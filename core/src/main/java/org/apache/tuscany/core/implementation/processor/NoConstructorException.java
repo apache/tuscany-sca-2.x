@@ -11,30 +11,29 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.core.implementation.ProcessingException;
 
 /**
- * Uses a wire to return an object instance
+ * Thrown when a suitable constructor for a component implementation cannot be found
  *
  * @version $Rev$ $Date$
  */
-public class WireObjectFactory implements ObjectFactory {
+public class NoConstructorException extends ProcessingException {
 
-    private OutboundWire<?> wire;
-    private WireService wireService;
-
-    public WireObjectFactory(OutboundWire<?> factory, WireService wireService) {
-        this.wire = factory;
-        this.wireService = wireService;
+    public NoConstructorException() {
     }
 
-    public Object getInstance() throws ObjectCreationException {
-        return wireService.createProxy(wire);
+    public NoConstructorException(String message) {
+        super(message);
     }
 
+    public NoConstructorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NoConstructorException(Throwable cause) {
+        super(cause);
+    }
 }

@@ -11,30 +11,30 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.core.implementation.ProcessingException;
 
 /**
- * Uses a wire to return an object instance
+ * Thrown when more than one component implementation constructor is annotated with {@link
+ * org.osoa.sca.annotations.Constructor}
  *
  * @version $Rev$ $Date$
  */
-public class WireObjectFactory implements ObjectFactory {
+public class DuplicateConstructorException extends ProcessingException {
 
-    private OutboundWire<?> wire;
-    private WireService wireService;
-
-    public WireObjectFactory(OutboundWire<?> factory, WireService wireService) {
-        this.wire = factory;
-        this.wireService = wireService;
+    public DuplicateConstructorException() {
     }
 
-    public Object getInstance() throws ObjectCreationException {
-        return wireService.createProxy(wire);
+    public DuplicateConstructorException(String message) {
+        super(message);
     }
 
+    public DuplicateConstructorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DuplicateConstructorException(Throwable cause) {
+        super(cause);
+    }
 }

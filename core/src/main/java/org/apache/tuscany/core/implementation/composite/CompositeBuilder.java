@@ -51,39 +51,40 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
 
         // create lists of all components, services and references in this composite
         List<ComponentDefinition<? extends Implementation<?>>> allComponents =
-                new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
+            new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
         allComponents.addAll(componentType.getComponents().values());
 
         List<BoundServiceDefinition<? extends Binding>> allBoundServices =
-                new ArrayList<BoundServiceDefinition<? extends Binding>>();
+            new ArrayList<BoundServiceDefinition<? extends Binding>>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
                 BoundServiceDefinition<? extends Binding> boundService =
-                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                    (BoundServiceDefinition<? extends Binding>) serviceDefinition;
                 allBoundServices.add(boundService);
             }
         }
 
         // FIXME is this right?
         List<BoundReferenceDefinition<? extends Binding>> allBoundReferences =
-                new ArrayList<BoundReferenceDefinition<? extends Binding>>();
+            new ArrayList<BoundReferenceDefinition<? extends Binding>>();
         for (ReferenceTarget referenceTarget : componentDefinition.getReferenceTargets().values()) {
-            ReferenceDefinition referenceDefinition = referenceTarget.getReference();
+            ReferenceDefinition referenceDefinition =
+                componentType.getReferences().get(referenceTarget.getReferenceName());
             if (referenceDefinition instanceof BoundReferenceDefinition<?>) {
                 BoundReferenceDefinition<? extends Binding> boundReference =
-                        (BoundReferenceDefinition<? extends Binding>) referenceDefinition;
+                    (BoundReferenceDefinition<? extends Binding>) referenceDefinition;
                 allBoundReferences.add(boundReference);
             }
         }
 
         // add in components and services from included composites
         for (Include include : componentType.getIncludes().values()) {
-            CompositeComponentType<?,?,?> included = include.getIncluded();
+            CompositeComponentType<?, ?, ?> included = include.getIncluded();
             allComponents.addAll(included.getComponents().values());
             for (ServiceDefinition serviceDefinition : included.getServices().values()) {
                 if (serviceDefinition instanceof BoundServiceDefinition) {
                     BoundServiceDefinition<? extends Binding> boundService =
-                            (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
                     allBoundServices.add(boundService);
                 }
             }

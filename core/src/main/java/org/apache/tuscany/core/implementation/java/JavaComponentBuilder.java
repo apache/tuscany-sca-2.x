@@ -14,39 +14,39 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Map;
 
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.injection.FieldInjector;
-import org.apache.tuscany.core.injection.MethodEventInvoker;
-import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -65,7 +65,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
-        Scope scope = componentType.getLifecycleScope();
+        Scope scope = componentType.getImplementationScope();
         if (Scope.MODULE == scope) {
             configuration.setScopeContainer(deployment.getModuleScope());
         } else {
@@ -80,51 +80,52 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         if (destroyMethod != null) {
             configuration.setDestroyInvoker(new MethodEventInvoker(destroyMethod));
         }
+
         configuration.setWireService(wireService);
-        try {
-            Constructor<?> constr = JavaIntrospectionHelper
-                .getDefaultConstructor(definition.getImplementation().getImplementationClass());
-            configuration.setInstanceFactory(new PojoObjectFactory(constr));
-        } catch (NoSuchMethodException e) {
-            BuilderConfigException bce = new BuilderConfigException("Error building definition", e);
-            bce.setIdentifier(definition.getName());
-            bce.addContextName(parent.getName());
-            throw bce;
+
+        // setup property injection sites
+        for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
+            configuration.addPropertySite(property.getName(), property.getMember());
         }
-        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            configuration.addServiceInterface(serviceDefinition.getServiceContract().getInterfaceClass());
+
+        // setup reference injection sites
+        for (JavaMappedReference reference : componentType.getReferences().values()) {
+            Member member = reference.getMember();
+            if (member != null) {
+                // could be null if the reference is mapped to a constructor
+                configuration.addReferenceSite(reference.getName(), member);
+            }
         }
+        // setup constructor injection
+        ConstructorDefinition<?> ctorDef = componentType.getConstructorDefinition();
+        Constructor<?> constr = ctorDef.getConstructor();
+        PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
+        configuration.setInstanceFactory(instanceFactory);
+        configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
+
+        JavaAtomicComponent component = new JavaAtomicComponent(definition.getName(), configuration);
 
         // handle properties
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
             ObjectFactory<?> factory = property.getDefaultValueFactory();
-            if (property.getMember() instanceof Field) {
-                configuration.addPropertyInjector(new FieldInjector((Field) property.getMember(), factory));
-            } else if (property.getMember() instanceof Method) {
-                configuration.addPropertyInjector(new MethodInjector((Method) property.getMember(), factory));
-            } else {
-                BuilderConfigException e = new BuilderConfigException("Invalid property injection site");
-                e.setIdentifier(property.getName());
-                throw e;
+            if (factory != null) {
+                component.addPropertyFactory(property.getName(), factory);
             }
         }
-        for (JavaMappedReference reference : componentType.getReferences().values()) {
-            configuration.addReferenceSite(reference.getName(), reference.getMember());
-        }
 
-        JavaAtomicComponent component = new JavaAtomicComponent(definition.getName(), configuration);
         for (ServiceDefinition service : componentType.getServices().values()) {
             component.addInboundWire(createWire(service));
         }
         for (ReferenceTarget reference : definition.getReferenceTargets().values()) {
-            component.addOutboundWire(
-                createWire(reference, componentType.getReferences().get(reference.getReferenceName())));
+            Map<String, JavaMappedReference> references = componentType.getReferences();
+            OutboundWire wire = createWire(reference, references.get(reference.getReferenceName()));
+            component.addOutboundWire(wire);
         }
         return component;
     }
 
 
-    //FIXME attach referenceDefinition to ref in loader
+    @SuppressWarnings("unchecked")
     private OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
         //TODO multiplicity
         if (reference.getTargets().size() != 1) {
@@ -143,6 +144,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         return wire;
     }
 
+    @SuppressWarnings("unchecked")
     private InboundWire createWire(ServiceDefinition service) {
         Class<?> interfaze = service.getServiceContract().getInterfaceClass();
         InboundWire wire = new InboundWireImpl();

@@ -27,7 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 public interface TargetInvoker extends Cloneable {
 
     /**
-     * Invokes an operation on a target with the given payload. Used in optmized cases where messagesdo not need to be
+     * Invokes an operation on a target with the given payload. Used in optmized cases where messages do not need to be
      * flowed such as in non-proxied wires.
      *
      * @throws InvocationTargetException

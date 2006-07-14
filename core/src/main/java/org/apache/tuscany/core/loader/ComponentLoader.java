@@ -95,17 +95,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         try {
             while (true) {
                 switch (reader.next()) {
-                case START_ELEMENT:
-                    QName qname = reader.getName();
-                    if (PROPERTY.equals(qname)) {
-                        loadProperty(reader, deploymentContext, componentDefinition);
-                    } else if (REFERENCE.equals(qname)) {
-                        loadReference(reader, deploymentContext, componentDefinition);
-                    }
-                    reader.next();
-                    break;
-                case END_ELEMENT:
-                    return componentDefinition;
+                    case START_ELEMENT:
+                        QName qname = reader.getName();
+                        if (PROPERTY.equals(qname)) {
+                            loadProperty(reader, deploymentContext, componentDefinition);
+                        } else if (REFERENCE.equals(qname)) {
+                            loadReference(reader, deploymentContext, componentDefinition);
+                        }
+                        reader.next();
+                        break;
+                    case END_ELEMENT:
+                        return componentDefinition;
                 }
             }
         } catch (LoaderException e) {

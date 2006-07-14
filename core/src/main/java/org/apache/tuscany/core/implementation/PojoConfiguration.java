@@ -19,13 +19,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 
 /**
  * Encapsulates confuration for a Java-based atomic component
@@ -36,12 +36,14 @@ public class PojoConfiguration {
 
     private CompositeComponent<?> parent;
     private ScopeContainer scopeContainer;
-    private ObjectFactory<?> instanceFactory;
+    private PojoObjectFactory<?> instanceFactory;
+    private List<String> constructorParamNames = new ArrayList<String>();
     private boolean eagerInit;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private List<Injector> propertyInjectors = new ArrayList<Injector>();
     private Map<String, Member> referenceSites = new HashMap<String, Member>();
+    private Map<String, Member> propertySites = new HashMap<String, Member>();
     private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
     private WireService wireService;
 
@@ -69,12 +71,24 @@ public class PojoConfiguration {
         serviceInterfaces.add(serviceInterface);
     }
 
-    public ObjectFactory<?> getInstanceFactory() {
+    public PojoObjectFactory<?> getInstanceFactory() {
         return instanceFactory;
     }
 
-    public void setInstanceFactory(ObjectFactory<?> objectFactory) {
+    public void setInstanceFactory(PojoObjectFactory<?> objectFactory) {
         this.instanceFactory = objectFactory;
+    }
+
+    public List<String> getConstructorParamNames() {
+        return constructorParamNames;
+    }
+
+    public void setConstructorParamNames(List<String> names) {
+        constructorParamNames = names;
+    }
+
+    public void addConstructorParamName(String name) {
+        constructorParamNames.add(name);
     }
 
     public boolean isEagerInit() {
@@ -115,6 +129,14 @@ public class PojoConfiguration {
 
     public void addReferenceSite(String name, Member member) {
         referenceSites.put(name, member);
+    }
+
+    public Map<String, Member> getPropertySites() {
+        return propertySites;
+    }
+
+    public void addPropertySite(String name, Member member) {
+        propertySites.put(name, member);
     }
 
     public WireService getWireService() {

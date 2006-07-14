@@ -21,36 +21,73 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
- * Creates new instances of a Java class, calling a given set of injectors to configure the instance
+ * Creates new instances of a Java class
  *
  * @version $Rev$ $Date$
  * @see org.apache.tuscany.core.injection.Injector
  */
 public class PojoObjectFactory<T> implements ObjectFactory<T> {
 
-    private static final ObjectFactory[] NO_INIT_PARAM = {};
-
     private final Constructor<T> ctr;
-    private final ObjectFactory<?>[] initParamsArray;
+    private ObjectFactory[] initializerFactories;
 
+    /**
+     * Creates the object factory
+     *
+     * @param ctr the constructor to use when instantiating a new object
+     */
     public PojoObjectFactory(Constructor<T> ctr) {
-        this(ctr, null);
+        assert ctr != null;
+        this.ctr = ctr;
+        initializerFactories = new ObjectFactory[ctr.getParameterTypes().length];
     }
 
-    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> initParams) {
+    /**
+     * Creates the object factory
+     *
+     * @param ctr       the constructor to use when instantiating a new object
+     * @param factories an ordered list of <code>ObjectFactory</code>s to use for returning constructor parameters
+     */
+    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> factories) {
+        assert ctr != null;
+        int params = ctr.getParameterTypes().length;
+        assert params == factories.size();
         this.ctr = ctr;
-        if (initParams != null && initParams.size() > 0) {
-            initParamsArray = initParams.toArray(new ObjectFactory[initParams.size()]);
-        } else {
-            initParamsArray = NO_INIT_PARAM;
+        initializerFactories = new ObjectFactory[params];
+        int i = 0;
+        for (ObjectFactory factory : factories) {
+            initializerFactories[i] = factory;
+            i++;
         }
     }
 
+    /**
+     * Returns the ordered array of <code>ObjectFactory</code>s use in creating constructor parameters
+     */
+    public ObjectFactory[] getInitializerFactories() {
+        return initializerFactories;
+    }
+
+    /**
+     * Sets an <code>ObjectFactory</code>s to use in creating constructor parameter
+     *
+     * @param pos     the constructor parameter position
+     * @param factory the object factory
+     */
+    public void setInitializerFactory(int pos, ObjectFactory factory) {
+        assert pos < initializerFactories.length;
+        initializerFactories[pos] = factory;
+    }
+
+    /**
+     * Creates a new instance of an object
+     */
     public T getInstance() throws ObjectCreationException {
-        Object[] initargs = new Object[initParamsArray.length];
+        int size = initializerFactories.length;
+        Object[] initargs = new Object[size];
         // create the constructor arg array
-        for (int i = 0; i < initParamsArray.length; i++) {
-            ObjectFactory<?> objectFactory = initParamsArray[i];
+        for (int i = 0; i < size; i++) {
+            ObjectFactory<?> objectFactory = initializerFactories[i];
             initargs[i] = objectFactory.getInstance();
         }
         try {

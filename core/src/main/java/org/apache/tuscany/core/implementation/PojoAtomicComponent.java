@@ -1,3 +1,16 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
 package org.apache.tuscany.core.implementation;
 
 import java.lang.reflect.Field;
@@ -23,7 +36,7 @@ import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
-import org.apache.tuscany.core.injection.WireObjectFactory;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -35,10 +48,12 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     protected boolean eagerInit;
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
-    protected ObjectFactory<?> objectFactory;
+    protected PojoObjectFactory<?> instanceFactory;
+    protected List<String> constructorParamNames;
     protected List<Class<?>> serviceInterfaces;
+    protected Map<String, Member> referenceSites;
+    protected Map<String, Member> propertySites;
     protected List<Injector> injectors;
-    protected Map<String, Member> members;
 
     public PojoAtomicComponent(String name, PojoConfiguration configuration) {
         super(name, configuration.getParent(), configuration.getScopeContainer(), configuration.getWireService());
@@ -49,12 +64,13 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         eagerInit = configuration.isEagerInit();
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
-        objectFactory = configuration.getInstanceFactory();
+        instanceFactory = configuration.getInstanceFactory();
+        constructorParamNames = configuration.getConstructorParamNames();
         serviceInterfaces = configuration.getServiceInterfaces();
-        this.injectors =
-            (configuration.getPropertyInjectors() == null) ? new ArrayList<Injector>()
-                : configuration.getPropertyInjectors();
-        this.members = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
+        injectors = new ArrayList<Injector>();
+        referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
+            : new HashMap<String, Member>();
+        propertySites = configuration.getPropertySites() != null ? configuration.getPropertySites()
             : new HashMap<String, Member>();
     }
 
@@ -96,8 +112,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     }
 
     public Object createInstance() throws ObjectCreationException {
-        Object instance = objectFactory.getInstance();
-        //InstanceWrapper ctx = new InstanceWrapperImpl(this, instance);
+        Object instance = instanceFactory.getInstance();
         // inject the instance with properties and references
         for (Injector<Object> injector : injectors) {
             injector.inject(instance);
@@ -105,27 +120,59 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         return instance;
     }
 
-    public void onReferenceWire(OutboundWire wire) {
-        String referenceName = wire.getReferenceName();
-        Member member = members.get(referenceName);
-        if (member == null) {
-            throw new NoAccessorException(referenceName);
+    public void addPropertyFactory(String name, ObjectFactory<?> factory) {
+        Member member = propertySites.get(name);
+        if (member instanceof Field) {
+            injectors.add(new FieldInjector((Field) member, factory));
+        } else if (member instanceof Method) {
+            injectors.add(new MethodInjector((Method) member, factory));
         }
-        injectors.add(createInjector(member, wire));
+        // cycle through constructor param names as well
+        for (int i = 0; i < constructorParamNames.size(); i++) {
+            if (name.equals(constructorParamNames.get(i))) {
+                ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
+                initializerFactories[i] = factory;
+                break;
+            }
+        }
+        //FIXME throw an error if no injection site found
+    }
+
+    public void onReferenceWire(OutboundWire wire) {
+        String name = wire.getReferenceName();
+        Member member = referenceSites.get(name);
+        if (member != null) {
+            injectors.add(createInjector(member, wire));
+        }
+        // cycle through constructor param names as well
+        for (int i = 0; i < constructorParamNames.size(); i++) {
+            if (name.equals(constructorParamNames.get(i))) {
+                ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
+                initializerFactories[i] = createWireFactory(wire);
+                break;
+            }
+        }
+        //TODO error if ref not set on constructor or ref site
     }
 
     public void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
         assert wires.size() > 0 : "Wires were empty";
         String referenceName = wires.get(0).getReferenceName();
-        Member member = members.get(referenceName);
+        Member member = referenceSites.get(referenceName);
         if (member == null) {
-            throw new NoAccessorException(referenceName);
+            if (constructorParamNames.contains(referenceName)) {
+                // injected on the constructor
+
+            } else {
+                throw new NoAccessorException(referenceName);
+            }
         }
         injectors.add(createMultiplicityInjector(member, multiplicityClass, wires));
+        //TODO multiplicity for constructor injection
     }
 
     protected Injector createInjector(Member member, OutboundWire wire) {
-        ObjectFactory<?> factory = new WireObjectFactory(wire, wireService);
+        ObjectFactory<?> factory = createWireFactory(wire);
         if (member instanceof Field) {
             return new FieldInjector((Field) member, factory);
         } else if (member instanceof Method) {
@@ -142,7 +189,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
                                                   List<OutboundWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (OutboundWire wire : wireFactories) {
-            factories.add(new WireObjectFactory(wire, wireService));
+            factories.add(createWireFactory(wire));
         }
         if (member instanceof Field) {
             Field field = (Field) member;
@@ -165,5 +212,6 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
+    protected abstract ObjectFactory<?> createWireFactory(OutboundWire wire);
 
 }

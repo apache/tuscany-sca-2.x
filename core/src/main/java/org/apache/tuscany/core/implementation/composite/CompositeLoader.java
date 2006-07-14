@@ -32,11 +32,11 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.Include;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
@@ -61,30 +61,30 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                                        XMLStreamReader reader,
                                        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
-        CompositeComponentType<ServiceDefinition,ReferenceDefinition, Property<?>> composite =
-                new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
+            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         composite.setName(reader.getAttributeValue(null, "name"));
         while (true) {
             switch (reader.next()) {
-            case START_ELEMENT:
-                ModelObject o = registry.load(parent, reader, deploymentContext);
-                if (o instanceof ServiceDefinition) {
-                    composite.add((ServiceDefinition) o);
-                } else if (o instanceof ReferenceDefinition) {
-                    composite.add((ReferenceDefinition) o);
-                } else if (o instanceof Property<?>) {
-                    composite.add((Property<?>) o);
-                } else if (o instanceof ComponentDefinition<?>) {
-                    composite.add((ComponentDefinition<? extends Implementation<?>>) o);
-                } else if (o instanceof Include) {
-                    composite.add((Include) o);
-                }
-                reader.next();
-                break;
-            case END_ELEMENT:
-                if (COMPOSITE.equals(reader.getName())) {
-                    return composite;
-                }
+                case START_ELEMENT:
+                    ModelObject o = registry.load(parent, reader, deploymentContext);
+                    if (o instanceof ServiceDefinition) {
+                        composite.add((ServiceDefinition) o);
+                    } else if (o instanceof ReferenceDefinition) {
+                        composite.add((ReferenceDefinition) o);
+                    } else if (o instanceof Property<?>) {
+                        composite.add((Property<?>) o);
+                    } else if (o instanceof ComponentDefinition<?>) {
+                        composite.add((ComponentDefinition<? extends Implementation<?>>) o);
+                    } else if (o instanceof Include) {
+                        composite.add((Include) o);
+                    }
+                    reader.next();
+                    break;
+                case END_ELEMENT:
+                    if (COMPOSITE.equals(reader.getName())) {
+                        return composite;
+                    }
             }
         }
     }

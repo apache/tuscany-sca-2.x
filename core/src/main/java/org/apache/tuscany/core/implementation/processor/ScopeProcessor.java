@@ -26,9 +26,9 @@ public class ScopeProcessor extends ImplementationProcessorSupport {
         if (annotation == null) {
             // TODO do this with a specialization of a system POJO
             if (SystemCompositeComponent.class.isAssignableFrom(parent.getClass())) {
-                type.setLifecycleScope(Scope.MODULE);
+                type.setImplementationScope(Scope.MODULE);
             } else {
-                type.setLifecycleScope(Scope.STATELESS);
+                type.setImplementationScope(Scope.STATELESS);
             }
             return;
         }
@@ -47,6 +47,6 @@ public class ScopeProcessor extends ImplementationProcessorSupport {
         } else {
             scope = Scope.STATELESS;
         }
-        type.setLifecycleScope(scope);
+        type.setImplementationScope(scope);
     }
 }

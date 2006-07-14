@@ -55,7 +55,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
     }
 
     public Include load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
-            throws XMLStreamException, LoaderException {
+        throws XMLStreamException, LoaderException {
 
         assert INCLUDE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");

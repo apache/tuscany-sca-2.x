@@ -11,6 +11,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
@@ -31,10 +32,14 @@ public final class MockComponentFactory {
     /**
      * Creates a component named "source" with a reference to target/Target
      */
-    public static ComponentDefinition<SystemImplementation> createSourceWithTargetReference() {
+    public static ComponentDefinition<SystemImplementation> createSourceWithTargetReference()
+        throws NoSuchMethodException {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType componentType = new PojoComponentType();
-        componentType.setLifecycleScope(Scope.MODULE);
+        componentType.setImplementationScope(Scope.MODULE);
+        componentType
+            .setConstructorDefinition(
+                new ConstructorDefinition<SourceImpl>(SourceImpl.class.getConstructor((Class[]) null)));
         JavaMappedReference reference;
         try {
             reference = new JavaMappedReference();
@@ -54,7 +59,6 @@ public final class MockComponentFactory {
         sourceComponentDefinition.setName("source");
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReference(reference);
         referenceTarget.setReferenceName("target");
         try {
             referenceTarget.addTarget(new URI("target/Target"));
@@ -71,7 +75,7 @@ public final class MockComponentFactory {
     public static ComponentDefinition<SystemImplementation> createSourceWithTargetAutowire() {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType componentType = new PojoComponentType();
-        componentType.setLifecycleScope(Scope.MODULE);
+        componentType.setImplementationScope(Scope.MODULE);
         JavaMappedReference reference;
         try {
             reference = new JavaMappedReference();
@@ -92,7 +96,6 @@ public final class MockComponentFactory {
         sourceComponentDefinition.setName("source");
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReference(reference);
         referenceTarget.setReferenceName("target");
         sourceComponentDefinition.add(referenceTarget);
         return sourceComponentDefinition;
@@ -101,10 +104,13 @@ public final class MockComponentFactory {
     /**
      * Creates a component named "target" with a service named "Target"
      */
-    public static ComponentDefinition<SystemImplementation> createTarget() {
+    public static ComponentDefinition<SystemImplementation> createTarget() throws NoSuchMethodException {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType componentType = new PojoComponentType();
-        componentType.setLifecycleScope(Scope.MODULE);
+        componentType.setImplementationScope(Scope.MODULE);
+        componentType
+            .setConstructorDefinition(
+                new ConstructorDefinition<TargetImpl>(TargetImpl.class.getConstructor((Class[]) null)));
         ServiceDefinition targetServiceDefinition = new ServiceDefinition();
         targetServiceDefinition.setName("Target");
         ServiceContract contract = new JavaServiceContract();

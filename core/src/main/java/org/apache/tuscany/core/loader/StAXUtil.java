@@ -19,7 +19,6 @@ package org.apache.tuscany.core.loader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Multiplicity;
 

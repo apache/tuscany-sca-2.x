@@ -13,6 +13,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -28,6 +29,10 @@ import java.util.Set;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -41,8 +46,6 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicA
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine services, references, and properties
@@ -66,8 +69,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             Set<Class> interfaces = getAllInterfaces(clazz);
             if (interfaces.size() == 0) {
                 // class is the interface
-                throw new UnsupportedOperationException(
-                    "Classes not yet supported as interfaces [" + clazz.getName() + "]");
+                JavaMappedService service = createService(clazz);
+                type.getServices().put(service.getName(), service);
             } else if (interfaces.size() == 1) {
                 JavaMappedService service = createService(interfaces.iterator().next());
                 type.getServices().put(service.getName(), service);
@@ -82,6 +85,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                     throw new ServiceTypeNotFoundException(clazz.getName());
                 }
             }
+            calculateConstructor(type, clazz);
             return;
         }
 
@@ -130,6 +134,101 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 type.add(createProperty(field.getName(), field, paramType));
             }
         }
+        calculateConstructor(type, clazz);
+    }
+
+    private void calculateConstructor(PojoComponentType<JavaMappedService,
+        JavaMappedReference,
+        JavaMappedProperty<?>> type,
+                                      Class<?> clazz) throws NoConstructorException,
+                                                             UnresolvableConstructorParameterException {
+        // determine constructor if one is not annotated
+        if (type.getConstructorDefinition() == null) {
+            Constructor[] constructors = clazz.getConstructors();
+            if (constructors.length == 0) {
+                NoConstructorException e = new NoConstructorException("No public constructor for class");
+                e.setIdentifier(clazz.getName());
+                throw e;
+            } else if (constructors.length > 1) {
+                Constructor selected = null;
+                int sites = type.getProperties().size() + type.getReferences().size();
+                for (Constructor constructor : constructors) {
+                    if (constructor.getParameterTypes().length == 0) {
+                        selected = constructor;
+                    }
+                    if (constructor.getParameterTypes().length == sites) {
+                        //TODO finish
+                        //selected = constructor;
+                        // select constructor
+                        //break;
+                    }
+                }
+                ConstructorDefinition<?> definition = new ConstructorDefinition(selected);
+                type.setConstructorDefinition(definition);
+            } else {
+                Constructor constructor = constructors[0];
+                Class[] params = constructor.getParameterTypes();
+                if (params.length != 0) {
+                    Map<String, JavaMappedProperty<?>> props = type.getProperties();
+                    Map<String, JavaMappedReference> refs = type.getReferences();
+                    List<String> paramNames = new ArrayList<String>();
+                    // the constructor param types must unambiguously match reference or property types
+                    for (Class param : params) {
+                        String name = findReferenceOrProperty(param, props, refs);
+                        if (name == null) {
+                            throw new UnresolvableConstructorParameterException(param.getName());
+                        }
+                        paramNames.add(name);
+                    }
+                    ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+                    definition.setInjectionNames(paramNames);
+                    type.setConstructorDefinition(definition);
+                } else {
+                    ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+                    type.setConstructorDefinition(definition);
+                }
+            }
+        }
+    }
+
+    /**
+     * Unambiguously finds the reference or property associated with the given type
+     *
+     * @return the name of the reference or property if found, null if not
+     * @throws UnresolvableConstructorParameterException
+     *          if the constructor parameter cannot be resolved to a property or reference
+     */
+    private String findReferenceOrProperty(Class<?> type,
+                                           Map<String, JavaMappedProperty<?>> props,
+                                           Map<String, JavaMappedReference> refs)
+        throws UnresolvableConstructorParameterException {
+
+        String name = null;
+        for (JavaMappedProperty<?> property : props.values()) {
+            if (property.getJavaType().equals(type)) {
+                if (name != null) {
+                    UnresolvableConstructorParameterException e = new UnresolvableConstructorParameterException(
+                        "Cannot unambiguously determine property or reference for constructor type");
+                    e.setIdentifier(type.getName());
+                    throw e;
+                }
+                name = property.getName();
+                // do not break since ambiguities must be checked, i.e. more than one prop or ref of the same type
+            }
+        }
+        for (JavaMappedReference reference : refs.values()) {
+            if (reference.getServiceContract().getInterfaceClass().equals(type)) {
+                if (name != null) {
+                    UnresolvableConstructorParameterException e = new UnresolvableConstructorParameterException(
+                        "Cannot unambiguously determine property or reference for constructor type");
+                    e.setIdentifier(type.getName());
+                    throw e;
+                }
+                name = reference.getName();
+                // do not break since ambiguities must be checked, i.e. more than one prop or ref of the same type
+            }
+        }
+        return name;
     }
 
     /**
@@ -261,7 +360,6 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                                 found = true;
                             }
                         }
-
                     }
                     if (found) {
                         break;

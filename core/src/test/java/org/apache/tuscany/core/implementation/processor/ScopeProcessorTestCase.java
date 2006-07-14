@@ -19,42 +19,42 @@ public class ScopeProcessorTestCase extends MockObjectTestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType type = new PojoComponentType();
         processor.visitClass(parent, Module.class, type, null);
-        assertEquals(Scope.MODULE, type.getLifecycleScope());
+        assertEquals(Scope.MODULE, type.getImplementationScope());
     }
 
     public void testSessionScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType type = new PojoComponentType();
         processor.visitClass(parent, Session.class, type, null);
-        assertEquals(Scope.SESSION, type.getLifecycleScope());
+        assertEquals(Scope.SESSION, type.getImplementationScope());
     }
 
     public void testRequestScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType type = new PojoComponentType();
         processor.visitClass(parent, Request.class, type, null);
-        assertEquals(Scope.REQUEST, type.getLifecycleScope());
+        assertEquals(Scope.REQUEST, type.getImplementationScope());
     }
 
     public void testCompositeScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType type = new PojoComponentType();
         processor.visitClass(parent, Composite.class, type, null);
-        assertEquals(Scope.COMPOSITE, type.getLifecycleScope());
+        assertEquals(Scope.COMPOSITE, type.getImplementationScope());
     }
 
     public void testStatelessScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType type = new PojoComponentType();
         processor.visitClass(parent, Stateless.class, type, null);
-        assertEquals(Scope.STATELESS, type.getLifecycleScope());
+        assertEquals(Scope.STATELESS, type.getImplementationScope());
     }
 
     public void testNoScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType type = new PojoComponentType();
         processor.visitClass(parent, None.class, type, null);
-        assertEquals(Scope.STATELESS, type.getLifecycleScope());
+        assertEquals(Scope.STATELESS, type.getImplementationScope());
     }
 
     protected void setUp() throws Exception {

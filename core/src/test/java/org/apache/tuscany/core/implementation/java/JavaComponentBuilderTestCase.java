@@ -3,19 +3,6 @@ package org.apache.tuscany.core.implementation.java;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
-
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -24,6 +11,20 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
+import org.apache.tuscany.core.implementation.java.mock.components.Source;
+import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
+import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
+import org.jmock.core.Invocation;
+import org.jmock.core.Stub;
 
 /**
  * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
@@ -36,7 +37,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         CompositeComponent parent = new CompositeComponentImpl(null, null, null);
 
         PojoComponentType sourceType = new PojoComponentType();
-        sourceType.setLifecycleScope(Scope.MODULE);
+        sourceType.setImplementationScope(Scope.MODULE);
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName("target");
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
@@ -49,6 +50,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         sourceServiceDefinition.setServiceContract(sourceContract);
 
         sourceType.add(sourceServiceDefinition);
+        sourceType.setConstructorDefinition(new ConstructorDefinition(SourceImpl.class.getConstructor((Class[]) null)));
         JavaImplementation sourceImpl = new JavaImplementation();
         sourceImpl.setComponentType(sourceType);
         sourceImpl.setImplementationClass(SourceImpl.class);

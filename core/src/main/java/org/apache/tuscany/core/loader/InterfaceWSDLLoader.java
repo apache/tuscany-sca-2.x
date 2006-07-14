@@ -40,11 +40,11 @@ import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
  * @version $Rev$ $Date$
  */
 public class InterfaceWSDLLoader extends LoaderExtension {
+    public static final QName INTERFACE_WSDL = new QName(XML_NAMESPACE_1_0, "interface.wsdl");
     private static final String WSDLI = "http://www.w3.org/2006/01/wsdl-instance";
     private static final String WSDLI_LOCATION = "wsdlLocation";
 
     private WSDLDefinitionRegistry wsdlRegistry;
-    public static final QName INTERFACE_WSDL = new QName(XML_NAMESPACE_1_0, "interface.wsdl");
 
     @Autowire
     public void setWsdlRegistry(WSDLDefinitionRegistry wsdlRegistry) {

@@ -20,6 +20,7 @@ import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
@@ -40,10 +41,12 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
     DeploymentContext deploymentContext;
     CompositeComponent<?> parent;
 
+    @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
+        type.setConstructorDefinition(new ConstructorDefinition(Foo.class.getConstructor((Class[])null)));
         JavaMappedProperty<String> property = new JavaMappedProperty<String>();
         property.setName("test");
         property.setDefaultValueFactory(new SingletonObjectFactory<String>("foo"));

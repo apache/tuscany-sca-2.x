@@ -23,8 +23,11 @@ import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.ObjectFactory;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
+import org.apache.tuscany.core.injection.WireObjectFactory;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -62,5 +65,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         return new JavaTargetInvoker(operation, this);
     }
 
-
+    protected ObjectFactory<?> createWireFactory(OutboundWire wire) {
+        return new WireObjectFactory(wire, wireService);
+    }
 }

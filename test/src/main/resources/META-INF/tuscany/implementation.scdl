@@ -25,6 +25,9 @@
 
     <!-- Foundation implementation processors -->
     <component name="implementation.Destroy">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConstructorProcessor"/>
+    </component>
+    <component name="implementation.Destroy">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.DestroyProcessor"/>
     </component>
     <component name="implementation.Init">

@@ -36,7 +36,7 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         registry.introspect(null, Foo.class, type, null);
         assertEquals(Foo.class.getMethod("init"), type.getInitMethod());
         assertEquals(Foo.class.getMethod("destroy"), type.getDestroyMethod());
-        assertEquals(MODULE, type.getLifecycleScope());
+        assertEquals(MODULE, type.getImplementationScope());
         assertEquals(Foo.class.getMethod("setBar", String.class), type.getProperties().get("bar").getMember());
         assertEquals(Foo.class.getMethod("setTarget", Foo.class), type.getReferences().get("target").getMember());
     }

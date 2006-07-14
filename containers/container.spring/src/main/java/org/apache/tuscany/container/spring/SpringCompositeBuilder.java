@@ -1,13 +1,11 @@
 package org.apache.tuscany.container.spring;
 
-import org.springframework.context.ConfigurableApplicationContext;
-
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -19,6 +17,8 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Creates a {@link SpringCompositeComponent} from an assembly model
@@ -35,16 +35,16 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         SpringImplementation implementation = componentDefinition.getImplementation();
         ConfigurableApplicationContext applicationContext = implementation.getApplicationContext();
         SpringCompositeComponent component =
-                new SpringCompositeComponent(name, applicationContext, parent);
+            new SpringCompositeComponent(name, applicationContext, parent);
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
-                BoundReferenceDefinition<? extends Binding>,
-                ? extends Property> componentType = implementation.getComponentType();
+            BoundReferenceDefinition<? extends Binding>,
+            ? extends Property> componentType = implementation.getComponentType();
 
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
             // call back into builder registry to handle building of services
             Service<?> service = (Service) builderRegistry.build(parent,
-                    serviceDefinition,
-                    deploymentContext);
+                serviceDefinition,
+                deploymentContext);
             // wire serviceDefinition to bean invokers
             InboundWire<?> wire = service.getInboundWire();
             QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
@@ -55,11 +55,11 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         }
         // TODO is this correct?
         for (ReferenceTarget target : componentDefinition.getReferenceTargets().values()) {
-            ReferenceDefinition referenceDefinition = target.getReference();
+            ReferenceDefinition referenceDefinition = componentType.getReferences().get(target.getReferenceName());
             if (referenceDefinition instanceof BoundReferenceDefinition) {
                 // call back into builder registry to handle building of references
                 component.register(builderRegistry.build(parent, (BoundReferenceDefinition<? extends Binding>)
-                        referenceDefinition, deploymentContext));
+                    referenceDefinition, deploymentContext));
             }
         }
         return component;

@@ -16,13 +16,9 @@
  */
 package org.apache.tuscany.core.implementation.system.builder;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
@@ -34,8 +30,13 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.Include;
+import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * Produces system composite components by evaluating an assembly.
@@ -62,27 +63,27 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
         // create lists of all components and services in this composite
         List<ComponentDefinition<? extends Implementation<?>>> allComponents =
-                new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
+            new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
         allComponents.addAll(componentType.getComponents().values());
 
         List<BoundServiceDefinition<? extends Binding>> allBoundServices =
-                new ArrayList<BoundServiceDefinition<? extends Binding>>();
+            new ArrayList<BoundServiceDefinition<? extends Binding>>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
                 BoundServiceDefinition<? extends Binding> boundService =
-                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                    (BoundServiceDefinition<? extends Binding>) serviceDefinition;
                 allBoundServices.add(boundService);
             }
         }
 
         // add in components and services from included composites
         for (Include include : componentType.getIncludes().values()) {
-            CompositeComponentType<?,?,?> included = include.getIncluded();
+            CompositeComponentType<?, ?, ?> included = include.getIncluded();
             allComponents.addAll(included.getComponents().values());
             for (ServiceDefinition serviceDefinition : included.getServices().values()) {
                 if (serviceDefinition instanceof BoundServiceDefinition) {
                     BoundServiceDefinition<? extends Binding> boundService =
-                            (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
                     allBoundServices.add(boundService);
                 }
             }

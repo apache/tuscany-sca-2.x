@@ -20,15 +20,6 @@ import java.net.URL;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.mock.component.BasicInterface;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -39,9 +30,18 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.Include;
+
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.mock.component.BasicInterface;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies the default boostrap deployer
@@ -61,7 +61,7 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         deployer.load(parent, componentDefinition, deploymentContext);
-        CompositeComponentType<ServiceDefinition,?,?> composite = implementation.getComponentType();
+        CompositeComponentType<ServiceDefinition, ?, ?> composite = implementation.getComponentType();
         assertNotNull(composite);
         assertEquals("boot1", composite.getName());
 

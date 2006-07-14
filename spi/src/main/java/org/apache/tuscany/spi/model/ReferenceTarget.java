@@ -28,7 +28,6 @@ import java.util.List;
 public class ReferenceTarget extends ModelObject {
     private String referenceName;
     private List<URI> targets = new ArrayList<URI>();
-    private ReferenceDefinition referenceDefinition;
 
     public String getReferenceName() {
         return referenceName;
@@ -44,14 +43,6 @@ public class ReferenceTarget extends ModelObject {
 
     public void addTarget(URI target) {
         targets.add(target);
-    }
-
-    public ReferenceDefinition getReference() {
-        return referenceDefinition;
-    }
-
-    public void setReference(ReferenceDefinition referenceDefinition) {
-        this.referenceDefinition = referenceDefinition;
     }
 
 }

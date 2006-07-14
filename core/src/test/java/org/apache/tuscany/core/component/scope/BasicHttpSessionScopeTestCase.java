@@ -1,6 +1,5 @@
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -22,7 +21,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
-    private ObjectFactory<?> factory;
+    private PojoObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
@@ -74,7 +73,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         factory = new PojoObjectFactory<SessionScopeInitDestroyComponent>(
-            SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null), null);
+            SessionScopeInitDestroyComponent.class.getConstructor((Class[]) null));
         initInvoker = new MethodEventInvoker<Object>(
             SessionScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
         destroyInvoker = new MethodEventInvoker<Object>(
