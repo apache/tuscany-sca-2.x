@@ -35,7 +35,7 @@ public class ConstructorAutowireTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor ctor = Foo.class.getConstructor(Bar.class);
         processor.visitConstructor(null, ctor, type, null);
-        assertNotNull(type.getReferences().get("constructorautowiretestcase$bar"));
+        assertNotNull(type.getReferences().get("ref"));
     }
 
     private static interface Bar {
@@ -44,7 +44,7 @@ public class ConstructorAutowireTestCase extends TestCase {
 
     private static class Foo {
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.osoa.sca.annotations.Constructor("ref")
         public Foo(@Autowire Bar ref) {
 
         }

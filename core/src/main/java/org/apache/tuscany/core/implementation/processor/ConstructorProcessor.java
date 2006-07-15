@@ -64,7 +64,7 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
                 if (Autowire.class.equals(annot.annotationType())) {
                     JavaMappedReference reference = new JavaMappedReference();
                     reference.setAutowire(true);
-                    String name = getBaseName(param).toLowerCase();
+                    String name = names[i];
                     reference.setName(name);
                     JavaServiceContract contract = new JavaServiceContract();
                     contract.setInterfaceClass(param);
