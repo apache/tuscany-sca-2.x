@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
 
 import org.osoa.sca.Version;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -28,6 +29,8 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loader that handles an &lt;implementation.composite&gt; element.
@@ -37,6 +40,11 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 public class ImplementationCompositeLoader extends LoaderExtension<CompositeImplementation> {
     private static final QName IMPLEMENTATION_COMPOSITE =
             new QName(Version.XML_NAMESPACE_1_0, "implementation.composite");
+
+    @Constructor({"registry"})
+    public ImplementationCompositeLoader(@Autowire LoaderRegistry registry) {
+        super(registry);
+    }
 
     public QName getXMLType() {
         return IMPLEMENTATION_COMPOSITE;

@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -37,6 +38,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
@@ -46,10 +48,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     public static final QName COMPOSITE = new QName(XML_NAMESPACE_1_0, "composite");
 
-    public CompositeLoader() {
-    }
-
-    public CompositeLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public CompositeLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 

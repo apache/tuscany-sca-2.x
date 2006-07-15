@@ -23,14 +23,17 @@ public class LoaderExtensionTestCase extends MockObjectTestCase {
         mock.expects(once()).method("registerLoader");
         mock.expects(once()).method("unregisterLoader");
         LoaderRegistry registry = (LoaderRegistry) mock.proxy();
-        LoaderExtensionTestCase.Extension loader = new LoaderExtensionTestCase.Extension();
-        loader.setRegistry(registry);
+        LoaderExtensionTestCase.Extension loader = new LoaderExtensionTestCase.Extension(registry);
         loader.start();
         loader.stop();
     }
 
 
     private static class Extension extends LoaderExtension {
+
+        public Extension(LoaderRegistry registry) {
+            super(registry);
+        }
 
         public QName getXMLType() {
             return null;

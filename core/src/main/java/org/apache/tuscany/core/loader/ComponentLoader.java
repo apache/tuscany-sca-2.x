@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -57,17 +58,11 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
     private StAXPropertyFactory defaultPropertyFactory;
 
-    public ComponentLoader() {
-    }
-
-    public ComponentLoader(LoaderRegistry registry, StAXPropertyFactory propertyFactory) {
+    @Constructor({"registry", "defaultPropertyFactory"})
+    public ComponentLoader(@Autowire LoaderRegistry registry,
+                           @Autowire StAXPropertyFactory propertyFactory) {
         super(registry);
         this.defaultPropertyFactory = propertyFactory;
-    }
-
-    @Autowire
-    public void setDefaultPropertyFactory(StAXPropertyFactory defaultPropertyFactory) {
-        this.defaultPropertyFactory = defaultPropertyFactory;
     }
 
     public QName getXMLType() {

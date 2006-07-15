@@ -50,7 +50,7 @@ public class IncludeLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.loader = new IncludeLoader();
+        this.loader = new IncludeLoader(null);
         mockReader = mock(XMLStreamReader.class);
 
     }

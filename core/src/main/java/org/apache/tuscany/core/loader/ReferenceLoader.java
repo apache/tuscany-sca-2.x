@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a reference from an XML-based assembly file
@@ -42,10 +44,8 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     public static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
 
-    public ReferenceLoader() {
-    }
-
-    public ReferenceLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public ReferenceLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 

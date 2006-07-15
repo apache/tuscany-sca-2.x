@@ -39,27 +39,11 @@ public abstract class LoaderExtension<T extends ModelObject> implements StAXElem
     protected LoaderRegistry registry;
 
     /**
-     * Default constructor.
-     */
-    protected LoaderExtension() {
-    }
-
-    /**
-     * Constructor that allows the registry to be specified.
+     * Constructor specifies the registry to register with.
      *
      * @param registry the LoaderRegistry this loader should register with
      */
-    protected LoaderExtension(LoaderRegistry registry) {
-        this.registry = registry;
-    }
-
-    /**
-     * Set the registry this loader should register with.
-     *
-     * @param registry the registry this loader should register with
-     */
-    @Autowire
-    public void setRegistry(LoaderRegistry registry) {
+    protected LoaderExtension(@Autowire LoaderRegistry registry) {
         this.registry = registry;
     }
 

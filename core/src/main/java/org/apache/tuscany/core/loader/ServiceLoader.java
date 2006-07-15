@@ -25,6 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -37,6 +38,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a service definition from an XML-based assembly file
@@ -46,10 +48,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
 
-    public ServiceLoader() {
-    }
-
-    public ServiceLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public ServiceLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 

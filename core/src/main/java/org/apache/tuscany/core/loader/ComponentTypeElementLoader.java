@@ -23,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -34,6 +35,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * @version $Rev$ $Date$
@@ -41,10 +43,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     public static final QName COMPONENT_TYPE = new QName(XML_NAMESPACE_1_0, "componentType");
 
-    public ComponentTypeElementLoader() {
-    }
-
-    public ComponentTypeElementLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public ComponentTypeElementLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 

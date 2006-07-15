@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -29,6 +30,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a property from an XML-based assembly file
@@ -38,10 +40,8 @@ import org.apache.tuscany.spi.model.Property;
 public class PropertyLoader extends LoaderExtension<Property> {
     public static final QName PROPERTY = new QName(XML_NAMESPACE_1_0, "property");
 
-    public PropertyLoader() {
-    }
-
-    public PropertyLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public PropertyLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 

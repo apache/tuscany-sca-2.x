@@ -51,7 +51,7 @@ public class ImplementationCompositeLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        this.loader = new ImplementationCompositeLoader();
+        this.loader = new ImplementationCompositeLoader(null);
         mockReader = mock(XMLStreamReader.class);
 
     }

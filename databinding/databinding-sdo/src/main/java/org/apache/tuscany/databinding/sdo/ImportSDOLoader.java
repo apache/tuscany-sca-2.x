@@ -30,9 +30,13 @@ import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.annotation.Autowire;
+
+import org.osoa.sca.annotations.Constructor;
 
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
@@ -41,6 +45,11 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public class ImportSDOLoader extends LoaderExtension {
     public static final QName IMPORT_SDO = new QName("http://www.osoa.org/xmlns/sca/0.9", "import.sdo");
+
+    @Constructor({"registry"})
+    public ImportSDOLoader(@Autowire LoaderRegistry registry) {
+        super(registry);
+    }
 
     public QName getXMLType() {
         return IMPORT_SDO;

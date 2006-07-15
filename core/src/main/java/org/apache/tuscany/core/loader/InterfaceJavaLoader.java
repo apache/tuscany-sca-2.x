@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -29,6 +30,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
@@ -38,10 +40,8 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
     public static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
 
-    public InterfaceJavaLoader() {
-    }
-
-    public InterfaceJavaLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public InterfaceJavaLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 

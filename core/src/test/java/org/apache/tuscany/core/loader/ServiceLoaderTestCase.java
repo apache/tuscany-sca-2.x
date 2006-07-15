@@ -83,10 +83,9 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        loader = new ServiceLoader();
         mockReader = mock(XMLStreamReader.class);
         mockRegistry = mock(LoaderRegistry.class);
-        loader.setRegistry((LoaderRegistry) mockRegistry.proxy());
+        loader = new ServiceLoader((LoaderRegistry) mockRegistry.proxy());
         deploymentContext = new RootDeploymentContext(null, null, null, null);
     }
 }

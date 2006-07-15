@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -48,18 +49,13 @@ import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
     public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
-    protected LoaderRegistry registry;
     protected WSDLDefinitionRegistry wsdlRegistry;
 
-    @Autowire
-    public void setWsdlRegistry(WSDLDefinitionRegistry wsdlReg) {
-        try {
-            Map<String, Object> properties = new WeakHashMap<String, Object>();
-            properties.put("celtix.WSDLManager", new TuscanyWSDLManager(wsdlReg));
-            wsdlRegistry = wsdlReg;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Constructor({"registry"})
+    public WebServiceBindingLoader(@Autowire LoaderRegistry registry,
+                                   @Autowire WSDLDefinitionRegistry wsdlRegistry) {
+        super(registry);
+        this.wsdlRegistry = wsdlRegistry;
     }
 
     public QName getXMLType() {

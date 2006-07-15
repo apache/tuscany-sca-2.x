@@ -20,6 +20,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -27,6 +29,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loads a system binding specified in an XML-based assembly
@@ -37,10 +40,8 @@ public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
     public static final QName SYSTEM_BINDING =
         new QName("http://tuscany.apache.org/xmlns/system/1.0-chianti-SNAPSHOT", "binding.system");
 
-    public SystemBindingLoader() {
-    }
-
-    public SystemBindingLoader(LoaderRegistry registry) {
+    @Constructor({"registry"})
+    public SystemBindingLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
