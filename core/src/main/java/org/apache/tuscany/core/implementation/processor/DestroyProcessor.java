@@ -45,7 +45,7 @@ public class DestroyProcessor extends ImplementationProcessorSupport {
         }
         if (method.getParameterTypes().length != 0) {
             IllegalDestructorException e = new IllegalDestructorException("Destructor must not have argments");
-            e.setIdentifier(method.getName());
+            e.setIdentifier(method.toString());
             throw e;
         }
         if (type.getDestroyMethod() != null) {

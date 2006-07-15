@@ -28,5 +28,9 @@ import java.lang.annotation.Target;
 @Target({METHOD, FIELD, PARAMETER})
 @Retention(RUNTIME)
 public @interface Autowire {
+    /**
+     * The name of the autowire. If not specified then the name will be derived from the annotated field.
+     */
+    String name() default "";
 
 }

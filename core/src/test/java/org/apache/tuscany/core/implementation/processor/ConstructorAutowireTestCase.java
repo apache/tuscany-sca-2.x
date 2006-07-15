@@ -30,12 +30,45 @@ public class ConstructorAutowireTestCase extends TestCase {
 
     ConstructorProcessor processor = new ConstructorProcessor();
 
-    public void testAutowireReference() throws Exception {
+    public void testAutowire() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor ctor = Foo.class.getConstructor(Bar.class);
         processor.visitConstructor(null, ctor, type, null);
-        assertNotNull(type.getReferences().get("ref"));
+        assertNotNull(type.getReferences().get("myRef"));
+    }
+
+    public void testNamesOnConstructor() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = Foo.class.getConstructor(Bar.class, Bar.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertNotNull(type.getReferences().get("myRef1"));
+        assertNotNull(type.getReferences().get("myRef2"));
+    }
+
+    public void testNoName() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(Bar.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidAutowireException e) {
+            // expected
+        }
+    }
+
+    public void testInvalidNumberOfNames() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(Bar.class, Bar.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidAutowireException e) {
+            // expected
+        }
     }
 
     private static interface Bar {
@@ -44,10 +77,30 @@ public class ConstructorAutowireTestCase extends TestCase {
 
     private static class Foo {
 
-        @org.osoa.sca.annotations.Constructor("ref")
-        public Foo(@Autowire Bar ref) {
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Autowire(name = "myRef") Bar ref) {
 
         }
+
+        @org.osoa.sca.annotations.Constructor({"myRef1", "myRef2"})
+        public Foo(@Autowire Bar ref1, @Autowire Bar ref2) {
+
+        }
+
+    }
+
+    private static class BadFoo {
+
+        @org.osoa.sca.annotations.Constructor()
+        public BadFoo(@Autowire Bar ref) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor({"ref1"})
+        public BadFoo(@Autowire Bar ref1, @Autowire Bar ref2) {
+
+        }
+
     }
 
 }

@@ -1,0 +1,130 @@
+package org.apache.tuscany.core.implementation.processor;
+
+import java.lang.reflect.Constructor;
+import java.util.List;
+
+import org.osoa.sca.annotations.Reference;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class ConstructorReferenceTestCase extends TestCase {
+
+    ConstructorProcessor processor = new ConstructorProcessor();
+
+    public void testReference() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = ConstructorReferenceTestCase.Foo.class.getConstructor(String.class);
+        processor.visitConstructor(null, ctor, type, null);
+        JavaMappedReference reference = type.getReferences().get("myRef");
+        assertTrue(reference.isRequired());
+        assertEquals("myRef", reference.getName());
+    }
+
+    public void testTwoPropertiesSameType() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = ConstructorReferenceTestCase.Foo.class.getConstructor(String.class, String.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertNotNull(type.getReferences().get("myRef1"));
+        assertNotNull(type.getReferences().get("myRef2"));
+    }
+
+    public void testDuplicateProperty() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = ConstructorReferenceTestCase.BadFoo.class.getConstructor(String.class, String.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (DuplicateReferenceException e) {
+            // expected
+        }
+    }
+
+    public void testNoName() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = ConstructorReferenceTestCase.BadFoo.class.getConstructor(String.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidReferenceException e) {
+            // expected
+        }
+    }
+
+    public void testNamesOnConstructor() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = Foo.class.getConstructor(Integer.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertNotNull(type.getReferences().get("myRef"));
+    }
+
+    public void testInvalidNumberOfNames() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidReferenceException e) {
+            // expected
+        }
+    }
+
+//    public void testMultiplicityRequired() throws Exception {
+    // TODO multiplicity
+//    }
+
+    private static class Foo {
+
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Reference(name = "myRef", required = true) String prop) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Reference(name = "myRef1") String prop1, @Reference(name = "myRef2") String prop2) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor("myRef")
+        public Foo(@Reference Integer prop) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Reference List prop) {
+
+        }
+    }
+
+    private static class BadFoo {
+
+        @org.osoa.sca.annotations.Constructor()
+        public BadFoo(@Reference(name = "myRef") String prop1, @Reference(name = "myRef") String prop2) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor()
+        public BadFoo(@Reference String prop) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor("myRef")
+        public BadFoo(@Reference Integer ref, @Reference Integer ref2) {
+
+        }
+
+    }
+
+}

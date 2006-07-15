@@ -37,7 +37,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         }
         if (method.getParameterTypes().length != 1) {
             IllegalReferenceException e = new IllegalReferenceException("Setter must have one parameter");
-            e.setIdentifier(method.getName());
+            e.setIdentifier(method.toString());
             throw e;
         }
         String name = null;

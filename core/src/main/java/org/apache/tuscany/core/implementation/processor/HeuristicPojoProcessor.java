@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.areUnique;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -145,6 +147,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
      * @throws AmbiguousConstructorException if the parameters of a constructor cannot be unambiguously mapped to
      *                                       references and properties
      */
+    @SuppressWarnings("unchecked")
     private void calcConstructor(PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  Class<?> clazz) throws NoConstructorException,
                                                         AmbiguousConstructorException {
@@ -167,7 +170,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             }
             Map<String, JavaMappedProperty<?>> props = type.getProperties();
             Map<String, JavaMappedReference> refs = type.getReferences();
-            if (!ProcessorUtils.areUnique(params)) {
+            if (!areUnique(params)) {
                 throw new AmbiguousConstructorException(
                     "Unable to resolve parameter types as they are not unique, use @Constructor");
             }
@@ -237,7 +240,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             classes[i] = reference.getServiceContract().getInterfaceClass();
             i++;
         }
-        return ProcessorUtils.areUnique(classes);
+        return areUnique(classes);
     }
 
     /**

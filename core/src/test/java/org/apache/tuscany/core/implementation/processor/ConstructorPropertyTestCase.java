@@ -1,0 +1,143 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+package org.apache.tuscany.core.implementation.processor;
+
+import java.lang.reflect.Constructor;
+import java.util.List;
+
+import org.osoa.sca.annotations.Property;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class ConstructorPropertyTestCase extends TestCase {
+
+    ConstructorProcessor processor = new ConstructorProcessor();
+
+    public void testProperty() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = Foo.class.getConstructor(String.class);
+        processor.visitConstructor(null, ctor, type, null);
+        JavaMappedProperty<?> property = type.getProperties().get("myProp");
+        assertTrue(property.isRequired());
+        assertEquals("myProp", property.getName());
+    }
+
+    public void testTwoPropertiesSameType() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = Foo.class.getConstructor(String.class, String.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertNotNull(type.getProperties().get("myProp1"));
+        assertNotNull(type.getProperties().get("myProp2"));
+    }
+
+    public void testDuplicateProperty() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(String.class, String.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (DuplicatePropertyException e) {
+            // expected
+        }
+    }
+
+    public void testNoName() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(String.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidPropertyException e) {
+            // expected
+        }
+    }
+
+    public void testNamesOnConstructor() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = Foo.class.getConstructor(Integer.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertNotNull(type.getProperties().get("myProp"));
+    }
+
+    public void testInvalidNumberOfNames() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidPropertyException e) {
+            // expected
+        }
+    }
+
+//    public void testMultiplicityRequired() throws Exception {
+    // TODO multiplicity
+//    }
+
+    private static class Foo {
+
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Property(name = "myProp", required = true) String prop) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor("myProp")
+        public Foo(@Property Integer prop) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Property(name = "myProp1") String prop1, @Property(name = "myProp2") String prop2) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor()
+        public Foo(@Property List prop) {
+
+        }
+    }
+
+    private static class BadFoo {
+
+        @org.osoa.sca.annotations.Constructor()
+        public BadFoo(@Property(name = "myProp") String prop1, @Property(name = "myProp") String prop2) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor()
+        public BadFoo(@Property String prop) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor("myProp")
+        public BadFoo(@Property Integer prop, @Property Integer prop2) {
+
+        }
+
+    }
+
+}

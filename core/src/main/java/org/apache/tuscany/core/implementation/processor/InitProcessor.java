@@ -45,7 +45,7 @@ public class InitProcessor extends ImplementationProcessorSupport {
         }
         if (method.getParameterTypes().length != 0) {
             IllegalInitException e = new IllegalInitException("Initializer must not have argments");
-            e.setIdentifier(method.getName());
+            e.setIdentifier(method.toString());
             throw e;
         }
         if (type.getInitMethod() != null) {
