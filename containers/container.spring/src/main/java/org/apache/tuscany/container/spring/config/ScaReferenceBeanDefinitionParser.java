@@ -13,21 +13,21 @@ import org.w3c.dom.Element;
 public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
     public  static final String REFERENCE_ELEMENT         = "reference";
-    private static final String REFERENCE_NAME_ATTRIBUTE  = "name";
-    private static final String TYPE_ATTRIBUTE            = "type";
-    private static final String DEFAULT_SERVICE_ATTRIBUTE = "default";
+//    private static final String REFERENCE_NAME_ATTRIBUTE  = "name";
+//    private static final String TYPE_ATTRIBUTE            = "type";
+//    private static final String DEFAULT_SERVICE_ATTRIBUTE = "default";
 
     public ScaReferenceBeanDefinitionParser() {
     }
 
     public BeanDefinition parse(Element element, ParserContext parserContext) {
 
-        String name = element.getAttribute(REFERENCE_NAME_ATTRIBUTE);
-        String type = element.getAttribute(TYPE_ATTRIBUTE);
-        String service = null;
-        if (element.hasAttribute(DEFAULT_SERVICE_ATTRIBUTE)) {
-            service = element.getAttribute(DEFAULT_SERVICE_ATTRIBUTE);
-        }
+//        String name = element.getAttribute(REFERENCE_NAME_ATTRIBUTE);
+//        String type = element.getAttribute(TYPE_ATTRIBUTE);
+//        String service = null;
+//        if (element.hasAttribute(DEFAULT_SERVICE_ATTRIBUTE)) {
+//            service = element.getAttribute(DEFAULT_SERVICE_ATTRIBUTE);
+//        }
 
         return null;
 
