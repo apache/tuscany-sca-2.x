@@ -41,7 +41,6 @@ import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
@@ -191,7 +190,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             } else {
                 // heuristically determine refs and props from the parameter types
                 for (Class<?> param : params) {
-                    String name = JavaIntrospectionHelper.getBaseName(param).toLowerCase();
+                    String name = getBaseName(param).toLowerCase();
                     if (isReferenceType(param)) {
                         refs.put(name, createReference(name, null, param));
                     } else {

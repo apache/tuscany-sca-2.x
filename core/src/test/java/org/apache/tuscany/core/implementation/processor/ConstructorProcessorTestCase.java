@@ -54,7 +54,6 @@ public class ConstructorProcessorTestCase extends TestCase {
         } catch (InvalidConstructorException e) {
             // expected
         }
-
     }
 
     private static class BadFoo {
@@ -68,7 +67,6 @@ public class ConstructorProcessorTestCase extends TestCase {
         public BadFoo(String foo, String bar) {
 
         }
-
     }
 
     private static class Foo {
