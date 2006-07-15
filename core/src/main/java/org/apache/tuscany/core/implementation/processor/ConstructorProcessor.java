@@ -123,6 +123,12 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
                         throw new InvalidAutowireException("No name specified for autowire parameter " + (pos + 1));
                     }
                     name = constructorNames[pos];
+                } else if (pos < constructorNames.length
+                    && constructorNames[pos] != null
+                    && constructorNames[pos].length() != 0
+                    && !name.equals(constructorNames[pos])) {
+                    throw new InvalidConstructorException(
+                        "Name specified by @Constructor does not match autowire name at " + (pos + 1));
                 }
                 reference.setName(name);
                 JavaServiceContract contract = new JavaServiceContract();
@@ -143,6 +149,12 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
                         throw new InvalidPropertyException("No name specified for property parameter " + (pos + 1));
                     }
                     name = constructorNames[pos];
+                } else if (pos < constructorNames.length
+                    && constructorNames[pos] != null
+                    && constructorNames[pos].length() != 0
+                    && !name.equals(constructorNames[pos])) {
+                    throw new InvalidConstructorException(
+                        "Name specified by @Constructor does not match property name at " + (pos + 1));
                 }
                 if (type.getProperties().get(name) != null) {
                     throw new DuplicatePropertyException(name);
@@ -165,6 +177,12 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
                         throw new InvalidReferenceException("No name specified for reference parameter " + (pos + 1));
                     }
                     name = constructorNames[pos];
+                } else if (pos < constructorNames.length
+                    && constructorNames[pos] != null
+                    && constructorNames[pos].length() != 0
+                    && !name.equals(constructorNames[pos])) {
+                    throw new InvalidConstructorException(
+                        "Name specified by @Constructor does not match reference name at " + (pos + 1));
                 }
                 if (type.getReferences().get(name) != null) {
                     throw new DuplicateReferenceException(name);

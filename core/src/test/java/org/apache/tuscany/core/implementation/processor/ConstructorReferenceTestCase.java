@@ -81,6 +81,18 @@ public class ConstructorReferenceTestCase extends TestCase {
         }
     }
 
+    public void testNoMatchingNames() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(List.class, List.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidConstructorException e) {
+            // expected
+        }
+    }
+
 //    public void testMultiplicityRequired() throws Exception {
     // TODO multiplicity
 //    }
@@ -122,6 +134,11 @@ public class ConstructorReferenceTestCase extends TestCase {
 
         @org.osoa.sca.annotations.Constructor("myRef")
         public BadFoo(@Reference Integer ref, @Reference Integer ref2) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
+        public BadFoo(@Reference List ref, @Reference(name = "myOtherRef") List ref2) {
 
         }
 

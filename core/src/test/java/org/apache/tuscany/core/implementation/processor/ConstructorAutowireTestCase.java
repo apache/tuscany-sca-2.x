@@ -14,6 +14,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 
@@ -71,6 +72,18 @@ public class ConstructorAutowireTestCase extends TestCase {
         }
     }
 
+    public void testNoMatchingNames() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = BadFoo.class.getConstructor(List.class, List.class);
+        try {
+            processor.visitConstructor(null, ctor, type, null);
+            fail();
+        } catch (InvalidConstructorException e) {
+            // expected
+        }
+    }
+
     private static interface Bar {
 
     }
@@ -98,6 +111,11 @@ public class ConstructorAutowireTestCase extends TestCase {
 
         @org.osoa.sca.annotations.Constructor({"ref1"})
         public BadFoo(@Autowire Bar ref1, @Autowire Bar ref2) {
+
+        }
+
+        @org.osoa.sca.annotations.Constructor({"myRef", "myRef2"})
+        public BadFoo(@Autowire List ref, @Autowire(name = "myOtherRef") List ref2) {
 
         }
 
