@@ -45,7 +45,6 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T> {
 
-    protected int initLevel;
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
@@ -56,9 +55,12 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     protected List<Injector> injectors;
 
     public PojoAtomicComponent(String name, PojoConfiguration configuration) {
-        super(name, configuration.getParent(), configuration.getScopeContainer(), configuration.getWireService());
+        super(name,
+              configuration.getParent(),
+              configuration.getScopeContainer(),
+              configuration.getWireService(),
+              configuration.getInitLevel());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
-        initLevel = configuration.getInitLevel();
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
         instanceFactory = configuration.getInstanceFactory();
@@ -73,14 +75,6 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
 
     public List<Class<?>> getServiceInterfaces() {
         return serviceInterfaces;
-    }
-
-    public boolean isEagerInit() {
-        return initLevel > 0;
-    }
-
-    public int getInitLevel() {
-        return initLevel;
     }
 
     public void init(Object instance) throws TargetException {

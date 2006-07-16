@@ -29,22 +29,29 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
     protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
+    private final int initLevel;
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent<?> parent,
                                        ScopeContainer scopeContainer,
-                                       WireService wireService) {
+                                       WireService wireService,
+                                       int initLevel) {
         super(name, parent);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
+        this.initLevel = initLevel;
     }
 
     public Scope getScope() {
         return scope;
     }
 
+    public int getInitLevel() {
+        return initLevel;
+    }
+
     public boolean isEagerInit() {
-        return false;
+        return initLevel > 0;
     }
 
     public void start() throws CoreRuntimeException {

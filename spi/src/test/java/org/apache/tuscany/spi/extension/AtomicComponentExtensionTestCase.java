@@ -41,7 +41,7 @@ public class AtomicComponentExtensionTestCase extends TestCase {
 
     private class TestExtension extends AtomicComponentExtension {
         public TestExtension() {
-            super(null, null, null, null);
+            super(null, null, null, null, 0);
         }
 
         public Object getServiceInstance() throws TargetException {

@@ -44,6 +44,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return false;
     }
 
+    public int getInitLevel() {
+        return 0;
+    }
+
     public T getTargetInstance() throws TargetException {
         return instance;
     }

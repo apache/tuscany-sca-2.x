@@ -31,6 +31,14 @@ public interface AtomicComponent<T> extends Component<T> {
     boolean isEagerInit();
 
     /**
+     * Returns the initialization level for this component.
+     *
+     * @return the initialization level for this component
+     * @see org.apache.tuscany.spi.model.ComponentDefinition#getInitLevel()
+     */
+    int getInitLevel();
+
+    /**
      * Notifies the given instance of an initialization event
      *
      * @throws TargetException

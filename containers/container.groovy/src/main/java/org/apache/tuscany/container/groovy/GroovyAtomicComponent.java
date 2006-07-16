@@ -52,7 +52,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                                  CompositeComponent parent,
                                  ScopeContainer scopeContainer,
                                  WireService wireService) {
-        super(name, parent, scopeContainer, wireService);
+        super(name, parent, scopeContainer, wireService, 0);
         this.script = script;
         this.services = services;
         this.scope = scope;
