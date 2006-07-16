@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {
     private String name;
+    private int initLevel;
     private final I implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
     private final Map<String, PropertyValue<?>> propertyValues = new HashMap<String, PropertyValue<?>>();
@@ -45,6 +46,14 @@ public class ComponentDefinition<I extends Implementation<?>> extends ModelObjec
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getInitLevel() {
+        return initLevel;
+    }
+
+    public void setInitLevel(int initLevel) {
+        this.initLevel = initLevel;
     }
 
     public I getImplementation() {
