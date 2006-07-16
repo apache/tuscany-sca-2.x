@@ -45,7 +45,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T> {
 
-    protected boolean eagerInit;
+    protected int initLevel;
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
@@ -58,10 +58,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     public PojoAtomicComponent(String name, PojoConfiguration configuration) {
         super(name, configuration.getParent(), configuration.getScopeContainer(), configuration.getWireService());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
-        if (eagerInit && initInvoker == null) {
-            throw new AssertionError("No intialization method found for eager init implementation");
-        }
-        eagerInit = configuration.isEagerInit();
+        initLevel = configuration.getInitLevel();
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
         instanceFactory = configuration.getInstanceFactory();
@@ -79,7 +76,11 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     }
 
     public boolean isEagerInit() {
-        return eagerInit;
+        return initLevel > 0;
+    }
+
+    public int getInitLevel() {
+        return initLevel;
     }
 
     public void init(Object instance) throws TargetException {

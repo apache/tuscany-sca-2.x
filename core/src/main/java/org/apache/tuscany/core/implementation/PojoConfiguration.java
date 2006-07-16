@@ -91,10 +91,6 @@ public class PojoConfiguration {
         constructorParamNames.add(name);
     }
 
-    public boolean isEagerInit() {
-        return initLevel > 0;
-    }
-
     public int getInitLevel() {
         return initLevel;
     }
