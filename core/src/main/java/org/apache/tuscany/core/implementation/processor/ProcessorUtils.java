@@ -144,7 +144,9 @@ public final class ProcessorUtils {
         return annotationsDeclared;
     }
 
-    private static void processAutowire(Annotation annot, String[] constructorNames, int pos, Class<?> param,
+    private static void processAutowire(Annotation annot, String[] constructorNames,
+                                        int pos,
+                                        Class<?> param,
                                         PojoComponentType<JavaMappedService, JavaMappedReference,
                                             JavaMappedProperty<?>> type,
                                         List<String> explicitNames) throws InvalidAutowireException,
@@ -175,10 +177,13 @@ public final class ProcessorUtils {
         explicitNames.add(name);
     }
 
-    private static void processProperty(Annotation annot, String[] constructorNames, int pos,
+    private static void processProperty(Annotation annot,
+                                        String[] constructorNames,
+                                        int pos,
                                         PojoComponentType<JavaMappedService, JavaMappedReference,
                                             JavaMappedProperty<?>> type,
-                                        Class<?> param, List<String> explicitNames)
+                                        Class<?> param,
+                                        List<String> explicitNames)
         throws ProcessingException {
         // TODO multiplicity
         // the param is marked as a property
@@ -208,10 +213,12 @@ public final class ProcessorUtils {
         explicitNames.add(name);
     }
 
-    private static void processReference(Annotation annot, String[] constructorNames, int pos,
+    private static void processReference(Annotation annot, String[] constructorNames,
+                                         int pos,
                                          PojoComponentType<JavaMappedService, JavaMappedReference,
                                              JavaMappedProperty<?>> type,
-                                         Class<?> param, List<String> explicitNames)
+                                         Class<?> param,
+                                         List<String> explicitNames)
         throws ProcessingException {
 
         // TODO multiplicity
