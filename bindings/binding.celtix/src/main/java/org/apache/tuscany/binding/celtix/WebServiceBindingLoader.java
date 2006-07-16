@@ -18,8 +18,6 @@ package org.apache.tuscany.binding.celtix;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -28,8 +26,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -98,6 +96,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 portName = fragment;
             }
 
+            // FIXME definitions is always null
             if (definitions == null) {
                 throw new IllegalArgumentException("Cannot find WSDL definition for " + portNamespace);
             }
