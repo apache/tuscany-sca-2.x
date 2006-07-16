@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
+import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -75,19 +76,29 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         throws XMLStreamException, LoaderException {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        reader.nextTag();
-        ModelObject o = registry.load(parent, reader, deploymentContext);
-        if (!(o instanceof Implementation)) {
-            MissingImplementationException e = new MissingImplementationException();
-            e.setIdentifier(name);
-            throw e;
-        }
-        Implementation<?> impl = (Implementation<?>) o;
-        ComponentDefinition<?> componentDefinition = new ComponentDefinition<Implementation<?>>(impl);
-        componentDefinition.setName(name);
-        registry.loadComponentType(parent, impl, deploymentContext);
+        String initLevel = reader.getAttributeValue(null, "initLevel");
 
         try {
+            Implementation<?> impl = loadImplementation(parent,reader, deploymentContext);
+            registry.loadComponentType(parent, impl, deploymentContext);
+
+            ComponentDefinition<?> componentDefinition = new ComponentDefinition<Implementation<?>>(name, impl);
+
+            if (initLevel != null) {
+                if (initLevel.length() == 0) {
+                    componentDefinition.setInitLevel(0);
+                } else {
+                    try {
+                        componentDefinition.setInitLevel(Integer.valueOf(initLevel));
+                    } catch (NumberFormatException e) {
+                        InvalidValueException ive = new InvalidValueException(initLevel, e);
+                        ive.setIdentifier("initValue");
+                        ive.addContextName(name);
+                        throw ive;
+                    }
+                }
+            }
+
             while (true) {
                 switch (reader.next()) {
                     case START_ELEMENT:
@@ -104,9 +115,21 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 }
             }
         } catch (LoaderException e) {
-            e.addContextName(componentDefinition.getName());
+            e.addContextName(name);
             throw e;
         }
+    }
+
+    protected Implementation<?> loadImplementation(CompositeComponent parent,
+                                                   XMLStreamReader reader,
+                                                   DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
+        reader.nextTag();
+        ModelObject o = registry.load(parent, reader, deploymentContext);
+        if (!(o instanceof Implementation)) {
+            throw new MissingImplementationException();
+        }
+        return (Implementation<?>) o;
     }
 
     protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext,
