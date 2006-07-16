@@ -20,59 +20,133 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a component specified in an assembly
+ * Represents a component.
+ * <p>A component is a configured instance of an implementation. The services provided and consumed
+ * and the available configuration properties are defined by the implementation (represented by
+ * its componentType).</p>
+ * <p>Every component has a name which uniquely identifies it within the scope of the composite
+ * that contains it; the name must be different from the names of all other components, services and references
+ * immediately contained in the composite (directly or through an &lt;include&gt; element).</p>
+ * <p>A component may define a {@link PropertyValue} that overrides the default value of a {@link Property}
+ * defined in the componentType.</p>
+ * <p>It may also define a {@link ReferenceTarget} for a {@link ReferenceDefinition} defined in the componentType.
+ * The ReferenceTarget must resolve to another component or a reference in the enclosing composite.</p>
+ * <p>Components may specify an initialization level that will determine the order in which it will be eagerly
+ * initialized relative to other components from the enclosing composite that are in the same scope. This can be
+ * used to define a startup sequence for components that are otherwise independent. Any initialization required
+ * to resolve references between components will override this initialization order.</p>
  *
  * @version $Rev$ $Date$
  */
 public class ComponentDefinition<I extends Implementation<?>> extends ModelObject {
     private String name;
-    private int initLevel;
+    private Integer initLevel;
     private final I implementation;
     private final Map<String, ReferenceTarget> referenceTargets = new HashMap<String, ReferenceTarget>();
     private final Map<String, PropertyValue<?>> propertyValues = new HashMap<String, PropertyValue<?>>();
 
+    /**
+     * Constructor specifying the component's name and implementation.
+     *
+     * @param name           the name of this component
+     * @param implementation the implementation of this component
+     */
     public ComponentDefinition(String name, I implementation) {
         this.name = name;
         this.implementation = implementation;
     }
 
+    /**
+     * Constructor specifying the implementation of this component.
+     *
+     * @param implementation the implementation of this component
+     */
     public ComponentDefinition(I implementation) {
         this.implementation = implementation;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getInitLevel() {
-        return initLevel;
-    }
-
-    public void setInitLevel(int initLevel) {
-        this.initLevel = initLevel;
-    }
-
+    /**
+     * Returns the {@link Implementation} of this component.
+     *
+     * @return the implementation of this component
+     */
     public I getImplementation() {
         return implementation;
     }
 
+    /**
+     * Returns the name of this component.
+     *
+     * @return the name of this component
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of this component.
+     *
+     * @param name the name of this component
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the initialization level of this component.
+     *
+     * @return the initialization level of this component
+     */
+    public Integer getInitLevel() {
+        return initLevel;
+    }
+
+    /**
+     * Sets the initialization level of this component.
+     * If set to null then the level from the componentType is used.
+     * If set to zero or a negative value then the component will not be eagerly initialized.
+     *
+     * @param initLevel the initialization level of this component
+     */
+    public void setInitLevel(Integer initLevel) {
+        this.initLevel = initLevel;
+    }
+
+    /**
+     * Returns a live Map of the {@link ReferenceTarget targets} configured by this component definition.
+     *
+     * @return the reference targets configured by this component
+     */
     public Map<String, ReferenceTarget> getReferenceTargets() {
         return referenceTargets;
     }
 
+    /**
+     * Add a reference target configuration to this component.
+     * Any existing configuration for the reference named in the target is replaced.
+     *
+     * @param target the target to add
+     */
+    public void add(ReferenceTarget target) {
+        referenceTargets.put(target.getReferenceName(), target);
+    }
+
+    /**
+     * Returns a live Map of {@link PropertyValue property values} configured by this component definition.
+     *
+     * @return the property values configured by this component
+     */
     public Map<String, PropertyValue<?>> getPropertyValues() {
         return propertyValues;
     }
 
+    /**
+     * Add a property value configuration to this component.
+     * Any existing configuration for the property names in the property value is replaced.
+     *
+     * @param value the property value to add
+     */
     public void add(PropertyValue<?> value) {
         propertyValues.put(value.getName(), value);
-    }
-
-    public void add(ReferenceTarget target) {
-        referenceTargets.put(target.getReferenceName(), target);
     }
 }
