@@ -14,7 +14,6 @@ import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
@@ -63,11 +62,6 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     ) {
         super(name, parent);
         this.autowireContext = autowireContext;
-    }
-
-    @Autowire
-    public void setAutowireContext(AutowireComponent context) {
-        autowireContext = context;
     }
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
