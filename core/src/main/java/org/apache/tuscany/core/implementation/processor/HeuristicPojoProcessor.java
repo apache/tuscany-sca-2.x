@@ -13,8 +13,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.areUnique;
-
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -28,9 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
@@ -42,7 +44,9 @@ import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.areUnique;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
@@ -149,8 +153,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
      */
     @SuppressWarnings("unchecked")
     private void calcConstructor(PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 Class<?> clazz) throws NoConstructorException,
-                                                        AmbiguousConstructorException {
+                                 Class<?> clazz) throws ProcessingException {
         // determine constructor if one is not annotated
         if (type.getConstructorDefinition() != null) {
             return;
@@ -167,7 +170,17 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
                 type.setConstructorDefinition(definition);
                 return;
+            } else {
+                Annotation[][] annotations = constructor.getParameterAnnotations();
+                List<String> paramNames = new ArrayList<String>();
+                if (annotationsDefined(annotations)) {
+                    for (int i = 0; i < params.length; i++) {
+                        Class param = params[i];
+                        processParam(param, annotations[i], new String[0], i, type, paramNames);
+                    }
+                }
             }
+
             Map<String, JavaMappedProperty<?>> props = type.getProperties();
             Map<String, JavaMappedReference> refs = type.getReferences();
             if (!areUnique(params)) {
@@ -222,6 +235,22 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             ConstructorDefinition<?> definition = new ConstructorDefinition(selected);
             type.setConstructorDefinition(definition);
         }
+    }
+
+    private boolean annotationsDefined(Annotation[][] annots) {
+        // since all parameters must be annotated or not, just check the first one
+        if (annots.length > 0 && annots[0].length > 0) {
+            Annotation[] annotations = annots[0];
+            for (Annotation annotation : annotations) {
+                Class<? extends Annotation> annotType = annotation.annotationType();
+                if (annotType.equals(Autowire.class)
+                    || annotType.equals(Property.class)
+                    || annotType.equals(Reference.class)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

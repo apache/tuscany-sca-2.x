@@ -13,8 +13,11 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
@@ -120,6 +123,27 @@ public class HeuristicConstructorTestCase extends TestCase {
         }
     }
 
+    public void testConstructorPropertyAnnotatedParamsOnly() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo7.class, type, null);
+        assertNotNull(type.getProperties().get("myProp"));
+    }
+
+    public void testConstructorReferenceAnnotatedParamsOnly() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo8.class, type, null);
+        assertNotNull(type.getReferences().get("myRef"));
+    }
+
+    public void testConstructorAutowireAnnotatedParamsOnly() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo9.class, type, null);
+        assertNotNull(type.getReferences().get("myAutowire"));
+    }
+
     @SuppressWarnings("unchecked")
     public void testDefaultConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -164,5 +188,35 @@ public class HeuristicConstructorTestCase extends TestCase {
         public Foo6(Ref ref) {
         }
     }
+
+    public static class Foo7 {
+        public Foo7(@Property(name = "myProp") String prop) {
+        }
+    }
+
+
+    public static class Foo8 {
+        public Foo8(@Reference(name = "myRef") String ref) {
+        }
+    }
+
+    public static class Foo9 {
+        public Foo9(@Autowire(name = "myAutowire") String autowire) {
+        }
+    }
+
+    public static class Foo10 {
+
+        public Foo10() {
+        }
+
+        public Foo10(String prop) {
+        }
+
+        public Foo10(@Property(name = "prop1") String prop1, @Property(name = "prop2") String prop2) {
+
+        }
+    }
+
 
 }
