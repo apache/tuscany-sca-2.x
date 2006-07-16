@@ -73,13 +73,13 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     public void start() {
         synchronized (lock) {
             if (lifecycleState != UNINITIALIZED && lifecycleState != STOPPED) {
-                throw new IllegalStateException("SCAObject not in UNINITIALIZED state");
+                throw new IllegalStateException("Composite not in UNINITIALIZED state");
             }
 
             if (scopeContainer != null) {
                 scopeContainer.start();
             }
-            for (SCAObject child : children.values()) {
+            for (SCAObject child : getChildrenInStartOrder()) {
                 child.start();
             }
             initializeLatch.countDown();
@@ -132,7 +132,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
             }
             registerAutowire(context);
         } else if (child instanceof AtomicComponent) {
-            registerAutowire((AtomicComponent) child);
+            AtomicComponent atomic = (AtomicComponent) child;
+            registerAutowire(atomic);
         } else if (child instanceof CompositeComponent) {
             CompositeComponent component = (CompositeComponent) child;
             if (lifecycleState == RUNNING && component.getLifecycleState() == UNINITIALIZED) {

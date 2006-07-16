@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
@@ -17,6 +18,7 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -79,6 +81,36 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
 
     public List<SCAObject> getChildren() {
         return Collections.unmodifiableList(new ArrayList<SCAObject>(children.values()));
+    }
+
+    public List<SCAObject> getChildrenInStartOrder() {
+        int size = children.size();
+        List<SCAObject> lazyInit = new ArrayList<SCAObject>(size);
+        Map<Integer, List<SCAObject>> eagerInit = new TreeMap<Integer, List<SCAObject>>();
+        for (SCAObject child : children.values()) {
+            if (child instanceof AtomicComponent) {
+                AtomicComponent atomic = (AtomicComponent) child;
+                int initLevel = atomic.getInitLevel();
+                if (initLevel > 0) {
+                    List<SCAObject> list = eagerInit.get(initLevel);
+                    if (list == null) {
+                        list = new ArrayList<SCAObject>();
+                        eagerInit.put(initLevel, list);
+                    }
+                    list.add(atomic);
+                } else {
+                    lazyInit.add(atomic);
+                }
+            } else {
+                lazyInit.add(child);
+            }
+        }
+        List<SCAObject> sorted = new ArrayList<SCAObject>(size);
+        for (List<SCAObject> list : eagerInit.values()) {
+            sorted.addAll(list);
+        }
+        sorted.addAll(lazyInit);
+        return Collections.unmodifiableList(sorted);
     }
 
     public List<Service> getServices() {
