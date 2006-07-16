@@ -86,7 +86,7 @@ public final class MockFactory {
                 }
                 Init init;
                 if ((init = method.getAnnotation(Init.class)) != null) {
-                    sourceConfig.setEagerInit(init.eager());
+                    sourceConfig.setInitLevel(init.eager() ? 50 : 0);
                     sourceConfig.setInitInvoker(new MethodEventInvoker<Object>(method));
 
                 } else if (method.getAnnotation(Destroy.class) != null) {
@@ -123,7 +123,7 @@ public final class MockFactory {
         for (Method method : methods) {
             Init init;
             if ((init = method.getAnnotation(Init.class)) != null) {
-                configuration.setEagerInit(init.eager());
+                configuration.setInitLevel(init.eager() ? 50 : 0);
                 configuration.setInitInvoker(new MethodEventInvoker<Object>(method));
 
             } else if (method.getAnnotation(Destroy.class) != null) {

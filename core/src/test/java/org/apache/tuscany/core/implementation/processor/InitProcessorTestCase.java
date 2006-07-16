@@ -22,7 +22,7 @@ public class InitProcessorTestCase extends TestCase {
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
         processor.visitMethod(null, method, type, null);
         assertNotNull(type.getInitMethod());
-        assertTrue(type.isEagerInit());
+        assertEquals(50, type.getInitLevel());
     }
 
     public void testBadInit() throws Exception {

@@ -56,7 +56,11 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
         configuration.setScopeContainer(deploymentContext.getModuleScope());
-        configuration.setEagerInit(componentType.isEagerInit());
+        if (definition.getInitLevel() != null) {
+            configuration.setInitLevel(definition.getInitLevel());
+        } else {
+            configuration.setInitLevel(componentType.getInitLevel());
+        }
         Method initMethod = componentType.getInitMethod();
         if (initMethod != null) {
             configuration.setInitInvoker(new MethodEventInvoker<Object>(initMethod));

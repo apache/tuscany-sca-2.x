@@ -38,7 +38,7 @@ public class PojoConfiguration {
     private ScopeContainer scopeContainer;
     private PojoObjectFactory<?> instanceFactory;
     private List<String> constructorParamNames = new ArrayList<String>();
-    private boolean eagerInit;
+    private int initLevel;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private List<Injector> propertyInjectors = new ArrayList<Injector>();
@@ -92,11 +92,15 @@ public class PojoConfiguration {
     }
 
     public boolean isEagerInit() {
-        return eagerInit;
+        return initLevel > 0;
     }
 
-    public void setEagerInit(boolean eagerInit) {
-        this.eagerInit = eagerInit;
+    public int getInitLevel() {
+        return initLevel;
+    }
+
+    public void setInitLevel(int initLevel) {
+        this.initLevel = initLevel;
     }
 
     public EventInvoker<Object> getInitInvoker() {

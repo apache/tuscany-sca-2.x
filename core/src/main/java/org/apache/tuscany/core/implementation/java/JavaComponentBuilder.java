@@ -71,7 +71,11 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         } else {
             configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
         }
-        configuration.setEagerInit(componentType.isEagerInit());
+        if (definition.getInitLevel() != null) {
+            configuration.setInitLevel(definition.getInitLevel());
+        } else {
+            configuration.setInitLevel(componentType.getInitLevel());
+        }
         Method initMethod = componentType.getInitMethod();
         if (initMethod != null) {
             configuration.setInitInvoker(new MethodEventInvoker(initMethod));
