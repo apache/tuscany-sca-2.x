@@ -131,91 +131,116 @@ public final class ProcessorUtils {
         boolean annotationsDeclared = false;
         for (Annotation annot : paramAnnotations) {
             if (Autowire.class.equals(annot.annotationType())) {
-                // the param is marked as an autowire
-                Autowire autowireAnnot = (Autowire) annot;
-                JavaMappedReference reference = new JavaMappedReference();
-                reference.setAutowire(true);
-                String name = autowireAnnot.name();
-                if (name == null || name.length() == 0) {
-                    if (constructorNames.length < pos + 1 || constructorNames[pos] == null
-                        || constructorNames[pos].length() == 0) {
-                        throw new InvalidAutowireException("No name specified for autowire parameter " + (pos + 1));
-                    }
-                    name = constructorNames[pos];
-                } else if (pos < constructorNames.length
-                    && constructorNames[pos] != null
-                    && constructorNames[pos].length() != 0
-                    && !name.equals(constructorNames[pos])) {
-                    throw new InvalidConstructorException(
-                        "Name specified by @Constructor does not match autowire name at " + (pos + 1));
-                }
-                reference.setName(name);
-                JavaServiceContract contract = new JavaServiceContract();
-                contract.setInterfaceClass(param);
-                reference.setServiceContract(contract);
-                type.getReferences().put(name, reference);
+                processAutowire(annot, constructorNames, pos, param, type, explicitNames);
                 annotationsDeclared = true;
-                explicitNames.add(name);
             } else if (Property.class.equals(annot.annotationType())) {
-                // TODO multiplicity
-                // the param is marked as a property
-                Property propAnnot = (Property) annot;
-                JavaMappedProperty property = new JavaMappedProperty();
-                String name = propAnnot.name();
-                if (name == null || name.length() == 0) {
-                    if (constructorNames.length < pos + 1 || constructorNames[pos] == null
-                        || constructorNames[pos].length() == 0) {
-                        throw new InvalidPropertyException("No name specified for property parameter " + (pos + 1));
-                    }
-                    name = constructorNames[pos];
-                } else if (pos < constructorNames.length
-                    && constructorNames[pos] != null
-                    && constructorNames[pos].length() != 0
-                    && !name.equals(constructorNames[pos])) {
-                    throw new InvalidConstructorException(
-                        "Name specified by @Constructor does not match property name at " + (pos + 1));
-                }
-                if (type.getProperties().get(name) != null) {
-                    throw new DuplicatePropertyException(name);
-                }
-                property.setName(name);
-                property.setRequired(propAnnot.required());
-                property.setJavaType(param);
-                type.getProperties().put(name, property);
+                processProperty(annot, constructorNames, pos, type, param, explicitNames);
                 annotationsDeclared = true;
-                explicitNames.add(name);
             } else if (Reference.class.equals(annot.annotationType())) {
-                // TODO multiplicity
-                // the param is marked as a reference
-                Reference refAnnotation = (Reference) annot;
-                JavaMappedReference reference = new JavaMappedReference();
-                String name = refAnnotation.name();
-                if (name == null || name.length() == 0) {
-                    if (constructorNames.length < pos + 1 || constructorNames[pos] == null
-                        || constructorNames[pos].length() == 0) {
-                        throw new InvalidReferenceException("No name specified for reference parameter " + (pos + 1));
-                    }
-                    name = constructorNames[pos];
-                } else if (pos < constructorNames.length
-                    && constructorNames[pos] != null
-                    && constructorNames[pos].length() != 0
-                    && !name.equals(constructorNames[pos])) {
-                    throw new InvalidConstructorException(
-                        "Name specified by @Constructor does not match reference name at " + (pos + 1));
-                }
-                if (type.getReferences().get(name) != null) {
-                    throw new DuplicateReferenceException(name);
-                }
-                reference.setName(name);
-                reference.setRequired(refAnnotation.required());
-                JavaServiceContract contract = new JavaServiceContract();
-                contract.setInterfaceClass(param);
-                reference.setServiceContract(contract);
-                type.getReferences().put(name, reference);
+                processReference(annot, constructorNames, pos, type, param, explicitNames);
                 annotationsDeclared = true;
-                explicitNames.add(name);
             }
         }
         return annotationsDeclared;
+    }
+
+    private static void processAutowire(Annotation annot, String[] constructorNames, int pos, Class<?> param,
+                                        PojoComponentType<JavaMappedService, JavaMappedReference,
+                                            JavaMappedProperty<?>> type,
+                                        List<String> explicitNames) throws InvalidAutowireException,
+                                                                           InvalidConstructorException {
+        // the param is marked as an autowire
+        Autowire autowireAnnot = (Autowire) annot;
+        JavaMappedReference reference = new JavaMappedReference();
+        reference.setAutowire(true);
+        String name = autowireAnnot.name();
+        if (name == null || name.length() == 0) {
+            if (constructorNames.length < pos + 1 || constructorNames[pos] == null
+                || constructorNames[pos].length() == 0) {
+                throw new InvalidAutowireException("No name specified for autowire parameter " + (pos + 1));
+            }
+            name = constructorNames[pos];
+        } else if (pos < constructorNames.length
+            && constructorNames[pos] != null
+            && constructorNames[pos].length() != 0
+            && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException(
+                "Name specified by @Constructor does not match autowire name at " + (pos + 1));
+        }
+        reference.setName(name);
+        JavaServiceContract contract = new JavaServiceContract();
+        contract.setInterfaceClass(param);
+        reference.setServiceContract(contract);
+        type.getReferences().put(name, reference);
+        explicitNames.add(name);
+    }
+
+    private static void processProperty(Annotation annot, String[] constructorNames, int pos,
+                                        PojoComponentType<JavaMappedService, JavaMappedReference,
+                                            JavaMappedProperty<?>> type,
+                                        Class<?> param, List<String> explicitNames)
+        throws ProcessingException {
+        // TODO multiplicity
+        // the param is marked as a property
+        Property propAnnot = (Property) annot;
+        JavaMappedProperty property = new JavaMappedProperty();
+        String name = propAnnot.name();
+        if (name == null || name.length() == 0) {
+            if (constructorNames.length < pos + 1 || constructorNames[pos] == null
+                || constructorNames[pos].length() == 0) {
+                throw new InvalidPropertyException("No name specified for property parameter " + (pos + 1));
+            }
+            name = constructorNames[pos];
+        } else if (pos < constructorNames.length
+            && constructorNames[pos] != null
+            && constructorNames[pos].length() != 0
+            && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException(
+                "Name specified by @Constructor does not match property name at " + (pos + 1));
+        }
+        if (type.getProperties().get(name) != null) {
+            throw new DuplicatePropertyException(name);
+        }
+        property.setName(name);
+        property.setRequired(propAnnot.required());
+        property.setJavaType(param);
+        type.getProperties().put(name, property);
+        explicitNames.add(name);
+    }
+
+    private static void processReference(Annotation annot, String[] constructorNames, int pos,
+                                         PojoComponentType<JavaMappedService, JavaMappedReference,
+                                             JavaMappedProperty<?>> type,
+                                         Class<?> param, List<String> explicitNames)
+        throws ProcessingException {
+
+        // TODO multiplicity
+        // the param is marked as a reference
+        Reference refAnnotation = (Reference) annot;
+        JavaMappedReference reference = new JavaMappedReference();
+        String name = refAnnotation.name();
+        if (name == null || name.length() == 0) {
+            if (constructorNames.length < pos + 1 || constructorNames[pos] == null
+                || constructorNames[pos].length() == 0) {
+                throw new InvalidReferenceException("No name specified for reference parameter " + (pos + 1));
+            }
+            name = constructorNames[pos];
+        } else if (pos < constructorNames.length
+            && constructorNames[pos] != null
+            && constructorNames[pos].length() != 0
+            && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException(
+                "Name specified by @Constructor does not match reference name at " + (pos + 1));
+        }
+        if (type.getReferences().get(name) != null) {
+            throw new DuplicateReferenceException(name);
+        }
+        reference.setName(name);
+        reference.setRequired(refAnnotation.required());
+        JavaServiceContract contract = new JavaServiceContract();
+        contract.setInterfaceClass(param);
+        reference.setServiceContract(contract);
+        type.getReferences().put(name, reference);
+        explicitNames.add(name);
     }
 }
