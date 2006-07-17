@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -13,9 +16,6 @@ import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
 
 /**
  * A scope context which manages atomic component instances keyed by module
@@ -110,20 +110,35 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     }
 
     private void eagerInitComponents() throws CoreRuntimeException {
+        Map<Integer, List<AtomicComponent>> eagerInit = new TreeMap<Integer, List<AtomicComponent>>();
+
+        // find all eager init components and group them by init level
         for (Map.Entry<AtomicComponent, InstanceWrapper> entry : instanceWrappers.entrySet()) {
             AtomicComponent component = entry.getKey();
-            if (component.isEagerInit()) {
+            int initLevel = component.getInitLevel();
+            if (initLevel > 0) {
+                List<AtomicComponent> list = eagerInit.get(initLevel);
+                if (list == null) {
+                    list = new ArrayList<AtomicComponent>();
+                    eagerInit.put(initLevel, list);
+                }
+                list.add(component);
+            }
+        }
+
+        // start each group
+        for (List<AtomicComponent> list : eagerInit.values()) {
+            for (AtomicComponent component : list) {
                 // the instance could have been created from a depth-first traversal
                 InstanceWrapper ctx = instanceWrappers.get(component);
                 if (ctx == EMPTY) {
                     ctx = new InstanceWrapperImpl(component, component.createInstance());
                     ctx.start();
                     instanceWrappers.put(component, ctx);
+                    destroyQueue.add(ctx);
                 }
-                destroyQueue.add(ctx);
             }
         }
-
     }
 
     private static class EmptyWrapper extends AbstractLifecycle implements InstanceWrapper {

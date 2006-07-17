@@ -79,7 +79,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
             if (scopeContainer != null) {
                 scopeContainer.start();
             }
-            for (SCAObject child : getChildrenInStartOrder()) {
+            for (SCAObject child : children.values()) {
                 child.start();
             }
             initializeLatch.countDown();

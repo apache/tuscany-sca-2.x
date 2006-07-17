@@ -32,7 +32,6 @@ public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
         Mock mock = mock(SystemAtomicComponent.class);
         mock.expects(atLeastOnce()).method("start");
         mock.expects(atLeastOnce()).method("stop");
-        mock.expects(atLeastOnce()).method("getInitLevel").will(returnValue(0));
         mock.stubs().method("getName").will(returnValue("source"));
         mock.stubs().method("getServiceInstance").will(returnValue(originalSource));
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));

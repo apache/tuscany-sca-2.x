@@ -87,7 +87,7 @@
     <include name="org.apache.tuscany.launcher.JavaImplementation" scdlLocation="javaImplementation.scdl"/>
 
     <!-- component that scans the extension directory -->
-    <component name="directoryScanExtender">
+    <component name="directoryScanExtender" initLevel="90">
         <system:implementation.system class="org.apache.tuscany.core.services.extension.DirectoryScanExtender"/>
         <property name="path">extension</property>
     </component>
