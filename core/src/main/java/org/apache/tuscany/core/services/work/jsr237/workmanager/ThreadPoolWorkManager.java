@@ -132,7 +132,7 @@ public class ThreadPoolWorkManager implements WorkManager {
     /*
      * Method to indicate a work start.
      */
-    private synchronized void workStarted(final DefaultWorkItem workItem, final Work work) {
+    private void workStarted(final DefaultWorkItem workItem, final Work work) {
         WorkListener listener = workItems.get(workItem);
         if (listener != null) {
             workItem.setStatus(WorkEvent.WORK_STARTED);

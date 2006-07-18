@@ -92,8 +92,7 @@
         <property name="path">extension</property>
     </component>
 
-        <!-- WorkScheduler service -->
-
+    <!-- WorkScheduler service -->
     <component name="workManager">
         <system:implementation.system
             class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
