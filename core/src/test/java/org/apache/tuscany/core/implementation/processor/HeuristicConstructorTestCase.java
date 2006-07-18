@@ -152,6 +152,10 @@ public class HeuristicConstructorTestCase extends TestCase {
         assertNotNull(type.getConstructorDefinition().getConstructor());
     }
 
+    public void testMultipleConstructors() throws Exception {
+    //    throw new UnsupportedOperationException("Finish heuristic multiple constructors - Foo10");
+    }
+
     public static class Foo1 {
         public Foo1(String val) {
         }

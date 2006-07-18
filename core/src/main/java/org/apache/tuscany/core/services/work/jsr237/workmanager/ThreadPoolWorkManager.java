@@ -24,6 +24,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
+import org.osoa.sca.annotations.Property;
+
 import commonj.work.Work;
 import commonj.work.WorkEvent;
 import commonj.work.WorkException;
@@ -53,7 +55,7 @@ public class ThreadPoolWorkManager implements WorkManager {
      *
      * @param threadPoolSize Thread-pool size.
      */
-    public ThreadPoolWorkManager(int threadPoolSize) {
+    public ThreadPoolWorkManager(@Property(name = "poolSize") int threadPoolSize) {
         executor = Executors.newFixedThreadPool(threadPoolSize);
     }
 

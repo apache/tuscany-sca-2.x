@@ -25,14 +25,16 @@ import java.lang.reflect.Modifier;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.model.Property;
 
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+
 /**
- * Implementation of StAXPropertyFactory that interprets the XML as 
+ * Implementation of StAXPropertyFactory that interprets the XML as
+ *
  * @version $Rev$ $Date$
  */
 public class StringParserPropertyFactory implements StAXPropertyFactory {
@@ -94,7 +96,7 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
         if (editor != null) {
             try {
                 editor.setAsText(text);
-                return new SingletonObjectFactory<T>(type.cast(editor.getValue()));
+                return new SingletonObjectFactory(editor.getValue());
             } catch (IllegalArgumentException e) {
                 // FIXME we should throw something better
                 throw new LoaderException(e);

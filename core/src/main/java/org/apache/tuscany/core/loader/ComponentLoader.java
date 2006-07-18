@@ -33,12 +33,12 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
+import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
-import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -79,7 +79,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String initLevel = reader.getAttributeValue(null, "initLevel");
 
         try {
-            Implementation<?> impl = loadImplementation(parent,reader, deploymentContext);
+            Implementation<?> impl = loadImplementation(parent, reader, deploymentContext);
             registry.loadComponentType(parent, impl, deploymentContext);
 
             ComponentDefinition<?> componentDefinition = new ComponentDefinition<Implementation<?>>(name, impl);

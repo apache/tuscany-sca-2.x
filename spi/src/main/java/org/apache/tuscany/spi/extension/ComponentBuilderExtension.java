@@ -8,6 +8,7 @@ import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 /**
  * An extension point for component builders. When adding support for new component types, implementations may extend
@@ -21,6 +22,7 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
     protected WireService wireService;
+    protected WorkScheduler workScheduler;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -35,6 +37,11 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setWireService(WireService wireService) {
         this.wireService = wireService;
+    }
+
+    @Autowire
+    public void setWorkScheduler(WorkScheduler workScheduler) {
+        this.workScheduler = workScheduler;
     }
 
     @Init(eager = true)

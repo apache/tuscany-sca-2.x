@@ -21,14 +21,12 @@ import org.osoa.sca.CurrentCompositeContext;
 
 import org.apache.tuscany.test.SCATestCase;
 
-import supplychain.Customer;
-
 /**
- * This client program shows how to create an SCA runtime, start it,
- * locate a simple HelloWorld service component and invoke it.
+ * This client program shows how to create an SCA runtime, start it, locate a simple HelloWorld service component and
+ * invoke it.
  */
 public class SupplyChainClientTestCase extends SCATestCase {
-    
+
     private Customer customer;
 
     protected void setUp() throws Exception {
@@ -39,7 +37,7 @@ public class SupplyChainClientTestCase extends SCATestCase {
     }
 
     public void test() throws Exception {
-        
+
         System.out.println("Main thread " + Thread.currentThread());
         customer.purchaseGoods();
 

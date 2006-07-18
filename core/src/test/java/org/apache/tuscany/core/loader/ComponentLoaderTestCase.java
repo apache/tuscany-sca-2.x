@@ -16,21 +16,22 @@
  */
 package org.apache.tuscany.core.loader;
 
-import javax.xml.stream.XMLStreamReader;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
-import org.jmock.MockObjectTestCase;
-import org.jmock.Mock;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.jmock.Mock;
+import org.jmock.MockObjectTestCase;
 
 /**
  * @version $Rev$ $Date$
@@ -48,8 +49,8 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
     public void testEmptyComponent() throws LoaderException, XMLStreamException {
         mockReader.expects(once()).method("getName").will(returnValue(COMPONENT));
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
-                .with(ANYTHING, ANYTHING)
-                .will(onConsecutiveCalls(returnValue(NAME), returnValue(null)));
+            .with(ANYTHING, ANYTHING)
+            .will(onConsecutiveCalls(returnValue(NAME), returnValue(null)));
         mockReader.expects(once()).method("nextTag").will(returnValue(0));
         mockReader.expects(once()).method("next").will(returnValue(XMLStreamConstants.END_ELEMENT));
         mockRegistry.expects(once()).method("loadComponentType");
@@ -62,8 +63,8 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
     public void testInitValue20() throws LoaderException, XMLStreamException {
         mockReader.expects(once()).method("getName").will(returnValue(COMPONENT));
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
-                .with(ANYTHING, ANYTHING)
-                .will(onConsecutiveCalls(returnValue(NAME), returnValue("20")));
+            .with(ANYTHING, ANYTHING)
+            .will(onConsecutiveCalls(returnValue(NAME), returnValue("20")));
         mockReader.expects(once()).method("nextTag").will(returnValue(0));
         mockReader.expects(once()).method("next").will(returnValue(XMLStreamConstants.END_ELEMENT));
         mockRegistry.expects(once()).method("loadComponentType");
@@ -78,6 +79,7 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
         mockReader = mock(XMLStreamReader.class);
         mockRegistry = mock(LoaderRegistry.class);
         mockPropertyFactory = mock(StAXPropertyFactory.class);
-        loader = new ComponentLoader((LoaderRegistry) mockRegistry.proxy(), (StAXPropertyFactory) mockPropertyFactory.proxy());
+        loader = new ComponentLoader((LoaderRegistry) mockRegistry.proxy(),
+            (StAXPropertyFactory) mockPropertyFactory.proxy());
     }
 }

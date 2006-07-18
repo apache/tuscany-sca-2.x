@@ -91,4 +91,17 @@
         <system:implementation.system class="org.apache.tuscany.core.services.extension.DirectoryScanExtender"/>
         <property name="path">extension</property>
     </component>
+
+    <!-- WorkScheduler service -->
+
+    <component name="workManager">
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
+        <property name="poolSize">10</property>
+    </component>
+
+    <component name="workScheduler">
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
+    </component>
+
 </composite>

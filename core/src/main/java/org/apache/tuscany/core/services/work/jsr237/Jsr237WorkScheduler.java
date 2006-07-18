@@ -16,6 +16,9 @@
  */
 package org.apache.tuscany.core.services.work.jsr237;
 
+import org.osoa.sca.annotations.Scope;
+
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.work.NotificationListener;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.services.work.WorkSchedulerException;
@@ -36,6 +39,7 @@ import commonj.work.WorkRejectedException;
  * manager implementaion available. For example, if the managed environment supports work manager the runtime can use
  * the appropriate lookup mechanism to inject the work manager implementation. </p>
  */
+@Scope("MODULE")
 public class Jsr237WorkScheduler implements WorkScheduler {
 
     /**
@@ -48,13 +52,11 @@ public class Jsr237WorkScheduler implements WorkScheduler {
      *
      * @param jsr237WorkManager JSR 237 work manager.
      */
-    public Jsr237WorkScheduler(WorkManager jsr237WorkManager) {
-
+    public Jsr237WorkScheduler(@Autowire(name = "workmanager") WorkManager jsr237WorkManager) {
         if (jsr237WorkManager == null) {
             throw new IllegalArgumentException("Work manager cannot be null");
         }
         this.jsr237WorkManager = jsr237WorkManager;
-
     }
 
     /**
