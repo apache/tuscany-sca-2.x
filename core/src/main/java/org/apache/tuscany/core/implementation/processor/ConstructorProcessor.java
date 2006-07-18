@@ -13,6 +13,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
             Class<?> param = params[i];
             Annotation[] paramAnnotations = annotations[i];
             try {
-                if (ProcessorUtils.processParam(param, paramAnnotations, names, i, type, explicitNames)) {
+                if (processParam(param, paramAnnotations, names, i, type, explicitNames)) {
                     annotationsDeclared = true;
                 }
             } catch (ProcessingException e) {

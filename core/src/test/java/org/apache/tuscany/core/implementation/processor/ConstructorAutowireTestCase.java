@@ -51,13 +51,9 @@ public class ConstructorAutowireTestCase extends TestCase {
     public void testNoName() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = BadFoo.class.getConstructor(Bar.class);
-        try {
-            processor.visitConstructor(null, ctor, type, null);
-            fail();
-        } catch (InvalidAutowireException e) {
-            // expected
-        }
+        Constructor ctor = Foo2.class.getConstructor(Bar.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertNotNull(type.getReferences().get(Bar.class.getName()));
     }
 
     public void testInvalidNumberOfNames() throws Exception {
@@ -102,12 +98,14 @@ public class ConstructorAutowireTestCase extends TestCase {
 
     }
 
-    private static class BadFoo {
-
+    private static class Foo2 {
         @org.osoa.sca.annotations.Constructor()
-        public BadFoo(@Autowire Bar ref) {
+        public Foo2(@Autowire Bar ref) {
 
         }
+    }
+
+    private static class BadFoo {
 
         @org.osoa.sca.annotations.Constructor({"ref1"})
         public BadFoo(@Autowire Bar ref1, @Autowire Bar ref2) {

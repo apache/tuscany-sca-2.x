@@ -157,11 +157,14 @@ public final class ProcessorUtils {
         reference.setAutowire(true);
         String name = autowireAnnot.name();
         if (name == null || name.length() == 0) {
-            if (constructorNames.length < pos + 1 || constructorNames[pos] == null
-                || constructorNames[pos].length() == 0) {
-                throw new InvalidAutowireException("No name specified for autowire parameter " + (pos + 1));
+            if (constructorNames.length > 0 && (constructorNames.length < pos + 1 || constructorNames[pos] == null)) {
+                throw new InvalidAutowireException(
+                    "Names in @Constructor and autowire parameter do not match at " + (pos + 1));
+            } else if (constructorNames.length == 0 || constructorNames[pos].length() == 0) {
+                name = param.getName();
+            } else {
+                name = constructorNames[pos];
             }
-            name = constructorNames[pos];
         } else if (pos < constructorNames.length
             && constructorNames[pos] != null
             && constructorNames[pos].length() != 0

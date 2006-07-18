@@ -52,7 +52,7 @@ public class Jsr237WorkScheduler implements WorkScheduler {
      *
      * @param jsr237WorkManager JSR 237 work manager.
      */
-    public Jsr237WorkScheduler(@Autowire(name = "workmanager") WorkManager jsr237WorkManager) {
+    public Jsr237WorkScheduler(@Autowire WorkManager jsr237WorkManager) {
         if (jsr237WorkManager == null) {
             throw new IllegalArgumentException("Work manager cannot be null");
         }
