@@ -45,6 +45,11 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         this.introspector = introspector;
     }
 
+    @Override
+    protected Class<JavaImplementation> getImplementationClass() {
+        return JavaImplementation.class;
+    }
+
     public void load(CompositeComponent<?> parent,
                      JavaImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
@@ -66,11 +71,6 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         Class<?> implClass = implementation.getImplementationClass();
         introspector.introspect(parent, implClass, componentType, deploymentContext);
         return componentType;
-    }
-
-    @Override
-    protected Class<JavaImplementation> getImplementationClass() {
-        return JavaImplementation.class;
     }
 
     protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
