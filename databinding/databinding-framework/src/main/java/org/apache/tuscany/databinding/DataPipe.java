@@ -17,33 +17,24 @@
 package org.apache.tuscany.databinding;
 
 /**
- * Data pipe allows a data pumper pushes data into its sink and pipe the data into its result
+ * Data pipe allows a data source pushes data into its sink and pipe the data into its result
  * 
- * @param <S>
- * @param <R>
+ * @param <S> The data binding type of the sink
+ * @param <R> The data binding type of the result
  */
-public interface DataPipe<S, R> {
+public interface DataPipe<S, R> extends Transformer<S, R>{
 
     /**
-     * Inound wire represents a data sink which the Transformer can push data into
-     * @return
+     * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to
+     * receive data pushed by the source
+     * @return The sink to consume data
      */
     public S getSink();
     
     /**
-     * Outbound wire represents a data source which can be consumed by a Transformer
+     * Returns the data populated by the sink
      * @return
      */
     public R getResult();
     
-    public Class<S> getSinkType();
-
-    public Class<R> getResultType();
-    
-
-    /**
-     * The cost to flow data from the inbound wire to the outbound wire
-     * @return
-     */
-    public int getWeight();
 }

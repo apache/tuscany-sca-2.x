@@ -19,22 +19,28 @@ package org.apache.tuscany.databinding;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
+/**
+ * DataBinding interface defines a data binding 
+ */
 public interface DataBinding {
-    public static enum Mode {
-        PULL, PUSH;
-    }
 
     /**
+     * Get the name of the data binding
      * @return The name which uniquely idetifies the data binding
      */
     public String getName();
 
     /**
-     * @return The operation mode: PUSH or PULL
+     * @param source
+     * @param sourceType
+     * @return
      */
-    public Mode getMode();
+    public Source createSource(Object source, Class sourceType);
 
-    public Source createSource(Object source);
-
-    public Result createResult();
+    /**
+     * Create a result object
+     * @param resultType
+     * @return
+     */
+    public Result createResult(Class resultType);
 }

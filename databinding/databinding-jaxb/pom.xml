@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	*  Copyright (c) 2006 The Apache Software Foundation or its licensors, as applicable.
-	*
-	*  Licensed under the Apache License, Version 2.0 (the "License");
-	*  you may not use this file except in compliance with the License.
-	*  You may obtain a copy of the License at
-	*
-	*     http://www.apache.org/licenses/LICENSE-2.0
-	*
-	*  Unless required by applicable law or agreed to in writing, software
-	*  distributed under the License is distributed on an "AS IS" BASIS,
-	*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	*  See the License for the specific language governing permissions and
-	*  limitations under the License.
+    *  Copyright (c) 2006 The Apache Software Foundation or its licensors, as applicable.
+    *
+    *  Licensed under the Apache License, Version 2.0 (the "License");
+    *  you may not use this file except in compliance with the License.
+    *  You may obtain a copy of the License at
+    *
+    *     http://www.apache.org/licenses/LICENSE-2.0
+    *
+    *  Unless required by applicable law or agreed to in writing, software
+    *  distributed under the License is distributed on an "AS IS" BASIS,
+    *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    *  See the License for the specific language governing permissions and
+    *  limitations under the License.
 -->
 <project>
 
@@ -40,7 +40,7 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <!-- Using 2.0 instead of 2.0.1 for now because the SUN repository has an incorrect reference
-               to jaxb-api 2.0.1 -->
+                to jaxb-api 2.0.1 -->
             <version>2.0</version>
             <scope>test</scope>
         </dependency>
@@ -89,12 +89,15 @@
                 <directory>target/jaxb-source</directory>
                 <filtering>true</filtering>
             </testResource>
+            <testResource>
+                <directory>src/test/java</directory>
+                <filtering>true</filtering>
+            </testResource>
         </testResources>
-        
-        <testSourceDirectory>${project.build.directory}/jaxb-source</testSourceDirectory>
+
+        <testSourceDirectory>target/jaxb-source</testSourceDirectory>
 
         <plugins>
-
             <plugin>
                 <groupId>com.sun.tools.xjc.maven2</groupId>
                 <artifactId>maven-jaxb-plugin</artifactId>

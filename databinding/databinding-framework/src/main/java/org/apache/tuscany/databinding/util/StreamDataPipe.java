@@ -31,7 +31,7 @@ public class StreamDataPipe implements DataPipe<OutputStream, InputStream> {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    public Class<InputStream> getResultType() {
+    public Class<InputStream> getTargetType() {
         return InputStream.class;
     }
 
@@ -43,7 +43,7 @@ public class StreamDataPipe implements DataPipe<OutputStream, InputStream> {
         return outputStream;
     }
 
-    public Class<OutputStream> getSinkType() {
+    public Class<OutputStream> getSourceType() {
         return OutputStream.class;
     }
 

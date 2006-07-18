@@ -19,10 +19,10 @@ package org.apache.tuscany.databinding.xmlbeans;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.xmlbeans.XmlObject;
 
-public class XmlObject2XMLStreamReader implements Transformer<XmlObject, XMLStreamReader> {
+public class XmlObject2XMLStreamReader implements PullTransformer<XmlObject, XMLStreamReader> {
     // private XmlOptions options;
     
     public XMLStreamReader transform(XmlObject source, TransformationContext context) {
@@ -33,7 +33,7 @@ public class XmlObject2XMLStreamReader implements Transformer<XmlObject, XMLStre
         return XmlObject.class;
     }
 
-    public Class<XMLStreamReader> getResultType() {
+    public Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

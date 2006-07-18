@@ -97,6 +97,8 @@
 				<filtering>true</filtering>
 			</testResource>
 		</testResources>
+        
+        <testSourceDirectory>target/jaxb-source</testSourceDirectory>
 
 		<plugins>
 			<plugin>
@@ -105,7 +107,7 @@
 				<executions>
 					<execution>
 						<id>generate-sdo</id>
-						<phase>generate-sources</phase>
+						<phase>generate-test-sources</phase>
 						<configuration>
 							<schemaFile>${basedir}/src/test/resources/ipo.xsd</schemaFile>
 							<javaPackage>com.example.ipo.sdo</javaPackage>

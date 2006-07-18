@@ -31,7 +31,7 @@ public class Writer2ReaderDataPipe implements DataPipe<Writer, Reader> {
         return new StringReader(writer.toString());
     }
 
-    public Class<Reader> getResultType() {
+    public Class<Reader> getTargetType() {
         return Reader.class;
     }
 
@@ -43,7 +43,7 @@ public class Writer2ReaderDataPipe implements DataPipe<Writer, Reader> {
         return writer;
     }
 
-    public Class<Writer> getSinkType() {
+    public Class<Writer> getSourceType() {
         return Writer.class;
     }
 

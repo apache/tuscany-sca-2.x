@@ -22,9 +22,9 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
-public class String2OMElement implements Transformer<String, OMElement> {
+public class String2OMElement implements PullTransformer<String, OMElement> {
 
     public OMElement transform(String source, TransformationContext context) {
         try {
@@ -35,7 +35,7 @@ public class String2OMElement implements Transformer<String, OMElement> {
         }
     }
 
-    public Class<OMElement> getResultType() {
+    public Class<OMElement> getTargetType() {
         return OMElement.class;
     }
 

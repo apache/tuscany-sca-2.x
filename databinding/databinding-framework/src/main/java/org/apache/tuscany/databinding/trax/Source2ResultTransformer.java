@@ -20,7 +20,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 
-import org.apache.tuscany.databinding.PushStyleTransformer;
+import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 
@@ -28,14 +28,12 @@ import org.apache.tuscany.databinding.TransformationException;
  * Transform TrAX Source to Result
  * 
  */
-public class Source2ResultTransformer implements PushStyleTransformer<Source, Result> {
+public class Source2ResultTransformer implements PushTransformer<Source, Result> {
     private static final TransformerFactory factory = TransformerFactory.newInstance();
 
     public void transform(Source source, Result result, TransformationContext context) {
         try {
-            // FIXME:
-            Source xslt = context == null ? null : (Source) context.get(Source.class.getName());
-            javax.xml.transform.Transformer transformer = factory.newTransformer(xslt);
+            javax.xml.transform.Transformer transformer = factory.newTransformer();
             transformer.transform(source, result);
         } catch (Exception e) {
             throw new TransformationException(e);
@@ -46,7 +44,7 @@ public class Source2ResultTransformer implements PushStyleTransformer<Source, Re
         return Source.class;
     }
 
-    public Class<Result> getSinkType() {
+    public Class<Result> getTargetType() {
         return Result.class;
     }
 

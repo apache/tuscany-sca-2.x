@@ -20,11 +20,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 
-public class XMLStreamReader2XmlObject implements Transformer<XMLStreamReader, XmlObject> {
+public class XMLStreamReader2XmlObject implements PullTransformer<XMLStreamReader, XmlObject> {
     // private XmlOptions options;
 
     public XmlObject transform(XMLStreamReader source, TransformationContext context) {
@@ -35,7 +35,7 @@ public class XMLStreamReader2XmlObject implements Transformer<XMLStreamReader, X
         }
     }
 
-    public Class<XmlObject> getResultType() {
+    public Class<XmlObject> getTargetType() {
         return XmlObject.class;
     }
 

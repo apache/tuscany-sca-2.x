@@ -31,4 +31,14 @@ public interface Mediator {
      * @return The mediated result
      */
     public Object mediate(Object source, Object sourceType, Object resultType, TransformationContext context);
+    /**
+     * @param source
+     * @param target
+     * @param sourceType
+     * @param resultType
+     * @param context
+     * @return
+     */
+    public Object mediate(Object source, Object target, Object sourceType, Object resultType, TransformationContext context);
+    
 }

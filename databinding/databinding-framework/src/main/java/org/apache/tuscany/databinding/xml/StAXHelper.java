@@ -309,6 +309,12 @@ public class StAXHelper {
         streamWriter.flush();
     }
 
+    public static void save(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
+        XMLStreamSerializer serializer = new XMLStreamSerializer();
+        serializer.serialize(reader, writer);
+        writer.flush();
+    }
+    
     public static String save(XMLStreamReader reader) throws XMLStreamException {
         StringWriter writer = new StringWriter();
         save(reader, writer);

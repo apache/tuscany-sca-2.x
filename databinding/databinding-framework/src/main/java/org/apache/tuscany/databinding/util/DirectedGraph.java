@@ -25,14 +25,47 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Directed, weighted graph 
- *
- * @param <V> The type of vertex object
- * @param <E> The type of edge object
+ * Directed, weighted graph
+ * 
+ * @param <V>
+ *            The type of vertex object
+ * @param <E>
+ *            The type of edge object
  */
 public class DirectedGraph<V, E> {
-    private Map<V, Vertex> vertices = new HashMap<V, Vertex>();
+    private final Map<V, Vertex> vertices = new HashMap<V, Vertex>();
 
+    /**
+     * Key for the shortest path cache
+     */
+    private class VertexPair {
+        private Vertex source;
+
+        private Vertex target;
+
+        public boolean equals(Object object) {
+            if (!VertexPair.class.isInstance(object))
+                return false;
+            VertexPair pair = (VertexPair) object;
+            return source == pair.source && target == pair.target;
+        }
+
+        /**
+         * @param source
+         * @param target
+         */
+        private VertexPair(Vertex source, Vertex target) {
+            super();
+            this.source = source;
+            this.target = target;
+        }
+    }
+
+    private final Map<VertexPair, Path> paths = new HashMap<VertexPair, Path>();
+
+    /**
+     * Vertex of a graph
+     */
     public class Vertex {
         private V value;
 
@@ -57,6 +90,9 @@ public class DirectedGraph<V, E> {
 
     }
 
+    /**
+     * An Edge connects two vertices in one direction
+     */
     public class Edge {
         private Vertex sourceVertex;
 
@@ -169,11 +205,15 @@ public class DirectedGraph<V, E> {
     public Edge getEdge(V source, V target) {
         return getEdge(getVertex(source), getVertex(target));
     }
-    
+
     /**
-     * @param sourceValue
-     * @param targetValue
-     * @return
+     * Get the shortes path from the source vertex to the target vertex using Dijkstra's algorithm. If 
+     * there's no path, null will be returned. If the source is the same as the target, it returns a 
+     * path with empty edges with weight 0.
+     *  
+     * @param sourceValue The value identifies the source
+     * @param targetValue The value identifies the target
+     * @return The shortest path
      */
     public Path getShortestPath(V sourceValue, V targetValue) {
         Vertex source = getVertex(sourceValue);
@@ -182,6 +222,11 @@ public class DirectedGraph<V, E> {
         Vertex target = getVertex(targetValue);
         if (target == null)
             return null;
+
+        VertexPair pair = new VertexPair(source, target);
+        if (paths.containsKey(pair))
+            return paths.get(pair);
+
         Map<Vertex, Node> nodes = new HashMap<Vertex, Node>();
         for (Vertex v : vertices.values()) {
             Node node = new Node(v);
@@ -194,8 +239,11 @@ public class DirectedGraph<V, E> {
         Set<Node> nodesOnPath = new HashSet<Node>();
         while (!otherNodes.isEmpty()) {
             Node nextNode = extractMin(otherNodes);
-            if (nextNode.vertex == target)
-                return getPath(nextNode);
+            if (nextNode.vertex == target) {
+                Path path = getPath(nextNode);
+                paths.put(pair, path); // Cache it
+                return path;
+            }
             nodesOnPath.add(nextNode);
             for (Edge edge : nextNode.vertex.outEdges.values()) {
                 Node adjacentNode = nodes.get(edge.targetVertex);
@@ -205,6 +253,7 @@ public class DirectedGraph<V, E> {
                 }
             }
         }
+        paths.put(pair, null); // Cache it
         return null;
     }
 
@@ -220,6 +269,9 @@ public class DirectedGraph<V, E> {
         return node;
     }
 
+    /**
+     * The path between two vertices
+     */
     public class Path {
         private List<Edge> edges = new LinkedList<Edge>();
 
@@ -233,19 +285,24 @@ public class DirectedGraph<V, E> {
             return edges;
         }
 
+        public void addEdge(Edge edge) {
+            edges.add(0, edge);
+            weight += edge.weight;
+        }
+
         public String toString() {
             return edges + ", " + weight;
         }
     }
 
     private Path getPath(Node t) {
+        if (t.distance == Integer.MAX_VALUE)
+            return null;
         Path path = new Path();
-
         Node u = t;
         while (u.previous != null) {
             Edge edge = getEdge(u.previous.vertex, u.vertex);
-            path.edges.add(0, edge);
-            path.weight += edge.weight;
+            path.addEdge(edge);
             u = u.previous;
         }
         return path;

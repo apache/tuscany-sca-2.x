@@ -22,9 +22,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
-public class XMLStreamReader2JAXB implements Transformer<XMLStreamReader, Object> {
+public class XMLStreamReader2JAXB implements PullTransformer<XMLStreamReader, Object> {
     // TODO: How to pass context information
     private String contextPath;
     
@@ -49,7 +49,7 @@ public class XMLStreamReader2JAXB implements Transformer<XMLStreamReader, Object
         return XMLStreamReader.class;
     }
 
-    public Class<Object> getResultType() {
+    public Class<Object> getTargetType() {
         return Object.class;
     }
 

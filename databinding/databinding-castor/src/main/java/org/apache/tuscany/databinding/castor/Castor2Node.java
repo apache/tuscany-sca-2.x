@@ -22,14 +22,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class Castor2Node implements Transformer<Object, Node> {
+public class Castor2Node implements PullTransformer<Object, Node> {
 
-    public Class<Node> getResultType() {
+    public Class<Node> getTargetType() {
         return Node.class;
     }
 
@@ -42,7 +42,7 @@ public class Castor2Node implements Transformer<Object, Node> {
     }
 
     /**
-     * @see org.apache.tuscany.databinding.Transformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
+     * @see org.apache.tuscany.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
      */
     public Node transform(Object source, TransformationContext arg1) {
         try {

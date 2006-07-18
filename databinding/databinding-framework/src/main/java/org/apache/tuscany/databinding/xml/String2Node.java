@@ -23,11 +23,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-public class String2Node implements Transformer<String, Node> {
+public class String2Node implements PullTransformer<String, Node> {
 
     public Node transform(String source, TransformationContext context) {
         try {
@@ -43,7 +43,7 @@ public class String2Node implements Transformer<String, Node> {
         return String.class;
     }
 
-    public Class<Node> getResultType() {
+    public Class<Node> getTargetType() {
         return Node.class;
     }
 

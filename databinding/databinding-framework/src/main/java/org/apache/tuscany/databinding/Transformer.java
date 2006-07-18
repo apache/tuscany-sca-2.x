@@ -18,16 +18,30 @@ package org.apache.tuscany.databinding;
 
 
 /**
- * Transformer transforms data from one binding format to the other one
- * @param <S>
- * @param <R>
+ * Transformer transforms data from one binding format to the other one.
+ * 
+ * @param <S> The source data type
+ * @param <R> the target data type
  */
 public interface Transformer<S, R> {
-    public R transform(S source, TransformationContext context);
-
+    // FIXME: [rfeng] I'm not very sure if Class is a good id to represent the data type. Another option
+    // is to use URI strings
+    /**
+     * Get the source type that this transformer transforms data from 
+     * @return
+     */
     public Class<S> getSourceType();
 
-    public Class<R> getResultType();
+    /**
+     * Get the target type that this transformer transforms data into 
+     * @return
+     */
+    public Class<R> getTargetType();
 
+    /**
+     * Get the cost of the transformation. The weight can be used to choose the most efficient path if
+     * there are more than one available from the source to the target.
+     * @return 
+     */
     public int getWeight();
 }

@@ -54,7 +54,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        loader = new ImportSDOLoader();
+        loader = new ImportSDOLoader(null);
         xmlFactory = XMLInputFactory.newInstance();
         deploymentContext = new RootDeploymentContext(getClass().getClassLoader(), xmlFactory, null, null);
     }

@@ -17,11 +17,11 @@
 package org.apache.tuscany.databinding.xmlbeans;
 
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
-public class XmlObject2Node implements Transformer<XmlObject, Node> {
+public class XmlObject2Node implements PullTransformer<XmlObject, Node> {
     // private XmlOptions options;
 
     public Node transform(XmlObject source, TransformationContext context) {
@@ -34,7 +34,7 @@ public class XmlObject2Node implements Transformer<XmlObject, Node> {
         return XmlObject.class;
     }
 
-    public Class<Node> getResultType() {
+    public Class<Node> getTargetType() {
         return Node.class;
     }
 

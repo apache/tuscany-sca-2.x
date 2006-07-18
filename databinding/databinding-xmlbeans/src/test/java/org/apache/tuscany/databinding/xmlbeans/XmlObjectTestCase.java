@@ -17,6 +17,7 @@
 package org.apache.tuscany.databinding.xmlbeans;
 
 import java.io.StringReader;
+import java.net.URL;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -25,6 +26,8 @@ import junit.framework.TestCase;
 
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
+
+import com.example.ipo.xmlbeans.PurchaseOrderDocument;
 
 public class XmlObjectTestCase extends TestCase {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
@@ -64,11 +67,10 @@ public class XmlObjectTestCase extends TestCase {
         Assert.assertNotNull(object3);
     }
     
-    /*
     public void testGeneratedXmlObject() throws Exception {
-        URL xmlFile = getClass().getClassLoader().getResource("ipo.xml");
+        // URL xmlFile = getClass().getClassLoader().getResource("ipo.xml");
         // URL/Stream/Reader to XmlObject
-        PurchaseOrderDocument object = PurchaseOrderDocument.Factory.parse(xmlFile);
+        PurchaseOrderDocument object = PurchaseOrderDocument.Factory.parse(new StringReader(IPO_XML));
 
         // XmlObject to XMLStreamReader
         XmlObject2XMLStreamReader t1 = new XmlObject2XMLStreamReader();
@@ -76,7 +78,7 @@ public class XmlObjectTestCase extends TestCase {
 
         // XMLStreamReader to XmlObject
         XMLStreamReader2XmlObject t2 = new XMLStreamReader2XmlObject();
-        XmlObject object2 = t2.transform(reader, null);
+        PurchaseOrderDocument object2 = (PurchaseOrderDocument) t2.transform(reader, null);
 
         // XmlObject to Node
         XmlObject2Node t3 = new XmlObject2Node();
@@ -84,10 +86,9 @@ public class XmlObjectTestCase extends TestCase {
 
         // Node to XmlObject
         Node2XmlObject t4 = new Node2XmlObject();
-        XmlObject object3 = t4.transform(node, null);
+        PurchaseOrderDocument object3 = (PurchaseOrderDocument) t4.transform(node, null);
         Assert.assertNotNull(object3);
     }   
-    */ 
 
     protected void tearDown() throws Exception {
         super.tearDown();

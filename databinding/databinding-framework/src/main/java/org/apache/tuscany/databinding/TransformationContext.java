@@ -16,12 +16,34 @@
  */
 package org.apache.tuscany.databinding;
 
-import java.util.Map;
+
 
 /**
  * Context for data transformation
  *
  */
-public interface TransformationContext extends Map {
-
+public interface TransformationContext {
+    /**
+     * @return
+     */
+    public DataBinding getSourceBinding();
+    /**
+     * @return
+     */
+    public DataBinding getTargetBinding();
+    /**
+     * @return
+     */
+    public ClassLoader getClassLoader();
+    /**
+     * @param name
+     * @return
+     */
+    public Object getAttribute(String name);
+    
+    /**
+     * @param name
+     * @param object
+     */
+    public void setAttribute(String name, Object object);
 }

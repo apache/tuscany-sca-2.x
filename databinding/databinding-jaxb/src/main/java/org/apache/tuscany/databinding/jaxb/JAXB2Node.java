@@ -23,11 +23,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class JAXB2Node implements Transformer<Object, Node> {
+public class JAXB2Node implements PullTransformer<Object, Node> {
 
     private String contextPath;
 
@@ -52,7 +52,7 @@ public class JAXB2Node implements Transformer<Object, Node> {
         return Object.class;
     }
 
-    public Class<Node> getResultType() {
+    public Class<Node> getTargetType() {
         return Node.class;
     }
 

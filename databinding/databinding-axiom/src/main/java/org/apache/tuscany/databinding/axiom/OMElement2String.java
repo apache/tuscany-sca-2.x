@@ -23,9 +23,9 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
-public class OMElement2String implements Transformer<OMElement, String> {
+public class OMElement2String implements PullTransformer<OMElement, String> {
     // private XmlOptions options;
     
     public String transform(OMElement source, TransformationContext context) {
@@ -42,7 +42,7 @@ public class OMElement2String implements Transformer<OMElement, String> {
         return OMElement.class;
     }
 
-    public Class<String> getResultType() {
+    public Class<String> getTargetType() {
         return String.class;
     }
 

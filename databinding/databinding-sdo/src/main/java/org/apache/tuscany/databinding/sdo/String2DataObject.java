@@ -18,12 +18,12 @@ package org.apache.tuscany.databinding.sdo;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.XMLHelper;
 
-public class String2DataObject implements Transformer<String, DataObject> {
+public class String2DataObject implements PullTransformer<String, DataObject> {
 
     public DataObject transform(String source, TransformationContext context) {
         try {
@@ -37,7 +37,7 @@ public class String2DataObject implements Transformer<String, DataObject> {
         return String.class;
     }
 
-    public Class<DataObject> getResultType() {
+    public Class<DataObject> getTargetType() {
         return DataObject.class;
     }
 

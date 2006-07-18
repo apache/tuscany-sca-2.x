@@ -20,9 +20,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
-public class OMElement2XMLStreamReader implements Transformer<OMElement, XMLStreamReader> {
+public class OMElement2XMLStreamReader implements PullTransformer<OMElement, XMLStreamReader> {
     // private XmlOptions options;
     
     public XMLStreamReader transform(OMElement source, TransformationContext context) {
@@ -33,7 +33,7 @@ public class OMElement2XMLStreamReader implements Transformer<OMElement, XMLStre
         return OMElement.class;
     }
 
-    public Class<XMLStreamReader> getResultType() {
+    public Class<XMLStreamReader> getTargetType() {
         return XMLStreamReader.class;
     }
 

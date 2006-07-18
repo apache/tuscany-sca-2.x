@@ -21,10 +21,10 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.w3c.dom.Node;
 
-public class Node2JAXB implements Transformer<Node, Object> {
+public class Node2JAXB implements PullTransformer<Node, Object> {
 
     private String contextPath;
 
@@ -44,7 +44,7 @@ public class Node2JAXB implements Transformer<Node, Object> {
         return Node.class;
     }
 
-    public Class<Object> getResultType() {
+    public Class<Object> getTargetType() {
         return Object.class;
     }
 

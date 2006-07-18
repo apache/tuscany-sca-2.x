@@ -48,13 +48,10 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
     </dependencies>
     
     <build>
+        <testSourceDirectory>target/sdo-source</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tuscany</groupId>

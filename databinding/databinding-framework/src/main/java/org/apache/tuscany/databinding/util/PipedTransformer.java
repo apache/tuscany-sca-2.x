@@ -18,9 +18,9 @@
 package org.apache.tuscany.databinding.util;
 
 import org.apache.tuscany.databinding.DataPipe;
-import org.apache.tuscany.databinding.PushStyleTransformer;
+import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
 /**
  *
@@ -28,8 +28,8 @@ import org.apache.tuscany.databinding.Transformer;
  * @param <I>
  * @param <R>
  */
-public class PipedTransformer<S, I, R> implements Transformer<S, R> {
-    private PushStyleTransformer<S, I> pumper;
+public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {
+    private PushTransformer<S, I> pusher;
 
     private DataPipe<I, R> pipe;
 
@@ -37,27 +37,27 @@ public class PipedTransformer<S, I, R> implements Transformer<S, R> {
      * @param pumper
      * @param pipe
      */
-    public PipedTransformer(PushStyleTransformer<S, I> pumper, DataPipe<I, R> pipe) {
+    public PipedTransformer(PushTransformer<S, I> pumper, DataPipe<I, R> pipe) {
         super();
-        this.pumper = pumper;
+        this.pusher = pumper;
         this.pipe = pipe;
     }
 
     public R transform(S source, TransformationContext context) {
-        pumper.transform(source, pipe.getSink(), context);
+        pusher.transform(source, pipe.getSink(), context);
         return pipe.getResult();
     }
 
     public Class<S> getSourceType() {
-        return pumper.getSourceType();
+        return pusher.getSourceType();
     }
 
-    public Class<R> getResultType() {
-        return pipe.getResultType();
+    public Class<R> getTargetType() {
+        return pipe.getTargetType();
     }
 
     public int getWeight() {
-        return pumper.getWeight() + pipe.getWeight();
+        return pusher.getWeight() + pipe.getWeight();
     }
 
 }

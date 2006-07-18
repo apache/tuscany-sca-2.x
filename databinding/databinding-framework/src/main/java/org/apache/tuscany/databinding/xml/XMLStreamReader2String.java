@@ -21,9 +21,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 
-public class XMLStreamReader2String implements Transformer<XMLStreamReader, String> {
+public class XMLStreamReader2String implements PullTransformer<XMLStreamReader, String> {
 
     public String transform(XMLStreamReader source, TransformationContext context) {
         try {
@@ -37,7 +37,7 @@ public class XMLStreamReader2String implements Transformer<XMLStreamReader, Stri
         return XMLStreamReader.class;
     }
 
-    public Class<String> getResultType() {
+    public Class<String> getTargetType() {
         return String.class;
     }
 

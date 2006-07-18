@@ -20,7 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
+import org.apache.tuscany.databinding.PullTransformer;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -29,7 +29,7 @@ import org.w3c.dom.ls.LSSerializer;
  * Transform DOM Node to XML String
  *
  */
-public class Node2String implements Transformer<Node, String> {
+public class Node2String implements PullTransformer<Node, String> {
 
     public String transform(Node source, TransformationContext context) {
         try {
@@ -45,7 +45,7 @@ public class Node2String implements Transformer<Node, String> {
         return Node.class;
     }
 
-    public Class<String> getResultType() {
+    public Class<String> getTargetType() {
         return String.class;
     }
 

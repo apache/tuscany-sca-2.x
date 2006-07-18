@@ -18,32 +18,23 @@ package org.apache.tuscany.databinding.trax;
 
 import java.io.StringWriter;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.Transformer;
 import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML String
  *
  */
-public class Node2String implements Transformer<Node, String> {
-    private static final TransformerFactory factory = TransformerFactory.newInstance();
+public class Node2String implements PullTransformer<Node, String> {
+    private static final Node2Writer transformer = new Node2Writer();
 
     public String transform(Node source, TransformationContext context) {
         try {
-            javax.xml.transform.Transformer transformer = factory.newTransformer();
-            Source domSource = new DOMSource(source);
             StringWriter writer = new StringWriter();
-            Result result = new StreamResult(writer);
-            transformer.transform(domSource, result);
-            return result.toString();
+            transformer.transform(source, writer, context);
+            return writer.toString();
         } catch (Exception e) {
             throw new TransformationException(e);
         }
@@ -53,7 +44,7 @@ public class Node2String implements Transformer<Node, String> {
         return Node.class;
     }
 
-    public Class<String> getResultType() {
+    public Class<String> getTargetType() {
         return String.class;
     }
 

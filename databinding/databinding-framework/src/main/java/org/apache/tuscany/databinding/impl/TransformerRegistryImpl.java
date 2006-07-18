@@ -19,13 +19,11 @@ package org.apache.tuscany.databinding.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.util.DirectedGraph;
 
-public class TransformerRegistryImpl implements TransformerRegistry, Mediator {
+public class TransformerRegistryImpl implements TransformerRegistry {
 
     private DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
 
@@ -34,7 +32,7 @@ public class TransformerRegistryImpl implements TransformerRegistry, Mediator {
     }
 
     public void registerTransformer(Transformer transformer) {
-        graph.addEdge(transformer.getSourceType(), transformer.getResultType(), transformer, transformer.getWeight());
+        graph.addEdge(transformer.getSourceType(), transformer.getTargetType(), transformer, transformer.getWeight());
     }
 
     public boolean removeTransformer(Object sourceType, Object resultType) {
@@ -57,18 +55,6 @@ public class TransformerRegistryImpl implements TransformerRegistry, Mediator {
 
     public String toString() {
         return graph.toString();
-    }
-
-    @SuppressWarnings("unchecked")
-    public Object mediate(Object source, Object sourceType, Object resultType, TransformationContext context) {
-        List<Transformer> path = getTransformerChain(sourceType, resultType);
-
-        Object result = source;
-        for (Transformer transformer : path) {
-            result = transformer.transform(result, context);
-        }
-        
-        return result;
     }
 
 }

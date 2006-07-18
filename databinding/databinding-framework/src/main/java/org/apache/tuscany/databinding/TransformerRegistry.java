@@ -18,6 +18,10 @@ package org.apache.tuscany.databinding;
 
 import java.util.List;
 
+/**
+ * Registry for data transformers
+ *
+ */
 public interface TransformerRegistry {
     /**
      * @param sourceType
