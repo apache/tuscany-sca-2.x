@@ -17,12 +17,15 @@
 package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamConstants;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import org.osoa.sca.Version;
 
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -31,27 +34,28 @@ import org.apache.tuscany.spi.model.Include;
 /**
  * @version $Rev$ $Date$
  */
-public class IncludeLoaderTestCase extends MockObjectTestCase {
+public class IncludeLoaderTestCase extends TestCase {
     private static final QName INCLUDE = new QName(Version.XML_NAMESPACE_1_0, "include");
 
     private IncludeLoader loader;
-    private Mock mockReader;
+    private XMLStreamReader reader;
 
     public void testName() throws LoaderException, XMLStreamException {
         String name = "foo";
-        mockReader.expects(once()).method("getName").will(returnValue(IncludeLoaderTestCase.INCLUDE));
-        mockReader.expects(atLeastOnce()).method("getAttributeValue")
-                .with(ANYTHING, ANYTHING)
-                .will(onConsecutiveCalls(returnValue(name), returnValue(null)));
-        mockReader.expects(once()).method("next").will(returnValue(XMLStreamConstants.END_ELEMENT));
-        Include include = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
+        expect(reader.getName()).andReturn(INCLUDE);
+        expect(reader.getAttributeValue(null, "name")).andReturn(name);
+        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn(null);
+        expect(reader.next()).andReturn(END_ELEMENT);
+        replay(reader);
+
+        Include include = loader.load(null, reader, null);
         assertEquals(name, include.getName());
+        verify(reader);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         this.loader = new IncludeLoader(null);
-        mockReader = mock(XMLStreamReader.class);
-
+        reader = createMock(XMLStreamReader.class);
     }
 }
