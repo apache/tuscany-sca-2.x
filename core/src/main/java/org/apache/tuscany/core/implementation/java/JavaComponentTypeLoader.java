@@ -18,17 +18,19 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.net.URL;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.core.implementation.IntrospectionRegistry;
 import org.apache.tuscany.core.implementation.Introspector;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -36,13 +38,10 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaImplementation> {
     private Introspector introspector;
 
-    public JavaComponentTypeLoader() {
-        super();
-    }
-
-    //FIXME autowire to support multiple interfaces
-    @Autowire
-    public void setIntrospector(IntrospectionRegistry introspector) {
+    @Constructor({"registry", "introspector"})
+    public JavaComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry,
+                                   @Autowire IntrospectionRegistry introspector) {
+        super(loaderRegistry);
         this.introspector = introspector;
     }
 
