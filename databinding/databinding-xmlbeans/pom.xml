@@ -34,7 +34,6 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>xmlbeans</groupId>
             <artifactId>xbean</artifactId>
@@ -42,6 +41,10 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

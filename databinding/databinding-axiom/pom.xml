@@ -46,6 +46,11 @@
 			<version>1.0</version>
 			<scope>compile</scope>
 		</dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>ws-commons</groupId>
 			<artifactId>axiom-impl</artifactId>
@@ -55,8 +60,6 @@
         <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <version>2.9.3</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
