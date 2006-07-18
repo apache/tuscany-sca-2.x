@@ -18,31 +18,29 @@ package org.apache.tuscany.databinding.trax;
 
 import java.io.StringReader;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
 
 /**
  * Transform XML string to SAX
- *
+ * 
  */
 public class String2SAX implements PushTransformer<String, ContentHandler> {
-    private static final TransformerFactory factory = TransformerFactory.newInstance();
+    /*
+     * private static final TransformerFactory factory = TransformerFactory.newInstance();
+     * 
+     * public void transform(String source, ContentHandler target, TransformationContext context) { try { javax.xml.transform.Transformer transformer =
+     * factory.newTransformer(); Source domSource = new StreamSource(new StringReader(source));
+     * 
+     * Result result = new SAXResult(target); transformer.transform(domSource, result); } catch (Exception e) { throw new TransformationException(e); } }
+     */
 
     public void transform(String source, ContentHandler target, TransformationContext context) {
         try {
-            javax.xml.transform.Transformer transformer = factory.newTransformer();
-            Source domSource = new StreamSource(new StringReader(source));
-           
-            Result result = new SAXResult(target);
-            transformer.transform(domSource, result);
+            new InputSource2SAX().transform(new InputSource(new StringReader(source)), target, context);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

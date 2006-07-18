@@ -23,8 +23,6 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Transform XML string to SAX
@@ -33,9 +31,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class Reader2SAX implements PushTransformer<Reader, ContentHandler> {
     public void transform(Reader source, ContentHandler target, TransformationContext context) {
         try {
-            XMLReader reader = XMLReaderFactory.createXMLReader();
-            reader.setContentHandler(target);
-            reader.parse(new InputSource(source));
+            new InputSource2SAX().transform(new InputSource(source), target, context);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

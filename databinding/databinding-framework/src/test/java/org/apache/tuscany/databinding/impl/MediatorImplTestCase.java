@@ -67,22 +67,18 @@ public class MediatorImplTestCase extends TestCase {
     }
 
     public void testTransform1() {
-/*
         Object node = mediator.mediate(IPO_XML, String.class, Node.class, null);
         Assert.assertTrue(node instanceof Document);
         Element root = ((Document) node).getDocumentElement();
         Assert.assertEquals(root.getNamespaceURI(), "http://www.example.com/IPO");
         Assert.assertEquals(root.getLocalName(), "purchaseOrder");
-*/
     }
 
     public void testTransform2() {
-/*
         Writer writer = new StringWriter();
         mediator.mediate(IPO_XML, writer, String.class, Writer.class, null);
         String str = writer.toString();
         Assert.assertTrue(str != null && str.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
-*/
     }
 
 }

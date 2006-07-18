@@ -32,6 +32,8 @@ public class InputSource2SAX implements PushTransformer<InputSource, ContentHand
     public void transform(InputSource source, ContentHandler target, TransformationContext context) {
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
+            reader.setFeature("http://xml.org/sax/features/namespaces", true);
+            reader.setFeature("http://xml.org/sax/features/namespace-prefixes", false);
             reader.setContentHandler(target);
             reader.parse(source);
         } catch (Exception e) {
