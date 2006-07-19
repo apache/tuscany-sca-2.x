@@ -17,18 +17,16 @@ import java.util.List;
 
 /**
  * Implementations are used in wiring tests
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface Source {
 
-    public Target getTarget();
-    
-    public List<Target> getTargets();
+    Target getTarget();
 
-    public List<Target> getTargetsThroughField();
+    List<Target> getTargets();
 
-    public Target[] getArrayOfTargets();
+    List<Target> getTargetsThroughField();
 
 }
 

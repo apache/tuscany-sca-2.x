@@ -1,70 +1,98 @@
 /**
  *
- *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
+ * Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
 import java.util.List;
 
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
- * Creates new instances of a Java class, calling a given set of injectors to configure the instance
- * 
+ * Creates new instances of a Java class
+ *
  * @version $Rev$ $Date$
- * @see Injector
+ * @see org.apache.tuscany.core.injection.Injector
  */
 public class PojoObjectFactory<T> implements ObjectFactory<T> {
 
-    private static final ObjectFactory[] NO_INIT_PARAM = {};
-
-    private static final List<Injector> NO_SETTER_PARAM = Collections.emptyList();
-
     private final Constructor<T> ctr;
+    private ObjectFactory[] initializerFactories;
 
-    private final ObjectFactory<?>[] initParamsArray;
-
-    private final List<Injector> setters;
-
-    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> initParams, List<Injector> setters) {
+    /**
+     * Creates the object factory
+     *
+     * @param ctr the constructor to use when instantiating a new object
+     */
+    public PojoObjectFactory(Constructor<T> ctr) {
+        assert ctr != null;
         this.ctr = ctr;
-        if (initParams != null && initParams.size() > 0) {
-            initParamsArray = initParams.toArray(new ObjectFactory[initParams.size()]);
-        } else {
-            initParamsArray = NO_INIT_PARAM;
-        }
-        this.setters = setters != null ? setters : NO_SETTER_PARAM;
+        initializerFactories = new ObjectFactory[ctr.getParameterTypes().length];
     }
 
+    /**
+     * Creates the object factory
+     *
+     * @param ctr       the constructor to use when instantiating a new object
+     * @param factories an ordered list of <code>ObjectFactory</code>s to use for returning constructor parameters
+     */
+    public PojoObjectFactory(Constructor<T> ctr, List<ObjectFactory> factories) {
+        assert ctr != null;
+        int params = ctr.getParameterTypes().length;
+        assert params == factories.size();
+        this.ctr = ctr;
+        initializerFactories = new ObjectFactory[params];
+        int i = 0;
+        for (ObjectFactory factory : factories) {
+            initializerFactories[i] = factory;
+            i++;
+        }
+    }
+
+    /**
+     * Returns the ordered array of <code>ObjectFactory</code>s use in creating constructor parameters
+     */
+    public ObjectFactory[] getInitializerFactories() {
+        return initializerFactories;
+    }
+
+    /**
+     * Sets an <code>ObjectFactory</code>s to use in creating constructor parameter
+     *
+     * @param pos     the constructor parameter position
+     * @param factory the object factory
+     */
+    public void setInitializerFactory(int pos, ObjectFactory factory) {
+        assert pos < initializerFactories.length;
+        initializerFactories[pos] = factory;
+    }
+
+    /**
+     * Creates a new instance of an object
+     */
     public T getInstance() throws ObjectCreationException {
-        Object[] initargs = new Object[initParamsArray.length];
+        int size = initializerFactories.length;
+        Object[] initargs = new Object[size];
         // create the constructor arg array
-        for (int i = 0; i < initParamsArray.length; i++) {
-            ObjectFactory<?> objectFactory = initParamsArray[i];
+        for (int i = 0; i < size; i++) {
+            ObjectFactory<?> objectFactory = initializerFactories[i];
             initargs[i] = objectFactory.getInstance();
         }
         try {
-            T instance = ctr.newInstance(initargs);
-            // interate through the injectors and inject the instance
-            for (Injector<T> setter : setters) {
-                setter.inject(instance);
-            }
-            return instance;
+            ctr.setAccessible(true);
+            return ctr.newInstance(initargs);
         } catch (InstantiationException e) {
             throw new AssertionError("Class is not instantiable [" + ctr.getDeclaringClass().getName() + "]");
         } catch (IllegalAccessException e) {

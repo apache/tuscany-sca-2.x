@@ -17,144 +17,53 @@
 package org.apache.tuscany.core.loader;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.config.ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.ConfigurationException;
-import org.apache.tuscany.core.config.ConfigurationLoadException;
-import org.apache.tuscany.core.config.impl.Java5ComponentTypeIntrospector;
-import org.apache.tuscany.core.config.processor.ProcessorUtils;
-import org.apache.tuscany.core.loader.assembly.ComponentLoader;
-import org.apache.tuscany.core.loader.assembly.EntryPointLoader;
-import org.apache.tuscany.core.loader.assembly.InterfaceJavaLoader;
-import org.apache.tuscany.core.loader.assembly.ModuleFragmentLoader;
-import org.apache.tuscany.core.loader.assembly.ModuleLoader;
-import org.apache.tuscany.core.loader.impl.StAXLoaderRegistryImpl;
-import org.apache.tuscany.core.loader.impl.StringParserPropertyFactory;
-import org.apache.tuscany.core.loader.system.SystemBindingLoader;
-import org.apache.tuscany.core.loader.system.SystemImplementationLoader;
-import org.apache.tuscany.core.system.assembly.SystemAssemblyFactory;
-import org.apache.tuscany.core.system.assembly.SystemImplementation;
-import org.apache.tuscany.core.system.assembly.impl.SystemAssemblyFactoryImpl;
-import org.apache.tuscany.model.assembly.AssemblyContext;
-import org.apache.tuscany.model.assembly.Component;
-import org.apache.tuscany.model.assembly.EntryPoint;
-import org.apache.tuscany.model.assembly.Module;
-import org.apache.tuscany.model.assembly.ModuleComponent;
-import org.apache.tuscany.model.assembly.Multiplicity;
-import org.apache.tuscany.model.assembly.OverrideOption;
-import org.apache.tuscany.model.assembly.Scope;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Multiplicity;
 
 /**
+ * Utility classes to support StAX-based loaders
+ *
  * @version $Rev$ $Date$
  */
 public final class StAXUtil {
     private static final Map<String, Multiplicity> MULTIPLICITY = new HashMap<String, Multiplicity>(4);
-    private static final Map<String, OverrideOption> OVERRIDE_OPTIONS = new HashMap<String, OverrideOption>(3);
 
     static {
         MULTIPLICITY.put("0..1", Multiplicity.ZERO_ONE);
         MULTIPLICITY.put("1..1", Multiplicity.ONE_ONE);
         MULTIPLICITY.put("0..n", Multiplicity.ZERO_N);
         MULTIPLICITY.put("1..n", Multiplicity.ONE_N);
-
-        OVERRIDE_OPTIONS.put("no", OverrideOption.NO);
-        OVERRIDE_OPTIONS.put("may", OverrideOption.MAY);
-        OVERRIDE_OPTIONS.put("must", OverrideOption.MUST);
     }
 
     private StAXUtil() {
     }
 
-    public static void skipToEndElement(XMLStreamReader reader) throws XMLStreamException {
-        int depth = 0;
-        while (true) {
-            int event = reader.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
-                depth++;
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (depth == 0) {
-                    return;
-                }
-                depth--;
-            }
-        }
-    }
-
+    /**
+     * Convert a "multiplicity" attribute to the equivalent enum value.
+     *
+     * @param multiplicity the attribute to convert
+     * @param def          the default value
+     * @return the enum equivalent
+     */
     public static Multiplicity multiplicity(String multiplicity, Multiplicity def) {
         return multiplicity == null ? def : MULTIPLICITY.get(multiplicity);
     }
 
-    public static OverrideOption overrideOption(String overrideOption, OverrideOption def) {
-        return overrideOption == null ? def : OVERRIDE_OPTIONS.get(overrideOption);
-    }
-
-    public static ModuleComponent bootstrapLoader(String name, AssemblyContext context) throws ConfigurationLoadException {
-        SystemAssemblyFactory factory = new SystemAssemblyFactoryImpl();
-        ComponentTypeIntrospector introspector = ProcessorUtils.createCoreIntrospector(factory);
-        Module module = factory.createModule();
-        module.setName("org.apache.tuscany.core.system.loader");
-
-        List<Component> components = module.getComponents();
-
-        // bootstrap the minimal set of loaders needed to read the system module files
-        // all others should be defined in the system.module file
-        components.add(bootstrapLoader(factory, introspector, ModuleLoader.class));
-        components.add(bootstrapLoader(factory, introspector, ModuleFragmentLoader.class));
-        Component propFactory = factory.createSystemComponent("org.apache.tuscany.core.system.loader.DefaultPropertyFactory", StAXPropertyFactory.class, StringParserPropertyFactory.class, Scope.MODULE);
-        introspector.introspect(StAXPropertyFactory.class);
-        components.add(propFactory);
-        components.add(bootstrapLoader(factory, introspector, ComponentLoader.class));
-        components.add(bootstrapLoader(factory, introspector, EntryPointLoader.class));
-        components.add(bootstrapLoader(factory, introspector, InterfaceJavaLoader.class));
-        components.add(bootstrapLoader(factory, introspector, SystemImplementationLoader.class));
-        components.add(bootstrapLoader(factory, introspector, SystemBindingLoader.class));
-        // do not add additional loaders above - they should be in the system.module file
-
-        // bootstrap the registries needed by the bootstrap loaders above
-        bootstrapService(factory, introspector, module, StAXLoaderRegistry.class, StAXLoaderRegistryImpl.class);
-        bootstrapService(factory, introspector, module, SystemAssemblyFactory.class, SystemAssemblyFactoryImpl.class);
-        bootstrapService(factory, introspector, module, ComponentTypeIntrospector.class, Java5ComponentTypeIntrospector.class);
-
-        ModuleComponent mc = factory.createModuleComponent();
-        mc.setName(name);
-        mc.setImplementation(module);
-        mc.initialize(context);
-        return mc;
-    }
-
-    private static Component bootstrapLoader(SystemAssemblyFactory factory, ComponentTypeIntrospector introspector, Class<?> loaderClass) {
-        SystemImplementation implementation = factory.createSystemImplementation();
-        implementation.setImplementationClass(loaderClass);
-        try {
-            implementation.setComponentType(introspector.introspect(loaderClass));
-        } catch (ConfigurationException e) {
-            throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
+    /**
+     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals (ignoring
+     * case) "conversational", otherwise returns NONCONVERSATIONAL.
+     *
+     * @param scope the attribute to convert
+     * @return the enum equivalent
+     */
+    public static InteractionScope interactionScope(String scope) {
+        if ("conversational".equalsIgnoreCase(scope)) {
+            return InteractionScope.CONVERSATIONAL;
+        } else {
+            return InteractionScope.NONCONVERSATIONAL;
         }
-        Component component = factory.createSimpleComponent();
-        component.setName(loaderClass.getName());
-        component.setImplementation(implementation);
-        return component;
     }
 
-    private static <T> void bootstrapService(SystemAssemblyFactory factory, ComponentTypeIntrospector introspector, Module module, Class<T> service, Class<? extends T> impl) {
-        String epName = service.getName();
-        String compName = impl.getName();
-
-        Component component = factory.createSystemComponent(compName, service, impl, Scope.MODULE);
-        try {
-            component.getImplementation().setComponentType(introspector.introspect(impl));
-        } catch (ConfigurationException e) {
-            throw (AssertionError) new AssertionError("Invalid bootstrap loader").initCause(e);
-        }
-
-        EntryPoint entryPoint = factory.createSystemEntryPoint(epName, service, compName);
-
-        module.getComponents().add(component);
-        module.getEntryPoints().add(entryPoint);
-    }
 }

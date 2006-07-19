@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2006 The Apache Software Foundation
+ * Copyright 2006 The Apache Software Foundation or its licensors as applicable
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ package org.apache.tuscany.core.injection;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
- * An implementation of ObjectFactory that creates instances
- * by looking them up in a JNDI context.
+ * An implementation of ObjectFactory that creates instances by looking them up in a JNDI context.
  *
  * @version $Rev$ $Date$
  */
@@ -36,6 +36,8 @@ public class JNDIObjectFactory<T> implements ObjectFactory<T> {
         this.name = name;
     }
 
+
+    @SuppressWarnings("unchecked")
     public T getInstance() throws ObjectCreationException {
         try {
             return (T) context.lookup(name);

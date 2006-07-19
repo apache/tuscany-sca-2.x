@@ -15,7 +15,7 @@ package org.apache.tuscany.core.mock.component;
 
 /**
  * Mock system component implementation used in wiring tests
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TargetImpl implements Target {

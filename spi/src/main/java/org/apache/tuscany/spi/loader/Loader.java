@@ -1,0 +1,79 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors as applicable
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.apache.tuscany.spi.loader;
+
+import java.net.URL;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
+/**
+ * System service for loading physical artifacts that represent SCDL configurations and creating the model objects that
+ * represent them.
+ *
+ * @version $Rev$ $Date$
+ */
+public interface Loader {
+    /**
+     * Parse the supplied XML stream, dispatching to the appropriate registered loader for each element encountered in
+     * the stream.
+     * <p/>
+     * This method must be called with the XML cursor positioned on a START_ELEMENT event. When this method returns, the
+     * stream will be positioned on the corresponding END_ELEMENT event.
+     *
+     * @param parent
+     * @param reader            the XML stream to parse
+     * @param deploymentContext the current deployment context
+     * @return the model object obtained by parsing the current element on the stream
+     * @throws XMLStreamException if there was a problem reading the stream
+     */
+    ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException;
+
+    /**
+     * Load a model object from a specified location.
+     *
+     * @param parent
+     * @param url               the location of an XML document to be loaded
+     * @param type              the type of ModelObject that is expected to be in the document
+     * @param deploymentContext the current deployment context
+     * @return the model ojbect loaded from the document
+     * @throws LoaderException if there was a problem loading the document
+     */
+    <MO extends ModelObject> MO load(CompositeComponent parent, URL url, Class<MO> type,
+                                     DeploymentContext deploymentContext)
+        throws LoaderException;
+
+    /**
+     * Load the component type definition for a given implementation. How the component type information is located is
+     * defined by the implementation specification. It may include loading from an XML sidefile, introspection of some
+     * artifact related to the implementation, some combination of those techniques or any other implementation-defined
+     * mechanism.
+     *
+     * @param parent the parent composite
+     * @param implementation    the implementation whose component type should be loaded
+     * @param deploymentContext the current deployment context
+     * @throws LoaderException if there was a problem loading the component type definition
+     */
+    <I extends Implementation<?>> void loadComponentType(CompositeComponent<?> parent, I implementation,
+                                                         DeploymentContext deploymentContext)
+        throws LoaderException;
+}

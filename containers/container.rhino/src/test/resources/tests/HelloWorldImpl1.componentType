@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-
-<componentType xmlns="http://www.osoa.org/xmlns/sca/0.9" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-
-    <service name="HelloWorldService">
-        <interface.java interface="org.apache.tuscany.container.rhino.integration.HelloWorld"/>
-    </service>
-
-</componentType>

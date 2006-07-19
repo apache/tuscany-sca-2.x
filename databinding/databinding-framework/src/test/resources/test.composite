@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ASCII"?>
+<composite xmlns="http://www.osoa.org/xmlns/sca/0.9"
+           xmlns:db="http://tuscany.apache.org/xmlns/databinding/0.9"
+           name="TestComposite">
+
+	<service name="myService">
+		<interface.java interface="service.MyServiceSDO"/>
+		<reference>myComponent</reference>
+		<db:databinding.sdo/>
+	</service>
+	
+	<component name="myComponent">
+		<implementation.java class="service.MyComponentImpl"/>
+	</component>
+
+	<reference name="myReference">
+		<interface.java interface="service.MyServiceJAXB"/>
+		<db:databinding.jaxb/>
+	</reference>
+
+
+</composite>

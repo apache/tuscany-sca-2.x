@@ -15,19 +15,15 @@
  *  limitations under the License.
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.bindings</groupId>
-    <artifactId>tuscany-sunjars</artifactId>
-    <packaging>pom</packaging>
-    <version>incubating-M1</version>
-    <name>Project to install the Sun jars</name>
-
     <parent>
-        <groupId>org.apache.tuscany.sca.bindings</groupId>
-        <artifactId>tuscany-sca-bindings</artifactId>
-        <version>incubating-M1</version>
+        <groupId>org.apache.tuscany.bindings</groupId>
+        <artifactId>bindings</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
-
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>sunjars</artifactId>
+    <packaging>pom</packaging>
+    <name>Project to install the Sun jars</name>
 
     <properties>
         <celtix.version>1.0</celtix.version>
@@ -45,8 +41,6 @@
             </snapshots>
         </repository>
     </repositories>
-
-
 
     <build>
         <plugins>

@@ -18,19 +18,23 @@
 
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>incubating-M1</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.databinding</groupId>
-    <artifactId>tuscany-databinding</artifactId>
+    <artifactId>databinding</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Data Bindings</name>
-    <version>incubating-M1</version>
 
     <modules>
-        <module>sdo</module>
+        <module>databinding-axiom</module>
+        <module>databinding-castor</module>
+        <module>databinding-framework</module>
+        <module>databinding-jaxb</module>
+        <module>databinding-sdo</module>
+        <module>databinding-test</module>
+        <module>databinding-xmlbeans</module>
     </modules>
-
 </project>

@@ -18,25 +18,21 @@
 
     <parent>
         <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-sca</artifactId>
-        <version>incubating-M1</version>
+        <artifactId>sca</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.bindings</groupId>
-    <artifactId>tuscany-sca-bindings</artifactId>
+    <groupId>org.apache.tuscany.bindings</groupId>
+    <artifactId>bindings</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Bindings</name>
-    <version>incubating-M1</version>
 
     <modules>
         <!-- temporary project to download and install the celtix required sun jars.   The jars
-        are all CDDL so will be available on ibiblio when Sun releases them.   This is just temporary.
-         -->
+        are all CDDL so will be available on ibiblio when Sun releases them.   This is just temporary.-->
+         
         <module>sunjars</module>
-
-        <module>binding.axis2</module>
-        <module>binding.jsonrpc</module>
         <module>binding.celtix</module>
     </modules>
 

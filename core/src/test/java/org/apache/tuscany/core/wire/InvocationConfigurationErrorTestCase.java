@@ -13,33 +13,30 @@
  */
 package org.apache.tuscany.core.wire;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.impl.InvokerInterceptor;
-import org.apache.tuscany.core.wire.impl.MessageChannelImpl;
-import org.apache.tuscany.core.wire.mock.MockHandler;
-import org.apache.tuscany.core.wire.mock.SimpleTarget;
-import org.apache.tuscany.core.wire.mock.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.mock.SimpleTargetImpl;
-import org.apache.tuscany.core.wire.mock.MockStaticInvoker;
-import org.apache.tuscany.core.message.Message;
-import org.apache.tuscany.core.message.MessageFactory;
-import org.apache.tuscany.core.message.impl.MessageFactoryImpl;
-
 import java.lang.reflect.Method;
+
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.mock.component.SimpleTarget;
+import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
+import org.apache.tuscany.core.mock.wire.MockHandler;
+import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
+import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 
 /**
  * Tests error propagation through an innvocation
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class InvocationConfigurationErrorTestCase extends TestCase {
 
-    
+
     private Method hello;
 
-    private MessageFactory factory = new MessageFactoryImpl();
-    
     public InvocationConfigurationErrorTestCase() {
         super();
     }
@@ -47,13 +44,13 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
     public InvocationConfigurationErrorTestCase(String arg0) {
         super(arg0);
     }
-    
+
     public void setUp() throws Exception {
         hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
-    public void testInvokeWithHandlers() throws Exception{
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
+    public void testInvokeWithHandlers() throws Exception {
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -61,7 +58,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
+        InboundInvocationChain target = new InboundInvocationChainImpl(hello);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
@@ -73,31 +70,31 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         // connect the source to the target
         source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
         source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
-        
-        Message msg = factory.createMessage();
+
+        Message msg = new MessageImpl();
         msg.setTargetInvoker(invoker);
         Message response = source.getHeadInterceptor().invoke(msg);
-        Assert.assertTrue(response.getBody() instanceof IllegalArgumentException);
-        Assert.assertEquals(1,sourceRequestHandler.getCount());
-        Assert.assertEquals(1,sourceResponseHandler.getCount());
-        Assert.assertEquals(1,sourceInterceptor.getCount());
-        Assert.assertEquals(1,targetRequestHandler.getCount());
-        Assert.assertEquals(1,targetResponseHandler.getCount());
-        Assert.assertEquals(1,targetInterceptor.getCount());
+        assertTrue(response.getBody() instanceof IllegalArgumentException);
+        assertEquals(1, sourceRequestHandler.getCount());
+        assertEquals(1, sourceResponseHandler.getCount());
+        assertEquals(1, sourceInterceptor.getCount());
+        assertEquals(1, targetRequestHandler.getCount());
+        assertEquals(1, targetResponseHandler.getCount());
+        assertEquals(1, targetInterceptor.getCount());
     }
 
-    public void testInvokeWithRequestHandlers() throws Exception{
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
+    public void testInvokeWithRequestHandlers() throws Exception {
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
         MockHandler sourceRequestHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addRequestHandler(sourceRequestHandler);
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
+        InboundInvocationChain target = new InboundInvocationChainImpl(hello);
         MockHandler targetRequestHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addRequestHandler(targetRequestHandler);
@@ -107,47 +104,47 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         // connect the source to the target
         source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
         source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
-        
-        Message msg = factory.createMessage();
+
+        Message msg = new MessageImpl();
         msg.setTargetInvoker(invoker);
         Message response = source.getHeadInterceptor().invoke(msg);
-        Assert.assertTrue(response.getBody() instanceof IllegalArgumentException);
-        Assert.assertEquals(1,sourceRequestHandler.getCount());
-        Assert.assertEquals(1,sourceInterceptor.getCount());
-        Assert.assertEquals(1,targetRequestHandler.getCount());
-        Assert.assertEquals(1,targetInterceptor.getCount());
+        assertTrue(response.getBody() instanceof IllegalArgumentException);
+        assertEquals(1, sourceRequestHandler.getCount());
+        assertEquals(1, sourceInterceptor.getCount());
+        assertEquals(1, targetRequestHandler.getCount());
+        assertEquals(1, targetInterceptor.getCount());
     }
 
     /**
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
-    public void testInvokeWithInterceptorsOnly() throws Exception{
-        SourceInvocationConfiguration source = new SourceInvocationConfiguration(hello);
+    public void testInvokeWithInterceptorsOnly() throws Exception {
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 
-        TargetInvocationConfiguration target = new TargetInvocationConfiguration(hello);
+        InboundInvocationChain target = new InboundInvocationChainImpl(hello);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
         // connect the source to the target
         source.setTargetInterceptor(target.getHeadInterceptor());
-        source.build();
-        target.build();
+        source.prepare();
+        target.prepare();
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
-        
-        Message msg = factory.createMessage();
+
+        Message msg = new MessageImpl();
         msg.setTargetInvoker(invoker);
         Message response = source.getHeadInterceptor().invoke(msg);
-        Assert.assertTrue(response.getBody() instanceof IllegalArgumentException);
-        Assert.assertEquals(1,sourceInterceptor.getCount());
-        Assert.assertEquals(1,targetInterceptor.getCount());
+        assertTrue(response.getBody() instanceof IllegalArgumentException);
+        assertEquals(1, sourceInterceptor.getCount());
+        assertEquals(1, targetInterceptor.getCount());
 
     }
 
