@@ -3,17 +3,19 @@ package org.apache.tuscany.container.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.container.groovy.injectors.SingletonInjector;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
-import org.jmock.MockObjectTestCase;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class PropertyTestCase extends MockObjectTestCase {
+public class PropertyTestCase extends TestCase {
 
     private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
             + "class Foo implements Greeting{"
@@ -33,8 +35,15 @@ public class PropertyTestCase extends MockObjectTestCase {
         services.add(Greeting.class);
         List<PropertyInjector> injectors = new ArrayList<PropertyInjector>();
         injectors.add(new SingletonInjector("property", "bar"));
-        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", PropertyTestCase.SCRIPT,
-                services, Scope.MODULE, injectors, null, scope, ArtifactFactory.createWireService());
+        WireService wireService = ArtifactFactory.createWireService();
+        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source",
+                                                                                      PropertyTestCase.SCRIPT,
+                                                                                      services,
+                                                                                      Scope.MODULE,
+                                                                                      injectors,
+                                                                                      null,
+                                                                                      scope,
+                                                                                      wireService);
         scope.register(context);
         Greeting greeting = context.getServiceInstance();
         assertEquals("bar", greeting.greet("foo"));

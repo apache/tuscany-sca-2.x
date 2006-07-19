@@ -3,9 +3,12 @@ package org.apache.tuscany.container.groovy;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.*;
+import org.easymock.IArgumentMatcher;
+
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -15,15 +18,11 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.test.ArtifactFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class WireTestCase extends MockObjectTestCase {
+public class WireTestCase extends TestCase {
 
     private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
             + "class Foo implements Greeting{"
@@ -55,23 +54,17 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT,
-                services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+                                                                                      services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         OutboundWire<?> wire = ArtifactFactory.createOutboundWire("wire", Greeting.class);
         ArtifactFactory.terminateWire(wire);
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(atLeastOnce()).method("isCacheable").will(returnValue(false));
-        mock.expects(atLeastOnce()).method("invoke").will(new Stub() {
-            public Object invoke(Invocation invocation) throws Throwable {
-                Message msg = new MessageImpl();
-                msg.setBody("foo");
-                return msg;
-            }
 
-            public StringBuffer describeTo(StringBuffer stringBuffer) {
-                return null;
-            }
-        });
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createMock(TargetInvoker.class);
+        expect(invoker.isCacheable()).andReturn(false);
+        Message response = new MessageImpl();
+        response.setBody("foo");
+        expect(invoker.invoke(eqMessage())).andReturn(response);
+        replay(invoker);
+
         for (OutboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(invoker);
         }
@@ -79,7 +72,27 @@ public class WireTestCase extends MockObjectTestCase {
         context.addOutboundWire(wire);
         Greeting greeting = context.getServiceInstance();
         assertEquals("foo", greeting.greet("foo"));
+        verify(invoker);
+
         scope.stop();
+    }
+
+    // todo this could be generalized and moved to test module
+    public static Message eqMessage() {
+        reportMatcher(new IArgumentMatcher() {
+            public boolean matches(Object object) {
+                if (!(object instanceof Message)) {
+                    return false;
+                }
+                final Message msg = (Message) object;
+                Object[] body = (Object[]) msg.getBody();
+                return "foo".equals(body[0]);
+            }
+
+            public void appendTo(StringBuffer stringBuffer) {
+            }
+        });
+        return null;
     }
 
 
@@ -92,7 +105,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2, services,
-                Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+                                                                                      Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
         TargetInvoker invoker =
                 context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
@@ -110,7 +123,7 @@ public class WireTestCase extends MockObjectTestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2,
-                services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+                                                                                      services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
         scope.register(context);
 
         InboundWire<?> wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);

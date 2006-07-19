@@ -59,6 +59,11 @@
             <version>${sca.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
