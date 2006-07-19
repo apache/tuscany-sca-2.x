@@ -18,49 +18,100 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>tuscany-project</artifactId>
-        <version>SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-sca</artifactId>
+    <artifactId>sca</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Implementation Project</name>
-    <version>SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
+    <properties>
+        <sca.version>1.0-SNAPSHOT</sca.version>
+    </properties>
 
     <modules>
-        <module>common</module>
-        <module>model</module>
+        <module>spi</module>
         <module>core</module>
-        <module>binding.axis</module>
-        <module>container.java</module>
-        <module>container.js</module>
-        <module>tomcat</module>
+        <module>test</module>
+        <module>containers</module>
+        <module>databinding</module>
+        <module>bindings</module>
+        <module>services</module>
+        <module>commands/launcher</module>
+        <module>samples</module>
+        <module>runtime/standalone</module>
     </modules>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*TestCase.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-        </plugins>
-        <testResources>
-            <testResource>
-                <directory>src/test/java</directory>
-                <includes>
-                    <include>**/*.componentType</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-        </testResources>
-    </build>
+    <dependencyManagement>
+        <dependencies>
+            <!-- org.osoa.sca API -->
+            <dependency>
+                <groupId>org.osoa</groupId>
+                <artifactId>sca-api-r0.95</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- javax.servlet API -->
+            <dependency>
+                <groupId>tomcat</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>5.0.18</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- javax.resource API -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- javax.transaction API -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- commonj.work and commonj.timer APIs -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-commonj_1.1_spec</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- StAX implementation -->
+            <dependency>
+                <groupId>woodstox</groupId>
+                <artifactId>wstx-asl</artifactId>
+                <version>2.9.3</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.8.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>jmock</groupId>
+                <artifactId>jmock</artifactId>
+                <version>1.0.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

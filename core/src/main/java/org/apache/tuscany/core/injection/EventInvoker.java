@@ -4,7 +4,6 @@ package org.apache.tuscany.core.injection;
  * Performs an invocation on an instance
  *
  * @version $Rev$ $Date$
- * @see MethodEventInvoker
  */
 public interface EventInvoker<T> {
 

@@ -1,26 +1,18 @@
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.core.builder.ObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 
 /**
  * Implementation of ObjectFactory that returns a single instance, typically an immutable type.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class SingletonObjectFactory<T> implements ObjectFactory<T> {
     private final T instance;
 
-    // ----------------------------------
-    // Constructors
-    // ----------------------------------
-
     public SingletonObjectFactory(T instance) {
         this.instance = instance;
     }
-
-    // ----------------------------------
-    // Methods
-    // ----------------------------------
 
     public T getInstance() {
         return instance;
