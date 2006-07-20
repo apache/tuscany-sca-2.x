@@ -116,6 +116,7 @@
         <name>Apache Software Foundation</name>
         <url>http://www.apache.org/</url>
     </organization>
+    <url>http://incubator.apache.org/tuscany</url>
 
     <prerequisites>
         <maven>2.0.4</maven>
