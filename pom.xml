@@ -15,12 +15,8 @@
  *  limitations under the License.
  -->
 <project>
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>tuscany-project</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.tuscany</groupId>
     <artifactId>sca</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Implementation Project</name>
@@ -114,4 +110,205 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <inceptionYear>2005</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>http://www.apache.org/</url>
+    </organization>
+
+    <prerequisites>
+        <maven>2.0.4</maven>
+    </prerequisites>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://issues.apache.org/jira/browse/TUSCANY</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <repositories>
+        <repository>
+            <id>ibiblio</id>
+            <name>ibiblio</name>
+            <url>http://www.ibiblio.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>maven-snapshot-repository</id>
+            <name>Apache SNAPSHOT Repository</name>
+            <url>scp://cvs.apache.org/www/cvs.apache.org/maven-snapshot-repository</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.tuscany</groupId>
+                            <artifactId>buildtools</artifactId>
+                            <version>${pom.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>process-sources</id>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <configLocation>tuscany-checkstyle.xml</configLocation>
+                                <suppressionsLocation>tuscany-suppressions.xml</suppressionsLocation>
+                                <consoleOutput>true</consoleOutput>
+                                <failsOnError>true</failsOnError>
+                                <linkXRef>false</linkXRef>
+                                <sourceDirectory>${basedir}/src</sourceDirectory>
+                                <propertyExpansion>${checkstyle.properties}</propertyExpansion>
+                            </configuration>
+                            <goals>
+                                <goal>checkstyle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <configuration>
+                        <rulesets>
+                            <ruleset>${basedir}/.ruleset</ruleset>
+                        </rulesets>
+                        <linkXRef>false</linkXRef>
+                        <targetJdk>1.5</targetJdk>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>process-sources</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*TestCase.java</include>
+                        </includes>
+                        <reportFormat>brief</reportFormat>
+                        <useFile>false</useFile>
+                        <forkMode>once</forkMode>
+                        <argLine>-ea</argLine>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.componentType</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+                <includes>
+                    <include>**/*.componentType</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-alpha-5</version>
+            </extension>
+        </extensions>
+    </build>
+
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/tuscany/java</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/tuscany/java</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/incubator/tuscany/java</url>
+    </scm>
+
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <profile>
+            <id>sourcecheck</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>1.5</source>
+                            <target>1.5</target>
+                            <showDeprecation>true</showDeprecation>
+                            <compilerArgument>-Xlint:unchecked,deprecation,fallthrough,finally</compilerArgument>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
