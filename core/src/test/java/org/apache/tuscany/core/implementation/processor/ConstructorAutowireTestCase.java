@@ -16,6 +16,8 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.osoa.sca.annotations.Property;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 
 import junit.framework.TestCase;
@@ -80,6 +82,18 @@ public class ConstructorAutowireTestCase extends TestCase {
         }
     }
 
+    /**
+     * Verifies processing executes with additional extension annotations
+     */
+    public void testRandomAnnotation() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor ctor = Foo3.class.getConstructor(String.class, String.class);
+        processor.visitConstructor(null, ctor, type, null);
+        assertEquals(1, type.getProperties().size());
+        assertNotNull(type.getProperties().get("prop1"));
+    }
+
     private static interface Bar {
 
     }
@@ -119,4 +133,14 @@ public class ConstructorAutowireTestCase extends TestCase {
 
     }
 
+    public static class Foo3 {
+
+        @org.osoa.sca.annotations.Constructor({"prop1"})
+        public Foo3(@Property String prop, @Baz String baz) {
+        }
+    }
+
+    public @interface Baz {
+
+    }
 }

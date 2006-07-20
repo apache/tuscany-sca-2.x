@@ -17,11 +17,8 @@ public class ConstructorProcessorTestCase extends TestCase {
     public void testDuplicateConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor1 = BadFoo.class.getConstructor(String.class);
-        Constructor ctor2 = BadFoo.class.getConstructor(String.class, String.class);
-        processor.visitConstructor(null, ctor1, type, null);
         try {
-            processor.visitConstructor(null, ctor2, type, null);
+            processor.visitClass(null, BadFoo.class, type, null);
             fail();
         } catch (DuplicateConstructorException e) {
             // expected
