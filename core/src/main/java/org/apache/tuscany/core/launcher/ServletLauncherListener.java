@@ -52,13 +52,15 @@ public class ServletLauncherListener implements ServletContextListener {
 
         // Read optional path to system SCDL from context-param
         String systemScdlPath = servletContext.getInitParameter(SYSTEM_SCDL_PATH_PARAM);
-        if (systemScdlPath == null)
+        if (systemScdlPath == null) {
             systemScdlPath = Launcher.METAINF_SYSTEM_SCDL_PATH;
+        }
 
         // Read optional path to application SCDL from context-param
         String applicationScdlPath = servletContext.getInitParameter(APPLICATION_SCDL_PATH_PARAM);
-        if (applicationScdlPath == null)
+        if (applicationScdlPath == null) {
             applicationScdlPath = DEFAULT_APPLICATION_SCDL_PATH;
+        }
 
         Launcher launcher = new Launcher();
 
@@ -76,8 +78,7 @@ public class ServletLauncherListener implements ServletContextListener {
             component.start();
             context = new CompositeContextImpl(component);
             context.start();
-        }
-        catch (LoaderException le) {
+        } catch (LoaderException le) {
             // TODO: Need proper logging infrastructure here
             // TODO: stash exception info in attributes?
             le.printStackTrace();
@@ -97,10 +98,12 @@ public class ServletLauncherListener implements ServletContextListener {
         CompositeContextImpl context =
             (CompositeContextImpl) servletContext.getAttribute(APPLICATION_ROOT_CONTEXT_ATTRIBUTE);
 
-        if (component != null)
+        if (component != null) {
             component.stop();
+        }
 
-        if (context != null)
+        if (context != null) {
             context.stop();
+        }
     }
 }
