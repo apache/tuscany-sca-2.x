@@ -44,7 +44,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>tomcat</groupId>
+            <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
 
