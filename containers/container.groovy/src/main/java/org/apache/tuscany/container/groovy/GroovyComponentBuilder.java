@@ -2,11 +2,12 @@ package org.apache.tuscany.container.groovy;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
@@ -15,10 +16,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * Extension point for creating {@link GroovyAtomicComponent}s from an assembly configuration
@@ -34,7 +32,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
     public Component<?> build(CompositeComponent<?> parent,
                               ComponentDefinition<GroovyImplementation> componentDefinition,
                               DeploymentContext deploymentContext)
-        throws BuilderConfigException {
+            throws BuilderConfigException {
 
         String name = componentDefinition.getName();
         GroovyImplementation implementation = componentDefinition.getImplementation();
