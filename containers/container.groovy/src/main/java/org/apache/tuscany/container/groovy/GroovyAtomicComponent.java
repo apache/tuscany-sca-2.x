@@ -33,19 +33,18 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * The Groovy atomic component implementation. Groovy implementations may be "scripts" or classes.
  */
 public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
+    private final Class<? extends GroovyObject> groovyClass;
 
-    private String script;
     private List<Class<?>> services;
     private List<PropertyInjector> injectors;
 
     public GroovyAtomicComponent(String name,
-                                 String script,
+                                 Class<? extends GroovyObject> groovyClass,
                                  List<Class<?>>services,
                                  Scope scope,
                                  List<PropertyInjector> injectors,
@@ -53,18 +52,15 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                                  ScopeContainer scopeContainer,
                                  WireService wireService) {
         super(name, parent, scopeContainer, wireService, 0);
-        this.script = script;
-        this.services = services;
+        this.groovyClass = groovyClass;
+        this.services = Collections.unmodifiableList(services);
         this.scope = scope;
         this.injectors = (injectors != null) ? injectors : new ArrayList<PropertyInjector>();
-    }
 
-    public String getScript() {
-        return script;
     }
 
     public List<Class<?>> getServiceInterfaces() {
-        return Collections.unmodifiableList(services);
+        return services;
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
@@ -72,29 +68,27 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     }
 
     public Object createInstance() throws ObjectCreationException {
+        GroovyObject instance;
         try {
-            ClassLoader parent = getClass().getClassLoader();
-            GroovyClassLoader loader = new GroovyClassLoader(parent);
-            Class groovyClass = loader.parseClass(script);
-            GroovyObject object = (GroovyObject) groovyClass.newInstance();
-            // inject properties
-            for (PropertyInjector injector : injectors) {
-                injector.inject(object);
-            }
-            // inject wires
-            for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
-                for (OutboundWire<?> wire : referenceWires) {
-                    object.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
-                }
-            }
-            return object;
-        } catch (CompilationFailedException e) {
-            throw new ObjectCreationException(e);
+            instance = groovyClass.newInstance();
         } catch (IllegalAccessException e) {
             throw new ObjectCreationException(e);
         } catch (InstantiationException e) {
             throw new ObjectCreationException(e);
         }
+
+        // inject properties
+        for (PropertyInjector injector : injectors) {
+            injector.inject(instance);
+        }
+
+        // inject wires
+        for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
+            for (OutboundWire<?> wire : referenceWires) {
+                instance.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
+            }
+        }
+        return instance;
     }
 
     @SuppressWarnings("unchecked")
@@ -116,13 +110,5 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
             throw e;
         }
         return wireService.createProxy(wire);
-    }
-
-    public void init(Object instance) throws TargetException {
-        //TODO implement - this should call some kind of init method
-    }
-
-    public void destroy(Object instance) throws TargetException {
-        //TODO implement - this should call some kind of destroy method
     }
 }

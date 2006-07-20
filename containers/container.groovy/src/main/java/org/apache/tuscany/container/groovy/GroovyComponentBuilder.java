@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -12,6 +15,8 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * Extension point for creating {@link GroovyAtomicComponent}s from an assembly configuration
@@ -37,14 +42,26 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         String script = implementation.getScript();
         String name = componentDefinition.getName();
         Scope scope = implementation.getComponentType().getLifecycleScope();
+
+        ClassLoader parentCL = deploymentContext.getClassLoader();
+        GroovyClassLoader loader = new GroovyClassLoader(parentCL);
+        Class<? extends GroovyObject> groovyClass;
+        try {
+            groovyClass = loader.parseClass(script);
+        } catch (CompilationFailedException e) {
+            BuilderConfigException bce = new BuilderConfigException(e);
+            bce.setIdentifier(name);
+            throw bce;
+        }
+
         return new GroovyAtomicComponent(name,
-                script,
-                services,
-                scope,
-                null,
-                parent,
-                deploymentContext.getModuleScope(),
-                wireService);
+                                         groovyClass,
+                                         services,
+                                         scope,
+                                         null,
+                                         parent,
+                                         deploymentContext.getModuleScope(),
+                                         wireService);
     }
 
 }

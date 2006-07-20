@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import groovy.lang.GroovyObject;
+import groovy.lang.GroovyClassLoader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.container.groovy.mock.Greeting;
@@ -16,7 +17,8 @@ import org.apache.tuscany.test.ArtifactFactory;
  */
 public class ScriptInvokeTestCase extends TestCase {
 
-    private String script2 = "def greet(name) { return name }";
+    private static final String SCRIPT = "def greet(name) { return name }";
+    private Class<? extends GroovyObject> implClass;
 
     /**
      * Tests the invocation of a Groovy "script" as opposed to a class
@@ -26,12 +28,24 @@ public class ScriptInvokeTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicComponent<GroovyObject> context = new GroovyAtomicComponent<GroovyObject>("source", script2,
-                                                                                              services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+        GroovyAtomicComponent<GroovyObject> context =
+                new GroovyAtomicComponent<GroovyObject>("source",
+                                                        implClass,
+                                                        services,
+                                                        Scope.MODULE,
+                                                        null,
+                                                        null,
+                                                        scope,
+                                                        ArtifactFactory.createWireService());
         scope.register(context);
         GroovyObject object = context.getServiceInstance();
         assertEquals("foo", object.invokeMethod("greet", "foo"));
         scope.stop();
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        GroovyClassLoader cl = new GroovyClassLoader(getClass().getClassLoader());
+        implClass = cl.parseClass(SCRIPT);
+    }
 }

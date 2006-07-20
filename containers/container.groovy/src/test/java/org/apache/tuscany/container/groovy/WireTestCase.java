@@ -19,6 +19,9 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.test.ArtifactFactory;
 
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
@@ -44,6 +47,9 @@ public class WireTestCase extends TestCase {
             + "   }"
             + "}";
 
+    private Class<? extends GroovyObject> implClass1;
+    private Class<? extends GroovyObject> implClass2;
+
     /**
      * Tests a basic invocation down a source wire
      */
@@ -53,8 +59,15 @@ public class WireTestCase extends TestCase {
 
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT,
-                                                                                      services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+        GroovyAtomicComponent<Greeting> context =
+                new GroovyAtomicComponent<Greeting>("source",
+                                                    implClass1,
+                                                    services,
+                                                    Scope.MODULE,
+                                                    null,
+                                                    null,
+                                                    scope,
+                                                    ArtifactFactory.createWireService());
         OutboundWire<?> wire = ArtifactFactory.createOutboundWire("wire", Greeting.class);
         ArtifactFactory.terminateWire(wire);
 
@@ -104,8 +117,15 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2, services,
-                                                                                      Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+        GroovyAtomicComponent<Greeting> context =
+                new GroovyAtomicComponent<Greeting>("source",
+                                                    implClass2,
+                                                    services,
+                                                    Scope.MODULE,
+                                                    null,
+                                                    null,
+                                                    scope,
+                                                    ArtifactFactory.createWireService());
         scope.register(context);
         TargetInvoker invoker =
                 context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
@@ -122,8 +142,15 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source", SCRIPT2,
-                                                                                      services, Scope.MODULE, null, null, scope, ArtifactFactory.createWireService());
+        GroovyAtomicComponent<Greeting> context =
+                new GroovyAtomicComponent<Greeting>("source",
+                                                    implClass2,
+                                                    services,
+                                                    Scope.MODULE,
+                                                    null,
+                                                    null,
+                                                    scope,
+                                                    ArtifactFactory.createWireService());
         scope.register(context);
 
         InboundWire<?> wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);
@@ -137,4 +164,10 @@ public class WireTestCase extends TestCase {
         scope.stop();
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        GroovyClassLoader cl = new GroovyClassLoader(getClass().getClassLoader());
+        implClass1 = cl.parseClass(SCRIPT);
+        implClass2 = cl.parseClass(SCRIPT2);
+    }
 }
