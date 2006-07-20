@@ -2,6 +2,7 @@ package org.apache.tuscany.container.groovy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 import groovy.lang.GroovyObject;
 import groovy.lang.GroovyClassLoader;
@@ -18,6 +19,8 @@ import org.apache.tuscany.test.ArtifactFactory;
 public class ScriptInvokeTestCase extends TestCase {
 
     private static final String SCRIPT = "def greet(name) { return name }";
+    private static final List<PropertyInjector> INJECTORS = Collections.emptyList();
+
     private Class<? extends GroovyObject> implClass;
 
     /**
@@ -33,7 +36,7 @@ public class ScriptInvokeTestCase extends TestCase {
                                                         implClass,
                                                         services,
                                                         Scope.MODULE,
-                                                        null,
+                                                        INJECTORS,
                                                         null,
                                                         scope,
                                                         ArtifactFactory.createWireService());

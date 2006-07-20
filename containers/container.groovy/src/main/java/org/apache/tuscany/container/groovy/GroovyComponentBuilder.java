@@ -3,6 +3,7 @@ package org.apache.tuscany.container.groovy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Collections;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
@@ -54,11 +55,14 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
             throw bce;
         }
 
+        List<PropertyInjector> injectors = Collections.emptyList();
+        // todo set up injectors
+        
         return new GroovyAtomicComponent(name,
                                          groovyClass,
                                          services,
                                          scope,
-                                         null,
+                                         injectors,
                                          parent,
                                          deploymentContext.getModuleScope(),
                                          wireService);
