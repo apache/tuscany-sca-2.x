@@ -164,6 +164,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             e.setIdentifier(clazz.getName());
             throw e;
         } else if (constructors.length == 1) {
+            boolean explictAnnotations;
             Constructor constructor = constructors[0];
             Class[] params = constructor.getParameterTypes();
             if (params.length == 0) {
@@ -173,21 +174,26 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             } else {
                 Annotation[][] annotations = constructor.getParameterAnnotations();
                 List<String> paramNames = new ArrayList<String>();
-                if (annotationsDefined(annotations)) {
+                explictAnnotations = annotationsDefined(annotations);
+                if (explictAnnotations) {
                     for (int i = 0; i < params.length; i++) {
                         Class param = params[i];
                         processParam(param, annotations[i], new String[0], i, type, paramNames);
                     }
+                    ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
+                    definition.setInjectionNames(paramNames);
+                    type.setConstructorDefinition(definition);
+                    return;
                 }
             }
 
             Map<String, JavaMappedProperty<?>> props = type.getProperties();
             Map<String, JavaMappedReference> refs = type.getReferences();
-            if (!areUnique(params)) {
+            if (!explictAnnotations && !areUnique(params)) {
                 throw new AmbiguousConstructorException(
                     "Unable to resolve parameter types as they are not unique, use @Constructor");
             }
-            if (!calcPropRefUniqueness(props.values(), refs.values())) {
+            if (!explictAnnotations && !calcPropRefUniqueness(props.values(), refs.values())) {
                 throw new AmbiguousConstructorException(
                     "Unable to resolve parameter types as reference and property types are not unique, "
                         + "use @Constructor");

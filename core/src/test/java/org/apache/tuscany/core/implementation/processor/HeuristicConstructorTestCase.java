@@ -152,8 +152,36 @@ public class HeuristicConstructorTestCase extends TestCase {
         assertNotNull(type.getConstructorDefinition().getConstructor());
     }
 
+    public void testSameTypesButAnnotated() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo12.class, type, null);
+        assertEquals(2, type.getProperties().size());
+        assertNotNull(type.getProperties().get("prop1"));
+        assertNotNull(type.getProperties().get("prop2"));
+    }
+
+    /**
+     * Verifies processing executes with additional extension annotations
+     */
+    public void testRandomAnnotation() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo11.class, type, null);
+        assertEquals(1, type.getProperties().size());
+        assertNotNull(type.getProperties().get("prop1"));
+    }
+
+    public void testAutowire() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo13.class, type, null);
+        assertEquals(1, type.getReferences().size());
+        assertNotNull(type.getReferences().get(String.class.getName()));
+    }
+
     public void testMultipleConstructors() throws Exception {
-    //    throw new UnsupportedOperationException("Finish heuristic multiple constructors - Foo10");
+        //    throw new UnsupportedOperationException("Finish heuristic multiple constructors - Foo10");
     }
 
     public static class Foo1 {
@@ -222,5 +250,26 @@ public class HeuristicConstructorTestCase extends TestCase {
         }
     }
 
+    public static class Foo11 {
+
+        public Foo11(@Property(name = "prop1") String prop, @Baz String baz) {
+        }
+    }
+
+    public static class Foo12 {
+
+        public Foo12(@Property(name = "prop1") String prop, @Property(name = "prop2") String baz) {
+        }
+    }
+
+
+    public @interface Baz {
+
+    }
+
+    public static class Foo13 {
+        public Foo13(@Autowire String foo) {
+        }
+    }
 
 }

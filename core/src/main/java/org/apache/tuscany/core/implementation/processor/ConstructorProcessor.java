@@ -13,8 +13,6 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -30,6 +28,7 @@ import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
 
 /**
  * Handles processing of a constructor decorated with {@link org.osoa.sca.annotations.Constructor}
@@ -38,6 +37,24 @@ import org.apache.tuscany.core.implementation.ProcessingException;
  */
 @SuppressWarnings("unchecked")
 public class ConstructorProcessor extends ImplementationProcessorSupport {
+
+    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
+        Constructor[] ctors = clazz.getConstructors();
+        boolean found = false;
+        for (Constructor constructor : ctors) {
+            if (constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
+                if (found) {
+                    DuplicateConstructorException e =
+                        new DuplicateConstructorException("More than one constructor marked with @Constructor");
+                    e.setIdentifier(constructor.getDeclaringClass().getName());
+                    throw e;
+                }
+                found = true;
+            }
+        }
+    }
 
     public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
@@ -86,5 +103,4 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
         }
         type.setConstructorDefinition(definition);
     }
-
 }
