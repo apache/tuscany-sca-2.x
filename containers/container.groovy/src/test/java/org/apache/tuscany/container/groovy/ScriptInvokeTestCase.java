@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.test.ArtifactFactory;
 
 /**
@@ -35,7 +34,6 @@ public class ScriptInvokeTestCase extends TestCase {
                 new GroovyAtomicComponent<GroovyObject>("source",
                                                         implClass,
                                                         services,
-                                                        Scope.MODULE,
                                                         INJECTORS,
                                                         null,
                                                         scope,

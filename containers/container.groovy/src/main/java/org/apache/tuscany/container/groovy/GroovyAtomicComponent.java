@@ -44,12 +44,13 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     public GroovyAtomicComponent(String name,
                                  Class<? extends GroovyObject> groovyClass,
                                  List<Class<?>>services,
-                                 Scope scope,
                                  List<PropertyInjector> injectors,
                                  CompositeComponent parent,
                                  ScopeContainer scopeContainer,
                                  WireService wireService) {
         super(name, parent, scopeContainer, wireService, 0);
+        this.scope = scopeContainer.getScope();
+
         assert groovyClass != null;
         assert services != null;
         assert injectors != null;
@@ -57,8 +58,6 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         this.groovyClass = groovyClass;
         this.services = Collections.unmodifiableList(services);
         this.injectors = injectors;
-
-        this.scope = scope;
     }
 
     public List<Class<?>> getServiceInterfaces() {
