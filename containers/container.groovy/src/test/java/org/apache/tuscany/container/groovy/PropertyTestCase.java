@@ -12,6 +12,9 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
 
+import groovy.lang.GroovyObject;
+import groovy.lang.GroovyClassLoader;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
@@ -25,6 +28,8 @@ public class PropertyTestCase extends TestCase {
             + "   }"
             + "}";
 
+    private Class<? extends GroovyObject> implClass;
+
     /**
      * Tests injecting a simple property type on a Groovy implementation instance
      */
@@ -37,7 +42,7 @@ public class PropertyTestCase extends TestCase {
         injectors.add(new SingletonInjector("property", "bar"));
         WireService wireService = ArtifactFactory.createWireService();
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source",
-                                                                                      PropertyTestCase.SCRIPT,
+                                                                                      implClass,
                                                                                       services,
                                                                                       Scope.MODULE,
                                                                                       injectors,
@@ -50,5 +55,9 @@ public class PropertyTestCase extends TestCase {
         scope.stop();
     }
 
-
+    protected void setUp() throws Exception {
+        super.setUp();
+        GroovyClassLoader cl = new GroovyClassLoader(getClass().getClassLoader());
+        implClass = cl.parseClass(SCRIPT);
+    }
 }
