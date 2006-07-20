@@ -35,16 +35,20 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
                               ComponentDefinition<GroovyImplementation> componentDefinition,
                               DeploymentContext deploymentContext)
         throws BuilderConfigException {
-        List<Class<?>> services = new ArrayList<Class<?>>();
+
+        String name = componentDefinition.getName();
         GroovyImplementation implementation = componentDefinition.getImplementation();
-        Collection<ServiceDefinition> collection = implementation.getComponentType().getServices().values();
+        GroovyComponentType componentType = implementation.getComponentType();
+
+        // get list of services provided by this component
+        Collection<ServiceDefinition> collection = componentType.getServices().values();
+        List<Class<?>> services = new ArrayList<Class<?>>(collection.size());
         for (ServiceDefinition serviceDefinition : collection) {
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
-        String script = implementation.getScript();
-        String name = componentDefinition.getName();
-        Scope scope = implementation.getComponentType().getLifecycleScope();
-        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+
+        // get the scope container for this component's scope
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
 
         // get the Groovy classloader for this deployment context
         GroovyClassLoader groovyClassLoader = (GroovyClassLoader) deploymentContext.getExtension("groovy.classloader");
@@ -53,8 +57,10 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
             deploymentContext.putExtension("groovy.classloader", groovyClassLoader);
         }
 
+        // create the implementation class for the script
         Class<? extends GroovyObject> groovyClass;
         try {
+            String script = implementation.getScript();
             groovyClass = groovyClassLoader.parseClass(script);
         } catch (CompilationFailedException e) {
             BuilderConfigException bce = new BuilderConfigException(e);
@@ -62,9 +68,10 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
             throw bce;
         }
 
-        List<PropertyInjector> injectors = Collections.emptyList();
         // todo set up injectors
+        List<PropertyInjector> injectors = Collections.emptyList();
 
+        // create the actual component
         return new GroovyAtomicComponent(name, groovyClass, services, injectors, parent, scopeContainer, wireService);
     }
 
