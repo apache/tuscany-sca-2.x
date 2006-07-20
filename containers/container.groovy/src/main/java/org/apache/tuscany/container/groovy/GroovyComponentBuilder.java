@@ -44,11 +44,16 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         String name = componentDefinition.getName();
         Scope scope = implementation.getComponentType().getLifecycleScope();
 
-        ClassLoader parentCL = deploymentContext.getClassLoader();
-        GroovyClassLoader loader = new GroovyClassLoader(parentCL);
+        // get the Groovy classloader for this deployment context
+        GroovyClassLoader groovyClassLoader = (GroovyClassLoader) deploymentContext.getExtension("groovy.classloader");
+        if (groovyClassLoader == null) {
+            groovyClassLoader = new GroovyClassLoader(deploymentContext.getClassLoader());
+            deploymentContext.putExtension("groovy.classloader", groovyClassLoader);
+        }
+
         Class<? extends GroovyObject> groovyClass;
         try {
-            groovyClass = loader.parseClass(script);
+            groovyClass = groovyClassLoader.parseClass(script);
         } catch (CompilationFailedException e) {
             BuilderConfigException bce = new BuilderConfigException(e);
             bce.setIdentifier(name);
@@ -57,7 +62,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
 
         List<PropertyInjector> injectors = Collections.emptyList();
         // todo set up injectors
-        
+
         return new GroovyAtomicComponent(name,
                                          groovyClass,
                                          services,
