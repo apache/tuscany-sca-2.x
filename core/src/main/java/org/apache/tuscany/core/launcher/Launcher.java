@@ -43,14 +43,6 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
 public class Launcher {
-    // REVIEW: (kentaminator@apache.org) Perhaps this should be null / have no default?
-    // It seems to me it would very unusual (ie, uncommonly-simplistic) for the system classloader to be the desired
-    // application loader, and we might be better off requiring it to be injected.
-    private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
-    private String className;
-    private RuntimeComponent runtime;
-    private Deployer deployer;
-
     /**
      * A conventional META-INF based location for the system SCDL.  Refers to a location
      * on the classloader used to load this class.
@@ -66,6 +58,14 @@ public class Launcher {
      * @see #bootApplication(String)
      */
     public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
+
+    // REVIEW: (kentaminator@apache.org) Perhaps this should be null / have no default?
+    // It seems to me it would very unusual (ie, uncommonly-simplistic) for the system classloader to be the desired
+    // application loader, and we might be better off requiring it to be injected.
+    private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
+    private String className;
+    private RuntimeComponent runtime;
+    private Deployer deployer;
 
     /**
      * Returns the classloader for application classes.
