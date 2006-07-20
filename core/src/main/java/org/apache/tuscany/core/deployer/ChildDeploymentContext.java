@@ -28,10 +28,8 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  *
  * @version $Rev$ $Date$
  */
-public class ChildDeploymentContext implements DeploymentContext {
+public class ChildDeploymentContext extends AbstractDeploymentContext {
     private final DeploymentContext parent;
-    private final ClassLoader classLoader;
-    private final URL scdlLocation;
 
     /**
      * Constructor specifying the loader for application resources.
@@ -41,18 +39,13 @@ public class ChildDeploymentContext implements DeploymentContext {
      * @param scdlLocation the location of the SCDL being deployed
      */
     public ChildDeploymentContext(DeploymentContext parent, ClassLoader classLoader, URL scdlLocation) {
+        super(classLoader, scdlLocation);
         assert parent != null;
         this.parent = parent;
-        this.classLoader = classLoader;
-        this.scdlLocation = scdlLocation;
     }
 
     public DeploymentContext getParent() {
         return parent;
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
     }
 
     public XMLInputFactory getXmlFactory() {
@@ -61,9 +54,5 @@ public class ChildDeploymentContext implements DeploymentContext {
 
     public ScopeContainer getModuleScope() {
         return parent.getModuleScope();
-    }
-
-    public URL getScdlLocation() {
-        return scdlLocation;
     }
 }

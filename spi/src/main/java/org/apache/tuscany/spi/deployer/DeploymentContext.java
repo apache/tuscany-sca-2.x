@@ -63,4 +63,20 @@ public interface DeploymentContext {
      * @return the location of the SCDL definition being deployed
      */
     URL getScdlLocation();
+
+    /**
+     * Return the extension property with the supplied name.
+     *
+     * @param name the name of the property
+     * @return the property value; if null indicates that no property is present
+     */
+    Object getExtension(String name);
+
+    /**
+     * Set the value of an extension property.
+     *
+     * @param name the name of the property
+     * @param value the property value; if null then the extension property is removed
+     */
+    void putExtension(String name, Object value);
 }
