@@ -128,8 +128,8 @@ public class MainLauncher extends Launcher {
         // The classpath to load the launcher should not contain any of Tuscany jar files except the launcher.
         try {
             parseArguments(args);
-            bootRuntime();
-            CompositeComponent application = bootApplication();
+            bootRuntime(METAINF_SYSTEM_SCDL_PATH);
+            CompositeComponent application = bootApplication(METAINF_APPLICATION_SCDL_PATH);
             application.start();
             try {
                 callApplication(application);

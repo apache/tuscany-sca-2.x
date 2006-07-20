@@ -38,15 +38,34 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 
 /**
- * Support class for launcher implementations.
+ * Basic launcher implementation.
  *
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
 public class Launcher {
+    // REVIEW: (kentaminator@apache.org) Perhaps this should be null / have no default?
+    // It seems to me it would very unusual (ie, uncommonly-simplistic) for the system classloader to be the desired
+    // application loader, and we might be better off requiring it to be injected.
     private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
     private String className;
     private RuntimeComponent runtime;
     private Deployer deployer;
+
+    /**
+     * A conventional META-INF based location for the system SCDL.  Refers to a location
+     * on the classloader used to load this class.
+     *
+     * @see #bootRuntime(String)
+     */
+    public static final String METAINF_SYSTEM_SCDL_PATH = "/META-INF/tuscany/system.scdl";
+
+    /**
+     * A conventional META-INF based location for the application SCDL.  Refers to a location
+     * on the application classloader.
+     *
+     * @see #bootApplication(String)
+     */
+    public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
 
     /**
      * Returns the classloader for application classes.
@@ -58,7 +77,8 @@ public class Launcher {
     }
 
     /**
-     * Set the classloader to be used for application classes.
+     * Set the classloader to be used for application classes.  You should almost always supply your own
+     * application classloader, based on the hosting environment that the runtime is embedded in.
      *
      * @param applicationLoader the classloader to be used for application classes
      */
@@ -139,7 +159,16 @@ public class Launcher {
         this.className = className;
     }
 
-    public CompositeComponent<?> bootRuntime() throws LoaderException {
+    /**
+     * Boots the runtime defined by the specified SCDL, which will be
+     * loaded using the classloader of this class.
+     *
+     * @see   METAINF_SYSTEM_SCDL_PATH
+     * @param systemScdlPath a resource path to the SCDL defining the system.
+     * @return a CompositeComponent for the newly booted runtime system
+     * @throws LoaderException
+     */
+    public CompositeComponent<?> bootRuntime(String systemScdlPath) throws LoaderException {
         ClassLoader systemClassLoader = getClass().getClassLoader();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
         Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
@@ -156,7 +185,7 @@ public class Launcher {
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
-        URL scdl = getClass().getResource("/META-INF/tuscany/system.scdl");
+        URL scdl = getClass().getResource(systemScdlPath);
         if (scdl == null) {
             throw new LoaderException("No system scdl found");
         }
@@ -176,12 +205,21 @@ public class Launcher {
         return composite;
     }
 
-    public CompositeComponent<?> bootApplication() throws LoaderException {
+    /**
+     * Boots the application defined by the specified SCDL, which will be
+     * loaded using the application loader ((@link #getApplicationLoader}).
+     *
+     * @see   METAINF_APPLICATION_SCDL_PATH
+     * @param appScdlPath a resource path to the SCDL defining the application
+     * @return a CompositeComponent for the newly booted application
+     * @throws LoaderException
+     */
+    public CompositeComponent<?> bootApplication(String appScdlPath) throws LoaderException {
         ClassLoader applicationLoader = getApplicationLoader();
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation impl = new SystemCompositeImplementation();
-        URL scdl = applicationLoader.getResource("META-INF/sca/default.scdl");
+        URL scdl = applicationLoader.getResource(appScdlPath);
         if (scdl == null) {
             throw new LoaderException("No application scdl found");
         }
