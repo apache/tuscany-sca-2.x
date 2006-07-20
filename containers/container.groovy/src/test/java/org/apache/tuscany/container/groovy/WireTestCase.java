@@ -2,6 +2,7 @@ package org.apache.tuscany.container.groovy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.*;
@@ -26,6 +27,7 @@ import groovy.lang.GroovyObject;
  * @version $$Rev$$ $$Date$$
  */
 public class WireTestCase extends TestCase {
+    private static final List<PropertyInjector> INJECTORS = Collections.emptyList();
 
     private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
             + "class Foo implements Greeting{"
@@ -64,7 +66,7 @@ public class WireTestCase extends TestCase {
                                                     implClass1,
                                                     services,
                                                     Scope.MODULE,
-                                                    null,
+                                                    INJECTORS,
                                                     null,
                                                     scope,
                                                     ArtifactFactory.createWireService());
@@ -122,7 +124,7 @@ public class WireTestCase extends TestCase {
                                                     implClass2,
                                                     services,
                                                     Scope.MODULE,
-                                                    null,
+                                                    INJECTORS,
                                                     null,
                                                     scope,
                                                     ArtifactFactory.createWireService());
@@ -147,7 +149,7 @@ public class WireTestCase extends TestCase {
                                                     implClass2,
                                                     services,
                                                     Scope.MODULE,
-                                                    null,
+                                                    INJECTORS,
                                                     null,
                                                     scope,
                                                     ArtifactFactory.createWireService());

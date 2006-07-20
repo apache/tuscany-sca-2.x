@@ -17,12 +17,11 @@
 package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -39,9 +38,8 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     private final Class<? extends GroovyObject> groovyClass;
-
-    private List<Class<?>> services;
-    private List<PropertyInjector> injectors;
+    private final List<Class<?>> services;
+    private final List<PropertyInjector> injectors;
 
     public GroovyAtomicComponent(String name,
                                  Class<? extends GroovyObject> groovyClass,
@@ -52,11 +50,15 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                                  ScopeContainer scopeContainer,
                                  WireService wireService) {
         super(name, parent, scopeContainer, wireService, 0);
+        assert groovyClass != null;
+        assert services != null;
+        assert injectors != null;
+
         this.groovyClass = groovyClass;
         this.services = Collections.unmodifiableList(services);
-        this.scope = scope;
-        this.injectors = (injectors != null) ? injectors : new ArrayList<PropertyInjector>();
+        this.injectors = injectors;
 
+        this.scope = scope;
     }
 
     public List<Class<?>> getServiceInterfaces() {
