@@ -36,8 +36,8 @@ public class SCATestCase extends TestCase {
         super.setUp();
         launcher = new Launcher();
         launcher.setApplicationLoader(getClass().getClassLoader());
-        launcher.bootRuntime();
-        component = launcher.bootApplication();
+        launcher.bootRuntime(Launcher.METAINF_SYSTEM_SCDL_PATH);
+        component = launcher.bootApplication(Launcher.METAINF_APPLICATION_SCDL_PATH);
         component.start();
         context = new CompositeContextImpl(component);
         context.start();
