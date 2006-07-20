@@ -11,6 +11,7 @@ import groovy.lang.GroovyObject;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -43,6 +44,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         String script = implementation.getScript();
         String name = componentDefinition.getName();
         Scope scope = implementation.getComponentType().getLifecycleScope();
+        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
 
         // get the Groovy classloader for this deployment context
         GroovyClassLoader groovyClassLoader = (GroovyClassLoader) deploymentContext.getExtension("groovy.classloader");
@@ -63,14 +65,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         List<PropertyInjector> injectors = Collections.emptyList();
         // todo set up injectors
 
-        return new GroovyAtomicComponent(name,
-                                         groovyClass,
-                                         services,
-                                         scope,
-                                         injectors,
-                                         parent,
-                                         deploymentContext.getModuleScope(),
-                                         wireService);
+        return new GroovyAtomicComponent(name, groovyClass, services, injectors, parent, scopeContainer, wireService);
     }
 
 }

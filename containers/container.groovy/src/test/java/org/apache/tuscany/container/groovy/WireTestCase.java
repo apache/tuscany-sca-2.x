@@ -10,7 +10,6 @@ import org.easymock.IArgumentMatcher;
 
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
@@ -65,7 +64,6 @@ public class WireTestCase extends TestCase {
                 new GroovyAtomicComponent<Greeting>("source",
                                                     implClass1,
                                                     services,
-                                                    Scope.MODULE,
                                                     INJECTORS,
                                                     null,
                                                     scope,
@@ -123,7 +121,6 @@ public class WireTestCase extends TestCase {
                 new GroovyAtomicComponent<Greeting>("source",
                                                     implClass2,
                                                     services,
-                                                    Scope.MODULE,
                                                     INJECTORS,
                                                     null,
                                                     scope,
@@ -148,7 +145,6 @@ public class WireTestCase extends TestCase {
                 new GroovyAtomicComponent<Greeting>("source",
                                                     implClass2,
                                                     services,
-                                                    Scope.MODULE,
                                                     INJECTORS,
                                                     null,
                                                     scope,

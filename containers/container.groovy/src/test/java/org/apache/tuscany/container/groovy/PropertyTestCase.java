@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.container.groovy.injectors.SingletonInjector;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
 
@@ -44,7 +43,6 @@ public class PropertyTestCase extends TestCase {
         GroovyAtomicComponent<Greeting> context = new GroovyAtomicComponent<Greeting>("source",
                                                                                       implClass,
                                                                                       services,
-                                                                                      Scope.MODULE,
                                                                                       injectors,
                                                                                       null,
                                                                                       scope,
