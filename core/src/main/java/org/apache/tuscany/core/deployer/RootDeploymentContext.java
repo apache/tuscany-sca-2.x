@@ -28,11 +28,10 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  *
  * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
  */
-public class RootDeploymentContext implements DeploymentContext {
-    private final ClassLoader classLoader;
+public class RootDeploymentContext extends AbstractDeploymentContext {
     private final XMLInputFactory xmlFactory;
     private final ScopeContainer moduleScope;
-    private final URL scdlLocation;
+
     /**
      * Constructor specifying the loader for application resources.
      *
@@ -45,18 +44,13 @@ public class RootDeploymentContext implements DeploymentContext {
                                  XMLInputFactory xmlFactory,
                                  ScopeContainer moduleScope,
                                  URL scdlLocation) {
-        this.classLoader = classLoader;
+        super(classLoader, scdlLocation);
         this.xmlFactory = xmlFactory;
         this.moduleScope = moduleScope;
-        this.scdlLocation = scdlLocation;
     }
 
     public DeploymentContext getParent() {
         return null;
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
     }
 
     public XMLInputFactory getXmlFactory() {
@@ -65,9 +59,5 @@ public class RootDeploymentContext implements DeploymentContext {
 
     public ScopeContainer getModuleScope() {
         return moduleScope;
-    }
-
-    public URL getScdlLocation() {
-        return scdlLocation;
     }
 }
