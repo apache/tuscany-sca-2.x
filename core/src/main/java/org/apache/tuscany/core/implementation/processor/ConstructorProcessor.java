@@ -15,7 +15,6 @@ package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -28,6 +27,7 @@ import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.addName;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
 
 /**
@@ -65,41 +65,40 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
             return;
         }
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
-        if (definition != null) {
+        if (definition != null && !definition.getConstructor().equals(constructor)) {
             DuplicateConstructorException e =
                 new DuplicateConstructorException("More than one constructor marked with @Constructor");
             e.setIdentifier(constructor.getDeclaringClass().getName());
             throw e;
+        } else if (definition == null) {
+            definition = new ConstructorDefinition(constructor);
         }
-        definition = new ConstructorDefinition(constructor);
         Class<?>[] params = constructor.getParameterTypes();
         String[] names = annotation.value();
         Annotation[][] annotations = constructor.getParameterAnnotations();
-        List<String> explicitNames = new ArrayList<String>();
-        boolean annotationsDeclared = false;
+        List<String> injectionNames = definition.getInjectionNames();
+        boolean validateNames = true;
         for (int i = 0; i < params.length; i++) {
             Class<?> param = params[i];
             Annotation[] paramAnnotations = annotations[i];
             try {
-                if (processParam(param, paramAnnotations, names, i, type, explicitNames)) {
-                    annotationsDeclared = true;
+                if (!processParam(param, paramAnnotations, names, i, type, injectionNames)) {
+                    String name = (i < names.length) ? names[i] : "";
+                    addName(injectionNames, i, name);
+                    if (validateNames) {
+                        validateNames = false;
+                    }
                 }
-            } catch (ProcessingException e) {
+            } catch (ProcessingException
+                e) {
                 e.setIdentifier(constructor.toString());
                 throw e;
             }
         }
-        if (!annotationsDeclared) {
-            if (names.length != params.length) {
-                throw new InvalidConstructorException("Names in @Constructor do not match number of parameters");
-            }
-            for (String name : names) {
-                definition.getInjectionNames().add(name);
-            }
-        } else {
-            for (String name : explicitNames) {
-                definition.getInjectionNames().add(name);
-            }
+        if (validateNames && names.length != 0 && names[0].length() != 0 && names.length != params.length) {
+            throw new InvalidConstructorException("Names in @Constructor do not match number of parameters");
+        } else if (names.length != 0 && names[0].length() != 0 && names.length != params.length) {
+            throw new InvalidConstructorException("Names in @Constructor do not match number of parameters");
         }
         type.setConstructorDefinition(definition);
     }

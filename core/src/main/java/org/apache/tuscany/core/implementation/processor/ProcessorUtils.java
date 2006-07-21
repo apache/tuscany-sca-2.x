@@ -87,6 +87,59 @@ public final class ProcessorUtils {
     }
 
     /**
+     * Inserts a name at the specified position, paddiling the list if its size is less than the position
+     */
+    public static void addName(List<String> names, int pos, String name) {
+        if (names.size() < pos) {
+            for (int i = 0; i < pos; i++) {
+                names.add(i, "");
+            }
+            names.add(name);
+        } else if (names.size() > pos) {
+            names.remove(pos);
+            names.add(pos, name);
+        } else {
+            names.add(pos, name);
+        }
+    }
+
+    /**
+     * Processes a constructor parameter by introspecting its annotations
+     *
+     * @param param            the parameter to process
+     * @param paramAnnotations the parameter annotations
+     * @param constructorNames the array of constructorNames specified by @Constructor
+     * @param pos              the declaration position of the constructor parameter
+     * @param type             the component type associated with implementation being reflected
+     * @param injectionNames   the list of parameter constructorNames specified on parameter annotations
+     * @throws org.apache.tuscany.core.implementation.ProcessingException
+     *
+     */
+    public static boolean processParam(Class<?> param,
+                                       Annotation[] paramAnnotations,
+                                       String[] constructorNames,
+                                       int pos,
+                                       PojoComponentType<JavaMappedService, JavaMappedReference,
+                                           JavaMappedProperty<?>> type,
+                                       List<String> injectionNames)
+        throws ProcessingException {
+        boolean processed = false;
+        for (Annotation annot : paramAnnotations) {
+            if (Autowire.class.equals(annot.annotationType())) {
+                processed = true;
+                processAutowire(annot, constructorNames, pos, param, type, injectionNames);
+            } else if (Property.class.equals(annot.annotationType())) {
+                processed = true;
+                processProperty(annot, constructorNames, pos, type, param, injectionNames);
+            } else if (Reference.class.equals(annot.annotationType())) {
+                processed = true;
+                processReference(annot, constructorNames, pos, type, param, injectionNames);
+            }
+        }
+        return processed;
+    }
+
+    /**
      * Determines if all the members of a collection have unique types
      *
      * @param collection the collection to analyze
@@ -107,41 +160,18 @@ public final class ProcessorUtils {
         }
     }
 
-    /**
-     * Processes a constructor parameter by introspecting its annotations
-     *
-     * @param param            the parameter to process
-     * @param paramAnnotations the parameter annotations
-     * @param constructorNames the array of constructorNames specified by @Constructor
-     * @param pos              the declaration position of the constructor parameter
-     * @param type             the component type associated with implementation being reflected
-     * @param explicitNames    the list of parameter constructorNames specified on parameter annotations
-     * @return true if the parameters have explicit annotation declarations
-     * @throws org.apache.tuscany.core.implementation.ProcessingException
-     *
-     */
-    public static boolean processParam(Class<?> param,
-                                       Annotation[] paramAnnotations,
-                                       String[] constructorNames,
-                                       int pos,
-                                       PojoComponentType<JavaMappedService, JavaMappedReference,
-                                           JavaMappedProperty<?>> type,
-                                       List<String> explicitNames)
-        throws ProcessingException {
-        boolean annotationsDeclared = false;
-        for (Annotation annot : paramAnnotations) {
-            if (Autowire.class.equals(annot.annotationType())) {
-                processAutowire(annot, constructorNames, pos, param, type, explicitNames);
-                annotationsDeclared = true;
-            } else if (Property.class.equals(annot.annotationType())) {
-                processProperty(annot, constructorNames, pos, type, param, explicitNames);
-                annotationsDeclared = true;
-            } else if (Reference.class.equals(annot.annotationType())) {
-                processReference(annot, constructorNames, pos, type, param, explicitNames);
-                annotationsDeclared = true;
+    public static boolean annotationsDefined(Annotation[][] annots) {
+        for (Annotation[] annotations : annots) {
+            for (Annotation annotation : annotations) {
+                Class<? extends Annotation> annotType = annotation.annotationType();
+                if (annotType.equals(Autowire.class)
+                    || annotType.equals(Property.class)
+                    || annotType.equals(Reference.class)) {
+                    return true;
+                }
             }
         }
-        return annotationsDeclared;
+        return false;
     }
 
     private static void processAutowire(Annotation annot, String[] constructorNames,
@@ -149,8 +179,8 @@ public final class ProcessorUtils {
                                         Class<?> param,
                                         PojoComponentType<JavaMappedService, JavaMappedReference,
                                             JavaMappedProperty<?>> type,
-                                        List<String> explicitNames) throws InvalidAutowireException,
-                                                                           InvalidConstructorException {
+                                        List<String> injectionNames) throws InvalidAutowireException,
+                                                                            InvalidConstructorException {
         // the param is marked as an autowire
         Autowire autowireAnnot = (Autowire) annot;
         JavaMappedReference reference = new JavaMappedReference();
@@ -177,7 +207,7 @@ public final class ProcessorUtils {
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
-        explicitNames.add(name);
+        addName(injectionNames, pos, name);
     }
 
     private static void processProperty(Annotation annot,
@@ -213,7 +243,7 @@ public final class ProcessorUtils {
         property.setRequired(propAnnot.required());
         property.setJavaType(param);
         type.getProperties().put(name, property);
-        explicitNames.add(name);
+        addName(explicitNames, pos, name);
     }
 
     private static void processReference(Annotation annot, String[] constructorNames,
@@ -251,6 +281,7 @@ public final class ProcessorUtils {
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
-        explicitNames.add(name);
+        addName(explicitNames, pos, name);
     }
+
 }

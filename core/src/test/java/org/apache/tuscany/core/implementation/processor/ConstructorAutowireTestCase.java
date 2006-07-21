@@ -46,6 +46,7 @@ public class ConstructorAutowireTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor ctor = Foo.class.getConstructor(Bar.class, Bar.class);
         processor.visitConstructor(null, ctor, type, null);
+        assertEquals(2, type.getConstructorDefinition().getInjectionNames().size());
         assertNotNull(type.getReferences().get("myRef1"));
         assertNotNull(type.getReferences().get("myRef2"));
     }
@@ -135,8 +136,8 @@ public class ConstructorAutowireTestCase extends TestCase {
 
     public static class Foo3 {
 
-        @org.osoa.sca.annotations.Constructor({"prop1"})
-        public Foo3(@Property String prop, @Baz String baz) {
+        @org.osoa.sca.annotations.Constructor
+        public Foo3(@Property(name = "prop1") String prop, @Baz String baz) {
         }
     }
 

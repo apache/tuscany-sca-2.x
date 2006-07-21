@@ -180,9 +180,22 @@ public class HeuristicConstructorTestCase extends TestCase {
         assertNotNull(type.getReferences().get(String.class.getName()));
     }
 
+    public void testPrivateConstructor() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        try {
+            processor.visitEnd(null, Foo14.class, type, null);
+            fail();
+        } catch (NoConstructorException e) {
+            // expected
+        }
+    }
+
+
     public void testMultipleConstructors() throws Exception {
         //    throw new UnsupportedOperationException("Finish heuristic multiple constructors - Foo10");
     }
+
 
     public static class Foo1 {
         public Foo1(String val) {
@@ -269,6 +282,11 @@ public class HeuristicConstructorTestCase extends TestCase {
 
     public static class Foo13 {
         public Foo13(@Autowire String foo) {
+        }
+    }
+
+    public final static class Foo14 {
+        private Foo14() {
         }
     }
 

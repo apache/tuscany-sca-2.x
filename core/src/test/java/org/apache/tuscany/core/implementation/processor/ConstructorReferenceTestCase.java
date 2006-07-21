@@ -28,10 +28,10 @@ public class ConstructorReferenceTestCase extends TestCase {
         assertEquals("myRef", reference.getName());
     }
 
-    public void testTwoPropertiesSameType() throws Exception {
+    public void testTwoReferencesSameType() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = ConstructorReferenceTestCase.Foo.class.getConstructor(String.class, String.class);
+        Constructor ctor = Foo.class.getConstructor(String.class, String.class);
         processor.visitConstructor(null, ctor, type, null);
         assertNotNull(type.getReferences().get("myRef1"));
         assertNotNull(type.getReferences().get("myRef2"));
