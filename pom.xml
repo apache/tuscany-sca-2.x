@@ -34,7 +34,6 @@
         <module>bindings</module>
         <module>services</module>
         <module>commands/launcher</module>
-        <module>runtime/standalone</module>
     </modules>
 
     <dependencyManagement>
