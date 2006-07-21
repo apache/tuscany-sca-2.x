@@ -27,12 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
@@ -44,6 +41,7 @@ import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.annotationsDefined;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.areUnique;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
@@ -155,51 +153,80 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
     private void calcConstructor(PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  Class<?> clazz) throws ProcessingException {
         // determine constructor if one is not annotated
-        if (type.getConstructorDefinition() != null) {
+        ConstructorDefinition<?> definition = type.getConstructorDefinition();
+        Constructor constructor;
+        boolean explictConstructor = false;
+        if (definition != null
+            && definition.getConstructor().getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
+            // the constructor was already defined explicitly
+            return;
+        } else if (definition != null) {
+            explictConstructor = true;
+            constructor = definition.getConstructor();
+        } else {
+            // no definition, heuristically determine constructor
+            Constructor[] constructors = clazz.getConstructors();
+            if (constructors.length == 0) {
+                NoConstructorException e = new NoConstructorException("No public constructor for class");
+                e.setIdentifier(clazz.getName());
+                throw e;
+            } else if (constructors.length == 1) {
+                constructor = constructors[0];
+            } else {
+                // FIXME multiple constructors, none yet done
+                Constructor selected = null;
+                int sites = type.getProperties().size() + type.getReferences().size();
+                for (Constructor ctor : constructors) {
+                    if (ctor.getParameterTypes().length == 0) {
+                        selected = ctor;
+                    }
+                    if (ctor.getParameterTypes().length == sites) {
+                        //TODO finish
+                        //selected = constructor;
+                        // select constructor
+                        //break;
+                    }
+                }
+                if (selected == null) {
+                    throw new NoConstructorException();
+                }
+                constructor = selected;
+                definition = new ConstructorDefinition(selected);
+                type.setConstructorDefinition(definition);
+                //return;
+            }
+            definition = new ConstructorDefinition(constructor);
+            type.setConstructorDefinition(definition);
+        }
+        Class[] params = constructor.getParameterTypes();
+        if (params.length == 0) {
             return;
         }
-        Constructor[] constructors = clazz.getConstructors();
-        if (constructors.length == 0) {
-            NoConstructorException e = new NoConstructorException("No public constructor for class");
-            e.setIdentifier(clazz.getName());
-            throw e;
-        } else if (constructors.length == 1) {
-            boolean explictAnnotations;
-            Constructor constructor = constructors[0];
-            Class[] params = constructor.getParameterTypes();
-            if (params.length == 0) {
-                ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
-                type.setConstructorDefinition(definition);
-                return;
-            } else {
-                Annotation[][] annotations = constructor.getParameterAnnotations();
-                List<String> paramNames = new ArrayList<String>();
-                explictAnnotations = annotationsDefined(annotations);
-                if (explictAnnotations) {
-                    for (int i = 0; i < params.length; i++) {
-                        Class param = params[i];
-                        processParam(param, annotations[i], new String[0], i, type, paramNames);
-                    }
-                    ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
-                    definition.setInjectionNames(paramNames);
-                    type.setConstructorDefinition(definition);
-                    return;
-                }
+        List<String> paramNames = definition.getInjectionNames();
+        Map<String, JavaMappedProperty<?>> props = type.getProperties();
+        Map<String, JavaMappedReference> refs = type.getReferences();
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        if (!explictConstructor) {
+            // the constructor wasn't defined by an annotation, so check to see if any of the params have an annotation
+            // which we can impute as explicitly defining the constructor, e.g. @Property, @Reference, or @Autowire
+            explictConstructor = annotationsDefined(annotations);
+        }
+        if (explictConstructor) {
+            for (int i = 0; i < params.length; i++) {
+                Class param = params[i];
+                processParam(param, annotations[i], new String[0], i, type, paramNames);
             }
-
-            Map<String, JavaMappedProperty<?>> props = type.getProperties();
-            Map<String, JavaMappedReference> refs = type.getReferences();
-            if (!explictAnnotations && !areUnique(params)) {
+        } else {
+            if (!areUnique(params)) {
                 throw new AmbiguousConstructorException(
                     "Unable to resolve parameter types as they are not unique, use @Constructor");
             }
-            if (!explictAnnotations && !calcPropRefUniqueness(props.values(), refs.values())) {
+            if (!calcPropRefUniqueness(props.values(), refs.values())) {
                 throw new AmbiguousConstructorException(
                     "Unable to resolve parameter types as reference and property types are not unique, "
                         + "use @Constructor");
             }
             boolean empty = props.size() + refs.size() == 0;
-            List<String> paramNames = new ArrayList<String>();
             if (!empty) {
                 // the constructor param types must unambiguously match defined reference or property types
                 for (Class param : params) {
@@ -221,43 +248,11 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                     paramNames.add(name);
                 }
             }
-            ConstructorDefinition<?> definition = new ConstructorDefinition(constructor);
-            definition.setInjectionNames(paramNames);
-            type.setConstructorDefinition(definition);
-        } else {
-            Constructor selected = null;
-            int sites = type.getProperties().size() + type.getReferences().size();
-            for (Constructor constructor : constructors) {
-                if (constructor.getParameterTypes().length == 0) {
-                    selected = constructor;
-                }
-                if (constructor.getParameterTypes().length == sites) {
-                    //TODO finish
-                    //selected = constructor;
-                    // select constructor
-                    //break;
-                }
-            }
-            ConstructorDefinition<?> definition = new ConstructorDefinition(selected);
-            type.setConstructorDefinition(definition);
+
         }
+        //definition.setInjectionNames(paramNames);
     }
 
-    private boolean annotationsDefined(Annotation[][] annots) {
-        // since all parameters must be annotated or not, just check the first one
-        if (annots.length > 0 && annots[0].length > 0) {
-            Annotation[] annotations = annots[0];
-            for (Annotation annotation : annotations) {
-                Class<? extends Annotation> annotType = annotation.annotationType();
-                if (annotType.equals(Autowire.class)
-                    || annotType.equals(Property.class)
-                    || annotType.equals(Reference.class)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     /**
      * Returns true if the union of the given collections of properties and references have unique Java types

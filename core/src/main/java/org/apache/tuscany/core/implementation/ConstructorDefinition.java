@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Hold injection information for the constructor used to instantiate a component implementation instance
+ *
  * @version $Rev$ $Date$
  */
 public class ConstructorDefinition<T> {
