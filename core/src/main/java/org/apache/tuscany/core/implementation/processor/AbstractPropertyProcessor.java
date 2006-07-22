@@ -17,11 +17,16 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -29,11 +34,9 @@ import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
- * Base class for ImplementationProcessors that handle annotations that add Property's.
+ * Base class for ImplementationProcessors that handle annotations that add Properties.
  *
  * @version $Rev$ $Date$
  */
@@ -108,6 +111,37 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         JavaMappedProperty<?> property = createProperty(name, javaType, field);
         initProperty(property, annotation, parent, context);
         properties.put(name, property);
+    }
+
+    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                 DeploymentContext context) throws ProcessingException {
+
+        ConstructorDefinition definition = type.getConstructorDefinition();
+        Class[] params = constructor.getParameterTypes();
+        Map<String, JavaMappedProperty<?>> properties = type.getProperties();
+        Annotation[][] annotations = constructor.getParameterAnnotations();
+        for (int i = 0; i < params.length; i++) {
+            Class param = params[i];
+            Annotation[] paramAnnotations = annotations[i];
+            for (Annotation annotation : paramAnnotations) {
+                if (annotation.annotationType().equals(annotationClass)) {
+                    if (definition == null) {
+                        definition = new ConstructorDefinition(constructor);
+                        type.setConstructorDefinition(definition);
+                    }
+                    A monitorAnnot = annotationClass.cast(annotation);
+                    String name = getName(monitorAnnot);
+                    if (name == null || name.length() == 0) {
+                        name = param.getName();
+                    }
+                    JavaMappedProperty<?> property = createProperty(name, param, constructor);
+                    initProperty(property, monitorAnnot, parent, context);
+                    properties.put(name, property);
+                    ProcessorUtils.addName(definition.getInjectionNames(), i, name);
+                }
+            }
+        }
     }
 
     protected abstract String getName(A annotation);
