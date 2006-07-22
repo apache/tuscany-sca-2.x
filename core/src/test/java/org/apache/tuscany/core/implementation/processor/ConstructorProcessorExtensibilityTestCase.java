@@ -12,7 +12,7 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 
 /**
- * Verifies the constructor processor works when parameters are marked with extension annotations
+ * Verifies the constructor processor works when parameters are marked with custom extension annotations
  *
  * @version $Rev$ $Date$
  */

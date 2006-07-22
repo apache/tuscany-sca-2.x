@@ -47,7 +47,7 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
             if (constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
                 if (found) {
                     DuplicateConstructorException e =
-                        new DuplicateConstructorException("More than one constructor marked with @Constructor");
+                        new DuplicateConstructorException("Multiple constructors marked with @Constructor");
                     e.setIdentifier(constructor.getDeclaringClass().getName());
                     throw e;
                 }
@@ -67,7 +67,7 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
         if (definition != null && !definition.getConstructor().equals(constructor)) {
             DuplicateConstructorException e =
-                new DuplicateConstructorException("More than one constructor marked with @Constructor");
+                new DuplicateConstructorException("Multiple constructor definitions found");
             e.setIdentifier(constructor.getDeclaringClass().getName());
             throw e;
         } else if (definition == null) {
@@ -77,7 +77,6 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
         String[] names = annotation.value();
         Annotation[][] annotations = constructor.getParameterAnnotations();
         List<String> injectionNames = definition.getInjectionNames();
-        boolean validateNames = true;
         for (int i = 0; i < params.length; i++) {
             Class<?> param = params[i];
             Annotation[] paramAnnotations = annotations[i];
@@ -85,9 +84,6 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
                 if (!processParam(param, paramAnnotations, names, i, type, injectionNames)) {
                     String name = (i < names.length) ? names[i] : "";
                     addName(injectionNames, i, name);
-                    if (validateNames) {
-                        validateNames = false;
-                    }
                 }
             } catch (ProcessingException
                 e) {
@@ -95,9 +91,7 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
                 throw e;
             }
         }
-        if (validateNames && names.length != 0 && names[0].length() != 0 && names.length != params.length) {
-            throw new InvalidConstructorException("Names in @Constructor do not match number of parameters");
-        } else if (names.length != 0 && names[0].length() != 0 && names.length != params.length) {
+        if (names.length != 0 && names[0].length() != 0 && names.length != params.length) {
             throw new InvalidConstructorException("Names in @Constructor do not match number of parameters");
         }
         type.setConstructorDefinition(definition);

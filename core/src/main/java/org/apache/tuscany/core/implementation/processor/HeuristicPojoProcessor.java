@@ -88,7 +88,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                     throw new ServiceTypeNotFoundException(clazz.getName());
                 }
             }
-            calcConstructor(type, clazz);
+            evaluateConstructor(type, clazz);
             return;
         }
 
@@ -101,7 +101,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             if (!isInServiceInterface(method, services)) {
                 String name = toPropertyName(method.getName());
                 // avoid duplicate property or ref names
-                if (type.getProperties().get(name) == null && type.getReferences().get(name) == null) {
+                if (!type.getProperties().containsKey(name) && !type.getReferences().containsKey(name)) {
                     Class<?> param = method.getParameterTypes()[0];
                     Type genericType = method.getGenericParameterTypes()[0];
                     if (isReferenceType(genericType)) {
@@ -120,7 +120,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             Class<?> param = method.getParameterTypes()[0];
             String name = toPropertyName(method.getName());
             // avoid duplicate property or ref names
-            if (type.getProperties().get(name) == null && type.getReferences().get(name) == null) {
+            if (!type.getProperties().containsKey(name) && !type.getReferences().containsKey(name)) {
                 if (isReferenceType(param)) {
                     type.add(createReference(name, method, param));
                 } else {
@@ -137,7 +137,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                 type.add(createProperty(field.getName(), field, paramType));
             }
         }
-        calcConstructor(type, clazz);
+        evaluateConstructor(type, clazz);
     }
 
     /**
@@ -150,18 +150,19 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
      *                                       references and properties
      */
     @SuppressWarnings("unchecked")
-    private void calcConstructor(PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 Class<?> clazz) throws ProcessingException {
+    private void evaluateConstructor(
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        Class<?> clazz) throws ProcessingException {
         // determine constructor if one is not annotated
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
         Constructor constructor;
-        boolean explictConstructor = false;
+        boolean explict = false;
         if (definition != null
             && definition.getConstructor().getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
             // the constructor was already defined explicitly
             return;
         } else if (definition != null) {
-            explictConstructor = true;
+            explict = true;
             constructor = definition.getConstructor();
         } else {
             // no definition, heuristically determine constructor
@@ -206,12 +207,12 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         Map<String, JavaMappedProperty<?>> props = type.getProperties();
         Map<String, JavaMappedReference> refs = type.getReferences();
         Annotation[][] annotations = constructor.getParameterAnnotations();
-        if (!explictConstructor) {
+        if (!explict) {
             // the constructor wasn't defined by an annotation, so check to see if any of the params have an annotation
             // which we can impute as explicitly defining the constructor, e.g. @Property, @Reference, or @Autowire
-            explictConstructor = annotationsDefined(annotations);
+            explict = annotationsDefined(annotations);
         }
-        if (explictConstructor) {
+        if (explict) {
             for (int i = 0; i < params.length; i++) {
                 Class param = params[i];
                 processParam(param, annotations[i], new String[0], i, type, paramNames);
@@ -250,7 +251,6 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             }
 
         }
-        //definition.setInjectionNames(paramNames);
     }
 
 
@@ -426,7 +426,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         // calculate methods that are not properties or references
         for (Method method : methods) {
             String name = toPropertyName(method.getName());
-            if (references.get(name) == null && properties.get(name) == null) {
+            if (!references.containsKey(name) && !properties.containsKey(name)) {
                 nonPropRefMethods.add(method);
             }
         }

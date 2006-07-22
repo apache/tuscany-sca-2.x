@@ -285,7 +285,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         }
     }
 
-    public final static class Foo14 {
+    public static final class Foo14 {
         private Foo14() {
         }
     }

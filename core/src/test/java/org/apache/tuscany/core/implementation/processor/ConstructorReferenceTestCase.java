@@ -122,12 +122,12 @@ public class ConstructorReferenceTestCase extends TestCase {
 
     private static class BadFoo {
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.osoa.sca.annotations.Constructor
         public BadFoo(@Reference(name = "myRef") String prop1, @Reference(name = "myRef") String prop2) {
 
         }
 
-        @org.osoa.sca.annotations.Constructor()
+        @org.osoa.sca.annotations.Constructor
         public BadFoo(@Reference String prop) {
 
         }
