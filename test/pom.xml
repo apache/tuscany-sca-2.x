@@ -22,7 +22,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>test</artifactId>
-    <name>Tuscany Test</name>
+    <name>Apache Tuscany Test Framework</name>
     <description>Tuscany Testcase Framework</description>
 
     <dependencies>

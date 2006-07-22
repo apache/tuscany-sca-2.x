@@ -24,7 +24,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>databinding-jaxb</artifactId>
-    <name>Tuscany JAXB Data Binding</name>
+    <name>Apache Tuscany Data Binding for JAXB</name>
     <description>Tuscany JAXB Data Binding</description>
 
     <dependencies>

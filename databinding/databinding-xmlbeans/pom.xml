@@ -24,7 +24,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>databinding-xmlbeans</artifactId>
-    <name>Tuscany XmlBeans Data Binding</name>
+    <name>Apache Tuscany Data Binding for XmlBeans</name>
     <description>Tuscany XmlBeans Data Binding</description>
 
     <dependencies>
