@@ -24,8 +24,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>groovy</artifactId>
-    <name>Tuscany Groovy Container</name>
-    <description>Tuscany Groovy Container</description>
+    <name>Apache Tuscany Groovy Container</name>
+    <description>Apache Tuscany Groovy Container</description>
 
     <dependencies>
         <dependency>

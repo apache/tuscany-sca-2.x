@@ -22,7 +22,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>http-jetty</artifactId>
-    <name>Tuscany Jetty HTTP Service</name>
+    <name>Apache Tuscany Jetty HTTP Service</name>
     <description>Tuscany Jetty HTTP Service</description>
 
     <dependencies>

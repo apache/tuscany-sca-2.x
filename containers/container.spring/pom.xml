@@ -24,7 +24,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spring</artifactId>
-    <name>Tuscany Spring Framework Container</name>
+    <name>Apache Tuscany Spring Framework Container</name>
     <description>Container for managing Spring composites</description>
 
     <dependencies>

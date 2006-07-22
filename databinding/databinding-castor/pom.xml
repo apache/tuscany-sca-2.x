@@ -24,7 +24,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>databinding-castor</artifactId>
-    <name>Tuscany Castor Data Binding</name>
+    <name>Apache Tuscany Data Binding for Castor</name>
     <description>Tuscany Castor Data Binding</description>
 
     <dependencies>
