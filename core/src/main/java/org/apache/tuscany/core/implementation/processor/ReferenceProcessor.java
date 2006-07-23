@@ -2,6 +2,7 @@ package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -105,6 +106,12 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
+    }
+
+    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                 DeploymentContext context) throws ProcessingException {
+        
     }
 
 }

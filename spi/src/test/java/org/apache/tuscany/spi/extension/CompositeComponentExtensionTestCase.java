@@ -17,13 +17,16 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeComponentExtensionTestCase extends MockObjectTestCase {
+public class CompositeComponentExtensionTestCase extends TestCase {
 
     public void testGetScope() {
         assertEquals(Scope.COMPOSITE, new Composite().getScope());
@@ -119,12 +122,15 @@ public class CompositeComponentExtensionTestCase extends MockObjectTestCase {
 
     public void testGetServiceInstanceByName() {
         Composite<?> composite = new Composite();
-        Mock mock = mock(Service.class);
-        mock.stubs().method("getName").will(returnValue("foo"));
-        mock.stubs().method("getInterface").will(returnValue(Foo.class));
-        mock.expects(once()).method("getServiceInstance").will(returnValue(new Foo() {
-        }));
-        Service service = (Service) mock.proxy();
+        Service service = createMock(Service.class);
+        service.getName();
+        expectLastCall().andReturn("foo").anyTimes();
+        service.getInterface();
+        expectLastCall().andReturn(Foo.class);
+        service.getServiceInstance();
+        expectLastCall().andReturn(new Foo() {
+        });
+        replay(service);
         composite.register(service);
         assertNotNull(composite.getServiceInstance("foo"));
     }
@@ -160,9 +166,11 @@ public class CompositeComponentExtensionTestCase extends MockObjectTestCase {
                 return null;
             }
         };
-        Mock mock = mock(RuntimeEventListener.class);
-        mock.expects(once()).method("onEvent").with(eq(event));
-        composite.addListener((RuntimeEventListener) mock.proxy());
+        RuntimeEventListener listener = createMock(RuntimeEventListener.class);
+        listener.onEvent(eq(event));
+        expectLastCall();
+        replay(listener);
+        composite.addListener(listener);
         composite.onEvent(event);
     }
 
@@ -198,22 +206,29 @@ public class CompositeComponentExtensionTestCase extends MockObjectTestCase {
     }
 
     private AtomicComponent getAtomic(String name) {
-        Mock mock = mock(AtomicComponent.class);
-        mock.stubs().method("getName").will(returnValue(name));
-        return (AtomicComponent) mock.proxy();
+        AtomicComponent component = createMock(AtomicComponent.class);
+        component.getName();
+        expectLastCall().andReturn(name).anyTimes();
+        replay(component);
+        return component;
     }
 
     private Reference getReference(String name) {
-        Mock mock = mock(Reference.class);
-        mock.stubs().method("getName").will(returnValue(name));
-        return (Reference) mock.proxy();
+        Reference reference = createMock(Reference.class);
+        reference.getName();
+        expectLastCall().andReturn(name).anyTimes();
+        replay(reference);
+        return reference;
     }
 
     private Service getService(String name, Class<?> interfaze) {
-        Mock mock = mock(Service.class);
-        mock.stubs().method("getName").will(returnValue(name));
-        mock.stubs().method("getInterface").will(returnValue(interfaze));
-        return (Service) mock.proxy();
+        Service service = createMock(Service.class);
+        service.getName();
+        expectLastCall().andReturn(name).anyTimes();
+        service.getInterface();
+        expectLastCall().andReturn(interfaze);
+        replay(service);
+        return service;
     }
 
     private interface Foo {

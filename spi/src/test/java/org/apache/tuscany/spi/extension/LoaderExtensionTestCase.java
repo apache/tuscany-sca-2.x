@@ -4,26 +4,31 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+
 /**
  * @version $Rev$ $Date$
  */
-public class LoaderExtensionTestCase extends MockObjectTestCase {
+public class LoaderExtensionTestCase extends TestCase {
 
+    @SuppressWarnings("unchecked")
     public void testRegistrationDeregistration() throws Exception {
-        Mock mock = mock(LoaderRegistry.class);
-        mock.expects(once()).method("registerLoader");
-        mock.expects(once()).method("unregisterLoader");
-        LoaderRegistry registry = (LoaderRegistry) mock.proxy();
-        LoaderExtensionTestCase.Extension loader = new LoaderExtensionTestCase.Extension(registry);
+        LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
+        registry.registerLoader(isA(QName.class), isA(Extension.class));
+        expectLastCall();
+        registry.unregisterLoader(isA(QName.class), isA(Extension.class));
+        expectLastCall();
+        EasyMock.replay(registry);
+        Extension loader = new Extension(registry);
         loader.start();
         loader.stop();
     }
@@ -36,13 +41,13 @@ public class LoaderExtensionTestCase extends MockObjectTestCase {
         }
 
         public QName getXMLType() {
-            return null;
+            return new QName("");
         }
 
         public ModelObject load(CompositeComponent parent,
                                 XMLStreamReader reader,
                                 DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
-            return null;
+            throw new AssertionError();
         }
     }
 }

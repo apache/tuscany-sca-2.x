@@ -28,7 +28,7 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
         this.operation = operation;
     }
 
-    public Object invokeTarget(Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
             Object instance = getInstance();
             if (!operation.getDeclaringClass().isInstance(instance)) {

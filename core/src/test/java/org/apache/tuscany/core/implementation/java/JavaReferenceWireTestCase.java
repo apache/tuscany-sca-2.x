@@ -56,7 +56,7 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
             }
         });
         configuration.setWireService((WireService) mockService.proxy());
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration, null, null);
         sourceContext.addOutboundWire(wire);
         sourceContext.start();
         Source source = (Source) sourceContext.getServiceInstance();

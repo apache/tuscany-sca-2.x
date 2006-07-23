@@ -28,7 +28,7 @@ public class ReferenceInjectionTestCase extends TestCase {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Map<String, AtomicComponent> contexts =
-            MockFactory.createWiredContexts("source", SourceImpl.class, scope,
+            MockFactory.createWiredComponents("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();

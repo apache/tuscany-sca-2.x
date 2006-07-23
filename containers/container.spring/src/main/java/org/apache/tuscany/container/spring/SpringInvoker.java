@@ -28,7 +28,7 @@ public class SpringInvoker implements TargetInvoker {
         springContext = context;
     }
 
-    public Object invokeTarget(Object object) throws InvocationTargetException {
+    public Object invokeTarget(final Object object) throws InvocationTargetException {
         if (bean == null) {
             try {
                 bean = springContext.getBean(beanName);
