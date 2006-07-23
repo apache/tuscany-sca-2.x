@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -42,6 +43,7 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.policy.async.AsyncMonitor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -54,6 +56,13 @@ import org.apache.tuscany.core.wire.OutboundWireImpl;
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
+
+    private AsyncMonitor monitor;
+
+    @Monitor
+    public void setMonitor(AsyncMonitor monitor) {
+        this.monitor = monitor;
+    }
 
     @SuppressWarnings("unchecked")
     public AtomicComponent<?> build(CompositeComponent<?> parent,
@@ -107,7 +116,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setInstanceFactory(instanceFactory);
         configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
 
-        JavaAtomicComponent component = new JavaAtomicComponent(definition.getName(), configuration);
+        JavaAtomicComponent component =
+            new JavaAtomicComponent(definition.getName(), configuration, workScheduler, monitor);
 
         // handle properties
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {

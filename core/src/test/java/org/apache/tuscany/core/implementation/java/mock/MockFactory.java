@@ -9,10 +9,9 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -22,8 +21,10 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaTargetInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
@@ -32,6 +33,10 @@ import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
 
 /**
  * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
@@ -43,19 +48,53 @@ public final class MockFactory {
     private MockFactory() {
     }
 
+    /**
+     * Creates a JavaAtomicComponent which returns the given instance
+     */
     @SuppressWarnings("unchecked")
-    public static JavaAtomicComponent<?> createJavaAtomicContext(String name,
-                                                                 ScopeContainer scopeContainer,
-                                                                 Class<?> clazz,
-                                                                 Scope scope)
-        throws NoSuchMethodException {
-        scope.compareTo(scope); //FXIME
+    public static <T> JavaAtomicComponent<T> createJavaComponent(T instance) {
+        ScopeContainer scope = createMock(ScopeContainer.class);
+        scope.getScope();
+        expectLastCall().andReturn(Scope.MODULE);
+        scope.getInstance(isA(JavaAtomicComponent.class));
+        expectLastCall().andReturn(instance).anyTimes();
+        replay(scope);
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scopeContainer);
+        configuration.setScopeContainer(scope);
+        try {
+            configuration.setInstanceFactory(new PojoObjectFactory(DummyImpl.class.getConstructor()));
+        } catch (NoSuchMethodException e) {
+            throw new AssertionError(e);
+        }
+        configuration.addServiceInterface(DummyImpl.class);
+        configuration.setWireService(WIRE_SERVICE);
+        return new JavaAtomicComponent(instance.getClass().getName(), configuration, null, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> JavaAtomicComponent<T> createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
+        throws NoSuchMethodException {
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.addServiceInterface(clazz);
         configuration.setWireService(WIRE_SERVICE);
-        return new JavaAtomicComponent(name, configuration);
+        return new JavaAtomicComponent(name, configuration, null, null);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> JavaAtomicComponent<T> createJavaComponent(String name,
+                                                                 ScopeContainer scope,
+                                                                 Class<T> clazz,
+                                                                 WorkScheduler scheduler)
+        throws NoSuchMethodException {
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.setScopeContainer(scope);
+        configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
+        configuration.addServiceInterface(clazz);
+        configuration.setWireService(WIRE_SERVICE);
+        return new JavaAtomicComponent(name, configuration, scheduler, null);
 
     }
 
@@ -73,14 +112,14 @@ public final class MockFactory {
      * @return
      * @throws Exception
      */
-    public static Map<String, AtomicComponent> createWiredContexts(String sourceName,
-                                                                   Class<?> sourceClass,
-                                                                   ScopeContainer sourceScope,
-                                                                   Map<String, Member> members,
-                                                                   String targetName,
-                                                                   Class<?> targetService,
-                                                                   Class<?> targetClass,
-                                                                   ScopeContainer targetScope) throws Exception {
+    public static Map<String, AtomicComponent> createWiredComponents(String sourceName,
+                                                                     Class<?> sourceClass,
+                                                                     ScopeContainer sourceScope,
+                                                                     Map<String, Member> members,
+                                                                     String targetName,
+                                                                     Class<?> targetService,
+                                                                     Class<?> targetClass,
+                                                                     ScopeContainer targetScope) throws Exception {
         return createWiredComponents(sourceName, sourceClass, targetService, sourceScope, members, targetName,
             targetService, targetClass, targetScope);
 
@@ -118,7 +157,7 @@ public final class MockFactory {
                                                                      MessageHandler targetResponseHeadHandler)
         throws Exception {
         JavaAtomicComponent targetContext =
-            createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
+            createJavaComponent(targetName, targetScope, targetClass);
         InboundWire inboundWire = createServiceWire(targetService.getName().substring(
             targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor,
             targetRequestHeadHandler, targetResponseHeadHandler);
@@ -132,7 +171,7 @@ public final class MockFactory {
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null, null);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
             sourceHeadRequestHandler, sourceHeadResponseHandler);
         sourceContext.addOutboundWire(outboundWire);
@@ -170,7 +209,7 @@ public final class MockFactory {
                                                                        Map<String, Member> members,
                                                                        ScopeContainer targetScope) throws Exception {
         JavaAtomicComponent targetContext =
-            createJavaAtomicContext(targetName, targetScope, targetClass, targetScope.getScope());
+            createJavaComponent(targetName, targetScope, targetClass);
         InboundWire inboundWire = createServiceWire(targetService.getName().substring(
             targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
         targetContext.addInboundWire(inboundWire);
@@ -183,7 +222,7 @@ public final class MockFactory {
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null, null);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null, null, null);
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);
@@ -341,6 +380,11 @@ public final class MockFactory {
             invocations.put(method, chain);
         }
         return invocations;
+    }
+
+    private static class DummyImpl {
+        public DummyImpl() {
+        }
     }
 
 }

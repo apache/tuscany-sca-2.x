@@ -1,6 +1,7 @@
 package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -9,6 +10,7 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 
 /**
  * An extension point for component builders. When adding support for new component types, implementations may extend
@@ -16,13 +18,14 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
  *
  * @version $$Rev$$ $$Date$$
  */
-@org.osoa.sca.annotations.Scope("MODULE")
+@Scope("MODULE")
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
 
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
     protected WireService wireService;
     protected WorkScheduler workScheduler;
+    protected PolicyBuilderRegistry policyBuilderRegistry;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -42,6 +45,11 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setWorkScheduler(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
+    }
+
+    @Autowire
+    public void setPolicyBuilderRegistry(PolicyBuilderRegistry registry) {
+        policyBuilderRegistry = registry;
     }
 
     @Init(eager = true)

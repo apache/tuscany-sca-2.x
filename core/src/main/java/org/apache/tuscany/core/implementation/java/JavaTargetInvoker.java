@@ -36,12 +36,12 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
      * Creates a new invoker
      *
      * @param operation the operation the invoker is associated with
-     * @param context   the scope component the component is resolved in
+     * @param component the target component
      */
-    public JavaTargetInvoker(Method operation, JavaAtomicComponent context) {
+    public JavaTargetInvoker(Method operation, JavaAtomicComponent component) {
         super(operation);
-        assert context != null : "No atomic component specified";
-        this.component = context;
+        assert component != null : "No atomic component specified";
+        this.component = component;
     }
 
     /**

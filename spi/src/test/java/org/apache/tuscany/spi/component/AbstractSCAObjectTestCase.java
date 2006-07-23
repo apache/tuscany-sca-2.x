@@ -6,30 +6,30 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.model.Scope;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractSCAObjectTestCase extends MockObjectTestCase {
+public class AbstractSCAObjectTestCase extends TestCase {
 
     public void testFireListener() {
         SCAObject object = new TestSCAObject("foo", null);
-        Mock mock = mock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(once()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        listener.onEvent(EasyMock.same(event));
+        EasyMock.expectLastCall();
+        EasyMock.replay(listener);
         object.addListener(listener);
         object.publish(event);
     }
 
     public void testRemoveListener() {
         SCAObject object = new TestSCAObject("foo", null);
-        Mock mock = mock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(never()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        EasyMock.replay(listener);
         object.addListener(listener);
         object.removeListener(listener);
         object.publish(event);
@@ -37,20 +37,20 @@ public class AbstractSCAObjectTestCase extends MockObjectTestCase {
 
     public void testFalseFilterListener() {
         SCAObject object = new TestSCAObject("foo", null);
-        Mock mock = mock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(never()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        EasyMock.replay(listener);
         object.addListener(new FalseFilter(), listener);
         object.publish(event);
     }
 
     public void testTrueFilterListener() {
         SCAObject object = new TestSCAObject("foo", null);
-        Mock mock = mock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(once()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        listener.onEvent(EasyMock.same(event));
+        EasyMock.expectLastCall();
+        EasyMock.replay(listener);
         object.addListener(new TrueFilter(), listener);
         object.publish(event);
     }

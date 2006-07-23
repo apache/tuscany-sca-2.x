@@ -46,7 +46,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
  */
 public class OutboundWireToJavaTestCase extends TestCase {
-    private WorkContext workContext;
+    private WorkContext workContext = new WorkContextImpl();
     private WireService wireService = new JDKWireService();
 
     public void testToStatelessScope() throws Exception {
@@ -159,17 +159,12 @@ public class OutboundWireToJavaTestCase extends TestCase {
         configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.addServiceInterface(Target.class);
-        JavaAtomicComponent<?> atomicComponent = new JavaAtomicComponent("target", configuration);
+        JavaAtomicComponent<?> atomicComponent = new JavaAtomicComponent("target", configuration, null, null);
         InboundWire targetWire = MockFactory.createTargetWire("Target", Target.class);
         atomicComponent.addInboundWire(targetWire);
         connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, false);
         atomicComponent.start();
         return wire;
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        workContext = new WorkContextImpl();
     }
 
     public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze) {

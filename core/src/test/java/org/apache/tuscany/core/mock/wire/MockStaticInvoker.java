@@ -38,7 +38,7 @@ public class MockStaticInvoker implements TargetInvoker {
         return isCacheable();
     }
 
-    public Object invokeTarget(Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
             if (payload != null && !payload.getClass().isArray()) {
                 return operation.invoke(instance, payload);

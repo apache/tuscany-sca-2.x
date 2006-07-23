@@ -18,16 +18,21 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.osoa.sca.annotations.OneWay;
+
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.ComponentRuntimeException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.WireObjectFactory;
+import org.apache.tuscany.core.policy.async.AsyncMonitor;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -36,9 +41,14 @@ import org.apache.tuscany.core.injection.WireObjectFactory;
  */
 public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
 
-    public JavaAtomicComponent(String name, PojoConfiguration configuration) {
+    private WorkScheduler workScheduler;
+    private AsyncMonitor monitor;
+
+    public JavaAtomicComponent(String name, PojoConfiguration configuration, WorkScheduler scheduler,
+                               AsyncMonitor monitor) {
         super(name, configuration);
         this.scope = configuration.getScopeContainer().getScope();
+        this.workScheduler = scheduler;
     }
 
     public Object getServiceInstance(String name) throws TargetException {
@@ -62,7 +72,24 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        return new JavaTargetInvoker(operation, this);
+        TargetInvoker targetInvoker;
+        if (operation.getAnnotation(OneWay.class) != null) {
+            if (workScheduler == null) {
+                // TODO Make sure appropriate exception is thrown
+                throw new ComponentRuntimeException("Need an instance of workScheduler");
+            }
+            //REVIEW we should set required as an autowire attribute and have the runtime perform this check
+            if (monitor == null) {
+                // TODO Make sure appropriate exception is thrown
+                // throw new ComponentRuntimeException("Need an instance of monitor");
+            }
+            targetInvoker = new AsyncJavaTargetInvoker(operation, this, workScheduler, monitor);
+        } else {
+            targetInvoker = new JavaTargetInvoker(operation, this);
+        }
+        return targetInvoker;
+
+
     }
 
     protected ObjectFactory<?> createWireFactory(OutboundWire wire) {

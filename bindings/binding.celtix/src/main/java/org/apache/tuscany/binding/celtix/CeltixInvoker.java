@@ -26,13 +26,14 @@ import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPAddress;
-import javax.xml.ws.ProtocolException;
 import javax.xml.ws.Holder;
+import javax.xml.ws.ProtocolException;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
 import org.apache.tuscany.binding.celtix.io.SCADataBindingCallback;
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.BusException;
@@ -45,11 +46,8 @@ import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
 import org.objectweb.celtix.wsdl.EndpointReferenceUtils;
 import org.xmlsoap.schemas.wsdl.http.AddressType;
 
-import org.objectweb.celtix.bindings.BindingManager;
-
 /**
- * Responsible for dispatching a service operation invocation on a reference to
- * the active Celtix <code>Bus</code>
+ * Responsible for dispatching a service operation invocation on a reference to the active Celtix <code>Bus</code>
  *
  * @version $Rev$ $Date$
  */
@@ -76,8 +74,8 @@ public class CeltixInvoker implements TargetInvoker {
             URL url = new URL(key);
 
             EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,
-                                                                                          wsdlService.getQName(),
-                                                                                          port.getName());
+                wsdlService.getQName(),
+                port.getName());
 
             String bindingId = null;
             Binding binding = port.getBinding();
@@ -101,7 +99,7 @@ public class CeltixInvoker implements TargetInvoker {
 
             }
             clientBinding = bus.getBindingManager().getBindingFactory(bindingId).createClientBinding(
-                                                                                                     reference);
+                reference);
         } catch (MalformedURLException e) {
             throw new InvokerCreationException(e);
         } catch (BusException e) {
@@ -116,11 +114,10 @@ public class CeltixInvoker implements TargetInvoker {
     /**
      * Invoke an operation on the external Web service.
      *
-     * @param args
-     *            the Java object arguments to the WS operation
+     * @param args the Java object arguments to the WS operation
      * @return the response from the WS as a Java object
      */
-    public Object invokeTarget(Object args) {
+    public Object invokeTarget(final Object args) {
         WSDLOperationInfo opInfo = wsdlCache.getOperationInfo(operationName);
         if (opInfo == null) {
             // REVISIT - really map the operation name to a WSDL operation
@@ -168,10 +165,10 @@ public class CeltixInvoker implements TargetInvoker {
         try {
             if (isOneway) {
                 clientBinding.invokeOneWay(objMsgContext,
-                                           callback);
+                    callback);
             } else {
                 objMsgContext = clientBinding.invoke(objMsgContext,
-                                                     callback);
+                    callback);
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block

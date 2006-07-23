@@ -19,14 +19,13 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.Assert;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.jmock.MockObjectTestCase;
+import org.apache.tuscany.core.implementation.java.mock.MockFactory;
 
-public class JavaTargetInvokerTestCase extends MockObjectTestCase {
+public class JavaTargetInvokerTestCase extends TestCase {
 
     private Method echoMethod;
 
@@ -46,12 +45,25 @@ public class JavaTargetInvokerTestCase extends MockObjectTestCase {
     public void testScopedInvoke() throws Exception {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
-        JavaAtomicComponent context =
-            MockFactory.createJavaAtomicContext("foo", scope, Echo.class, Scope.MODULE);
-        scope.register(context);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, context);
+        JavaAtomicComponent component =
+            MockFactory.createJavaComponent("foo", scope, Echo.class);
+        scope.register(component);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component);
         invoker.setCacheable(false);
         assertEquals("foo", invoker.invokeTarget("foo"));
+        scope.stop();
+    }
+
+    public void testClone() throws Exception {
+        ScopeContainer scope = new ModuleScopeContainer(null);
+        scope.start();
+        JavaAtomicComponent component =
+            MockFactory.createJavaComponent("foo", scope, Echo.class);
+        scope.register(component);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component);
+        invoker.setCacheable(false);
+        JavaTargetInvoker clone = invoker.clone();
+        assertEquals("foo", clone.invokeTarget("foo"));
         scope.stop();
     }
 

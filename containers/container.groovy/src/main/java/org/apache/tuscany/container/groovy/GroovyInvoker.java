@@ -54,7 +54,7 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
     /**
      * Dispatches to the the target.
      */
-    public Object invokeTarget(Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload) throws InvocationTargetException {
         GroovyObject target = context.getTargetInstance();
         Object[] args = (Object[]) payload;
         try {

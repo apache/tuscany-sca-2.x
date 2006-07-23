@@ -32,7 +32,7 @@ public interface TargetInvoker extends Cloneable {
      *
      * @throws InvocationTargetException
      */
-    Object invokeTarget(Object payload) throws InvocationTargetException;
+    Object invokeTarget(final Object payload) throws InvocationTargetException;
 
     /**
      * Invokes an operation on a target with the given message

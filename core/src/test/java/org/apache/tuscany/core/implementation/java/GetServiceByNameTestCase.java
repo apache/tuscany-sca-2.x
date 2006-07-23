@@ -30,7 +30,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.addServiceInterface(Target.class);
         configuration.setWireService(new JDKWireService());
-        final JavaAtomicComponent<?> component = new JavaAtomicComponent("target", configuration);
+        final JavaAtomicComponent<?> component = new JavaAtomicComponent("target", configuration, null, null);
 
         Mock mock = mock(InboundWire.class);
         mock.stubs().method("getBusinessInterface").will(returnValue(Target.class));
