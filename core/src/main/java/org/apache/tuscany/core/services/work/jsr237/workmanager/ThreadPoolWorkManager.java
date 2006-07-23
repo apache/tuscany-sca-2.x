@@ -111,7 +111,7 @@ public class ThreadPoolWorkManager implements WorkManager {
      * @param timeout Timeout for waiting for the units of work to finish.
      */
     public Collection waitForAny(Collection works, long timeout) {
-        throw new UnsupportedOperationException("waitForAll not supported");
+        throw new UnsupportedOperationException("waitForAny not supported");
     }
 
     /**
