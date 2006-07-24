@@ -23,6 +23,7 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <sca.version>1.0-SNAPSHOT</sca.version>
+        <notice.dir>.</notice.dir>
     </properties>
 
     <modules>
@@ -242,7 +243,7 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>.</directory>
+                <directory>${notice.dir}</directory>
                 <targetPath>META-INF</targetPath>
                 <filtering>true</filtering>
                 <includes>
@@ -293,6 +294,17 @@
     </reporting>
 
     <profiles>
+        <profile>
+            <!-- this is kind of a hack for eclipse.   Eclipse doesn't like "." as a resource directory as then you have
+            source directories inside a source directory which causes all kinds of errors.  We'll just point 
+            the resources directory back to the resources directory.   The NOTICE and LICSENSE files 
+            won't be included in the eclipse builds, but it at least works.
+            -->
+            <id>eclipse</id>
+            <properties>
+                <notice.dir>src/main/resources</notice.dir>
+            </properties>
+        </profile>
         <profile>
             <id>sourcecheck</id>
             <build>
