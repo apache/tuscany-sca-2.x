@@ -20,16 +20,24 @@ import org.easymock.IAnswer;
 public class ThreadPoolWorkManagerTestCase extends TestCase {
 
     public void testSchedule() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall();
+        expectLastCall().andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                latch.countDown();
+                return null;
+            }
+        });
         replay(work);
         ThreadPoolWorkManager mgr = new ThreadPoolWorkManager(1);
         mgr.schedule(work);
+        latch.await();
         verify(work);
     }
 
     public void testListener() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
         WorkListener listener = createStrictMock(WorkListener.class);
         listener.workAccepted(isA(WorkEvent.class));
         listener.workStarted(isA(WorkEvent.class));
@@ -38,10 +46,16 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         replay(listener);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall();
+        expectLastCall().andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                latch.countDown();
+                return null;
+            }
+        });
         replay(work);
         ThreadPoolWorkManager mgr = new ThreadPoolWorkManager(1);
         mgr.schedule(work, listener);
+        latch.await();
         verify(work);
     }
 
@@ -75,6 +89,7 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
     }
 
     public void testErrorListener() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
         WorkListener listener = createStrictMock(WorkListener.class);
         listener.workAccepted(isA(WorkEvent.class));
         listener.workStarted(isA(WorkEvent.class));
@@ -82,10 +97,16 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         replay(listener);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall().andThrow(new RuntimeException());
+        expectLastCall().andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                latch.countDown();
+                throw new RuntimeException();
+            }
+        });
         replay(work);
         ThreadPoolWorkManager mgr = new ThreadPoolWorkManager(1);
         mgr.schedule(work, listener);
+        latch.await();
         verify(work);
     }
 
