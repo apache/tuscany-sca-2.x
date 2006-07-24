@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.services.work.jsr237;
 
 import org.apache.tuscany.spi.services.work.NotificationListener;
+import org.apache.tuscany.spi.services.work.WorkSchedulerException;
 
 import commonj.work.Work;
 import commonj.work.WorkItem;
@@ -58,6 +59,23 @@ public class Jsr237WorkSchedulerTestCase extends TestCase {
         expectLastCall();
         replay(listener);
         scheduler.scheduleWork(work, listener);
+        verify(mgr);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testWorkRejectedNoListener() throws Exception {
+        WorkManager mgr = createMock(WorkManager.class);
+        mgr.schedule(isA(Work.class));
+        expectLastCall().andThrow(new WorkRejectedException());
+        replay(mgr);
+        Jsr237WorkScheduler scheduler = new Jsr237WorkScheduler(mgr);
+        Work work = createMock(Work.class);
+        try {
+            scheduler.scheduleWork(work);
+            fail();
+        } catch (WorkSchedulerException e) {
+            // expected
+        }
         verify(mgr);
     }
 
