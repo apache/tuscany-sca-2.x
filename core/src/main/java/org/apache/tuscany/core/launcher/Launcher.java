@@ -174,7 +174,7 @@ public class Launcher {
             throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
         }
 
-        File jarFile = new File(URI.create(jarLocation));
+        File jarFile = new File(jarLocation.substring(5));
         return jarFile.getParentFile().getParentFile();
     }
 }
