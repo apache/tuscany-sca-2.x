@@ -19,6 +19,7 @@ package org.apache.tuscany.core.monitor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Map;
 
 import org.osoa.sca.annotations.Init;
 
@@ -43,6 +44,9 @@ public class NullMonitorFactory implements MonitorFactory {
     public void init() {
     }
 
+    public void initialize(Map<String,Object> configProperties) {
+    }
+
     public <T> T getMonitor(Class<T> monitorInterface) {
         /*
          * This uses a reflection proxy to implement the monitor interface which
@@ -52,5 +56,4 @@ public class NullMonitorFactory implements MonitorFactory {
         return monitorInterface.cast(
             Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, NULL_MONITOR));
     }
-
 }

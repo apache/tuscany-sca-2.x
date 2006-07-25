@@ -72,6 +72,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
                 throw mre;
             }
             URL location = include.getScdlLocation();
+            System.out.println("Included SCDL URL=" + location);
             DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
                                                                         deploymentContext.getClassLoader(),
                                                                         location);

@@ -17,9 +17,7 @@
 package org.apache.tuscany.core.launcher;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.net.URI;
 
 import javax.xml.stream.XMLInputFactory;
@@ -43,29 +41,23 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
 public class Launcher {
-    /**
-     * A conventional META-INF based location for the system SCDL.  Refers to a location
-     * on the classloader used to load this class.
-     *
-     * @see #bootRuntime(String)
-     */
-    public static final String METAINF_SYSTEM_SCDL_PATH = "/META-INF/tuscany/system.scdl";
-
-    /**
-     * A conventional META-INF based location for the application SCDL.  Refers to a location
-     * on the application classloader.
-     *
-     * @see #bootApplication(String)
-     */
-    public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
-
-    // REVIEW: (kentaminator@apache.org) Perhaps this should be null / have no default?
-    // It seems to me it would very unusual (ie, uncommonly-simplistic) for the system classloader to be the desired
-    // application loader, and we might be better off requiring it to be injected.
-    private ClassLoader applicationLoader = ClassLoader.getSystemClassLoader();
-    private String className;
+    private ClassLoader applicationLoader;
     private RuntimeComponent runtime;
     private Deployer deployer;
+
+    /**
+     * A conventional META-INF based location for the system SCDL.
+     *
+     * @see #bootRuntime(URL)
+     */
+    public static final String METAINF_SYSTEM_SCDL_PATH = "META-INF/tuscany/system.scdl";
+
+    /**
+     * A conventional META-INF based location for the application SCDL.
+     *
+     * @see #bootApplication(URL)
+     */
+    public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
 
     /**
      * Returns the classloader for application classes.
@@ -87,88 +79,17 @@ public class Launcher {
     }
 
     /**
-     * Create a classloader for the supplied classpath.
+     * Boots the runtime defined by the specified SCDL.
      *
-     * @param path   a list of file/directory names separated by the platform path separator
-     * @param parent the parent for the new classloader
-     * @return a classloader that will load classes from the supplied path
-     */
-    protected static ClassLoader createClassLoader(ClassLoader parent, String path) {
-        String[] files = path.split(File.pathSeparator);
-        return createClassLoader(parent, files);
-    }
-
-    /**
-     * Create a classloader for a classpath supplied as individual file names.
-     *
-     * @param files  a list of file/directory names
-     * @param parent the parent for the new classloader
-     * @return a classloader that will load classes from the supplied path
-     */
-    protected static ClassLoader createClassLoader(ClassLoader parent, String[] files) {
-        URL[] urls = new URL[files.length];
-        for (int i = 0; i < files.length; i++) {
-            try {
-                File file = new File(files[i]);
-                urls[i] = file.toURI().toURL();
-            } catch (MalformedURLException e) {
-                // just ignore this value
-                continue;
-            }
-        }
-
-        return new URLClassLoader(urls, parent);
-    }
-
-    /**
-     * Create a classloader for a classpath supplied as a list of files.
-     *
-     * @param files  a list of files
-     * @param parent the parent for the new classloader
-     * @return a classloader that will load classes from the supplied path
-     */
-    protected ClassLoader createClassLoader(ClassLoader parent, File[] files) {
-        URL[] urls = new URL[files.length];
-        for (int i = 0; i < files.length; i++) {
-            try {
-                File file = files[i];
-                urls[i] = file.toURI().toURL();
-            } catch (MalformedURLException e) {
-
-                continue;
-            }
-        }
-        return new URLClassLoader(urls, parent);
-    }
-
-    /**
-     * Returns the name of the application class.
-     *
-     * @return the name of the application class
-     */
-    protected String getClassName() {
-        return className;
-    }
-
-    /**
-     * Sets the name of the application class.
-     *
-     * @param className the name of the application class
-     */
-    protected void setClassName(String className) {
-        this.className = className;
-    }
-
-    /**
-     * Boots the runtime defined by the specified SCDL, which will be
-     * loaded using the classloader of this class.
-     *
-     * @see   METAINF_SYSTEM_SCDL_PATH
-     * @param systemScdlPath a resource path to the SCDL defining the system.
+     * @param systemScdl a resource path to the SCDL defining the system.
      * @return a CompositeComponent for the newly booted runtime system
      * @throws LoaderException
      */
-    public CompositeComponent<?> bootRuntime(String systemScdlPath) throws LoaderException {
+    public CompositeComponent<?> bootRuntime(URL systemScdl) throws LoaderException {
+        if (systemScdl == null) {
+            throw new LoaderException("Null system SCDL URL");
+        }
+
         ClassLoader systemClassLoader = getClass().getClassLoader();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
         Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
@@ -176,7 +97,7 @@ public class Launcher {
 
         // create and start the core runtime
         runtime = bootstrapper.createRuntime();
-        runtime.start();
+        runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
 
         // initialize the runtime info
         SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
@@ -185,11 +106,7 @@ public class Launcher {
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
-        URL scdl = getClass().getResource(systemScdlPath);
-        if (scdl == null) {
-            throw new LoaderException("No system scdl found");
-        }
-        moduleImplementation.setScdlLocation(scdl);
+        moduleImplementation.setScdlLocation(systemScdl);
         moduleImplementation.setClassLoader(systemClassLoader);
         ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
                 new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM,
@@ -206,24 +123,32 @@ public class Launcher {
     }
 
     /**
-     * Boots the application defined by the specified SCDL, which will be
-     * loaded using the application loader ((@link #getApplicationLoader}).
+     * Shuts down the active runtime being managed by this instance.
+     */
+    public void shutdownRuntime() {
+        if (runtime != null)
+            runtime.stop();
+
+        runtime = null;
+    }
+
+    /**
+     * Boots the application defined by the specified SCDL.
      *
      * @see   METAINF_APPLICATION_SCDL_PATH
-     * @param appScdlPath a resource path to the SCDL defining the application
+     * @param appScdl URL to the SCDL defining the application
      * @return a CompositeComponent for the newly booted application
      * @throws LoaderException
      */
-    public CompositeComponent<?> bootApplication(String appScdlPath) throws LoaderException {
+    public CompositeComponent<?> bootApplication(URL appScdl) throws LoaderException {
+        if (appScdl == null) {
+            throw new LoaderException("No application scdl found");
+        }
         ClassLoader applicationLoader = getApplicationLoader();
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation impl = new SystemCompositeImplementation();
-        URL scdl = applicationLoader.getResource(appScdlPath);
-        if (scdl == null) {
-            throw new LoaderException("No application scdl found");
-        }
-        impl.setScdlLocation(scdl);
+        impl.setScdlLocation(appScdl);
         impl.setClassLoader(applicationLoader);
         ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
                 new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM, impl);

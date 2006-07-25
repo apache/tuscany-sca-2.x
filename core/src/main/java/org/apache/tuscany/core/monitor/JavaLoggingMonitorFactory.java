@@ -41,11 +41,11 @@ import org.apache.tuscany.spi.monitor.MonitorFactory;
  * @see java.util.logging
  */
 public class JavaLoggingMonitorFactory implements MonitorFactory {
-    private final String bundleName;
-    private final Level defaultLevel;
-    private final Map<String, Level> levels;
+    private String bundleName;
+    private Level defaultLevel;
+    private Map<String, Level> levels;
 
-    private final Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
+    private Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
 
     /**
      * Construct a MonitorFactory that will monitor the specified methods at the specified levels and generate messages
@@ -61,17 +61,38 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
      * @see java.util.logging.Logger
      */
     public JavaLoggingMonitorFactory(Properties levels, Level defaultLevel, String bundleName) {
-        this.defaultLevel = defaultLevel;
-        this.bundleName = bundleName;
-        this.levels = new HashMap<String, Level>(levels.size());
-        for (Map.Entry<Object, Object> entry : levels.entrySet()) {
-            String method = (String) entry.getKey();
-            String level = (String) entry.getValue();
-            try {
-                this.levels.put(method, Level.parse(level));
-            } catch (IllegalArgumentException e) {
-                throw new InvalidLevelException(method, level);
+        Map<String,Object> configProperties = new HashMap<String,Object>();
+        configProperties.put("levels", levels);
+        configProperties.put("defaultLevel", defaultLevel);
+        configProperties.put("bundleName", bundleName);
+        initialize(configProperties);
+    }
+
+    /**
+     * Constructs a MonitorFactory that needs to be subsequently configured via a call to {@link #initialize}.
+     */
+    public JavaLoggingMonitorFactory() {
+    }
+
+    public void initialize(Map<String,Object> configProperties) {
+        try {
+            this.defaultLevel = (Level) configProperties.get("defaultLevel");
+            this.bundleName = (String) configProperties.get("bundleName");
+            Properties levels = (Properties) configProperties.get("levels");
+
+            this.levels = new HashMap<String, Level>(levels.size());
+            for (Map.Entry<Object, Object> entry : levels.entrySet()) {
+                String method = (String) entry.getKey();
+                String level = (String) entry.getValue();
+                try {
+                    this.levels.put(method, Level.parse(level));
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidLevelException(method, level);
+                }
             }
+        }
+        catch (ClassCastException cce) {
+            throw new IllegalArgumentException(cce.getLocalizedMessage());
         }
     }
 

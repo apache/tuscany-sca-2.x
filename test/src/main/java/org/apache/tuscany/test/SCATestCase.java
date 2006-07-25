@@ -34,10 +34,11 @@ public class SCATestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        ClassLoader cl = getClass().getClassLoader();
         launcher = new Launcher();
-        launcher.setApplicationLoader(getClass().getClassLoader());
-        launcher.bootRuntime(Launcher.METAINF_SYSTEM_SCDL_PATH);
-        component = launcher.bootApplication(Launcher.METAINF_APPLICATION_SCDL_PATH);
+        launcher.setApplicationLoader(cl);
+        launcher.bootRuntime(cl.getResource(Launcher.METAINF_SYSTEM_SCDL_PATH));
+        component = launcher.bootApplication(cl.getResource(Launcher.METAINF_APPLICATION_SCDL_PATH));
         component.start();
         context = new CompositeContextImpl(component);
         context.start();

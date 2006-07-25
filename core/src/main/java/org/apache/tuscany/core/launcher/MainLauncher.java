@@ -23,8 +23,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ResourceBundle;
 import java.util.jar.JarFile;
+import java.net.URL;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.core.util.ClassLoaderHelper;
 
 
 /**
@@ -33,6 +35,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
  * @version $Rev: 412898 $ $Date: 2006-06-08 21:31:50 -0400 (Thu, 08 Jun 2006) $
  */
 public class MainLauncher extends Launcher {
+    private String className;
     private String[] args;
 
     /**
@@ -44,12 +47,12 @@ public class MainLauncher extends Launcher {
      */
     public void setClassPath(String path) {
         String[] files = path.split(File.pathSeparator);
-        setApplicationLoader(createClassLoader(ClassLoader.getSystemClassLoader(), files));
+        setApplicationLoader(ClassLoaderHelper.createClassLoader(ClassLoader.getSystemClassLoader(), files));
 
         // if we don't have a main class yet, see if we can extract one from the jars
-        for (int i = 0; getClassName() == null && i < files.length; i++) {
+        for (int i = 0; className == null && i < files.length; i++) {
             String file = files[i];
-            setClassName(getMainClassFromJar(file));
+            className = getMainClassFromJar(file);
         }
     }
 
@@ -94,15 +97,15 @@ public class MainLauncher extends Launcher {
         Thread.currentThread().setContextClassLoader(getApplicationLoader());
         context.start();
         try {
-            if (getClassName() == null) {
+            if (className == null) {
                 throw new InvalidMainException("Main-Class not specified");
             }
-            Class<?> mainClass = Class.forName(getClassName(), true, getApplicationLoader());
+            Class<?> mainClass = Class.forName(className, true, getApplicationLoader());
             Method main;
             try {
                 main = mainClass.getMethod("main", String[].class);
             } catch (NoSuchMethodException e) {
-                throw new InvalidMainException(getClassName());
+                throw new InvalidMainException(className);
             }
             if (!Modifier.isStatic(main.getModifiers())) {
                 throw new InvalidMainException(main.toString());
@@ -128,8 +131,10 @@ public class MainLauncher extends Launcher {
         // The classpath to load the launcher should not contain any of Tuscany jar files except the launcher.
         try {
             parseArguments(args);
-            bootRuntime(METAINF_SYSTEM_SCDL_PATH);
-            CompositeComponent application = bootApplication(METAINF_APPLICATION_SCDL_PATH);
+            URL scdl = getClass().getResource(METAINF_SYSTEM_SCDL_PATH);
+            bootRuntime(scdl);
+            URL appScdl = getApplicationLoader().getResource(METAINF_APPLICATION_SCDL_PATH);
+            CompositeComponent application = bootApplication(appScdl);
             application.start();
             try {
                 callApplication(application);
@@ -147,16 +152,21 @@ public class MainLauncher extends Launcher {
             e.getCause().printStackTrace(System.err);
             System.exit(2);
         }
+        finally {
+            shutdownRuntime();
+        }
     }
 
     protected void parseArguments(String... args) {
         String specifiedMain = null;
+        boolean specifiedClassPath = false;
         int i = 0;
         while (i < args.length) {
             int left = args.length - i;
             String arg = args[i];
             if ("--classpath".equals(arg) && left > 1) {
                 setClassPath(args[i + 1]);
+                specifiedClassPath = true;
                 i += 2;
             } else if ("--main".equals(arg) && left > 1) {
                 specifiedMain = args[i + 1];
@@ -170,7 +180,12 @@ public class MainLauncher extends Launcher {
 
         // Specified main-class overrides anything found on classpath
         if (specifiedMain != null) {
-            setClassName(specifiedMain);
+            className = specifiedMain;
+        }
+
+        // Exit if no classpath was specified
+        if (!specifiedClassPath) {
+            usage();
         }
 
         String[] mainArgs = new String[args.length - i];
