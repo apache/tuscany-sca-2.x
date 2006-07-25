@@ -79,11 +79,11 @@ public class ThreadPoolWorkManager implements WorkManager {
     public WorkItem schedule(Work work, WorkListener workListener) throws WorkRejectedException {
 
         DefaultWorkItem workItem = new DefaultWorkItem(new UID().toString(), work);
+        if (workListener != null) {
+            workItems.put(workItem, workListener);
+        }
+        workAccepted(workItem, work);
         if (scheduleWork(work, workItem)) {
-            if (workListener != null) {
-                workItems.put(workItem, workListener);
-            }
-            workAccepted(workItem, work);
             return workItem;
         } else {
             workItem.setStatus(WorkEvent.WORK_REJECTED);
@@ -198,7 +198,7 @@ public class ThreadPoolWorkManager implements WorkManager {
          * Overrides the run method.
          */
         public void run() {
-            workStarted(workItem, decoratedWork);
+			workStarted(workItem, decoratedWork);
             try {
                 decoratedWork.run();
                 workCompleted(workItem, decoratedWork);
