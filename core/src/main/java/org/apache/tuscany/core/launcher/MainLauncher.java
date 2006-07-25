@@ -131,7 +131,8 @@ public class MainLauncher extends Launcher {
         // The classpath to load the launcher should not contain any of Tuscany jar files except the launcher.
         try {
             parseArguments(args);
-            URL scdl = getClass().getResource(METAINF_SYSTEM_SCDL_PATH);
+            // need to use the classloader as the path does not start with a '/'
+            URL scdl = getClass().getClassLoader().getResource(METAINF_SYSTEM_SCDL_PATH);
             bootRuntime(scdl);
             URL appScdl = getApplicationLoader().getResource(METAINF_APPLICATION_SCDL_PATH);
             CompositeComponent application = bootApplication(appScdl);
