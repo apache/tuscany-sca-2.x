@@ -2,17 +2,23 @@ package org.apache.tuscany.core.launcher;
 
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
 
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Launcher for runtime environment that loads info from servlet context params.
- * This listener manages one top-level CompositeContext per servlet context; the
- * lifecycle of that CompositeContext corresponds to the the lifecycle of the
+ * This listener manages one top-level Launcher (and hence one Tuscany runtime context)
+ * per servlet context; the lifecycle of that runtime corresponds to the the lifecycle of the
  * associated servlet context.
+ *
+ * Web application code may obtain the top-level CompositeContext via
+ * {@link org.osoa.sca.CurrentCompositeContext#getContext()}.  If that returns null,
+ * it is likely the runtime failed to boot: the context param {@link LAUNCHER_THROWABLE_ATTRIBUTE}
+ * will contain a {@link Throwable} with diagnostic information.
  *
  * @version $$Rev: $$ $$Date: $$
  */
@@ -29,23 +35,20 @@ public class ServletLauncherListener implements ServletContextListener {
 
     /**
      * Default application SCDL path used if no "applicationScdlPath" param is specified
-     *
-     * REVIEW: this doesn't work as expected right now because we are using the webapp classloader
-     * directly, which doesn't include the root of the webapp.
      */
-    public static final String DEFAULT_APPLICATION_SCDL_PATH = "WEB-INF/default.scdl";
+    public static final String DEFAULT_APPLICATION_SCDL_PATH = "/WEB-INF/default.scdl";
 
     /**
-     * Context attribute to which application root component (of type CompositeComponent<?>)
-     * will be bound to on successful application initialization.  May be null on failure.
+     * Context attribute to which an Exception or Error object will be bound to if the
+     * launcher fails to initialize.
      */
-    public static final String APPLICATION_ROOT_COMPONENT_ATTRIBUTE = ComponentNames.TUSCANY_ROOT;
+    public static final String LAUNCHER_THROWABLE_ATTRIBUTE = "Tuscany.Launcher.Throwable";
 
     /**
-     * Context attribute to which application root context (of type CompositeContext)
-     * will be bound to on successful application initialization.  May be null on failure.
+     * Context attribute to which the active {@link Launcher} managing the runtime for this
+     * servlet context is stored.
      */
-    public static final String APPLICATION_ROOT_CONTEXT_ATTRIBUTE = APPLICATION_ROOT_COMPONENT_ATTRIBUTE + ".context";
+    private static final String LAUNCHER_ATTRIBUTE = "Tuscany.Launcher";
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
@@ -53,7 +56,7 @@ public class ServletLauncherListener implements ServletContextListener {
         // Read optional path to system SCDL from context-param
         String systemScdlPath = servletContext.getInitParameter(SYSTEM_SCDL_PATH_PARAM);
         if (systemScdlPath == null) {
-            systemScdlPath = Launcher.METAINF_SYSTEM_SCDL_PATH;
+            systemScdlPath = "/" + Launcher.METAINF_SYSTEM_SCDL_PATH;
         }
 
         // Read optional path to application SCDL from context-param
@@ -64,46 +67,51 @@ public class ServletLauncherListener implements ServletContextListener {
 
         Launcher launcher = new Launcher();
 
-        // REVIEW: Not sure how reliable it is to rely on the thread context classloader as having
-        // reasonable semantics across a variety of servlet containers.. if "not very", the thread
-        // context loader works for Tomcat, so perhaps this class needs to become container-specific.
+        // Current thread context classloader should be the webapp classloader
         launcher.setApplicationLoader(Thread.currentThread().getContextClassLoader());
 
-        CompositeComponent<?> component = null;
-        CompositeContextImpl context = null;
+        CompositeComponent<?> component;
+        CompositeContextImpl context;
 
         try {
-            launcher.bootRuntime(systemScdlPath);
-            component = launcher.bootApplication(applicationScdlPath);
+            URL systemScdl = getClass().getResource(systemScdlPath);
+            launcher.bootRuntime(systemScdl);
+            servletContext.setAttribute(LAUNCHER_ATTRIBUTE, launcher);
+
+            URL appScdl;
+            if (applicationScdlPath.startsWith("/")) {
+                // Paths begining w/ "/" are treated as webapp resources
+                try {
+                    appScdl = servletContext.getResource(applicationScdlPath);
+                }
+                catch (MalformedURLException mue) {
+                    throw new LoaderException("Unable to find application SCDL: " + applicationScdlPath);
+                }
+            }
+            else {
+                // Other paths are searched using the application classloader
+                appScdl = launcher.getApplicationLoader().getResource(applicationScdlPath);
+                if (appScdl == null)
+                    throw new LoaderException("Unable to find application SCDL: " + applicationScdlPath);
+            }
+
+            component = launcher.bootApplication(appScdl);
             component.start();
             context = new CompositeContextImpl(component);
             context.start();
-        } catch (LoaderException le) {
-            // TODO: Need proper logging infrastructure here
-            // TODO: stash exception info in attributes?
-            le.printStackTrace();
         }
-
-        servletContext.setAttribute(APPLICATION_ROOT_COMPONENT_ATTRIBUTE, component);
-        servletContext.setAttribute(APPLICATION_ROOT_COMPONENT_ATTRIBUTE, context);
+        catch (Throwable t) {
+            servletContext.setAttribute(LAUNCHER_THROWABLE_ATTRIBUTE, t);
+            t.printStackTrace();
+        }
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
 
-        CompositeComponent<?> component =
-            (CompositeComponent<?>) servletContext.getAttribute(APPLICATION_ROOT_COMPONENT_ATTRIBUTE);
+        Launcher launcher = (Launcher) servletContext.getAttribute(LAUNCHER_ATTRIBUTE);
 
-        // REVIEW: may be ok to use CurrentCompositeContext.getContext(), but this feels safer.
-        CompositeContextImpl context =
-            (CompositeContextImpl) servletContext.getAttribute(APPLICATION_ROOT_CONTEXT_ATTRIBUTE);
-
-        if (component != null) {
-            component.stop();
-        }
-
-        if (context != null) {
-            context.stop();
-        }
+        if (launcher != null)
+            launcher.shutdownRuntime();
     }
 }
