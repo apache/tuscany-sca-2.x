@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -92,9 +91,8 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         return instance;
     }
 
-    @SuppressWarnings("unchecked")
     public GroovyObject getTargetInstance() throws TargetException {
-        return (GroovyObject) scopeContainer.getInstance(this);
+        return scopeContainer.getInstance(this);
     }
 
     @SuppressWarnings("unchecked")

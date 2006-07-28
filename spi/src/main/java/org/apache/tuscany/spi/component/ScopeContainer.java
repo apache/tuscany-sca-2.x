@@ -49,6 +49,6 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      *
      * @throws TargetException
      */
-    Object getInstance(AtomicComponent component) throws TargetException;
+    <T> T getInstance(AtomicComponent component) throws TargetException;
 
 }

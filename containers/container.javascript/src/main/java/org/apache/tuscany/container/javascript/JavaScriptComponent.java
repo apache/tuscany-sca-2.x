@@ -83,9 +83,8 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
         return properties;
     }
 
-    @SuppressWarnings("unchecked")
     public RhinoScriptInstance getTargetInstance() throws TargetException {
-        return (RhinoScriptInstance) scopeContainer.getInstance(this);
+        return scopeContainer.getInstance(this);
     }
 
     @SuppressWarnings("unchecked")
