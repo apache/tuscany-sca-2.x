@@ -24,7 +24,6 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         scope = Scope.MODULE;
     }
 
-    @SuppressWarnings("unchecked")
     public T getTargetInstance() throws TargetException {
         return (T) scopeContainer.getInstance(this);
     }

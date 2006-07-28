@@ -101,7 +101,6 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
-    @SuppressWarnings("unchecked")
     public T getTargetInstance() throws TargetException {
         return (T) scopeContainer.getInstance(this);
     }
