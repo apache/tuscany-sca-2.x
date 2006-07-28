@@ -3,21 +3,8 @@ package org.apache.tuscany.service.jetty;
 import java.io.File;
 import java.io.IOException;
 import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkException;
-import javax.resource.spi.work.WorkManager;
 import javax.servlet.Servlet;
 
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Handler;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ContextHandlerCollection;
-import org.mortbay.jetty.handler.DefaultHandler;
-import org.mortbay.jetty.handler.HandlerCollection;
-import org.mortbay.jetty.handler.RequestLogHandler;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
-import org.mortbay.thread.BoundedThreadPool;
-import org.mortbay.thread.ThreadPool;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
@@ -27,9 +14,23 @@ import org.osoa.sca.annotations.Service;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
+
+import org.mortbay.jetty.Connector;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.ContextHandler;
+import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.security.SslSocketConnector;
+import org.mortbay.jetty.servlet.ServletHandler;
+import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.jetty.servlet.ServletMapping;
+import org.mortbay.log.Log;
+import org.mortbay.log.Logger;
+import org.mortbay.thread.BoundedThreadPool;
+import org.mortbay.thread.ThreadPool;
 
 /**
- * Implements an HTTP transport service using Jetty
+ * Implements an HTTP transport service using Jetty.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -37,116 +38,198 @@ import org.apache.tuscany.spi.host.ServletHost;
 @Service(ServletHost.class)
 public class JettyServiceImpl implements JettyService {
 
-    private TransportMonitor monitor;
-    private WorkManager workManager;
-    private Server server;
-    private int port = 8080;
+    private static final String ROOT = "/";
+    private static final int ERROR = 0;
+    private static final int UNINITIALIZED = 0;
+    private static final int STARTING = 1;
+    private static final int STARTED = 2;
+    private static final int STOPPING = 3;
+    private static final int STOPPED = 4;
 
-    public JettyServiceImpl() {
+    private final Object joinLock = new Object();
+    private int state = UNINITIALIZED;
+    private int httpPort = 8080;
+    private int httpsPort = 8484;
+    private String keystore;
+    private String certPassword;
+    private String keyPassword;
+    private boolean sendServerVersion;
+    private boolean https;
+    private TransportMonitor monitor;
+    private WorkScheduler scheduler;
+    private boolean debug;
+    private Server server;
+    private Connector connector;
+    private ServletHandler servletHandler;
+
+    static {
+        // hack to replace the static Jetty logger
+        System.setProperty("org.mortbay.log.class", JettyLogger.class.getName());
+    }
+
+    public JettyServiceImpl(@Monitor TransportMonitor monitor,
+                            @Autowire WorkScheduler scheduler) {
+        this.monitor = monitor;
+        this.scheduler = scheduler;
+        // Jetty uses a static logger, so jam in the monitor into a static reference
+        Logger logger = Log.getLogger(null);
+        if (logger instanceof JettyLogger) {
+            JettyLogger jettyLogger = (JettyLogger) logger;
+            jettyLogger.setMonitor(monitor);
+            if (debug) {
+                jettyLogger.setDebugEnabled(true);
+            }
+        }
     }
 
     public JettyServiceImpl(TransportMonitor monitor) {
         this.monitor = monitor;
     }
 
-    @Monitor
-    public void setMonitor(TransportMonitor monitor) {
-        this.monitor = monitor;
-    }
-
-    @Autowire
-    public void setWorkManager(WorkManager workManager) {
-        this.workManager = workManager;
+    public JettyServiceImpl(TransportMonitor monitor,
+                            WorkScheduler scheduler,
+                            Connector connector) {
+        this(monitor, scheduler);
+        this.connector = connector;
     }
 
     @Property
-    public void setPort(int port) {
-        this.port = port;
+    public void setHttpPort(int httpPort) {
+        this.httpPort = httpPort;
+    }
+
+    @Property
+    public void setHttpsPort(int httpsPort) {
+        this.httpsPort = httpsPort;
+    }
+
+    @Property
+    public void setSendServerVersion(boolean sendServerVersion) {
+        this.sendServerVersion = sendServerVersion;
+    }
+
+    @Property
+    public void setHttps(boolean https) {
+        this.https = https;
+    }
+
+    @Property
+    public void setKeystore(String keystore) {
+        this.keystore = keystore;
+    }
+
+    @Property
+    public void setCertPassword(String certPassword) {
+        this.certPassword = certPassword;
+    }
+
+    @Property
+    public void setKeyPassword(String keyPassword) {
+        this.keyPassword = keyPassword;
+    }
+
+    @Property
+    public void setDebug(boolean val) {
+        debug = val;
     }
 
     @Init
     public void init() throws Exception {
-
-        server = new Server();
-
-        if (workManager == null) {
-            BoundedThreadPool threadPool = new BoundedThreadPool();
-            threadPool.setMaxThreads(100);
-            server.setThreadPool(threadPool);
-        } else {
-            server.setThreadPool(new TuscanyThreadPool());
+        try {
+            state = STARTING;
+            server = new Server();
+            if (scheduler == null) {
+                BoundedThreadPool threadPool = new BoundedThreadPool();
+                threadPool.setMaxThreads(100);
+                server.setThreadPool(threadPool);
+            } else {
+                server.setThreadPool(new TuscanyThreadPool());
+            }
+            if (connector == null) {
+                if (https) {
+                    Connector httpConnector = new SelectChannelConnector();
+                    httpConnector.setPort(httpPort);
+                    SslSocketConnector sslConnector = new SslSocketConnector();
+                    sslConnector.setPort(httpsPort);
+                    sslConnector.setKeystore(keystore);
+                    sslConnector.setPassword(certPassword);
+                    sslConnector.setKeyPassword(keyPassword);
+                    server.setConnectors(new Connector[]{httpConnector, sslConnector});
+                } else {
+                    SelectChannelConnector selectConnector = new SelectChannelConnector();
+                    selectConnector.setPort(httpPort);
+                    server.setConnectors(new Connector[]{selectConnector});
+                }
+            } else {
+                connector.setPort(httpPort);
+                server.setConnectors(new Connector[]{connector});
+            }
+            ContextHandler contextHandler = new ContextHandler();
+            contextHandler.setContextPath(ROOT);
+            server.setHandler(contextHandler);
+            servletHandler = new ServletHandler();
+            contextHandler.setHandler(servletHandler);
+            server.setStopAtShutdown(true);
+            server.setSendServerVersion(sendServerVersion);
+            monitor.started();
+            server.start();
+            state = STARTED;
+        } catch (Exception e) {
+            state = ERROR;
+            throw e;
         }
-        Connector connector = new SelectChannelConnector();
-        connector.setPort(port);
-        server.setConnectors(new Connector[]{connector});
-
-        HandlerCollection handlers = new HandlerCollection();
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        RequestLogHandler requestLogHandler = new RequestLogHandler();
-        handlers.setHandlers(new Handler[]{contexts, new DefaultHandler(), requestLogHandler});
-        server.setHandler(handlers);
-
-/*
-         WebAppContext.addWebApplications(server, "./webapps", "org/mortbay/jetty/webapp/webdefault.xml", true, false);
-
-        HashUserRealm userRealm = new HashUserRealm();
-        userRealm.setName("Test Realm");
-        userRealm.setConfig("./etc/realm.properties");
-        server.setUserRealms(new UserRealm[]{userRealm});
-
-        NCSARequestLog requestLog = new NCSARequestLog("./logs/jetty-yyyy-mm-dd.log");
-        requestLog.setExtended(false);
-        requestLogHandler.setRequestLog(requestLog);
-        requestLogHandler.setRequestLog(monitor);
-*/
-        server.setStopAtShutdown(true);
-        server.setSendServerVersion(true);
-        server.start();
-        monitor.started(port);
     }
 
     @Destroy
-    public void destroy() {
-        monitor.shutdown(port);
+    public void destroy() throws Exception {
+        state = STOPPING;
+        synchronized (joinLock) {
+            joinLock.notifyAll();
+        }
+        server.stop();
+        state = STOPPED;
+        monitor.shutdown();
     }
 
-    public void registerMapping(String string, Servlet servlet) {
-
+    public void registerMapping(String path, Servlet servlet) {
+        ServletHolder holder = new ServletHolder(servlet);
+        servletHandler.addServlet(holder);
+        ServletMapping mapping = new ServletMapping();
+        mapping.setServletName(holder.getClassName());
+        mapping.setPathSpec(path);
+        servletHandler.addServletMapping(mapping);
     }
 
     public void unregisterMapping(String string) {
-
+        throw new UnsupportedOperationException();
     }
 
     public void registerComposite(File compositeLocation) throws IOException {
-        WebAppContext.addWebApplications(server, compositeLocation.getAbsolutePath(),
-                "org/mortbay/jetty/webapp/webdefault.xml",
-                false,
-                false);
+        throw new UnsupportedOperationException();
     }
 
     public Server getServer() {
         return server;
     }
 
-    public int getPort() {
-        return port;
+    public int getHttpPort() {
+        return httpPort;
     }
 
+    /**
+     * An integration wrapper to enable use of a {@link WorkScheduler} with Jetty
+     */
     private class TuscanyThreadPool implements ThreadPool {
 
         public boolean dispatch(Runnable job) {
-            try {
-                workManager.doWork(new TuscanyWork(job));
-            } catch (WorkException e) {
-                //FIXME
-                monitor.requestHandleError(e);
-            }
+            scheduler.scheduleWork(new TuscanyWork(job));
             return true;
         }
 
         public void join() throws InterruptedException {
-            throw new UnsupportedOperationException();
+            synchronized (joinLock) {
+                joinLock.wait();
+            }
         }
 
         public int getThreads() {
@@ -158,7 +241,8 @@ public class JettyServiceImpl implements JettyService {
         }
 
         public boolean isLowOnThreads() {
-            throw new UnsupportedOperationException();
+            // TODO FIXME
+            return false;
         }
 
         public void start() throws Exception {
@@ -170,26 +254,29 @@ public class JettyServiceImpl implements JettyService {
         }
 
         public boolean isRunning() {
-            return false;
+            return state == STARTING || state == STARTED;
         }
 
         public boolean isStarted() {
-            return false;
+            return state == STARTED;
         }
 
         public boolean isStarting() {
-            return false;
+            return state == STARTING;
         }
 
         public boolean isStopping() {
-            return false;
+            return state == STOPPING;
         }
 
         public boolean isFailed() {
-            return false;
+            return state == ERROR;
         }
     }
 
+    /**
+     * A unit of work dispatched to the runtime work scheduler
+     */
     private class TuscanyWork implements Work {
 
         Runnable job;

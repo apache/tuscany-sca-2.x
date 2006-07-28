@@ -33,7 +33,7 @@
         <module>containers</module>
         <module>databinding</module>
         <module>bindings</module>
-        <module>services</module>
+        <!--<module>services</module>-->
         <module>commands/launcher</module>
     </modules>
 

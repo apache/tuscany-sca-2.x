@@ -35,7 +35,7 @@
         <dependency>
             <groupId>jetty</groupId>
             <artifactId>jetty</artifactId>
-            <version>6.0.0beta16</version>
+            <version>6.0.0beta17</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -57,8 +57,8 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
 
