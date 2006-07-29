@@ -26,7 +26,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>rmi</artifactId>
-    <name>Apache Tuscany RMI Binding</name>
+    <name>Apache Tuscany Binding for Java RMI</name>
     <description>Implementation of the SCA RMI Binding</description>
 
     <dependencies>
