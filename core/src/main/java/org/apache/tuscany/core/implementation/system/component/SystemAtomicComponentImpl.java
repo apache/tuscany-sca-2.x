@@ -24,10 +24,6 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         scope = Scope.MODULE;
     }
 
-    public T getTargetInstance() throws TargetException {
-        return (T) scopeContainer.getInstance(this);
-    }
-
     public Object getServiceInstance(String name) throws TargetException {
         return getTargetInstance();
     }
