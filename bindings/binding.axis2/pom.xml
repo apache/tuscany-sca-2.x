@@ -24,11 +24,11 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>axis2</artifactId>
-    <name>Tuscany Axis2 Binding</name>
+    <name>Apache Tuscany Axis2 Binding</name>
     <description>Implementation of the SCA Web Services binding using Axis2.</description>
 
     <dependencies>
-		  <dependency>
+        <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>core</artifactId>
             <version>${sca.version}</version>
@@ -41,36 +41,7 @@
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-		  
-		  <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>test</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
-        </dependency>
 
-<!--
-        <dependency>
-            <groupId>org.apache.tuscany.containers</groupId>
-            <artifactId>spring</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.containers</groupId>
-            <artifactId>groovy</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
-        </dependency>
--->
         <!-- axis 2.0 -->
         <dependency>
             <groupId>axis2</groupId>
@@ -87,16 +58,21 @@
         </dependency>
 
         <dependency>
-            <groupId>ws-commons</groupId>
-            <artifactId>axiom-impl</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
         </dependency>
 
         <dependency>
             <groupId>ws-commons</groupId>
             <artifactId>neethi</artifactId>
             <version>1.0.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ws-commons</groupId>
+            <artifactId>axiom-impl</artifactId>
+            <version>1.0</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -122,47 +98,23 @@
         </dependency>
 
         <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-
-        <dependency>
-          <groupId>stax</groupId>
-          <artifactId>stax-api</artifactId>
-          <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <version>2.9.3</version>
-            <scope>runtime</scope>
         </dependency>
 
-        <!-- end of axis 2.0 -->
-			<dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-			</dependency>
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>test</artifactId>
+            <version>${sca.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    <!-- buildSource>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                <excludes>
-                <exclude>**/org/apache/tuscany/binding/axis/engine/config/AxisEngineConfigurationFactory.java</exclude>
-                <exclude>**/org/apache/tuscany/binding/axis/handler/WebServiceEntryPointBean.java</exclude>
-                </excludes>
-                </configuration>
-            </plugin>
-        </plugins>
-
-    </buildSource -->
 </project>
