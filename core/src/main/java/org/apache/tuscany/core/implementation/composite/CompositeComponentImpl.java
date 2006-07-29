@@ -1,15 +1,7 @@
 package org.apache.tuscany.core.implementation.composite;
 
-import org.osoa.sca.ServiceUnavailableException;
-
 import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent composite.
@@ -19,41 +11,27 @@ import org.apache.tuscany.spi.component.TargetException;
 public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
     private String uri;
 
-    public CompositeComponentImpl(String name,
-                                  CompositeComponent parent,
-                                  AutowireComponent autowireContext
-    ) {
+    public CompositeComponentImpl(String name, CompositeComponent parent, AutowireComponent autowireContext) {
         super(name, parent, autowireContext);
+    }
+
+    /**
+     * Constructor specifying name and URI.
+     *
+     * @param name the name of this Component
+     * @param uri the unique identifier for this component
+     * @param parent this component's parent
+     * @param autowireComponent the component that should be used to resolve autowired references
+     */
+    public CompositeComponentImpl(String name,
+                                  String uri,
+                                  CompositeComponent parent,
+                                  AutowireComponent autowireComponent) {
+        super(name, parent, autowireComponent);
+        this.uri = uri;
     }
 
     public String getURI() {
         return uri;
     }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
-
-    //FIXME this should be removed and added to an impl of ModuleContext
-    public Object locateService(String name) throws ServiceUnavailableException {
-        checkInit();
-        QualifiedName qName = new QualifiedName(name);
-        SCAObject context = children.get(qName.getPartName());
-        if (context == null) {
-            throw new ServiceUnavailableException("ServiceDefinition not found [" + name + "]");
-        }
-        try {
-            if (context instanceof AtomicComponent) {
-                return ((AtomicComponent) context).getServiceInstance(qName.getPortName());
-            } else if (context instanceof Service || context instanceof Reference) {
-                return context.getServiceInstance();
-            } else {
-                throw new ServiceUnavailableException("Illegal target type [" + name + "]");
-            }
-        } catch (TargetException e) {
-            e.addContextName(getName());
-            throw new ServiceUnavailableException(e);
-        }
-    }
-
 }

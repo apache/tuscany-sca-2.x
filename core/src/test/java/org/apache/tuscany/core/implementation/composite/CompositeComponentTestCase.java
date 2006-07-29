@@ -8,8 +8,7 @@ import junit.framework.TestCase;
 public class CompositeComponentTestCase extends TestCase {
 
     public void testSetUri() throws Exception {
-        CompositeComponentImpl<?> component = new CompositeComponentImpl("foo", null, null);
-        component.setURI("foo/bar");
+        CompositeComponentImpl<?> component = new CompositeComponentImpl("foo", "foo/bar", null, null);
         assertEquals("foo/bar", component.getURI());
     }
 }
