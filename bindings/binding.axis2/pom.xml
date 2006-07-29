@@ -24,7 +24,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>axis2</artifactId>
-    <name>Apache Tuscany Axis2 Binding</name>
+    <name>Apache Tuscany Binding for Axis2</name>
     <description>Implementation of the SCA Web Services binding using Axis2.</description>
 
     <dependencies>
