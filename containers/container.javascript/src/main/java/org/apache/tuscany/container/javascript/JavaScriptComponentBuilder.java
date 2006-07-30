@@ -18,8 +18,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Extension point for creating {@link JavaScriptComponent}s from an assembly configuration
- *
- * @version $$Rev: 424027 $$ $$Date: 2006-07-20 20:26:20 +0100 (Thu, 20 Jul 2006) $$
  */
 public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaScriptImplementation> {
 
@@ -28,11 +26,8 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
     }
 
     @SuppressWarnings("unchecked")
-    public Component<?> build(CompositeComponent<?> parent,
-                              ComponentDefinition<JavaScriptImplementation> componentDefinition,
-                              DeploymentContext deploymentContext)
-            throws BuilderConfigException {
-
+    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<JavaScriptImplementation> componentDefinition,
+            DeploymentContext deploymentContext) throws BuilderConfigException {
 
         String name = componentDefinition.getName();
         JavaScriptImplementation implementation = componentDefinition.getImplementation();
@@ -45,12 +40,15 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
 
-
         String script = implementation.getScript();
         RhinoScript rhinoScript = new RhinoScript(name, script);
 
+        //TODO properties
         Map<String, Object> properties = new HashMap<String, Object>();
-        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
+
+        // TODO scopes
+        // ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
+        ScopeContainer scopeContainer = deploymentContext.getModuleScope(); 
 
         return new JavaScriptComponent(name, rhinoScript, services, properties, parent, scopeContainer, wireService);
     }
