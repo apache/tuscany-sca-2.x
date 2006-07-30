@@ -19,17 +19,16 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.container.javascript.JavaScriptImplementation">
 
-    <!-- JavaScript implementation type -->
+           name="org.apache.tuscany.launcher.JavaScriptImplementation">
 
     <component name="javascript.implementationLoader">
         <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptImplementationLoader"/>
     </component>
 
-    <!-- component name="javascript.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.container.javascript.JavaComponentTypeLoader"/>
-    </component -->
+    <component name="javascript.componentTypeLoader">
+        <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptComponentTypeLoader"/>
+    </component>
 
     <component name="javascript.componentBuilder">
         <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptComponentBuilder"/>
