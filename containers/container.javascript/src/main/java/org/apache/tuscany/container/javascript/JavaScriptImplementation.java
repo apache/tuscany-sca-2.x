@@ -24,6 +24,9 @@ import org.apache.tuscany.spi.model.AtomicImplementation;
 public class JavaScriptImplementation extends AtomicImplementation<JavaScriptComponentType> {
 
     private String script;
+    private String scriptName;
+    private ClassLoader cl;
+    private JavaScriptComponentType componentType;
 
     /**
      * Returns the JavaScript source to be executed.
@@ -39,4 +42,27 @@ public class JavaScriptImplementation extends AtomicImplementation<JavaScriptCom
         this.script = script;
     }
 
+    public JavaScriptComponentType getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType(JavaScriptComponentType componentType) {
+        this.componentType =  componentType;
+    }
+
+    public String getScriptName() {
+        return scriptName;
+    }
+
+    public void setScriptName(String scriptName) {
+        this.scriptName = scriptName;
+    }
+
+    public ClassLoader getClassLoader() {
+        return cl;
+    }
+
+    public void setClassLoader(ClassLoader cl) {
+        this.cl = cl;
+    }
 }
