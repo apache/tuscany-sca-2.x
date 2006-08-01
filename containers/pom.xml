@@ -28,6 +28,7 @@
 
     <modules>
         <module>container.groovy</module>
+        <module>container.javascript</module>
         <module>container.spring</module>
     </modules>
 
