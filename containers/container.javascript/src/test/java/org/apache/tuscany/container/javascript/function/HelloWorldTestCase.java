@@ -28,6 +28,7 @@ import org.osoa.sca.CurrentCompositeContext;
 public class HelloWorldTestCase extends SCATestCase {
 
     private HelloWorldService helloWorldService;
+    private HelloWorldService introspectableService;
 
     protected void setUp() throws Exception {
         addExtension("JavaScriptContainer", getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
@@ -36,9 +37,14 @@ public class HelloWorldTestCase extends SCATestCase {
 
         CompositeContext context = CurrentCompositeContext.getContext();
         helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponent");
+        introspectableService = context.locateService(HelloWorldService.class, "IntrospectableHelloWorldComponent");
     }
 
     public void testHelloWorld() throws Exception {
         assertEquals(helloWorldService.sayHello("petra"), "Hello petra");
+    }
+
+    public void testIntrospectedHelloWorld() throws Exception {
+        assertEquals(introspectableService.sayHello("petra"), "Hello petra");
     }
 }

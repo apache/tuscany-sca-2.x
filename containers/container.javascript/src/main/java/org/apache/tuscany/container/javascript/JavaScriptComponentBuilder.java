@@ -14,6 +14,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
@@ -31,7 +32,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
 
         String name = componentDefinition.getName();
         JavaScriptImplementation implementation = componentDefinition.getImplementation();
-        JavaScriptComponentType componentType = implementation.getComponentType();
+        ComponentType componentType = implementation.getComponentType();
 
         // get list of services provided by this component
         Collection<ServiceDefinition> collection = componentType.getServices().values();
@@ -40,8 +41,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
 
-        String script = implementation.getScript();
-        RhinoScript rhinoScript = new RhinoScript(name, script);
+        RhinoScript rhinoScript = implementation.getRhinoScript();
 
         //TODO properties
         Map<String, Object> properties = new HashMap<String, Object>();
