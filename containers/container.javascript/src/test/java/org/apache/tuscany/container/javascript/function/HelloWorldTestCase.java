@@ -14,29 +14,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.container.javascript.functional;
+package org.apache.tuscany.container.javascript.function;
 
 import helloworld.HelloWorldService;
 
-import org.apache.tuscany.container.javascript.utils.JavaScriptTestCase;
+import org.apache.tuscany.test.SCATestCase;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
 /**
  * This shows how to test the HelloWorld service component.
  */
-public class HelloWorldTestCase extends JavaScriptTestCase {
+public class HelloWorldTestCase extends SCATestCase {
 
     private HelloWorldService helloWorldService;
 
     protected void setUp() throws Exception {
+        addExtension("JavaScriptContainer", getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
+        setApplicationSCDL("org/apache/tuscany/container/javascript/function/helloworld.scdl");
         super.setUp();
 
         CompositeContext context = CurrentCompositeContext.getContext();
         helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponent");
-    }
-
-    protected void tearDown() throws Exception {
     }
 
     public void testHelloWorld() throws Exception {
