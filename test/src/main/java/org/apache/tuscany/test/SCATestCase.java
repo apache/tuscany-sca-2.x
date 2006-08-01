@@ -27,6 +27,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.launcher.Launcher;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -38,7 +39,6 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
  * @version $Rev$ $Date$
  */
 public class SCATestCase extends TestCase {
-    private Launcher launcher;
     private CompositeComponent<?> component;
     private CompositeContextImpl context;
     private Map<String, URL> extensions = new HashMap<String, URL>();
@@ -47,9 +47,10 @@ public class SCATestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ClassLoader cl = getClass().getClassLoader();
-        launcher = new Launcher();
+        Launcher launcher = new Launcher();
         launcher.setApplicationLoader(cl);
-        CompositeComponent<?> composite = launcher.bootRuntime(cl.getResource(Launcher.METAINF_SYSTEM_SCDL_PATH));
+        CompositeComponent<?> composite = launcher.bootRuntime(cl.getResource(Launcher.METAINF_SYSTEM_SCDL_PATH),
+                new NullMonitorFactory());
 
         for (String extensionName : extensions.keySet()) {
             deployExtension(composite, extensionName, extensions.get(extensionName));

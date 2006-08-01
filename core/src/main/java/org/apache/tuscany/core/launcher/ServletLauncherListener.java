@@ -2,12 +2,17 @@ package org.apache.tuscany.core.launcher;
 
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * Launcher for runtime environment that loads info from servlet context params.
@@ -32,6 +37,12 @@ public class ServletLauncherListener implements ServletContextListener {
      * Servlet context-param name for user-specified application SCDL path.
      */
     public static final String APPLICATION_SCDL_PATH_PARAM = "applicationScdlPath";
+    /**
+     * Servlet context-param name for system monitoring level.
+     * Supported values are the names of statics defined in java.util.logging.Level.
+     * If absent, no monitoring will take place.
+     */
+    public static final String SYSTEM_MONITORING_PARAM = "tuscanyMonitoringLevel";
 
     /**
      * Default application SCDL path used if no "applicationScdlPath" param is specified
@@ -65,6 +76,10 @@ public class ServletLauncherListener implements ServletContextListener {
             applicationScdlPath = DEFAULT_APPLICATION_SCDL_PATH;
         }
 
+        // Read optional system monitor factory classname
+        String systemLogging = servletContext.getInitParameter(SYSTEM_MONITORING_PARAM);
+        MonitorFactory mf = getMonitorFactory(systemLogging);
+
         Launcher launcher = new Launcher();
 
         // Current thread context classloader should be the webapp classloader
@@ -75,7 +90,7 @@ public class ServletLauncherListener implements ServletContextListener {
 
         try {
             URL systemScdl = getClass().getResource(systemScdlPath);
-            launcher.bootRuntime(systemScdl);
+            launcher.bootRuntime(systemScdl, mf);
             servletContext.setAttribute(LAUNCHER_ATTRIBUTE, launcher);
 
             URL appScdl;
@@ -83,24 +98,22 @@ public class ServletLauncherListener implements ServletContextListener {
                 // Paths begining w/ "/" are treated as webapp resources
                 try {
                     appScdl = servletContext.getResource(applicationScdlPath);
-                }
-                catch (MalformedURLException mue) {
+                } catch (MalformedURLException mue) {
                     throw new LoaderException("Unable to find application SCDL: " + applicationScdlPath);
                 }
-            }
-            else {
+            } else {
                 // Other paths are searched using the application classloader
                 appScdl = launcher.getApplicationLoader().getResource(applicationScdlPath);
-                if (appScdl == null)
+                if (appScdl == null) {
                     throw new LoaderException("Unable to find application SCDL: " + applicationScdlPath);
+                }
             }
 
             component = launcher.bootApplication(appScdl);
             component.start();
             context = new CompositeContextImpl(component);
             context.start();
-        }
-        catch (Throwable t) {
+        } catch (Throwable t) {
             servletContext.setAttribute(LAUNCHER_THROWABLE_ATTRIBUTE, t);
             t.printStackTrace();
         }
@@ -111,7 +124,27 @@ public class ServletLauncherListener implements ServletContextListener {
 
         Launcher launcher = (Launcher) servletContext.getAttribute(LAUNCHER_ATTRIBUTE);
 
-        if (launcher != null)
+        if (launcher != null) {
             launcher.shutdownRuntime();
+        }
+    }
+
+    private MonitorFactory getMonitorFactory(String loggingLevel) {
+        String factoryName = "org.apache.tuscany.core.monitor.NullMonitorFactory";
+        Map<String, Object> props = null;
+        if (loggingLevel != null) {
+            factoryName = "org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory";
+            props = new HashMap<String, Object>();
+            Level level = Level.SEVERE;
+            try {
+                level = Level.parse(loggingLevel);
+            } catch (IllegalArgumentException e) {
+                // ignore bad loggingLevel
+            }
+            props.put("bundleName", "SystemMessages");
+            props.put("defaultLevel", level);
+        }
+
+        return MonitorFactoryUtil.createMonitorFactory(factoryName, props);
     }
 }

@@ -27,6 +27,7 @@ import java.net.URL;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.core.util.ClassLoaderHelper;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
 
 /**
@@ -133,7 +134,7 @@ public class MainLauncher extends Launcher {
             parseArguments(args);
             // need to use the classloader as the path does not start with a '/'
             URL scdl = getClass().getClassLoader().getResource(METAINF_SYSTEM_SCDL_PATH);
-            bootRuntime(scdl);
+            bootRuntime(scdl, new NullMonitorFactory());
             URL appScdl = getApplicationLoader().getResource(METAINF_APPLICATION_SCDL_PATH);
             CompositeComponent application = bootApplication(appScdl);
             application.start();
@@ -152,8 +153,7 @@ public class MainLauncher extends Launcher {
         } catch (InvocationTargetException e) {
             e.getCause().printStackTrace(System.err);
             System.exit(2);
-        }
-        finally {
+        } finally {
             shutdownRuntime();
         }
     }
