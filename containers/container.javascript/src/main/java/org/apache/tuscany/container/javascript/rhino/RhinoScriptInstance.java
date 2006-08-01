@@ -69,7 +69,7 @@ public class RhinoScriptInstance {
 
         Object handleObj = scriptScope.get(functionName, instanceScope);
         if (UniqueTag.NOT_FOUND.equals(handleObj)) {
-            // Bit of a hack so E4X scripts don't need to define a function for every operation 
+            // Bit of a hack so E4X scripts don't need to define a function for every operation
             handleObj = scriptScope.get("process", instanceScope);
         }
         if (!(handleObj instanceof Function)) {

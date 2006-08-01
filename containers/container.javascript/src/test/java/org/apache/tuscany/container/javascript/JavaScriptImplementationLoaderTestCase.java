@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 
 /**
- * Tests for JavaScriptImplementationLoader 
+ * Tests for JavaScriptImplementationLoader
  */
 public class JavaScriptImplementationLoaderTestCase extends TestCase {
     private CompositeComponent parent;

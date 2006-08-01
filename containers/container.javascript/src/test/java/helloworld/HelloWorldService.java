@@ -2,6 +2,6 @@ package helloworld;
 
 public interface HelloWorldService {
 
-	String sayHello(String s);
+    String sayHello(String s);
 
 }

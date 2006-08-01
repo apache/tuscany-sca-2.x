@@ -28,6 +28,7 @@ import org.osoa.sca.CurrentCompositeContext;
 public class HelloWorldTestCase extends SCATestCase {
 
     private HelloWorldService helloWorldService;
+
     private HelloWorldService introspectableService;
 
     protected void setUp() throws Exception {

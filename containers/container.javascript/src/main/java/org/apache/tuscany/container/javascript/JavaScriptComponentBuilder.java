@@ -43,12 +43,12 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
 
         RhinoScript rhinoScript = implementation.getRhinoScript();
 
-        //TODO properties
+        // TODO properties
         Map<String, Object> properties = new HashMap<String, Object>();
 
         // TODO scopes
         // ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
-        ScopeContainer scopeContainer = deploymentContext.getModuleScope(); 
+        ScopeContainer scopeContainer = deploymentContext.getModuleScope();
 
         return new JavaScriptComponent(name, rhinoScript, services, properties, parent, scopeContainer, wireService);
     }
