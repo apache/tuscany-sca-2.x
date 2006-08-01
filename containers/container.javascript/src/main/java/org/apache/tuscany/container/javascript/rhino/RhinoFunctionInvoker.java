@@ -49,7 +49,7 @@ public class RhinoFunctionInvoker {
         } else {
             jsArgs = new Object[arg.length];
             for (int i = 0; i < jsArgs.length; i++) {
-                jsArgs[i] =  Context.toObject(arg[i], scope);
+                jsArgs[i] = Context.toObject(arg[i], scope);
             }
         }
         return jsArgs;

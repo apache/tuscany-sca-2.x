@@ -14,7 +14,7 @@ import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
 
 /**
- * Tests for component properties 
+ * Tests for component properties
  */
 public class PropertyTestCase extends TestCase {
 

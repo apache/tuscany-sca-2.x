@@ -41,7 +41,7 @@ public class RhinoScript {
 
     /*
      * Enable dynamic scopes so a script can be used concurrently with a global shared scope and individual execution scopes. See
-     * http://www.mozilla.org/rhino/scopes.html 
+     * http://www.mozilla.org/rhino/scopes.html
      */
     private static class MyFactory extends ContextFactory {
         protected boolean hasFeature(Context cx, int featureIndex) {
@@ -181,11 +181,9 @@ public class RhinoScript {
     }
 
     /**
-     * Set the Java type of a response value. JavaScript is dynamically typed so Rhino
-     * cannot always work out what the intended Java type of a response should be, for 
-     * example should the statement "return 42" be a Java int, or Integer or Double etc.
-     * When Rhino can't determine the type it will default to returning a String, using
-     * this method enables overriding the Rhino default to use a specific Java type.   
+     * Set the Java type of a response value. JavaScript is dynamically typed so Rhino cannot always work out what the intended Java type of a
+     * response should be, for example should the statement "return 42" be a Java int, or Integer or Double etc. When Rhino can't determine the type
+     * it will default to returning a String, using this method enables overriding the Rhino default to use a specific Java type.
      */
     public void setResponseClass(String functionName, Class responseClasses) {
         this.responseClasses.put(functionName, responseClasses);

@@ -108,12 +108,12 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
                 return target.invokeFunction(method.getName(), args);
             }
         };
-        
+
         Class<?>[] ifaces = new Class<?>[getServiceInterfaces().size()];
-        for (int i=0; i<getServiceInterfaces().size(); i++) {
+        for (int i = 0; i < getServiceInterfaces().size(); i++) {
             ifaces[i] = getServiceInterfaces().get(i);
         }
-        T proxy = (T) Proxy.newProxyInstance(cl, ifaces , ih);
+        T proxy = (T) Proxy.newProxyInstance(cl, ifaces, ih);
 
         return proxy;
     }

@@ -58,7 +58,7 @@ public class JavaScriptImplementationLoader extends LoaderExtension<JavaScriptIm
         if (script == null) {
             throw new MissingResourceException("No script supplied");
         }
-        
+
         ClassLoader cl = deploymentContext.getClassLoader();
         String source = loadSource(cl, script);
 
