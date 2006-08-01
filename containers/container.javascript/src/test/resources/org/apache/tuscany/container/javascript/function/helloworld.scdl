@@ -23,4 +23,8 @@
 		<js:implementation.js script="org/apache/tuscany/container/javascript/function/HelloWorld.js"/>
     </component>
 
+    <component name="IntrospectableHelloWorldComponent">
+		<js:implementation.js script="org/apache/tuscany/container/javascript/function/IntrospectableHelloWorld.js"/>
+    </component>
+
 </composite>

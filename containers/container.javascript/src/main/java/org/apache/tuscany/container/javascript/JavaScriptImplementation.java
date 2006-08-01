@@ -16,46 +16,25 @@
  */
 package org.apache.tuscany.container.javascript;
 
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
 import org.apache.tuscany.spi.model.AtomicImplementation;
+import org.apache.tuscany.spi.model.ComponentType;
 
 /**
  * Model object for a JavaScript implementation.
  */
-public class JavaScriptImplementation extends AtomicImplementation<JavaScriptComponentType> {
+public class JavaScriptImplementation extends AtomicImplementation<ComponentType> {
 
-    private String script;
-    private String scriptName;
+    private RhinoScript rhinoScript;
     private ClassLoader cl;
-    private JavaScriptComponentType componentType;
+    private ComponentType componentType;
 
-    /**
-     * Returns the JavaScript source to be executed.
-     */
-    public String getScript() {
-        return script;
-    }
-
-    /**
-     * Sets the JavaScript source to be executed.
-     */
-    public void setScript(String script) {
-        this.script = script;
-    }
-
-    public JavaScriptComponentType getComponentType() {
+    public ComponentType getComponentType() {
         return componentType;
     }
 
-    public void setComponentType(JavaScriptComponentType componentType) {
+    public void setComponentType(ComponentType componentType) {
         this.componentType =  componentType;
-    }
-
-    public String getScriptName() {
-        return scriptName;
-    }
-
-    public void setScriptName(String scriptName) {
-        this.scriptName = scriptName;
     }
 
     public ClassLoader getClassLoader() {
@@ -64,5 +43,13 @@ public class JavaScriptImplementation extends AtomicImplementation<JavaScriptCom
 
     public void setClassLoader(ClassLoader cl) {
         this.cl = cl;
+    }
+
+    public RhinoScript getRhinoScript() {
+        return rhinoScript;
+    }
+
+    public void setRhinoScript(RhinoScript rhinoScript) {
+        this.rhinoScript = rhinoScript;
     }
 }

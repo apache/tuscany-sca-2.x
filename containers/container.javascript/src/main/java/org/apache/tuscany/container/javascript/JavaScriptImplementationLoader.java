@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -64,8 +65,8 @@ public class JavaScriptImplementationLoader extends LoaderExtension<JavaScriptIm
         LoaderUtil.skipToEndElement(reader);
 
         JavaScriptImplementation implementation = new JavaScriptImplementation();
-        implementation.setScript(source);
-        implementation.setScriptName(script);
+        RhinoScript rhinoScript = new RhinoScript(script, source, null, cl);
+        implementation.setRhinoScript(rhinoScript);
         implementation.setClassLoader(cl);
         registry.loadComponentType(parent, implementation, deploymentContext);
         return implementation;
