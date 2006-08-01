@@ -159,6 +159,13 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
         String target = reader.getAttributeValue(null, "target");
+
+        if (name == null || target == null) {
+            InvalidReferenceException le = new InvalidReferenceException();
+            le.setIdentifier(target);
+            throw le;
+        }
+
         ReferenceTarget referenceTarget = new ReferenceTarget();
         referenceTarget.setReferenceName(name);
         try {

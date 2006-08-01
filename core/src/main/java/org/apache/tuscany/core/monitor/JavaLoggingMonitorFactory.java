@@ -55,13 +55,13 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
      * the method name in form returned by <code>Class.getName() + '#' + Method.getName()</code> and the value the log
      * level to use as defined by {@link java.util.logging.Level}.
      *
-     * @param levels       definition of custom levels for specific monitored methods
+     * @param levels       definition of custom levels for specific monitored methods, may be null or empty.
      * @param defaultLevel the default log level to use
      * @param bundleName   the name of a resource bundle that will be passed to the logger
      * @see java.util.logging.Logger
      */
     public JavaLoggingMonitorFactory(Properties levels, Level defaultLevel, String bundleName) {
-        Map<String,Object> configProperties = new HashMap<String,Object>();
+        Map<String, Object> configProperties = new HashMap<String, Object>();
         configProperties.put("levels", levels);
         configProperties.put("defaultLevel", defaultLevel);
         configProperties.put("bundleName", bundleName);
@@ -74,24 +74,29 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
     public JavaLoggingMonitorFactory() {
     }
 
-    public void initialize(Map<String,Object> configProperties) {
+    public void initialize(Map<String, Object> configProperties) {
+        if (configProperties == null) {
+            return;
+        }
+
         try {
             this.defaultLevel = (Level) configProperties.get("defaultLevel");
             this.bundleName = (String) configProperties.get("bundleName");
             Properties levels = (Properties) configProperties.get("levels");
 
-            this.levels = new HashMap<String, Level>(levels.size());
-            for (Map.Entry<Object, Object> entry : levels.entrySet()) {
-                String method = (String) entry.getKey();
-                String level = (String) entry.getValue();
-                try {
-                    this.levels.put(method, Level.parse(level));
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidLevelException(method, level);
+            this.levels = new HashMap<String, Level>();
+            if (levels != null) {
+                for (Map.Entry<Object, Object> entry : levels.entrySet()) {
+                    String method = (String) entry.getKey();
+                    String level = (String) entry.getValue();
+                    try {
+                        this.levels.put(method, Level.parse(level));
+                    } catch (IllegalArgumentException e) {
+                        throw new InvalidLevelException(method, level);
+                    }
                 }
             }
-        }
-        catch (ClassCastException cce) {
+        } catch (ClassCastException cce) {
             throw new IllegalArgumentException(cce.getLocalizedMessage());
         }
     }

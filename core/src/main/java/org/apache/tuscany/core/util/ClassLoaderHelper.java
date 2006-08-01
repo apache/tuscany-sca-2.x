@@ -11,7 +11,13 @@ import java.net.URLClassLoader;
  * @version $$Rev: $$ $$Date: $$
  */
 
-public class ClassLoaderHelper {
+public final class ClassLoaderHelper {
+    /**
+     * Hide constructor
+     */
+    private ClassLoaderHelper() {
+    }
+    
     /**
      * Create a classloader for the supplied classpath.
      *

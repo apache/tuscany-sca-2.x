@@ -61,7 +61,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
         Mock mock = mock(AutowireComponent.class);
         parent = (CompositeComponent<?>) mock.proxy();
         registry = new ScopeRegistryImpl(new WorkContextImpl());
-        registry.registerFactory(Scope.STATELESS, new StatelessScopeObjectFactory());
+        new StatelessScopeObjectFactory(registry);
     }
 
     private static class Foo {

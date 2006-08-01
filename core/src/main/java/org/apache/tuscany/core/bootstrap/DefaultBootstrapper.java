@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
@@ -144,7 +143,7 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
      */
     public ScopeRegistry createScopeRegistry(WorkContext workContext) {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
-        scopeRegistry.registerFactory(Scope.MODULE, new ModuleScopeObjectFactory());
+        new ModuleScopeObjectFactory(scopeRegistry); // self-registers
         return scopeRegistry;
     }
 

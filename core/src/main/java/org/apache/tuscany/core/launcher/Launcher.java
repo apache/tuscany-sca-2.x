@@ -18,7 +18,6 @@ package org.apache.tuscany.core.launcher;
 
 import java.io.File;
 import java.net.URL;
-import java.net.URI;
 
 import javax.xml.stream.XMLInputFactory;
 
@@ -29,9 +28,9 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 
@@ -41,14 +40,10 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
 public class Launcher {
-    private ClassLoader applicationLoader;
-    private RuntimeComponent runtime;
-    private Deployer deployer;
-
     /**
      * A conventional META-INF based location for the system SCDL.
      *
-     * @see #bootRuntime(URL)
+     * @see #bootRuntime(URL, MonitorFactory)
      */
     public static final String METAINF_SYSTEM_SCDL_PATH = "META-INF/tuscany/system.scdl";
 
@@ -58,6 +53,10 @@ public class Launcher {
      * @see #bootApplication(URL)
      */
     public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
+
+    private ClassLoader applicationLoader;
+    private RuntimeComponent runtime;
+    private Deployer deployer;
 
     /**
      * Returns the classloader for application classes.
@@ -85,14 +84,14 @@ public class Launcher {
      * @return a CompositeComponent for the newly booted runtime system
      * @throws LoaderException
      */
-    public CompositeComponent<?> bootRuntime(URL systemScdl) throws LoaderException {
+    public CompositeComponent<?> bootRuntime(URL systemScdl, MonitorFactory monitor) throws LoaderException {
         if (systemScdl == null) {
             throw new LoaderException("Null system SCDL URL");
         }
 
         ClassLoader systemClassLoader = getClass().getClassLoader();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
-        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
+        Bootstrapper bootstrapper = new DefaultBootstrapper(monitor, xmlFactory);
         Deployer bootDeployer = bootstrapper.createDeployer();
 
         // create and start the core runtime
@@ -126,8 +125,9 @@ public class Launcher {
      * Shuts down the active runtime being managed by this instance.
      */
     public void shutdownRuntime() {
-        if (runtime != null)
+        if (runtime != null) {
             runtime.stop();
+        }
 
         runtime = null;
     }

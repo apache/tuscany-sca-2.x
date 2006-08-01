@@ -33,10 +33,10 @@ public interface MonitorFactory {
     /**
      * Initializes MonitorFactory instances with implementation-specific configuration properties.
      *
-     * @param configProperties a map of named configuration properties
+     * @param configProperties a map of named configuration properties.  May be null.
      * @throws IllegalArgumentException if the instance can't be configured using the supplied properties
      */
-    void initialize(Map<String,Object> configProperties);
+    void initialize(Map<String, Object> configProperties);
     /**
      * Return a monitor for a component's monitor interface.
      *

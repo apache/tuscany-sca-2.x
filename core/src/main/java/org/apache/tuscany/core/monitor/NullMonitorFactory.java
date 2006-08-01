@@ -44,7 +44,7 @@ public class NullMonitorFactory implements MonitorFactory {
     public void init() {
     }
 
-    public void initialize(Map<String,Object> configProperties) {
+    public void initialize(Map<String, Object> configProperties) {
     }
 
     public <T> T getMonitor(Class<T> monitorInterface) {
