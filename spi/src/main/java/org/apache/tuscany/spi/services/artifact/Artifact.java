@@ -1,0 +1,144 @@
+/*
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors as applicable
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package org.apache.tuscany.spi.services.artifact;
+
+import java.net.URL;
+
+/**
+ * Description of some packaged artifact such as a JAR file or a Composite.
+ *
+ * @version $Rev$ $Date$
+ */
+public class Artifact {
+    private String group;
+    private String name;
+    private String version;
+    private String classifier;
+    private String type;
+    private URL url;
+
+    /**
+     * Returns the name of a logical grouping to which this artifact belongs.
+     * For example, this might represent the original publisher of the artifact.
+     *
+     * @return the name of a logical grouping to which this artifact belongs
+     */
+    public String getGroup() {
+        return group;
+    }
+
+    /**
+     * Sets the name of a logical grouping to which this artifact belongs.
+     *
+     * @param group the name of a logical grouping to which this artifact belongs
+     */
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    /**
+     * Returns the name of an artifact.
+     *
+     * @return the name of an artifact
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of an artifact.
+     *
+     * @param name the name of an artifact
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the version of an artifact.
+     *
+     * @return the version of an artifact
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * Sets the version of an artifact.
+     *
+     * @param version the version of an artifact
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * Returns a way of classifying an artifact.
+     * This can be used to distinguish variants of an artifact that provide the same function
+     * but which may have platform specific requirements. For example, it may contain the name
+     * of a hardware platform for artifacts that contain native code.
+     *
+     * @return a way of classifying an artifact
+     */
+    public String getClassifier() {
+        return classifier;
+    }
+
+    /**
+     * Sets a way of classifying an artifact
+     *
+     * @param classifier a way of classifying an artifact
+     */
+    public void setClassifier(String classifier) {
+        this.classifier = classifier;
+    }
+
+    /**
+     * Returns the type of artifact.
+     *
+     * @return the type of artifact
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of artifact.
+     * @param type the type of artifact
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * Returns a URL from which the artifact can be obtained.
+     *
+     * @return a URL from which the artifact can be obtained
+     */
+    public URL getUrl() {
+        return url;
+    }
+
+    /**
+     * Sets a URL from which the artifact can be obtained.
+     *
+     * @param url a URL from which the artifact can be obtained
+     */
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+}
