@@ -57,6 +57,7 @@ public class Launcher {
     private ClassLoader applicationLoader;
     private RuntimeComponent runtime;
     private Deployer deployer;
+    private CompositeComponent<?> composite;
 
     /**
      * Returns the classloader for application classes.
@@ -112,7 +113,7 @@ public class Launcher {
                                                                        moduleImplementation);
 
         // deploy the component into the runtime under the system parent
-        CompositeComponent<?> composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
+        composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
 
         // start the system
         composite.start();
@@ -125,11 +126,15 @@ public class Launcher {
      * Shuts down the active runtime being managed by this instance.
      */
     public void shutdownRuntime() {
-        if (runtime != null) {
-            runtime.stop();
+        if (composite != null) {
+            composite.stop();
+            composite = null;
         }
 
-        runtime = null;
+        if (runtime != null) {
+            runtime.stop();
+            runtime = null;
+        }
     }
 
     /**

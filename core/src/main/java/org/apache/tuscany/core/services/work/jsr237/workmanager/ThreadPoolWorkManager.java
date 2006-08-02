@@ -20,10 +20,11 @@ import java.rmi.server.UID;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
+import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Property;
 
 import commonj.work.Work;
@@ -48,7 +49,7 @@ public class ThreadPoolWorkManager implements WorkManager {
     private Map<DefaultWorkItem, WorkListener> workItems = new ConcurrentHashMap<DefaultWorkItem, WorkListener>();
 
     // Thread-pool
-    private Executor executor;
+    private ExecutorService executor;
 
     /**
      * Initializes the thread-pool.
@@ -207,6 +208,11 @@ public class ThreadPoolWorkManager implements WorkManager {
             }
         }
 
+    }
+    
+    @Destroy
+    public void destroy() {
+    	executor.shutdown();
     }
 
 }
