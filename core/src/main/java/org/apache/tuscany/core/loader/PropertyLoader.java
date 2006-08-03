@@ -19,16 +19,19 @@ package org.apache.tuscany.core.loader;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
+import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.annotation.Autowire;
 
@@ -39,10 +42,17 @@ import org.apache.tuscany.spi.annotation.Autowire;
  */
 public class PropertyLoader extends LoaderExtension<Property> {
     public static final QName PROPERTY = new QName(XML_NAMESPACE_1_0, "property");
+    private final DocumentBuilder documentBuilder;
 
     @Constructor({"registry"})
     public PropertyLoader(@Autowire LoaderRegistry registry) {
         super(registry);
+        try {
+            documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            // we should be able to construct the default DocumentBuilder
+            throw new AssertionError(e);
+        }
     }
 
     public QName getXMLType() {
@@ -52,8 +62,7 @@ public class PropertyLoader extends LoaderExtension<Property> {
     public Property<?> load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext ctx)
         throws XMLStreamException, LoaderException {
         assert PROPERTY.equals(reader.getName());
-        Property<?> property = new Property();
-        property.setName(reader.getAttributeValue(null, "name"));
+        String name = reader.getAttributeValue(null, "name");
         String typeName = reader.getAttributeValue(null, "type");
         QName xmlType;
         int index = typeName.indexOf(':');
@@ -67,13 +76,16 @@ public class PropertyLoader extends LoaderExtension<Property> {
             String namespaceURI = reader.getNamespaceURI();
             xmlType = new QName(namespaceURI, typeName);
         }
+        boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, "many"));
+        boolean required = Boolean.parseBoolean(reader.getAttributeValue(null, "required"));
+        Document value = StAXUtil.createPropertyValue(reader, xmlType, documentBuilder);
+
+        Property<?> property = new Property();
+        property.setName(name);
         property.setXmlType(xmlType);
-        property.setMany(Boolean.parseBoolean(reader.getAttributeValue(null, "many")));
-        property.setRequired(Boolean.parseBoolean(reader.getAttributeValue(null, "required")));
-
-        // TODO support default values
-
-        LoaderUtil.skipToEndElement(reader);
+        property.setMany(many);
+        property.setRequired(required);
+        property.setDefaultValue(value);
         return property;
     }
 }

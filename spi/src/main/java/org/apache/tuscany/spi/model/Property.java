@@ -18,6 +18,8 @@ package org.apache.tuscany.spi.model;
 
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.Document;
+
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
@@ -32,6 +34,7 @@ public class Property<T> extends ModelObject {
     private Class<T> javaType;
     private boolean many;
     private boolean required;
+    private Document defaultValue;
 
     public Property() {
     }
@@ -88,5 +91,13 @@ public class Property<T> extends ModelObject {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public Document getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(Document defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }
