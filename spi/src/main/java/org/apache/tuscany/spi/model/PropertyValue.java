@@ -25,9 +25,21 @@ import org.apache.tuscany.spi.ObjectFactory;
  */
 public class PropertyValue<T> extends ModelObject {
     private String name;
+    private String source;
     private ObjectFactory<T> valueFactory;
 
     public PropertyValue() {
+    }
+
+    /**
+     * Constructor specifying the name of a property and the XPath source expression.
+     *
+     * @param name the name of the property which this value is for
+     * @param source an XPath expression whose result will be the actual value
+     */
+    public PropertyValue(String name, String source) {
+        this.name = name;
+        this.source = source;
     }
 
     public PropertyValue(String name, ObjectFactory<T> valueFactory) {
@@ -35,12 +47,37 @@ public class PropertyValue<T> extends ModelObject {
         this.valueFactory = valueFactory;
     }
 
+    /**
+     * Returns the name of the property that this value is for.
+     * @return the name of the property that this value is for
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the property that this value is for.
+     * @param name the name of the property that this value is for
+     */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns an XPath expression that should be evaluated to get the actual property value.
+     *
+     * @return an XPath expression that should be evaluated to get the actual property value
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * Sets an XPath expression that should be evaluated to get the actual property value.
+     * @param source an XPath expression that should be evaluated to get the actual property value
+     */
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public ObjectFactory<T> getValueFactory() {
