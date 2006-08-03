@@ -132,7 +132,8 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         return (Implementation<?>) o;
     }
 
-    protected void loadProperty(XMLStreamReader reader, DeploymentContext deploymentContext,
+    protected void loadProperty(XMLStreamReader reader,
+                                DeploymentContext deploymentContext,
                                 ComponentDefinition<?> componentDefinition)
         throws XMLStreamException, LoaderException {
         String name = reader.getAttributeValue(null, "name");
@@ -142,7 +143,14 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         if (property == null) {
             throw new UndefinedPropertyException(name);
         }
-        componentDefinition.add(createPropertyValue(reader, property, name));
+        PropertyValue<?> propertyValue;
+        String source = reader.getAttributeValue(null, "source");
+        if (source != null) {
+            propertyValue = new PropertyValue(name, source);
+        } else {
+            propertyValue = createPropertyValue(reader, property, name);
+        }
+        componentDefinition.add(propertyValue);
     }
 
     private <T> PropertyValue<T> createPropertyValue(XMLStreamReader reader,
@@ -177,31 +185,4 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
         componentDefinition.add(referenceTarget);
     }
-
-/*
-    protected StAXPropertyFactory<?> getPropertyFactory(String factoryName,
-        ResourceLoader resourceLoader) throws InvalidPropertyFactoryException {
-        Class<?> impl;
-        try {
-            // try to load factory from application classloader
-            impl = resourceLoader.loadClass(factoryName);
-        } catch (ClassNotFoundException e) {
-            try {
-                // try to load factory from container classloader
-                impl = Class.forName(factoryName);
-            } catch (ClassNotFoundException e1) {
-                throw new InvalidPropertyFactoryException(factoryName, e);
-            }
-        }
-        try {
-            return (StAXPropertyFactory<?>) impl.newInstance();
-        } catch (InstantiationException e) {
-            throw new InvalidPropertyFactoryException(factoryName, e);
-        } catch (IllegalAccessException e) {
-            throw new InvalidPropertyFactoryException(factoryName, e);
-        } catch (ClassCastException e) {
-            throw new InvalidPropertyFactoryException(factoryName, e);
-        }
-    }
-*/
 }
