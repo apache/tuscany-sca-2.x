@@ -24,11 +24,11 @@ import java.net.URLClassLoader;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.TuscanyException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -44,7 +44,7 @@ public class DirectoryScanExtender implements VoidService {
     private String path;
     private RuntimeInfo runtimeInfo;
     private Deployer deployer;
-    private SystemCompositeComponent parent;
+    private CompositeComponent parent;
 
     @Property
     public void setPath(String path) {
@@ -62,7 +62,7 @@ public class DirectoryScanExtender implements VoidService {
     }
 
     @Autowire
-    public void setParent(SystemCompositeComponent parent) {
+    public void setParent(CompositeComponent parent) {
         this.parent = parent;
     }
 
