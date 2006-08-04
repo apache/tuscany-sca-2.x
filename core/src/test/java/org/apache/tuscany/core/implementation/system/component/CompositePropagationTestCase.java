@@ -34,9 +34,9 @@ public class CompositePropagationTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = new SystemCompositeComponentImpl("parent", null, null);
-        child1 = new SystemCompositeComponentImpl("child1", parent, null);
-        child2 = new SystemCompositeComponentImpl("child2", child1, null);
+        parent = new SystemCompositeComponentImpl("parent", null, null, null);
+        child1 = new SystemCompositeComponentImpl("child1", parent, null, null);
+        child2 = new SystemCompositeComponentImpl("child2", child1, null, null);
         child1.register(child2);
         parent.register(child1);
     }

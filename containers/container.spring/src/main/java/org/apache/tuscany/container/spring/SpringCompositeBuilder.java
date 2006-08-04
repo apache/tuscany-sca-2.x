@@ -35,7 +35,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         SpringImplementation implementation = componentDefinition.getImplementation();
         ConfigurableApplicationContext applicationContext = implementation.getApplicationContext();
         SpringCompositeComponent component =
-            new SpringCompositeComponent(name, applicationContext, parent);
+            new SpringCompositeComponent(name, applicationContext, parent, null);
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
             BoundReferenceDefinition<? extends Binding>,
             ? extends Property> componentType = implementation.getComponentType();

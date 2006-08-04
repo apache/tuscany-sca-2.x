@@ -18,7 +18,7 @@ import org.jmock.MockObjectTestCase;
 public class SystemCompositeComponentResolutionTestCase extends MockObjectTestCase {
 
     public void testComponentResolution() throws NoSuchMethodException {
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl("foo", null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl("foo", null, null, null);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);

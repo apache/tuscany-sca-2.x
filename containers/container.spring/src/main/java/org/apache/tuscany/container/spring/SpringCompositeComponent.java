@@ -16,6 +16,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.io.Resource;
+import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -40,11 +41,13 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
      * @param name          the name of the SCA composite
      * @param springContext the pre-instantiated Spring applicaiton context
      * @param parent        the SCA composite parent
+     * @param propertyValues the values of this composite's Properties
      */
     public SpringCompositeComponent(String name,
                                     ConfigurableApplicationContext springContext,
-                                    CompositeComponent parent) {
-        super(name, parent);
+                                    CompositeComponent parent,
+                                    Map<String, Document> propertyValues) {
+        super(name, parent, propertyValues);
         SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
         this.springContext = springContext;

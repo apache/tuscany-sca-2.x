@@ -21,7 +21,7 @@ public class ReferenceInvocationTestCase extends MockObjectTestCase {
 
     public void testInvocation() throws Exception {
         ConfigurableApplicationContext ctx = createSpringContext();
-        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null);
+        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null, null);
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
         Mock mock = mock(Reference.class);

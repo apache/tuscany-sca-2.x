@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.w3c.dom.Document;
+
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.AutowireResolutionException;
 import org.apache.tuscany.core.component.ComponentInitException;
@@ -56,11 +58,17 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
 
     protected ScopeContainer scopeContainer;
 
+    /**
+     * @param name          the name of the SCA composite
+     * @param parent        the SCA composite parent
+     * @param autowireContext the component that should be to resolve autowires
+     * @param propertyValues the values of this composite's Properties
+     */
     public AbstractCompositeComponent(String name,
                                       CompositeComponent parent,
-                                      AutowireComponent autowireContext
-    ) {
-        super(name, parent);
+                                      AutowireComponent autowireContext,
+                                      Map<String, Document> propertyValues) {
+        super(name, parent, propertyValues);
         this.autowireContext = autowireContext;
     }
 

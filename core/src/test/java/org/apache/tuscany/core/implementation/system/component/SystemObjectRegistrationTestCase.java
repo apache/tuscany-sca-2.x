@@ -41,7 +41,7 @@ public class SystemObjectRegistrationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        systemContext = new SystemCompositeComponentImpl(null, null, null);
+        systemContext = new SystemCompositeComponentImpl(null, null, null, null);
         systemContext.start();
         systemContext.publish(new CompositeStart(this, null));
     }

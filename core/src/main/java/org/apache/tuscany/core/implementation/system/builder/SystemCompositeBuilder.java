@@ -92,7 +92,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         // create the composite component
         String name = componentDefinition.getName();
         AutowireComponent autowireContext = getAutowireContext(parent);
-        SystemCompositeComponent<?> context = new SystemCompositeComponentImpl(name, parent, autowireContext);
+        SystemCompositeComponent<?> context = new SystemCompositeComponentImpl(name, parent, autowireContext, null);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
             context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
         }
