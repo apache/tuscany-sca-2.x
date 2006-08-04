@@ -17,6 +17,7 @@
 package org.apache.tuscany.core.services.artifact;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -42,11 +43,11 @@ public class LocalMavenRepositoryTestCase extends TestCase {
         assertEquals("org/apache/tuscany/spi/1.0-SNAPSHOT/spi-1.0-SNAPSHOT-x86.jar", repo.getPath(artifact));
     }
 
-    public void testArtifactFoundInRepo() throws MalformedURLException {
+    public void testArtifactFoundInRepo() throws MalformedURLException, UnsupportedEncodingException {
         String home = System.getProperty("user.home");
         File file = new File(home, ".m2/repository/org/apache/tuscany/spi/1.0-SNAPSHOT/spi-1.0-SNAPSHOT.jar");
         repo.resolve(artifact);
-        assertEquals(file.toURL(), artifact.getUrl());
+        assertEquals(file.toURL().toString(), java.net.URLDecoder.decode(artifact.getUrl().toString(), "UTF-8"));
     }
 
     public void testArtifactNotFoundInRepo() throws MalformedURLException {
