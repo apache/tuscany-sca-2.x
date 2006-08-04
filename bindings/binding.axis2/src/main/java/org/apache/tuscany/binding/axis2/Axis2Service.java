@@ -171,6 +171,7 @@ public class Axis2Service<T> extends ServiceExtension<T> {
         return new DummyServletConfig();
     }
 
+
     private class DummyServletConfig implements ServletConfig {
 
         public String getServletName() {
