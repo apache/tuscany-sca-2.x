@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class JavaMappedService extends ServiceDefinition {
     private Class<?> serviceInterface;
+    private JavaMappedCallback callbackReference;
 
     public JavaMappedService() {
     }
@@ -64,5 +65,23 @@ public class JavaMappedService extends ServiceDefinition {
      */
     public void setServiceInterface(Class<?> serviceInterface) {
         this.serviceInterface = serviceInterface;
+    }
+
+    /**
+     * Returns the Callback Reference for this service.
+     *
+     * @return the Callback Reference for this service
+     */
+    public JavaMappedCallback getCallbackReference() {
+        return callbackReference;
+    }
+
+    /**
+     * Sets the Callback Reference for this service.
+     *
+     * @param callbackReference the Callback Reference for this service
+     */
+    public void setCallbackReference(JavaMappedCallback callbackReference) {
+        this.callbackReference = callbackReference;
     }
 }

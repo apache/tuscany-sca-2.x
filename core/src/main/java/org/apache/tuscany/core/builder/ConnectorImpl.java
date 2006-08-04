@@ -5,16 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.wire.BridgingInterceptor;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.MessageDispatcher;
-import org.apache.tuscany.core.wire.OutboundAutowire;
+import org.osoa.sca.annotations.Callback;
+import org.osoa.sca.annotations.OneWay;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -27,6 +26,12 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import org.apache.tuscany.core.wire.BridgingInterceptor;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.MessageDispatcher;
+import org.apache.tuscany.core.wire.OutboundAutowire;
 
 /**
  * The default connector implmentation
@@ -46,7 +51,7 @@ public class ConnectorImpl implements Connector {
                         continue;
                     }
                     try {
-                        connect(outboundWire, parent, scope);
+                        connect(sourceComponent, outboundWire, parent, scope);
                     } catch (BuilderConfigException e) {
                         e.addContextName(source.getName());
                         e.addContextName(parent.getName());
@@ -55,8 +60,8 @@ public class ConnectorImpl implements Connector {
                 }
             }
         } else if (source instanceof CompositeComponent) {
-            CompositeComponent composite = (CompositeComponent) source;
-            for (SCAObject<?> child : (List<SCAObject<?>>) composite.getChildren()) {
+            CompositeComponent<?> composite = (CompositeComponent) source;
+            for (SCAObject<?> child : composite.getChildren()) {
                 connect(child);
             }
         } else if (source instanceof Service) {
@@ -79,7 +84,8 @@ public class ConnectorImpl implements Connector {
      * @throws BuilderConfigException
      */
     @SuppressWarnings("unchecked")
-    public <T> void connect(OutboundWire<T> sourceWire,
+    public <T> void connect(AtomicComponent<?> source,
+                            OutboundWire<T> sourceWire,
                             CompositeComponent<?> parent,
                             Scope sourceScope) throws BuilderConfigException {
         assert sourceScope != null : "Source scope was null";
@@ -105,17 +111,18 @@ public class ConnectorImpl implements Connector {
             if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
-            connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
+            boolean optimizable = isOptimizable(sourceScope, target.getScope());
+            connect(sourceWire, targetWire, source, target, optimizable);
         } else if (target instanceof Reference) {
             InboundWire<T> targetWire = ((Reference) target).getInboundWire();
             assert targetWire != null;
             if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
-            connect(sourceWire, targetWire, target, isOptimizable(sourceScope, target.getScope()));
+            connect(sourceWire, targetWire, source, target, isOptimizable(sourceScope, target.getScope()));
         } else {
-            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference "
-                + sourceWire.getReferenceName());
+            String name = sourceWire.getReferenceName();
+            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + name);
             e.setIdentifier(targetName.getQualifiedName());
         }
     }
@@ -144,7 +151,8 @@ public class ConnectorImpl implements Connector {
 
     public <T> void connect(OutboundWire<T> sourceWire,
                             InboundWire<T> targetWire,
-                            SCAObject<?> context,
+                            AtomicComponent<?> source,
+                            SCAObject<?> scaObject,
                             boolean optimizable) {
         Map<Method, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
@@ -163,13 +171,59 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
-            if (context instanceof Component) {
-                connect(outboundChain,
-                    inboundChain,
-                    ((Component) context).createTargetInvoker(targetWire.getServiceName(),
-                        inboundChain.getMethod()));
-            } else if (context instanceof Reference) {
-                Reference reference = (Reference) context;
+            if (scaObject instanceof Component) {
+                Component component = (Component) scaObject;
+                Method operation = outboundChain.getMethod();
+
+                // FIXME should not relay on annotations
+                boolean isOneWayOperation = operation.getAnnotation(OneWay.class) != null;
+                boolean operationHasCallback = operation.getDeclaringClass().getAnnotation(Callback.class) != null;
+                if (isOneWayOperation && operationHasCallback) {
+                    throw new ComponentRuntimeException("Operation can't both be one-way and have a callback");
+                }
+                TargetInvoker invoker;
+                if (isOneWayOperation || operationHasCallback) {
+                    invoker = component.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
+                } else {
+                    invoker = component.createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
+                }
+                connect(outboundChain, inboundChain, invoker);
+            } else if (scaObject instanceof Reference) {
+                Reference reference = (Reference) scaObject;
+                TargetInvoker invoker = reference.createTargetInvoker(targetWire.getServiceName(),
+                    inboundChain.getMethod());
+                connect(outboundChain, inboundChain, invoker);
+            }
+        }
+
+        // connect callback wires if they exist
+        for (OutboundInvocationChain outboundChain : sourceWire.getSourceCallbackInvocationChains().values()) {
+            // match wire chains
+            Map<Method, InboundInvocationChain> chains = sourceWire.getTargetCallbackInvocationChains();
+            InboundInvocationChain inboundChain = chains.get(outboundChain.getMethod());
+            if (inboundChain == null) {
+                BuilderConfigException e =
+                    new BuilderConfigException("Incompatible source and target chain interfaces for reference");
+                e.setIdentifier(sourceWire.getReferenceName());
+                throw e;
+            }
+            if (scaObject instanceof Component) {
+                Method operation = outboundChain.getMethod();
+                // FIXME should not relay on annotations
+                boolean isOneWayOperation = operation.getAnnotation(OneWay.class) != null;
+                boolean operationHasCallback = operation.getDeclaringClass().getAnnotation(Callback.class) != null;
+                if (isOneWayOperation && operationHasCallback) {
+                    throw new ComponentRuntimeException("Operation can't both be one-way and have a callback");
+                }
+                TargetInvoker invoker;
+                if (isOneWayOperation || operationHasCallback) {
+                    invoker = source.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
+                } else {
+                    invoker = source.createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
+                }
+                connect(outboundChain, inboundChain, invoker);
+            } else if (scaObject instanceof Reference) {
+                Reference reference = (Reference) scaObject;
                 TargetInvoker invoker = reference.createTargetInvoker(targetWire.getServiceName(),
                     inboundChain.getMethod());
                 connect(outboundChain, inboundChain, invoker);

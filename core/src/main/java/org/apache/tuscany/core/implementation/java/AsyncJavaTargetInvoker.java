@@ -26,37 +26,52 @@ import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetException;
 
 import org.apache.tuscany.core.policy.async.AsyncMonitor;
+import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
 /**
  * Responsible for performing a non-blocking dispatch on a Java component implementation instance
  *
  * @version $Rev$ $Date$
  */
-public class AsyncJavaTargetInvoker extends JavaTargetInvoker {
+public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
 
     private static final ContextBinder BINDER = new ContextBinder();
     private static final Message RESPONSE = new ImmutableMessage();
 
+    private JavaAtomicComponent component;
+    private OutboundWire wire;
     private WorkScheduler workScheduler;
     private AsyncMonitor monitor;
+    private WorkContext workContext;
+    private Object target;
 
     /**
      * Creates a new invoker
      *
      * @param operation     the operation the invoker is associated with
+     * @param wire
      * @param component     the target component
      * @param workScheduler the work scheduler to run the invocation
      * @param monitor       the monitor to pass events to
+     * @param workContext
      */
     public AsyncJavaTargetInvoker(Method operation,
+                                  OutboundWire wire,
                                   JavaAtomicComponent component,
                                   WorkScheduler workScheduler,
-                                  AsyncMonitor monitor) {
-        super(operation, component);
+                                  AsyncMonitor monitor,
+                                  WorkContext workContext) {
+        super(operation);
+        this.wire = wire;
+        this.component = component;
         this.workScheduler = workScheduler;
         this.monitor = monitor;
+        this.workContext = workContext;
     }
 
     // Override invocation methods to defer invocation to work item
@@ -69,9 +84,10 @@ public class AsyncJavaTargetInvoker extends JavaTargetInvoker {
         try {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
+                    workContext.setCurrentInvocationWire(wire);
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
-                        AsyncJavaTargetInvoker.BINDER.setContext(currentContext);
+                        BINDER.setContext(currentContext);
                         // REVIEW response must be null for one-way and non-null for callback
                         AsyncJavaTargetInvoker.super.invokeTarget(payload);
                     } catch (Exception e) {
@@ -79,7 +95,7 @@ public class AsyncJavaTargetInvoker extends JavaTargetInvoker {
                         // monitor.executionError(e);
                         e.printStackTrace();
                     } finally {
-                        AsyncJavaTargetInvoker.BINDER.setContext(oldContext);
+                        BINDER.setContext(oldContext);
                     }
                 }
             });
@@ -111,6 +127,20 @@ public class AsyncJavaTargetInvoker extends JavaTargetInvoker {
         invoker.monitor = this.monitor;
 
         return invoker;
+    }
+
+    /**
+     * Resolves the target service instance or returns a cached one
+     */
+    protected Object getInstance() throws TargetException {
+        if (!cacheable) {
+            return component.getTargetInstance();
+        } else {
+            if (target == null) {
+                target = component.getTargetInstance();
+            }
+            return target;
+        }
     }
 
     private static class ContextBinder extends SCA {

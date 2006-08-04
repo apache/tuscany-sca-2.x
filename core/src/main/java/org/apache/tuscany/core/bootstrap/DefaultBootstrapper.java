@@ -42,6 +42,7 @@ import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.Introspector;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
+import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
@@ -50,7 +51,6 @@ import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -65,13 +65,13 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.loader.ComponentLoader;
 import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
+import org.apache.tuscany.core.loader.IncludeLoader;
 import org.apache.tuscany.core.loader.InterfaceJavaLoader;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
 import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.loader.StringParserPropertyFactory;
-import org.apache.tuscany.core.loader.IncludeLoader;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on the individual methods for how the
@@ -180,9 +180,9 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
 
         // register component type loaders
         loaderRegistry.registerLoader(SystemImplementation.class,
-                                      new SystemComponentTypeLoader(introspector));
+            new SystemComponentTypeLoader(introspector));
         loaderRegistry.registerLoader(SystemCompositeImplementation.class,
-                                      new SystemCompositeComponentTypeLoader(loaderRegistry));
+            new SystemCompositeComponentTypeLoader(loaderRegistry));
 
         // register element loaders
         registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));

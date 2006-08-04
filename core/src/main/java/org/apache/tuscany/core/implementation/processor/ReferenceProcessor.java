@@ -1,5 +1,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processCallback;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
@@ -15,6 +17,7 @@ import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -70,6 +73,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
+        processCallback(interfaceType, contract);
     }
 
     public void visitField(CompositeComponent<?> parent, Field field,
@@ -106,6 +110,8 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
+        processCallback(interfaceType, contract);
+
     }
 
     public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
@@ -113,5 +119,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
                                  DeploymentContext context) throws ProcessingException {
         
     }
+
+
 
 }

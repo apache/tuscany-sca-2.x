@@ -30,7 +30,6 @@ public class MockSyncInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         ++count;
-        //System.out.println("Invoking interceptor");
         return next.invoke(msg);
     }
 

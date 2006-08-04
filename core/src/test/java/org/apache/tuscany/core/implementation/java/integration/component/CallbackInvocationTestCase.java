@@ -1,0 +1,234 @@
+package org.apache.tuscany.core.implementation.java.integration.component;
+
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.osoa.sca.annotations.Callback;
+
+import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.implementation.ConstructorDefinition;
+import org.apache.tuscany.core.implementation.JavaMappedCallback;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import org.easymock.IAnswer;
+
+/**
+ * Verifies callback integration scenarios.
+ *
+ * @version $Rev$ $Date$
+ */
+public class CallbackInvocationTestCase extends TestCase {
+
+    private ScopeContainer container;
+    private DeploymentContext context;
+    private JavaComponentBuilder builder;
+
+    /**
+     * Verifies callback wires are built and callback invocations are handled properly
+     */
+    public void testComponentToComponentCallback() throws Exception {
+        ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
+        JavaAtomicComponent<Foo> fooComponent =
+            (JavaAtomicComponent<Foo>) builder.build(null, targetDefinition, context);
+        container.register(fooComponent);
+
+        CompositeComponent parent = createMock(CompositeComponent.class);
+        parent.getChild(isA(String.class));
+        expectLastCall().andReturn(fooComponent).anyTimes();
+        replay(parent);
+
+        ComponentDefinition<JavaImplementation> sourceDefinition = createSource("fooClient");
+        JavaAtomicComponent<FooClient> clientComponent =
+            (JavaAtomicComponent<FooClient>) builder.build(parent, sourceDefinition, context);
+        container.register(clientComponent);
+
+        Connector connector = new ConnectorImpl();
+        connector.connect(clientComponent);
+        FooClient client = clientComponent.getServiceInstance();
+        client.invoke();
+        assertTrue(client.invoked);
+    }
+
+    /**
+     * Verifies a callback in response to an invocation from two different client components is routed back to the
+     * appropriate client.
+     */
+    public void testTwoSourceComponentToComponentCallback() throws Exception {
+        ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
+        JavaAtomicComponent<Foo> fooComponent =
+            (JavaAtomicComponent<Foo>) builder.build(null, targetDefinition, context);
+        container.register(fooComponent);
+
+        CompositeComponent parent = createMock(CompositeComponent.class);
+        parent.getChild(isA(String.class));
+        expectLastCall().andReturn(fooComponent).anyTimes();
+        replay(parent);
+
+        ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource("fooCleint1");
+        ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource("fooCleint2");
+        JavaAtomicComponent<FooClient> clientComponent1 =
+            (JavaAtomicComponent<FooClient>) builder.build(parent, sourceDefinition1, context);
+        container.register(clientComponent1);
+        JavaAtomicComponent<FooClient> clientComponent2 =
+            (JavaAtomicComponent<FooClient>) builder.build(parent, sourceDefinition2, context);
+        container.register(clientComponent2);
+
+        Connector connector = new ConnectorImpl();
+        connector.connect(clientComponent1);
+        connector.connect(clientComponent2);
+        FooClient client1 = clientComponent1.getServiceInstance();
+        client1.invoke();
+        assertTrue(client1.invoked);
+        FooClient client2 = clientComponent2.getServiceInstance();
+        client2.invoke();
+        assertTrue(client2.invoked);
+    }
+
+
+    private ComponentDefinition<JavaImplementation> createTarget() throws NoSuchMethodException {
+        ConstructorDefinition<FooImpl> ctorDef = new ConstructorDefinition<FooImpl>(FooImpl.class.getConstructor());
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        type.setConstructorDefinition(ctorDef);
+        type.setImplementationScope(Scope.MODULE);
+        Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
+        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        contract.setCallbackClass(FooCallback.class);
+        contract.setCallbackName("callback");
+        JavaMappedService mappedService = new JavaMappedService("Foo", contract, false);
+        JavaMappedCallback mappedCallback = new JavaMappedCallback("callback", method, FooCallback.class);
+        mappedService.setCallbackReference(mappedCallback);
+        type.getServices().put("Foo", mappedService);
+
+        JavaImplementation impl = new JavaImplementation();
+        impl.setComponentType(type);
+        impl.setImplementationClass(FooImpl.class);
+        return new ComponentDefinition<JavaImplementation>("foo", impl);
+    }
+
+    private ComponentDefinition<JavaImplementation> createSource(String name)
+        throws NoSuchMethodException, URISyntaxException {
+        ConstructorDefinition<FooClient> ctorDef =
+            new ConstructorDefinition<FooClient>(FooClient.class.getConstructor());
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        type.setConstructorDefinition(ctorDef);
+        type.setImplementationScope(Scope.MODULE);
+        Method method = FooClient.class.getMethod("setFoo", Foo.class);
+        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        contract.setCallbackClass(FooCallback.class);
+        contract.setCallbackName("callback");
+        JavaMappedReference mappedReference = new JavaMappedReference("foo", contract, method);
+        type.getReferences().put("foo", mappedReference);
+        ReferenceTarget refTarget = new ReferenceTarget();
+        refTarget.setReferenceName("foo");
+        refTarget.getTargets().add(new URI("foo"));
+        JavaImplementation impl = new JavaImplementation();
+        impl.setComponentType(type);
+        impl.setImplementationClass(FooClient.class);
+        ComponentDefinition<JavaImplementation> def = new ComponentDefinition<JavaImplementation>(name, impl);
+        def.getReferenceTargets().put("foo", refTarget);
+        return def;
+    }
+
+    @Callback(FooCallback.class)
+    public static interface Foo {
+        void call();
+    }
+
+    public static class FooImpl implements Foo {
+        private FooCallback callback;
+
+        public FooImpl() {
+        }
+
+        @Callback
+        public void setCallback(FooCallback callback) {
+            this.callback = callback;
+        }
+
+        public void call() {
+            callback.callback();
+        }
+    }
+
+    public static class FooClient implements FooCallback {
+
+        private Foo foo;
+        private boolean invoked;
+
+        public FooClient() {
+        }
+
+        public void setFoo(Foo foo) {
+            this.foo = foo;
+        }
+
+        public void callback() {
+            if (invoked) {
+                fail();
+            }
+            invoked = true;
+        }
+
+        public void invoke() {
+            foo.call();
+        }
+    }
+
+    public interface FooCallback {
+        void callback();
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        container = new ModuleScopeContainer();
+        container.start();
+        context = createMock(DeploymentContext.class);
+        context.getModuleScope();
+        expectLastCall().andReturn(container).anyTimes();
+        replay(context);
+
+        WorkScheduler scheduler = createMock(WorkScheduler.class);
+        scheduler.scheduleWork(isA(Runnable.class));
+        expectLastCall().andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                Runnable runnable = (Runnable) getCurrentArguments()[0];
+                runnable.run();
+                return null;
+            }
+        });
+        replay(scheduler);
+
+        builder = new JavaComponentBuilder();
+        WorkContextImpl workContext = new WorkContextImpl();
+        builder.setWorkContext(workContext);
+        builder.setWireService(new JDKWireService(workContext, null));
+        builder.setWorkScheduler(scheduler);
+    }
+}

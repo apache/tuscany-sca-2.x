@@ -9,12 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.component.AutowireResolutionException;
-import org.apache.tuscany.core.component.ComponentInitException;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -26,7 +20,15 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.component.AutowireResolutionException;
+import org.apache.tuscany.core.component.ComponentInitException;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.implementation.system.component.SystemService;
 
 /**
  * The base implementation of a composite context
@@ -59,10 +61,10 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     protected ScopeContainer scopeContainer;
 
     /**
-     * @param name          the name of the SCA composite
-     * @param parent        the SCA composite parent
+     * @param name            the name of the SCA composite
+     * @param parent          the SCA composite parent
      * @param autowireContext the component that should be to resolve autowires
-     * @param propertyValues the values of this composite's Properties
+     * @param propertyValues  the values of this composite's Properties
      */
     public AbstractCompositeComponent(String name,
                                       CompositeComponent parent,
@@ -209,6 +211,11 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
         return null;
     }
+
+    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        return null;
+    }
+
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemService context) {
         assert interfaze != null;

@@ -21,8 +21,9 @@ public class InboundWireImpl<T> implements InboundWire<T> {
 
     private String serviceName;
     private Class[] businessInterfaces;
-    private Map<Method, InboundInvocationChain> invocationChains = new MethodHashMap<InboundInvocationChain>();
     private OutboundWire<T> targetWire;
+    private String callbackReferenceName;
+    private Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -59,23 +60,31 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     }
 
     public Map<Method, InboundInvocationChain> getInvocationChains() {
-        return invocationChains;
+        return chains;
     }
 
     public void addInvocationChains(Map<Method, InboundInvocationChain> chains) {
-        invocationChains.putAll(chains);
+        this.chains.putAll(chains);
     }
 
     public void addInvocationChain(Method method, InboundInvocationChain chain) {
-        invocationChains.put(method, chain);
+        chains.put(method, chain);
     }
 
     public void setTargetWire(OutboundWire<T> wire) {
         targetWire = wire;
     }
 
+    public String getCallbackReferenceName() {
+        return callbackReferenceName;
+    }
+
+    public void setCallbackReferenceName(String callbackReferenceName) {
+        this.callbackReferenceName = callbackReferenceName;
+    }
+
     public boolean isOptimizable() {
-        for (InboundInvocationChain chain : invocationChains.values()) {
+        for (InboundInvocationChain chain : chains.values()) {
             if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {
                 return false;
             }
@@ -103,7 +112,6 @@ public class InboundWireImpl<T> implements InboundWire<T> {
                 }
             }
         }
-
         return true;
     }
 

@@ -5,16 +5,16 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 
 /**
  * Base class for dispatching to a Java based component implementation. Subclasses implement a strategy for resolving
- * implementation instances. 
+ * implementation instances.
  *
  * @version $Rev$ $Date$
  */
@@ -32,8 +32,8 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
         try {
             Object instance = getInstance();
             if (!operation.getDeclaringClass().isInstance(instance)) {
-                Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(instance.getClass());
-                Method newOperation = JavaIntrospectionHelper.findClosestMatchingMethod(operation.getName(),
+                Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
+                Method newOperation = findClosestMatchingMethod(operation.getName(),
                     operation.getParameterTypes(), methods);
                 if (newOperation != null) {
                     operation = newOperation;
@@ -59,10 +59,6 @@ public abstract class PojoTargetInvoker implements TargetInvoker {
             msg.setBody(e);
         }
         return msg;
-    }
-
-    public void setNext(Interceptor next) {
-        throw new IllegalStateException("This interceptor must be the last interceptor in an interceptor chain");
     }
 
     public boolean isCacheable() {

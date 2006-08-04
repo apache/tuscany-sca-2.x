@@ -28,7 +28,7 @@ import org.apache.tuscany.core.implementation.JavaServiceContract;
  */
 public class ProcessorUtilsServiceTestCase extends TestCase {
 
-    public void testCreateConversationalService() {
+    public void testCreateConversationalService() throws Exception {
         JavaMappedService service = ProcessorUtils.createService(Foo.class);
         assertTrue(Foo.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(service.isRemotable());
@@ -38,7 +38,7 @@ public class ProcessorUtilsServiceTestCase extends TestCase {
         assertTrue("ProcessorUtilsServiceTestCase$Bar".equals(serviceContract.getCallbackName()));
     }
 
-    public void testCreateDefaultService() {
+    public void testCreateDefaultService() throws Exception {
         JavaMappedService service = ProcessorUtils.createService(Baz.class);
         assertTrue(Baz.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(!service.isRemotable());

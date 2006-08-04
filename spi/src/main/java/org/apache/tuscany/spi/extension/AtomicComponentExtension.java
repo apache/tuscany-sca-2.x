@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
@@ -11,11 +12,13 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * An extension point for atomic component type, which new implementation types may extend
@@ -29,16 +32,19 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
     protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
+    protected WorkContext workContext;
     private final int initLevel;
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent<?> parent,
                                        ScopeContainer scopeContainer,
                                        WireService wireService,
+                                       WorkContext workContext,
                                        int initLevel) {
         super(name, parent);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
+        this.workContext = workContext;
         this.initLevel = initLevel;
     }
 
@@ -109,6 +115,10 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         }
     }
 
+    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        throw new UnsupportedOperationException();
+    }
+
     protected void onReferenceWire(OutboundWire wire) {
     }
 
@@ -117,5 +127,6 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
 
     protected void onServiceWire(InboundWire wire) {
     }
+
 
 }

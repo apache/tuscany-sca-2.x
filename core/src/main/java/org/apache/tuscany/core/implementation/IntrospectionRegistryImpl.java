@@ -70,19 +70,6 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
             }
         }
 
-//        Constructor componentConstructor = null;
-//        Constructor[] constructors = clazz.getConstructors();
-//        for (Constructor constructor : constructors) {
-//            if (componentConstructor == null) {
-//                componentConstructor = constructor;
-//            }else{
-//                if componentConstructor.getAnnotation()
-//            }
-//            for (ImplementationProcessor processor : cache) {
-//                processor.visitConstructor(constructor, type, null);
-//            }
-//        }
-
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
             for (ImplementationProcessor processor : cache) {

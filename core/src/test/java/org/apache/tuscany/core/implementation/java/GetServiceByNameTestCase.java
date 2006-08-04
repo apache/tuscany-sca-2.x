@@ -36,6 +36,7 @@ public class GetServiceByNameTestCase extends MockObjectTestCase {
         mock.stubs().method("getBusinessInterface").will(returnValue(Target.class));
         mock.stubs().method("getServiceName").will(returnValue("Target"));
         mock.expects(atLeastOnce()).method("getInvocationChains").will(returnValue(Collections.emptyMap()));
+        mock.stubs().method("getCallbackReferenceName").will(returnValue(null));
 
         InboundWire<Target> wire = (InboundWire<Target>) mock.proxy();
         component.addInboundWire(wire);

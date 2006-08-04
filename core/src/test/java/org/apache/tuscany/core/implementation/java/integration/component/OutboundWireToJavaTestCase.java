@@ -162,7 +162,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         JavaAtomicComponent<?> atomicComponent = new JavaAtomicComponent("target", configuration, null, null);
         InboundWire targetWire = MockFactory.createTargetWire("Target", Target.class);
         atomicComponent.addInboundWire(targetWire);
-        connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, false);
+        connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, atomicComponent, false);
         atomicComponent.start();
         return wire;
     }

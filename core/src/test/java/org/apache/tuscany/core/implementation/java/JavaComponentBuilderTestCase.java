@@ -15,6 +15,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
@@ -45,7 +46,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
         ServiceContract sourceContract = new JavaServiceContract();
         sourceContract.setInterfaceClass(Source.class);
-        ServiceDefinition sourceServiceDefinition = new ServiceDefinition();
+        ServiceDefinition sourceServiceDefinition = new JavaMappedService();
         sourceServiceDefinition.setName("Source");
         sourceServiceDefinition.setServiceContract(sourceContract);
 

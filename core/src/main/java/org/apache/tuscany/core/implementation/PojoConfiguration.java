@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -44,8 +45,10 @@ public class PojoConfiguration {
     private List<Injector> propertyInjectors = new ArrayList<Injector>();
     private Map<String, Member> referenceSites = new HashMap<String, Member>();
     private Map<String, Member> propertySites = new HashMap<String, Member>();
+    private Map<String, Member> callbackSites = new HashMap<String, Member>();
     private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
     private WireService wireService;
+    private WorkContext workContext;
 
     public CompositeComponent<?> getParent() {
         return parent;
@@ -131,6 +134,14 @@ public class PojoConfiguration {
         referenceSites.put(name, member);
     }
 
+    public Map<String, Member> getCallbackSite() {
+        return callbackSites;
+    }
+
+    public void addCallbackSite(String name, Member member) {
+        callbackSites.put(name, member);
+    }
+
     public Map<String, Member> getPropertySites() {
         return propertySites;
     }
@@ -146,4 +157,13 @@ public class PojoConfiguration {
     public void setWireService(WireService wireService) {
         this.wireService = wireService;
     }
+
+    public WorkContext getWorkContext() {
+        return workContext;
+    }
+
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
+    }
+
 }

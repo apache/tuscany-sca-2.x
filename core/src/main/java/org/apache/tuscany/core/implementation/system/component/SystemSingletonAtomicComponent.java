@@ -99,4 +99,8 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
         throw new UnsupportedOperationException();
     }
+
+    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        throw new UnsupportedOperationException();
+    }
 }

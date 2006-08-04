@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -47,8 +48,8 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
     private RhinoScript rhinoScript;
 
     public JavaScriptComponent(String name, RhinoScript rhinoScript, List<Class<?>> services, Map<String, Object> properties,
-            CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService) {
-        super(name, parent, scopeContainer, wireService, 0);
+            CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService, WorkContext workContext) {
+        super(name, parent, scopeContainer, wireService, workContext, 0);
 
         this.rhinoScript = rhinoScript;
         this.services = services;
