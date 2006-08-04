@@ -1,5 +1,9 @@
 package org.apache.tuscany.core.implementation.system.component;
 
+import java.util.Map;
+
+import org.w3c.dom.Document;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.core.component.AutowireComponent;
@@ -16,8 +20,11 @@ import org.apache.tuscany.core.implementation.composite.AbstractCompositeCompone
 public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<S>
     implements SystemCompositeComponent<S> {
 
-    public SystemCompositeComponentImpl(String name, CompositeComponent parent, AutowireComponent autowireContext) {
-        super(name, parent, autowireContext);
+    public SystemCompositeComponentImpl(String name,
+                                        CompositeComponent parent,
+                                        AutowireComponent autowireContext,
+                                        Map<String, Document> propertyValues) {
+        super(name, parent, autowireContext, propertyValues);
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)

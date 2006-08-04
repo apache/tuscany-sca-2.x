@@ -92,7 +92,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         }
 
         String name = componentDefinition.getName();
-        CompositeComponentImpl<?> context = new CompositeComponentImpl(name, parent, null);
+        CompositeComponentImpl<?> context = new CompositeComponentImpl(name, parent, null, null);
         for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
             context.register(builderRegistry.build(context, referenceDefinition, deploymentContext));
         }

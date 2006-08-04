@@ -19,7 +19,7 @@ public class AutowireTestCase extends MockObjectTestCase {
      * @throws Exception
      */
     public void testAtomicAutowire() throws Exception {
-        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null);
+        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -44,7 +44,7 @@ public class AutowireTestCase extends MockObjectTestCase {
      * Tests autowiring to a service context which is wired to an atomic context.
      */
     public void testServiceAutowire() throws Exception {
-        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null);
+        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -77,7 +77,7 @@ public class AutowireTestCase extends MockObjectTestCase {
      * Tests autowiring to a reference
      */
     public void testReferenceAutowire() throws Exception {
-        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null);
+        SystemCompositeComponent<?> parent = new SystemCompositeComponentImpl("parent", null, null, null);
         parent.start();
 
         Source refSource = new SourceImpl();

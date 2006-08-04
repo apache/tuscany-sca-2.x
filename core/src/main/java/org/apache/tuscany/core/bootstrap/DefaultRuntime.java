@@ -16,13 +16,17 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.w3c.dom.Document;
+
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
-
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
 
 /**
  * The default implementation of the Tuscany runtime component
@@ -35,8 +39,19 @@ public class DefaultRuntime
     private CompositeComponent rootComponent;
     private SystemCompositeComponent<?> systemComponent;
 
+    /**
+     * Initialize a default runtime with an empty set of Property values.
+     */
     public DefaultRuntime() {
-        super(ComponentNames.TUSCANY_RUNTIME, null, null);
+        this(new HashMap<String, Document>());
+    }
+
+    /**
+     * Initialize a runtime with the a set of properties
+     * @param runtimeProperties Property values for the runtime itself
+     */
+    public DefaultRuntime(Map<String, Document> runtimeProperties) {
+        super(ComponentNames.TUSCANY_RUNTIME, null, null, runtimeProperties);
     }
 
     protected void setRootComponent(CompositeComponent rootComponent) {

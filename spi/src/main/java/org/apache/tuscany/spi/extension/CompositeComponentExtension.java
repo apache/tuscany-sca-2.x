@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.w3c.dom.Document;
+
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.ComponentNotFoundException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -32,9 +34,11 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
+    protected final Map<String, Document> propertyValues;
 
-    protected CompositeComponentExtension(String name, CompositeComponent<?> parent) {
+    protected CompositeComponentExtension(String name, CompositeComponent<?> parent, Map<String, Document> propertyValues) {
         super(name, parent);
+        this.propertyValues = propertyValues;
     }
 
     public Scope getScope() {
