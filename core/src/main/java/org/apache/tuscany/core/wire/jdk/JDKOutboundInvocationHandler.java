@@ -16,19 +16,14 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire} via
@@ -36,7 +31,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public class JDKOutboundInvocationHandler implements WireInvocationHandler, InvocationHandler {
+public class JDKOutboundInvocationHandler extends AbstractJDKOutboundInvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains an invocation chain
@@ -47,7 +42,8 @@ public class JDKOutboundInvocationHandler implements WireInvocationHandler, Invo
      */
     private Map<Method, ChainHolder> chains;
 
-    public JDKOutboundInvocationHandler(Map<Method, OutboundInvocationChain> invocationChains) {
+    public JDKOutboundInvocationHandler(OutboundWire<?> wire) {
+        Map<Method, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         for (Map.Entry<Method, OutboundInvocationChain> entry : invocationChains.entrySet()) {
             this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
@@ -55,7 +51,6 @@ public class JDKOutboundInvocationHandler implements WireInvocationHandler, Invo
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Interceptor headInterceptor = null;
         ChainHolder holder = chains.get(method);
         if (holder == null) {
             TargetException e = new TargetException("Operation not configured");
@@ -63,10 +58,6 @@ public class JDKOutboundInvocationHandler implements WireInvocationHandler, Invo
             throw e;
         }
         OutboundInvocationChain chain = holder.chain;
-        if (chain != null) {
-            headInterceptor = chain.getHeadInterceptor();
-        }
-
         TargetInvoker invoker;
 
         if (holder.cachedInvoker == null) {
@@ -87,51 +78,7 @@ public class JDKOutboundInvocationHandler implements WireInvocationHandler, Invo
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        if (chain.getTargetRequestChannel() == null && chain.getTargetResponseChannel() == null
-            && headInterceptor == null) {
-            try {
-                // short-circuit the dispatch and invoke the target directly
-                if (chain.getTargetInvoker() == null) {
-                    throw new AssertionError("No target invoker [" + method.getName() + "]");
-                }
-                return chain.getTargetInvoker().invokeTarget(args);
-            } catch (InvocationTargetException e) {
-                // the cause was thrown by the target so throw it
-                throw e.getCause();
-            }
-        } else {
-            Message msg = new MessageImpl();
-            msg.setTargetInvoker(invoker);
-            msg.setBody(args);
-            // dispatch the wire down the chain and get the response
-            if (chain.getTargetRequestChannel() != null) {
-                chain.getTargetRequestChannel().send(msg);
-                Object body = msg.getRelatedCallbackMessage().getBody();
-                if (body instanceof Throwable) {
-                    throw (Throwable) body;
-                }
-                return body;
-
-            } else if (headInterceptor == null) {
-                throw new AssertionError("No target interceptor configured [" + method.getName() + "]");
-
-            } else {
-                Message resp = headInterceptor.invoke(msg);
-                if (chain.getTargetResponseChannel() != null) {
-                    chain.getTargetResponseChannel().send(resp);
-                    resp = resp.getRelatedCallbackMessage();
-                }
-                Object body = resp.getBody();
-                if (body instanceof Throwable) {
-                    throw (Throwable) body;
-                }
-                return body;
-            }
-        }
-    }
-
-    public Object invoke(Method method, Object[] args) throws Throwable {
-        return invoke(null, method, args);
+        return invoke(chain, invoker, args);
     }
 
     /**

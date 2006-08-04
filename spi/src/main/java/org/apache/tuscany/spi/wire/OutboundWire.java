@@ -48,6 +48,16 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     void setTargetName(QualifiedName name);
 
     /**
+     * Sets the callback interface type generated proxies implement
+     */
+    void setCallbackInterface(Class<T> interfaze);
+
+    /**
+     * Returns the callback interface type implemented by generated proxies
+     */
+    Class<T> getCallbackInterface();
+
+    /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
      * service.
      */
@@ -56,12 +66,44 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, OutboundInvocationChain> chain);
+    void addInvocationChains(Map<Method, OutboundInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
     void addInvocationChain(Method method, OutboundInvocationChain chain);
+
+    /**
+     * Returns the callback invocation configuration for each operation on a service specified by a reference or
+     * a target service.
+     */
+    Map<Method, InboundInvocationChain> getTargetCallbackInvocationChains();
+
+    /**
+     * Adds the collection of callback invocation chains keyed by operation
+     */
+    void addTargetCallbackInvocationChains(Map<Method, InboundInvocationChain> chains);
+
+    /**
+     * Adds the callback invocation chain associated with the given operation
+     */
+    void addTargetCallbackInvocationChain(Method method, InboundInvocationChain chain);
+
+    /**
+     * Returns the callback invocation configuration for each operation on a service specified by a reference or
+     * a target service.
+     */
+    Map<Method, OutboundInvocationChain> getSourceCallbackInvocationChains();
+
+    /**
+     * Adds the collection of callback invocation chains keyed by operation
+     */
+    void addSourceCallbackInvocationChains(Map<Method, OutboundInvocationChain> chains);
+
+    /**
+     * Adds the callback invocation chain associated with the given operation
+     */
+    void addSourceCallbackInvocationChain(Method method, OutboundInvocationChain chain);
 
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end

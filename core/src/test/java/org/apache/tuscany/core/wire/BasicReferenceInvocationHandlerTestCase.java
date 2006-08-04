@@ -1,16 +1,15 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
 import org.jmock.MockObjectTestCase;
 
@@ -22,7 +21,7 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
     private Method echo;
 
     public void testHandlersInterceptorInvoke() throws Throwable {
-        Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
+        //Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(echo);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -34,8 +33,10 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         chain.addResponseHandler(responseHandler);
         chain.setTargetInvoker(invoker);
         chain.prepare();
-        chains.put(echo, chain);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
+        //chains.put(echo, chain);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(echo, chain);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, requestHandler.getCount());

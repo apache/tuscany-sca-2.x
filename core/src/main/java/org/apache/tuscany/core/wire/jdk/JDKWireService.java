@@ -2,10 +2,12 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Proxy;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -20,17 +22,15 @@ import org.apache.tuscany.spi.wire.WireService;
 @Scope("MODULE")
 public class JDKWireService implements WireService {
 
+    private WorkContext context;
     //private PolicyBuilderRegistry policyRegistry;
 
     public JDKWireService() {
     }
 
-    public JDKWireService(PolicyBuilderRegistry policyRegistry) {
-        //this.policyRegistry = policyRegistry;
-    }
-
-    @Autowire
-    public void setPolicyRegistry(PolicyBuilderRegistry policyRegistry) {
+    @Constructor({"workContext", "policyregisty"})
+    public JDKWireService(@Autowire WorkContext context, @Autowire PolicyBuilderRegistry policyRegistry) {
+        this.context = context;
         //this.policyRegistry = policyRegistry;
     }
 
@@ -48,9 +48,9 @@ public class JDKWireService implements WireService {
             ClassLoader cl = interfaze.getClassLoader();
             return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else if (wire instanceof OutboundWire) {
-            OutboundWire<T> inbound = (OutboundWire<T>) wire;
-            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(inbound.getInvocationChains());
-            Class<T> interfaze = inbound.getBusinessInterface();
+            OutboundWire<T> outbound = (OutboundWire<T>) wire;
+            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound);
+            Class<T> interfaze = outbound.getBusinessInterface();
             ClassLoader cl = interfaze.getClassLoader();
             return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else {
@@ -60,14 +60,20 @@ public class JDKWireService implements WireService {
         }
     }
 
+    public <T> T createCallbackProxy(Class<T> interfaze) throws ProxyCreationException {
+        ClassLoader cl = interfaze.getClassLoader();
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(context);
+        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
+    }
+
     public WireInvocationHandler createHandler(RuntimeWire<?> wire) {
         assert wire != null : "WireDefinition was null";
         if (wire instanceof InboundWire) {
             InboundWire<?> inbound = (InboundWire) wire;
             return new JDKInboundInvocationHandler(inbound.getInvocationChains());
         } else if (wire instanceof OutboundWire) {
-            OutboundWire<?> inbound = (OutboundWire) wire;
-            return new JDKOutboundInvocationHandler(inbound.getInvocationChains());
+            OutboundWire<?> outbound = (OutboundWire) wire;
+            return new JDKOutboundInvocationHandler(outbound);
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
             e.setIdentifier(wire.getClass().getName());
@@ -75,43 +81,9 @@ public class JDKWireService implements WireService {
         }
     }
 
-    /*
-    public OutboundWire createReferenceWire(ReferenceDefinition reference) throws BuilderConfigException {
-        String name = reference.getName();
-        Class interfaze = reference.getServiceContract().getInterfaceClass();
-        OutboundWire<?> wire = new OutboundWireImpl();
-        wire.setBusinessInterface(interfaze);
-        wire.setReferenceName(name);
-
-        Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
-        for (Method method : javaMethods) {
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
-            wire.addInvocationChain(method, chain);
-        }
-        if (policyRegistry != null) {
-            // invoke policy builders
-            policyRegistry.buildSource(reference, wire);
-        }
-        return wire;
+    public WireInvocationHandler createCallbackHandler() {
+        return new JDKCallbackInvocationHandler(context);
     }
 
-    public InboundWire createServiceWire(ServiceDefinition service) {
-        String name = service.getName();
-        Class interfaze = service.getServiceContract().getInterfaceClass();
-        InboundWire<?> wire = new InboundWireImpl();
-        wire.setBusinessInterface(interfaze);
-        wire.setServiceName(name);
 
-        Set<Method> javaMethods = JavaIntrospectionHelper.getAllUniqueMethods(interfaze);
-        for (Method method : javaMethods) {
-            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
-            wire.addInvocationChain(method, chain);
-        }
-        if (policyRegistry != null) {
-            // invoke policy builders
-            policyRegistry.buildTarget(service, wire);
-        }
-        return wire;
-    }
-    */
 }

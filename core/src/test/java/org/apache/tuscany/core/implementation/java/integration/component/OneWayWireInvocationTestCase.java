@@ -15,6 +15,7 @@ package org.apache.tuscany.core.implementation.java.integration.component;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -46,7 +47,7 @@ public class OneWayWireInvocationTestCase extends TestCase {
     WireService wireService = new JDKWireService();
 
     public void testNoInterceptors() throws Exception {
-        AsyncTarget target = createMock(AsyncTarget.class); 
+        AsyncTarget target = createMock(AsyncTarget.class);
         target.invoke();
         expectLastCall().once();
         replay(target);
@@ -61,9 +62,10 @@ public class OneWayWireInvocationTestCase extends TestCase {
             }
         });
         replay(scheduler);
+        WorkContext context = createMock(WorkContext.class);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
-        AsyncJavaTargetInvoker invoker = new AsyncJavaTargetInvoker(method, component, scheduler, null);
+        AsyncJavaTargetInvoker invoker = new AsyncJavaTargetInvoker(method, null, component, scheduler, null, context);
         InboundWire<AsyncTarget> wire =
             createServiceWire("foo", AsyncTarget.class, null, null, null);
         InboundInvocationChain chain = wire.getInvocationChains().get(method);

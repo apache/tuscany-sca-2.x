@@ -46,7 +46,7 @@ public final class ProcessorUtils {
     /**
      * Convenience method for creating a mapped service from the given interface
      */
-    public static JavaMappedService createService(Class<?> interfaze) {
+    public static JavaMappedService createService(Class<?> interfaze) throws IllegalCallbackException {
         JavaMappedService service = new JavaMappedService();
         service.setName(JavaIntrospectionHelper.getBaseName(interfaze));
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
@@ -63,14 +63,31 @@ public final class ProcessorUtils {
                 contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
             }
         }
+        processCallback(interfaze, contract);
+        service.setServiceContract(contract);
+        return service;
+    }
+
+    /**
+     * Processes the callback contract for a given interface type
+     *
+     * @param interfaze the interface type to examine
+     * @param contract  the service contract the callback is associated wth
+     * @throws IllegalCallbackException
+     */
+    public static void processCallback(Class<?> interfaze, JavaServiceContract contract)
+        throws IllegalCallbackException {
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             Class<?> callbackClass = callback.value();
             contract.setCallbackClass(callbackClass);
             contract.setCallbackName(JavaIntrospectionHelper.getBaseName(callbackClass));
+        } else if (callback != null && Void.class.equals(callback.value())) {
+            IllegalCallbackException e =
+                new IllegalCallbackException("Callback annotation must specify an interface on service type");
+            e.setIdentifier(interfaze.getName());
+            throw e;
         }
-        service.setServiceContract(contract);
-        return service;
     }
 
     /**
@@ -160,7 +177,10 @@ public final class ProcessorUtils {
         }
     }
 
-    public static boolean annotationsDefined(Annotation[][] annots) {
+    /**
+     * Returns true if {@link @Autowire}, {@link @Property}, or {@link @Reference} are present in the given array
+     */
+    public static boolean injectionAnnotationsPresent(Annotation[][] annots) {
         for (Annotation[] annotations : annots) {
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();
@@ -174,6 +194,19 @@ public final class ProcessorUtils {
         return false;
     }
 
+    /**
+     * Processes autowire metadata for a constructor parameter
+     *
+     * @param annot            the autowire annotation
+     * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
+     *                         annotation
+     * @param pos              the position of the parameter in the constructor's parameter list
+     * @param param            the parameter type
+     * @param type             the component type associated with the implementation being processed
+     * @param injectionNames   the collection of injection names to update
+     * @throws InvalidAutowireException
+     * @throws InvalidConstructorException
+     */
     private static void processAutowire(Annotation annot, String[] constructorNames,
                                         int pos,
                                         Class<?> param,
@@ -210,6 +243,18 @@ public final class ProcessorUtils {
         addName(injectionNames, pos, name);
     }
 
+    /**
+     * Processes parameter metadata for a constructor parameter
+     *
+     * @param annot            the parameter annotation
+     * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
+     *                         annotation
+     * @param pos              the position of the parameter in the constructor's parameter list
+     * @param type             the component type associated with the implementation being processed
+     * @param param            the parameter type
+     * @param explicitNames    the collection of injection names to update
+     * @throws ProcessingException
+     */
     private static void processProperty(Annotation annot,
                                         String[] constructorNames,
                                         int pos,
@@ -246,6 +291,18 @@ public final class ProcessorUtils {
         addName(explicitNames, pos, name);
     }
 
+    /**
+     * Processes reference metadata for a constructor parameter
+     *
+     * @param annot            the parameter annotation
+     * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
+     *                         annotation
+     * @param pos              the position of the parameter in the constructor's parameter list
+     * @param type             the component type associated with the implementation being processed
+     * @param param            the parameter type
+     * @param explicitNames    the collection of injection names to update
+     * @throws ProcessingException
+     */
     private static void processReference(Annotation annot, String[] constructorNames,
                                          int pos,
                                          PojoComponentType<JavaMappedService, JavaMappedReference,

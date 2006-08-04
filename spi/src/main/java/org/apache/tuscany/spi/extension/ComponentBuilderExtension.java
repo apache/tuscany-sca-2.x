@@ -7,6 +7,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
@@ -25,6 +26,7 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected ScopeRegistry scopeRegistry;
     protected WireService wireService;
     protected WorkScheduler workScheduler;
+    protected WorkContext workContext;
     protected PolicyBuilderRegistry policyBuilderRegistry;
 
     @Autowire
@@ -45,6 +47,11 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setWorkScheduler(WorkScheduler workScheduler) {
         this.workScheduler = workScheduler;
+    }
+
+    @Autowire
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
     }
 
     @Autowire

@@ -29,7 +29,7 @@ public class ScriptInvokeTestCase extends TestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", rhinoScript, services, new HashMap<String, Object>(),
-                null, scope, ArtifactFactory.createWireService());
+                null, scope, ArtifactFactory.createWireService(), null);
         scope.register(context);
         Greeting object = (Greeting) context.getServiceInstance();
         assertEquals("foo", object.greet("foo"));

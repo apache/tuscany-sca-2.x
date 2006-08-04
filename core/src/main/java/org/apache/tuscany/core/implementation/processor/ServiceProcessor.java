@@ -13,37 +13,43 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
-import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
+import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
+import org.apache.tuscany.core.implementation.JavaMappedCallback;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.ProcessingException;
+import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+
 /**
  * Processes an {@link org.osoa.sca.annotations.Service} annotation and updates the component type with corresponding
- * {@link JavaMappedService}s
+ * {@link JavaMappedService}s. Also processes related {@link org.osoa.sca.annotations.Callback} annotations.
  *
  * @version $Rev$ $Date$
  */
 public class ServiceProcessor extends ImplementationProcessorSupport {
+
     public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context)
-        throws ProcessingException {
+                           DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (annotation == null) {
             // scan intefaces for remotable
-            //TODO also service?
-            Set<Class> interfaces = JavaIntrospectionHelper.getAllInterfaces(clazz);
+            Set<Class> interfaces = getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
                 if (interfaze.getAnnotation(Remotable.class) != null) {
                     JavaMappedService service = createService(interfaze);
@@ -72,5 +78,61 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
             type.getServices().put(service.getName(), service);
         }
     }
+
+
+    public void visitMethod(CompositeComponent<?> parent,
+                            Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context) throws ProcessingException {
+
+        Callback annotation = method.getAnnotation(Callback.class);
+        if (annotation == null) {
+            return;
+        }
+        if (method.getParameterTypes().length != 1) {
+            IllegalCallbackException e = new IllegalCallbackException("Setter must have one parameter");
+            e.setIdentifier(method.toString());
+            throw e;
+        }
+        String name = toPropertyName(method.getName());
+        JavaMappedService callbackService = null;
+        Class<?> callbackClass = method.getParameterTypes()[0];
+        for (JavaMappedService service : type.getServices().values()) {
+            JavaServiceContract serviceContract = (JavaServiceContract) service.getServiceContract();
+            if (serviceContract.getCallbackClass().equals(callbackClass)) {
+                callbackService = service;
+            }
+        }
+        if (callbackService == null) {
+            throw new IllegalCallbackException("Callback type does not match a service callback interface");
+        }
+        JavaMappedCallback callback = new JavaMappedCallback(name, method, callbackClass);
+        callbackService.setCallbackReference(callback);
+    }
+
+    public void visitField(CompositeComponent<?> parent, Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
+
+        Callback annotation = field.getAnnotation(Callback.class);
+        if (annotation == null) {
+            return;
+        }
+        String name = field.getName();
+        JavaMappedService callbacksService = null;
+        Class<?> callbackClass = field.getType();
+        for (JavaMappedService service : type.getServices().values()) {
+            JavaServiceContract serviceContract = (JavaServiceContract) service.getServiceContract();
+            if (serviceContract.getCallbackClass().equals(callbackClass)) {
+                callbacksService = service;
+            }
+        }
+        if (callbacksService == null) {
+            throw new IllegalCallbackException("Callback type does not match a service callback interface");
+        }
+        JavaMappedCallback callback = new JavaMappedCallback(name, field, callbackClass);
+        callbacksService.setCallbackReference(callback);
+    }
+
 
 }

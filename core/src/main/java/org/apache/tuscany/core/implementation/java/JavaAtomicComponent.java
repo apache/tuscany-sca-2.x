@@ -16,21 +16,26 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.osoa.sca.annotations.OneWay;
-
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.ComponentRuntimeException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.injection.CallbackWireObjectFactory;
+import org.apache.tuscany.core.injection.FieldInjector;
+import org.apache.tuscany.core.injection.Injector;
+import org.apache.tuscany.core.injection.InvalidAccessorException;
+import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.core.policy.async.AsyncMonitor;
 
@@ -49,6 +54,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         super(name, configuration);
         this.scope = configuration.getScopeContainer().getScope();
         this.workScheduler = scheduler;
+        this.monitor = monitor;
     }
 
     public Object getServiceInstance(String name) throws TargetException {
@@ -72,27 +78,42 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        TargetInvoker targetInvoker;
-        if (operation.getAnnotation(OneWay.class) != null) {
-            if (workScheduler == null) {
-                // TODO Make sure appropriate exception is thrown
-                throw new ComponentRuntimeException("Need an instance of workScheduler");
-            }
-            //REVIEW we should set required as an autowire attribute and have the runtime perform this check
-            if (monitor == null) {
-                // TODO Make sure appropriate exception is thrown
-                // throw new ComponentRuntimeException("Need an instance of monitor");
-            }
-            targetInvoker = new AsyncJavaTargetInvoker(operation, this, workScheduler, monitor);
-        } else {
-            targetInvoker = new JavaTargetInvoker(operation, this);
-        }
-        return targetInvoker;
-
-
+        return new JavaTargetInvoker(operation, this);
     }
 
-    protected ObjectFactory<?> createWireFactory(OutboundWire wire) {
+    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        return new AsyncJavaTargetInvoker(operation, wire, this, workScheduler, monitor, workContext);
+    }
+
+    protected void onServiceWire(InboundWire wire) {
+        String name = wire.getCallbackReferenceName();
+        if (name == null) {
+            // It's ok not to have one, we just do nothing
+            return;
+        }
+        Member member = callbackSites.get(name);
+        if (member != null) {
+            injectors.add(createCallbackInjector(member));
+        }
+    }
+
+    protected Injector createCallbackInjector(Member member) {
+        if (member instanceof Field) {
+            Field field = (Field) member;
+            ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), wireService);
+            return new FieldInjector(field, factory);
+        } else if (member instanceof Method) {
+            Method method = (Method) member;
+            ObjectFactory<?> factory = new CallbackWireObjectFactory(method.getParameterTypes()[0], wireService);
+            return new MethodInjector(method, factory);
+        } else {
+            InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
+            e.setIdentifier(member.getName());
+            throw e;
+        }
+    }
+
+    protected ObjectFactory<?> createWireFactory(RuntimeWire wire) {
         return new WireObjectFactory(wire, wireService);
     }
 }

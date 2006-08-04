@@ -33,7 +33,7 @@ public class PropertyTestCase extends TestCase {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("property", "bar");
         WireService wireService = ArtifactFactory.createWireService();
-        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass, services, properties, null, scope, wireService);
+        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass, services, properties, null, scope, wireService, null);
         scope.register(context);
         Greeting greeting = context.getServiceInstance();
         assertEquals("bar", greeting.greet("foo"));

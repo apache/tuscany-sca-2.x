@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -52,14 +53,16 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     protected List<Class<?>> serviceInterfaces;
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> propertySites;
+    protected Map<String, Member> callbackSites;
     protected List<Injector> injectors;
 
     public PojoAtomicComponent(String name, PojoConfiguration configuration) {
         super(name,
-              configuration.getParent(),
-              configuration.getScopeContainer(),
-              configuration.getWireService(),
-              configuration.getInitLevel());
+            configuration.getParent(),
+            configuration.getScopeContainer(),
+            configuration.getWireService(),
+            configuration.getWorkContext(),
+            configuration.getInitLevel());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();
@@ -70,6 +73,8 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
             : new HashMap<String, Member>();
         propertySites = configuration.getPropertySites() != null ? configuration.getPropertySites()
+            : new HashMap<String, Member>();
+        callbackSites = configuration.getCallbackSite() != null ? configuration.getCallbackSite()
             : new HashMap<String, Member>();
     }
 
@@ -132,7 +137,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         //FIXME throw an error if no injection site found
     }
 
-    public void onReferenceWire(OutboundWire wire) {
+    protected void onReferenceWire(OutboundWire wire) {
         String name = wire.getReferenceName();
         Member member = referenceSites.get(name);
         if (member != null) {
@@ -165,7 +170,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         //TODO multiplicity for constructor injection
     }
 
-    protected Injector createInjector(Member member, OutboundWire wire) {
+    protected Injector createInjector(Member member, RuntimeWire wire) {
         ObjectFactory<?> factory = createWireFactory(wire);
         if (member instanceof Field) {
             return new FieldInjector((Field) member, factory);
@@ -206,6 +211,6 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
-    protected abstract ObjectFactory<?> createWireFactory(OutboundWire wire);
+    protected abstract ObjectFactory<?> createWireFactory(RuntimeWire wire);
 
 }

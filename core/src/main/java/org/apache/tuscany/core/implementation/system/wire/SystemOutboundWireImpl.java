@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
@@ -61,6 +62,22 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         return new Class[0];
     }
 
+    @SuppressWarnings("unchecked")
+    public void setCallbackInterface(Class<T> interfaze) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Class<T> getCallbackInterface() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addCallbackInterface(Class<?> claz) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Class[] getImplementedCallbackInterfaces() {
+        throw new UnsupportedOperationException();
+   }
 
     public Map<Method, OutboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
@@ -71,6 +88,30 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
     }
 
     public void addInvocationChains(Map chains) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<Method, InboundInvocationChain> getTargetCallbackInvocationChains() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addTargetCallbackInvocationChains(Map<Method, InboundInvocationChain> chains) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addTargetCallbackInvocationChain(Method method, InboundInvocationChain chain) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<Method, OutboundInvocationChain> getSourceCallbackInvocationChains() {
+        return null;
+    }
+
+    public void addSourceCallbackInvocationChains(Map<Method, OutboundInvocationChain> chains) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addSourceCallbackInvocationChain(Method method, OutboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 

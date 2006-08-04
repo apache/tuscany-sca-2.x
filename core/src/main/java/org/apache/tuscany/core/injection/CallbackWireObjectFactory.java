@@ -15,26 +15,25 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
- * Uses a wire to return an object instance
+ * Returns proxy instance for a wire callback
  *
  * @version $Rev$ $Date$
  */
-public class WireObjectFactory implements ObjectFactory {
+public class CallbackWireObjectFactory implements ObjectFactory {
 
-    private RuntimeWire<?> wire;
     private WireService wireService;
+    private Class<?> interfaze;
 
-    public WireObjectFactory(RuntimeWire<?> wire, WireService wireService) {
-        this.wire = wire;
+    public CallbackWireObjectFactory(Class<?> interfaze, WireService wireService) {
+        this.interfaze = interfaze;
         this.wireService = wireService;
     }
 
     public Object getInstance() throws ObjectCreationException {
-        return wireService.createProxy(wire);
+        return wireService.createCallbackProxy(interfaze);
     }
 
 }

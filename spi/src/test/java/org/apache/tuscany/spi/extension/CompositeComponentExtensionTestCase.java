@@ -16,6 +16,7 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
@@ -201,6 +202,10 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         }
 
         public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+            return null;
+        }
+
+        public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
             return null;
         }
     }

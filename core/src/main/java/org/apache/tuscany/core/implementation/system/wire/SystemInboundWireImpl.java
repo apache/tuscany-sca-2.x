@@ -82,6 +82,14 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
+    public String getCallbackReferenceName() {
+        return null;
+    }
+
+    public void setCallbackReferenceName(String callbackReferenceName) {
+        throw new UnsupportedOperationException();
+    }
+
     public boolean isOptimizable() {
         return true;  // system wires are always optimizable
     }

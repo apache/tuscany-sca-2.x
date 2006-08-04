@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
@@ -36,7 +36,7 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         throw new UnsupportedOperationException();
     }
 
-    protected ObjectFactory<?> createWireFactory(OutboundWire wire) {
+    protected ObjectFactory<?> createWireFactory(RuntimeWire wire) {
         assert wire instanceof SystemOutboundWire : "wire must be an instance of " + SystemOutboundWire.class.getName();
         SystemOutboundWire systemWire = (SystemOutboundWire) wire;
         return new SystemWireObjectFactory(systemWire);

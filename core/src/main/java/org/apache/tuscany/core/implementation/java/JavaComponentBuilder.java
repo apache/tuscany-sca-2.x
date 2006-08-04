@@ -27,18 +27,19 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
+import org.apache.tuscany.core.implementation.JavaMappedCallback;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -69,7 +70,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                                     ComponentDefinition<JavaImplementation> definition,
                                     DeploymentContext deployment)
         throws BuilderConfigException {
-        PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>> componentType =
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             definition.getImplementation().getComponentType();
 
         PojoConfiguration configuration = new PojoConfiguration();
@@ -95,7 +96,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
 
         configuration.setWireService(wireService);
-
+        configuration.setWorkContext(workContext);
         // setup property injection sites
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
             configuration.addPropertySite(property.getName(), property.getMember());
@@ -127,12 +128,20 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             }
         }
 
-        for (ServiceDefinition service : componentType.getServices().values()) {
+        for (JavaMappedService service : componentType.getServices().values()) {
+            // setup callback injection sites
+            JavaMappedCallback callback = service.getCallbackReference();
+            if (callback != null) {
+                // Only if there is a callback reference in the service
+                configuration.addCallbackSite(callback.getName(), callback.getMember());
+            }
             component.addInboundWire(createWire(service));
         }
+        
         for (ReferenceTarget reference : definition.getReferenceTargets().values()) {
             Map<String, JavaMappedReference> references = componentType.getReferences();
-            OutboundWire wire = createWire(reference, references.get(reference.getReferenceName()));
+            JavaMappedReference mappedReference = references.get(reference.getReferenceName());
+            OutboundWire wire = createWire(reference, mappedReference);
             component.addOutboundWire(wire);
         }
         return component;
@@ -140,7 +149,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
 
     @SuppressWarnings("unchecked")
-    private OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
+    private OutboundWire createWire(ReferenceTarget reference, JavaMappedReference def) {
         //TODO multiplicity
         if (reference.getTargets().size() != 1) {
             throw new UnsupportedOperationException();
@@ -155,11 +164,27 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
             wire.addInvocationChain(method, chain);
         }
+        // FIXME Using JavaServiceContract for now; this may be ok, but if it's not, then getCallbackClass
+        //       will need to be promoted to ServiceContract
+        JavaServiceContract jsc = (JavaServiceContract) def.getServiceContract();
+        Class<?> callbackInterface = jsc.getCallbackClass();
+        if (callbackInterface != null) {
+            wire.setCallbackInterface(callbackInterface);
+            for (Method callbackMethod : callbackInterface.getMethods()) {
+                InboundInvocationChain callbackTargetChain = new InboundInvocationChainImpl(callbackMethod);
+                OutboundInvocationChain callbackSourceChain = new OutboundInvocationChainImpl(callbackMethod);
+                // TODO handle policy
+                //TODO statement below could be cleaner
+                callbackTargetChain.addInterceptor(new InvokerInterceptor());
+                wire.addTargetCallbackInvocationChain(callbackMethod, callbackTargetChain);
+                wire.addSourceCallbackInvocationChain(callbackMethod, callbackSourceChain);
+            }
+        }
         return wire;
     }
 
     @SuppressWarnings("unchecked")
-    private InboundWire createWire(ServiceDefinition service) {
+    private InboundWire createWire(JavaMappedService service) {
         Class<?> interfaze = service.getServiceContract().getInterfaceClass();
         InboundWire wire = new InboundWireImpl();
         wire.setBusinessInterface(interfaze);
@@ -170,6 +195,13 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             //TODO statement below could be cleaner
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(method, chain);
+        }
+        // FIXME Using JavaServiceContract for now; this may be ok, but if it's not, then getCallbackClass
+        //       will need to be promoted to ServiceContract
+        JavaServiceContract jsc = (JavaServiceContract) service.getServiceContract();
+        Class<?> callbackInterface = jsc.getCallbackClass();
+        if (callbackInterface != null) {
+            wire.setCallbackReferenceName(service.getCallbackReference().getName());
         }
         return wire;
     }

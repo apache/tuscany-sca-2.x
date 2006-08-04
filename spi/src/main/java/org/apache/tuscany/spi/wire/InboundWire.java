@@ -53,6 +53,16 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     void addInvocationChain(Method method, InboundInvocationChain chain);
 
     /**
+     * Returns the name of the callback associated with the service of the wire
+     */
+    String getCallbackReferenceName();
+
+    /**
+     * Sets the name of the callback associated with the service of the wire
+     */
+    void setCallbackReferenceName(String callbackReferenceName);
+    
+    /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
     void setTargetWire(OutboundWire<T> wire);

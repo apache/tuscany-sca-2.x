@@ -1,10 +1,10 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
@@ -12,7 +12,6 @@ import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
 
 public class OutboundInvocationHandlerTestCase extends TestCase {
@@ -32,16 +31,16 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
     }
 
     public void testBasicInvoke() throws Throwable {
-        Map<Method, OutboundInvocationChain> configs = new MethodHashMap<OutboundInvocationChain>();
-        configs.put(hello, createChain(hello));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(configs);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(hello, createChain(hello));
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
     public void testErrorInvoke() throws Throwable {
-        Map<Method, OutboundInvocationChain> configs = new MethodHashMap<OutboundInvocationChain>();
-        configs.put(hello, createChain(hello));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(configs);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(hello, createChain(hello));
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         try {
             handler.invoke(hello, new Object[]{});
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -55,9 +54,9 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, OutboundInvocationChain> configs = new MethodHashMap<OutboundInvocationChain>();
-        configs.put(hello, source);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(configs);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(hello, source);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         try {
             assertEquals("foo", handler.invoke(hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -71,9 +70,9 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(hello, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, OutboundInvocationChain> configs = new MethodHashMap<OutboundInvocationChain>();
-        configs.put(hello, source);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(configs);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(hello, source);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 

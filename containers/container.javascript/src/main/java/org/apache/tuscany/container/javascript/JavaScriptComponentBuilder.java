@@ -50,7 +50,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
         // ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
         ScopeContainer scopeContainer = deploymentContext.getModuleScope();
 
-        return new JavaScriptComponent(name, rhinoScript, services, properties, parent, scopeContainer, wireService);
+        return new JavaScriptComponent(name, rhinoScript, services, properties, parent, scopeContainer, wireService, workContext);
     }
 
 }

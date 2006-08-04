@@ -1,7 +1,17 @@
 package org.apache.tuscany.core.integration.implementation.system.builder;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
@@ -17,16 +27,6 @@ import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.factories.MockComponentFactory;
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Validates that system builders and the default connector create properly wired contexts
@@ -146,7 +146,8 @@ public class SystemBuilderWireTestCase extends TestCase {
 
         connector.connect(sourceComponent);
         String serviceName = service.getOutboundWire().getTargetName().getPortName();
-        connector.connect(service.getOutboundWire(), sourceComponent.getInboundWire(serviceName), parent, true);
+        connector.connect(service.getOutboundWire(), sourceComponent.getInboundWire(serviceName), sourceComponent,
+            parent, true);
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
         Target target = (Target) parent.getChild("serviceDefinition").getServiceInstance();

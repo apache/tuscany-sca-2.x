@@ -1,5 +1,6 @@
 package org.apache.tuscany.spi.extension;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -36,7 +38,8 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     protected final List<Reference> references = new ArrayList<Reference>();
     protected final Map<String, Document> propertyValues;
 
-    protected CompositeComponentExtension(String name, CompositeComponent<?> parent, Map<String, Document> propertyValues) {
+    protected CompositeComponentExtension(String name, CompositeComponent<?> parent,
+                                          Map<String, Document> propertyValues) {
         super(name, parent);
         this.propertyValues = propertyValues;
     }
@@ -174,5 +177,8 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         }
     }
 
+    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        throw new UnsupportedOperationException();
+    }
 
 }

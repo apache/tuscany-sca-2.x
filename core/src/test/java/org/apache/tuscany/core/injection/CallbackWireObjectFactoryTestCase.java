@@ -13,28 +13,30 @@
  */
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireService;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+
 /**
- * Uses a wire to return an object instance
- *
  * @version $Rev$ $Date$
  */
-public class WireObjectFactory implements ObjectFactory {
+public class CallbackWireObjectFactoryTestCase extends TestCase {
 
-    private RuntimeWire<?> wire;
-    private WireService wireService;
-
-    public WireObjectFactory(RuntimeWire<?> wire, WireService wireService) {
-        this.wire = wire;
-        this.wireService = wireService;
+    public void testCreateInstance() throws Exception {
+        WireService service = createMock(WireService.class);
+        service.createCallbackProxy(Foo.class);
+        expectLastCall().andReturn(null);
+        replay(service);
+        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(Foo.class, service);
+        factory.getInstance();
+        EasyMock.verify(service);
     }
 
-    public Object getInstance() throws ObjectCreationException {
-        return wireService.createProxy(wire);
-    }
+    private interface Foo {
 
+    }
 }

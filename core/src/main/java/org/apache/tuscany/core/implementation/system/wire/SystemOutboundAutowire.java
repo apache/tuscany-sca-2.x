@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
@@ -59,6 +60,23 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
         return new Class[0];
     }
 
+    @SuppressWarnings("unchecked")
+    public void setCallbackInterface(Class<T> interfaze) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Class<T> getCallbackInterface() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addCallbackInterface(Class<?> claz) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Class[] getImplementedCallbackInterfaces() {
+        throw new UnsupportedOperationException();
+    }
+
     public void setTargetWire(InboundWire<T> wire) {
         throw new UnsupportedOperationException();
     }
@@ -73,6 +91,30 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
 
     public void addInvocationChains(Map chains) {
         throw new UnsupportedOperationException();
+    }
+
+    public Map<Method, InboundInvocationChain> getTargetCallbackInvocationChains() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addTargetCallbackInvocationChains(Map<Method, InboundInvocationChain> chains) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addTargetCallbackInvocationChain(Method method, InboundInvocationChain chain) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Map<Method, OutboundInvocationChain> getSourceCallbackInvocationChains() {
+        return null;
+    }
+
+    public void addSourceCallbackInvocationChains(Map<Method, OutboundInvocationChain> chains) {
+
+    }
+
+    public void addSourceCallbackInvocationChain(Method method, OutboundInvocationChain chain) {
+
     }
 
     public void addInterface(Class claz) {

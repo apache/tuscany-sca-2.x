@@ -47,7 +47,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
                                  CompositeComponent parent,
                                  ScopeContainer scopeContainer,
                                  WireService wireService) {
-        super(name, parent, scopeContainer, wireService, 0);
+        super(name, parent, scopeContainer, wireService, null, 0);
         this.scope = scopeContainer.getScope();
 
         assert groovyClass != null;

@@ -18,15 +18,14 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Map;
 
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
 
 /**
@@ -55,9 +54,9 @@ public class OutboundInvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
-        chains.put(checkedMethod, createChain(checkedMethod));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(checkedMethod, createChain(checkedMethod));
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                 new Class[]{TestBean.class}, handler);
@@ -69,9 +68,9 @@ public class OutboundInvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
-        chains.put(runtimeMethod, createChain(runtimeMethod));
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(chains);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.addInvocationChain(runtimeMethod, createChain(runtimeMethod));
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
                 new Class[]{TestBean.class}, handler);
