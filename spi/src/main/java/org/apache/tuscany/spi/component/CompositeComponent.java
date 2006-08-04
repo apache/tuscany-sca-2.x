@@ -18,6 +18,8 @@ package org.apache.tuscany.spi.component;
 
 import java.util.List;
 
+import org.w3c.dom.Document;
+
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 
 /**
@@ -66,4 +68,12 @@ public interface CompositeComponent<T> extends Component<T>, RuntimeEventListene
      * @param scopeContainer
      */
     void setScopeContainer(ScopeContainer scopeContainer);
+
+    /**
+     * Returns the value of a Property of this composite.
+     *
+     * @param name the name of the Property
+     * @return its value, or null if there is not such property or if it has no defined value
+     */
+    Document getPropertyValue(String name);
 }

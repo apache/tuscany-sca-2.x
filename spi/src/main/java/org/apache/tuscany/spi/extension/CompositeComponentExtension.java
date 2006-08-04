@@ -76,6 +76,10 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         }
     }
 
+    public Document getPropertyValue(String name) {
+        return propertyValues.get(name);
+    }
+
     public SCAObject getChild(String name) {
         assert name != null : "Name was null";
         return children.get(name);
