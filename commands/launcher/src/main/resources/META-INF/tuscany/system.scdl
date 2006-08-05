@@ -38,11 +38,6 @@
         <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireService"/>
     </component>
 
-    <!-- Wire callback service -->
-    <component name="wireCallbackService">
-        <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireCallbackService"/>
-    </component>
-
     <!-- Scope infrastructure -->
     <component name="scopeRegistry">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ScopeRegistryImpl"/>
