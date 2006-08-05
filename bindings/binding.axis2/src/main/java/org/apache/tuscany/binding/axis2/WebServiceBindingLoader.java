@@ -79,7 +79,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         endpointAttribute = reader.getAttributeValue(null, "endpoint");
         wsdlLocation = reader.getAttributeValue(null, "location");
         try {
-            return createBinding(uri, endpointAttribute);
+            return createBinding(uri, endpointAttribute, deploymentContext);
         } catch (Exception e) {
 
             throw new LoaderException(e);
@@ -87,7 +87,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
     }
 
     @SuppressWarnings("unchecked")
-    private WebServiceBinding createBinding(String port, String portURI) throws WSDLException, IOException {
+    private WebServiceBinding createBinding(String port, String portURI, DeploymentContext deploymentContext) throws WSDLException, IOException {
         List<Definition> definitions = null;
         // FIXME wsdlRegistry.getDefinitionsForNamespace(portNamespace,
         // resourceLoader);
@@ -114,7 +114,9 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 portName = fragment;
             }
             // FIXME need to find out how to get wsdl and what context to use --- terrible hack attack!
-            URL wsdlurl = Thread.currentThread().getContextClassLoader().getResource(wsdlLocation);
+            // URL wsdlurl = Thread.currentThread().getContextClassLoader().getResource(wsdlLocation);
+            URL wsdlurl = deploymentContext.getClassLoader().getResource(wsdlLocation);
+            
             WSDLFactory factory = WSDLFactory.newInstance();
             WSDLReader reader = factory.newWSDLReader();
             reader.setFeature("javax.wsdl.verbose", false);
