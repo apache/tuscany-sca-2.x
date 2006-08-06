@@ -15,8 +15,8 @@ import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
@@ -45,9 +45,9 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     public void testDuplicateName() {
         Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension<Object>("foo", null, null, null));
         try {
-            composite.register(new ServiceExtension("foo", null, null));
+            composite.register(new ServiceExtension<Object>("foo", null, null, null));
             fail();
         } catch (DuplicateNameException e) {
             // expected
@@ -56,27 +56,27 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     public void testGetChildren() {
         Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension<Object>("foo", null, null, null));
         assertEquals(1, composite.getChildren().size());
     }
 
     public void testGetServices() {
         Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.register(getReference("bar"));
         assertEquals(1, composite.getServices().size());
     }
 
     public void testGetService() {
         Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.start();
         assertNotNull(composite.getService("foo"));
     }
 
     public void testServiceNotFound() {
         Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.start();
         try {
             composite.getService("bar");
@@ -100,7 +100,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     public void testReferencesServices() {
         Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.register(getReference("bar"));
         assertEquals(1, composite.getReferences().size());
     }

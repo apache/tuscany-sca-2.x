@@ -68,7 +68,7 @@ public class ReferenceTestCase extends TestCase {
             super(name, parent, wireService);
         }
 
-        public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        public TargetInvoker createTargetInvoker(Method operation) {
             return null;
         }
     }

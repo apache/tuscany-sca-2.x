@@ -77,7 +77,7 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
 
     public Class[] getImplementedCallbackInterfaces() {
         throw new UnsupportedOperationException();
-   }
+    }
 
     public Map<Method, OutboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();

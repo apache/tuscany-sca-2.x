@@ -1,6 +1,7 @@
 package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
@@ -19,7 +20,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-@org.osoa.sca.annotations.Scope("MODULE")
+@Scope("MODULE")
 public abstract class BindingBuilderExtension<B extends Binding> implements BindingBuilder<B> {
 
     protected BuilderRegistry builderRegistry;

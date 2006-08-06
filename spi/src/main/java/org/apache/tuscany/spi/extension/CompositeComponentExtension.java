@@ -3,6 +3,7 @@ package org.apache.tuscany.spi.extension;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -164,16 +165,27 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     }
 
     public InboundWire getInboundWire(String serviceName) {
-        SCAObject context = children.get(serviceName);
-        if (!(context instanceof Service)) {
+        SCAObject object = children.get(serviceName);
+        if (!(object instanceof Service)) {
             throw new ComponentNotFoundException(serviceName);
         }
-        return ((Service) context).getInboundWire();
+        return ((Service) object).getInboundWire();
     }
 
+    public Map<String, InboundWire> getInboundWires() {
+        synchronized (services) {
+            Map<String, InboundWire> map = new HashMap<String, InboundWire>();
+            for (Service service : services) {
+                map.put(service.getName(), service.getInboundWire());
+            }
+            return map;
+        }
+    }
+
+
     public void prepare() {
-        for (SCAObject context : children.values()) {
-            context.prepare();
+        for (SCAObject object : children.values()) {
+            object.prepare();
         }
     }
 

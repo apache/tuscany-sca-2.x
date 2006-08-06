@@ -42,7 +42,6 @@ public class ConnectorImpl implements Connector {
 
     public <T> void connect(SCAObject<T> source) {
         CompositeComponent parent = source.getParent();
-        Scope scope = source.getScope();
         if (source instanceof AtomicComponent) {
             AtomicComponent<T> sourceComponent = (AtomicComponent<T>) source;
             for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
@@ -51,7 +50,7 @@ public class ConnectorImpl implements Connector {
                         continue;
                     }
                     try {
-                        connect(sourceComponent, outboundWire, parent, scope);
+                        connect(sourceComponent, outboundWire);
                     } catch (BuilderConfigException e) {
                         e.addContextName(source.getName());
                         e.addContextName(parent.getName());
@@ -59,13 +58,40 @@ public class ConnectorImpl implements Connector {
                     }
                 }
             }
+            // connect inbound wires
+            for (InboundWire<T> inboundWire : sourceComponent.getInboundWires().values()) {
+                for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                    String serviceName = inboundWire.getServiceName();
+                    TargetInvoker invoker =
+                        sourceComponent.createTargetInvoker(serviceName, chain.getMethod());
+                    chain.setTargetInvoker(invoker);
+                    chain.prepare();
+                }
+            }
+
         } else if (source instanceof CompositeComponent) {
             CompositeComponent<?> composite = (CompositeComponent) source;
             for (SCAObject<?> child : composite.getChildren()) {
                 connect(child);
             }
+        } else if (source instanceof Reference) {
+            Reference<?> reference = (Reference) source;
+            Map<Method, InboundInvocationChain> chains = reference.getInboundWire().getInvocationChains();
+            // for references, no need to have an outbound wire
+            for (InboundInvocationChain chain : chains.values()) {
+                //TODO handle async
+                TargetInvoker invoker = reference.createTargetInvoker(chain.getMethod());
+                chain.setTargetInvoker(invoker);
+                chain.prepare();
+            }
         } else if (source instanceof Service) {
-            //TODO complete
+            Service<?> service = (Service) source;
+            InboundWire inboundWire = service.getInboundWire();
+            OutboundWire outboundWire = service.getOutboundWire();
+            // services have inbound and outbound wires
+            connect(inboundWire, outboundWire, true);
+            // connect the outbound service wire to the target
+            connect(service, outboundWire);
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid source context type");
             e.setIdentifier(source.getName());
@@ -75,58 +101,13 @@ public class ConnectorImpl implements Connector {
     }
 
     /**
-     * Connects an outbound wire to its target in a CompositeComponent.  Valid targets are either AtomicComponents
-     * contained in the CompositeComponent, or References of the CompositeComponent.
+     * Connects an inbound wire to a specific outbound wire
      *
-     * @param sourceWire
-     * @param parent
-     * @param sourceScope
+     * @param sourceWire  the inbound wire to connect
+     * @param targetWire  the outbound wire to connect to
+     * @param optimizable true if the connection can be ooptimized
      * @throws BuilderConfigException
      */
-    @SuppressWarnings("unchecked")
-    public <T> void connect(AtomicComponent<?> source,
-                            OutboundWire<T> sourceWire,
-                            CompositeComponent<?> parent,
-                            Scope sourceScope) throws BuilderConfigException {
-        assert sourceScope != null : "Source scope was null";
-        assert sourceWire.getTargetName() != null : "WireDefinition target name was null";
-        QualifiedName targetName = sourceWire.getTargetName();
-        SCAObject<?> target = parent.getChild(targetName.getPartName());
-        if (target == null) {
-            BuilderConfigException e = new BuilderConfigException("Target not found for reference"
-                + sourceWire.getReferenceName());
-            e.setIdentifier(targetName.getQualifiedName());
-            throw e;
-        }
-
-        if (target instanceof AtomicComponent) {
-            AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
-            InboundWire<T> targetWire = targetComponent.getInboundWire(targetName.getPortName());
-            if (targetWire == null) {
-                BuilderConfigException e = new BuilderConfigException("Target service not found for reference "
-                    + sourceWire.getReferenceName());
-                e.setIdentifier(targetName.getPortName());
-                throw e;
-            }
-            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
-                throw new BuilderConfigException("Incompatible source and target interfaces");
-            }
-            boolean optimizable = isOptimizable(sourceScope, target.getScope());
-            connect(sourceWire, targetWire, source, target, optimizable);
-        } else if (target instanceof Reference) {
-            InboundWire<T> targetWire = ((Reference) target).getInboundWire();
-            assert targetWire != null;
-            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
-                throw new BuilderConfigException("Incompatible source and target interfaces");
-            }
-            connect(sourceWire, targetWire, source, target, isOptimizable(sourceScope, target.getScope()));
-        } else {
-            String name = sourceWire.getReferenceName();
-            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + name);
-            e.setIdentifier(targetName.getQualifiedName());
-        }
-    }
-
     public <T> void connect(InboundWire<T> sourceWire,
                             OutboundWire<T> targetWire,
                             boolean optimizable) throws BuilderConfigException {
@@ -136,7 +117,6 @@ public class ConnectorImpl implements Connector {
             sourceWire.setTargetWire(targetWire);
             return;
         }
-        //String serviceName = targetWire.getTargetName();
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
             // match wire chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getMethod());
@@ -149,10 +129,10 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public <T> void connect(OutboundWire<T> sourceWire,
+    public <T> void connect(SCAObject<?> source,
+                            SCAObject<?> target,
+                            OutboundWire<T> sourceWire,
                             InboundWire<T> targetWire,
-                            AtomicComponent<?> source,
-                            SCAObject<?> scaObject,
                             boolean optimizable) {
         Map<Method, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
@@ -171,8 +151,8 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
-            if (scaObject instanceof Component) {
-                Component component = (Component) scaObject;
+            if (target instanceof Component) {
+                Component component = (Component) target;
                 Method operation = outboundChain.getMethod();
 
                 // FIXME should not relay on annotations
@@ -185,12 +165,13 @@ public class ConnectorImpl implements Connector {
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
                 } else {
-                    invoker = component.createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
+                    invoker = component
+                        .createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
                 }
                 connect(outboundChain, inboundChain, invoker);
-            } else if (scaObject instanceof Reference) {
-                Reference reference = (Reference) scaObject;
-                TargetInvoker invoker = reference.createTargetInvoker(targetWire.getServiceName(),
+            } else if (target instanceof Reference) {
+                Reference reference = (Reference) target;
+                TargetInvoker invoker = reference.createTargetInvoker(
                     inboundChain.getMethod());
                 connect(outboundChain, inboundChain, invoker);
             }
@@ -207,7 +188,8 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
-            if (scaObject instanceof Component) {
+            if (source instanceof Component) {
+                Component component = (Component) source;
                 Method operation = outboundChain.getMethod();
                 // FIXME should not relay on annotations
                 boolean isOneWayOperation = operation.getAnnotation(OneWay.class) != null;
@@ -217,16 +199,14 @@ public class ConnectorImpl implements Connector {
                 }
                 TargetInvoker invoker;
                 if (isOneWayOperation || operationHasCallback) {
-                    invoker = source.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
+                    invoker = component.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
                 } else {
-                    invoker = source.createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
+                    invoker = component
+                        .createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
                 }
                 connect(outboundChain, inboundChain, invoker);
-            } else if (scaObject instanceof Reference) {
-                Reference reference = (Reference) scaObject;
-                TargetInvoker invoker = reference.createTargetInvoker(targetWire.getServiceName(),
-                    inboundChain.getMethod());
-                connect(outboundChain, inboundChain, invoker);
+            } else if (target instanceof Service) {
+                throw new UnsupportedOperationException();
             }
         }
     }
@@ -274,6 +254,55 @@ public class ConnectorImpl implements Connector {
         sourceChain.addInterceptor(new BridgingInterceptor(targetChain.getHeadInterceptor()));
     }
 
+    /**
+     * Connects an component's outbound wire to its target in a composite.  Valid targets are either
+     * <code>AtomicComponent</code>s contained in the composite, or <code>References</code> of the composite.
+     *
+     * @param sourceWire
+     * @throws BuilderConfigException
+     */
+    @SuppressWarnings("unchecked")
+    private <T> void connect(SCAObject<?> source,
+                             OutboundWire<T> sourceWire) throws BuilderConfigException {
+        //assert sourceScope != null : "Source scope was null";
+        assert sourceWire.getTargetName() != null : "WireDefinition target name was null";
+        QualifiedName targetName = sourceWire.getTargetName();
+        CompositeComponent<?> parent = source.getParent();
+        SCAObject<?> target = parent.getChild(targetName.getPartName());
+        if (target == null) {
+            String refName = sourceWire.getReferenceName();
+            BuilderConfigException e = new BuilderConfigException("Target not found for reference" + refName);
+            e.setIdentifier(targetName.getQualifiedName());
+            throw e;
+        }
+
+        if (target instanceof AtomicComponent) {
+            AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
+            InboundWire<T> targetWire = targetComponent.getInboundWire(targetName.getPortName());
+            if (targetWire == null) {
+                String refName = sourceWire.getReferenceName();
+                BuilderConfigException e = new BuilderConfigException("No target service for reference " + refName);
+                e.setIdentifier(targetName.getPortName());
+                throw e;
+            }
+            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
+                throw new BuilderConfigException("Incompatible source and target interfaces");
+            }
+            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+            connect(source, target, sourceWire, targetWire, optimizable);
+        } else if (target instanceof Reference) {
+            InboundWire<T> targetWire = ((Reference) target).getInboundWire();
+            assert targetWire != null;
+            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
+                throw new BuilderConfigException("Incompatible source and target interfaces");
+            }
+            connect(source, target, sourceWire, targetWire, isOptimizable(source.getScope(), target.getScope()));
+        } else {
+            String name = sourceWire.getReferenceName();
+            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + name);
+            e.setIdentifier(targetName.getQualifiedName());
+        }
+    }
 
     private boolean isOptimizable(Scope pReferrer, Scope pReferee) {
         if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {

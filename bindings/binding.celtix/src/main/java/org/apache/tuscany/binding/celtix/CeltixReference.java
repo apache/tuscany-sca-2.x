@@ -22,12 +22,11 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
 import org.objectweb.celtix.Bus;
-import org.objectweb.celtix.bus.bindings.WSDLMetaDataCache;
 
 /**
- * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix
- * binding
+ * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix binding
  *
  * @version $Rev$ $Date$
  */
@@ -52,7 +51,7 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
         this.bus = bus;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(Method operation) {
         //FIXME - can we pass in the method name as the operation name?
         return new CeltixInvoker(operation.getName(), bus, port, wsdlService, wsdlDef);
     }

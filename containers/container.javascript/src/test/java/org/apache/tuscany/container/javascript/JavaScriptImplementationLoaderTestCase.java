@@ -16,21 +16,20 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.easymock.classextension.EasyMock.verify;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 
 /**
  * Tests for JavaScriptImplementationLoader
@@ -88,7 +87,8 @@ public class JavaScriptImplementationLoaderTestCase extends TestCase {
     }
 
     public void testLoadScript() throws LoaderException {
-        String script = loader.loadSource(getClass().getClassLoader(), "org/apache/tuscany/container/javascript/mock/test.js");
+        String script =
+            loader.loadSource(getClass().getClassLoader(), "org/apache/tuscany/container/javascript/mock/test.js");
         assertEquals("//Test Script", script);
     }
 

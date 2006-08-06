@@ -111,7 +111,8 @@ public class WireTestCase extends TestCase {
         JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, properties, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
-        TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
+        TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class)
+        );
         assertEquals("foo", invoker.invokeTarget(new String[] { "foo" }));
         scope.stop();
     }

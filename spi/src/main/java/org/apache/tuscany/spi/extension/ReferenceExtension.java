@@ -13,14 +13,16 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.lang.reflect.Method;
+
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -74,18 +76,11 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
     }
 
     public WireInvocationHandler getHandler() throws TargetException {
-        //Map<Method, InboundInvocationChain> configuration = inboundWire.getInvocationChains();
         return wireService.createHandler(inboundWire);
-        //return new JDKInboundInvocationHandler(configuration);
     }
 
-    public void prepare() {
-        assert inboundWire != null : "Inbound wire not set";
-        for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
-                chain.getMethod()));
-            chain.prepare();
-        }
+    public TargetInvoker createAsyncTargetInvoker(Method operation, OutboundWire wire) {
+        throw new UnsupportedOperationException();
     }
 
 }

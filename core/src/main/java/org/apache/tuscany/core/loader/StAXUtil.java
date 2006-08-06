@@ -18,16 +18,15 @@ package org.apache.tuscany.core.loader;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
-import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Multiplicity;
@@ -89,48 +88,48 @@ public final class StAXUtil {
     }
 
     /**
-     * Load a property value specification from an StAX stream into a DOM Document.
-     * Only elements, text and attributes are processed; all comments and other whitespace are ignored.
+     * Load a property value specification from an StAX stream into a DOM Document. Only elements, text and attributes
+     * are processed; all comments and other whitespace are ignored.
      *
      * @param reader the stream to read from
-     * @param root the DOM node to load
+     * @param root   the DOM node to load
      */
     public static void loadPropertyValue(XMLStreamReader reader, Node root) throws XMLStreamException {
         Document document = root.getOwnerDocument();
         Node current = root;
         while (true) {
             switch (reader.next()) {
-            case XMLStreamConstants.START_ELEMENT:
-                QName name = reader.getName();
-                Element child = document.createElementNS(name.getNamespaceURI(), name.getLocalPart());
+                case XMLStreamConstants.START_ELEMENT:
+                    QName name = reader.getName();
+                    Element child = document.createElementNS(name.getNamespaceURI(), name.getLocalPart());
 
-                // add the attributes for this element
-                int count = reader.getAttributeCount();
-                for (int i = 0; i < count; i++) {
-                    String ns = reader.getAttributeNamespace(i);
-                    String localPart = reader.getAttributeLocalName(i);
-                    String value = reader.getAttributeValue(i);
-                    child.setAttributeNS(ns, localPart, value);
-                }
+                    // add the attributes for this element
+                    int count = reader.getAttributeCount();
+                    for (int i = 0; i < count; i++) {
+                        String ns = reader.getAttributeNamespace(i);
+                        String localPart = reader.getAttributeLocalName(i);
+                        String value = reader.getAttributeValue(i);
+                        child.setAttributeNS(ns, localPart, value);
+                    }
 
-                // push the new element and make it the current one
-                current.appendChild(child);
-                current = child;
-                break;
-            case XMLStreamConstants.CDATA:
-                current.appendChild(document.createCDATASection(reader.getText()));
-                break;
-            case XMLStreamConstants.CHARACTERS:
-                current.appendChild(document.createTextNode(reader.getText()));
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                // if we are back at the root then we are done
-                if (current == root) {
-                    return;
-                }
+                    // push the new element and make it the current one
+                    current.appendChild(child);
+                    current = child;
+                    break;
+                case XMLStreamConstants.CDATA:
+                    current.appendChild(document.createCDATASection(reader.getText()));
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    current.appendChild(document.createTextNode(reader.getText()));
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    // if we are back at the root then we are done
+                    if (current == root) {
+                        return;
+                    }
 
-                // pop the element off the stack
-                current = current.getParentNode();
+                    // pop the element off the stack
+                    current = current.getParentNode();
             }
         }
     }

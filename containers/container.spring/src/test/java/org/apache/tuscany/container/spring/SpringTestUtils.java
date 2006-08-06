@@ -22,7 +22,7 @@ public final class SpringTestUtils {
                                                Class<T> serviceInterface,
                                                CompositeComponent parent,
                                                WireService wireService) {
-        Service<T> service = new ServiceExtension<T>(name, parent, wireService);
+        Service<T> service = new ServiceExtension<T>(name, serviceInterface, parent, wireService);
         InboundWire<T> inboundWire = ArtifactFactory.createInboundWire(name, serviceInterface);
         OutboundWire<T> outboundWire = ArtifactFactory.createOutboundWire(name, serviceInterface);
         ArtifactFactory.terminateWire(outboundWire);

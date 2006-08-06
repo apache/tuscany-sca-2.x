@@ -6,7 +6,6 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -30,7 +29,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
 
     public SystemReferenceImpl(String name, Class<T> referenceInterface, CompositeComponent parent) {
         super(name, parent);
-        assert referenceInterface != null : "ReferenceDefinition interface was null";
+        assert referenceInterface != null : "Reference interface was null";
         this.referenceInterface = referenceInterface;
     }
 
@@ -52,7 +51,7 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
     }
 
     public void setOutboundWire(OutboundWire<T> wire) {
-        assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
+        assert wire instanceof SystemOutboundWire : "Wire must be a " + SystemOutboundWire.class.getName();
         this.outboundWire = (SystemOutboundWire<T>) wire;
     }
 
@@ -64,15 +63,6 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         this.referenceInterface = referenceInterface;
     }
 
-    public void prepare() {
-        for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            TargetInvoker targetInvoker = createTargetInvoker(outboundWire.getTargetName().getQualifiedName(),
-                chain.getMethod());
-            chain.setTargetInvoker(targetInvoker);
-            chain.prepare();
-        }
-    }
-
     public T getServiceInstance() throws TargetException {
         return referenceInterface.cast(inboundWire.getTargetService());
     }
@@ -81,7 +71,11 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(Method operation) {
+        throw new UnsupportedOperationException();
+    }
+
+    public TargetInvoker createAsyncTargetInvoker(Method operation, OutboundWire wire) {
         throw new UnsupportedOperationException();
     }
 

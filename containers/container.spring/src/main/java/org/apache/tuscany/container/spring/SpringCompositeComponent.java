@@ -5,6 +5,16 @@ import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.extension.CompositeComponentExtension;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -16,15 +26,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.extension.CompositeComponentExtension;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * A composite implementation responsible for managing Spring application contexts.
@@ -38,9 +39,9 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     /**
      * Creates a new composite
      *
-     * @param name          the name of the SCA composite
-     * @param springContext the pre-instantiated Spring applicaiton context
-     * @param parent        the SCA composite parent
+     * @param name           the name of the SCA composite
+     * @param springContext  the pre-instantiated Spring applicaiton context
+     * @param parent         the SCA composite parent
      * @param propertyValues the values of this composite's Properties
      */
     public SpringCompositeComponent(String name,
@@ -78,9 +79,9 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
 
 
     /**
-     * An inner class is required to act as the Spring application context parent as opposed to implementing
-     * the interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()}
-     * and {@link org.apache.tuscany.spi.component.CompositeComponent#getParent()} clash
+     * An inner class is required to act as the Spring application context parent as opposed to implementing the
+     * interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()} and
+     * {@link org.apache.tuscany.spi.component.CompositeComponent#getParent()} clash
      */
     private class SCAApplicationContext implements ApplicationContext {
 

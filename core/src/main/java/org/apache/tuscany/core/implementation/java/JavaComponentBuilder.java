@@ -49,7 +49,6 @@ import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -137,7 +136,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             }
             component.addInboundWire(createWire(service));
         }
-        
+
         for (ReferenceTarget reference : definition.getReferenceTargets().values()) {
             Map<String, JavaMappedReference> references = componentType.getReferences();
             JavaMappedReference mappedReference = references.get(reference.getReferenceName());
@@ -155,13 +154,13 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             throw new UnsupportedOperationException();
         }
         Class<?> interfaze = def.getServiceContract().getInterfaceClass();
-        OutboundWire wire = new OutboundWireImpl();
+        OutboundWire wire = wireService.createOutboundWire();
         wire.setTargetName(new QualifiedName(reference.getTargets().get(0).toString()));
         wire.setBusinessInterface(interfaze);
         wire.setReferenceName(reference.getReferenceName());
         for (Method method : interfaze.getMethods()) {
             //TODO handle policy
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
+            OutboundInvocationChain chain = wireService.createOutboundChain(method);
             wire.addInvocationChain(method, chain);
         }
         // FIXME Using JavaServiceContract for now; this may be ok, but if it's not, then getCallbackClass

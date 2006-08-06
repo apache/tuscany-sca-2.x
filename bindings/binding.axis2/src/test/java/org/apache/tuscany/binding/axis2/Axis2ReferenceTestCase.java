@@ -22,7 +22,7 @@ public class Axis2ReferenceTestCase extends TestCase {
     public void testInvokeService() throws Exception {
         Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
         Method operation = Greeter.class.getMethod("sayHi");
-        TargetInvoker targetInvoker = axis2Reference.createTargetInvoker("anyServiceName", operation);
+        TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(operation);
         assertNotNull(targetInvoker);
     }
 

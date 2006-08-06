@@ -57,16 +57,18 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
  */
 public class Axis2Service<T> extends ServiceExtension<T> {
 
-    private ServletHost tomcatHost;
+    private ServletHost host;
     private WebServiceBinding wsBinding;
 
     public Axis2Service(String theName,
-                        CompositeComponent parent, WireService wireService,
+                        Class<T> interfaze,
+                        CompositeComponent parent,
+                        WireService wireService,
                         WebServiceBinding binding,
                         ServletHost servletHost) {
-        super(theName, parent, wireService);
+        super(theName, interfaze, parent, wireService);
         wsBinding = binding;
-        tomcatHost = servletHost;
+        host = servletHost;
     }
 
     public void start() {
@@ -113,7 +115,7 @@ public class Axis2Service<T> extends ServiceExtension<T> {
         }
 
         String servletMapping = wsBinding.getWebAppName() + "/services/" + this.getName();
-        tomcatHost.registerMapping(servletMapping, servlet);
+        host.registerMapping(servletMapping, servlet);
     }
 
     private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {

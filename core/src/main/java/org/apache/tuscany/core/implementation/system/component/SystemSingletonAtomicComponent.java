@@ -2,6 +2,7 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,9 +53,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return instance;
     }
 
-    public void prepare() {
-    }
-
     public Object getServiceInstance(String name) throws TargetException {
         return getTargetInstance();
     }
@@ -79,8 +77,12 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         throw new UnsupportedOperationException();
     }
 
+    public Map<String, InboundWire> getInboundWires() {
+        return Collections.emptyMap();
+    }
+
     public InboundWire getInboundWire(String serviceName) {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     public void addOutboundWire(OutboundWire wire) {
@@ -92,15 +94,15 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
     }
 
     public Map<String, List<OutboundWire>> getOutboundWires() {
-        throw new UnsupportedOperationException();
+        return Collections.emptyMap();
     }
 
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
-        throw new UnsupportedOperationException();
+        return null;
     }
 }
