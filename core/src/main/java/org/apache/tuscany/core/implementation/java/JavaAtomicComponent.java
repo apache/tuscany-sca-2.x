@@ -23,7 +23,6 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
@@ -46,14 +45,13 @@ import org.apache.tuscany.core.policy.async.AsyncMonitor;
  */
 public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
 
-    private WorkScheduler workScheduler;
     private AsyncMonitor monitor;
 
-    public JavaAtomicComponent(String name, PojoConfiguration configuration, WorkScheduler scheduler,
+    public JavaAtomicComponent(String name,
+                               PojoConfiguration configuration,
                                AsyncMonitor monitor) {
         super(name, configuration);
         this.scope = configuration.getScopeContainer().getScope();
-        this.workScheduler = scheduler;
         this.monitor = monitor;
     }
 

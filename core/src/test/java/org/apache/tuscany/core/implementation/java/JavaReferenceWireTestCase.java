@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -56,7 +56,7 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
             }
         });
         configuration.setWireService((WireService) mockService.proxy());
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration, null, null);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration, null);
         sourceContext.addOutboundWire(wire);
         sourceContext.start();
         Source source = (Source) sourceContext.getServiceInstance();

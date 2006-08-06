@@ -45,10 +45,7 @@ import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.policy.async.AsyncMonitor;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -96,6 +93,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);
+        configuration.setScheduler(workScheduler);
+
         // setup property injection sites
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
             configuration.addPropertySite(property.getName(), property.getMember());
@@ -117,7 +116,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
 
         JavaAtomicComponent component =
-            new JavaAtomicComponent(definition.getName(), configuration, workScheduler, monitor);
+            new JavaAtomicComponent(definition.getName(), configuration, monitor);
 
         // handle properties
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
@@ -170,8 +169,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         if (callbackInterface != null) {
             wire.setCallbackInterface(callbackInterface);
             for (Method callbackMethod : callbackInterface.getMethods()) {
-                InboundInvocationChain callbackTargetChain = new InboundInvocationChainImpl(callbackMethod);
-                OutboundInvocationChain callbackSourceChain = new OutboundInvocationChainImpl(callbackMethod);
+                InboundInvocationChain callbackTargetChain = wireService.createInboundChain(callbackMethod);
+                OutboundInvocationChain callbackSourceChain = wireService.createOutboundChain(callbackMethod);
                 // TODO handle policy
                 //TODO statement below could be cleaner
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
@@ -185,11 +184,11 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     @SuppressWarnings("unchecked")
     private InboundWire createWire(JavaMappedService service) {
         Class<?> interfaze = service.getServiceContract().getInterfaceClass();
-        InboundWire wire = new InboundWireImpl();
+        InboundWire wire = wireService.createInboundWire();
         wire.setBusinessInterface(interfaze);
         wire.setServiceName(service.getName());
         for (Method method : interfaze.getMethods()) {
-            InboundInvocationChain chain = new InboundInvocationChainImpl(method);
+            InboundInvocationChain chain = wireService.createInboundChain(method);
             // TODO handle policy
             //TODO statement below could be cleaner
             chain.addInterceptor(new InvokerInterceptor());

@@ -15,6 +15,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -33,6 +34,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     protected Map<String, List<OutboundWire>> referenceWires = new HashMap<String, List<OutboundWire>>();
     protected WireService wireService;
     protected WorkContext workContext;
+    protected WorkScheduler workScheduler;
     private final int initLevel;
 
     protected AtomicComponentExtension(String name,
@@ -40,11 +42,13 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
                                        ScopeContainer scopeContainer,
                                        WireService wireService,
                                        WorkContext workContext,
+                                       WorkScheduler workScheduler,
                                        int initLevel) {
         super(name, parent);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
         this.workContext = workContext;
+        this.workScheduler = workScheduler;
         this.initLevel = initLevel;
     }
 

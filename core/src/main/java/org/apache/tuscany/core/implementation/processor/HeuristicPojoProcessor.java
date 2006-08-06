@@ -220,13 +220,10 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             }
         } else {
             if (!areUnique(params)) {
-                throw new AmbiguousConstructorException(
-                    "Unable to resolve parameter types as they are not unique, use @Constructor");
+                throw new AmbiguousConstructorException("Cannot resolve non-unique parameter types, use @Constructor");
             }
             if (!calcPropRefUniqueness(props.values(), refs.values())) {
-                throw new AmbiguousConstructorException(
-                    "Unable to resolve parameter types as reference and property types are not unique, "
-                        + "use @Constructor");
+                throw new AmbiguousConstructorException("Cannot resolve non-unique parameter types, use @Constructor");
             }
             boolean empty = props.size() + refs.size() == 0;
             if (!empty) {
@@ -289,7 +286,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             if (property.getJavaType().equals(type)) {
                 if (name != null) {
                     AmbiguousConstructorException e = new AmbiguousConstructorException(
-                        "Cannot unambiguously determine property or reference for constructor type");
+                        "Ambiguous property or reference for constructor type");
                     e.setIdentifier(type.getName());
                     throw e;
                 }
@@ -301,7 +298,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             if (reference.getServiceContract().getInterfaceClass().equals(type)) {
                 if (name != null) {
                     AmbiguousConstructorException e = new AmbiguousConstructorException(
-                        "Cannot unambiguously determine property or reference for constructor type");
+                        "Ambiguous property or reference for constructor type");
                     e.setIdentifier(type.getName());
                     throw e;
                 }

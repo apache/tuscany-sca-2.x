@@ -108,8 +108,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         // handle inbound wires
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             Class interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-            SystemInboundWire<?> wire =
-                new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, component);
+            SystemInboundWire<?> wire =  new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, component);
             component.addInboundWire(wire);
         }
         // handle references directly with no proxies

@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.loader.MissingResourceException;
  */
 public class ImplementationLoader extends LoaderExtension<GroovyImplementation> {
     private static final QName IMPLEMENTATION_GROOVY =
-            new QName("http://tuscany.apache.org/xmlns/groovy/1.0", "implementation");
+        new QName("http://tuscany.apache.org/xmlns/groovy/1.0", "implementation");
 
     public ImplementationLoader(LoaderRegistry registry) {
         super(registry);

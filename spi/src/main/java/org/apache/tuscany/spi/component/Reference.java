@@ -26,8 +26,14 @@ public interface Reference<T> extends SCAObject<T> {
      */
     WireInvocationHandler getHandler() throws TargetException;
 
+    /**
+     * Returns the inbound wire for flowing a request through the reference
+     */
     InboundWire<T> getInboundWire();
 
+    /**
+     * Returns the outbound wire used by the reference to connect to a target
+     */
     OutboundWire<T> getOutboundWire();
 
     /**

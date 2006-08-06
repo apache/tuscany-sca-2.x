@@ -62,6 +62,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
             configuration.getScopeContainer(),
             configuration.getWireService(),
             configuration.getWorkContext(),
+            configuration.getScheduler(),
             configuration.getInitLevel());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
         initInvoker = configuration.getInitInvoker();

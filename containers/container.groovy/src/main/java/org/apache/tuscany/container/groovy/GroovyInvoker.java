@@ -18,10 +18,11 @@ package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.InvocationTargetException;
 
-import groovy.lang.GroovyObject;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import groovy.lang.GroovyObject;
 
 /**
  * Dispatches to a Groovy implementation instance

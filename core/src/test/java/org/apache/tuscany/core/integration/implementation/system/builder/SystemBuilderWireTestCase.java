@@ -146,7 +146,10 @@ public class SystemBuilderWireTestCase extends TestCase {
 
         connector.connect(sourceComponent);
         String serviceName = service.getOutboundWire().getTargetName().getPortName();
-        connector.connect(sourceComponent, parent, service.getOutboundWire(), sourceComponent.getInboundWire(serviceName),
+        connector.connect(sourceComponent,
+            parent,
+            service.getOutboundWire(),
+            sourceComponent.getInboundWire(serviceName),
             true);
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
