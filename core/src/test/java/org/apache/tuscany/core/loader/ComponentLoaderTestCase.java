@@ -29,16 +29,17 @@ import org.apache.tuscany.spi.loader.StAXPropertyFactory;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.core.implementation.PojoComponentType;
-
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
-import static org.easymock.EasyMock.*;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -82,7 +83,7 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
     }
 
     public void testLoadPropertyWithSource() throws LoaderException, XMLStreamException {
-        PojoComponentType<?,?,Property<?>> type =
+        PojoComponentType<?, ?, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         Property property = new Property();
         property.setName("name");
@@ -105,6 +106,6 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
         mockRegistry = mock(LoaderRegistry.class);
         mockPropertyFactory = mock(StAXPropertyFactory.class);
         loader = new ComponentLoader((LoaderRegistry) mockRegistry.proxy(),
-                                     (StAXPropertyFactory) mockPropertyFactory.proxy());
+            (StAXPropertyFactory) mockPropertyFactory.proxy());
     }
 }

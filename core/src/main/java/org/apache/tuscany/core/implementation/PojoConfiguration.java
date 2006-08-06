@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -49,6 +50,7 @@ public class PojoConfiguration {
     private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
     private WireService wireService;
     private WorkContext workContext;
+    private WorkScheduler scheduler;
 
     public CompositeComponent<?> getParent() {
         return parent;
@@ -164,6 +166,14 @@ public class PojoConfiguration {
 
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
+    }
+
+    public WorkScheduler getScheduler() {
+        return scheduler;
+    }
+
+    public void setScheduler(WorkScheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
 }

@@ -16,17 +16,20 @@
  */
 package org.apache.tuscany.container.groovy;
 
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 
 import junit.framework.TestCase;
-import static org.easymock.classextension.EasyMock.*;
-
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 
 /**
  * @version $Rev$ $Date$
@@ -80,7 +83,7 @@ public class ImplementationLoaderTestCase extends TestCase {
 
     public void testLoadScript() throws LoaderException {
         String script = loader.loadSource(getClass().getClassLoader(),
-                                          "org/apache/tuscany/container/groovy/mock/TestScript.groovy");
+            "org/apache/tuscany/container/groovy/mock/TestScript.groovy");
         assertEquals("Test Script", script);
     }
 

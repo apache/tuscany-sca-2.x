@@ -2,15 +2,21 @@ package org.apache.tuscany.container.groovy;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 
-import groovy.lang.GroovyObject;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
+
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
 import junit.framework.TestCase;
-
 import org.apache.tuscany.container.groovy.mock.Greeting;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.test.ArtifactFactory;
+import static org.apache.tuscany.test.ArtifactFactory.createWireService;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import org.easymock.IAnswer;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -18,35 +24,38 @@ import org.apache.tuscany.test.ArtifactFactory;
 public class ScriptInvokeTestCase extends TestCase {
 
     private static final String SCRIPT = "def greet(name) { return name }";
-    private static final List<PropertyInjector> INJECTORS = Collections.emptyList();
 
     private Class<? extends GroovyObject> implClass;
+    private ScopeContainer scopeContainer;
 
     /**
      * Tests the invocation of a Groovy "script" as opposed to a class
      */
     public void testBasicScriptInvocation() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
-        scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        GroovyAtomicComponent<GroovyObject> context =
-                new GroovyAtomicComponent<GroovyObject>("source",
-                                                        implClass,
-                                                        services,
-                                                        INJECTORS,
-                                                        null,
-                                                        scope,
-                                                        ArtifactFactory.createWireService());
-        scope.register(context);
+        GroovyConfiguration configuration = new GroovyConfiguration();
+        configuration.setName("source");
+        configuration.setGroovyClass(implClass);
+        configuration.setServices(services);
+        configuration.setScopeContainer(scopeContainer);
+        configuration.setWireService(createWireService());
+        GroovyAtomicComponent<GroovyObject> context = new GroovyAtomicComponent<GroovyObject>(configuration);
         GroovyObject object = context.getServiceInstance();
         assertEquals("foo", object.invokeMethod("greet", "foo"));
-        scope.stop();
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         GroovyClassLoader cl = new GroovyClassLoader(getClass().getClassLoader());
         implClass = cl.parseClass(SCRIPT);
+        scopeContainer = createMock(ScopeContainer.class);
+        expect(scopeContainer.getInstance(isA(AtomicComponent.class))).andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                return ((AtomicComponent) getCurrentArguments()[0]).createInstance();
+            }
+        });
+        replay(scopeContainer);
     }
 }

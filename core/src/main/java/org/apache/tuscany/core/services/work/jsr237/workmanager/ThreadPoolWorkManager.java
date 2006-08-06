@@ -199,7 +199,7 @@ public class ThreadPoolWorkManager implements WorkManager {
          * Overrides the run method.
          */
         public void run() {
-			workStarted(workItem, decoratedWork);
+            workStarted(workItem, decoratedWork);
             try {
                 decoratedWork.run();
                 workCompleted(workItem, decoratedWork);
@@ -209,10 +209,10 @@ public class ThreadPoolWorkManager implements WorkManager {
         }
 
     }
-    
+
     @Destroy
     public void destroy() {
-    	executor.shutdown();
+        executor.shutdown();
     }
 
 }

@@ -49,7 +49,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
 
     public JavaScriptComponent(String name, RhinoScript rhinoScript, List<Class<?>> services, Map<String, Object> properties,
             CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService, WorkContext workContext) {
-        super(name, parent, scopeContainer, wireService, workContext, 0);
+        super(name, parent, scopeContainer, wireService, workContext, null, 0);
 
         this.rhinoScript = rhinoScript;
         this.services = services;

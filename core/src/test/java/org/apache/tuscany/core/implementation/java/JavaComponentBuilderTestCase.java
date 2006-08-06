@@ -22,6 +22,7 @@ import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
@@ -59,13 +60,14 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
             new ComponentDefinition<JavaImplementation>(sourceImpl);
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent<Source> ctx =
+        builder.setWireService(new JDKWireService());
+        JavaAtomicComponent<Source> component =
             (JavaAtomicComponent<Source>) builder.build(parent, sourceComponentDefinition, deploymentContext);
         deploymentContext.getModuleScope().start();
-        ctx.start();
-        Source source = ctx.getServiceInstance();
+        component.start();
+        Source source = component.getServiceInstance();
         assertNotNull(source);
-        ctx.stop();
+        component.stop();
     }
 
     protected void setUp() throws Exception {

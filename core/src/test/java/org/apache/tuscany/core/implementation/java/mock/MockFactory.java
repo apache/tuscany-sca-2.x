@@ -68,7 +68,7 @@ public final class MockFactory {
         }
         configuration.addServiceInterface(DummyImpl.class);
         configuration.setWireService(WIRE_SERVICE);
-        return new JavaAtomicComponent(instance.getClass().getName(), configuration, null, null);
+        return new JavaAtomicComponent(instance.getClass().getName(), configuration, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,7 +79,7 @@ public final class MockFactory {
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.addServiceInterface(clazz);
         configuration.setWireService(WIRE_SERVICE);
-        return new JavaAtomicComponent(name, configuration, null, null);
+        return new JavaAtomicComponent(name, configuration, null);
 
     }
 
@@ -94,7 +94,7 @@ public final class MockFactory {
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.addServiceInterface(clazz);
         configuration.setWireService(WIRE_SERVICE);
-        return new JavaAtomicComponent(name, configuration, scheduler, null);
+        return new JavaAtomicComponent(name, configuration, null);
 
     }
 
@@ -171,7 +171,7 @@ public final class MockFactory {
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null, null);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
             sourceHeadRequestHandler, sourceHeadResponseHandler);
         sourceContext.addOutboundWire(outboundWire);
@@ -222,7 +222,7 @@ public final class MockFactory {
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null, null);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null, null, null);
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);

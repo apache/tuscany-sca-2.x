@@ -18,17 +18,17 @@ package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 import groovy.lang.GroovyObject;
 
@@ -38,25 +38,21 @@ import groovy.lang.GroovyObject;
 public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     private final Class<? extends GroovyObject> groovyClass;
     private final List<Class<?>> services;
-    private final List<PropertyInjector> injectors;
+    //FIXME properties should move up to AtomicComponentExtension
+    private final Map<String, ObjectFactory> properties;
 
-    public GroovyAtomicComponent(String name,
-                                 Class<? extends GroovyObject> groovyClass,
-                                 List<Class<?>>services,
-                                 List<PropertyInjector> injectors,
-                                 CompositeComponent parent,
-                                 ScopeContainer scopeContainer,
-                                 WireService wireService) {
-        super(name, parent, scopeContainer, wireService, null, 0);
-        this.scope = scopeContainer.getScope();
+    public GroovyAtomicComponent(GroovyConfiguration configuration) {
+        super(configuration.getName(),
+            configuration.getParent(),
+            configuration.getScopeContainer(),
+            configuration.getWireService(),
+            configuration.getWorkContext(),
+            null, configuration.getInitLevel());
 
+        this.groovyClass = configuration.getGroovyClass();
+        this.services = Collections.unmodifiableList(configuration.getServices());
+        this.properties = new HashMap<String, ObjectFactory>();
         assert groovyClass != null;
-        assert services != null;
-        assert injectors != null;
-
-        this.groovyClass = groovyClass;
-        this.services = Collections.unmodifiableList(services);
-        this.injectors = injectors;
     }
 
     public List<Class<?>> getServiceInterfaces() {
@@ -78,11 +74,11 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         }
 
         // inject properties
-        for (PropertyInjector injector : injectors) {
-            injector.inject(instance);
+        for (Map.Entry<String, ObjectFactory> property : properties.entrySet()) {
+            instance.setProperty(property.getKey(), property.getValue().getInstance());
         }
 
-        // inject wires
+        // inject references
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
             for (OutboundWire<?> wire : referenceWires) {
                 instance.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
@@ -108,5 +104,9 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
             throw e;
         }
         return wireService.createProxy(wire);
+    }
+
+    public void addPropertyFactory(String name, ObjectFactory<?> factory) {
+        properties.put(name, factory);
     }
 }
