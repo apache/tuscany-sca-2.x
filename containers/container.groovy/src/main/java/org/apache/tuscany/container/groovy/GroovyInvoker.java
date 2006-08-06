@@ -31,13 +31,13 @@ import groovy.lang.GroovyObject;
  */
 public class GroovyInvoker implements TargetInvoker, Cloneable {
 
-    private GroovyAtomicComponent context;
-    private String methodName;
-    private boolean cacheable;
+    protected GroovyAtomicComponent component;
+    protected String operation;
+    protected boolean cacheable;
 
-    public GroovyInvoker(String methodName, GroovyAtomicComponent context) {
-        this.context = context;
-        this.methodName = methodName;
+    public GroovyInvoker(String operation, GroovyAtomicComponent context) {
+        this.component = context;
+        this.operation = operation;
     }
 
     public boolean isCacheable() {
@@ -56,10 +56,10 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
      * Dispatches to the the target.
      */
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
-        GroovyObject target = context.getTargetInstance();
+        GroovyObject target = component.getTargetInstance();
         Object[] args = (Object[]) payload;
         try {
-            return target.invokeMethod(methodName, args);
+            return target.invokeMethod(operation, args);
         } catch (Exception ex) {
             throw new InvocationTargetException(ex);
         }

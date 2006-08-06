@@ -61,7 +61,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         // get the scope container for this component's scope
         ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
 
-        // get the Groovy classloader for this deployment context
+        // get the Groovy classloader for this deployment component
         GroovyClassLoader groovyClassLoader = (GroovyClassLoader) deploymentContext.getExtension("groovy.classloader");
         if (groovyClassLoader == null) {
             groovyClassLoader = new GroovyClassLoader(deploymentContext.getClassLoader());
