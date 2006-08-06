@@ -20,8 +20,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-import groovy.lang.GroovyObject;
-
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -31,6 +29,8 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
+import groovy.lang.GroovyObject;
 
 /**
  * The Groovy atomic component implementation. Groovy implementations may be "scripts" or classes.

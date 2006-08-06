@@ -39,6 +39,11 @@ public interface Component<T> extends SCAObject<T> {
     InboundWire getInboundWire(String serviceName);
 
     /**
+     * Returns a map of inbound wires for a service.
+     */
+    Map<String, InboundWire> getInboundWires();
+
+    /**
      * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a reference
      * in the implementation associated with the instance wrapper created by this configuration.
      */

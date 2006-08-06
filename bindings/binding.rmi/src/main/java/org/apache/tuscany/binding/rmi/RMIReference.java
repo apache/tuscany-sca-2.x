@@ -39,7 +39,7 @@ public class RMIReference extends ReferenceExtension<RMIBinding> {
         this.uri = uri;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(Method operation) {
         try {
             Remote proxy = getProxy();
             Method remoteMethod = proxy.getClass().getMethod(operation.getName(), operation.getParameterTypes());

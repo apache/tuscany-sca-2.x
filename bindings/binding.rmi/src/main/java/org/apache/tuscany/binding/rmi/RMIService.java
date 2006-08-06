@@ -16,32 +16,34 @@
  */
 package org.apache.tuscany.binding.rmi;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
  */
-public class RMIService extends ServiceExtension {
+public class RMIService<T extends Remote> extends ServiceExtension<T> {
     private final String uri;
-    private final Class<? extends Remote> service;
 
-    public RMIService(String name, CompositeComponent parent, WireService wireService, String uri, Class<? extends Remote> service) {
-        super(name, parent, wireService);
+    public RMIService(String name,
+                      CompositeComponent parent,
+                      WireService wireService,
+                      String uri,
+                      Class<T> service) {
+        super(name, service, parent, wireService);
         this.uri = uri;
-        this.service = service;
     }
 
     public void start() {
@@ -72,9 +74,9 @@ public class RMIService extends ServiceExtension {
         super.stop();
     }
 
-    protected Remote createProxy() {
+    protected T createProxy() {
         InvocationHandler handler = new RMIInvocationHandler(getHandler());
-        return service.cast(Proxy.newProxyInstance(service.getClassLoader(), new Class[]{service}, handler));
+        return interfaze.cast(Proxy.newProxyInstance(interfaze.getClassLoader(), new Class[]{interfaze}, handler));
     }
 
     private static class RMIInvocationHandler implements InvocationHandler {

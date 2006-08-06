@@ -28,12 +28,15 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
     public SCAObject build(CompositeComponent parent,
-                           BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
+                           BoundServiceDefinition<WebServiceBinding> serviceDefinition,
                            DeploymentContext deploymentContext) {
-        WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
+        WebServiceBinding wsBinding = serviceDefinition.getBinding();
+        // FIXME need to get interface for the service
+        Class<?> interfaze = null;
         //FIXME: Axis2Service needs an instance of ServletHost as parameter. How to get it?
         return new Axis2Service(
-            boundServiceDefinition.getName(),
+            serviceDefinition.getName(),
+            interfaze,
             parent,
             wireService,
             wsBinding,

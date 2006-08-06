@@ -66,7 +66,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
         }
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(Method operation) {
         Axis2TargetInvoker invoker = null;
         try {
             //FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.

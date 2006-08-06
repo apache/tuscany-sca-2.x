@@ -33,18 +33,12 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     protected ObjectFactory<?> createWireFactory(RuntimeWire wire) {
-        assert wire instanceof SystemOutboundWire : "wire must be an instance of " + SystemOutboundWire.class.getName();
+        assert wire instanceof SystemOutboundWire : "Wire must be an instance of " + SystemOutboundWire.class.getName();
         SystemOutboundWire systemWire = (SystemOutboundWire) wire;
         return new SystemWireObjectFactory(systemWire);
     }
-
-    public void prepare() {
-        // override and do nothing since system services do not proxy
-    }
-
-
 }

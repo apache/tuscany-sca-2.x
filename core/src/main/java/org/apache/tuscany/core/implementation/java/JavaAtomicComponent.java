@@ -77,7 +77,8 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         }
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation
+    ) {
         return new JavaTargetInvoker(operation, this);
     }
 

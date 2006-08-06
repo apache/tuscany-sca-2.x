@@ -46,8 +46,11 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
         Definition definition = binding.getWSDLDefinition();
         Port port = binding.getWSDLPort();
         Service service = binding.getWSDLService();
+        //FIXME get interface
+        Class<?> interfaze = null;
         return new CeltixService(
             boundServiceDefinition.getName(),
+            interfaze,
             definition,
             port,
             service,

@@ -1,10 +1,11 @@
 package org.apache.tuscany.spi.extension;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
@@ -14,11 +15,10 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * An extension point for atomic component type, which new implementation types may extend
@@ -89,6 +89,10 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         }
     }
 
+    public Map<String, InboundWire> getInboundWires() {
+        return Collections.unmodifiableMap(serviceWires);
+    }
+
     public void addOutboundWire(OutboundWire wire) {
         List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(wire);
@@ -97,22 +101,13 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     }
 
     public Map<String, List<OutboundWire>> getOutboundWires() {
-        return referenceWires;
+        return Collections.unmodifiableMap(referenceWires);
     }
 
     public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
         assert wires != null && wires.size() > 0;
         referenceWires.put(wires.get(0).getReferenceName(), wires);
         onReferenceWires(multiplicityClass, wires);
-    }
-
-    public void prepare() {
-        for (InboundWire<T> inboundWire : serviceWires.values()) {
-            for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                chain.setTargetInvoker(createTargetInvoker(inboundWire.getServiceName(), chain.getMethod()));
-                chain.prepare();
-            }
-        }
     }
 
     public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {

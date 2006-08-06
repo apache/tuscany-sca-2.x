@@ -1,5 +1,7 @@
 package org.apache.tuscany.spi.wire;
 
+import java.lang.reflect.Method;
+
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
  *
@@ -15,5 +17,14 @@ public interface WireService {
     WireInvocationHandler createHandler(RuntimeWire<?> wire);
 
     WireInvocationHandler createCallbackHandler();
+
+    OutboundWire createOutboundWire();
+
+    InboundWire createInboundWire();
+
+    OutboundInvocationChain createOutboundChain(Method operation);
+
+    InboundInvocationChain createInboundChain(Method operation);
+
 
 }

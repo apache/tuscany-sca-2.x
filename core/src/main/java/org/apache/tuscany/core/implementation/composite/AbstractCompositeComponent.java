@@ -208,7 +208,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         }
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(String serviceName, Method operation
+    ) {
         return null;
     }
 

@@ -18,13 +18,15 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service<T> {
 
+    protected Class<T> interfaze;
     protected InboundWire<T> inboundWire;
     protected OutboundWire<T> outboundWire;
     protected WireService wireService;
 
-    public ServiceExtension(String name, CompositeComponent parent, WireService wireService)
+    public ServiceExtension(String name, Class<T> interfaze, CompositeComponent parent, WireService wireService)
         throws CoreRuntimeException {
         super(name, parent);
+        this.interfaze = interfaze;
         this.wireService = wireService;
     }
 
@@ -37,7 +39,6 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
     }
 
     public void setInboundWire(InboundWire<T> wire) {
-        //target = null;
         inboundWire = wire;
     }
 
@@ -58,8 +59,7 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
     }
 
     public Class<T> getInterface() {
-        assert inboundWire != null : "Inbound wire not set";
-        return inboundWire.getBusinessInterface();
+        return interfaze;
     }
 
 }

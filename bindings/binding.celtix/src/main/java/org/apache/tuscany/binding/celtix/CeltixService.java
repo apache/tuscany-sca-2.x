@@ -33,12 +33,15 @@ import javax.wsdl.extensions.soap.SOAPBody;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceProvider;
 
-import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
+import org.osoa.sca.annotations.Destroy;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.bindings.DataBindingCallback;
 import org.objectweb.celtix.bindings.ServerBinding;
@@ -50,7 +53,6 @@ import org.objectweb.celtix.context.ObjectMessageContext;
 import org.objectweb.celtix.ws.addressing.AttributedURIType;
 import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
 import org.objectweb.celtix.wsdl.EndpointReferenceUtils;
-import org.osoa.sca.annotations.Destroy;
 import org.xmlsoap.schemas.wsdl.http.AddressType;
 
 /**
@@ -72,13 +74,14 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
 
 
     public CeltixService(String name,
+                         Class<T> interfaze,
                          Definition wsdlDef,
                          Port port,
                          Service wsdlService,
                          CompositeComponent<?> parent,
                          Bus bus,
                          WireService wireService) {
-        super(name, parent, wireService);
+        super(name, interfaze, parent, wireService);
         this.port = port;
         this.wsdlDef = wsdlDef;
         this.wsdlService = wsdlService;
@@ -99,8 +102,8 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
         }
 
         EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,
-                                                                                      wsdlService.getQName(),
-                                                                                      port.getName());
+            wsdlService.getQName(),
+            port.getName());
 
         AttributedURIType address = new AttributedURIType();
 
@@ -135,7 +138,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
 
         try {
             ServerBinding serverBinding = bus.getBindingManager().getBindingFactory(bindingId).createServerBinding(
-                                                                                                                   reference, this);
+                reference, this);
             serverBinding.activate();
         } catch (Exception e) {
             throw new CeltixServiceInitException(e);
@@ -164,7 +167,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
 
             ServerDataBindingCallback cb = getDataBindingCallback(qn, null,
-                                                                  DataBindingCallback.Mode.PARTS);
+                DataBindingCallback.Mode.PARTS);
             opMap.put(qn, cb);
             if (!"".equals(cb.getRequestWrapperQName().getLocalPart())) {
                 opMap.put(cb.getRequestWrapperQName(), cb);
@@ -212,7 +215,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
         }
         throw new BuilderConfigException("no operation named " + operationName
-                                         + " found on service interface: " + serviceInterface.getName());
+            + " found on service interface: " + serviceInterface.getName());
     }
 
 

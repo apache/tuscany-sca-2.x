@@ -128,9 +128,9 @@ public class DeployerImpl implements Deployer {
     /**
      * Connect the context's source wires to other target wires within the scope of the parent.
      *
-     * @param context the context to connect
+     * @param object the SCA artifact to connect
      */
-    protected void connect(SCAObject<?> context) {
-        connector.connect(context);
+    protected void connect(SCAObject<?> object) {
+        connector.connect(object);
     }
 }

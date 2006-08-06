@@ -14,23 +14,24 @@ import static org.easymock.EasyMock.replay;
 public class ServiceExtensionTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        ServiceExtension service = new ServiceExtension(null, null, null);
+        ServiceExtension<Object> service = new ServiceExtension<Object>(null, null, null, null);
         assertEquals(Scope.COMPOSITE, service.getScope());
     }
 
+    @SuppressWarnings("unchecked")
     public void testSetGetInterface() throws Exception {
         InboundWire wire = createMock(InboundWire.class);
         wire.getBusinessInterface();
         expectLastCall().andReturn(getClass());
         replay(wire);
-        ServiceExtension<?> service = new ServiceExtension(null, null, null);
+        ServiceExtension<?> service = new ServiceExtension(null, null, null, null);
         service.setInboundWire(wire);
         service.getInterface();
     }
 
 
     public void testPrepare() throws Exception {
-        ServiceExtension service = new ServiceExtension(null, null, null);
+        ServiceExtension<Object> service = new ServiceExtension<Object>(null, null, null, null);
         service.prepare();
     }
 

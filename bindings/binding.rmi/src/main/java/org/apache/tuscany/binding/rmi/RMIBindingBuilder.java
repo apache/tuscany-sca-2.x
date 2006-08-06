@@ -40,18 +40,18 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
                            BoundServiceDefinition<RMIBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
         String name = boundServiceDefinition.getName();
-        Class<? extends Remote> service = getServiceInterface(boundServiceDefinition);
+        Class<Remote> service = getServiceInterface(boundServiceDefinition);
         String uri = boundServiceDefinition.getBinding().getURI();
-        return new RMIService(name, parent, wireService, uri, service);
+        return new RMIService<Remote>(name, parent, wireService, uri, service);
     }
 
     @SuppressWarnings({"unchecked"})
-    protected Class<? extends Remote> getServiceInterface(BoundServiceDefinition<RMIBinding> boundServiceDefinition) {
+    protected Class<Remote> getServiceInterface(BoundServiceDefinition<RMIBinding> boundServiceDefinition) {
         Class<?> intf = boundServiceDefinition.getServiceContract().getInterfaceClass();
         if (!Remote.class.isAssignableFrom(intf)) {
             throw new InvalidServiceInterfaceException("RMI requires interface extend Remote", intf);
         }
-        return (Class<? extends Remote>) intf;
+        return (Class<Remote>) intf;
     }
 
     public RMIReference build(CompositeComponent parent,

@@ -34,10 +34,16 @@ public interface Reference<T> extends SCAObject<T> {
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target service of
      * the reference
      *
-     * @param serviceName the name of the service
-     * @param operation   the operation to invoke
+     * @param operation the operation to invoke
      */
-    TargetInvoker createTargetInvoker(String serviceName, Method operation);
+    TargetInvoker createTargetInvoker(Method operation);
 
+    /**
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which issues a non-blocking dispatch
+     *
+     * @param operation the operation to invoke
+     * @param wire      the outbound wire of the invocation source, used for callbacks
+     */
+    TargetInvoker createAsyncTargetInvoker(Method operation, OutboundWire wire);
 
 }

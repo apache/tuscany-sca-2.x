@@ -1,20 +1,20 @@
 package org.apache.tuscany.container.spring;
 
-import junit.framework.TestCase;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.StaticApplicationContext;
-
-import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.container.spring.mock.TestBean;
+import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.test.ArtifactFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.StaticApplicationContext;
 
 /**
  * Tests a simple invocation through a service to a Spring bean
@@ -29,7 +29,7 @@ public class ServiceInvocationTestCase extends TestCase {
         OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
         Service<TestBean> service =
-                new ServiceExtension<TestBean>("fooService", context, ArtifactFactory.createWireService());
+            new ServiceExtension<TestBean>("fooService", TestBean.class, context, ArtifactFactory.createWireService());
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         Connector conntector = ArtifactFactory.createConnector();

@@ -7,24 +7,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.component.WorkContextImpl;
-
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
@@ -35,6 +27,12 @@ import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.implementation.java.mock.MockFactory;
+import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
@@ -152,7 +150,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     private OutboundWire<Target> getWire(ScopeContainer scope) throws NoSuchMethodException {
-        Connector connector = new ConnectorImpl();
+        ConnectorImpl connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 
         PojoConfiguration configuration = new PojoConfiguration();
@@ -162,7 +160,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         JavaAtomicComponent<?> atomicComponent = new JavaAtomicComponent("target", configuration, null, null);
         InboundWire targetWire = MockFactory.createTargetWire("Target", Target.class);
         atomicComponent.addInboundWire(targetWire);
-        connector.connect(wire, atomicComponent.getInboundWire("Target"), atomicComponent, atomicComponent, false);
+        connector.connect(atomicComponent, atomicComponent, wire, atomicComponent.getInboundWire("Target"), false);
         atomicComponent.start();
         return wire;
     }

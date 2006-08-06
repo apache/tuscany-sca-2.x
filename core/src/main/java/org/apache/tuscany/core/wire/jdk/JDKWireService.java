@@ -1,5 +1,6 @@
 package org.apache.tuscany.core.wire.jdk;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import org.osoa.sca.annotations.Constructor;
@@ -9,12 +10,19 @@ import org.osoa.sca.annotations.Scope;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -85,5 +93,19 @@ public class JDKWireService implements WireService {
         return new JDKCallbackInvocationHandler(context);
     }
 
+    public OutboundWire createOutboundWire() {
+        return new OutboundWireImpl();
+    }
 
+    public InboundWire createInboundWire() {
+        return new InboundWireImpl();
+    }
+
+    public OutboundInvocationChain createOutboundChain(Method operation) {
+        return new OutboundInvocationChainImpl(operation);
+    }
+
+    public InboundInvocationChain createInboundChain(Method operation) {
+        return new InboundInvocationChainImpl(operation);
+    }
 }
