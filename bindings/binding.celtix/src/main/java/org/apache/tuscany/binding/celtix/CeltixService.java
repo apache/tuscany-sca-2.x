@@ -33,15 +33,12 @@ import javax.wsdl.extensions.soap.SOAPBody;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceProvider;
 
-import org.osoa.sca.annotations.Destroy;
-
+import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.bindings.DataBindingCallback;
 import org.objectweb.celtix.bindings.ServerBinding;
@@ -53,6 +50,7 @@ import org.objectweb.celtix.context.ObjectMessageContext;
 import org.objectweb.celtix.ws.addressing.AttributedURIType;
 import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
 import org.objectweb.celtix.wsdl.EndpointReferenceUtils;
+import org.osoa.sca.annotations.Destroy;
 import org.xmlsoap.schemas.wsdl.http.AddressType;
 
 /**
@@ -67,32 +65,32 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
     private Definition wsdlDef;
     private Service wsdlService;
     private WSDLMetaDataCache wsdlCache;
-    private Object proxy;
 
     private Map<QName, ServerDataBindingCallback> opMap =
         new ConcurrentHashMap<QName, ServerDataBindingCallback>();
 
 
-    public CeltixService(String name,
+    public CeltixService(String theName,
                          Class<T> interfaze,
-                         Definition wsdlDef,
-                         Port port,
-                         Service wsdlService,
-                         CompositeComponent<?> parent,
-                         Bus bus,
-                         WireService wireService) {
-        super(name, interfaze, parent, wireService);
-        this.port = port;
-        this.wsdlDef = wsdlDef;
-        this.wsdlService = wsdlService;
+                         CompositeComponent parent,
+                         WireService wireService,
+                         WebServiceBinding binding,
+                         Bus bus) {
+        super(theName, interfaze, parent, wireService);
+        this.wsdlDef = binding.getWSDLDefinition();
+        this.port = binding.getWSDLPort();
+        this.wsdlService = binding.getWSDLService();
         this.bus = bus;
-        wsdlCache = new WSDLMetaDataCache(wsdlDef, port);
+        this.wsdlCache = new WSDLMetaDataCache(wsdlDef, port);
     }
 
     public void start() {
         super.start();
-        proxy = wireService.createProxy(inboundWire);
-        initOperationMap(wsdlDef);
+        initOperationMap();
+        startServerBinding();
+	}
+
+	private void startServerBinding() {
         String key = wsdlDef.getDocumentBaseURI();
         URL url;
         try {
@@ -102,8 +100,8 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
         }
 
         EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,
-            wsdlService.getQName(),
-            port.getName());
+                                                                                      wsdlService.getQName(),
+                                                                                      port.getName());
 
         AttributedURIType address = new AttributedURIType();
 
@@ -138,25 +136,22 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
 
         try {
             ServerBinding serverBinding = bus.getBindingManager().getBindingFactory(bindingId).createServerBinding(
-                reference, this);
+                                                                                                                   reference, this);
             serverBinding.activate();
         } catch (Exception e) {
             throw new CeltixServiceInitException(e);
         }
     }
 
-    @Destroy
-    public void stop() throws CoreRuntimeException {
-        super.stop();
-    }
-
-    private void initOperationMap(Definition def) {
+    private void initOperationMap() {
         List ops = port.getBinding().getBindingOperations();
         for (Object op1 : ops) {
             BindingOperation op = (BindingOperation) op1;
             BindingInput bindingInput = op.getBindingInput();
             List elements = bindingInput.getExtensibilityElements();
-            QName qn = new QName(def.getTargetNamespace(), op.getName());
+            QName qn = new QName(wsdlDef.getTargetNamespace(), op.getName());
+
+            //In case soap:body namespace is different from targetNamespace
             for (Object element : elements) {
                 if (SOAPBody.class.isInstance(element)) {
                     SOAPBody body = (SOAPBody) element;
@@ -167,12 +162,17 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
 
             ServerDataBindingCallback cb = getDataBindingCallback(qn, null,
-                DataBindingCallback.Mode.PARTS);
+                                                                  DataBindingCallback.Mode.PARTS);
             opMap.put(qn, cb);
             if (!"".equals(cb.getRequestWrapperQName().getLocalPart())) {
                 opMap.put(cb.getRequestWrapperQName(), cb);
             }
         }
+    }
+
+    @Destroy
+    public void stop() throws CoreRuntimeException {
+        super.stop();
     }
 
     public ServerDataBindingCallback getDataBindingCallback(QName operationName,
@@ -193,9 +193,10 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
         }
         boolean inout = false;
 
-
         Class<?> serviceInterface = this.getInterface();
         Method meth = getMethod(serviceInterface, operationName.getLocalPart());
+
+        Object proxy = this.getServiceInstance();
 
         return new SCAServerDataBindingCallback(opInfo, inout, meth, proxy);
     }
@@ -215,9 +216,8 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
         }
         throw new BuilderConfigException("no operation named " + operationName
-            + " found on service interface: " + serviceInterface.getName());
+                                         + " found on service interface: " + serviceInterface.getName());
     }
-
 
     public DataBindingCallback getFaultDataBindingCallback(ObjectMessageContext objContext) {
         // REVISIT - what to do about faults

@@ -64,7 +64,7 @@ public class CeltixInvoker implements TargetInvoker {
                          Port port,
                          Service wsdlService,
                          Definition wsdlDef) throws BuilderException {
-        wsdlCache = new WSDLMetaDataCache(wsdlDef, port);
+        this.wsdlCache = new WSDLMetaDataCache(wsdlDef, port);
         this.operationName = operationName;
         // Definition wsdlDef = wsBinding.getWSDLDefinition();
         // wsdlCache = new WSDLMetaDataCache(wsdlDef, wsBinding.getWSDLPort());

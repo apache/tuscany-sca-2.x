@@ -30,7 +30,22 @@ import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
  */
 public class CeltixServiceTestCase extends TestCase {
 
-    public void testGetDataBindingCallback() throws Exception {
+	public void testGetDataBindingCallback() throws Exception {
+        CeltixService celtixService = createCeltixService();
+
+        QName operationName = new QName("greetMe");
+        ObjectMessageContextImpl ctx = new ObjectMessageContextImpl();
+        ctx.setMessageObjects(new String[]{"Celtix"});
+     	ServerDataBindingCallback callback1 = celtixService.getDataBindingCallback(operationName, ctx, DataBindingCallback.Mode.PARTS);
+        assertNotNull(callback1);
+
+        callback1.invoke(ctx);
+        Object rtn = (String)ctx.getReturn();
+        assertEquals("Hello Celtix", rtn);
+
+	}
+
+    private CeltixService createCeltixService() throws Exception {
         //Make following call to return a mocked SOAPClientBinding:
         //bus.getBindingManager().getBindingFactory(bindingId).createClientBinding(reference)
         SOAPServerBinding serverBinding = EasyMock.createMock(SOAPServerBinding.class);
@@ -41,7 +56,7 @@ public class CeltixServiceTestCase extends TestCase {
 
         SOAPBindingFactory bindingFactory = EasyMock.createNiceMock(SOAPBindingFactory.class);
         bindingFactory.createServerBinding(EasyMock.isA(EndpointReferenceType.class),
-            EasyMock.isA(ServerBindingEndpointCallback.class));
+                                           EasyMock.isA(ServerBindingEndpointCallback.class));
         EasyMock.expectLastCall().andReturn(serverBinding);
         EasyMock.replay(bindingFactory);
 
@@ -56,11 +71,6 @@ public class CeltixServiceTestCase extends TestCase {
         EasyMock.replay(bindingManager);
         EasyMock.replay(bus);
 
-        WireService wireService = EasyMock.createNiceMock(WireService.class);
-        wireService.createProxy(EasyMock.isA(InboundWire.class));
-        EasyMock.expectLastCall().andReturn(null);
-        EasyMock.replay(wireService);
-
         //Create WSDL Definition
         String wsdlLocation = "/wsdl/hello_world_doc_lit.wsdl";
         URL url = getClass().getResource(wsdlLocation);
@@ -72,24 +82,29 @@ public class CeltixServiceTestCase extends TestCase {
         InputSource input = new InputSource(url.openStream());
         Definition wsdlDef = reader.readWSDL(url.toString(), input);
         Service wsdlService = wsdlDef.getService(new QName("http://objectweb.org/hello_world_soap_http",
-            "SOAPService"));
+                                                           "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
 
+        WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
+
+        //Create mocked InboundWire, for ServiceExtension.getInterface()
         InboundWire<Greeter> inboundWire = EasyMock.createNiceMock(InboundWire.class);
         inboundWire.getBusinessInterface();
         EasyMock.expectLastCall().andReturn(Greeter.class).anyTimes();
-
         EasyMock.replay(inboundWire);
 
-        CeltixService<Greeter> celtixService =
-            new CeltixService<Greeter>("name", Greeter.class, wsdlDef, port, wsdlService, null, bus, wireService);
+        //Create mocked WireService, for ServiceExtension.getServiceInstance()
+        WireService wireService = EasyMock.createNiceMock(WireService.class);
+        wireService.createProxy(EasyMock.isA(InboundWire.class));
+        EasyMock.expectLastCall().andReturn(new GreeterImpl()).anyTimes();
+        EasyMock.replay(wireService);
+
+        CeltixService celtixService = new CeltixService("name", Greeter.class, null, wireService, wsBinding, bus);
+        //Not sure how InboundWire is set to CeltixService, is the following way correct?
         celtixService.setInboundWire(inboundWire);
         celtixService.start();
 
-        QName operationName = new QName("greetMe");
-        ServerDataBindingCallback callback1 = celtixService
-            .getDataBindingCallback(operationName, new ObjectMessageContextImpl(), DataBindingCallback.Mode.PARTS);
-        assertNotNull(callback1);
+        return celtixService;
     }
 
 }
