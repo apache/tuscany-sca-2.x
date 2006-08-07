@@ -17,21 +17,12 @@
 package org.apache.tuscany.binding.celtix.io;
 
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.List;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.ws.Holder;
-import javax.xml.ws.WebServiceException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 //import commonj.sdo.DataObject;
 //import commonj.sdo.Property;
@@ -57,7 +48,7 @@ public class NodeDataWriter implements DataWriter<Node> {
     }
 
     public void write(Object obj, QName elName, Node output) {
-		/*
+        /*
         byte bytes[] = SDOXMLHelper.toXMLBytes(
             callback.getTypeHelper(),
             new Object[] {obj},
@@ -144,7 +135,7 @@ public class NodeDataWriter implements DataWriter<Node> {
         return dataObject;
     }
 */
-    private class NodeContentHandler extends DefaultHandler {
+    class NodeContentHandler extends DefaultHandler {
         Node current;
         Document doc;
 

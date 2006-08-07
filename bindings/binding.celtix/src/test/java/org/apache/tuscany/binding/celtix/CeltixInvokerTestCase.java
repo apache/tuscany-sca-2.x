@@ -1,29 +1,43 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this 
+ * file except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under 
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY 
+ * KIND, either express or implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
 package org.apache.tuscany.binding.celtix;
 
 import java.net.URL;
 
-import org.xml.sax.InputSource;
-
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
-import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.Service;
+import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
-import javax.xml.ws.Holder;
+
+import org.xml.sax.InputSource;
+
+import junit.framework.TestCase;
+
+import org.apache.tuscany.binding.celtix.io.SCADataBindingCallback;
+
+import org.easymock.classextension.EasyMock;
 
 import org.objectweb.celtix.Bus;
-import org.objectweb.celtix.bus.bindings.WSDLMetaDataCache;
-import org.objectweb.celtix.bus.bindings.WSDLOperationInfo;
-import org.objectweb.celtix.bus.bindings.soap.SOAPClientBinding;
-import org.objectweb.celtix.bus.bindings.soap.SOAPBindingFactory;
 import org.objectweb.celtix.bindings.BindingManager;
+import org.objectweb.celtix.bus.bindings.soap.SOAPBindingFactory;
+import org.objectweb.celtix.bus.bindings.soap.SOAPClientBinding;
 import org.objectweb.celtix.context.ObjectMessageContextImpl;
 import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
-import org.apache.tuscany.binding.celtix.io.SCADataBindingCallback;
 
 /**
  * @version $Rev$ $Date$
@@ -73,7 +87,8 @@ public class CeltixInvokerTestCase extends TestCase {
     // SOAPService and port name is SoapPort
     private CeltixInvoker createCeltixInvoker(String wsdlLocation,
             String operationName, ObjectMessageContextImpl inputCtx)
-            throws Exception {
+        throws Exception {
+        
         // Make following call to return a mocked SOAPClientBinding:
         // bus.getBindingManager().getBindingFactory(bindingId).createClientBinding(reference)
         SOAPClientBinding clientBinding = EasyMock
