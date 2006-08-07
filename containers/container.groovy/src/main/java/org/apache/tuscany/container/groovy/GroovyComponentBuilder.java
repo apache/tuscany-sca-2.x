@@ -93,7 +93,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         configuration.setWorkContext(workContext);
         configuration.setInitLevel(initLevel);
         configuration.setServices(services);
-        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
+        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration, null);
 
         // handle properties
         for (Property<?> property : componentType.getProperties().values()) {

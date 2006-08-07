@@ -40,8 +40,9 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     private final List<Class<?>> services;
     //FIXME properties should move up to AtomicComponentExtension
     private final Map<String, ObjectFactory> properties;
+    private AsyncMonitor monitor;
 
-    public GroovyAtomicComponent(GroovyConfiguration configuration) {
+    public GroovyAtomicComponent(GroovyConfiguration configuration, AsyncMonitor monitor) {
         super(configuration.getName(),
             configuration.getParent(),
             configuration.getScopeContainer(),
@@ -53,6 +54,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         this.services = Collections.unmodifiableList(configuration.getServices());
         this.properties = new HashMap<String, ObjectFactory>();
         assert groovyClass != null;
+        this.monitor = monitor;
     }
 
     public List<Class<?>> getServiceInterfaces() {
@@ -61,6 +63,10 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
 
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
         return new GroovyInvoker(method.getName(), this);
+    }
+
+    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        return new AsyncGroovyInvoker(operation.getName(), wire, this, workScheduler, monitor, workContext);
     }
 
     public Object createInstance() throws ObjectCreationException {

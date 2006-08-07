@@ -24,8 +24,6 @@ import org.easymock.IAnswer;
  */
 public class PropertyTestCase extends TestCase {
 
-    private ScopeContainer scopeContainer;
-
     private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
         + "class Foo implements Greeting{"
         + "   String property;"
@@ -34,6 +32,7 @@ public class PropertyTestCase extends TestCase {
         + "   }"
         + "}";
 
+    private ScopeContainer scopeContainer;
     private Class<? extends GroovyObject> implClass;
 
     /**
@@ -48,7 +47,7 @@ public class PropertyTestCase extends TestCase {
         configuration.setServices(services);
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
-        GroovyAtomicComponent<Greeting> component = new GroovyAtomicComponent<Greeting>(configuration);
+        GroovyAtomicComponent<Greeting> component = new GroovyAtomicComponent<Greeting>(configuration, null);
         ObjectFactory<?> factory = createMock(ObjectFactory.class);
         expect(factory.getInstance()).andReturn("bar");
         replay(factory);
