@@ -18,11 +18,8 @@ package org.apache.tuscany.binding.celtix.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceException;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
@@ -119,7 +116,7 @@ public class NodeDataReader implements DataReader<Node> {
         }
 */
     }
-    private byte[] getNodeBytes(Node node)
+    byte[] getNodeBytes(Node node)
         throws ClassCastException, ClassNotFoundException,
                InstantiationException, IllegalAccessException {
 
@@ -146,7 +143,7 @@ public class NodeDataReader implements DataReader<Node> {
         return bout.toByteArray();
     }
 
-    private InputStream getNodeStream(Node node)
+    InputStream getNodeStream(Node node)
         throws ClassCastException, ClassNotFoundException,
                InstantiationException, IllegalAccessException {
 

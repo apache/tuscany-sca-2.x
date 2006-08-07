@@ -1,3 +1,17 @@
+/**
+ *
+ * Copyright 2006 The Apache Software Foundation or its licensors, as applicable.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this 
+ * file except in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under 
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY 
+ * KIND, either express or implied. See the License for the specific language governing 
+ * permissions and limitations under the License.
+ */
 package org.apache.tuscany.binding.celtix;
 
 import java.net.URL;
@@ -10,10 +24,11 @@ import javax.xml.namespace.QName;
 
 import org.xml.sax.InputSource;
 
+import junit.framework.TestCase;
+
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
-import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.bindings.BindingManager;
@@ -30,20 +45,21 @@ import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
  */
 public class CeltixServiceTestCase extends TestCase {
 
-	public void testGetDataBindingCallback() throws Exception {
+    public void testGetDataBindingCallback() throws Exception {
         CeltixService celtixService = createCeltixService();
 
         QName operationName = new QName("greetMe");
         ObjectMessageContextImpl ctx = new ObjectMessageContextImpl();
         ctx.setMessageObjects(new String[]{"Celtix"});
-     	ServerDataBindingCallback callback1 = celtixService.getDataBindingCallback(operationName, ctx, DataBindingCallback.Mode.PARTS);
+        ServerDataBindingCallback callback1 = celtixService.getDataBindingCallback(operationName,
+                ctx, DataBindingCallback.Mode.PARTS);
         assertNotNull(callback1);
 
         callback1.invoke(ctx);
         Object rtn = (String)ctx.getReturn();
         assertEquals("Hello Celtix", rtn);
 
-	}
+    }
 
     private CeltixService createCeltixService() throws Exception {
         //Make following call to return a mocked SOAPClientBinding:
