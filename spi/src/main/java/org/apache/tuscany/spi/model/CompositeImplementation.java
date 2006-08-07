@@ -26,6 +26,7 @@ import java.net.URL;
 public class CompositeImplementation extends Implementation<CompositeComponentType> {
     private String name;
     private URL scdlLocation;
+    private ClassLoader classLoader;
 
     public String getName() {
         return name;
@@ -41,5 +42,13 @@ public class CompositeImplementation extends Implementation<CompositeComponentTy
 
     public void setScdlLocation(URL scdlLocation) {
         this.scdlLocation = scdlLocation;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }
