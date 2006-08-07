@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
@@ -152,11 +153,11 @@ public class Launcher {
         ClassLoader applicationLoader = getApplicationLoader();
 
         // create a ComponentDefinition to represent the component we are going to deploy
-        SystemCompositeImplementation impl = new SystemCompositeImplementation();
+        CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(appScdl);
         impl.setClassLoader(applicationLoader);
-        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
-                new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM, impl);
+        ComponentDefinition<CompositeImplementation> moduleDefinition =
+                new ComponentDefinition<CompositeImplementation>(ComponentNames.TUSCANY_SYSTEM, impl);
 
         // deploy the component into the runtime under the system parent
         CompositeComponent parent = runtime.getRootComponent();

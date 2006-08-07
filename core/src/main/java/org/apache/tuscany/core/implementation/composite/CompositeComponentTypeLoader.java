@@ -32,8 +32,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
                      DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
-        //FIXME classloader below
-        ClassLoader cl = implementation.getClass().getClassLoader();
+        ClassLoader cl = implementation.getClassLoader();
         deploymentContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation);
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, deploymentContext);
         implementation.setComponentType(componentType);
