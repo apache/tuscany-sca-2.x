@@ -22,11 +22,11 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-
 import org.objectweb.celtix.Bus;
 
 /**
- * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix binding
+ * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix
+ * binding
  *
  * @version $Rev$ $Date$
  */
@@ -38,16 +38,14 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
     private Service wsdlService;
 
     public CeltixReference(String name,
-                           Definition wsdlDef,
-                           Port port,
-                           Service wsdlService,
-                           Bus bus,
                            CompositeComponent<?> parent,
-                           WireService wireService) {
+                           WireService wireService,
+                           WebServiceBinding binding,
+                           Bus bus) {
         super(name, parent, wireService);
-        this.port = port;
-        this.wsdlDef = wsdlDef;
-        this.wsdlService = wsdlService;
+        this.wsdlDef = binding.getWSDLDefinition();
+        this.port = binding.getWSDLPort();
+        this.wsdlService = binding.getWSDLService();
         this.bus = bus;
     }
 

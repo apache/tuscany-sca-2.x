@@ -42,39 +42,33 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
     public SCAObject build(CompositeComponent parent,
                            BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
-        WebServiceBinding binding = boundServiceDefinition.getBinding();
-        Definition definition = binding.getWSDLDefinition();
-        Port port = binding.getWSDLPort();
-        Service service = binding.getWSDLService();
+		//FIXME: CeltixService needs an instance of BusService. How to get BusService wired in and where BusService is created?
+        WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
         //FIXME get interface
         Class<?> interfaze = null;
         return new CeltixService(
             boundServiceDefinition.getName(),
             interfaze,
-            definition,
-            port,
-            service,
             parent,
-            busService.getBus(),
-            wireService);
+            wireService,
+            wsBinding,
+            busService.getBus());
     }
 
     public SCAObject build(CompositeComponent parent,
                            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
-        WebServiceBinding binding = boundReferenceDefinition.getBinding();
-        Definition definition = binding.getWSDLDefinition();
-        Port port = binding.getWSDLPort();
-        Service service = binding.getWSDLService();
+        WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+        Definition definition = wsBinding.getWSDLDefinition();
+        Port port = wsBinding.getWSDLPort();
+        Service service = wsBinding.getWSDLService();
         return new CeltixReference(
             boundReferenceDefinition.getName(),
-            definition,
-            port,
-            service,
-            busService.getBus(),
             parent,
-            wireService);
-    }
+            wireService,
+            wsBinding,
+            busService.getBus());
+   }
 
     protected Class<WebServiceBinding> getBindingType() {
         return WebServiceBinding.class;
