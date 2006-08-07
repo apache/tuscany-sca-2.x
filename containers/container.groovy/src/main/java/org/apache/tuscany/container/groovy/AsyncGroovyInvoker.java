@@ -4,19 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.ServiceRuntimeException;
 import org.osoa.sca.SCA;
+import org.osoa.sca.ServiceRuntimeException;
 
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.TargetException;
-
-import org.apache.tuscany.core.policy.async.AsyncMonitor;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageChannel;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Responsible for performing a non-blocking dispatch on a Groovy component implementation instance
@@ -91,8 +89,7 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         // can't just call overriden invoke because it would bypass async
         try {
-            Object resp = invokeTarget(msg.getBody());
-            return (Message) resp;
+            return (Message) invokeTarget(msg.getBody());
         } catch (InvocationTargetException e) {
             // FIXME need to log exceptions
             e.printStackTrace();

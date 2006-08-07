@@ -10,7 +10,6 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import groovy.lang.GroovyObject;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.groovy.mock.AsyncTarget;
-import org.apache.tuscany.core.policy.async.AsyncMonitor;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
