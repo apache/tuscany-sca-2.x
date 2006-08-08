@@ -187,7 +187,7 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
         // register element loaders
         registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));
         registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, null));
         registerLoader(loaderRegistry, new IncludeLoader(loaderRegistry));
         registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry));
         registerLoader(loaderRegistry, new PropertyLoader(loaderRegistry));
