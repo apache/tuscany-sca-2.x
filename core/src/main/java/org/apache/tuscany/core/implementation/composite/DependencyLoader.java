@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Loader for handling <dependency> elements.
@@ -42,7 +43,7 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
     private static final QName CLASSIFIER = new QName(NS, "classifier");
     private static final QName TYPE = new QName(NS, "type");
 
-    public DependencyLoader(LoaderRegistry registry) {
+    public DependencyLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
