@@ -34,6 +34,8 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
@@ -59,22 +61,35 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     )
         throws XMLStreamException, LoaderException {
         assert REFERENCE.equals(reader.getName());
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition();
-        referenceDefinition.setName(reader.getAttributeValue(null, "name"));
-        referenceDefinition.setMultiplicity(
-            StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE));
 
+        String name = reader.getAttributeValue(null, "name");
+        Multiplicity multiplicity = StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE);
+        Binding binding = null;
+        ServiceContract serviceContract = null;
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(parent, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
-                        referenceDefinition.setServiceContract((ServiceContract) o);
+                        serviceContract = (ServiceContract) o;
+                    } else if (o instanceof Binding) {
+                        binding = (Binding) o;
                     }
                     reader.next();
                     break;
                 case END_ELEMENT:
-                    return referenceDefinition;
+                    if (binding == null) {
+                        ReferenceDefinition referenceDefinition = new ReferenceDefinition(name, serviceContract);
+                        referenceDefinition.setMultiplicity(multiplicity);
+                        return referenceDefinition;
+                    } else {
+                        BoundReferenceDefinition<Binding> referenceDefinition = new BoundReferenceDefinition<Binding>();
+                        referenceDefinition.setName(name);
+                        referenceDefinition.setServiceContract(serviceContract);
+                        referenceDefinition.setMultiplicity(multiplicity);
+                        referenceDefinition.setBinding(binding);
+                        return referenceDefinition;
+                    }
             }
         }
     }
