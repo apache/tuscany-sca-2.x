@@ -23,10 +23,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -38,7 +39,8 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
 /**
  * Loads a composite component definition from an XML-based assembly file
@@ -48,9 +50,12 @@ import org.apache.tuscany.spi.annotation.Autowire;
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     public static final QName COMPOSITE = new QName(XML_NAMESPACE_1_0, "composite");
 
-    @Constructor({"registry"})
-    public CompositeLoader(@Autowire LoaderRegistry registry) {
+    private final ArtifactRepository artifactRepository;
+
+    public CompositeLoader(@Autowire LoaderRegistry registry,
+                           @Autowire ArtifactRepository artifactRepository) {
         super(registry);
+        this.artifactRepository = artifactRepository;
     }
 
     public QName getXMLType() {
@@ -78,6 +83,18 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                         composite.add((ComponentDefinition<? extends Implementation<?>>) o);
                     } else if (o instanceof Include) {
                         composite.add((Include) o);
+                    } else if (o instanceof Dependency) {
+                        Artifact artifact = ((Dependency) o).getArtifact();
+                        if (artifactRepository != null) {
+                            artifactRepository.resolve(artifact);
+                        }
+                        if (artifact.getUrl() != null) {
+                            ClassLoader classLoader = deploymentContext.getClassLoader();
+                            if (classLoader instanceof CompositeClassLoader) {
+                                CompositeClassLoader ccl = (CompositeClassLoader) classLoader;
+                                ccl.addURL(artifact.getUrl());
+                            }
+                        }
                     }
                     reader.next();
                     break;

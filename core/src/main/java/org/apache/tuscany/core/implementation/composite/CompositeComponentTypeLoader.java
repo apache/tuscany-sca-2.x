@@ -5,6 +5,7 @@ import java.net.URL;
 import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -32,7 +33,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
                      DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
-        ClassLoader cl = implementation.getClassLoader();
+        ClassLoader cl = new CompositeClassLoader(implementation.getClassLoader());
         deploymentContext = new ChildDeploymentContext(deploymentContext, cl, scdlLocation);
         CompositeComponentType componentType = loadFromSidefile(parent, scdlLocation, deploymentContext);
         implementation.setComponentType(componentType);
