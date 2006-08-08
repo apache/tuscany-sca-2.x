@@ -86,6 +86,10 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                     } else if (o instanceof Dependency) {
                         Artifact artifact = ((Dependency) o).getArtifact();
                         if (artifactRepository != null) {
+                            // default to jar type if not specified
+                            if (artifact.getType() == null) {
+                                artifact.setType("jar");
+                            }
                             artifactRepository.resolve(artifact);
                         }
                         if (artifact.getUrl() != null) {
