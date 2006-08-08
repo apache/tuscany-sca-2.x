@@ -6,14 +6,15 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
-import org.apache.geronimo.connector.work.GeronimoWorkManager;
-import org.apache.geronimo.transaction.context.TransactionContextManager;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
 import org.jmock.core.Stub;
 
+import org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager;
+import org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 /**
  * Verfies basic async invocations
  *
@@ -21,12 +22,13 @@ import org.jmock.core.Stub;
  */
 public class AsyncInterceptorTestCase extends MockObjectTestCase {
 
-    private GeronimoWorkManager workManager;
+	private WorkScheduler workScheduler;
+    private ThreadPoolWorkManager workManager;
 
     @SuppressWarnings("unchecked")
     public void testInvocation() throws Exception {
         AsyncInterceptor asyncInterceptor =
-            new AsyncInterceptor(workManager, new NullMonitorFactory().getMonitor(AsyncMonitor.class));
+            new AsyncInterceptor(workScheduler, new NullMonitorFactory().getMonitor(AsyncMonitor.class));
         Message msg = new MessageImpl();
         msg.setBody("foo");
         final CountDownLatch startSignal = new CountDownLatch(1);
@@ -51,13 +53,12 @@ public class AsyncInterceptorTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        TransactionContextManager transactionContextManager = new TransactionContextManager();
-        workManager = new GeronimoWorkManager(2, transactionContextManager);
-        workManager.doStart();
+        workManager = new ThreadPoolWorkManager(2);
+        workScheduler = new Jsr237WorkScheduler(workManager);
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        workManager.doStop();
+        workManager.destroy();
     }
 }
