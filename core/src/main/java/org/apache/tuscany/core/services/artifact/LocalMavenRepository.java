@@ -22,6 +22,9 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Property;
+
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
@@ -39,7 +42,7 @@ public class LocalMavenRepository implements ArtifactRepository {
      *
      * @param repoPath the path to the local repo
      */
-    public LocalMavenRepository(String repoPath) {
+    public LocalMavenRepository(@Property(name="repository") String repoPath) {
         String home = AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty("user.home");
