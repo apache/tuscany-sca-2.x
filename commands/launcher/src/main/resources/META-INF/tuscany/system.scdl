@@ -92,11 +92,15 @@
         <property name="path">extension</property>
     </component>
 
-    <!-- WorkScheduler service -->
+    <!-- service for resolving artifacts against the user's local Maven repository -->
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+        <property name="repository">.m2/repository</property>
+    </component>
 
+    <!-- WorkScheduler service -->
     <component name="workManager">
-        <system:implementation.system
-            class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
         <property name="poolSize">10</property>
     </component>
 
