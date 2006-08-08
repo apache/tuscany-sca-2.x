@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.VoidService;
@@ -103,7 +104,7 @@ public class DirectoryScanExtender implements VoidService {
 
         // assume this class's ClassLoader is the Tuscany system classloader
         // and use it as the extension's parent ClassLoader
-        ClassLoader extensionCL = new URLClassLoader(new URL[]{extensionURL}, getClass().getClassLoader());
+        ClassLoader extensionCL = new CompositeClassLoader(new URL[]{extensionURL}, getClass().getClassLoader());
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
@@ -117,8 +118,10 @@ public class DirectoryScanExtender implements VoidService {
             component.start();
         } catch (LoaderException e) {
             // FIXME handle the exception
+            e.printStackTrace();
         } catch (TuscanyException e) {
             // FIXME handle the exception
+            e.printStackTrace();
         }
     }
 }
