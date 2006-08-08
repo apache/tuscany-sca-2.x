@@ -67,13 +67,10 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         // FIXME is this right?
         List<BoundReferenceDefinition<? extends Binding>> allBoundReferences =
             new ArrayList<BoundReferenceDefinition<? extends Binding>>();
-        for (ReferenceTarget referenceTarget : componentDefinition.getReferenceTargets().values()) {
-            ReferenceDefinition referenceDefinition =
-                componentType.getReferences().get(referenceTarget.getReferenceName());
-            if (referenceDefinition instanceof BoundReferenceDefinition<?>) {
-                BoundReferenceDefinition<? extends Binding> boundReference =
-                    (BoundReferenceDefinition<? extends Binding>) referenceDefinition;
-                allBoundReferences.add(boundReference);
+        
+        for (Object referenceTarget : componentType.getReferences().values()) {
+            if (referenceTarget instanceof BoundReferenceDefinition<?>) {
+                allBoundReferences.add((BoundReferenceDefinition<? extends Binding>) referenceTarget);
             }
         }
 
