@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.policy.async;
 
-import javax.resource.spi.work.WorkManager;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.OneWay;
@@ -25,7 +25,7 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
 public class AsyncPolicyBuilder implements TargetPolicyBuilder {
 
     private PolicyBuilderRegistry builderRegistry;
-    private WorkManager workManager;
+    private WorkScheduler workScheduler;
     private AsyncMonitor monitor;
 
     public AsyncPolicyBuilder() {
@@ -50,15 +50,15 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
     }
 
     @Autowire
-    public void setWorkManager(WorkManager workManager) {
-        this.workManager = workManager;
+    public void setWorkScheduler(WorkScheduler workScheduler) {
+        this.workScheduler = workScheduler;
     }
 
     public void build(ServiceDefinition serviceDefinition, InboundWire<?> wire) throws BuilderException {
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             // TODO fix this - it should be represented by the model and not through an annotation
             if (chain.getMethod().getAnnotation(OneWay.class) != null) {
-                chain.addInterceptor(new AsyncInterceptor(workManager, monitor));
+                chain.addInterceptor(new AsyncInterceptor(workScheduler, monitor));
             }
         }
     }

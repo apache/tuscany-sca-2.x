@@ -73,19 +73,7 @@
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.geronimo</groupId>
-            <artifactId>geronimo-connector</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.geronimo</groupId>
-            <artifactId>geronimo-transaction</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
+        
         <dependency>
             <groupId>concurrent</groupId>
             <artifactId>concurrent</artifactId>
