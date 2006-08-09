@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -40,6 +41,9 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 
 /**
  * The default builder registry in the runtime
@@ -49,7 +53,7 @@ import org.apache.tuscany.spi.model.Implementation;
 @Scope("MODULE")
 public class BuilderRegistryImpl implements BuilderRegistry {
 
-    //protected WireService wireService;
+    protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
 
     private final Map<Class<? extends Implementation<?>>,
@@ -73,6 +77,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     @Autowire
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
+    }
+
+    @Autowire
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -99,6 +108,10 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Component<?> component = componentBuilder.build(parent, componentDefinition, deploymentContext);
         ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
         assert componentType != null : "Component type must be set";
+        // create wires for the component
+        if (wireService != null && !(component instanceof SystemAtomicComponent)) {
+            wireService.createWires(component, componentDefinition);
+        }
         return component;
     }
 
@@ -138,6 +151,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                DeploymentContext deploymentContext) {
         Class<B> bindingClass = (Class<B>) boundReferenceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        return bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);
+        SCAObject object = bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);
+        // create wires for the component
+        if (wireService != null) {
+            wireService.createWires((Reference) object);
+        }
+        return object;
     }
 }

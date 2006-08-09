@@ -16,9 +16,6 @@
  */
 package org.apache.tuscany.core.builder;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.Component;
@@ -27,6 +24,11 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.wire.WireService;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -47,6 +49,8 @@ public class BuilderRegistryTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = new BuilderRegistryImpl();
+        WireService service = EasyMock.createNiceMock(WireService.class);
+        registry.setWireService(service);
         deploymentContext = new RootDeploymentContext(null, null, null, null);
     }
 
