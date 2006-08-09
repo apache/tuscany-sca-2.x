@@ -19,6 +19,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured
@@ -47,11 +48,13 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+       
         return new Axis2Reference(
             boundReferenceDefinition.getName(),
             parent,
             wireService,
-            wsBinding);
+            wsBinding, 
+            boundReferenceDefinition.getServiceContract());
     }
 
     protected Class<WebServiceBinding> getBindingType() {
