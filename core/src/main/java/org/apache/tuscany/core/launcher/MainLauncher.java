@@ -136,7 +136,7 @@ public class MainLauncher extends Launcher {
             URL scdl = getClass().getClassLoader().getResource(METAINF_SYSTEM_SCDL_PATH);
             bootRuntime(scdl, new NullMonitorFactory());
             URL appScdl = getApplicationLoader().getResource(METAINF_APPLICATION_SCDL_PATH);
-            CompositeComponent application = bootApplication(appScdl);
+            CompositeComponent application = bootApplication("application", appScdl);
             application.start();
             try {
                 callApplication(application);

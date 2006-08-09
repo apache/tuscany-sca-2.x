@@ -109,7 +109,11 @@ public class ServletLauncherListener implements ServletContextListener {
                 }
             }
 
-            component = launcher.bootApplication(appScdl);
+            String name = servletContext.getServletContextName();
+            if (name == null) {
+                name = "application";
+            }
+            component = launcher.bootApplication(name, appScdl);
             component.start();
             context = new CompositeContextImpl(component);
             context.start();
