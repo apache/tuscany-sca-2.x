@@ -100,12 +100,12 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     public Service getService(String name) {
         SCAObject ctx = children.get(name);
         if (ctx == null) {
-            ComponentNotFoundException e = new ComponentNotFoundException("ServiceDefinition context not found");
+            ComponentNotFoundException e = new ComponentNotFoundException("Service not found");
             e.setIdentifier(name);
             e.addContextName(getName());
             throw e;
         } else if (!(ctx instanceof Service)) {
-            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service context");
+            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service");
             e.setIdentifier(name);
             e.addContextName(getName());
             throw e;

@@ -16,10 +16,8 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Monitor;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -27,13 +25,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
@@ -44,7 +36,6 @@ import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.policy.async.AsyncMonitor;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -131,72 +122,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 // Only if there is a callback reference in the service
                 configuration.addCallbackSite(service.getCallbackReferenceName(), service.getCallbackMember());
             }
-            component.addInboundWire(createWire(service));
-        }
-
-        for (ReferenceTarget reference : definition.getReferenceTargets().values()) {
-            Map<String, JavaMappedReference> references = componentType.getReferences();
-            JavaMappedReference mappedReference = references.get(reference.getReferenceName());
-            OutboundWire wire = createWire(reference, mappedReference);
-            component.addOutboundWire(wire);
         }
         return component;
-    }
-
-
-    @SuppressWarnings("unchecked")
-    private OutboundWire createWire(ReferenceTarget reference, JavaMappedReference def) {
-        //TODO multiplicity
-        if (reference.getTargets().size() != 1) {
-            throw new UnsupportedOperationException();
-        }
-        Class<?> interfaze = def.getServiceContract().getInterfaceClass();
-        OutboundWire wire = wireService.createOutboundWire();
-        wire.setTargetName(new QualifiedName(reference.getTargets().get(0).toString()));
-        wire.setBusinessInterface(interfaze);
-        wire.setReferenceName(reference.getReferenceName());
-        for (Method method : interfaze.getMethods()) {
-            //TODO handle policy
-            OutboundInvocationChain chain = wireService.createOutboundChain(method);
-            wire.addInvocationChain(method, chain);
-        }
-        // FIXME Using JavaServiceContract for now; this may be ok, but if it's not, then getCallbackClass
-        //       will need to be promoted to ServiceContract
-        ServiceContract contract = def.getServiceContract();
-        Class<?> callbackInterface = contract.getCallbackClass();
-        if (callbackInterface != null) {
-            wire.setCallbackInterface(callbackInterface);
-            for (Method callbackMethod : callbackInterface.getMethods()) {
-                InboundInvocationChain callbackTargetChain = wireService.createInboundChain(callbackMethod);
-                OutboundInvocationChain callbackSourceChain = wireService.createOutboundChain(callbackMethod);
-                // TODO handle policy
-                //TODO statement below could be cleaner
-                callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                wire.addTargetCallbackInvocationChain(callbackMethod, callbackTargetChain);
-                wire.addSourceCallbackInvocationChain(callbackMethod, callbackSourceChain);
-            }
-        }
-        return wire;
-    }
-
-    @SuppressWarnings("unchecked")
-    private InboundWire createWire(JavaMappedService service) {
-        Class<?> interfaze = service.getServiceContract().getInterfaceClass();
-        InboundWire wire = wireService.createInboundWire();
-        wire.setBusinessInterface(interfaze);
-        wire.setServiceName(service.getName());
-        for (Method method : interfaze.getMethods()) {
-            InboundInvocationChain chain = wireService.createInboundChain(method);
-            // TODO handle policy
-            //TODO statement below could be cleaner
-            chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(method, chain);
-        }
-        String callbackReferenceName = service.getCallbackReferenceName();
-        if (callbackReferenceName != null) {
-            wire.setCallbackReferenceName(callbackReferenceName);
-        }
-        return wire;
     }
 
     protected Class<JavaImplementation> getImplementationType() {
