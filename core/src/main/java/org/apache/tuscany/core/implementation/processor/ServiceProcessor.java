@@ -22,13 +22,12 @@ import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
-import org.apache.tuscany.core.implementation.JavaMappedCallback;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.ProcessingException;
 import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
@@ -98,7 +97,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         JavaMappedService callbackService = null;
         Class<?> callbackClass = method.getParameterTypes()[0];
         for (JavaMappedService service : type.getServices().values()) {
-            JavaServiceContract serviceContract = (JavaServiceContract) service.getServiceContract();
+            ServiceContract serviceContract = service.getServiceContract();
             if (serviceContract.getCallbackClass().equals(callbackClass)) {
                 callbackService = service;
             }
@@ -106,8 +105,8 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         if (callbackService == null) {
             throw new IllegalCallbackException("Callback type does not match a service callback interface");
         }
-        JavaMappedCallback callback = new JavaMappedCallback(name, method, callbackClass);
-        callbackService.setCallbackReference(callback);
+        callbackService.setCallbackReferenceName(name);
+        callbackService.setCallbackMember(method);
     }
 
     public void visitField(CompositeComponent<?> parent, Field field,
@@ -122,7 +121,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         JavaMappedService callbacksService = null;
         Class<?> callbackClass = field.getType();
         for (JavaMappedService service : type.getServices().values()) {
-            JavaServiceContract serviceContract = (JavaServiceContract) service.getServiceContract();
+            ServiceContract serviceContract = service.getServiceContract();
             if (serviceContract.getCallbackClass().equals(callbackClass)) {
                 callbacksService = service;
             }
@@ -130,8 +129,8 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
         if (callbacksService == null) {
             throw new IllegalCallbackException("Callback type does not match a service callback interface");
         }
-        JavaMappedCallback callback = new JavaMappedCallback(name, field, callbackClass);
-        callbacksService.setCallbackReference(callback);
+        callbacksService.setCallbackReferenceName(name);
+        callbacksService.setCallbackMember(field);
     }
 
 

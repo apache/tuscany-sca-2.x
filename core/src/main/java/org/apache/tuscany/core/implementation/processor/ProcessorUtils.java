@@ -24,6 +24,7 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
@@ -50,8 +51,7 @@ public final class ProcessorUtils {
         JavaMappedService service = new JavaMappedService();
         service.setName(JavaIntrospectionHelper.getBaseName(interfaze));
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-        service.setServiceInterface(interfaze);
-        JavaServiceContract contract = new JavaServiceContract();
+        ServiceContract contract = new JavaServiceContract();
         contract.setInterfaceClass(interfaze);
         Scope interactionScope = interfaze.getAnnotation(Scope.class);
         if (interactionScope == null) {
@@ -75,7 +75,7 @@ public final class ProcessorUtils {
      * @param contract  the service contract the callback is associated wth
      * @throws IllegalCallbackException
      */
-    public static void processCallback(Class<?> interfaze, JavaServiceContract contract)
+    public static void processCallback(Class<?> interfaze, ServiceContract contract)
         throws IllegalCallbackException {
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
@@ -236,7 +236,7 @@ public final class ProcessorUtils {
                 "Name specified by @Constructor does not match autowire name at " + (pos + 1));
         }
         reference.setName(name);
-        JavaServiceContract contract = new JavaServiceContract();
+        ServiceContract contract = new JavaServiceContract();
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
@@ -334,7 +334,7 @@ public final class ProcessorUtils {
         }
         reference.setName(name);
         reference.setRequired(refAnnotation.required());
-        JavaServiceContract contract = new JavaServiceContract();
+        ServiceContract contract = new JavaServiceContract();
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);

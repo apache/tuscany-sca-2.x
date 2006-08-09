@@ -127,11 +127,11 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                 }
             }
         } catch (IOException e) {
-            LoaderException sfe = new LoaderException(e.getMessage());
+            LoaderException sfe = new LoaderException(e);
             sfe.setResourceURI(url.toString());
             throw sfe;
         } catch (XMLStreamException e) {
-            LoaderException sfe = new LoaderException(e.getMessage());
+            LoaderException sfe = new LoaderException(e);
             sfe.setResourceURI(url.toString());
             throw sfe;
         }
