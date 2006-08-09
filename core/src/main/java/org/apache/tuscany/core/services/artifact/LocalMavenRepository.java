@@ -22,7 +22,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 
-import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Property;
 
 import org.apache.tuscany.spi.services.artifact.Artifact;
@@ -37,12 +36,12 @@ public class LocalMavenRepository implements ArtifactRepository {
     private File localRepo;
 
     /**
-     * Constructor specifying the location of the local repo.
-     * Relative paths are resolved against the user's home directory.
+     * Constructor specifying the location of the local repo. Relative paths are resolved against the user's home
+     * directory.
      *
      * @param repoPath the path to the local repo
      */
-    public LocalMavenRepository(@Property(name="repository") String repoPath) {
+    public LocalMavenRepository(@Property(name = "repository") String repoPath) {
         String home = AccessController.doPrivileged(new PrivilegedAction<String>() {
             public String run() {
                 return System.getProperty("user.home");
@@ -55,7 +54,7 @@ public class LocalMavenRepository implements ArtifactRepository {
         if (artifact.getUrl() != null) {
             return;
         }
-        
+
         String path = getPath(artifact);
         File artifactFile = new File(localRepo, path);
         if (artifactFile.exists()) {
@@ -69,9 +68,8 @@ public class LocalMavenRepository implements ArtifactRepository {
     }
 
     /**
-     * Return the path into the repo for an artifact.
-     * The path for an artifact is
-     * ${group.replace('.', '/')}/$[name}/${version}/${name}-${version}[-${classifier}].${type}
+     * Return the path into the repo for an artifact. The path for an artifact is ${group.replace('.',
+     * '/')}/$[name}/${version}/${name}-${version}[-${classifier}].${type}
      *
      * @param artifact the artifact to resolve
      * @return the path into the repo for the artifact

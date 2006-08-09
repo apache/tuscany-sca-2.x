@@ -19,22 +19,22 @@ package org.apache.tuscany.core.services.extension;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.TuscanyException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.VoidService;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
+
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * Service that extends the runtime by loading composites located in a directory.
@@ -111,7 +111,7 @@ public class DirectoryScanExtender implements VoidService {
         implementation.setScdlLocation(scdl);
         implementation.setClassLoader(extensionCL);
         ComponentDefinition<SystemCompositeImplementation> definition =
-                new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
+            new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
 
         try {
             Component<?> component = deployer.deploy(parent, definition);

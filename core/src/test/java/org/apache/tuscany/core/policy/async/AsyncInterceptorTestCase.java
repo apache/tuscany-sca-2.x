@@ -2,19 +2,19 @@ package org.apache.tuscany.core.policy.async;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler;
+import org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.jmock.core.Invocation;
 import org.jmock.core.Stub;
 
-import org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager;
-import org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
 /**
  * Verfies basic async invocations
  *
@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
  */
 public class AsyncInterceptorTestCase extends MockObjectTestCase {
 
-	private WorkScheduler workScheduler;
+    private WorkScheduler workScheduler;
     private ThreadPoolWorkManager workManager;
 
     @SuppressWarnings("unchecked")
