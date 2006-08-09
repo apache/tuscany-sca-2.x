@@ -37,32 +37,35 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
 
 /**
  * Basic launcher implementation.
- *
+ * 
  * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
  */
 public class Launcher {
     /**
      * A conventional META-INF based location for the system SCDL.
-     *
+     * 
      * @see #bootRuntime(URL, MonitorFactory)
      */
     public static final String METAINF_SYSTEM_SCDL_PATH = "META-INF/tuscany/system.scdl";
 
     /**
      * A conventional META-INF based location for the application SCDL.
-     *
+     * 
      * @see #bootApplication(URL)
      */
     public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
 
     private ClassLoader applicationLoader;
+
     private RuntimeComponent runtime;
+
     private Deployer deployer;
+
     private CompositeComponent<?> composite;
 
     /**
      * Returns the classloader for application classes.
-     *
+     * 
      * @return the classloader for application classes
      */
     public ClassLoader getApplicationLoader() {
@@ -70,10 +73,11 @@ public class Launcher {
     }
 
     /**
-     * Set the classloader to be used for application classes.  You should almost always supply your own
-     * application classloader, based on the hosting environment that the runtime is embedded in.
-     *
-     * @param applicationLoader the classloader to be used for application classes
+     * Set the classloader to be used for application classes. You should almost always supply your own application classloader, based on the hosting
+     * environment that the runtime is embedded in.
+     * 
+     * @param applicationLoader
+     *            the classloader to be used for application classes
      */
     public void setApplicationLoader(ClassLoader applicationLoader) {
         this.applicationLoader = applicationLoader;
@@ -81,8 +85,9 @@ public class Launcher {
 
     /**
      * Boots the runtime defined by the specified SCDL.
-     *
-     * @param systemScdl a resource path to the SCDL defining the system.
+     * 
+     * @param systemScdl
+     *            a resource path to the SCDL defining the system.
      * @return a CompositeComponent for the newly booted runtime system
      * @throws LoaderException
      */
@@ -109,9 +114,8 @@ public class Launcher {
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         moduleImplementation.setScdlLocation(systemScdl);
         moduleImplementation.setClassLoader(systemClassLoader);
-        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
-                new ComponentDefinition<SystemCompositeImplementation>(ComponentNames.TUSCANY_SYSTEM,
-                                                                       moduleImplementation);
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition = new ComponentDefinition<SystemCompositeImplementation>(
+                ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
 
         // deploy the component into the runtime under the system parent
         composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
@@ -140,9 +144,10 @@ public class Launcher {
 
     /**
      * Boots the application defined by the specified SCDL.
-     *
-     * @see   METAINF_APPLICATION_SCDL_PATH
-     * @param appScdl URL to the SCDL defining the application
+     * 
+     * @see METAINF_APPLICATION_SCDL_PATH
+     * @param appScdl
+     *            URL to the SCDL defining the application
      * @return a CompositeComponent for the newly booted application
      * @throws LoaderException
      */
@@ -156,12 +161,21 @@ public class Launcher {
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(appScdl);
         impl.setClassLoader(applicationLoader);
-        ComponentDefinition<CompositeImplementation> moduleDefinition =
-                new ComponentDefinition<CompositeImplementation>(ComponentNames.TUSCANY_SYSTEM, impl);
+        ComponentDefinition<CompositeImplementation> moduleDefinition = new ComponentDefinition<CompositeImplementation>(
+                ComponentNames.TUSCANY_SYSTEM, impl);
 
         // deploy the component into the runtime under the system parent
         CompositeComponent parent = runtime.getRootComponent();
-        return (CompositeComponent<?>) deployer.deploy(parent, moduleDefinition);
+        ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+       
+        try {
+
+            Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
+            return (CompositeComponent<?>) deployer.deploy(parent, moduleDefinition);
+        } finally {
+            Thread.currentThread().setContextClassLoader(ccl);
+        }
     }
 
     public File getInstallDirectory() {
