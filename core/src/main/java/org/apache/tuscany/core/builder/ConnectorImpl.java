@@ -271,7 +271,7 @@ public class ConnectorImpl implements Connector {
         SCAObject<?> target = parent.getChild(targetName.getPartName());
         if (target == null) {
             String refName = sourceWire.getReferenceName();
-            BuilderConfigException e = new BuilderConfigException("Target not found for reference" + refName);
+            BuilderConfigException e = new BuilderConfigException("Target not found for reference " + refName);
             e.setIdentifier(targetName.getQualifiedName());
             throw e;
         }

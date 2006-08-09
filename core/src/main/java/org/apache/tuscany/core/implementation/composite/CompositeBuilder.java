@@ -32,8 +32,6 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Include;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
@@ -67,7 +65,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         // FIXME is this right?
         List<BoundReferenceDefinition<? extends Binding>> allBoundReferences =
             new ArrayList<BoundReferenceDefinition<? extends Binding>>();
-        
+
         for (Object referenceTarget : componentType.getReferences().values()) {
             if (referenceTarget instanceof BoundReferenceDefinition<?>) {
                 allBoundReferences.add((BoundReferenceDefinition<? extends Binding>) referenceTarget);

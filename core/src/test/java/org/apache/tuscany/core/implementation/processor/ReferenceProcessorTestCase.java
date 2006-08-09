@@ -2,11 +2,12 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.spi.model.ServiceContract;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 
 /**
@@ -22,7 +23,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type, null);
         JavaMappedReference reference = type.getReferences().get("foo");
         assertNotNull(reference);
-        JavaServiceContract contract = (JavaServiceContract) reference.getServiceContract();
+        ServiceContract contract = reference.getServiceContract();
         assertEquals(Ref.class, contract.getInterfaceClass());
         assertEquals("ReferenceProcessorTestCase$Ref", contract.getInterfaceName());
     }
@@ -45,7 +46,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         processor.visitField(null, ReferenceProcessorTestCase.Foo.class.getDeclaredField("baz"), type, null);
         JavaMappedReference reference = type.getReferences().get("baz");
         assertNotNull(reference);
-        JavaServiceContract contract = (JavaServiceContract) reference.getServiceContract();
+        ServiceContract contract = reference.getServiceContract();
         assertEquals(Ref.class, contract.getInterfaceClass());
         assertEquals("ReferenceProcessorTestCase$Ref", contract.getInterfaceName());
     }

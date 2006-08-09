@@ -17,11 +17,12 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.model.ServiceContract;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 
 /**
@@ -36,7 +37,7 @@ public class ServiceProcessorTestCase extends TestCase {
         processor.visitClass(null, FooMultiple.class, type, null);
         assertEquals(2, type.getServices().size());
         JavaMappedService service = type.getServices().get("ServiceProcessorTestCase$Baz");
-        JavaServiceContract contract = (JavaServiceContract) service.getServiceContract();
+        ServiceContract contract = service.getServiceContract();
         assertEquals(Baz.class, contract.getInterfaceClass());
         assertEquals(Bar.class, contract.getCallbackClass());
         assertEquals("ServiceProcessorTestCase$Bar", contract.getCallbackName());
@@ -58,7 +59,7 @@ public class ServiceProcessorTestCase extends TestCase {
         processor.visitClass(null, FooRemotableNoService.class, type, null);
         assertEquals(1, type.getServices().size());
         JavaMappedService service = type.getServices().get("ServiceProcessorTestCase$BazRemotable");
-        JavaServiceContract contract = (JavaServiceContract) service.getServiceContract();
+        ServiceContract contract = service.getServiceContract();
         assertEquals(BazRemotable.class, contract.getInterfaceClass());
     }
 

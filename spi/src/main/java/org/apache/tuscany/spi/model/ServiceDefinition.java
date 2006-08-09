@@ -25,6 +25,10 @@ public class ServiceDefinition extends ModelObject {
     private String name;
     private ServiceContract serviceContract;
     private boolean remotable;
+    private String callbackRefName;
+
+    public ServiceDefinition() {
+    }
 
     public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable) {
         this.name = name;
@@ -32,7 +36,11 @@ public class ServiceDefinition extends ModelObject {
         this.remotable = remotable;
     }
 
-    public ServiceDefinition() {
+    public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable, String callbackRefName) {
+        this.name = name;
+        this.serviceContract = serviceContract;
+        this.remotable = remotable;
+        this.callbackRefName = callbackRefName;
     }
 
     public String getName() {
@@ -58,4 +66,16 @@ public class ServiceDefinition extends ModelObject {
     public void setRemotable(boolean remotable) {
         this.remotable = remotable;
     }
+
+    /**
+     * Returns the callback name.
+     */
+    public String getCallbackReferenceName() {
+        return callbackRefName;
+    }
+
+    public void setCallbackReferenceName(String callbackRefName) {
+        this.callbackRefName = callbackRefName;
+    }
+
 }

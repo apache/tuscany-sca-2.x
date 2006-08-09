@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import java.lang.reflect.Member;
+
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -29,7 +31,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class JavaMappedService extends ServiceDefinition {
     private Class<?> serviceInterface;
-    private JavaMappedCallback callbackReference;
+    private Member callbackMember;
 
     public JavaMappedService() {
     }
@@ -40,6 +42,15 @@ public class JavaMappedService extends ServiceDefinition {
 
     public JavaMappedService(String name, ServiceContract contract, boolean remotable) {
         super(name, contract, remotable);
+    }
+
+    public JavaMappedService(String name,
+                             ServiceContract contract,
+                             boolean remotable,
+                             String callbackRefName,
+                             Member callbackMember) {
+        super(name, contract, remotable, callbackRefName);
+        this.callbackMember = callbackMember;
     }
 
     public JavaMappedService(String name, ServiceContract contract, Class<?> serviceInterface, boolean remotable) {
@@ -67,21 +78,12 @@ public class JavaMappedService extends ServiceDefinition {
         this.serviceInterface = serviceInterface;
     }
 
-    /**
-     * Returns the Callback Reference for this service.
-     *
-     * @return the Callback Reference for this service
-     */
-    public JavaMappedCallback getCallbackReference() {
-        return callbackReference;
+    public Member getCallbackMember() {
+        return callbackMember;
     }
 
-    /**
-     * Sets the Callback Reference for this service.
-     *
-     * @param callbackReference the Callback Reference for this service
-     */
-    public void setCallbackReference(JavaMappedCallback callbackReference) {
-        this.callbackReference = callbackReference;
+    public void setCallbackMember(Member callbackMember) {
+        this.callbackMember = callbackMember;
     }
+
 }

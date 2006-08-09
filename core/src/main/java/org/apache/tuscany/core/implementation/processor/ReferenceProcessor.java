@@ -21,6 +21,7 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
@@ -66,7 +67,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setAutowire(autowire);
         reference.setRequired(required);
         reference.setName(name);
-        JavaServiceContract contract = new JavaServiceContract();
+        ServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = method.getParameterTypes()[0];
         String interfaceName = getBaseName(interfaceType);
         contract.setInterfaceName(interfaceName);
@@ -103,7 +104,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setRequired(required);
         reference.setAutowire(autowire);
         reference.setName(name);
-        JavaServiceContract contract = new JavaServiceContract();
+        ServiceContract contract = new JavaServiceContract();
         Class<?> interfaceType = field.getType();
         String interfaceName = getBaseName(interfaceType);
         contract.setInterfaceName(interfaceName);
@@ -117,7 +118,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
     public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
-        
+
     }
 
 

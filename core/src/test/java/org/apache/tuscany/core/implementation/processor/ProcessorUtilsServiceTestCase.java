@@ -18,10 +18,10 @@ import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
 
 /**
  * @version $Rev$ $Date$
@@ -33,7 +33,7 @@ public class ProcessorUtilsServiceTestCase extends TestCase {
         assertTrue(Foo.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(service.isRemotable());
         assertEquals(InteractionScope.CONVERSATIONAL, service.getServiceContract().getInteractionScope());
-        JavaServiceContract serviceContract = (JavaServiceContract) service.getServiceContract();
+        ServiceContract serviceContract = service.getServiceContract();
         assertTrue(Bar.class.equals(serviceContract.getCallbackClass()));
         assertTrue("ProcessorUtilsServiceTestCase$Bar".equals(serviceContract.getCallbackName()));
     }

@@ -13,6 +13,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 import junit.framework.TestCase;
@@ -20,7 +21,6 @@ import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
-import org.apache.tuscany.core.implementation.JavaMappedCallback;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
@@ -117,12 +117,10 @@ public class CallbackInvocationTestCase extends TestCase {
         type.setConstructorDefinition(ctorDef);
         type.setImplementationScope(Scope.MODULE);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
-        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
-        JavaMappedService mappedService = new JavaMappedService("Foo", contract, false);
-        JavaMappedCallback mappedCallback = new JavaMappedCallback("callback", method, FooCallback.class);
-        mappedService.setCallbackReference(mappedCallback);
+        JavaMappedService mappedService = new JavaMappedService("Foo", contract, false, "callback", method);
         type.getServices().put("Foo", mappedService);
 
         JavaImplementation impl = new JavaImplementation();
@@ -140,7 +138,7 @@ public class CallbackInvocationTestCase extends TestCase {
         type.setConstructorDefinition(ctorDef);
         type.setImplementationScope(Scope.MODULE);
         Method method = FooClient.class.getMethod("setFoo", Foo.class);
-        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
         JavaMappedReference mappedReference = new JavaMappedReference("foo", contract, method);

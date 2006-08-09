@@ -24,6 +24,9 @@ package org.apache.tuscany.spi.model;
 public abstract class ServiceContract extends ModelObject {
     private InteractionScope interactionScope;
     private Class<?> interfaceClass;
+    private String interfaceName;
+    private String callbackName;
+    private Class<?> callbackClass;
 
     protected ServiceContract() {
     }
@@ -32,20 +35,68 @@ public abstract class ServiceContract extends ModelObject {
         this.interfaceClass = interfaceClass;
     }
 
+    protected ServiceContract(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
+
+    public String getInterfaceName() {
+        return interfaceName;
+    }
+
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
+    }
+
+    /**
+     * Returns the class used to represent the service contract
+     */
     public Class<?> getInterfaceClass() {
         return interfaceClass;
     }
 
+    /**
+     * Sets the class used to represent the service contract
+     */
     public void setInterfaceClass(Class<?> interfaceClass) {
         this.interfaceClass = interfaceClass;
     }
 
+    /**
+     * Returns the service interaction scope
+     */
     public InteractionScope getInteractionScope() {
         return interactionScope;
     }
 
+    /**
+     * Sets the service interaction scope
+     */
     public void setInteractionScope(InteractionScope interactionScope) {
         this.interactionScope = interactionScope;
     }
 
+    /**
+     * Returns the name of the callback or null if the contract is unidirectional
+     */
+    public String getCallbackName() {
+        return callbackName;
+    }
+
+    /**
+     * Sets the name of the callback service
+     */
+    public void setCallbackName(String callbackName) {
+        this.callbackName = callbackName;
+    }
+
+    /**
+     * Returns the name of the callback service
+     */
+    public Class<?> getCallbackClass() {
+        return callbackClass;
+    }
+
+    public void setCallbackClass(Class<?> callbackClass) {
+        this.callbackClass = callbackClass;
+    }
 }

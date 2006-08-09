@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.component.AutowireComponent;
@@ -130,7 +131,7 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         Method refMethod = FooImpl.class.getMethod("setRef", Foo.class);
         refMethod.setAccessible(true);
         mappedReference.setMember(refMethod);
-        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        ServiceContract contract = new JavaServiceContract(Foo.class);
         mappedReference.setServiceContract(contract);
         type.add(mappedReference);
         ConstructorDefinition<FooImpl> ctorDef = new ConstructorDefinition<FooImpl>(FooImpl.class.getConstructor());
@@ -169,7 +170,7 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         Method refMethod = FooImpl.class.getMethod("setRef", Foo.class);
         refMethod.setAccessible(true);
         mappedReference.setMember(refMethod);
-        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        ServiceContract contract = new JavaServiceContract(Foo.class);
         mappedReference.setServiceContract(contract);
         type.add(mappedReference);
         ConstructorDefinition<FooImpl> ctorDef = new ConstructorDefinition<FooImpl>(FooImpl.class.getConstructor());
@@ -206,7 +207,7 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         JavaMappedReference mappedReference = new JavaMappedReference();
         mappedReference.setName("ref");
         mappedReference.setAutowire(true);
-        JavaServiceContract contract = new JavaServiceContract(Foo.class);
+        ServiceContract contract = new JavaServiceContract(Foo.class);
         mappedReference.setServiceContract(contract);
         type.add(mappedReference);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);

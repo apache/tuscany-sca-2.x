@@ -20,7 +20,6 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.JavaMappedCallback;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
@@ -41,8 +40,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertNotNull(service);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
         processor.visitMethod(null, method, type, null);
-        JavaMappedCallback callback = service.getCallbackReference();
-        assertEquals(FooCallback.class, callback.getCallbackInterface());
+        assertEquals(method, service.getCallbackMember());
     }
 
     public void testFieldCallbackInterface() throws Exception {
@@ -53,8 +51,7 @@ public class ServiceCallbackTestCase extends TestCase {
         assertNotNull(service);
         Field field = FooImpl.class.getDeclaredField("callback");
         processor.visitField(null, field, type, null);
-        JavaMappedCallback callback = service.getCallbackReference();
-        assertEquals(FooCallback.class, callback.getCallbackInterface());
+        assertEquals(field, service.getCallbackMember());
     }
 
     public void testMethodDoesNotMatchCallback() throws Exception {

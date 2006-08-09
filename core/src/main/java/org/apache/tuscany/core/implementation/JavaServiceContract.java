@@ -24,42 +24,16 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $Rev$ $Date$
  */
 public class JavaServiceContract extends ServiceContract {
-    private String interfaceName;
-    private String callbackName;
-    private Class<?> callbackClass;
 
     public JavaServiceContract() {
     }
 
     public JavaServiceContract(String interfaceName) {
-        this.interfaceName = interfaceName;
+        super(interfaceName);
     }
 
     public JavaServiceContract(Class<?> interfaceClass) {
         super(interfaceClass);
     }
 
-    public String getInterfaceName() {
-        return interfaceName;
-    }
-
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName = interfaceName;
-    }
-
-    public String getCallbackName() {
-        return callbackName;
-    }
-
-    public void setCallbackName(String callbackName) {
-        this.callbackName = callbackName;
-    }
-
-    public Class<?> getCallbackClass() {
-        return callbackClass;
-    }
-
-    public void setCallbackClass(Class<?> callbackClass) {
-        this.callbackClass = callbackClass;
-    }
 }

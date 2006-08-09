@@ -32,6 +32,7 @@ import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
@@ -380,7 +381,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         reference.setName(name);
         reference.setMember(member);
         reference.setRequired(false);
-        JavaServiceContract contract = new JavaServiceContract();
+        ServiceContract contract = new JavaServiceContract();
         String interfaceName = getBaseName(paramType);
         contract.setInterfaceName(interfaceName);
         contract.setInterfaceClass(paramType);
