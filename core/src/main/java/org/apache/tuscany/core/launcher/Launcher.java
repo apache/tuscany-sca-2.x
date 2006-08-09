@@ -20,6 +20,10 @@ import java.io.File;
 import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -29,11 +33,6 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.monitor.MonitorFactory;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
-
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * Basic launcher implementation.
@@ -50,8 +49,6 @@ public class Launcher {
 
     /**
      * A conventional META-INF based location for the application SCDL.
-     *
-     * @see #bootApplication(URL)
      */
     public static final String METAINF_APPLICATION_SCDL_PATH = "META-INF/sca/default.scdl";
 
@@ -144,12 +141,13 @@ public class Launcher {
     /**
      * Boots the application defined by the specified SCDL.
      *
+     * @param name    the name of the application component
      * @param appScdl URL to the SCDL defining the application
      * @return a CompositeComponent for the newly booted application
      * @throws LoaderException
      * @see METAINF_APPLICATION_SCDL_PATH
      */
-    public CompositeComponent<?> bootApplication(URL appScdl) throws LoaderException {
+    public CompositeComponent<?> bootApplication(String name, URL appScdl) throws LoaderException {
         if (appScdl == null) {
             throw new LoaderException("No application scdl found");
         }
@@ -160,8 +158,7 @@ public class Launcher {
         impl.setScdlLocation(appScdl);
         impl.setClassLoader(applicationLoader);
         ComponentDefinition<CompositeImplementation> moduleDefinition =
-            new ComponentDefinition<CompositeImplementation>(
-                ComponentNames.TUSCANY_SYSTEM, impl);
+            new ComponentDefinition<CompositeImplementation>(name, impl);
 
         // deploy the component into the runtime under the system parent
         CompositeComponent parent = runtime.getRootComponent();

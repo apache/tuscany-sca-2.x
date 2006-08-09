@@ -60,7 +60,7 @@ public class SCATestCase extends TestCase {
         if (applicationScdlURL == null) {
             throw new RuntimeException("application SCDL not found: " + applicationSCDL);
         }
-        component = launcher.bootApplication(applicationScdlURL);
+        component = launcher.bootApplication("application", applicationScdlURL);
         component.start();
         context = new CompositeContextImpl(component);
         context.start();
