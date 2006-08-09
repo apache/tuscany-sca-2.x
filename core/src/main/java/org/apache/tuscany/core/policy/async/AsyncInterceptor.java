@@ -1,12 +1,10 @@
 package org.apache.tuscany.core.policy.async;
 
-import org.apache.tuscany.spi.services.work.WorkScheduler;
-
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.SCA;
-import org.osoa.sca.ServiceRuntimeException;
 
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;

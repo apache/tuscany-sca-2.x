@@ -248,7 +248,6 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
                     paramNames.add(name);
                 }
             }
-
         }
     }
 
