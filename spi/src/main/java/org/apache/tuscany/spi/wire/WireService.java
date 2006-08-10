@@ -9,6 +9,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
  * Creates proxies that implement Java interfaces and invocation handlers for fronting wires
@@ -42,6 +43,6 @@ public interface WireService {
 
     void createWires(Reference<?> reference);
 
-    void createWires(Service<?> service);
+    void createWires(Service<?> service, BoundServiceDefinition<?> def);
 
 }

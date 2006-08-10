@@ -88,10 +88,11 @@ public class ConnectorImpl implements Connector {
             Service<?> service = (Service) source;
             InboundWire inboundWire = service.getInboundWire();
             OutboundWire outboundWire = service.getOutboundWire();
-            // services have inbound and outbound wires
-            connect(inboundWire, outboundWire, true);
-            // connect the outbound service wire to the target
+            // connect the outbound service wire to the target    xcv
             connect(service, outboundWire);
+            // services have inbound and outbound wires
+            // NB: this connect must be done after the outbound service chain is connected to its target above
+            connect(inboundWire, outboundWire, true);
         } else {
             BuilderConfigException e = new BuilderConfigException("Invalid source context type");
             e.setIdentifier(source.getName());
@@ -144,13 +145,15 @@ public class ConnectorImpl implements Connector {
         }
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
             // match wire chains
-            InboundInvocationChain inboundChain = targetChains.get(outboundChain.getMethod());
+            Method method = outboundChain.getMethod();
+            InboundInvocationChain inboundChain = targetChains.get(method);
             if (inboundChain == null) {
                 BuilderConfigException e =
                     new BuilderConfigException("Incompatible source and target chain interfaces for reference");
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
+            TargetInvoker invoker = null;
             if (target instanceof Component) {
                 Component component = (Component) target;
                 Method operation = outboundChain.getMethod();
@@ -161,18 +164,23 @@ public class ConnectorImpl implements Connector {
                 if (isOneWayOperation && operationHasCallback) {
                     throw new ComponentRuntimeException("Operation can't both be one-way and have a callback");
                 }
-                TargetInvoker invoker;
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
                 } else {
                     invoker = component
                         .createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
                 }
-                connect(outboundChain, inboundChain, invoker);
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
-                TargetInvoker invoker = reference.createTargetInvoker(
-                    inboundChain.getMethod());
+                invoker = reference.createTargetInvoker(inboundChain.getMethod());
+            }
+            if (source instanceof Service) {
+                // services are a special case: invoker must go on the inbound chain
+                connect(outboundChain, inboundChain, null);
+                Service<?> service = (Service) source;
+                InboundInvocationChain chain = service.getInboundWire().getInvocationChains().get(method);
+                chain.setTargetInvoker(invoker);
+            } else {
                 connect(outboundChain, inboundChain, invoker);
             }
         }
@@ -264,8 +272,7 @@ public class ConnectorImpl implements Connector {
     @SuppressWarnings("unchecked")
     private <T> void connect(SCAObject<?> source,
                              OutboundWire<T> sourceWire) throws BuilderConfigException {
-        //assert sourceScope != null : "Source scope was null";
-        assert sourceWire.getTargetName() != null : "WireDefinition target name was null";
+        assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
         CompositeComponent<?> parent = source.getParent();
         SCAObject<?> target = parent.getChild(targetName.getPartName());
@@ -296,7 +303,8 @@ public class ConnectorImpl implements Connector {
             if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
-            connect(source, target, sourceWire, targetWire, isOptimizable(source.getScope(), target.getScope()));
+            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+            connect(source, target, sourceWire, targetWire, optimizable);
         } else {
             String name = sourceWire.getReferenceName();
             BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + name);

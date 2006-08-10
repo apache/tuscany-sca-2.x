@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -142,7 +143,11 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                DeploymentContext deploymentContext) {
         Class<B> bindingClass = (Class<B>) boundServiceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        return bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
+        SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
+        if (wireService != null) {
+            wireService.createWires((Service) object, boundServiceDefinition);
+        }
+        return object;
     }
 
     @SuppressWarnings("unchecked")

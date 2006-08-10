@@ -14,6 +14,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -150,12 +151,13 @@ public class JDKWireService implements WireService {
         reference.setInboundWire(wire);
     }
 
-    public void createWires(Service<?> service) {
+    public void createWires(Service<?> service, BoundServiceDefinition<?> def) {
         InboundWire inboundWire = createInboundWire();
         OutboundWire outboundWire = createOutboundWire();
         Class interfaze = service.getInterface();
         inboundWire.setBusinessInterface(interfaze);
         outboundWire.setBusinessInterface(interfaze);
+        outboundWire.setTargetName(new QualifiedName(def.getTarget().getPath()));
         for (Method method : interfaze.getMethods()) {
             InboundInvocationChain inboundChain = createInboundChain(method);
             inboundWire.addInvocationChain(method, inboundChain);
