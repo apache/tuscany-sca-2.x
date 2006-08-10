@@ -15,23 +15,23 @@
  *  limitations under the License.
  -->
 <!--
-    Default system configuration for the launcher environment.
-    
-    $Rev: 423526 $ $Date: 2006-07-19 22:31:58 +0530 (Wed, 19 Jul 2006) $
+    JavaScript configuration for the launcher environment.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.binding.rmi">
 
-    <component name="binding.rmi.bindingLoader">
-        <system:implementation.system class="org.apache.tuscany.binding.rmi.RMIBindingLoader"/>
+           name="org.apache.tuscany.launcher.JavaScriptImplementation">
+
+    <component name="javascript.implementationLoader">
+        <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptImplementationLoader"/>
     </component>
-    
-    <component name="binding.rmi.bindingBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.rmi.RMIBindingBuilder"/>
+
+    <component name="javascript.componentTypeLoader">
+        <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptComponentTypeLoader"/>
     </component>
-    
-    <component name="binding.rmi.bindingInvoker">
-        <system:implementation.system class="org.apache.tuscany.binding.rmi.RMIInvoker"/>
+
+    <component name="javascript.componentBuilder">
+        <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptComponentBuilder"/>
     </component>
+
 </composite>
