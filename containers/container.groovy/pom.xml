@@ -28,12 +28,19 @@
     <description>Apache Tuscany Groovy Container</description>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>core</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
+        </dependency>-->
+		  <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>spi</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>groovy</groupId>
             <artifactId>groovy</artifactId>

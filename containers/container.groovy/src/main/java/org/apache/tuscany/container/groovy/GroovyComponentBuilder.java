@@ -1,13 +1,10 @@
 package org.apache.tuscany.container.groovy;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -16,17 +13,10 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -81,9 +71,6 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         }
         // TODO deal with init and destroy
 
-        // TODO set up injectors
-        //List<PropertyInjector> injectors = Collections.emptyList();
-
         GroovyConfiguration configuration = new GroovyConfiguration();
         configuration.setName(name);
         configuration.setGroovyClass(groovyClass);
@@ -102,81 +89,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
                 component.addPropertyFactory(property.getName(), factory);
             }
         }
-
-//        for (ServiceDefinition service : componentType.getServices().values()) {
-//            // TODO handle callbacks
-//             Callback callback = service. getCallbackReference();
-//             if (callback != null) {
-//                // Only if there is a callback reference in the service
-//                configuration.addCallbackSite(callback.getName(), callback.getMember());
-//             }
-//             component.addInboundWire(createWire(service));
-//        }
-
-        // handle references
-        for (ReferenceTarget referenceTarget : componentDefinition.getReferenceTargets().values()) {
-            Map<String, ReferenceDefinition> references = componentType.getReferences();
-            ReferenceDefinition referenceDefinition = references.get(referenceTarget.getReferenceName());
-            OutboundWire wire = createWire(referenceTarget, referenceDefinition);
-            component.addOutboundWire(wire);
-        }
         return component;
-    }
-
-    @SuppressWarnings("unchecked")
-    private OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
-        //TODO multiplicity
-        if (reference.getTargets().size() != 1) {
-            throw new UnsupportedOperationException();
-        }
-        Class<?> interfaze = def.getServiceContract().getInterfaceClass();
-        OutboundWire wire = wireService.createOutboundWire();
-        wire.setTargetName(new QualifiedName(reference.getTargets().get(0).toString()));
-        wire.setBusinessInterface(interfaze);
-        wire.setReferenceName(reference.getReferenceName());
-        for (Method method : interfaze.getMethods()) {
-            //TODO handle policy
-            OutboundInvocationChain chain = wireService.createOutboundChain(method);
-            wire.addInvocationChain(method, chain);
-        }
-        // TODO handle callback
-//        ServiceContract contract = def.getServiceContract();
-//        Class<?> callbackInterface = contract.getCallbackClass();
-//        if (callbackInterface != null) {
-//            wire.setCallbackInterface(callbackInterface);
-//            for (Method callbackMethod : callbackInterface.getMethods()) {
-//                InboundInvocationChain callbackTargetChain = wireService.createInboundChain(callbackMethod);
-//                OutboundInvocationChain callbackSourceChain = wireService.createOutboundChain(callbackMethod);
-//                // TODO handle policy
-//                //TODO statement below could be cleaner
-//                callbackTargetChain.addInterceptor(new InvokerInterceptor());
-//                wire.addTargetCallbackInvocationChain(callbackMethod, callbackTargetChain);
-//                wire.addSourceCallbackInvocationChain(callbackMethod, callbackSourceChain);
-//            }
-//        }
-        return wire;
-    }
-
-    @SuppressWarnings("unchecked")
-    private InboundWire createWire(ServiceDefinition service) {
-        Class<?> interfaze = service.getServiceContract().getInterfaceClass();
-        InboundWire wire = wireService.createInboundWire();
-        wire.setBusinessInterface(interfaze);
-        wire.setServiceName(service.getName());
-        for (Method method : interfaze.getMethods()) {
-            InboundInvocationChain chain = wireService.createInboundChain(method);
-            // TODO handle policy
-            //TODO statement below could be cleaner
-            chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(method, chain);
-        }
-        //TODO handle callback
-//         ServiceContract contract = service.getServiceContract();
-//         Class<?> callbackInterface = contract.getCallbackClass();
-//         if (callbackInterface != null) {
-//             wire.setCallbackReferenceName(service.getCallbackReference().getName());
-//         }
-        return wire;
     }
 
 
