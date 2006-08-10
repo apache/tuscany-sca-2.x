@@ -63,6 +63,7 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
         //Service service = wsBinding.getWSDLService();
         return new CeltixReference(
             boundReferenceDefinition.getName(),
+            boundReferenceDefinition.getServiceContract().getInterfaceClass(),
             parent,
             wireService,
             wsBinding,

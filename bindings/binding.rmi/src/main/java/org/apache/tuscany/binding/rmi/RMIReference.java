@@ -31,11 +31,15 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * @version $Rev$ $Date$
  */
-public class RMIReference extends ReferenceExtension<RMIBinding> {
+public class RMIReference<T> extends ReferenceExtension<T> {
     private final String uri;
 
-    public RMIReference(String name, CompositeComponent<?> parent, WireService wireService, String uri) {
-        super(name, parent, wireService);
+    public RMIReference(String name,
+                        Class<T> interfaze,
+                        CompositeComponent<?> parent,
+                        WireService wireService,
+                        String uri) {
+        super(name, interfaze, parent, wireService);
         this.uri = uri;
     }
 
