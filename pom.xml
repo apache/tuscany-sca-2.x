@@ -141,6 +141,13 @@
             <url>http://www.ibiblio.org/maven2</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache-snapshot-repository</id>
+            <name>Apache SNAPSHOT Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <distributionManagement>
         <snapshotRepository>
@@ -227,6 +234,20 @@
                         <useFile>false</useFile>
                         <forkMode>once</forkMode>
                         <argLine>-ea</argLine>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.felix.plugins</groupId>
+                    <artifactId>maven-osgi-plugin</artifactId>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <osgiManifest>
+                            <bundleName>${pom.name}</bundleName>
+                            <bundleDescription>${pom.description}</bundleDescription>
+                            <bundleVendor>${pom.organization.name}</bundleVendor>
+                            <bundleLocalization>plugin</bundleLocalization>
+                        </osgiManifest>
                     </configuration>
                 </plugin>
             </plugins>
