@@ -22,6 +22,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spi</artifactId>
+    <packaging>osgi-bundle</packaging>
     <name>Apache Tuscany SCA SPI</name>
     <description>Tuscany Service Provider Interfaces.</description>
 
@@ -57,4 +58,13 @@
             <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix.plugins</groupId>
+                <artifactId>maven-osgi-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
