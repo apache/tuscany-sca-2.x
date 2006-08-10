@@ -33,12 +33,12 @@ public class RMIInvoker implements TargetInvoker {
     private final Method remoteMethod;
     private final Remote proxy;
 
-    RMIInvoker(Remote proxy, Method remoteMethod) {
+    public RMIInvoker(Remote proxy, Method remoteMethod) {
         assert remoteMethod.isAccessible();
         this.remoteMethod = remoteMethod;
         this.proxy = proxy;
     }
-
+ 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             Object resp = invokeTarget(msg.getBody());
