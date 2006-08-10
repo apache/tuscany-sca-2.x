@@ -137,7 +137,8 @@ public class RhinoScript {
         Context cx = Context.enter();
         try {
             if (cl != null) {
-                cx.setApplicationClassLoader(cl);
+     // TODO: broken with the way the tuscany launcher now uses class loaders
+     //           cx.setApplicationClassLoader(cl); 
             }
             this.scriptScope = new ImporterTopLevel(cx, true);
             Script compiledScript = cx.compileString(scriptCode, fileName, 1, null);
