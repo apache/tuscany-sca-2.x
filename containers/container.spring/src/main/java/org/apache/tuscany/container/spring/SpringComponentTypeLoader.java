@@ -20,6 +20,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
  */
 public class SpringComponentTypeLoader implements ComponentTypeLoader<SpringImplementation> {
 
+    /* Major work in progress here */
     public void load(CompositeComponent<?> parent, SpringImplementation implementation,
                      DeploymentContext deploymentContext) {
         Resource resource = null; //FIXME
@@ -30,6 +31,5 @@ public class SpringComponentTypeLoader implements ComponentTypeLoader<SpringImpl
         GenericApplicationContext ctx = new GenericApplicationContext(beanFactory);
         ctx.refresh();
         implementation.setComponentType(componentType);
-        implementation.setApplicationContext(ctx);
     }
 }

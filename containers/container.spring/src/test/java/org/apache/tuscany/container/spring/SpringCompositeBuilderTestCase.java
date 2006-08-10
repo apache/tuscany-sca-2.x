@@ -2,6 +2,11 @@ package org.apache.tuscany.container.spring;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
 
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
@@ -33,12 +38,27 @@ import org.springframework.context.support.StaticApplicationContext;
  * @version $$Rev$$ $$Date$$
  */
 public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
+    private final String appXml =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+        "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n" +
+        "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+        "       xsi:schemaLocation=\"\n" +
+        "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd\n" +
+        "\">\n" +
+        "\n" +
+        "\n" +
+        "<bean id=\"fooBean\" class=\"org.apache.tuscany.container.spring.mock.TestBeanImpl\">\n" +
+        "</bean>\n" +
+        "\n" +
+        "</beans>\n";
 
     public void testBuildImplicit() throws Exception {
 
         // Create an assembly model consisting of a component implemented by Spring
         SpringImplementation impl = new SpringImplementation(createComponentType());
-        impl.setApplicationContext(createImplicitSpringContext());
+        File tempAppXmlFile = createTempApplicationXml();
+        tempAppXmlFile.deleteOnExit();
+        impl.setApplicationXml(tempAppXmlFile.toURL());
         ComponentDefinition<SpringImplementation> componentDefinition =
             new ComponentDefinition<SpringImplementation>("spring", impl);
 
@@ -68,17 +88,8 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         CompositeComponent component = (CompositeComponent) builder.build(null, componentDefinition, null);
         Service service = component.getService("fooService");
         TestBean bean = (TestBean) service.getServiceInstance();
-        assertEquals("call foo", bean.echo("call foo"));
-    }
 
-    /**
-     * Return a Spring context w/ a single bean named "fooBean", implemented by TestBeanImpl
-     */
-    private ConfigurableApplicationContext createImplicitSpringContext() {
-        StaticApplicationContext beanFactory = new StaticApplicationContext();
-        BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
-        beanFactory.registerBeanDefinition("fooBean", definition);
-        return beanFactory;
+        assertEquals("call foo", bean.echo("call foo"));
     }
 
     private CompositeComponentType createComponentType() {
@@ -93,6 +104,14 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         }
         componentType.add(serviceDefinition);
         return componentType;
+    }
+
+    private File createTempApplicationXml() throws IOException, MalformedURLException {
+        File tempAppXml = File.createTempFile("SpringCompositeBuilderTestCase", ".xml");
+        FileWriter fw = new FileWriter(tempAppXml);
+        fw.write(appXml);
+        fw.flush();
+        return tempAppXml;
     }
 
     /**
