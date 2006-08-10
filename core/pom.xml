@@ -22,24 +22,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>core</artifactId>
+    <packaging>osgi-bundle</packaging>
     <name>Apache Tuscany SCA Core</name>
     <description>Core Tuscany runtime.</description>
-
-    <!--
-        add in Apache M1 repository to allow download of commonj snapshot
-        remove this when we update to a release version which can be fetched from ibiblio
-    -->
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>apache-legacy</id>
-            <name>Apache Snapshot Maven 1.x Repository</name>
-            <url>http://people.apache.org/repository</url>
-            <layout>legacy</layout>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>

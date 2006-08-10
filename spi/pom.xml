@@ -58,13 +58,4 @@
             <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix.plugins</groupId>
-                <artifactId>maven-osgi-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>
