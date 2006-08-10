@@ -237,21 +237,24 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.felix.plugins</groupId>
-                    <artifactId>maven-osgi-plugin</artifactId>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <osgiManifest>
-                            <bundleName>${pom.name}</bundleName>
-                            <bundleDescription>${pom.description}</bundleDescription>
-                            <bundleVendor>${pom.organization.name}</bundleVendor>
-                            <bundleLocalization>plugin</bundleLocalization>
-                        </osgiManifest>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix.plugins</groupId>
+                <artifactId>maven-osgi-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <osgiManifest>
+                        <bundleName>${pom.name}</bundleName>
+                        <bundleDescription>${pom.description}</bundleDescription>
+                        <bundleVendor>${pom.organization.name}</bundleVendor>
+                        <bundleLocalization>plugin</bundleLocalization>
+                    </osgiManifest>
+                </configuration>
+            </plugin>
+        </plugins>
 
         <resources>
             <resource>
