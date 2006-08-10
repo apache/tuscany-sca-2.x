@@ -9,6 +9,8 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 
+import java.net.URL;
+
 /**
  * @version $$Rev$$ $$Date$$
  */
@@ -19,7 +21,7 @@ public class SpringImplementation extends Implementation<
                 ? extends Property>> {
 
     private String location;
-    private ConfigurableApplicationContext applicationContext;
+    private URL applicationXml;
 
     public SpringImplementation() {
     }
@@ -34,22 +36,22 @@ public class SpringImplementation extends Implementation<
     /**
      * Returns the path of the Spring application context configuration
      */
-    public String getContextLocation() {
+    public String getLocation() {
         return location;
     }
 
     /**
      * Sets the path of the Spring application context configuration
      */
-    public void setContextLocation(String location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
-    public ConfigurableApplicationContext getApplicationContext() {
-        return applicationContext;
+    public URL getApplicationXml() {
+        return applicationXml;
     }
 
-    public void setApplicationContext(ConfigurableApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public void setApplicationXml(URL applicationXml) {
+        this.applicationXml = applicationXml;
     }
 }

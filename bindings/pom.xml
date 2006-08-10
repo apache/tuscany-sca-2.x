@@ -36,6 +36,9 @@
         <module>binding.celtix</module>
         <module>binding.axis2</module>
         <module>binding.rmi</module>
+        <!--
+        <module>binding.jaxws</module>
+        -->
     </modules>
 
 </project>

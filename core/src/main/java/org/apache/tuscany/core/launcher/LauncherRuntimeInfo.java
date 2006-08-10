@@ -25,12 +25,18 @@ import org.apache.tuscany.spi.services.info.RuntimeInfo;
  */
 public class LauncherRuntimeInfo implements RuntimeInfo {
     private final File installDirectory;
+    private final File applicationRootDirectory;
 
-    public LauncherRuntimeInfo(File installDirectory) {
+    public LauncherRuntimeInfo(File installDirectory, File applicationRootDirectory) {
         this.installDirectory = installDirectory;
+        this.applicationRootDirectory = applicationRootDirectory;
     }
 
     public File getInstallDirectory() {
         return installDirectory;
+    }
+
+    public File getApplicationRootDirectory() {
+        return applicationRootDirectory;
     }
 }

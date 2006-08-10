@@ -102,7 +102,7 @@ public class Launcher {
 
         // initialize the runtime info
         SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
-        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory());
+        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
         // create a ComponentDefinition to represent the component we are going to deploy
@@ -192,5 +192,14 @@ public class Launcher {
 
         File jarFile = new File(jarLocation.substring(5));
         return jarFile.getParentFile().getParentFile();
+    }
+
+    public File getApplicationRootDirectory() {
+        String property = System.getProperty("tuscany.applicationRootDir");
+        if (property != null) {
+            return new File(property);
+        }
+
+        return new File(System.getProperty("user.dir"));
     }
 }

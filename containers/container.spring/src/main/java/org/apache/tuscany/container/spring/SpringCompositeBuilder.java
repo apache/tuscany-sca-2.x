@@ -19,6 +19,13 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.QualifiedName;
 
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.UrlResource;
+
+import java.net.URL;
 
 /**
  * Creates a {@link SpringCompositeComponent} from an assembly model
@@ -33,7 +40,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
-        ConfigurableApplicationContext applicationContext = implementation.getApplicationContext();
+        ConfigurableApplicationContext applicationContext = createApplicationContext(implementation.getApplicationXml());
+
         SpringCompositeComponent component =
             new SpringCompositeComponent(name, applicationContext, parent, null);
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
@@ -67,5 +75,13 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
 
     protected Class<SpringImplementation> getImplementationType() {
         return SpringImplementation.class;
+    }
+
+    protected ConfigurableApplicationContext createApplicationContext(URL appXml) {
+        GenericApplicationContext ctx = new GenericApplicationContext();
+        XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
+        xmlReader.loadBeanDefinitions(new UrlResource(appXml));
+        ctx.refresh();
+        return ctx;
     }
 }
