@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
@@ -25,13 +23,12 @@ import static org.easymock.EasyMock.replay;
 public class ReferenceTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        TestReference ref = new TestReference(null, null, null);
+        TestReference ref = new TestReference();
         assertEquals(Scope.COMPOSITE, ref.getScope());
-
     }
 
     public void testSetGetInterface() throws Exception {
-        TestReference<TestReference> ref = new TestReference<TestReference>(null, null, null);
+        TestReference<TestReference> ref = new TestReference<TestReference>();
         ref.setInterface(TestReference.class);
         assertEquals(TestReference.class, ref.getInterface());
 
@@ -57,15 +54,15 @@ public class ReferenceTestCase extends TestCase {
         replay(chain);
         replay(wire);
         replay(outboundWire);
-        TestReference<?> ref = new TestReference(null, null, null);
+        TestReference<?> ref = new TestReference();
         ref.setInboundWire(wire);
         ref.setOutboundWire(outboundWire);
         ref.prepare();
     }
 
     private class TestReference<T> extends ReferenceExtension<T> {
-        public TestReference(String name, CompositeComponent parent, WireService wireService) {
-            super(name, parent, wireService);
+        public TestReference() {
+            super(null, null, null, null);
         }
 
         public TargetInvoker createTargetInvoker(Method operation) {

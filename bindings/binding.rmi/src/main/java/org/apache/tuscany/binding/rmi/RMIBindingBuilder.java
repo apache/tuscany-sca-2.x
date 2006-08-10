@@ -54,11 +54,13 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
         return (Class<Remote>) intf;
     }
 
+    @SuppressWarnings({"unchecked"})
     public RMIReference build(CompositeComponent parent,
                               BoundReferenceDefinition<RMIBinding> boundReferenceDefinition,
                               DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
         String uri = boundReferenceDefinition.getBinding().getURI();
-        return new RMIReference(name, parent, wireService, uri);
+        Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
+        return new RMIReference(name, interfaze, parent, wireService, uri);
     }
 }

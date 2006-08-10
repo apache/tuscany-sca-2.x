@@ -53,21 +53,12 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
     private ServiceClient serviceClient;
     
     public Axis2Reference(String theName,
-            CompositeComponent<?> parent,
-            WireService wireService,
-            WebServiceBinding wsBinding) {
-        this(theName,parent, wireService, wsBinding, null);
-    }
-
-    public Axis2Reference(String theName,
                           CompositeComponent<?> parent,
                           WireService wireService,
-                          WebServiceBinding wsBinding, ServiceContract contract) {
-        super(theName, parent, wireService);
+                          WebServiceBinding wsBinding,
+                          ServiceContract contract) {
+        super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
         try {
-            if(null != contract){
-                setInterface((Class<T>)contract.getInterfaceClass());
-            }
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
             wsPortMetaData =
                 new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);

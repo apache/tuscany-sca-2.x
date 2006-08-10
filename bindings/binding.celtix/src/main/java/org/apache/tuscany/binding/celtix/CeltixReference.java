@@ -39,11 +39,12 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
     private Service wsdlService;
 
     public CeltixReference(String name,
+                           Class<T> interfaze,
                            CompositeComponent<?> parent,
                            WireService wireService,
                            WebServiceBinding binding,
                            Bus bus) {
-        super(name, parent, wireService);
+        super(name, interfaze, parent, wireService);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();

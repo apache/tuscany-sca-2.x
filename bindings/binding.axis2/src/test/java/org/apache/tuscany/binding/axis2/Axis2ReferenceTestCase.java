@@ -11,6 +11,9 @@ import javax.xml.namespace.QName;
 
 import org.xml.sax.InputSource;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.WSDLServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -42,19 +45,13 @@ public class Axis2ReferenceTestCase extends TestCase {
         Port port = wsdlService.getPort("SoapPort");
         WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
         wsBinding.setWebAppName(webAppName);
-
         //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
-        //wireService.createProxy(EasyMock.isA(InboundWire.class));
-        //EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(wireService);
-/*
-        InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
-        inboundWire.getBusinessInterface();
-        EasyMock.expectLastCall().andReturn(Greeter.class).anyTimes();
-        EasyMock.replay(inboundWire);
-*/
-
-        return new Axis2Reference(serviceName, null, wireService, wsBinding);
+        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
+        // TODO figure out what to do with the service contract
+        ServiceContract contract = new WSDLServiceContract();
+        contract.setInterfaceClass(Greeter.class);
+        return new Axis2Reference(serviceName, parent, wireService, wsBinding, contract);
     }
 }

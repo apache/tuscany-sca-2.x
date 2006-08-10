@@ -38,8 +38,12 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
     protected Class<T> referenceInterface;
     protected WireService wireService;
 
-    protected ReferenceExtension(String name, CompositeComponent<?> parent, WireService wireService) {
+    protected ReferenceExtension(String name, 
+                                 Class<T> referenceInterface,
+                                 CompositeComponent<?> parent,
+                                 WireService wireService) {
         super(name, parent);
+        this.referenceInterface = referenceInterface;
         this.wireService = wireService;
     }
 
