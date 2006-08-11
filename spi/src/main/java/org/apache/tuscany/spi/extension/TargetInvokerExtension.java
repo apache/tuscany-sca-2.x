@@ -54,10 +54,13 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
         return isCacheable();
     }
     
-    public Object clone() throws CloneNotSupportedException {
-        TargetInvokerExtension clonedInvoker = (TargetInvokerExtension) super.clone();
-        clonedInvoker.cacheable = this.cacheable;
-        return clonedInvoker;
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            // TargetInvoker extends Cloneable so this should not have been thrown
+            throw new AssertionError(e);
+        }
     }
 
 }
