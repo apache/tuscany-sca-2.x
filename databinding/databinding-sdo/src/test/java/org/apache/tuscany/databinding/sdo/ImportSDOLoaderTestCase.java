@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
- * @version $Rev: 419382 $ $Date: 2006-07-05 16:14:37 -0700 (Wed, 05 Jul 2006) $
+ * @version $Rev$ $Date$
  */
 public class ImportSDOLoaderTestCase extends TestCase {
     private static boolean inited;

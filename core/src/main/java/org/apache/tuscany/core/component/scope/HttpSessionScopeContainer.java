@@ -18,7 +18,7 @@ import org.apache.tuscany.core.component.event.HttpSessionStart;
 /**
  * A scope context which manages atomic component instances keyed on HTTP session
  *
- * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class HttpSessionScopeContainer extends AbstractScopeContainer {
 

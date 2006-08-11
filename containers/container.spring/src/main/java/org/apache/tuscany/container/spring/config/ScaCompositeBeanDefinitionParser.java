@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 /**
  * Processes <code>composite</code> elements in a Spring configuration
  *
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 public class ScaCompositeBeanDefinitionParser implements BeanDefinitionParser {
     public static final String COMPOSITE_ELEMENT = "reference";

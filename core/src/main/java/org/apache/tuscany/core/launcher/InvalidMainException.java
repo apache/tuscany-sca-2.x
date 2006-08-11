@@ -20,7 +20,7 @@ package org.apache.tuscany.core.launcher;
  * Exception indicating that application's main method is missing or invalid
  * (for example it may not be static).
  *  
- * @version $Rev: 411440 $ $Date: 2006-06-03 10:40:55 -0400 (Sat, 03 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class InvalidMainException extends LaunchException {
     public InvalidMainException(String message) {

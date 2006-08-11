@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * Dispatches to a Groovy implementation instance
  * 
- * @version $$Rev: 424672 $$ $$Date: 2006-07-23 05:46:01 +0100 (Sun, 23 Jul 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class JavaScriptInvoker implements TargetInvoker, Cloneable {
 

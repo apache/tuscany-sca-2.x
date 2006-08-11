@@ -16,7 +16,7 @@ package org.apache.tuscany.core.component.event;
 /**
  * Propagated when a request completes or is ended
  *
- * @version $$Rev: 411441 $$ $$Date: 2006-06-03 07:52:56 -0700 (Sat, 03 Jun 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class RequestEnd extends AbstractRequestEvent {
 

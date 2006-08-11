@@ -2,7 +2,7 @@ package org.apache.tuscany.container.spring.config;
 
 /**
  * Bean impl for the Spring sca:reference XML configuration element
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public class SCAReference {

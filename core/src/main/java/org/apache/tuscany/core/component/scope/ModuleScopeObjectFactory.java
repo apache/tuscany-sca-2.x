@@ -10,7 +10,7 @@ import org.osoa.sca.annotations.Init;
 /**
  * Creates a new module scope context
  *
- * @version $$Rev: 412208 $$ $$Date: 2006-06-06 13:47:19 -0700 (Tue, 06 Jun 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContainer> {
 

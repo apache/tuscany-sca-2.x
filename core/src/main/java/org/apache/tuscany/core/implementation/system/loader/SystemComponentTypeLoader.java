@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 /**
  * Loads a system component type
  *
- * @version $Rev: 416228 $ $Date: 2006-06-21 19:53:17 -0700 (Wed, 21 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<SystemImplementation> {
     private Introspector introspector;

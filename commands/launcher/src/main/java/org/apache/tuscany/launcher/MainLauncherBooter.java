@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 /**
  * Launcher for launcher runtime environment that invokes a jar's Main class.
  *
- * @version $Rev: 412898 $ $Date: 2006-06-08 21:31:50 -0400 (Thu, 08 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class MainLauncherBooter {
     /**

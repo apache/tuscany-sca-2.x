@@ -18,7 +18,7 @@ import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 
 /**
- * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class ReferenceInjectionTestCase extends TestCase {
 

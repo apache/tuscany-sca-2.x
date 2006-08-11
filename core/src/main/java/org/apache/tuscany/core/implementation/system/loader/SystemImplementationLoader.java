@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 /**
  * Loads information for a system implementation
  *
- * @version $Rev: 416156 $ $Date: 2006-06-21 16:02:33 -0700 (Wed, 21 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class SystemImplementationLoader extends LoaderExtension<SystemImplementation> {
     public static final QName SYSTEM_IMPLEMENTATION =

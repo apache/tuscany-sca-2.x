@@ -8,7 +8,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 /**
  * Creates new instances of an SDO
  *
- * @version $Rev: 418257 $ $Date: 2006-06-30 06:16:24 -0700 (Fri, 30 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class SDOObjectFactory implements ObjectFactory<DataObject> {
 

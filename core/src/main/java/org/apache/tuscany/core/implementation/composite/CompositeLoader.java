@@ -45,7 +45,7 @@ import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 /**
  * Loads a composite component definition from an XML-based assembly file
  *
- * @version $Rev: 416156 $ $Date: 2006-06-21 16:02:33 -0700 (Wed, 21 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     public static final QName COMPOSITE = new QName(XML_NAMESPACE_1_0, "composite");

@@ -11,7 +11,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext} that handles event-to-thread
  * associations using an <code>InheritableThreadLocal</code>
  *
- * @version $Rev: 415032 $ $Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class WorkContextImpl implements WorkContext {
 
