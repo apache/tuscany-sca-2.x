@@ -40,6 +40,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class ServiceLoaderTestCase extends MockObjectTestCase {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
+    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
 
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
@@ -48,12 +49,12 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
-        String target = "target";
+//        String target = "target";
         mockReader.expects(once()).method("getName").will(returnValue(SERVICE));
         // todo figure out how to check ordering
-        mockReader.expects(atLeastOnce()).method("getAttributeValue")
+        mockReader.expects(once()).method("getAttributeValue")
                 .with(ANYTHING, ANYTHING)
-                .will(onConsecutiveCalls(returnValue(name), returnValue(target)));
+                .will(returnValue(name));
         mockReader.expects(once()).method("next").will(returnValue(END_ELEMENT));
         ServiceDefinition serviceDefinition = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
         assertNotNull(serviceDefinition);
@@ -65,15 +66,21 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         String target = "target";
         ServiceContract sc = new ServiceContract() {
         };
-        mockReader.expects(once()).method("getName").will(returnValue(SERVICE));
+        mockReader.expects(atLeastOnce()).method("getName")
+          .will(onConsecutiveCalls(returnValue(SERVICE),returnValue(SERVICE)
+                  ,returnValue(REFERENCE)));
         // todo figure out how to check ordering
-        mockReader.expects(atLeastOnce()).method("getAttributeValue")
+        mockReader.expects(once()).method("getAttributeValue")
                 .with(ANYTHING, ANYTHING)
-                .will(onConsecutiveCalls(returnValue(name), returnValue(target)));
+                .will((returnValue(name)));
         mockReader.expects(atLeastOnce()).method("next")
-            .will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(END_ELEMENT)));
+            .will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(START_ELEMENT), returnValue(END_ELEMENT)));
         mockRegistry.expects(once()).method("load").with(eq(null), eq(mockReader.proxy()), eq(deploymentContext))
             .will(returnValue(sc));
+        mockReader.expects(once()).method("getElementText").withNoArguments()
+        
+        .will((returnValue(target)));
+        
         ServiceDefinition serviceDefinition =
             loader.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext);
         assertNotNull(serviceDefinition);

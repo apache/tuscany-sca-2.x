@@ -40,6 +40,8 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.annotation.Autowire;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 /**
  * Loads a service definition from an XML-based assembly file
  *
@@ -47,6 +49,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
  */
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
+    private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
 
     @Constructor({"registry"})
     public ServiceLoader(@Autowire LoaderRegistry registry) {
@@ -64,18 +67,25 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        String target = reader.getAttributeValue(null, "target");
+        String target = null ;
         Binding binding = null;
         ServiceContract serviceContract = null;
         while (true) {
             int i = reader.next();
             switch (i) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, reader, deploymentContext);
-                    if (o instanceof ServiceContract) {
-                        serviceContract = (ServiceContract) o;
-                    } else if (o instanceof Binding) {
-                        binding = (Binding) o;
+                    
+                    //there is a reference already using this qname which doesn't seem appropriate.
+                    if(REFERENCE.equals(reader.getName())){
+                        target= reader.getElementText();
+                    }else{
+
+                        ModelObject o = registry.load(parent, reader, deploymentContext);
+                        if (o instanceof ServiceContract) {
+                            serviceContract = (ServiceContract) o;
+                        } else if (o instanceof Binding) {
+                            binding = (Binding) o;
+                        }
                     }
                     break;
                 case END_ELEMENT:
