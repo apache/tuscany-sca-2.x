@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
@@ -43,6 +44,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
     private SDODataBinding dataBinding;
     private SOAPFactory soapFactory;
     private OperationClient operationClient;
+    
 
     public Axis2TargetInvoker(QName wsdlOperationName, Options options, SDODataBinding dataBinding,
                               SOAPFactory soapFactory,
@@ -68,8 +70,20 @@ public class Axis2TargetInvoker implements TargetInvoker {
             SOAPEnvelope env = soapFactory.getDefaultEnvelope();
 
             if (payload != null && payload.getClass().isArray() && ((Object[]) payload).length > 0) {
-                OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
-                env.getBody().addChild(requestOM);
+//                OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
+//                env.getBody().addChild(requestOM);
+//TODO HACK 
+                OMFactory fac = env.getOMFactory();
+                OMElement opE = fac.createOMElement("getGreetings" ,"http://helloworld", "helloworld");
+                //            <helloworld:name>World</helloworld:name>
+
+                OMElement parmE = fac.createOMElement("name" ,"http://helloworld", "helloworld");
+                opE.addChild(parmE);
+                parmE.addChild(fac.createOMText(((Object[])payload)[0] + ""));
+                env.getBody().addChild((opE));
+//TODO HACK     
+                
+               
             }
 
             MessageContext requestMC = new MessageContext();

@@ -32,8 +32,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                            BoundServiceDefinition<WebServiceBinding> serviceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = serviceDefinition.getBinding();
-        // FIXME need to get interface for the service
-        Class<?> interfaze = null;
+        
+        Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
         //FIXME: Axis2Service needs an instance of ServletHost as parameter. How to get it?
         return new Axis2Service(
             serviceDefinition.getName(),

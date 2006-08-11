@@ -40,6 +40,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 import org.osoa.sca.annotations.Scope;
 import org.xml.sax.InputSource;
@@ -78,12 +79,14 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         String uri = null;
         endpointAttribute = reader.getAttributeValue(null, "endpoint");
         wsdlLocation = reader.getAttributeValue(null, "location");
+        LoaderUtil.skipToEndElement(reader);
         try {
             return createBinding(uri, endpointAttribute, deploymentContext);
         } catch (Exception e) {
 
             throw new LoaderException(e);
         }
+        
     }
 
     @SuppressWarnings("unchecked")
