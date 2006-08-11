@@ -14,7 +14,7 @@ import org.apache.tuscany.spi.model.Scope;
 /**
  * The default implementation of a scope registry
  *
- * @version $Rev: 415032 $ $Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
 

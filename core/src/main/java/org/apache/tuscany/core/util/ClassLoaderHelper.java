@@ -8,7 +8,7 @@ import java.net.URLClassLoader;
 /**
  * Functions to create & manipulate classloaders.
  * 
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public final class ClassLoaderHelper {

@@ -19,7 +19,7 @@ package org.apache.tuscany.core.launcher;
 /**
  * Exception indicating that there was a problem launching an application.
  *  
- * @version $Rev: 411440 $ $Date: 2006-06-03 10:40:55 -0400 (Sat, 03 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class LaunchException extends Exception {
     public LaunchException() {

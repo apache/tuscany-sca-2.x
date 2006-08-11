@@ -45,7 +45,7 @@ import org.apache.tuscany.model.assembly.EntryPoint;
 /**
  * 
  * @author gnodet
- * @version $Revision: 366467 $
+ * @version $Revision$
  * @org.apache.xbean.XBean element="endpoint" description="A sca endpoint"
  * 
  */

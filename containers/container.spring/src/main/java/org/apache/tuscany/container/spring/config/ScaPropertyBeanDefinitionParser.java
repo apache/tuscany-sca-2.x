@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 /**
  * Processes <code>property</code> elements in a Spring configuration
  *
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public class ScaPropertyBeanDefinitionParser implements BeanDefinitionParser {

@@ -3,7 +3,7 @@ package org.apache.tuscany.container.spring.config;
 /**
  * Bean impl for the Spring sca:service XML configuration element
  *
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public class SCAService {

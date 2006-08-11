@@ -25,7 +25,7 @@ import java.util.logging.Level;
  * it is likely the runtime failed to boot: the context param {@link LAUNCHER_THROWABLE_ATTRIBUTE}
  * will contain a {@link Throwable} with diagnostic information.
  *
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public class ServletLauncherListener implements ServletContextListener {

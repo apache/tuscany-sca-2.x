@@ -20,7 +20,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 /**
  * Default implementation of an <code>InstanceWrapper</code>
  *
- * @version $$Rev: 415032 $$ $$Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class InstanceWrapperImpl extends AbstractLifecycle implements InstanceWrapper {
 

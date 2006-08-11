@@ -11,7 +11,7 @@ import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.test.ArtifactFactory;
 
 /**
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public final class SpringTestUtils {

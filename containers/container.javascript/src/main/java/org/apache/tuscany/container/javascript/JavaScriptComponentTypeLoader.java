@@ -36,7 +36,7 @@ import org.mozilla.javascript.Scriptable;
 import org.osoa.sca.annotations.Constructor;
 
 /**
- * @version $Rev: 423297 $ $Date: 2006-07-19 00:56:32 +0100 (Wed, 19 Jul 2006) $
+ * @version $Rev$ $Date$
  */
 public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<JavaScriptImplementation> {
     private Introspector introspector;

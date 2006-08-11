@@ -41,7 +41,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
 /**
  * Validates wiring from a service context to Java atomic contexts by scope
  *
- * @version $$Rev: 415162 $$ $$Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class OutboundWireToJavaTestCase extends TestCase {
     private WorkContext workContext = new WorkContextImpl();

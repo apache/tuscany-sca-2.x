@@ -41,7 +41,7 @@ import org.osoa.sca.annotations.Constructor;
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
  *
- * @version $Rev: 419382 $ $Date: 2006-07-05 16:14:37 -0700 (Wed, 05 Jul 2006) $
+ * @version $Rev$ $Date$
  */
 public class ImportSDOLoader extends LoaderExtension {
     public static final QName IMPORT_SDO = new QName("http://www.osoa.org/xmlns/sca/0.9", "import.sdo");

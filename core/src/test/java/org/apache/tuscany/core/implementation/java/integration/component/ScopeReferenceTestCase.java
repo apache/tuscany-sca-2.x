@@ -48,7 +48,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 /**
  * Tests scoping is properly handled for service references
  *
- * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class ScopeReferenceTestCase extends TestCase {
 

@@ -15,7 +15,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  * Base class for performing invocations on an outbound chain. Subclasses are responsible for retrieving and supplying
  * the appropriate chain, target invoker and invocation arguments.
  *
- * @version $Rev: 415032 $ $Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class AbstractJDKOutboundInvocationHandler implements WireInvocationHandler, InvocationHandler {
 

@@ -29,7 +29,7 @@ import javax.management.ObjectName;
  * Base class for components bootstrap.
  * 
  * @author Guillaume Nodet
- * @version $Revision: 369856 $
+ * @version $Revision$
  * @since 3.0
  */
 public class ScaBootstrap implements Bootstrap {

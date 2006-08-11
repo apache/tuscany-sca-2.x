@@ -8,7 +8,7 @@ import org.apache.tuscany.container.spring.mock.TestBean;
 /**
  * Tests the SCA extensible schema elements for Spring's XML configuration files
  *
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public class SpringConfigSchemaTestCase extends TestCase {

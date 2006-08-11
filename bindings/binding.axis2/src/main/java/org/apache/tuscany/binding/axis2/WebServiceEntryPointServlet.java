@@ -28,7 +28,7 @@ import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.AxisServlet;
 
 /**
- * @version $Rev: 383148 $ $Date: 2006-03-04 08:07:17 -0800 (Sat, 04 Mar 2006) $
+ * @version $Rev$ $Date$
  */
 public class WebServiceEntryPointServlet extends AxisServlet {
 

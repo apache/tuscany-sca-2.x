@@ -5,7 +5,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 /**
  * Propagated when a composite starts
  *
- * @version $$Rev: 415032 $$ $$Date: 2006-06-17 10:28:07 -0700 (Sat, 17 Jun 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class CompositeStart extends AbstractEvent implements CompositeEvent {
 

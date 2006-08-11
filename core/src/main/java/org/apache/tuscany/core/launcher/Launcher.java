@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.services.info.RuntimeInfo;
 /**
  * Basic launcher implementation.
  *
- * @version $Rev: 417136 $ $Date: 2006-06-26 03:54:48 -0400 (Mon, 26 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class Launcher {
     /**

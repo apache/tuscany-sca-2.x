@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Helper for creating MonitorFactory instances.
  * 
- * @version $$Rev: $$ $$Date: $$
+ * @version $$Rev$$ $$Date$$
  */
 
 public final class MonitorFactoryUtil {

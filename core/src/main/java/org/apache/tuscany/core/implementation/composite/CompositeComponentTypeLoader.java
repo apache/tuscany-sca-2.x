@@ -15,7 +15,7 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
 /**
  * Loads a composite component type
  *
- * @version $Rev: 418879 $ $Date: 2006-07-03 17:06:26 -0700 (Mon, 03 Jul 2006) $
+ * @version $Rev$ $Date$
  */
 public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<CompositeImplementation> {
     public CompositeComponentTypeLoader() {

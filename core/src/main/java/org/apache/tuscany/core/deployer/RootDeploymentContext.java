@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  * A holder that can be used during the load process to store information that is not part of the logical assembly
  * model. This should be regarded as transient and references to this context should not be stored inside the model.
  *
- * @version $Rev: 415162 $ $Date: 2006-06-18 11:19:43 -0700 (Sun, 18 Jun 2006) $
+ * @version $Rev$ $Date$
  */
 public class RootDeploymentContext extends AbstractDeploymentContext {
     private final XMLInputFactory xmlFactory;
