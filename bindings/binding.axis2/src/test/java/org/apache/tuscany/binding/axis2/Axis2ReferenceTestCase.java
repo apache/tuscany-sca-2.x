@@ -9,16 +9,15 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.xml.sax.InputSource;
-
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.WSDLServiceContract;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
-
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
+import org.xml.sax.InputSource;
+
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 
 public class Axis2ReferenceTestCase extends TestCase {
 
@@ -41,7 +40,7 @@ public class Axis2ReferenceTestCase extends TestCase {
         InputSource input = new InputSource(url.openStream());
         Definition wsdlDef = reader.readWSDL(url.toString(), input);
         Service wsdlService = wsdlDef.getService(new QName("http://objectweb.org/hello_world_soap_http",
-            "SOAPService"));
+                                                           "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
         WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
         wsBinding.setWebAppName(webAppName);
