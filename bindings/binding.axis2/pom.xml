@@ -42,6 +42,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- axis 2.0 -->
         <dependency>
             <groupId>axis2</groupId>

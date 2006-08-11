@@ -14,9 +14,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.spi.model;
+package org.apache.tuscany.idl.wsdl;
 
 import javax.wsdl.PortType;
+
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Represents a service contract specified by a WSDL

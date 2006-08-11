@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.core.loader;
+package org.apache.tuscany.idl.wsdl;
 
 import java.io.IOException;
 import javax.wsdl.PortType;
@@ -33,7 +33,6 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.WSDLServiceContract;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
 /**
@@ -65,7 +64,8 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         throws XMLStreamException, LoaderException {
         assert INTERFACE_WSDL.equals(reader.getName());
         WSDLServiceContract serviceContract = new WSDLServiceContract();
-        serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
+        // FIXME set the interaction scope
+//        serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
 
         String location = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
         if (location != null) {
