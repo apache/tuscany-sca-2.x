@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
 /**
@@ -63,35 +64,37 @@ public class InterfaceWSDLLoader extends LoaderExtension {
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert INTERFACE_WSDL.equals(reader.getName());
-        WSDLServiceContract serviceContract = new WSDLServiceContract();
+
+        String interfaceURI = reader.getAttributeValue(null, "interface");
+        if (interfaceURI == null) {
+            throw new InvalidValueException("interface");
+        }
+
+        String callbackURI = reader.getAttributeValue(null, "callbackInterface");
+        String wsdlLocation = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
         // FIXME set the interaction scope
 //        serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
+        LoaderUtil.skipToEndElement(reader);
 
-        String location = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
-        if (location != null) {
+        if (wsdlLocation != null) {
             try {
-                wsdlRegistry.loadDefinition(location, deploymentContext.getClassLoader());
+                wsdlRegistry.loadDefinition(wsdlLocation, deploymentContext.getClassLoader());
             } catch (IOException e) {
                 LoaderException le = new LoaderException(e);
-                le.setIdentifier(location);
+                le.setIdentifier(wsdlLocation);
                 throw le;
             } catch (WSDLException e) {
                 LoaderException le = new LoaderException(e);
-                le.setIdentifier(location);
+                le.setIdentifier(wsdlLocation);
                 throw le;
             }
         }
 
-        String portTypeURI = reader.getAttributeValue(null, "interface");
-        if (portTypeURI != null) {
-            serviceContract.setPortType(getPortType(portTypeURI));
+        WSDLServiceContract serviceContract = new WSDLServiceContract();
+        serviceContract.setPortType(getPortType(interfaceURI));
+        if (callbackURI != null) {
+            serviceContract.setCallbackPortType(getPortType(callbackURI));
         }
-
-        portTypeURI = reader.getAttributeValue(null, "callbackInterface");
-        if (portTypeURI != null) {
-            serviceContract.setCallbackPortType(getPortType(portTypeURI));
-        }
-        LoaderUtil.skipToEndElement(reader);
         return serviceContract;
     }
 
