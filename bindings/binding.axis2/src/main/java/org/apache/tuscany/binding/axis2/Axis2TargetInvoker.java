@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-
 import java.lang.reflect.InvocationTargetException;
 import javax.xml.namespace.QName;
 
@@ -42,17 +41,18 @@ import org.apache.tuscany.binding.axis2.util.SDODataBinding;
  */
 public class Axis2TargetInvoker implements TargetInvoker {
 
-    //private QName wsdlOperationName;
+    // private QName wsdlOperationName;
     private Options options;
-    private SDODataBinding dataBinding;
-    private SOAPFactory soapFactory;
-    private OperationClient operationClient;
-    
 
-    public Axis2TargetInvoker(QName wsdlOperationName, Options options, SDODataBinding dataBinding,
-                              SOAPFactory soapFactory,
-                              OperationClient operationClient) {
-        //this.wsdlOperationName = wsdlOperationName;
+    private SDODataBinding dataBinding;
+
+    private SOAPFactory soapFactory;
+
+    private OperationClient operationClient;
+
+    public Axis2TargetInvoker(QName wsdlOperationName, Options options, SDODataBinding dataBinding, SOAPFactory soapFactory,
+            OperationClient operationClient) {
+        // this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.dataBinding = dataBinding;
         this.soapFactory = soapFactory;
@@ -61,7 +61,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
 
     /**
      * Invoke a WS operation
-     *
+     * 
      * @param payload
      * @return
      * @throws InvocationTargetException
@@ -73,20 +73,19 @@ public class Axis2TargetInvoker implements TargetInvoker {
             SOAPEnvelope env = soapFactory.getDefaultEnvelope();
 
             if (payload != null && payload.getClass().isArray() && ((Object[]) payload).length > 0) {
-//                OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
-//                env.getBody().addChild(requestOM);
-//TODO HACK 
+                // OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
+                // env.getBody().addChild(requestOM);
+                // TODO HACK
                 OMFactory fac = env.getOMFactory();
-                OMElement opE = fac.createOMElement("getGreetings" ,"http://helloworld", "helloworld");
-                //            <helloworld:name>World</helloworld:name>
+                OMElement opE = fac.createOMElement("getGreetings", "http://helloworld", "helloworld");
+                // <helloworld:name>World</helloworld:name>
 
-                OMElement parmE = fac.createOMElement("name" ,"http://helloworld", "helloworld");
+                OMElement parmE = fac.createOMElement("name", "http://helloworld", "helloworld");
                 opE.addChild(parmE);
-                parmE.addChild(fac.createOMText(((Object[])payload)[0] + ""));
-                env.getBody().addChild((opE));
-//TODO HACK     
-                
-               
+                parmE.addChild(fac.createOMText(((Object[]) payload)[0] + ""));
+                env.getBody().addChild(opE);
+                // TODO HACK
+
             }
 
             MessageContext requestMC = new MessageContext();
