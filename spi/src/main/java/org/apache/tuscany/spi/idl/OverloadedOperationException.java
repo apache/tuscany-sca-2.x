@@ -16,24 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.idl.java;
-
-import java.lang.reflect.Type;
-
-import org.apache.tuscany.spi.model.ServiceContract;
+package org.apache.tuscany.spi.idl;
 
 /**
- * Represents a service contract specified using a Java interface
+ * Exception thrown to indicate that a service contract specification contains an overloaded method.
  *
  * @version $Rev$ $Date$
  */
-public class JavaServiceContract extends ServiceContract<Type> {
-
-    public JavaServiceContract() {
+public class OverloadedOperationException extends InvalidServiceContractException {
+    public OverloadedOperationException() {
     }
 
-    public JavaServiceContract(Class<?> interfaceClass) {
-        super(interfaceClass);
+    public OverloadedOperationException(String message) {
+        super(message);
     }
 
+    public OverloadedOperationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public OverloadedOperationException(Throwable cause) {
+        super(cause);
+    }
 }

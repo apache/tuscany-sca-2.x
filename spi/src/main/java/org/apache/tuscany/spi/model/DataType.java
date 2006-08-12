@@ -20,11 +20,12 @@ package org.apache.tuscany.spi.model;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.lang.reflect.Type;
 
 /**
  * Representation of the type of data associated with an operation.
  * Data is represented in two forms: the physical form used by the runtime and a logical
- * form used by the assembly. The physical form is a Java Class because the runtime is written in Java.
+ * form used by the assembly. The physical form is a Java Type because the runtime is written in Java.
  * This may be the same form used by the application but it may not; for example, an application
  * that is performing stream processing may want a physical form such as an {@link java.io.InputStream InputStream}
  * to semantially operate on application data such as a purchase order.
@@ -35,8 +36,8 @@ import java.util.HashMap;
  *
  * @version $Rev$ $Date$
  */
-public class DataType<P,L> extends ModelObject {
-    private final Class<P> physical;
+public class DataType<L> extends ModelObject {
+    private final Type physical;
     private final L logical;
     private final Map<String, Object> metadata = new HashMap<String, Object>();
 
@@ -47,16 +48,16 @@ public class DataType<P,L> extends ModelObject {
      * @param logical the logical type
      * @see #getLogical()
      */
-    public DataType(Class<P> physical, L logical) {
+    public DataType(Type physical, L logical) {
         this.physical = physical;
         this.logical = logical;
     }
 
     /**
-     * Returns the physical class used by the runtime.
-     * @return the physical class used by the runtime
+     * Returns the physical type used by the runtime.
+     * @return the physical type used by the runtime
      */
-    public Class<P> getPhysical() {
+    public Type getPhysical() {
         return physical;
     }
 
@@ -64,7 +65,8 @@ public class DataType<P,L> extends ModelObject {
      * Returns the logical identifier used by the assembly.
      * The type of this value identifies the logical type system in use. Known values are:
      * <ul>
-     * <li>a java.lang.Class identifies a Java type by name and ClassLoader</li>
+     * <li>a java.lang.reflect.Type identifies a Java type by name and ClassLoader;
+     * this includes Java Classes as they are specializations of Type</li>
      * <li>a javax.xml.namespace.QName identifies an XML type by local name and namespace</li>
      * </ul>
      * @return the logical type name

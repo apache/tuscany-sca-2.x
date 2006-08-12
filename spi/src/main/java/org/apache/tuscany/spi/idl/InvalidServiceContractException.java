@@ -16,24 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.idl.java;
+package org.apache.tuscany.spi.idl;
 
-import java.lang.reflect.Type;
-
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.TuscanyException;
 
 /**
- * Represents a service contract specified using a Java interface
- *
  * @version $Rev$ $Date$
  */
-public class JavaServiceContract extends ServiceContract<Type> {
-
-    public JavaServiceContract() {
+public abstract class InvalidServiceContractException extends TuscanyException {
+    public InvalidServiceContractException() {
     }
 
-    public JavaServiceContract(Class<?> interfaceClass) {
-        super(interfaceClass);
+    public InvalidServiceContractException(String message) {
+        super(message);
     }
 
+    public InvalidServiceContractException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidServiceContractException(Throwable cause) {
+        super(cause);
+    }
 }

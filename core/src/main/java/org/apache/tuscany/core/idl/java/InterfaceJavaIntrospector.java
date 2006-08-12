@@ -18,22 +18,28 @@
  */
 package org.apache.tuscany.core.idl.java;
 
-import java.lang.reflect.Type;
-
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
 /**
- * Represents a service contract specified using a Java interface
+ * Processor for creating JavaServiceContract definitions from Java Classes.
  *
  * @version $Rev$ $Date$
  */
-public class JavaServiceContract extends ServiceContract<Type> {
+public interface InterfaceJavaIntrospector {
+    /**
+     * Introspect a Java interface and return a service contract definition.
+     *
+     * @param type the interface to inspect
+     * @return a JavaServiceContract corresponding to the Java interface
+     */
+    <I> JavaServiceContract introspect(Class<I> type) throws InvalidServiceContractException;
 
-    public JavaServiceContract() {
-    }
-
-    public JavaServiceContract(Class<?> interfaceClass) {
-        super(interfaceClass);
-    }
-
+    /**
+     * Introspect a Java interface and return a service contract definition.
+     *
+     * @param type the interface to inspect
+     * @param callback the callback interface to inspec
+     * @return a JavaServiceContract corresponding to the Java interface
+     */
+    <I,C> JavaServiceContract introspect(Class<I> type, Class<C> callback) throws InvalidServiceContractException;
 }
