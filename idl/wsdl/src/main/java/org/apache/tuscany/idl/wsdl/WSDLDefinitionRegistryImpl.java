@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.services.wsdl;
+package org.apache.tuscany.idl.wsdl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,8 +34,6 @@ import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
-
-import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
 /**
  * The default implementation of the runtime WSDL registry
@@ -105,7 +103,7 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
             throw new WSDLException(WSDLException.CONFIGURATION_ERROR,
-                namespace + " != " + definition.getTargetNamespace());
+                                    namespace + " != " + definition.getTargetNamespace());
         }
 
         monitor.cachingDefinition(definitionNamespace, location);

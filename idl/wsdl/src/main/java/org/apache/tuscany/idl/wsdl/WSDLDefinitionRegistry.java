@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.services.wsdl;
+package org.apache.tuscany.idl.wsdl;
 
 import java.io.IOException;
 import java.net.URL;

@@ -21,7 +21,8 @@ package org.apache.tuscany.binding.celtix;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.BusException;
 import org.osoa.sca.annotations.Destroy;

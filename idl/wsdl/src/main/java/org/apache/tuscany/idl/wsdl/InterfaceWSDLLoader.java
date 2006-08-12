@@ -36,7 +36,6 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.InvalidValueException;
-import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
 
 /**
  * Loads a WSDL interface definition from an XML-based assembly file
