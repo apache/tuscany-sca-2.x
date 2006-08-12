@@ -17,6 +17,14 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
+<ruleset name="pmd-eclipse">
+  <description>PMD Plugin preferences rule set</description>
+
+
+  <rule ref="rulesets/basic.xml/BooleanInstantiation"/>
+  <rule ref="rulesets/basic.xml/CollapsibleIfStatements"/>
+  <rule ref="rulesets/basic.xml/DoubleCheckedLocking"/>
+<!--<rule ref="rulesets/basic.xml/EmptyCatchBlock"/>-->
 <!--<rule ref="rulesets/basic.xml/EmptyFinallyBlock"/>-->
 <!--<rule ref="rulesets/basic.xml/EmptyIfStmt"/>-->
   <rule ref="rulesets/basic.xml/EmptyStatementNotInLoop"/>
