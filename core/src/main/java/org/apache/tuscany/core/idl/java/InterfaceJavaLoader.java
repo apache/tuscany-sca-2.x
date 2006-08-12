@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.loader;
+package org.apache.tuscany.core.idl.java;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ServiceContract;
 
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.core.loader.StAXUtil;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
