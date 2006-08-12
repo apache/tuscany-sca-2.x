@@ -63,8 +63,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
         sourceType.add(reference);
 
-        ServiceContract sourceContract = new JavaServiceContract();
-        sourceContract.setInterfaceClass(Source.class);
+        ServiceContract sourceContract = new JavaServiceContract(Source.class);
         ServiceDefinition sourceServiceDefinition = new JavaMappedService();
         sourceServiceDefinition.setName("Source");
         sourceServiceDefinition.setServiceContract(sourceContract);
