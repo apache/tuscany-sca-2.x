@@ -40,8 +40,6 @@ import org.apache.tuscany.spi.wire.WireService;
 public class Axis2ReferenceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
-//TODO put back in
-if(true) return;        
         Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
         Method operation = Greeter.class.getMethod("sayHi");
         TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(operation);
