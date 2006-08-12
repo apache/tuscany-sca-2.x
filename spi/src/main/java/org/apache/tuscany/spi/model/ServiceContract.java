@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.Map;
+
 /**
  * Base class representing service contract information
  *
@@ -29,6 +31,8 @@ public abstract class ServiceContract extends ModelObject {
     private String interfaceName;
     private String callbackName;
     private Class<?> callbackClass;
+    private Map<String, Operation> operations;
+    private Map<String, Operation> callbacksOperations;
 
     protected ServiceContract() {
     }
@@ -100,5 +104,21 @@ public abstract class ServiceContract extends ModelObject {
 
     public void setCallbackClass(Class<?> callbackClass) {
         this.callbackClass = callbackClass;
+    }
+
+    public Map<String, Operation> getOperations() {
+        return operations;
+    }
+
+    public void setOperations(Map<String, Operation> operations) {
+        this.operations = operations;
+    }
+
+    public Map<String, Operation> getCallbacksOperations() {
+        return callbacksOperations;
+    }
+
+    public void setCallbacksOperations(Map<String, Operation> callbacksOperations) {
+        this.callbacksOperations = callbacksOperations;
     }
 }
