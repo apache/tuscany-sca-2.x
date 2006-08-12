@@ -60,35 +60,34 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return SERVICE;
     }
 
-    public ServiceDefinition load(CompositeComponent parent,
-                                  XMLStreamReader reader,
-                                  DeploymentContext deploymentContext
-    )
-        throws XMLStreamException, LoaderException {
+    public ServiceDefinition load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException,
+            LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        String target = null ;
+        String target = null;
         Binding binding = null;
         ServiceContract serviceContract = null;
         while (true) {
             int i = reader.next();
             switch (i) {
-                case START_ELEMENT:
-                    
-                    //there is a reference already using this qname which doesn't seem appropriate.
-                    if(REFERENCE.equals(reader.getName())){
-                        target= reader.getElementText();
-                    }else{
+            case START_ELEMENT:
 
-                        ModelObject o = registry.load(parent, reader, deploymentContext);
-                        if (o instanceof ServiceContract) {
-                            serviceContract = (ServiceContract) o;
-                        } else if (o instanceof Binding) {
-                            binding = (Binding) o;
-                        }
+                // there is a reference already using this qname which doesn't seem appropriate.
+                if (REFERENCE.equals(reader.getName())) {
+                    String text = reader.getElementText();
+                    target = text != null ? text.trim() : null;
+                } else {
+
+                    ModelObject o = registry.load(parent, reader, deploymentContext);
+                    if (o instanceof ServiceContract) {
+                        serviceContract = (ServiceContract) o;
+                    } else if (o instanceof Binding) {
+                        binding = (Binding) o;
                     }
-                    break;
-                case END_ELEMENT:
+                }
+                break;
+            case END_ELEMENT:
+                if (SERVICE.equals(reader.getName())) {
                     if (binding != null) {
                         if (target == null) {
                             InvalidReferenceException e = new InvalidReferenceException("No target for service ");
@@ -104,12 +103,13 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                             throw ire;
                         }
 
-                        //FIXME need a way to specify "remotable" on a service
+                        // FIXME need a way to specify "remotable" on a service
                         return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding, targetURI);
                     } else {
-                        //FIXME need a way to specify "remotable" on a service
+                        // FIXME need a way to specify "remotable" on a service
                         return new ServiceDefinition(name, serviceContract, false);
                     }
+                }
             }
         }
     }
