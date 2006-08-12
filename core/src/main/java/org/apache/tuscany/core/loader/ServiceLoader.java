@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -38,9 +39,6 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.annotation.Autowire;
-
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 /**
  * Loads a service definition from an XML-based assembly file
@@ -60,8 +58,10 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return SERVICE;
     }
 
-    public ServiceDefinition load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException,
-            LoaderException {
+    public ServiceDefinition load(CompositeComponent parent,
+                                  XMLStreamReader reader,
+                                  DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String target = null;
@@ -70,46 +70,51 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         while (true) {
             int i = reader.next();
             switch (i) {
-            case START_ELEMENT:
+                case START_ELEMENT:
 
-                // there is a reference already using this qname which doesn't seem appropriate.
-                if (REFERENCE.equals(reader.getName())) {
-                    String text = reader.getElementText();
-                    target = text != null ? text.trim() : null;
-                } else {
-
-                    ModelObject o = registry.load(parent, reader, deploymentContext);
-                    if (o instanceof ServiceContract) {
-                        serviceContract = (ServiceContract) o;
-                    } else if (o instanceof Binding) {
-                        binding = (Binding) o;
-                    }
-                }
-                break;
-            case END_ELEMENT:
-                if (SERVICE.equals(reader.getName())) {
-                    if (binding != null) {
-                        if (target == null) {
-                            InvalidReferenceException e = new InvalidReferenceException("No target for service ");
-                            e.setIdentifier(name);
-                            throw e;
-                        }
-                        URI targetURI;
-                        try {
-                            targetURI = new URI(target);
-                        } catch (URISyntaxException e) {
-                            InvalidReferenceException ire = new InvalidReferenceException(target);
-                            ire.setIdentifier(name);
-                            throw ire;
-                        }
-
-                        // FIXME need a way to specify "remotable" on a service
-                        return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding, targetURI);
+                    // there is a reference already using this qname which doesn't seem appropriate.
+                    if (REFERENCE.equals(reader.getName())) {
+                        String text = reader.getElementText();
+                        target = text != null ? text.trim() : null;
                     } else {
-                        // FIXME need a way to specify "remotable" on a service
-                        return new ServiceDefinition(name, serviceContract, false);
+
+                        ModelObject o = registry.load(parent, reader, deploymentContext);
+                        if (o instanceof ServiceContract) {
+                            serviceContract = (ServiceContract) o;
+                        } else if (o instanceof Binding) {
+                            binding = (Binding) o;
+                        }
                     }
-                }
+                    break;
+                case END_ELEMENT:
+                    if (SERVICE.equals(reader.getName())) {
+                        if (binding != null) {
+                            if (target == null) {
+                                InvalidReferenceException e = new InvalidReferenceException("No target for service ");
+                                e.setIdentifier(name);
+                                throw e;
+                            }
+                            URI targetURI;
+                            try {
+                                targetURI = new URI(target);
+                            } catch (URISyntaxException e) {
+                                InvalidReferenceException ire = new InvalidReferenceException(target);
+                                ire.setIdentifier(name);
+                                throw ire;
+                            }
+
+                            // FIXME need a way to specify "remotable" on a service
+                            return new BoundServiceDefinition<Binding>(name,
+                                                                       serviceContract,
+                                                                       false,
+                                                                       binding,
+                                                                       targetURI);
+                        } else {
+                            // FIXME need a way to specify "remotable" on a service
+                            return new ServiceDefinition(name, serviceContract, false);
+                        }
+                    }
+                    break;
             }
         }
     }
