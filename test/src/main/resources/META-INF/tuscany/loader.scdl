@@ -37,7 +37,7 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.IncludeLoader"/>
     </component>
     <component name="elementLoader.interface.java">
-        <system:implementation.system class="org.apache.tuscany.core.loader.InterfaceJavaLoader"/>
+        <system:implementation.system class="org.apache.tuscany.core.idl.java.InterfaceJavaLoader"/>
     </component>
     <component name="elementLoader.property">
         <system:implementation.system class="org.apache.tuscany.core.loader.PropertyLoader"/>
