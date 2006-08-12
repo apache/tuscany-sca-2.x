@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.Vector;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -36,26 +37,24 @@ import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import org.osoa.sca.annotations.Destroy;
-
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
+import org.apache.axis2.description.WSDLToAxisServiceBuilder;
+import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
+import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
+import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
+import org.osoa.sca.annotations.Destroy;
 
 import commonj.sdo.helper.TypeHelper;
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.description.AxisOperation;
-import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
-import org.apache.axis2.description.WSDLToAxisServiceBuilder;
-import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
-import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
-import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 
 /**
  * An implementation of a {@link ServiceExtension} configured with the Axis2 binding

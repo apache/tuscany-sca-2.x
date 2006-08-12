@@ -22,15 +22,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.osoa.sca.ServiceRuntimeException;
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.deployment.AxisConfigBuilder;
-import org.apache.axis2.deployment.DeploymentEngine;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.AxisConfigurator;
+import org.osoa.sca.ServiceRuntimeException;
 
 /**
  * Helps configure Axis2 from a resource in binding.axis2 instead of Axis2.xml
