@@ -26,11 +26,11 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import groovy.lang.GroovyClassLoader;
@@ -66,9 +66,6 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
 
-        // get the scope container for this component's scope
-        ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
-
         // get the Groovy classloader for this deployment component
         GroovyClassLoader groovyClassLoader = (GroovyClassLoader) deploymentContext.getExtension("groovy.classloader");
         if (groovyClassLoader == null) {
@@ -93,7 +90,15 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         configuration.setName(name);
         configuration.setGroovyClass(groovyClass);
         configuration.setParent(parent);
-        configuration.setScopeContainer(scopeContainer);
+        // get the scope container for this component's scope
+        Scope scope = componentType.getLifecycleScope();
+        if (Scope.MODULE == scope) {
+            configuration.setScopeContainer(deploymentContext.getModuleScope());
+        } else {
+            configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
+        }
+
+
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);
         configuration.setInitLevel(initLevel);

@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -42,9 +43,9 @@ import org.apache.tuscany.spi.loader.MissingResourceException;
  */
 public class ImplementationLoader extends LoaderExtension<GroovyImplementation> {
     private static final QName IMPLEMENTATION_GROOVY =
-        new QName("http://tuscany.apache.org/xmlns/groovy/1.0", "implementation");
+        new QName("http://tuscany.apache.org/xmlns/groovy/1.0", "implementation.groovy");
 
-    public ImplementationLoader(LoaderRegistry registry) {
+    public ImplementationLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
@@ -67,7 +68,8 @@ public class ImplementationLoader extends LoaderExtension<GroovyImplementation> 
 
         GroovyImplementation implementation = new GroovyImplementation();
         implementation.setScript(source);
-        registry.loadComponentType(parent, implementation, deploymentContext);
+        // no component type support
+        //registry.loadComponentType(parent, implementation, deploymentContext);
         return implementation;
     }
 
