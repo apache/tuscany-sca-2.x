@@ -49,8 +49,10 @@ import commonj.sdo.helper.TypeHelper;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
-import org.apache.axis2.description.WSDL2AxisServiceBuilder;
+import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
+import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
@@ -132,8 +134,9 @@ public class Axis2Service<T> extends ServiceExtension<T> {
         // serviceGroup.setServiceGroupName(wsdlPortInfo.getServiceName().getLocalPart());
         // axisConfig.addServiceGroup(serviceGroup);
 
-        WSDL2AxisServiceBuilder builder =
-            new WSDL2AxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort().getName());
+//TODO investigate if this is 20 wsdl what todo?        
+        WSDLToAxisServiceBuilder builder =
+            new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort().getName());
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
@@ -167,7 +170,7 @@ public class Axis2Service<T> extends ServiceExtension<T> {
                     dataBinding, cl);
 
             AxisOperation axisOp = axisService.getOperation(operationQN);
-            axisOp.setMessageExchangePattern(WSDLConstants.MEP_URI_IN_OUT);
+            axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
             axisOp.setMessageReceiver(msgrec);
         }
 

@@ -70,7 +70,8 @@ public class TuscanyAxisConfigurator implements AxisConfigurator {
 
             InputStream serviceInputStream = url.openStream();
             AxisConfigBuilder axisConfigBuilder =
-                new AxisConfigBuilder(serviceInputStream, new DeploymentEngine(), axisConfiguration);
+//                new AxisConfigBuilder(serviceInputStream, new DeploymentEngine(), axisConfiguration);
+                new AxisConfigBuilder(serviceInputStream,  axisConfiguration);
             axisConfigBuilder.populateConfig();
             serviceInputStream.close();
             return ConfigurationContextFactory.createConfigurationContext(this);
