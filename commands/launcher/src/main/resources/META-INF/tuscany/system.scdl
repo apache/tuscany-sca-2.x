@@ -80,6 +80,9 @@
     <!-- include implementation processor configuration -->
     <include name="org.apache.tuscany.launcher.Implementation" scdlLocation="implementation.scdl"/>
 
+    <!-- Java interface definition language -->
+    <include name="org.apache.tuscany.launcher.InterfaceJava" scdlLocation="interfaceJava.scdl"/>
+
     <!-- include omposite implementation type -->
     <include name="org.apache.tuscany.launcher.Composite" scdlLocation="composite.scdl"/>
 

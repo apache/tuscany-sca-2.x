@@ -69,6 +69,7 @@ import org.apache.tuscany.core.loader.ComponentLoader;
 import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
 import org.apache.tuscany.core.loader.IncludeLoader;
 import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
 import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
@@ -191,7 +192,7 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
         registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
         registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, null));
         registerLoader(loaderRegistry, new IncludeLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry, new InterfaceJavaIntrospectorImpl()));
         registerLoader(loaderRegistry, new PropertyLoader(loaderRegistry));
         registerLoader(loaderRegistry, new ReferenceLoader(loaderRegistry));
         registerLoader(loaderRegistry, new ServiceLoader(loaderRegistry));
