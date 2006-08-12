@@ -16,15 +16,17 @@
  */
 package org.apache.tuscany.core.loader;
 
-import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import junit.framework.TestCase;
 
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -32,31 +34,32 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.easymock.EasyMock;
 
 /**
  * Verifies loading of a service definition from an XML-based assembly
  *
  * @version $Rev$ $Date$
  */
-public class ServiceLoaderTestCase extends MockObjectTestCase {
+public class ServiceLoaderTestCase extends TestCase {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
-
+    private static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
+    
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
-    private Mock mockReader;
-    private Mock mockRegistry;
+    private XMLStreamReader mockReader;
+    private LoaderRegistry mockRegistry;
 
     public void testWithNoInterface() throws LoaderException, XMLStreamException {
         String name = "serviceDefinition";
 //        String target = "target";
-        mockReader.expects(once()).method("getName").will(returnValue(SERVICE));
-        // todo figure out how to check ordering
-        mockReader.expects(once()).method("getAttributeValue")
-                .with(ANYTHING, ANYTHING)
-                .will(returnValue(name));
-        mockReader.expects(once()).method("next").will(returnValue(END_ELEMENT));
-        ServiceDefinition serviceDefinition = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
+        expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
+        expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.next()).andReturn(END_ELEMENT);
+        expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
+        replay(mockReader);
+        ServiceDefinition serviceDefinition = loader.load(null, (XMLStreamReader) mockReader, null);
         assertNotNull(serviceDefinition);
         assertEquals(name, serviceDefinition.getName());
     }
@@ -66,23 +69,24 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
         String target = "target";
         ServiceContract sc = new ServiceContract() {
         };
-        mockReader.expects(atLeastOnce()).method("getName")
-          .will(onConsecutiveCalls(returnValue(SERVICE),returnValue(SERVICE)
-                  ,returnValue(REFERENCE)));
-        // todo figure out how to check ordering
-        mockReader.expects(once()).method("getAttributeValue")
-                .with(ANYTHING, ANYTHING)
-                .will((returnValue(name)));
-        mockReader.expects(atLeastOnce()).method("next")
-            .will(onConsecutiveCalls(returnValue(START_ELEMENT), returnValue(START_ELEMENT), returnValue(END_ELEMENT)));
-        mockRegistry.expects(once()).method("load").with(eq(null), eq(mockReader.proxy()), eq(deploymentContext))
-            .will(returnValue(sc));
-        mockReader.expects(once()).method("getElementText").withNoArguments()
+        expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
+        expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.next()).andReturn(START_ELEMENT);
+        expect(mockReader.getName()).andReturn(INTERFACE_JAVA);
+        expect(mockRegistry.load(null, mockReader, deploymentContext)).andReturn(sc);
+        expect(mockReader.next()).andReturn(START_ELEMENT);
+        expect(mockReader.getName()).andReturn(REFERENCE);
+        expect(mockReader.getElementText()).andReturn(target);
+        expect(mockReader.next()).andReturn(END_ELEMENT);
+        expect(mockReader.getName()).andReturn(REFERENCE);
+        expect(mockReader.next()).andReturn(END_ELEMENT);
+        expect(mockReader.getName()).andReturn(SERVICE);
         
-        .will((returnValue(target)));
+        replay(mockReader);
+        replay(mockRegistry);
         
         ServiceDefinition serviceDefinition =
-            loader.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext);
+            loader.load(null, (XMLStreamReader) mockReader, deploymentContext);
         assertNotNull(serviceDefinition);
         assertEquals(name, serviceDefinition.getName());
         assertSame(sc, serviceDefinition.getServiceContract());
@@ -90,9 +94,9 @@ public class ServiceLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        mockReader = mock(XMLStreamReader.class);
-        mockRegistry = mock(LoaderRegistry.class);
-        loader = new ServiceLoader((LoaderRegistry) mockRegistry.proxy());
+        mockReader = EasyMock.createStrictMock(XMLStreamReader.class);
+        mockRegistry = EasyMock.createMock(LoaderRegistry.class);
+        loader = new ServiceLoader(mockRegistry);
         deploymentContext = new RootDeploymentContext(null, null, null, null);
     }
 }
