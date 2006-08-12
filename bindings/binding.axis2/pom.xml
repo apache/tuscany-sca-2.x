@@ -30,6 +30,20 @@
     <name>Apache Tuscany Binding for Axis2</name>
     <description>Implementation of the SCA Web Services binding using Axis2.</description>
 
+
+    <repositories>
+      <repository>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+        <id>apache-nightly-repository</id>
+        <name>Apache Nightly Repository</name>
+        <url>http://people.apache.org/repository/</url>
+        <layout>legacy</layout>
+      </repository>
+    </repositories>
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
@@ -52,7 +66,54 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- axis 2.0 -->
+        <!-- axis 2.0 SNAPSHOT      -->
+
+        <dependency>
+          <groupId>axis2</groupId>
+          <artifactId>axis2-core</artifactId>
+          <version>SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+          <groupId>ws-commons</groupId>
+          <artifactId>axiom-api</artifactId>
+          <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>ws-commons</groupId>
+          <artifactId>axiom-impl</artifactId>
+          <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+          <groupId>axis2</groupId>
+          <artifactId>axis2-common</artifactId>
+          <version>SNAPSHOT</version>
+        </dependency>
+ 
+
+        <dependency>
+          <groupId>incubator-woden</groupId>
+          <artifactId>woden</artifactId>
+          <version>SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+          <groupId>wsdl4j</groupId>
+          <artifactId>wsdl4j</artifactId>
+          <version>1.5.2</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+
+
+        <!-- end axis 2.0 SNAPSHOT  -->
+        <!-- axis 2.0 V 1.0  -->
+<!--        
         <dependency>
             <groupId>axis2</groupId>
             <artifactId>axis2-kernel</artifactId>
@@ -111,6 +172,8 @@
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
         </dependency>
+-->        
+        <!--END  axis 2.0 V 1.0  -->
 
         <!-- test dependencies -->
         <dependency>
