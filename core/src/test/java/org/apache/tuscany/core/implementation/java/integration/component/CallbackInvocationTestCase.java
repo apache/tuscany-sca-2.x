@@ -43,12 +43,13 @@ import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;

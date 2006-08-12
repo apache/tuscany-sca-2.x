@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ServiceContract;
 
-import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file

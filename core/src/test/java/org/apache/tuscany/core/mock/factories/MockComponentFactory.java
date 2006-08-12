@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
