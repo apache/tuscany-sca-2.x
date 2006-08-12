@@ -22,14 +22,15 @@ import java.util.List;
 
 /**
  * Represents an operation that is part of a service contract.
+ * The type paramter of this operation identifies the logical type system for all data types.
  *
  * @version $Rev$ $Date$
  */
-public class Operation {
+public class Operation<T> {
     private final String name;
-    private final DataType<?,?> returnType;
-    private final List<DataType<?,?>> parameterTypes;
-    private final List<DataType<? extends Exception, ?>> faultTypes;
+    private final DataType<T> returnType;
+    private final List<DataType<T>> parameterTypes;
+    private final List<DataType<T>> faultTypes;
     private final boolean nonBlocking;
 
     /**
@@ -42,9 +43,9 @@ public class Operation {
      * @param nonBlocking true if the operation is non-blocking
      */
     public Operation(String name,
-                     DataType<?, ?> returnType,
-                     List<DataType<?, ?>> parameterTypes,
-                     List<DataType<? extends Exception, ?>> faultTypes,
+                     DataType<T> returnType,
+                     List<DataType<T>> parameterTypes,
+                     List<DataType<T>> faultTypes,
                      boolean nonBlocking) {
         this.name = name;
         this.returnType = returnType;
@@ -65,7 +66,7 @@ public class Operation {
      * Returns the data type returned by the operation.
      * @return the data type returned by the operation
      */
-    public DataType<?, ?> getReturnType() {
+    public DataType<T> getReturnType() {
         return returnType;
     }
 
@@ -73,7 +74,7 @@ public class Operation {
      * Returns the data types of the parameters passed to the operation.
      * @return the data types of the parameters passed to the operation
      */
-    public List<DataType<?, ?>> getParameterTypes() {
+    public List<DataType<T>> getParameterTypes() {
         return parameterTypes;
     }
 
@@ -81,7 +82,7 @@ public class Operation {
      * Returns the data types of the faults raised by the operation.
      * @return the data types of the faults raised by the operation
      */
-    public List<DataType<? extends Exception, ?>> getFaultTypes() {
+    public List<DataType<T>> getFaultTypes() {
         return faultTypes;
     }
 

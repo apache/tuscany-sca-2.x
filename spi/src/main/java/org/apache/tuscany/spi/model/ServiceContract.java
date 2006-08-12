@@ -25,14 +25,14 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public abstract class ServiceContract extends ModelObject {
+public abstract class ServiceContract<T> extends ModelObject {
     private InteractionScope interactionScope;
     private Class<?> interfaceClass;
     private String interfaceName;
     private String callbackName;
     private Class<?> callbackClass;
-    private Map<String, Operation> operations;
-    private Map<String, Operation> callbacksOperations;
+    private Map<String, Operation<T>> operations;
+    private Map<String, Operation<T>> callbacksOperations;
 
     protected ServiceContract() {
     }
@@ -106,19 +106,19 @@ public abstract class ServiceContract extends ModelObject {
         this.callbackClass = callbackClass;
     }
 
-    public Map<String, Operation> getOperations() {
+    public Map<String, Operation<T>> getOperations() {
         return operations;
     }
 
-    public void setOperations(Map<String, Operation> operations) {
+    public void setOperations(Map<String, Operation<T>> operations) {
         this.operations = operations;
     }
 
-    public Map<String, Operation> getCallbacksOperations() {
+    public Map<String, Operation<T>> getCallbacksOperations() {
         return callbacksOperations;
     }
 
-    public void setCallbacksOperations(Map<String, Operation> callbacksOperations) {
+    public void setCallbacksOperations(Map<String, Operation<T>> callbacksOperations) {
         this.callbacksOperations = callbacksOperations;
     }
 }
