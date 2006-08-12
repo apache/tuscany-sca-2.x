@@ -39,11 +39,12 @@ import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

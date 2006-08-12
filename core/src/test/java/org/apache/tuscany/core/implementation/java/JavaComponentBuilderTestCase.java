@@ -34,7 +34,7 @@ import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
 import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaServiceContract;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Source;
