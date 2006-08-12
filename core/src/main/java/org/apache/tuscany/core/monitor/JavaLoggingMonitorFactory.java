@@ -65,7 +65,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         configProperties.put("levels", levels);
         configProperties.put("defaultLevel", defaultLevel);
         configProperties.put("bundleName", bundleName);
-        initialize(configProperties);
+        initialize_(configProperties);
     }
 
     /**
@@ -78,7 +78,10 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         if (configProperties == null) {
             return;
         }
+        initialize_(configProperties);
+    }
 
+    private void initialize_(Map<String, Object> configProperties) {
         try {
             this.defaultLevel = (Level) configProperties.get("defaultLevel");
             this.bundleName = (String) configProperties.get("bundleName");
