@@ -26,7 +26,8 @@ import javax.wsdl.extensions.ExtensionRegistry;
 import javax.wsdl.factory.WSDLFactory;
 
 import org.w3c.dom.Element;
-import org.apache.tuscany.spi.services.wsdl.WSDLDefinitionRegistry;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+
 import org.objectweb.celtix.wsdl.WSDLManager;
 
 /**

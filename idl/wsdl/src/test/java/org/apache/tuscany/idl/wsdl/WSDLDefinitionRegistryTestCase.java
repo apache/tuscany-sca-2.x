@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.services.wsdl;
+package org.apache.tuscany.idl.wsdl;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,6 +25,7 @@ import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 
 import junit.framework.TestCase;
+import junit.framework.Assert;
 
 /**
  * Verifies the default WSDL registry implementation
@@ -41,30 +42,29 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
         }
     };
     private WSDLDefinitionRegistryImpl wsdlRegistry;
-    private ClassLoader rl;
+    private ClassLoader cl;
+    private URL exampleWsdl;
 
 
     public void testLoadFromAbsoluteWSDLLocation() {
         try {
-            Definition def = wsdlRegistry.loadDefinition(
-                NS + ' ' + rl.getResource("org/apache/tuscany/core/services/wsdl/example.wsdl"), rl);
-            assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
+            Definition def = wsdlRegistry.loadDefinition(NS + ' ' + exampleWsdl, cl);
+            Assert.assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
         } catch (IOException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         } catch (WSDLException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
     public void testLoadFromRelativeWSDLLocation() {
         try {
-            Definition def =
-                wsdlRegistry.loadDefinition(NS + " org/apache/tuscany/core/services/wsdl/example.wsdl", rl);
-            assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
+            Definition def = wsdlRegistry.loadDefinition(NS + " org/apache/tuscany/idl/wsdl/example.wsdl", cl);
+            Assert.assertNotNull(def.getPortType(new QName(NS, "HelloWorld")));
         } catch (IOException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         } catch (WSDLException e) {
-            fail(e.getMessage());
+            Assert.fail(e.getMessage());
         }
     }
 
@@ -72,7 +72,8 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
         super.setUp();
         wsdlRegistry = new WSDLDefinitionRegistryImpl();
         wsdlRegistry.setMonitor(NULL_MONITOR);
-        rl = getClass().getClassLoader();
+        exampleWsdl = getClass().getResource("example.wsdl");
+        cl = getClass().getClassLoader();
     }
 
 }
