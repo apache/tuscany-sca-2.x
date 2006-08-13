@@ -40,6 +40,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.tuscany.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
             <version>1.6R2</version>
