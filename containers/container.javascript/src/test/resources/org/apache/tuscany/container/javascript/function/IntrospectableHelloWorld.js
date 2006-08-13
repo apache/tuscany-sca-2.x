@@ -1,5 +1,5 @@
 SCA = {
-   'serviceClass' : 'helloworld.HelloWorldService'
+   'javaInterface' : 'helloworld.HelloWorldService'
 }
 
 function sayHello(s) {

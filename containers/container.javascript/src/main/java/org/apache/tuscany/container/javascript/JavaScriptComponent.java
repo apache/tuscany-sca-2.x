@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,12 +72,14 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
         return instance;
     }
 
-    public List<Class<?>> getServiceInterfaces() {
-        return services;
-    }
-
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
         return new JavaScriptInvoker(method.getName(), this);
+    }
+
+    // TODO: move all the following up to AtomicComponentExtension?
+    
+    public List<Class<?>> getServiceInterfaces() {
+        return services;
     }
 
     public Map<String, Object> getProperties() {
@@ -88,6 +88,10 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
 
     public RhinoScriptInstance getTargetInstance() throws TargetException {
         return scopeContainer.getInstance(this);
+    }
+
+    public T getServiceInstance() throws TargetException {
+        return getServiceInstance(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -99,26 +103,6 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
             throw e;
         }
         return (T) wireService.createProxy(wire);
-    }
-
-    @SuppressWarnings("unchecked")
-    public T getServiceInstance() throws TargetException {
-        // TODO this should return a default service from a wire
-        final RhinoScriptInstance target = (RhinoScriptInstance) getTargetInstance();
-        ClassLoader cl = getServiceInterfaces().get(0).getClassLoader();
-        InvocationHandler ih = new InvocationHandler() {
-            public Object invoke(Object arg0, Method method, Object[] args) throws Throwable {
-                return target.invokeFunction(method.getName(), args);
-            }
-        };
-
-        Class<?>[] ifaces = new Class<?>[getServiceInterfaces().size()];
-        for (int i = 0; i < getServiceInterfaces().size(); i++) {
-            ifaces[i] = getServiceInterfaces().get(i);
-        }
-        T proxy = (T) Proxy.newProxyInstance(cl, ifaces, ih);
-
-        return proxy;
     }
 
 }

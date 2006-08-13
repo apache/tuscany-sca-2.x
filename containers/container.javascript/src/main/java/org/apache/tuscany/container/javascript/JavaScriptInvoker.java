@@ -21,63 +21,30 @@ package org.apache.tuscany.container.javascript;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
- * Dispatches to a Groovy implementation instance
+ * Dispatches to a JavaScript implementation instance
  * 
  * @version $$Rev$$ $$Date$$
  */
-public class JavaScriptInvoker implements TargetInvoker, Cloneable {
+public class JavaScriptInvoker extends TargetInvokerExtension {
 
     private JavaScriptComponent context;
 
-    private String methodName;
+    private String functionName;
 
-    private boolean cacheable;
-
-    public JavaScriptInvoker(String methodName, JavaScriptComponent context) {
+    public JavaScriptInvoker(String functionName, JavaScriptComponent context) {
+        this.functionName = functionName;
         this.context = context;
-        this.methodName = methodName;
-    }
-
-    public boolean isCacheable() {
-        return cacheable;
-    }
-
-    public void setCacheable(boolean cacheable) {
-        this.cacheable = cacheable;
-    }
-
-    public boolean isOptimizable() {
-        return false;
     }
 
     /**
-     * Dispatches to the the target.
+     * Invokes a function on a script instance
      */
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         RhinoScriptInstance target = context.getTargetInstance();
-        Object[] args = (Object[]) payload;
-        return target.invokeFunction(methodName, args);
-    }
-
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBody(e.getCause());
-        } catch (Throwable e) {
-            msg.setBody(e);
-        }
-        return msg;
-    }
-
-    public JavaScriptInvoker clone() throws CloneNotSupportedException {
-        return (JavaScriptInvoker) super.clone();
+        return target.invokeFunction(functionName, (Object[]) payload);
     }
 
 }

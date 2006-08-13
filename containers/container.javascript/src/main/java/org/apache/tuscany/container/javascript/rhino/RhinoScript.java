@@ -40,6 +40,8 @@ public class RhinoScript {
     protected Scriptable scriptScope;
 
     protected Map<String, Class> responseClasses;
+    
+    protected ClassLoader classLoader;
 
     /*
      * Enable dynamic scopes so a script can be used concurrently with a global shared scope and individual execution scopes. See
@@ -83,11 +85,12 @@ public class RhinoScript {
      * @param classLoader
      *            the ClassLoader Rhino should use to locate any user Java classes used in the script
      */
-    public RhinoScript(String scriptName, String script, Map context, ClassLoader cl) {
+    public RhinoScript(String scriptName, String script, Map context, ClassLoader classLoader) {
         this.scriptName = scriptName;
         this.script = script;
         this.responseClasses = new HashMap<String, Class>();
-        initScriptScope(scriptName, script, context, cl);
+        this.classLoader = classLoader;
+        initScriptScope(scriptName, script, context, classLoader);
     }
 
     /**
@@ -183,6 +186,10 @@ public class RhinoScript {
         return responseClasses;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
     /**
      * Set the Java type of a response value. JavaScript is dynamically typed so Rhino cannot always work out what the intended Java type of a
      * response should be, for example should the statement "return 42" be a Java int, or Integer or Double etc. When Rhino can't determine the type
@@ -190,6 +197,10 @@ public class RhinoScript {
      */
     public void setResponseClass(String functionName, Class responseClasses) {
         this.responseClasses.put(functionName, responseClasses);
+    }
+    
+    public RhinoSCAConfig getSCAConfig() {
+        return new RhinoSCAConfig(getScriptScope());
     }
 
 }

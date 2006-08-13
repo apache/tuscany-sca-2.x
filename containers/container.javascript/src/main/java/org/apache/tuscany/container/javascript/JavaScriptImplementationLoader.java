@@ -69,7 +69,6 @@ public class JavaScriptImplementationLoader extends LoaderExtension<JavaScriptIm
         JavaScriptImplementation implementation = new JavaScriptImplementation();
         RhinoScript rhinoScript = new RhinoScript(script, source, null, cl);
         implementation.setRhinoScript(rhinoScript);
-        implementation.setClassLoader(cl);
         registry.loadComponentType(parent, implementation, deploymentContext);
         return implementation;
     }
