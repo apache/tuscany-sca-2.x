@@ -25,7 +25,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spi</artifactId>
-    <packaging>osgi-bundle</packaging>
+    <packaging>jar</packaging>
     <name>Apache Tuscany SCA SPI</name>
     <description>Tuscany Service Provider Interfaces.</description>
 
