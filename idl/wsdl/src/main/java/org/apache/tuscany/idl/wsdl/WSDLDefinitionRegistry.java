@@ -32,6 +32,7 @@ import javax.xml.namespace.QName;
  *
  * @version $Rev$ $Date$
  */
+@Deprecated
 public interface WSDLDefinitionRegistry {
     /**
      * Loads and registers a WSDL Definition.
