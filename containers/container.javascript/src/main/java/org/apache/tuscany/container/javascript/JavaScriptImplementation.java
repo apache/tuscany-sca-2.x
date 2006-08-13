@@ -29,8 +29,6 @@ public class JavaScriptImplementation extends AtomicImplementation<ComponentType
 
     private RhinoScript rhinoScript;
 
-    private ClassLoader cl;
-
     private ComponentType componentType;
 
     public ComponentType getComponentType() {
@@ -39,14 +37,6 @@ public class JavaScriptImplementation extends AtomicImplementation<ComponentType
 
     public void setComponentType(ComponentType componentType) {
         this.componentType = componentType;
-    }
-
-    public ClassLoader getClassLoader() {
-        return cl;
-    }
-
-    public void setClassLoader(ClassLoader cl) {
-        this.cl = cl;
     }
 
     public RhinoScript getRhinoScript() {
