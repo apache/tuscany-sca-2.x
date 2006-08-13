@@ -19,6 +19,7 @@
 package org.apache.tuscany.idl.wsdl;
 
 import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.model.ServiceContract;
 
@@ -27,7 +28,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
  *
  * @version $Rev$ $Date$
  */
-public class WSDLServiceContract extends ServiceContract {
+public class WSDLServiceContract extends ServiceContract<QName> {
     private PortType portType;
     private PortType callbackPortType;
 
