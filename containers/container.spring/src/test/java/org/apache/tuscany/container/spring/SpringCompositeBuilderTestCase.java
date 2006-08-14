@@ -18,18 +18,18 @@
  */
 package org.apache.tuscany.container.spring;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.io.File;
-import java.io.IOException;
-import java.io.FileWriter;
 
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -39,38 +39,38 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.container.spring.mock.VMBinding;
 import org.apache.tuscany.test.ArtifactFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
 import org.jmock.core.Constraint;
 import org.jmock.core.Formatting;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.StaticApplicationContext;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
+public class SpringCompositeBuilderTestCase extends TestCase {
     private final String appXml =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-        "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n" +
-        "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-        "       xsi:schemaLocation=\"\n" +
-        "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd \n" +
-//        "http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/SpringSCA.xsd" +
-        "\">\n" +
-        "\n" +
-//        "<sca:service name=\"fooService\" type=\"org.apache.tuscany.container.spring.mock.TestBean\" target=\"fooBean\"/>" +
-        "\n" +
-        "<bean id=\"fooBean\" class=\"org.apache.tuscany.container.spring.mock.TestBeanImpl\">\n" +
-        "</bean>\n" +
-        "\n" +
-        "</beans>\n";
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            + "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"
+            + "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+            + "       xsi:schemaLocation=\"\n"
+            + "http://www.springframework.org/schema/beans "
+            + "http://www.springframework.org/schema/beans/spring-beans.xsd \n"
+// "http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/SpringSCA.xsd" +
+            + "\">\n"
+            + "\n"
+// "<sca:service name=\"fooService\" type=\"org.apache.tuscany.container.spring.mock.TestBean\" target=\"fooBean\"/>" +
+            + "\n"
+            + "<bean id=\"fooBean\" class=\"org.apache.tuscany.container.spring.mock.TestBeanImpl\">\n"
+            + "</bean>\n"
+            + "\n"
+            + "</beans>\n";
 
     public void testBuildImplicit() throws Exception {
 
@@ -97,18 +97,20 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         connector.connect(inboundWire, outboundWire, true);
 
         // Configure the mock builder registry
-        Mock mock = mock(BuilderRegistry.class);
-        mock.expects(atLeastOnce()).method("build").with(ANYTHING, serviceIsNamed("fooService"), ANYTHING)
-            .will(returnValue(serviceContext));
-
+        BuilderRegistry registry = createMock(BuilderRegistry.class);
+        expect(registry.build(isA(CompositeComponent.class),
+            isA(BoundServiceDefinition.class),
+            isA(DeploymentContext.class))).andStubReturn(serviceContext);
+        replay(registry);
         // Test the SpringCompositeBuilder
         SpringCompositeBuilder builder = new SpringCompositeBuilder();
         builder.setWireService(wireService);
-        builder.setBuilderRegistry((BuilderRegistry) mock.proxy());
-        CompositeComponent component = (CompositeComponent) builder.build(null, componentDefinition, null);
+        builder.setBuilderRegistry(registry);
+        CompositeComponent component = (CompositeComponent) builder.build(createNiceMock(CompositeComponent.class),
+            componentDefinition,
+            createNiceMock(DeploymentContext.class));
         Service service = component.getService("fooService");
         TestBean bean = (TestBean) service.getServiceInstance();
-
         assertEquals("call foo", bean.echo("call foo"));
     }
 
