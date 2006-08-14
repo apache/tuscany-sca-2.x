@@ -41,7 +41,5 @@ public class SCANamespaceHandler extends NamespaceHandlerSupport {
                 new ScaReferenceBeanDefinitionParser());
         registerBeanDefinitionParser(ScaServiceBeanDefinitionParser.SERVICE_ELEMENT,
                 new ScaServiceBeanDefinitionParser());
-        registerBeanDefinitionParser(ScaCompositeBeanDefinitionParser.COMPOSITE_ELEMENT,
-                new ScaCompositeBeanDefinitionParser());
     }
 }

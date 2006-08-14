@@ -10,6 +10,8 @@ http://www.springframework.org/schema/sca http://www.springframework.org/schema/
 </bean>
 
 <sca:service name="fooService" type="org.apache.tuscany.container.spring.mock.TestBean" target="testBean" />
-<sca:reference name="fooReference" type="org.apache.tuscany.container.spring.mock.TestBeanImpl" />
+
+<sca:reference name="fooReference" type="org.apache.tuscany.container.spring.mock.TestReference" />
+
 
 </beans>
