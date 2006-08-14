@@ -17,138 +17,56 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<!-- $Rev$ $Date$ -->
-<project
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany.bindings</groupId>
+        <artifactId>bindings</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-  <parent>
-    <groupId>org.apache.servicemix</groupId>
-    <artifactId>servicemix</artifactId>
-    <version>3.0-incubating-SNAPSHOT</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>binding-servicemix</artifactId>
+    <name>Apache Tuscany Binding for ServiceMix</name>
+    <description>Implementation of the SCA JBI Binding</description>
 
-  <artifactId>servicemix-sca</artifactId>
-  <packaging>jbi-component</packaging>
-  <name>ServiceMix :: SCA Service Engine</name>
-  <description>SCA service engine</description>
+    <repositories>
+      <repository>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+        <id>apache-nightly-repository</id>
+        <name>Apache Nightly Repository</name>
+        <url>http://people.apache.org/repository/</url>
+        <layout>legacy</layout>
+      </repository>
+    </repositories>
 
-  <properties>
-    <tuscany_version>20060317</tuscany_version>
-    <eclipse_xsd_version>2.2.0-I200602160000</eclipse_xsd_version>
-    <eclipse_emf_version>2.2.0-I200602160000</eclipse_emf_version>
-  </properties>
+    <dependencies>
 
-  <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>spi</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-common</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-core</artifactId>
+            <version>3.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>commonj</groupId>
-      <artifactId>sdo-api</artifactId>
-      <version>20060317</version>
-    </dependency>
-    <dependency>
-      <groupId>org.osoa</groupId>
-      <artifactId>sca-api</artifactId>
-      <version>${tuscany_version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.apache.tuscany</groupId>
-      <artifactId>tuscany-common</artifactId>
-      <version>${tuscany_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tuscany</groupId>
-      <artifactId>tuscany-container-java</artifactId>
-      <version>${tuscany_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tuscany</groupId>
-      <artifactId>tuscany-core</artifactId>
-      <version>${tuscany_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tuscany</groupId>
-      <artifactId>tuscany-model</artifactId>
-      <version>${tuscany_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tuscany</groupId>
-      <artifactId>tuscany-sdo-impl</artifactId>
-      <version>${tuscany_version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>common</artifactId>
-      <version>${eclipse_emf_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>ecore</artifactId>
-      <version>${eclipse_emf_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>ecore-change</artifactId>
-      <version>${eclipse_emf_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.emf</groupId>
-      <artifactId>ecore-xmi</artifactId>
-      <version>${eclipse_emf_version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.xsd</groupId>
-      <artifactId>xsd</artifactId>
-      <version>${eclipse_xsd_version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.sun.xml</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.0EA3</version>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.servicemix</groupId>
+            <artifactId>servicemix-common</artifactId>
+            <version>3.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>servicemix-core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.servicemix.tooling</groupId>
-        <artifactId>jbi-maven-plugin</artifactId>
-        <configuration>
-          <type>service-engine</type>
-          <bootstrap>org.apache.servicemix.sca.ScaBootstrap</bootstrap>
-          <component>org.apache.servicemix.sca.ScaComponent</component>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    </dependencies>
 
 </project>
