@@ -108,31 +108,43 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- runtime -->
+
+         <dependency>
+              <groupId>woodstox</groupId>
+              <artifactId>wstx-asl</artifactId>
+              <version>2.9.3</version>
+            <scope>runtime</scope>
+        </dependency>
 
         <dependency>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
           <version>1.1</version>
+           <scope>runtime</scope>
         </dependency>
 
         <dependency>
           <groupId>ws-commons</groupId>
           <artifactId>neethi</artifactId>
           <version>SNAPSHOT</version>
+          <scope>runtime</scope>
         </dependency>
 
         <dependency>
           <groupId>org.apache.ws.commons</groupId>
           <artifactId>XmlSchema</artifactId>
           <version>SNAPSHOT</version>
+          <scope>runtime</scope>
         </dependency>
 
         <dependency>
           <groupId>commons-httpclient</groupId>
           <artifactId>commons-httpclient</artifactId>
           <version>3.0</version>
+          <scope>runtime</scope>
         </dependency>
 
         <!-- end axis 2.0 SNAPSHOT  -->
