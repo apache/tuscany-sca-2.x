@@ -19,12 +19,12 @@
 package org.apache.tuscany.container.spring.config;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
+
 import org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader;
 import org.springframework.beans.factory.xml.NamespaceHandlerResolver;
 
 /**
- * Overrides the default top-level Spring parser to use
- * {@link org.apache.tuscany.container.spring.config.SCANamespaceHandlerResolver}
+ * Overrides the default top-level Spring parser to use {@link SCANamespaceHandlerResolver}
  * for resolving namespace handlers
  *
  * @version $$Rev$$ $$Date$$

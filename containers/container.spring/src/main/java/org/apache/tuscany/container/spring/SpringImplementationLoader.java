@@ -65,6 +65,7 @@ import org.apache.tuscany.spi.services.info.RuntimeInfo;
 public class SpringImplementationLoader extends LoaderExtension<SpringImplementation> {
     private static final QName IMPLEMENTATION_SPRING = new QName("http://tuscany.apache.org/xmlns/spring/1.0",
         "implementation.spring");
+    private static final String APPLICATION_CONTEXT = "META-INF/application-context.xml";
 
     private final RuntimeInfo runtimeInfo;
 
@@ -78,7 +79,8 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         return IMPLEMENTATION_SPRING;
     }
 
-    public SpringImplementation load(CompositeComponent parent, XMLStreamReader reader,
+    public SpringImplementation load(CompositeComponent parent,
+                                     XMLStreamReader reader,
                                      DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
@@ -126,7 +128,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     }
                 }
                 // no manifest-specified Spring context, use default
-                appXmlFile = new File(locationFile, "META-INF/application-context.xml");
+                appXmlFile = new File(locationFile, APPLICATION_CONTEXT);
                 if (appXmlFile.exists()) {
                     return appXmlFile.toURL();
                 }
@@ -148,15 +150,16 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                         }
                     }
                 }
-                je = jf.getJarEntry("META-INF/application-context.xml");
+                je = jf.getJarEntry(APPLICATION_CONTEXT);
                 if (je != null) {
-                    return new URL("jar:" + locationFile.toURL() + "!/META-INF/application-context.xml");
+                    return new URL("jar:" + locationFile.toURI().toURL() + "!"+APPLICATION_CONTEXT);
                 }
             } catch (IOException e) {
                 // bad archive
-                throw new MissingResourceException(locationAttr); // TODO: create a more appropriate exception type
+                // TODO: create a more appropriate exception type
+                throw new MissingResourceException(locationAttr);
             }
         }
-        throw new MissingResourceException("META-INF/application-context.xml");
+        throw new MissingResourceException(APPLICATION_CONTEXT);
     }
 }

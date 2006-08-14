@@ -18,14 +18,15 @@
  */
 package org.apache.tuscany.container.spring.config;
 
+import org.w3c.dom.Element;
+
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.ConstructorArgumentValues;
+import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
-import org.w3c.dom.Element;
 
 /**
  * Processes <code>reference</code> elements in a Spring configuration
@@ -34,9 +35,9 @@ import org.w3c.dom.Element;
  */
 public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
-    public  static final String REFERENCE_ELEMENT         = "reference";
-    private static final String REFERENCE_NAME_ATTRIBUTE  = "name";
-    private static final String TYPE_ATTRIBUTE            = "type";
+    public static final String REFERENCE_ELEMENT = "reference";
+    private static final String REFERENCE_NAME_ATTRIBUTE = "name";
+    private static final String TYPE_ATTRIBUTE = "type";
     private static final String DEFAULT_SERVICE_ATTRIBUTE = "default";
 
     public ScaReferenceBeanDefinitionParser() {

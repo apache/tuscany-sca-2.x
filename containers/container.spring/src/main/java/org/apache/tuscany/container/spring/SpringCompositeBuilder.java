@@ -64,8 +64,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
             BoundReferenceDefinition<? extends Binding>,
             ? extends Property> componentType = implementation.getComponentType();
-
-        // We still need to set the target invoker as opposed to havign the connector do it since the
+                                                                          
+        // We still need to set the target invoker as opposed to having the connector do it since the
         // Spring context is "opaque" to the wiring fabric. In other words, the Spring context does not expose
         // its beans as SCA components to the connector t wire the services to
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {

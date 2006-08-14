@@ -18,12 +18,13 @@
  */
 package org.apache.tuscany.container.spring.config;
 
+import org.w3c.dom.Element;
+
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.aop.framework.ProxyFactoryBean;
-import org.w3c.dom.Element;
 
 /**
  * Processes <code>service</code> elements in a Spring configuration
@@ -65,7 +66,7 @@ public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
         //
         // REVIEW: this is a hack that can be removed once a more sophisticated introspection
         // mechanism is defined for Spring app contexts.  See SpringComponentTypeLoader.
-        
+
         BeanDefinitionBuilder serviceBean = BeanDefinitionBuilder.rootBeanDefinition(SCAService.class);
         serviceBean.addConstructorArg(name);
         serviceBean.addConstructorArg(type);
