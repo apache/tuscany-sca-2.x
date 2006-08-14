@@ -18,15 +18,15 @@
  */
 package org.apache.tuscany.launcher;
 
+import java.beans.Beans;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ResourceBundle;
+
+import org.apache.tuscany.hostutil.LaunchHelper;
 
 /**
  * Launcher for launcher runtime environment that invokes a jar's Main class.
@@ -40,39 +40,15 @@ public class MainLauncherBooter {
      * @param args the command line args
      */
     public static void main(String[] args) throws Throwable {
-        // The classpath to load the launcher should not contain any of
-        // Tuscany jar files except the launcher.
+        // The classpath to load the launcher should not any jars from the Tuscany runtime
         MainLauncherBooter booter = new MainLauncherBooter();
         ClassLoader tuscanyCL = booter.getTuscanyClassLoader();
 
-        Class<?> launcherClass;
+        String className = System.getProperty("tuscany.launcherClass",
+                                              "org.apache.tuscany.core.launcher.MainLauncher");
+        Object launcher = Beans.instantiate(tuscanyCL, className);
         try {
-            String className = System.getProperty("tuscany.launcherClass",
-                                                  "org.apache.tuscany.core.launcher.MainLauncher");
-            launcherClass = tuscanyCL.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            System.err.println("Tuscany bootstrap class not found: " + e.getMessage());
-            System.exit(2);
-            throw new AssertionError();
-        }
-
-        Method mainMethod;
-        try {
-            mainMethod = launcherClass.getMethod("boot", String[].class);
-        } catch (NoSuchMethodException e) {
-            // this is our class so the method should be there
-            throw new AssertionError(e);
-        }
-
-        try {
-            Object launcher = launcherClass.newInstance();
-            mainMethod.invoke(launcher, new Object[] {args});
-        } catch (InstantiationException e) {
-            throw new AssertionError(e);
-        } catch (IllegalAccessException e) {
-            throw new AssertionError(e);
-        } catch (IllegalArgumentException e) {
-            throw new AssertionError(e);
+            LaunchHelper.invoke(launcher, "boot", new Class<?>[]{String[].class}, (Object[]) new Object[]{args});
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
@@ -80,34 +56,10 @@ public class MainLauncherBooter {
 
     protected ClassLoader getTuscanyClassLoader() {
         File tuscanylib = findBootDir();
-        URL[] urls = scanDirectory(tuscanylib);
+        URL[] urls = LaunchHelper.scanDirectoryForJars(tuscanylib);
         return new URLClassLoader(urls, getClass().getClassLoader());
     }
 
-    /**
-     * Scan a directory for jar files to be added to the classpath.
-     *
-     * @param tuscanylib the directory to scan
-     * @return the URLs or jar files in that directory
-     */
-    protected URL[] scanDirectory(File tuscanylib) {
-        File[] jars = tuscanylib.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".jar");
-            }
-        });
-
-        URL[] urls = new URL[jars.length];
-        for (int i = 0; i < jars.length; i++) {
-            try {
-                urls[i] = jars[i].toURI().toURL();
-            } catch (MalformedURLException e) {
-                // toURI should have escaped the URL
-                throw new AssertionError();
-            }
-        }
-        return urls;
-    }
 
     /**
      * Find the directory containing the bootstrap jars.

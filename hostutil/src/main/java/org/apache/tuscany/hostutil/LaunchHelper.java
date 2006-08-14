@@ -89,11 +89,11 @@ public final class LaunchHelper {
      * @return the value returned by the method
      * @throws InvocationTargetException if the method throw an Exception
      */
-    public static Object invoke(Object instance, String name, Object... args) throws InvocationTargetException {
-        Class<?>[] paramTypes = new Class<?>[args.length];
+    public static Object invoke(Object instance, String name, Class<?>[] paramTypes, Object... args)
+        throws InvocationTargetException {
         try {
             Method method = instance.getClass().getMethod(name, paramTypes);
-            return method.invoke(instance, args);
+            return method.invoke(instance, (Object[]) args);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(e);
         } catch (IllegalAccessException e) {

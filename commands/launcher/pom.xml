@@ -28,14 +28,20 @@
     <name>Apache Tuscany SCA Application Launcher</name>
     <description>Standalone executable jar that can be used to launch a SCA application.</description>
 
+    <!--
+      This library will typically be added to the application's classpath and so should
+      should have as few dependencies as possible and nothing from the Tuscany runtime.
+    -->
     <dependencies>
-        <!--
-            To keep implementation artifacts from creeping onto the application's classpath
-            no Tuscany jars should be added as dependencies here.
-        -->
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api-r0.95</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>hostutil</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
