@@ -20,6 +20,8 @@ package org.apache.tuscany.container.javascript.rhino;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.spi.model.Scope;
+
 public class RhinoSCAConfigTestCase extends TestCase {
 
     public void testJavaInteface() {
@@ -48,6 +50,50 @@ public class RhinoSCAConfigTestCase extends TestCase {
         RhinoSCAConfig scaConfig = rs.getSCAConfig();
         assertTrue(scaConfig.hasSCAConfig());
         assertEquals("Test", scaConfig.getWSDLPortType());
+    }
+
+    public void testScopeStateless() {
+        RhinoScript rs = new RhinoScript("testScopeStateless", "SCA = { scope : 'stateless', javaInterface : 'helloworld.HelloWorldService'}");
+        RhinoSCAConfig scaConfig = rs.getSCAConfig();
+        assertTrue(scaConfig.hasSCAConfig());
+        assertEquals(Scope.STATELESS, scaConfig.getScope());
+    }
+
+    public void testScopeComposite() {
+        RhinoScript rs = new RhinoScript("testScopeComposite", "SCA = { scope : 'composite', javaInterface : 'helloworld.HelloWorldService'}");
+        RhinoSCAConfig scaConfig = rs.getSCAConfig();
+        assertTrue(scaConfig.hasSCAConfig());
+        assertEquals(Scope.COMPOSITE, scaConfig.getScope());
+    }
+
+    public void testScopeSession() {
+        RhinoScript rs = new RhinoScript("testScopeSession", "SCA = { scope : 'session', javaInterface : 'helloworld.HelloWorldService'}");
+        RhinoSCAConfig scaConfig = rs.getSCAConfig();
+        assertTrue(scaConfig.hasSCAConfig());
+        assertEquals(Scope.SESSION, scaConfig.getScope());
+    }
+
+    public void testScopeModule() {
+        RhinoScript rs = new RhinoScript("testScopeModule", "SCA = { scope : 'module', javaInterface : 'helloworld.HelloWorldService'}");
+        RhinoSCAConfig scaConfig = rs.getSCAConfig();
+        assertTrue(scaConfig.hasSCAConfig());
+        assertEquals(Scope.MODULE, scaConfig.getScope());
+    }
+
+    public void testScopeRequest() {
+        RhinoScript rs = new RhinoScript("testScopeRequest", "SCA = { scope : 'request', javaInterface : 'helloworld.HelloWorldService'}");
+        RhinoSCAConfig scaConfig = rs.getSCAConfig();
+        assertTrue(scaConfig.hasSCAConfig());
+        assertEquals(Scope.REQUEST, scaConfig.getScope());
+    }
+
+    public void testBadScope() {
+        RhinoScript rs = new RhinoScript("testScopeStateless", "SCA = { scope : 'rubbish', javaInterface : 'helloworld.HelloWorldService'}");
+        try {
+            RhinoSCAConfig scaConfig = rs.getSCAConfig();
+            fail("expecting bad scope exception: " + scaConfig);
+        } catch (IllegalArgumentException e) {
+        }
     }
 
     public void testNoConfig() {

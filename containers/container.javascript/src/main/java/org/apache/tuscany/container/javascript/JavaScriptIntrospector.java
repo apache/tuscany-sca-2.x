@@ -49,8 +49,8 @@ public class JavaScriptIntrospector {
         this.wsdlRegistry = wsdlRegistry;
     }
 
-    public ComponentType introspectScript(RhinoSCAConfig scaConfig, ClassLoader cl) {
-        ComponentType componentType = new ComponentType();
+    public JavaScriptComponentType introspectScript(RhinoSCAConfig scaConfig, ClassLoader cl) {
+        JavaScriptComponentType componentType = new JavaScriptComponentType();
         introspectJavaInterface(componentType, cl, scaConfig.getJavaInterface());
         introspectWSDLInterface(componentType, cl, scaConfig.getWSDLNamespace(), scaConfig.getWSDLPortType(), scaConfig.getWSDLLocation());
         introspectReferences(componentType, cl, scaConfig.getReferences());

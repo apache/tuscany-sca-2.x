@@ -18,16 +18,10 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reportMatcher;
-import static org.easymock.EasyMock.verify;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -37,9 +31,6 @@ import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.easymock.IArgumentMatcher;
@@ -48,7 +39,6 @@ import org.easymock.IArgumentMatcher;
  * Tests for JavaScript component wiring
  */
 public class WireTestCase extends TestCase {
-    private static final Map<String, Object> properties = new HashMap<String, Object>();
 
     private static final String SCRIPT = 
         "   function setWire(ref){" + 
@@ -126,7 +116,7 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, properties, null, scope,
+        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
         TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class)
@@ -143,7 +133,7 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, properties, null, scope,
+        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
 

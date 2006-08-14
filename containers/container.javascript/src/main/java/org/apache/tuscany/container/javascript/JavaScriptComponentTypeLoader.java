@@ -22,34 +22,23 @@ import java.net.URL;
 
 import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
 import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.core.implementation.IntrospectionRegistry;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentType;
-import org.osoa.sca.annotations.Constructor;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<JavaScriptImplementation> {
-//    private Introspector introspector;
-
-    @Constructor( { "registry", "introspector" })
-    public JavaScriptComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry, @Autowire IntrospectionRegistry introspector) {
-        super(loaderRegistry);
-        // this.introspector = introspector;
-    }
 
     @Override
     protected Class<JavaScriptImplementation> getImplementationClass() {
         return JavaScriptImplementation.class;
     }
 
-    protected ComponentType loadByIntrospection(CompositeComponent<?> parent, JavaScriptImplementation implementation,
+    protected JavaScriptComponentType loadByIntrospection(CompositeComponent<?> parent, JavaScriptImplementation implementation,
             DeploymentContext deploymentContext) {
 
         RhinoScript rhinoScript = implementation.getRhinoScript();
@@ -58,7 +47,7 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
             throw new IllegalArgumentException("must use either .componentType side file or JS SCA varriable definition");
         }
 
-        ComponentType componentType = new JavaScriptIntrospector(null).introspectScript(scaConfig,rhinoScript.getClassLoader());
+        JavaScriptComponentType componentType = new JavaScriptIntrospector(null).introspectScript(scaConfig,rhinoScript.getClassLoader());
 
         return componentType;
     }
@@ -73,7 +62,7 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
             throws LoaderException {
 
         URL resource = implementation.getRhinoScript().getClassLoader().getResource(getSideFileName(implementation));
-        ComponentType componentType;
+        JavaScriptComponentType componentType;
         if (resource == null) {
             componentType = loadByIntrospection(parent, implementation, deploymentContext);
         } else {
@@ -83,8 +72,10 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
         implementation.setComponentType(componentType);
     }
 
-    protected ComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
-        return loaderRegistry.load(null, url, ComponentType.class, deploymentContext);
+    protected JavaScriptComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
+        ComponentType ct = loaderRegistry.load(null, url, ComponentType.class, deploymentContext);
+        JavaScriptComponentType jsct = new JavaScriptComponentType(ct);
+        return jsct;
     }
 
     private String getSideFileName(JavaScriptImplementation implementation) {
