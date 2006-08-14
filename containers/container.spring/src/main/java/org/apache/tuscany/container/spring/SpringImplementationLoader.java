@@ -78,9 +78,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
     public SpringImplementation load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
             throws XMLStreamException, LoaderException {
 
-        String locationAttr = reader.getAttributeValue(null, "locationAttr");
+        String locationAttr = reader.getAttributeValue(null, "location");
         if (locationAttr == null) {
-            throw new MissingResourceException("No locationAttr supplied");
+            throw new MissingResourceException("No location supplied");
         }
 
         URL appXmlUrl = getApplicationContextUrl(locationAttr);

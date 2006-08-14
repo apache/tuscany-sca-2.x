@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.apache.tuscany.container.spring.mock.TestBean;
+import org.apache.tuscany.container.spring.config.SCAReference;
 
 /**
  * Tests the SCA extensible schema elements for Spring's XML configuration files
@@ -43,10 +44,8 @@ public class SpringConfigSchemaTestCase extends TestCase {
         assertEquals("call me", service.echo("call me"));
     }
 
-    /*
     public void testSCAReference() {
         SCAReference ref = (SCAReference) applicationContext.getBean("fooReference");
         assertEquals("fooReference", ref.getName());
     }
-    */
 }

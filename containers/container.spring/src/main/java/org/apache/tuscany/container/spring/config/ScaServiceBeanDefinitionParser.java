@@ -32,6 +32,8 @@ import org.w3c.dom.Element;
  */
 public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
 
+    public static final String SERVICE_BEAN_SUFFIX = ".SCAService";
+
     public static final String SERVICE_ELEMENT = "service";
     private static final String NAME_ATTRIBUTE = "name";
     private static final String TYPE_ATTRIBUTE = "type";
@@ -46,6 +48,9 @@ public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
         String type = element.getAttribute(TYPE_ATTRIBUTE);
         String targetName = element.getAttribute(TARGET_ATTRIBUTE);
 
+        // Register a bean with the name of the service that proxies the bean that implements
+        // the service.
+
         BeanDefinitionBuilder proxyBean = BeanDefinitionBuilder.rootBeanDefinition(ProxyFactoryBean.class);
         proxyBean.addPropertyReference("target", targetName);
         proxyBean.addPropertyValue("proxyInterfaces", type);
@@ -55,17 +60,18 @@ public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
 
         parserContext.getRegistry().registerBeanDefinition(name, proxyBean.getBeanDefinition());
 
-        // REVIEW: It may make sense to register an additional bean to capture/expose the presence &
-        // attributes of the service element itself.  Such code as:
+        // Register an additional bean to capture/expose the presence & attributes of the
+        // <sca:service> element itself.  This bean is has the name "<service name attr>.SCAService".
+        //
+        // REVIEW: this is a hack that can be removed once a more sophisticated introspection
+        // mechanism is defined for Spring app contexts.  See SpringComponentTypeLoader.
         
-        /*
         BeanDefinitionBuilder serviceBean = BeanDefinitionBuilder.rootBeanDefinition(SCAService.class);
         serviceBean.addConstructorArg(name);
         serviceBean.addConstructorArg(type);
         serviceBean.addConstructorArg(targetName);
 
-        parserContext.getRegistry().registerBeanDefinition(name, serviceBean.getBeanDefinition());
-        */
+        parserContext.getRegistry().registerBeanDefinition(name + SERVICE_BEAN_SUFFIX, serviceBean.getBeanDefinition());
 
         return null;
     }

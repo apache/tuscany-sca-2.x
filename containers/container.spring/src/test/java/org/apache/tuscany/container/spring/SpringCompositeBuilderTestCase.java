@@ -61,9 +61,11 @@ public class SpringCompositeBuilderTestCase extends MockObjectTestCase {
         "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n" +
         "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
         "       xsi:schemaLocation=\"\n" +
-        "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd\n" +
+        "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd \n" +
+//        "http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/SpringSCA.xsd" +
         "\">\n" +
         "\n" +
+//        "<sca:service name=\"fooService\" type=\"org.apache.tuscany.container.spring.mock.TestBean\" target=\"fooBean\"/>" +
         "\n" +
         "<bean id=\"fooBean\" class=\"org.apache.tuscany.container.spring.mock.TestBeanImpl\">\n" +
         "</bean>\n" +

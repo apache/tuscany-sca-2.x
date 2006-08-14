@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  * @version $$Rev$$ $$Date$$
  */
 public class ScaCompositeBeanDefinitionParser implements BeanDefinitionParser {
-    public static final String COMPOSITE_ELEMENT = "reference";
+    public static final String COMPOSITE_ELEMENT = "composite";
 /*
     private static final String COMPONENT_ATTRIBUTE = "component";
     private static final String SCA_ADAPTER_CLASS_ATTRIBUTE = "sca-adapter-class";
