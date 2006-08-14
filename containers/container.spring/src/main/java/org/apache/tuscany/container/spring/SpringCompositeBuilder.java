@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.container.spring;
 
+import java.net.URL;
+
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -32,18 +35,13 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.InboundWire;
 
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.UrlResource;
-
-import java.net.URL;
 
 /**
  * Creates a {@link SpringCompositeComponent} from an assembly model
@@ -58,7 +56,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
-        ConfigurableApplicationContext applicationContext = createApplicationContext(implementation.getApplicationXml());
+        ConfigurableApplicationContext applicationContext =
+            createApplicationContext(implementation.getApplicationXml());
 
         SpringCompositeComponent component =
             new SpringCompositeComponent(name, applicationContext, parent, null);
@@ -72,7 +71,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
             // call back into builder registry to handle building of services
             Service<?> service = (Service) builderRegistry.build(parent, serviceDefinition, deploymentContext);
-           // wire serviceDefinition to bean invokers
+            // wire serviceDefinition to bean invokers
             InboundWire<?> wire = service.getInboundWire();
             QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
             for (InboundInvocationChain chain : wire.getInvocationChains().values()) {

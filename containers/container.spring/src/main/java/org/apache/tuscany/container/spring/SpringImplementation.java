@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.container.spring;
 
-import org.springframework.context.ConfigurableApplicationContext;
+import java.net.URL;
 
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -27,16 +27,14 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 
-import java.net.URL;
-
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class SpringImplementation extends Implementation<
-        CompositeComponentType<
-                BoundServiceDefinition<? extends Binding>,
-                BoundReferenceDefinition<? extends Binding>,
-                ? extends Property>> {
+    CompositeComponentType<
+        BoundServiceDefinition<? extends Binding>,
+        BoundReferenceDefinition<? extends Binding>,
+        ? extends Property>> {
 
     private String location;
     private URL applicationXml;
@@ -45,9 +43,9 @@ public class SpringImplementation extends Implementation<
     }
 
     public SpringImplementation(CompositeComponentType<
-            BoundServiceDefinition<? extends Binding>,
-            BoundReferenceDefinition<? extends Binding>,
-            ? extends Property> componentType) {
+        BoundServiceDefinition<? extends Binding>,
+        BoundReferenceDefinition<? extends Binding>,
+        ? extends Property> componentType) {
         super(componentType);
     }
 

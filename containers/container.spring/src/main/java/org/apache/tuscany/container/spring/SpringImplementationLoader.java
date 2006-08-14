@@ -35,37 +35,40 @@ package org.apache.tuscany.container.spring;
  *  limitations under the License.
  */
 
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.apache.tuscany.spi.loader.LoaderUtil;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
-import org.osoa.sca.annotations.Constructor;
-
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.io.*;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
-import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.osoa.sca.annotations.Constructor;
+
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
 /**
  * Loader for handling Spring <spring:implementation.spring> elements.
  */
 public class SpringImplementationLoader extends LoaderExtension<SpringImplementation> {
-    private static final QName IMPLEMENTATION_SPRING = new QName("http://tuscany.apache.org/xmlns/spring/1.0", "implementation.spring");
+    private static final QName IMPLEMENTATION_SPRING = new QName("http://tuscany.apache.org/xmlns/spring/1.0",
+        "implementation.spring");
 
     private final RuntimeInfo runtimeInfo;
 
-    @Constructor({"registry"})
+    @Constructor
     public SpringImplementationLoader(@Autowire LoaderRegistry registry, @Autowire RuntimeInfo runtimeInfo) {
         super(registry);
         this.runtimeInfo = runtimeInfo;
@@ -75,8 +78,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         return IMPLEMENTATION_SPRING;
     }
 
-    public SpringImplementation load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
-            throws XMLStreamException, LoaderException {
+    public SpringImplementation load(CompositeComponent parent, XMLStreamReader reader,
+                                     DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
 
         String locationAttr = reader.getAttributeValue(null, "location");
         if (locationAttr == null) {
@@ -95,11 +99,10 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
 
     protected URL getApplicationContextUrl(String locationAttr) throws LoaderException {
         assert runtimeInfo != null;
-
         File manifestFile = null;
-        File appXmlFile = null;
-
+        File appXmlFile;
         File locationFile = new File(locationAttr);
+
         if (!locationFile.isAbsolute()) {
             locationFile = new File(runtimeInfo.getApplicationRootDirectory(), locationAttr);
         }
@@ -133,7 +136,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         } else {
             try {
                 JarFile jf = new JarFile(locationFile);
-                JarEntry je = null;
+                JarEntry je;
                 Manifest mf = jf.getManifest();
                 if (mf != null) {
                     Attributes mainAttrs = mf.getMainAttributes();
