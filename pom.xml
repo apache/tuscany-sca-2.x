@@ -38,6 +38,8 @@
         <module>databinding</module>
         <module>bindings</module>
         <!--<module>services</module>-->
+        <module>hostutil</module>
+        <module>runtime/webapp</module>
         <module>commands/launcher</module>
     </modules>
 
