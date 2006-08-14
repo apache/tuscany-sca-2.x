@@ -21,6 +21,7 @@ package org.apache.tuscany.container.javascript.rhino;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.model.Scope;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.UniqueTag;
 
@@ -34,6 +35,7 @@ import org.mozilla.javascript.UniqueTag;
  *     wsdlLocation   : "\wsdl\mywsdl.txt",
  *     properties     : { "foo" : ["java.lang.String", "defaultValue"],},
  *     references     : {},
+ *     scope          : 'stateless'|'request'|'session'|'module'|'composite',
  * }
  * </code>
  * The config must define the service with either javaInterface or wsdl. When
@@ -56,25 +58,27 @@ public class RhinoSCAConfig {
     private Map properties;
 
     private Map references;
+    
+    private Scope scope;
 
-    public RhinoSCAConfig(Scriptable scope) {
-        Object o = scope.get("SCA", scope);
+    public RhinoSCAConfig(Scriptable scriptScope) {
+        Object o = scriptScope.get("SCA", scriptScope);
         if (o != null && UniqueTag.NOT_FOUND != o) {
             hasSCAConfig = true;
             Scriptable scaVar = (Scriptable) o;
-            o = scaVar.get("javaInterface", scope);
+            o = scaVar.get("javaInterface", scriptScope);
             if (o != null && UniqueTag.NOT_FOUND != o) {
                 this.javaInterface = o.toString();
             }
-            o = scaVar.get("wsdlLocation", scope);
+            o = scaVar.get("wsdlLocation", scriptScope);
             if (o != null && UniqueTag.NOT_FOUND != o) {
                 this.wsdlLocation = o.toString();
             }
-            o = scaVar.get("wsdlPortType", scope);
+            o = scaVar.get("wsdlPortType", scriptScope);
             if (o != null && UniqueTag.NOT_FOUND != o) {
                 this.wsdlPortType = o.toString();
             }
-            o = scaVar.get("wsdlNamespace", scope);
+            o = scaVar.get("wsdlNamespace", scriptScope);
             if (o != null && UniqueTag.NOT_FOUND != o) {
                 this.wsdlNamespace = o.toString();
             }
@@ -89,16 +93,34 @@ public class RhinoSCAConfig {
             }
 
             this.properties = new HashMap();
-            o = scaVar.get("properties", scope);
+            o = scaVar.get("properties", scriptScope);
             if (o != null && UniqueTag.NOT_FOUND != o) {
                 // TODO parse properties
             }
 
             this.references = new HashMap();
-            o = scaVar.get("references", scope);
+            o = scaVar.get("references", scriptScope);
             if (o != null && UniqueTag.NOT_FOUND != o) {
                 // TODO parse references
             }
+            
+            o = scaVar.get("scope", scriptScope);
+            if (o != null && UniqueTag.NOT_FOUND != o) {
+                if ("stateless".equalsIgnoreCase(String.valueOf(o))) {
+                    this.scope = Scope.STATELESS;
+                } else if ("request".equalsIgnoreCase(String.valueOf(o))) {
+                    this.scope = Scope.REQUEST;
+                } else if ("session".equalsIgnoreCase(String.valueOf(o))) {
+                    this.scope = Scope.SESSION;
+                } else if ("module".equalsIgnoreCase(String.valueOf(o))) {
+                    this.scope = Scope.MODULE;
+                } else if ("composite".equalsIgnoreCase(String.valueOf(o))) {
+                    this.scope = Scope.COMPOSITE;
+                } else {
+                    throw new IllegalArgumentException("invalid scope value: " + o);
+                }
+            }
+            
         }
     }
 
@@ -128,6 +150,10 @@ public class RhinoSCAConfig {
 
     public String getWSDLPortType() {
         return wsdlPortType;
+    }
+
+    public Scope getScope() {
+        return scope;
     }
 
 }

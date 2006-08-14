@@ -20,9 +20,7 @@ package org.apache.tuscany.container.javascript;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.container.javascript.rhino.RhinoScript;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -32,7 +30,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
@@ -50,7 +48,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
 
         String name = componentDefinition.getName();
         JavaScriptImplementation implementation = componentDefinition.getImplementation();
-        ComponentType componentType = implementation.getComponentType();
+        JavaScriptComponentType componentType = implementation.getComponentType();
 
         // get list of services provided by this component
         Collection<ServiceDefinition> collection = componentType.getServices().values();
@@ -61,14 +59,16 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
 
         RhinoScript rhinoScript = implementation.getRhinoScript();
 
-        // TODO properties
-        Map<String, Object> properties = new HashMap<String, Object>();
+        // TODO: have ComponentBuilderExtension pass ScopeContainer in on build method?
+        ScopeContainer scopeContainer;
+        Scope scope = componentType.getLifecycleScope();
+        if (Scope.MODULE == scope) {
+            scopeContainer = deploymentContext.getModuleScope();
+        } else {
+            scopeContainer = scopeRegistry.getScopeContainer(scope);
+        }
 
-        // TODO scopes
-        // ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(componentType.getLifecycleScope());
-        ScopeContainer scopeContainer = deploymentContext.getModuleScope();
-
-        return new JavaScriptComponent(name, rhinoScript, services, properties, parent, scopeContainer, wireService, workContext);
+        return new JavaScriptComponent(name, rhinoScript, services, parent, scopeContainer, wireService, workContext);
     }
 
 }
