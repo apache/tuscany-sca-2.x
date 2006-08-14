@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.container.spring.config;
 
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
-
 import org.apache.tuscany.spi.model.CompositeComponentType;
+
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * Handler for processing elements defined in a Spring configuration with the SCA namespace
@@ -38,8 +38,8 @@ public class SCANamespaceHandler extends NamespaceHandlerSupport {
 
     public void init() {
         registerBeanDefinitionParser(ScaReferenceBeanDefinitionParser.REFERENCE_ELEMENT,
-                new ScaReferenceBeanDefinitionParser());
+            new ScaReferenceBeanDefinitionParser());
         registerBeanDefinitionParser(ScaServiceBeanDefinitionParser.SERVICE_ELEMENT,
-                new ScaServiceBeanDefinitionParser());
+            new ScaServiceBeanDefinitionParser());
     }
 }

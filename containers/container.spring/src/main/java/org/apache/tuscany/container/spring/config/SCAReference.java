@@ -20,6 +20,7 @@ package org.apache.tuscany.container.spring.config;
 
 /**
  * Bean impl for the Spring sca:reference XML configuration element
+ *
  * @version $$Rev$$ $$Date$$
  */
 
@@ -33,9 +34,19 @@ public class SCAReference {
         this.type = type;
     }
 
-    public String getName()    { return name; }
-    public String getType()    { return type; }
+    public String getName() {
+        return name;
+    }
 
-    public String getDefault()         { return defaultService; }
-    public void   setDefault(String s) { this.defaultService = s; }
+    public String getType() {
+        return type;
+    }
+
+    public String getDefault() {
+        return defaultService;
+    }
+
+    public void setDefault(String s) {
+        this.defaultService = s;
+    }
 }

@@ -18,10 +18,11 @@
  */
 package org.apache.tuscany.container.spring.config;
 
+import org.w3c.dom.Element;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.w3c.dom.Element;
 
 /**
  * Processes <code>property</code> elements in a Spring configuration
