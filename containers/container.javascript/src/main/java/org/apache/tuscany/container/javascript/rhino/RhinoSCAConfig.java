@@ -35,7 +35,7 @@ import org.mozilla.javascript.UniqueTag;
  *     wsdlLocation   : "\wsdl\mywsdl.txt",
  *     properties     : { "foo" : ["java.lang.String", "defaultValue"],},
  *     references     : {},
- *     scope          : 'stateless'|'request'|'session'|'module'|'composite',
+ *     scope          : 'stateless'|'request'|'conversational'|'composite',
  * }
  * </code>
  * The config must define the service with either javaInterface or wsdl. When
@@ -110,12 +110,10 @@ public class RhinoSCAConfig {
                     this.scope = Scope.STATELESS;
                 } else if ("request".equalsIgnoreCase(String.valueOf(o))) {
                     this.scope = Scope.REQUEST;
-                } else if ("session".equalsIgnoreCase(String.valueOf(o))) {
-                    this.scope = Scope.SESSION;
-                } else if ("module".equalsIgnoreCase(String.valueOf(o))) {
-                    this.scope = Scope.MODULE;
+                } else if ("conversational".equalsIgnoreCase(String.valueOf(o))) {
+                    this.scope = Scope.SESSION; // TODO: where's CONVERSATIONAL?
                 } else if ("composite".equalsIgnoreCase(String.valueOf(o))) {
-                    this.scope = Scope.COMPOSITE;
+                    this.scope = Scope.MODULE; // TODO: composite = MODULE for now?
                 } else {
                     throw new IllegalArgumentException("invalid scope value: " + o);
                 }

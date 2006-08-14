@@ -63,21 +63,14 @@ public class RhinoSCAConfigTestCase extends TestCase {
         RhinoScript rs = new RhinoScript("testScopeComposite", "SCA = { scope : 'composite', javaInterface : 'helloworld.HelloWorldService'}");
         RhinoSCAConfig scaConfig = rs.getSCAConfig();
         assertTrue(scaConfig.hasSCAConfig());
-        assertEquals(Scope.COMPOSITE, scaConfig.getScope());
+        assertEquals(Scope.MODULE, scaConfig.getScope()); // TODO 
     }
 
-    public void testScopeSession() {
-        RhinoScript rs = new RhinoScript("testScopeSession", "SCA = { scope : 'session', javaInterface : 'helloworld.HelloWorldService'}");
+    public void testScopeConversational() {
+        RhinoScript rs = new RhinoScript("testScopeConversational", "SCA = { scope : 'conversational', javaInterface : 'helloworld.HelloWorldService'}");
         RhinoSCAConfig scaConfig = rs.getSCAConfig();
         assertTrue(scaConfig.hasSCAConfig());
         assertEquals(Scope.SESSION, scaConfig.getScope());
-    }
-
-    public void testScopeModule() {
-        RhinoScript rs = new RhinoScript("testScopeModule", "SCA = { scope : 'module', javaInterface : 'helloworld.HelloWorldService'}");
-        RhinoSCAConfig scaConfig = rs.getSCAConfig();
-        assertTrue(scaConfig.hasSCAConfig());
-        assertEquals(Scope.MODULE, scaConfig.getScope());
     }
 
     public void testScopeRequest() {

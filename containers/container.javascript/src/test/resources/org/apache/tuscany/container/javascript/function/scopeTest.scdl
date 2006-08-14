@@ -26,8 +26,12 @@
 		<js:implementation.js script="org/apache/tuscany/container/javascript/function/statelessScope.js"/>
     </component>
 
-    <component name="RequestComponent">
+    <!-- component name="RequestComponent">
 		<js:implementation.js script="org/apache/tuscany/container/javascript/function/requestScope.js"/>
-    </component>
+    </component -->
+
+    <!-- component name="CompositeScopeComponent">
+		<js:implementation.js script="org/apache/tuscany/container/javascript/function/compositeScope.js"/>
+    </component -->
 
 </composite>

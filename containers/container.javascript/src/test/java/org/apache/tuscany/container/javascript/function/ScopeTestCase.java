@@ -39,16 +39,24 @@ public class ScopeTestCase extends SCATestCase {
         context = CurrentCompositeContext.getContext();
     }
 
+// Composite scope not implemented in core yet    
+//    public void testComposite() throws Exception {
+//        HelloWorldService composoteScopeService = context.locateService(HelloWorldService.class, "ComposoteScopeService");
+//        assertEquals("1", composoteScopeService.sayHello(""));
+//        assertEquals("2", composoteScopeService.sayHello(""));
+//    }
+
     public void testStateless() throws Exception {
         HelloWorldService statelessService = context.locateService(HelloWorldService.class, "StatelessComponent");
         assertEquals("1", statelessService.sayHello(""));
-        assertEquals("2", statelessService.sayHello(""));
+        // stateless gives a new instance for each request
+        assertEquals("1", statelessService.sayHello(""));
     }
 
-    public void testRequestState() throws Exception {
-        HelloWorldService requestService = context.locateService(HelloWorldService.class, "RequestComponent");
-        assertEquals("1", requestService.sayHello(""));
-        // TODO: scopes don't work yet, everything seems to use Module scope
-        // assertEquals("1", requestService.sayHello(""));
-    }
+// Request scope not implemented in core yet    
+//    public void testRequestState() throws Exception {
+//        HelloWorldService requestService = context.locateService(HelloWorldService.class, "RequestComponent");
+//        assertEquals("1", requestService.sayHello(""));
+//        assertEquals("1", requestService.sayHello(""));
+//    }
 }
