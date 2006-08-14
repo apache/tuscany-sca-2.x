@@ -34,6 +34,7 @@ import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -55,7 +56,14 @@ public class JavaScriptIntrospector {
         introspectWSDLInterface(componentType, cl, scaConfig.getWSDLNamespace(), scaConfig.getWSDLPortType(), scaConfig.getWSDLLocation());
         introspectReferences(componentType, cl, scaConfig.getReferences());
         introspectProperties(componentType, cl, scaConfig.getProperties());
+        introspectScope(componentType, scaConfig.getScope());
         return componentType;
+    }
+
+    private void introspectScope(JavaScriptComponentType componentType, Scope scope) {
+        if (scope != null) {
+            componentType.setLifecycleScope(scope);
+        }
     }
 
     @SuppressWarnings("unchecked")
