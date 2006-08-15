@@ -43,13 +43,41 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class SpringCompositeBuilderTestCase extends TestCase {
 
-    public void testBuildImplicit() throws Exception {
+    /**
+     * Verfies basic build of a spring context
+     */
+    public void testBuild() throws Exception {
+        // Create an assembly model consisting of a component implemented by Spring
+        SpringImplementation impl = new SpringImplementation(new SpringComponentType(createContext()));
+        ComponentDefinition<SpringImplementation> componentDefinition =
+            new ComponentDefinition<SpringImplementation>("spring", impl);
+
+        // Configure the mock builder registry
+        BuilderRegistry registry = createNiceMock(BuilderRegistry.class);
+
+        // Test the SpringCompositeBuilder
+        SpringCompositeBuilder builder = new SpringCompositeBuilder();
+        builder.setBuilderRegistry(registry);
+        CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        DeploymentContext context = createNiceMock(DeploymentContext.class);
+        SpringCompositeComponent component =
+            (SpringCompositeComponent) builder.build(parent, componentDefinition, context);
+        TestBean bean = (TestBean) component.getApplicationContext().getBean("foo");
+        assertEquals("call foo", bean.echo("call foo"));
+    }
+
+    /**
+     * Verifies that the builder calls back into the registry to load services and wires them to bean targets when no
+     * <code>sca:service</code> tag is specified in the Spring application.xml
+     */
+    public void testImplicitServiceWiring() throws Exception {
 
         // Create an assembly model consisting of a component implemented by Spring
         SpringImplementation impl = new SpringImplementation(createComponentType());
@@ -62,8 +90,6 @@ public class SpringCompositeBuilderTestCase extends TestCase {
             new ServiceExtension<TestBean>("fooService", TestBean.class, null, wireService);
         InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
-        // REVIEW: this call appears to be unnecessary right now, is this a bug?
-        // outboundWire.setTargetName(new QualifiedName("fooBean"));
         ArtifactFactory.terminateWire(outboundWire);
         serviceContext.setInboundWire(inboundWire);
         serviceContext.setOutboundWire(outboundWire);
@@ -76,16 +102,18 @@ public class SpringCompositeBuilderTestCase extends TestCase {
             isA(BoundServiceDefinition.class),
             isA(DeploymentContext.class))).andStubReturn(serviceContext);
         replay(registry);
+
         // Test the SpringCompositeBuilder
         SpringCompositeBuilder builder = new SpringCompositeBuilder();
         builder.setWireService(wireService);
         builder.setBuilderRegistry(registry);
-        CompositeComponent component = (CompositeComponent) builder.build(createNiceMock(CompositeComponent.class),
-            componentDefinition,
-            createNiceMock(DeploymentContext.class));
+        CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        DeploymentContext context = createNiceMock(DeploymentContext.class);
+        CompositeComponent component = (CompositeComponent) builder.build(parent, componentDefinition, context);
         Service service = component.getService("fooService");
         TestBean bean = (TestBean) service.getServiceInstance();
         assertEquals("call foo", bean.echo("call foo"));
+        verify(registry);
     }
 
     private SpringComponentType createComponentType() {
