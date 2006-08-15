@@ -19,24 +19,18 @@
 package org.apache.tuscany.container.spring.impl;
 
 import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 import org.apache.tuscany.container.spring.config.SCAService;
 import org.apache.tuscany.container.spring.config.ScaServiceBeanDefinitionParser;
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.apache.tuscany.container.spring.model.SpringServiceContract;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.GenericApplicationContext;
@@ -61,10 +55,14 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
         return SpringImplementation.class;
     }
 
-    /* Major work in progress here */
+    /**
+     * Responsible for loading the Spring composite component type. The the application context is instantiated here as
+     * it is needed to derive component type information. Since the component type is loaded per SCDL entry (i.e.
+     * composite use) one application context instance will be created per Spring composite instance.
+     */
     public void load(CompositeComponent<?> parent,
                      SpringImplementation implementation,
-                     DeploymentContext deploymentContext) {
+                     DeploymentContext deploymentContext) throws LoaderException {
         Resource resource = implementation.getApplicationResource();
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
@@ -87,59 +85,61 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
             String serviceTypeName = serviceBean.getType();
             try {
                 Class serviceInterface = Class.forName(serviceTypeName, true, deploymentContext.getClassLoader());
-                ServiceDefinition service = createService(serviceInterface);
-                componentType.getServices().put(serviceName, service);
+                componentType.addServiceType(serviceName, serviceInterface);
+                //ServiceDefinition service = createService(serviceInterface);
+                //componentType.getServices().put(serviceName, service);
             } catch (ClassNotFoundException e) {
-                // FIXME
-                e.printStackTrace();
+                throw new LoaderException(e);
             }
         }
+        // if no service tags are specified, expose all beans
+        componentType.setExposeAllBeans(componentType.getServiceTypes().isEmpty());
 
-        // If there were no <sca:service> elements, expose all beans as SCA services
-        // REVIEW: this needs a lot of refinement; we almost certainly don't want to expose
-        // _all_ beans willy nilly.
-        if (serviceBeanNames.length == 0) {
-            String [] allBeanDefNames = ctx.getBeanDefinitionNames();
-            for (String beanDefName : allBeanDefNames) {
-                BeanDefinition beanDef = ctx.getBeanDefinition(beanDefName);
-                String beanClassName = beanDef.getBeanClassName();
-                String beanName = (String) beanDef.getAttribute("name");
-                try {
-                    Class beanClass = Class.forName(beanClassName, true, deploymentContext.getClassLoader());
-                    Class [] beanInterfaces = beanClass.getInterfaces();
-                    // hack, just using the 1st impl'ed interface for now
-                    if (beanInterfaces.length > 0) {
-                        ServiceDefinition service = createService(beanInterfaces[0]);
-                        componentType.getServices().put(beanName, service);
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        // If there were no <sca:service> elements, expose all beans as SCA services
+//        // REVIEW: this needs a lot of refinement; we almost certainly don't want to expose
+//        // _all_ beans willy nilly.
+//        if (serviceBeanNames.length == 0) {
+//            String [] allBeanDefNames = ctx.getBeanDefinitionNames();
+//            for (String beanDefName : allBeanDefNames) {
+//                BeanDefinition beanDef = ctx.getBeanDefinition(beanDefName);
+//                String beanClassName = beanDef.getBeanClassName();
+//                String beanName = (String) beanDef.getAttribute("name");
+//                try {
+//                    Class beanClass = Class.forName(beanClassName, true, deploymentContext.getClassLoader());
+//                    Class [] beanInterfaces = beanClass.getInterfaces();
+//                    // hack, just using the 1st impl'ed interface for now
+//                    if (beanInterfaces.length > 0) {
+//                        ServiceDefinition service = createService(beanInterfaces[0]);
+//                        componentType.getServices().put(beanName, service);
+//                    }
+//                } catch (ClassNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         implementation.setComponentType(componentType);
     }
 
-    private ServiceDefinition createService(Class<?> interfaze) {
-        ServiceDefinition service = new BoundServiceDefinition();
-        service.setName(getBaseName(interfaze));
-        service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-        ServiceContract contract = new SpringServiceContract();
-        contract.setInterfaceClass(interfaze);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        service.setServiceContract(contract);
-        return service;
-    }
-
-    private String getBaseName(Class<?> implClass) {
-        String baseName = implClass.getName();
-        int lastDot = baseName.lastIndexOf('.');
-        if (lastDot != -1) {
-            baseName = baseName.substring(lastDot + 1);
-        }
-        return baseName;
-    }
+//    private ServiceDefinition createService(Class<?> interfaze) {
+//        ServiceDefinition service = new BoundServiceDefinition();
+//        service.setName(getBaseName(interfaze));
+//        service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
+//        ServiceContract contract = new SpringServiceContract();
+//        contract.setInterfaceClass(interfaze);
+//        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+//        service.setServiceContract(contract);
+//        return service;
+//    }
+//
+//    private String getBaseName(Class<?> implClass) {
+//        String baseName = implClass.getName();
+//        int lastDot = baseName.lastIndexOf('.');
+//        if (lastDot != -1) {
+//            baseName = baseName.substring(lastDot + 1);
+//        }
+//        return baseName;
+//    }
 
 
 }
