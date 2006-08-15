@@ -58,7 +58,7 @@ public class WebServiceEntryPointServlet extends AxisServlet {
 
     public WebServiceEntryPointServlet() {
         System.err.println("Default constructor");
-    };
+    }
 
     public WebServiceEntryPointServlet(AxisService axisService) {
         this.axisService = axisService;
@@ -80,12 +80,12 @@ public class WebServiceEntryPointServlet extends AxisServlet {
 
     @Override
     protected void doGet(final HttpServletRequest arg0, final HttpServletResponse arg1) throws ServletException, IOException {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader scl = this.getClass().getClassLoader();
-        try {
-            if (tccl != scl) {
-                Thread.currentThread().setContextClassLoader(scl);
-            }
+//        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+//        ClassLoader scl = this.getClass().getClassLoader();
+//        try {
+//            if (tccl != scl) {
+//                Thread.currentThread().setContextClassLoader(scl);
+//            }
 
             try {
                 super.doGet(arg0, arg1);
@@ -94,21 +94,21 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                 throw new ServletException(e);
             }
 
-        } finally {
-            if (tccl != scl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
-        }
+//        } finally {
+//            if (tccl != scl) {
+//                Thread.currentThread().setContextClassLoader(tccl);
+//            }
+//        }
     }
 
     @Override
     protected void doPost(final HttpServletRequest arg0, final HttpServletResponse arg1) throws ServletException, IOException {
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader scl = this.getClass().getClassLoader();
-        try {
-            if (tccl != scl) {
-                Thread.currentThread().setContextClassLoader(scl);
-            }
+//        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+//        ClassLoader scl = this.getClass().getClassLoader();
+//        try {
+//            if (tccl != scl) {
+//                Thread.currentThread().setContextClassLoader(scl);
+//            }
 
             try {
                 super.doPost(arg0, arg1);
@@ -117,11 +117,11 @@ public class WebServiceEntryPointServlet extends AxisServlet {
                 throw new ServletException(e);
             }
 
-        } finally {
-            if (tccl != scl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
-        }
+//        } finally {
+//            if (tccl != scl) {
+//                Thread.currentThread().setContextClassLoader(tccl);
+//            }
+//        }
     }
 
     protected Method getMethod(Class<?> serviceInterface, String operationName) {

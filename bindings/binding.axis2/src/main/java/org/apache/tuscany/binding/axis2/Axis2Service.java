@@ -50,14 +50,9 @@ public class Axis2Service<T> extends ServiceExtension<T> {
 
     public void start() {
         super.start();
-        try {
 //TODO This is a big hack ... need to replace with ServletHost api ASAP
             
             currentAxis2Service= this;
-        } catch (Exception e) {
-           
-            e.printStackTrace();
-        }
         
     }
 
