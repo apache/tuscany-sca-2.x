@@ -67,7 +67,8 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
                 new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);
             serviceClient = createServiceClient(wsdlDefinition, wsPortMetaData);
         } catch (AxisFault e) {
-            //TODO
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -81,7 +82,8 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
             ClassLoader cl = null;
             invoker = createOperationInvokers(serviceClient, operation, typeHelper, cl, wsPortMetaData);
         } catch (AxisFault e) {
-            //TODO
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return invoker;
     }
