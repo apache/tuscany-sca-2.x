@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 import org.apache.tuscany.container.spring.config.SCAService;
 import org.apache.tuscany.container.spring.config.ScaServiceBeanDefinitionParser;
@@ -121,7 +122,7 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
     }
 
     private ServiceDefinition createService(Class<?> interfaze) {
-        ServiceDefinition service = new ServiceDefinition();
+        ServiceDefinition service = new BoundServiceDefinition();
         service.setName(getBaseName(interfaze));
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
         ServiceContract contract = new SpringServiceContract();

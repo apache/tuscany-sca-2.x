@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
-import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;

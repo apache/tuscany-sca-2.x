@@ -28,7 +28,6 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import org.springframework.context.ApplicationContext;
-import org.apache.tuscany.container.spring.impl.SpringInvoker;
 
 /**
  * Verifies a simple invocation on a Spring bean

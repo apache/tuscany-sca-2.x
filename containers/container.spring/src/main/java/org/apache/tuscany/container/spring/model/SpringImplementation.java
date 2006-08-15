@@ -25,7 +25,6 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 
 import org.springframework.core.io.Resource;
-import org.apache.tuscany.container.spring.model.SpringComponentType;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -43,9 +42,9 @@ public class SpringImplementation extends Implementation<
     }
 
     public SpringImplementation(SpringComponentType<
-            BoundServiceDefinition<? extends Binding>,
-            BoundReferenceDefinition<? extends Binding>,
-            ? extends Property> componentType) {
+        BoundServiceDefinition<? extends Binding>,
+        BoundReferenceDefinition<? extends Binding>,
+        ? extends Property> componentType) {
         super(componentType);
     }
 
