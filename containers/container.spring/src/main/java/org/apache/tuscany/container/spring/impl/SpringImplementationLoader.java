@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 /*
  *
@@ -61,6 +61,7 @@ import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.apache.tuscany.container.spring.model.SpringImplementation;
 
 /**
  * Loader for handling Spring <spring:implementation.spring> elements.
@@ -83,8 +84,8 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
     }
 
     public SpringImplementation load(CompositeComponent parent,
-                                     XMLStreamReader reader,
-                                     DeploymentContext deploymentContext)
+                                                                               XMLStreamReader reader,
+                                                                               DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         String locationAttr = reader.getAttributeValue(null, "location");

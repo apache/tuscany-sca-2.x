@@ -15,8 +15,8 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- */ 
-package org.apache.tuscany.container.spring;
+ */
+package org.apache.tuscany.container.spring.model;
 
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;

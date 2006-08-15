@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,6 +37,10 @@ import junit.framework.TestCase;
 import static org.apache.tuscany.container.spring.SpringTestUtils.createContext;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.VMBinding;
+import org.apache.tuscany.container.spring.model.SpringComponentType;
+import org.apache.tuscany.container.spring.model.SpringImplementation;
+import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
+import org.apache.tuscany.container.spring.impl.SpringCompositeBuilder;
 import org.apache.tuscany.test.ArtifactFactory;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
