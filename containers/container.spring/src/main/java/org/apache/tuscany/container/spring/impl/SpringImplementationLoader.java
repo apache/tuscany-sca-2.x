@@ -44,9 +44,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import javax.xml.namespace.QName;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -55,21 +58,27 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
+import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.apache.tuscany.container.spring.model.SpringImplementation;
 
 /**
  * Loader for handling Spring <spring:implementation.spring> elements.
  */
 public class SpringImplementationLoader extends LoaderExtension<SpringImplementation> {
-    private static final QName IMPLEMENTATION_SPRING = new QName("http://tuscany.apache.org/xmlns/spring/1.0",
+    private static final QName IMPLEMENTATION_SPRING = new QName("http://www.osoa.org/xmlns/sca/1.0",
         "implementation.spring");
+
     private static final String APPLICATION_CONTEXT = "META-INF/application-context.xml";
+
+    private static final QName SERVICE_ELEMENT = new QName(XML_NAMESPACE_1_0, "service");
+    private static final QName REFERENCE_ELEMENT = new QName(XML_NAMESPACE_1_0, "reference");
+    private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
+
 
     private final RuntimeInfo runtimeInfo;
 
@@ -84,8 +93,8 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
     }
 
     public SpringImplementation load(CompositeComponent parent,
-                                                                               XMLStreamReader reader,
-                                                                               DeploymentContext deploymentContext)
+                                     XMLStreamReader reader,
+                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         String locationAttr = reader.getAttributeValue(null, "location");
@@ -93,12 +102,27 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
             throw new MissingResourceException("No location supplied");
         }
 
-        LoaderUtil.skipToEndElement(reader);
-
         SpringImplementation implementation = new SpringImplementation();
         implementation.setApplicationResource(getApplicationContextResource(locationAttr));
         registry.loadComponentType(parent, implementation, deploymentContext);
-        return implementation;
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    QName qname = reader.getName();
+                    if (SERVICE_ELEMENT.equals(qname)) {
+                        BoundServiceDefinition service =
+                            (BoundServiceDefinition) registry.load(parent, reader, deploymentContext);
+                        implementation.getComponentType().getServices().put(service.getName(), service);
+                    } else if (REFERENCE_ELEMENT.equals(qname)) {
+                        throw new UnsupportedOperationException();
+                    }
+                    break;
+                case END_ELEMENT:
+                    if (COMPONENT.equals(reader.getName())) {
+                        return implementation;
+                    }
+            }
+        }
     }
 
     protected Resource getApplicationContextResource(String locationAttr) throws LoaderException {
@@ -160,7 +184,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
             } catch (IOException e) {
                 // bad archive
                 // TODO: create a more appropriate exception type
-                throw new MissingResourceException(locationAttr);
+                throw new MissingResourceException(locationAttr, e);
             }
         }
         throw new MissingResourceException(APPLICATION_CONTEXT);

@@ -36,9 +36,8 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
-import org.springframework.context.ConfigurableApplicationContext;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Creates a {@link org.apache.tuscany.container.spring.impl.SpringCompositeComponent} from an assembly model

@@ -23,7 +23,6 @@ import org.apache.tuscany.spi.component.Reference;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
-import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;

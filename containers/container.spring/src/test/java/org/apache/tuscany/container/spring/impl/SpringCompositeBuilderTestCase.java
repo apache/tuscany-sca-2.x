@@ -39,8 +39,6 @@ import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.VMBinding;
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
-import org.apache.tuscany.container.spring.impl.SpringCompositeBuilder;
 import org.apache.tuscany.test.ArtifactFactory;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
