@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
@@ -76,15 +77,24 @@ public class Axis2TargetInvoker implements TargetInvoker {
                 // OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
                 // env.getBody().addChild(requestOM);
                 // TODO HACK
-                OMFactory fac = env.getOMFactory();
-                OMElement opE = fac.createOMElement("getGreetings", "http://helloworld", "helloworld");
-                // <helloworld:name>World</helloworld:name>
+                if(((Object [])payload)[0] instanceof OMElement){
+                    SOAPBody body = env.getBody();
+                    for(Object bc : ((Object [])payload)){
+                        if(bc instanceof OMElement){
+                            body.addChild((OMElement)bc);
+                        }
+                    }
+                }else{
+                    OMFactory fac = env.getOMFactory();
+                    OMElement opE = fac.createOMElement("getGreetings", "http://helloworld", "helloworld");
+                    // <helloworld:name>World</helloworld:name>
 
-                OMElement parmE = fac.createOMElement("name", "http://helloworld", "helloworld");
-                opE.addChild(parmE);
-                parmE.addChild(fac.createOMText(((Object[]) payload)[0] + ""));
-                env.getBody().addChild(opE);
-                // TODO HACK
+                    OMElement parmE = fac.createOMElement("name", "http://helloworld", "helloworld");
+                    opE.addChild(parmE);
+                    parmE.addChild(fac.createOMText(((Object[]) payload)[0] + ""));
+                    env.getBody().addChild(opE);
+                    // TODO HACK
+                }
 
             }
 
