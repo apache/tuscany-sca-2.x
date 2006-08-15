@@ -18,31 +18,30 @@
  */
 package org.apache.tuscany.container.spring;
 
-import java.net.URL;
-
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
+
+import org.springframework.core.io.Resource;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class SpringImplementation extends Implementation<
-    CompositeComponentType<
+    SpringComponentType<
         BoundServiceDefinition<? extends Binding>,
         BoundReferenceDefinition<? extends Binding>,
         ? extends Property>> {
 
     private String location;
-    private URL applicationXml;
+    private Resource applicationResource;
 
     public SpringImplementation() {
     }
 
-    public SpringImplementation(CompositeComponentType<
+    public SpringImplementation(SpringComponentType<
         BoundServiceDefinition<? extends Binding>,
         BoundReferenceDefinition<? extends Binding>,
         ? extends Property> componentType) {
@@ -63,11 +62,17 @@ public class SpringImplementation extends Implementation<
         this.location = location;
     }
 
-    public URL getApplicationXml() {
-        return applicationXml;
+    /**
+     * Returns the Spring configuration resource for the application context
+     */
+    public Resource getApplicationResource() {
+        return applicationResource;
     }
 
-    public void setApplicationXml(URL applicationXml) {
-        this.applicationXml = applicationXml;
+    /**
+     * Sets the Spring configuration resource for the application context
+     */
+    public void setApplicationResource(Resource applicationXml) {
+        this.applicationResource = applicationXml;
     }
 }

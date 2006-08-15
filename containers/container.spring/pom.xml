@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>spi</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>

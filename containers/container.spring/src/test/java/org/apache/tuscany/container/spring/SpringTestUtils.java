@@ -26,7 +26,12 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.test.ArtifactFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.context.support.GenericApplicationContext;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -35,7 +40,7 @@ import org.apache.tuscany.test.ArtifactFactory;
 public final class SpringTestUtils {
     private SpringTestUtils() {
     }
-    
+
     public static <T> Service<T> createService(String name,
                                                Class<T> serviceInterface,
                                                CompositeComponent parent,
@@ -52,4 +57,13 @@ public final class SpringTestUtils {
         ArtifactFactory.terminateWire(inboundWire);
         return service;
     }
+
+
+    public static GenericApplicationContext createContext() {
+        GenericApplicationContext ctx = new GenericApplicationContext();
+        BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
+        ctx.registerBeanDefinition("foo", definition);
+        return ctx;
+    }
+
 }
