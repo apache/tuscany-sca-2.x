@@ -62,6 +62,7 @@ import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
+import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -105,6 +106,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         SpringImplementation implementation = new SpringImplementation();
         implementation.setApplicationResource(getApplicationContextResource(locationAttr));
         registry.loadComponentType(parent, implementation, deploymentContext);
+        SpringComponentType type = implementation.getComponentType();
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
@@ -112,6 +114,14 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     if (SERVICE_ELEMENT.equals(qname)) {
                         BoundServiceDefinition service =
                             (BoundServiceDefinition) registry.load(parent, reader, deploymentContext);
+                        if (!type.isExposeAllBeans()) {
+                            String name = service.getName();
+                            if (!type.getServiceTypes().containsKey(name)) {
+                                LoaderException e = new LoaderException("No service defined in Spring context for ");
+                                e.setIdentifier(name);
+                                throw e;
+                            }
+                        }
                         implementation.getComponentType().getServices().put(service.getName(), service);
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
                         throw new UnsupportedOperationException();

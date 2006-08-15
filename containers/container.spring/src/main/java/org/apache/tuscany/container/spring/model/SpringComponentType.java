@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.container.spring.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -33,6 +36,8 @@ public class SpringComponentType<S extends ServiceDefinition,
     P extends Property<?>> extends CompositeComponentType<S, R, P> {
 
     private GenericApplicationContext applicationContext;
+    private Map<String, Class<?>> serviceTypes = new HashMap<String, Class<?>>();
+    private boolean exposeAllBeans;
 
     public SpringComponentType(GenericApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -40,6 +45,22 @@ public class SpringComponentType<S extends ServiceDefinition,
 
     public GenericApplicationContext getApplicationContext() {
         return applicationContext;
+    }
+
+    public Map<String, Class<?>> getServiceTypes() {
+        return serviceTypes;
+    }
+
+    public void addServiceType(String name, Class<?> type) {
+        this.serviceTypes.put(name, type);
+    }
+
+    public boolean isExposeAllBeans() {
+        return exposeAllBeans;
+    }
+
+    public void setExposeAllBeans(boolean exposeAllBeans) {
+        this.exposeAllBeans = exposeAllBeans;
     }
 
 }

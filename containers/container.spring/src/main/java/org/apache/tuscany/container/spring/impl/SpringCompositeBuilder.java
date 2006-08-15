@@ -60,7 +60,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
 
         // We still need to set the target invoker as opposed to having the connector do it since the
         // Spring context is "opaque" to the wiring fabric. In other words, the Spring context does not expose
-        // its beans as SCA components to the connector t wire the services to
+        // its beans as SCA components to the connector to wire the services to
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
             // call back into builder registry to handle building of services
             Service<?> service = (Service) builderRegistry.build(parent, serviceDefinition, deploymentContext);
