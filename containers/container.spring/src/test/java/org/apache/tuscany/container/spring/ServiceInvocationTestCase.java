@@ -50,8 +50,8 @@ public class ServiceInvocationTestCase extends TestCase {
             new ServiceExtension<TestBean>("fooService", TestBean.class, context, ArtifactFactory.createWireService());
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
-        Connector conntector = ArtifactFactory.createConnector();
-        conntector.connect(inboundWire, outboundWire, true);
+        Connector connector = ArtifactFactory.createConnector();
+        connector.connect(inboundWire, outboundWire, true);
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getMethod()));
         }
