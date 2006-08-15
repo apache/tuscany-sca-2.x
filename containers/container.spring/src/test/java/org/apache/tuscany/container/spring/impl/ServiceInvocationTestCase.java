@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
+import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;

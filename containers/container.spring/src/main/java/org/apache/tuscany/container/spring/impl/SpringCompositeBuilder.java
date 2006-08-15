@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -37,9 +37,11 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.springframework.context.ConfigurableApplicationContext;
+import org.apache.tuscany.container.spring.model.SpringImplementation;
+import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
 
 /**
- * Creates a {@link SpringCompositeComponent} from an assembly model
+ * Creates a {@link org.apache.tuscany.container.spring.impl.SpringCompositeComponent} from an assembly model
  *
  * @version $$Rev$$ $$Date$$
  */

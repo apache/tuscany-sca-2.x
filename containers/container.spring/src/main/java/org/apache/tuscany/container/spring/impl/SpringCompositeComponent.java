@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

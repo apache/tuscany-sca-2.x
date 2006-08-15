@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
@@ -28,6 +28,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import org.springframework.context.ApplicationContext;
+import org.apache.tuscany.container.spring.impl.SpringInvoker;
 
 /**
  * Verifies a simple invocation on a Spring bean

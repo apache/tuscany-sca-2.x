@@ -23,15 +23,15 @@
            name="org.apache.tuscany.launcher.SpringImplementation">
 
     <component name="spring.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.SpringImplementationLoader"/>
+        <system:implementation.system class="org.apache.tuscany.container.spring.impl.SpringImplementationLoader"/>
     </component>
 
     <component name="spring.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.SpringComponentTypeLoader"/>
+        <system:implementation.system class="org.apache.tuscany.container.spring.impl.SpringComponentTypeLoader"/>
     </component>
 
     <component name="spring.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.spring.SpringCompositeBuilder"/>
+        <system:implementation.system class="org.apache.tuscany.container.spring.impl.SpringCompositeBuilder"/>
     </component>
 
 </composite>

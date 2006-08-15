@@ -1,4 +1,4 @@
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.model;
 
 import org.apache.tuscany.spi.model.ServiceContract;
 

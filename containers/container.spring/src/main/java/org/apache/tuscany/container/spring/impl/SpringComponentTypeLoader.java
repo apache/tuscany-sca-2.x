@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring;
+package org.apache.tuscany.container.spring.impl;
 
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Remotable;
@@ -32,6 +32,9 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.container.spring.config.SCAService;
 import org.apache.tuscany.container.spring.config.ScaServiceBeanDefinitionParser;
+import org.apache.tuscany.container.spring.model.SpringComponentType;
+import org.apache.tuscany.container.spring.model.SpringImplementation;
+import org.apache.tuscany.container.spring.model.SpringServiceContract;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
