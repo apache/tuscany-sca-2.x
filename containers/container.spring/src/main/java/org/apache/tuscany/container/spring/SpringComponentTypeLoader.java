@@ -18,39 +18,36 @@
  */
 package org.apache.tuscany.container.spring;
 
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Remotable;
+
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.container.spring.config.SCAService;
 import org.apache.tuscany.container.spring.config.ScaServiceBeanDefinitionParser;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
-import org.apache.tuscany.core.implementation.processor.ProcessorUtils;
-import org.apache.tuscany.core.implementation.processor.IllegalCallbackException;
-import org.osoa.sca.annotations.Constructor;
-
-import java.net.URL;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.Resource;
 
 /**
- * Loads a component type for a Spring <code>ApplicationContext</code>. The implementation creates a new
- * instance of a Spring application context which is configured with SCA namespace handlers for generating
- * component type information
+ * Loads a component type for a Spring <code>ApplicationContext</code>. The implementation creates a new instance of a
+ * Spring application context which is configured with SCA namespace handlers for generating component type information
  *
  * @version $$Rev$$ $$Date$$
  */
 
 public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<SpringImplementation> {
 
-    @Constructor({"registry"})
+    @Constructor
     public SpringComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
         super(loaderRegistry);
     }
@@ -61,17 +58,16 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
     }
 
     /* Major work in progress here */
-    public void load(CompositeComponent<?> parent, SpringImplementation implementation,
+    public void load(CompositeComponent<?> parent,
+                     SpringImplementation implementation,
                      DeploymentContext deploymentContext) {
-        URL appXml = implementation.getApplicationXml();
-
-        Resource resource = new UrlResource(appXml);
-        CompositeComponentType componentType = new CompositeComponentType();
+        Resource resource = implementation.getApplicationResource();
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
         reader.loadBeanDefinitions(resource);
         GenericApplicationContext ctx = new GenericApplicationContext(beanFactory);
         ctx.refresh();
+        SpringComponentType componentType = new SpringComponentType(ctx);
 
         // If there are <sca:service> elements, they define (and limit) the services exposed
         // in the componentType.
@@ -87,11 +83,10 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
             String serviceTypeName = serviceBean.getType();
             try {
                 Class serviceInterface = Class.forName(serviceTypeName, true, deploymentContext.getClassLoader());
-                ServiceDefinition service = ProcessorUtils.createService(serviceInterface);
+                ServiceDefinition service = createService(serviceInterface);
                 componentType.getServices().put(serviceName, service);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalCallbackException e) {
+                // FIXME
                 e.printStackTrace();
             }
         }
@@ -110,12 +105,10 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
                     Class [] beanInterfaces = beanClass.getInterfaces();
                     // hack, just using the 1st impl'ed interface for now
                     if (beanInterfaces.length > 0) {
-                        ServiceDefinition service = ProcessorUtils.createService(beanInterfaces[0]);
+                        ServiceDefinition service = createService(beanInterfaces[0]);
                         componentType.getServices().put(beanName, service);
                     }
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IllegalCallbackException e) {
                     e.printStackTrace();
                 }
             }
@@ -123,4 +116,26 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
 
         implementation.setComponentType(componentType);
     }
+
+    private ServiceDefinition createService(Class<?> interfaze) {
+        ServiceDefinition service = new ServiceDefinition();
+        service.setName(getBaseName(interfaze));
+        service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
+        ServiceContract contract = new SpringServiceContract();
+        contract.setInterfaceClass(interfaze);
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        service.setServiceContract(contract);
+        return service;
+    }
+
+    private String getBaseName(Class<?> implClass) {
+        String baseName = implClass.getName();
+        int lastDot = baseName.lastIndexOf('.');
+        if (lastDot != -1) {
+            baseName = baseName.substring(lastDot + 1);
+        }
+        return baseName;
+    }
+
+
 }

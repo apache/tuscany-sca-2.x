@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.container.spring;
 
-import java.net.URL;
-
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
@@ -38,10 +36,7 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.UrlResource;
 
 /**
  * Creates a {@link SpringCompositeComponent} from an assembly model
@@ -56,15 +51,12 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
-        ConfigurableApplicationContext applicationContext =
-            createApplicationContext(implementation.getApplicationXml());
-
-        SpringCompositeComponent component =
-            new SpringCompositeComponent(name, applicationContext, parent, null);
+        ConfigurableApplicationContext applicationContext = implementation.getComponentType().getApplicationContext();
+        SpringCompositeComponent component = new SpringCompositeComponent(name, applicationContext, parent, null);
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
             BoundReferenceDefinition<? extends Binding>,
             ? extends Property> componentType = implementation.getComponentType();
-                                                                          
+
         // We still need to set the target invoker as opposed to having the connector do it since the
         // Spring context is "opaque" to the wiring fabric. In other words, the Spring context does not expose
         // its beans as SCA components to the connector t wire the services to
@@ -92,13 +84,5 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
 
     protected Class<SpringImplementation> getImplementationType() {
         return SpringImplementation.class;
-    }
-
-    protected ConfigurableApplicationContext createApplicationContext(URL appXml) {
-        GenericApplicationContext ctx = new GenericApplicationContext();
-        XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
-        xmlReader.loadBeanDefinitions(new UrlResource(appXml));
-        ctx.refresh();
-        return ctx;
     }
 }

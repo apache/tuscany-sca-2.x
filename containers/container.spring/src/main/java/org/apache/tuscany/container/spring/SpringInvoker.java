@@ -36,9 +36,11 @@ import org.springframework.context.ApplicationContext;
  */
 public class SpringInvoker implements TargetInvoker {
     private ApplicationContext springContext;
-    private boolean cacheable = true; // default to true since Spring handles resolution
+    // default to true since Spring handles resolution
+    private boolean cacheable = true;
     private String beanName;
     private Method method;
+    // caching is thread-safe since Spring handles resolution
     private Object bean;
 
     public SpringInvoker(String beanName, Method method, ApplicationContext context) {
@@ -63,10 +65,6 @@ public class SpringInvoker implements TargetInvoker {
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
-        TargetInvoker invoker = msg.getTargetInvoker();
-        if (invoker == null) {
-            throw new InvocationRuntimeException("No target invoker specified on message");
-        }
         try {
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);

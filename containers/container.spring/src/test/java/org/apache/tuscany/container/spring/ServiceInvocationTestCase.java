@@ -52,12 +52,12 @@ public class ServiceInvocationTestCase extends TestCase {
         service.setOutboundWire(outboundWire);
         Connector conntector = ArtifactFactory.createConnector();
         conntector.connect(inboundWire, outboundWire, true);
-        // TODO fix below
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getMethod()));
         }
         context.register(service);
-        assertEquals("bar", ((TestBean) context.getService("fooService").getServiceInstance()).echo("bar"));
+        TestBean serviceInstance = (TestBean) context.getService("fooService").getServiceInstance();
+        assertEquals("bar", serviceInstance.echo("bar"));
     }
 
 

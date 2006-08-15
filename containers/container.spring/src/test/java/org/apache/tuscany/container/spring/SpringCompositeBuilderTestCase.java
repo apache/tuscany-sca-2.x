@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.container.spring;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -33,13 +29,12 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import static org.apache.tuscany.container.spring.SpringTestUtils.createContext;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.VMBinding;
 import org.apache.tuscany.test.ArtifactFactory;
@@ -48,37 +43,16 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
-import org.jmock.core.Constraint;
-import org.jmock.core.Formatting;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
 public class SpringCompositeBuilderTestCase extends TestCase {
-    private final String appXml =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            + "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"
-            + "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-            + "       xsi:schemaLocation=\"\n"
-            + "http://www.springframework.org/schema/beans "
-            + "http://www.springframework.org/schema/beans/spring-beans.xsd \n"
-// "http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/SpringSCA.xsd" +
-            + "\">\n"
-            + "\n"
-// "<sca:service name=\"fooService\" type=\"org.apache.tuscany.container.spring.mock.TestBean\" target=\"fooBean\"/>" +
-            + "\n"
-            + "<bean id=\"fooBean\" class=\"org.apache.tuscany.container.spring.mock.TestBeanImpl\">\n"
-            + "</bean>\n"
-            + "\n"
-            + "</beans>\n";
 
     public void testBuildImplicit() throws Exception {
 
         // Create an assembly model consisting of a component implemented by Spring
         SpringImplementation impl = new SpringImplementation(createComponentType());
-        File tempAppXmlFile = createTempApplicationXml();
-        tempAppXmlFile.deleteOnExit();
-        impl.setApplicationXml(tempAppXmlFile.toURL());
         ComponentDefinition<SpringImplementation> componentDefinition =
             new ComponentDefinition<SpringImplementation>("spring", impl);
 
@@ -114,13 +88,13 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         assertEquals("call foo", bean.echo("call foo"));
     }
 
-    private CompositeComponentType createComponentType() {
-        CompositeComponentType componentType = new CompositeComponentType();
+    private SpringComponentType createComponentType() {
+        SpringComponentType componentType = new SpringComponentType(createContext());
         BoundServiceDefinition<VMBinding> serviceDefinition = new BoundServiceDefinition<VMBinding>();
         serviceDefinition.setName("fooService");
         serviceDefinition.setBinding(new VMBinding());
         try {
-            serviceDefinition.setTarget(new URI("fooBean"));
+            serviceDefinition.setTarget(new URI("foo"));
         } catch (URISyntaxException e) {
             throw new AssertionError();
         }
@@ -128,38 +102,4 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         return componentType;
     }
 
-    private File createTempApplicationXml() throws IOException, MalformedURLException {
-        File tempAppXml = File.createTempFile("SpringCompositeBuilderTestCase", ".xml");
-        FileWriter fw = new FileWriter(tempAppXml);
-        fw.write(appXml);
-        fw.flush();
-        return tempAppXml;
-    }
-
-    /**
-     * JMock constraint class to test ServiceDefinition name
-     */
-    private class ServiceIsNamed implements Constraint {
-        private String name;
-
-        public ServiceIsNamed(String name) {
-            this.name = name;
-        }
-
-        public boolean eval(Object o) {
-            return o instanceof ServiceDefinition && ((ServiceDefinition) o).getName().equals(name);
-        }
-
-        public StringBuffer describeTo(StringBuffer buffer) {
-            return buffer.append("a service named ")
-                .append(Formatting.toReadableString(name));
-        }
-    }
-
-    /**
-     * JMock factory method for ServiceIsNamed constraint
-     */
-    private Constraint serviceIsNamed(String name) {
-        return new ServiceIsNamed(name);
-    }
 }

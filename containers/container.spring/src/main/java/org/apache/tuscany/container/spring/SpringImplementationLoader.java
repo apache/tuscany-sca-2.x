@@ -59,6 +59,9 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+
 /**
  * Loader for handling Spring <spring:implementation.spring> elements.
  */
@@ -89,17 +92,15 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
             throw new MissingResourceException("No location supplied");
         }
 
-        URL appXmlUrl = getApplicationContextUrl(locationAttr);
-
         LoaderUtil.skipToEndElement(reader);
 
         SpringImplementation implementation = new SpringImplementation();
-        implementation.setApplicationXml(appXmlUrl);
+        implementation.setApplicationResource(getApplicationContextResource(locationAttr));
         registry.loadComponentType(parent, implementation, deploymentContext);
         return implementation;
     }
 
-    protected URL getApplicationContextUrl(String locationAttr) throws LoaderException {
+    protected Resource getApplicationContextResource(String locationAttr) throws LoaderException {
         assert runtimeInfo != null;
         File manifestFile = null;
         File appXmlFile;
@@ -123,14 +124,14 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     if (appCtxPath != null) {
                         appXmlFile = new File(locationFile, appCtxPath);
                         if (appXmlFile.exists()) {
-                            return appXmlFile.toURL();
+                            return new UrlResource(appXmlFile.toURL());
                         }
                     }
                 }
                 // no manifest-specified Spring context, use default
                 appXmlFile = new File(locationFile, APPLICATION_CONTEXT);
                 if (appXmlFile.exists()) {
-                    return appXmlFile.toURL();
+                    return new UrlResource(appXmlFile.toURL());
                 }
             } catch (IOException e) {
                 throw new LoaderException("Error reading manifest " + manifestFile);
@@ -146,13 +147,14 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     if (appCtxPath != null) {
                         je = jf.getJarEntry(appCtxPath);
                         if (je != null) {
-                            return new URL("jar:" + locationFile.toURL() + "!/" + appCtxPath);
+                            // TODO return a Spring specific Resouce type for jars
+                            return new UrlResource(new URL("jar:" + locationFile.toURL() + "!/" + appCtxPath));
                         }
                     }
                 }
                 je = jf.getJarEntry(APPLICATION_CONTEXT);
                 if (je != null) {
-                    return new URL("jar:" + locationFile.toURI().toURL() + "!"+APPLICATION_CONTEXT);
+                    return new UrlResource(new URL("jar:" + locationFile.toURI().toURL() + "!" + APPLICATION_CONTEXT));
                 }
             } catch (IOException e) {
                 // bad archive

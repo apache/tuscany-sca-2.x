@@ -18,13 +18,16 @@
  */
 package org.apache.tuscany.container.spring;
 
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
-import org.springframework.context.ConfigurableApplicationContext;
+import static org.easymock.EasyMock.verify;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Verifies a simple invocation on a Spring bean
@@ -33,11 +36,27 @@ import org.springframework.context.ConfigurableApplicationContext;
  */
 public class SpringInvocationTestCase extends TestCase {
 
-    public void testSpringInvocation() throws Exception {
-        ConfigurableApplicationContext ctx = createMock(ConfigurableApplicationContext.class);
-        expect(ctx.getBean("foo")).andStubReturn(new TestBeanImpl());
-        replay(ctx);
-        SpringInvoker invoker = new SpringInvoker("foo", TestBean.class.getMethod("echo", String.class), ctx);
-        assertEquals("call foo", invoker.invokeTarget(new String[]{"call foo"}));
+    /**
+     * Verifies the invoker can resolve a bean in an application context and call a method l
+     */
+    public void testInvocation() throws Exception {
+        TestBean bean = createMock(TestBean.class);
+        bean.test("bar");
+        expectLastCall();
+        replay(bean);
+        ApplicationContext context = createMock(ApplicationContext.class);
+        expect(context.getBean("foo")).andReturn(bean);
+        replay(context);
+        SpringInvoker invoker = new SpringInvoker("foo", TestBean.class.getMethod("test", String.class), context);
+        Message msg = new MessageImpl();
+        msg.setBody(new String[]{"bar"});
+        invoker.invoke(msg);
+        verify(context);
+        verify(bean);
+    }
+
+
+    private interface TestBean {
+        void test(String msg);
     }
 }
