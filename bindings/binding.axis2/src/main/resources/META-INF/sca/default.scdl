@@ -22,14 +22,19 @@
 
            name="org.apache.tuscany.binding.axis2.WebServiceBinding">
 
+    <dependency>
+        <group>axis2</group>
+        <artifact>axis2-core</artifact>
+        <version>SNAPSHOT</version>
+    </dependency>
+    
     <component name="ws.implementationLoader">
         <system:implementation.system class="org.apache.tuscany.binding.axis2.WebServiceBindingLoader"/>
     </component>
 
- <component name="ws.componentBuilder">
-    <system:implementation.system class="org.apache.tuscany.binding.axis2.Axis2BindingBuilder"/>
- </component>
-
+    <component name="ws.componentBuilder">
+        <system:implementation.system class="org.apache.tuscany.binding.axis2.Axis2BindingBuilder"/>
+    </component>
 
 
 </composite>
