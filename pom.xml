@@ -30,6 +30,7 @@
     </properties>
 
     <modules>
+        <module>api</module>
         <module>spi</module>
         <module>core</module>
         <module>test</module>
@@ -37,7 +38,7 @@
         <module>idl/wsdl</module>
         <module>databinding</module>
         <module>bindings</module>
-        <!--<module>services</module>-->
+        <module>host-api</module>
         <module>hostutil</module>
         <module>runtime/webapp</module>
         <module>commands/launcher</module>
