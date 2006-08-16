@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
  * @version $Rev$ $Date$
  */
 public class SCATestCase extends TestCase {
-    private CompositeComponent<?> component;
+    protected CompositeComponent<?> component;
     private CompositeContextImpl context;
     private Map<String, URL> extensions = new HashMap<String, URL>();
     private String applicationSCDL = Launcher.METAINF_APPLICATION_SCDL_PATH;

@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.wire.WireService;
 import junit.framework.TestCase;
 import static org.apache.tuscany.container.spring.SpringTestUtils.createContext;
 import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.container.spring.mock.VMBinding;
+import org.apache.tuscany.container.spring.mock.binding.TestBinding;
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.apache.tuscany.test.ArtifactFactory;
@@ -55,6 +55,7 @@ public class SpringCompositeBuilderTestCase extends TestCase {
     /**
      * Verfies basic build of a spring context
      */
+    @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         // Create an assembly model consisting of a component implemented by Spring
         SpringImplementation impl = new SpringImplementation(new SpringComponentType(createContext()));
@@ -79,8 +80,8 @@ public class SpringCompositeBuilderTestCase extends TestCase {
      * Verifies that the builder calls back into the registry to load services and wires them to bean targets when no
      * <code>sca:service</code> tag is specified in the Spring application.xml
      */
+    @SuppressWarnings("unchecked")
     public void testImplicitServiceWiring() throws Exception {
-
         // Create an assembly model consisting of a component implemented by Spring
         SpringImplementation impl = new SpringImplementation(createComponentType());
         ComponentDefinition<SpringImplementation> componentDefinition =
@@ -118,11 +119,12 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         verify(registry);
     }
 
+    @SuppressWarnings("unchecked")
     private SpringComponentType createComponentType() {
         SpringComponentType componentType = new SpringComponentType(createContext());
-        BoundServiceDefinition<VMBinding> serviceDefinition = new BoundServiceDefinition<VMBinding>();
+        BoundServiceDefinition<TestBinding> serviceDefinition = new BoundServiceDefinition<TestBinding>();
         serviceDefinition.setName("fooService");
-        serviceDefinition.setBinding(new VMBinding());
+        serviceDefinition.setBinding(new TestBinding());
         try {
             serviceDefinition.setTarget(new URI("foo"));
         } catch (URISyntaxException e) {

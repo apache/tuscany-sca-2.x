@@ -18,10 +18,13 @@
            name="groovy.test">
 
     <component name="Spring">
-        <implementation.spring location="."/>
-        <service name = "fooService">
-            <binding.spring/>
-        </service>
+        <implementation.spring location="META-INF/sca/application-context.xml">
+            <service name="fooService">
+                <binding.test/>
+                <interface.java class="org.apache.tuscany.container.spring.mock.TestBean"/>
+                <reference>testBean</reference>
+            </service>
+        </implementation.spring>
     </component>
 
 </composite>

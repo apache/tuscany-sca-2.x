@@ -16,17 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring.mock;
+package org.apache.tuscany.container.spring.mock.binding;
 
 import org.apache.tuscany.spi.model.Binding;
 
 
 /**
- * A concrete local/in-VM binding for test purposes. 
+ * A simple binding for test purposes.
  *
  * @version $$Rev$$ $$Date$$
  */
-public class VMBinding extends Binding {
+public class TestBinding extends Binding {
 
 
 }

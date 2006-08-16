@@ -89,8 +89,10 @@ public class ConnectorImpl implements Connector {
 
         } else if (source instanceof CompositeComponent) {
             CompositeComponent<?> composite = (CompositeComponent) source;
-            for (SCAObject<?> child : composite.getChildren()) {
-                connect(child);
+            if (!composite.isSelfWiring()) {
+                for (SCAObject<?> child : composite.getChildren()) {
+                    connect(child);
+                }
             }
         } else if (source instanceof Reference) {
             Reference<?> reference = (Reference) source;

@@ -5,7 +5,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 /**
  * @version $Rev$ $Date$
  */
-public class SpringServiceContract extends ServiceContract {
+public class SpringServiceContract<T> extends ServiceContract<T> {
     public SpringServiceContract() {
     }
 
