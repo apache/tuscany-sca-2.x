@@ -50,7 +50,7 @@ import org.springframework.core.io.Resource;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SpringCompositeComponent extends CompositeComponentExtension {
+public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> {
     private static final String[] EMPTY_ARRAY = new String[0];
     private ConfigurableApplicationContext springContext;
 
@@ -70,6 +70,8 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
         this.springContext = springContext;
+        // Spring wires itself
+        this.selfWiring = true;
     }
 
     public TargetInvoker createTargetInvoker(String serviceName, Method method) {
@@ -95,7 +97,6 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         springContext.stop();
     }
 
-
     /**
      * An inner class is required to act as the Spring application context parent as opposed to implementing the
      * interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()} and
@@ -111,6 +112,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             return context.getServiceInstance();
         }
 
+        @SuppressWarnings("unchecked")
         public Object getBean(String name, Class requiredType) throws BeansException {
             SCAObject context = (SCAObject) children.get(name);   // keep cast due to compiler error
             if (context == null) {

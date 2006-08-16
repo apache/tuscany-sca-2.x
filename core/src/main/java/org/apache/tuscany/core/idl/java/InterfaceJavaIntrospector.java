@@ -37,7 +37,7 @@ public interface InterfaceJavaIntrospector {
     /**
      * Introspect a Java interface and return a service contract definition.
      *
-     * @param type the interface to inspect
+     * @param type     the interface to inspect
      * @param callback the callback interface to inspec
      * @return a JavaServiceContract corresponding to the Java interface
      */

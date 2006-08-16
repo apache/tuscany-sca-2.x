@@ -60,9 +60,14 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
      * it is needed to derive component type information. Since the component type is loaded per SCDL entry (i.e.
      * composite use) one application context instance will be created per Spring composite instance.
      */
+    @SuppressWarnings("unchecked")
     public void load(CompositeComponent<?> parent,
                      SpringImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
+        if (implementation.getComponentType() != null) {
+            // FIXME hack
+            return;
+        }
         Resource resource = implementation.getApplicationResource();
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
@@ -94,52 +99,6 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
         }
         // if no service tags are specified, expose all beans
         componentType.setExposeAllBeans(componentType.getServiceTypes().isEmpty());
-
-//        // If there were no <sca:service> elements, expose all beans as SCA services
-//        // REVIEW: this needs a lot of refinement; we almost certainly don't want to expose
-//        // _all_ beans willy nilly.
-//        if (serviceBeanNames.length == 0) {
-//            String [] allBeanDefNames = ctx.getBeanDefinitionNames();
-//            for (String beanDefName : allBeanDefNames) {
-//                BeanDefinition beanDef = ctx.getBeanDefinition(beanDefName);
-//                String beanClassName = beanDef.getBeanClassName();
-//                String beanName = (String) beanDef.getAttribute("name");
-//                try {
-//                    Class beanClass = Class.forName(beanClassName, true, deploymentContext.getClassLoader());
-//                    Class [] beanInterfaces = beanClass.getInterfaces();
-//                    // hack, just using the 1st impl'ed interface for now
-//                    if (beanInterfaces.length > 0) {
-//                        ServiceDefinition service = createService(beanInterfaces[0]);
-//                        componentType.getServices().put(beanName, service);
-//                    }
-//                } catch (ClassNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-
         implementation.setComponentType(componentType);
     }
-
-//    private ServiceDefinition createService(Class<?> interfaze) {
-//        ServiceDefinition service = new BoundServiceDefinition();
-//        service.setName(getBaseName(interfaze));
-//        service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-//        ServiceContract contract = new SpringServiceContract();
-//        contract.setInterfaceClass(interfaze);
-//        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-//        service.setServiceContract(contract);
-//        return service;
-//    }
-//
-//    private String getBaseName(Class<?> implClass) {
-//        String baseName = implClass.getName();
-//        int lastDot = baseName.lastIndexOf('.');
-//        if (lastDot != -1) {
-//            baseName = baseName.substring(lastDot + 1);
-//        }
-//        return baseName;
-//    }
-
-
 }

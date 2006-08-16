@@ -40,6 +40,11 @@ public interface CompositeComponent<T> extends Component<T>, RuntimeEventListene
     void register(SCAObject context) throws InvalidComponentTypeException;
 
     /**
+     * Returns true if the composite wires its own children
+     */
+    boolean isSelfWiring();
+
+    /**
      * Returns the child associated with a given name
      */
     SCAObject getChild(String name);

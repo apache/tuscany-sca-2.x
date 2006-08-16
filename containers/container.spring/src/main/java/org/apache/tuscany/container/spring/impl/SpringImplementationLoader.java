@@ -74,12 +74,10 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
     private static final QName IMPLEMENTATION_SPRING = new QName("http://www.osoa.org/xmlns/sca/1.0",
         "implementation.spring");
 
-    private static final String APPLICATION_CONTEXT = "META-INF/application-context.xml";
+    private static final String APPLICATION_CONTEXT = "application-context.xml";
 
     private static final QName SERVICE_ELEMENT = new QName(XML_NAMESPACE_1_0, "service");
     private static final QName REFERENCE_ELEMENT = new QName(XML_NAMESPACE_1_0, "reference");
-    private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
-
 
     private final RuntimeInfo runtimeInfo;
 
@@ -93,6 +91,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         return IMPLEMENTATION_SPRING;
     }
 
+    @SuppressWarnings("unchecked")
     public SpringImplementation load(CompositeComponent parent,
                                      XMLStreamReader reader,
                                      DeploymentContext deploymentContext)
@@ -104,7 +103,8 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         }
 
         SpringImplementation implementation = new SpringImplementation();
-        implementation.setApplicationResource(getApplicationContextResource(locationAttr));
+        ClassLoader classLoader = deploymentContext.getClassLoader();
+        implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
         registry.loadComponentType(parent, implementation, deploymentContext);
         SpringComponentType type = implementation.getComponentType();
         while (true) {
@@ -128,14 +128,14 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     }
                     break;
                 case END_ELEMENT:
-                    if (COMPONENT.equals(reader.getName())) {
+                    if (IMPLEMENTATION_SPRING.equals(reader.getName())) {
                         return implementation;
                     }
             }
         }
     }
 
-    protected Resource getApplicationContextResource(String locationAttr) throws LoaderException {
+    protected Resource getApplicationContextResource(String locationAttr, ClassLoader cl) throws LoaderException {
         assert runtimeInfo != null;
         File manifestFile = null;
         File appXmlFile;
@@ -144,8 +144,12 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         if (!locationFile.isAbsolute()) {
             locationFile = new File(runtimeInfo.getApplicationRootDirectory(), locationAttr);
         }
-
         if (!locationFile.exists()) {
+            // FIXME hack
+            URL url = cl.getResource(locationAttr);
+            if (url != null) {
+                return new UrlResource(url);
+            }
             throw new MissingResourceException(locationFile.toString());
         }
 

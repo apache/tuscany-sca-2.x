@@ -56,11 +56,16 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
     protected final Map<String, Document> propertyValues;
+    protected boolean selfWiring;
 
     protected CompositeComponentExtension(String name, CompositeComponent<?> parent,
                                           Map<String, Document> propertyValues) {
         super(name, parent);
         this.propertyValues = propertyValues;
+    }
+
+    public boolean isSelfWiring() {
+        return selfWiring;
     }
 
     public Scope getScope() {
@@ -72,7 +77,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     }
 
     public void register(SCAObject child) {
-        assert child != null : "SCAObject was null";
+        assert child != null : "child was null";
         if (children.get(child.getName()) != null) {
             DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
             e.setIdentifier(child.getName());
