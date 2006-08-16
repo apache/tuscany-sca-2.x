@@ -21,25 +21,23 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNode;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractInOutSyncMessageReceiver;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
-public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
+public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessageReceiver {
 
     protected Method operationMethod;
     protected SDODataBinding dataBinding;
     protected ClassLoader classLoader;
     private Object entryPointProxy;
 
-    public WebServiceEntryPointInOutSyncMessageReceiver(Object entryPointProxy,
+    public Axis2ServiceInOutSyncMessageReceiver(Object entryPointProxy,
                                                         Method operationMethod,
                                                         SDODataBinding dataBinding,
                                                         ClassLoader classLoader) {
@@ -52,43 +50,17 @@ public class WebServiceEntryPointInOutSyncMessageReceiver extends AbstractInOutS
     @Override
     public void invokeBusinessLogic(MessageContext inMC, MessageContext outMC) throws AxisFault {
         try {
+
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-//            Object[] request;
-//            if (requestOM != null) {
-//                request = dataBinding.fromOMElement(requestOM);
-//            } else {
-//                request = new Object[0];
-//            }
 
-            Object response;
-//            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-//            try {
-//                if (tccl != classLoader) {
-//                    Thread.currentThread().setContextClassLoader(classLoader);
-//                }
-
-                response = operationMethod.invoke(entryPointProxy, requestOM);
-
-//            } finally {
-//                if (tccl != classLoader) {
-//                    Thread.currentThread().setContextClassLoader(tccl);
-//                }
-//            }
+            OMElement responseOM = (OMElement) operationMethod.invoke(entryPointProxy, requestOM);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
-
-//            OMElement responseOM;
-//            if (response != null) {
-//                responseOM = dataBinding.toOMElement(new Object[]{response});
-//                soapEnvelope.getBody().addChild(responseOM);
-//            }
-              soapEnvelope.getBody().addChild((OMNode) response);
-
+            soapEnvelope.getBody().addChild(responseOM);
             outMC.setEnvelope(soapEnvelope);
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
         } catch (InvocationRuntimeException e) {
-            // throw new InvocationRuntimeException(e);
             Throwable t = e.getCause();
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception) t);

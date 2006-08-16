@@ -85,7 +85,7 @@ if(true) return ;
         EasyMock.replay(inboundWire);
 
         Axis2Service<Greeter> axis2Service =
-            new Axis2Service<Greeter>(serviceName, Greeter.class, null, wireService, wsBinding, tomcatHost);
+            new Axis2Service<Greeter>(serviceName, Greeter.class, null, wireService, wsBinding, tomcatHost, null);
         axis2Service.setInboundWire(inboundWire);
 
         return axis2Service;

@@ -18,47 +18,48 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
+import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
- * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured
- * with the Axis2 binding
- *
+ * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured with the Axis2 binding
+ * 
  * @version $Rev$ $Date$
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
-    public SCAObject build(CompositeComponent parent,
-                           BoundServiceDefinition<WebServiceBinding> serviceDefinition,
-                           DeploymentContext deploymentContext) {
-        WebServiceBinding wsBinding = serviceDefinition.getBinding();
-        
-        Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-        //FIXME: Axis2Service needs an instance of ServletHost as parameter. How to get it?
-        return new Axis2Service(
-            serviceDefinition.getName(),
-            interfaze,
-            parent,
-            wireService,
-            wsBinding,
-            null);
+
+    private ServletHost servletHost;
+
+    private ConfigurationContext configContext;
+
+    @Autowire()
+    public void setServletHost(ServletHost servletHost) {
+        this.servletHost = servletHost;
+        this.configContext = new TuscanyAxisConfigurator(null).getConfigurationContext();
     }
 
-    public SCAObject build(CompositeComponent parent,
-                           BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
-                           DeploymentContext deploymentContext) {
+    public SCAObject build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
+
+        WebServiceBinding wsBinding = serviceDefinition.getBinding();
+        Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
+
+        return new Axis2Service(serviceDefinition.getName(), interfaze, parent, wireService, wsBinding, servletHost, configContext);
+    }
+
+    public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
+            DeploymentContext deploymentContext) {
+        
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
-       
-        return new Axis2Reference(
-            boundReferenceDefinition.getName(),
-            parent,
-            wireService,
-            wsBinding, 
-            boundReferenceDefinition.getServiceContract());
+
+        return new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding, boundReferenceDefinition.getServiceContract());
     }
 
     protected Class<WebServiceBinding> getBindingType() {
