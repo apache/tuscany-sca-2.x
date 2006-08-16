@@ -18,51 +18,151 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
+import javax.wsdl.Definition;
+import javax.wsdl.Operation;
+import javax.wsdl.PortType;
+import javax.xml.namespace.QName;
+
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisOperation;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.description.Parameter;
+import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
+import org.apache.axis2.description.WSDLToAxisServiceBuilder;
+import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
+import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
+import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Destroy;
 
+import commonj.sdo.helper.TypeHelper;
+
 /**
  * An implementation of a {@link ServiceExtension} configured with the Axis2 binding
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class Axis2Service<T> extends ServiceExtension<T> {
-    
-    
-    public static Axis2Service currentAxis2Service;
-    private WebServiceBinding wsBinding;
 
-    public Axis2Service(String theName,
-                        Class<T> interfaze,
-                        CompositeComponent parent,
-                        WireService wireService,
-                        WebServiceBinding binding,
-                        ServletHost servletHost) {
+    private ServletHost servletHost;
+
+    private ConfigurationContext configContext;
+
+    private WebServiceBinding binding;
+
+    public Axis2Service(String theName, Class<T> interfaze, CompositeComponent parent, WireService wireService, WebServiceBinding binding,
+            ServletHost servletHost, ConfigurationContext configContext) {
+
         super(theName, interfaze, parent, wireService);
-        wsBinding = binding;
-    
+
+        this.binding = binding;
+        this.servletHost = servletHost;
+        this.configContext = configContext;
     }
 
     public void start() {
         super.start();
-//TODO This is a big hack ... need to replace with ServletHost api ASAP
-            
-            currentAxis2Service= this;
-        
+
+        try {
+            configContext.getAxisConfiguration().addService(createAxisService(binding));
+        } catch (AxisFault e) {
+            throw new RuntimeException(e);
+        }
+
+        Axis2ServiceServlet servlet = new Axis2ServiceServlet();
+        servlet.init(configContext);
+        servletHost.registerMapping("/" + getName(), servlet);
     }
 
     @Destroy
-    public void stop() throws CoreRuntimeException {
+    public void stop() {
+        servletHost.unregisterMapping("/" + getName());
+        try {
+            configContext.getAxisConfiguration().removeService(getName());
+        } catch (AxisFault e) {
+            throw new RuntimeException(e);
+        }
         super.stop();
     }
 
+    private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {
+        Definition definition = wsBinding.getWSDLDefinition();
+        WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
 
-    WebServiceBinding getWsBinding() {
-        return wsBinding;
+        // TODO investigate if this is 20 wsdl what todo?
+        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort().getName());
+        builder.setServerSide(true);
+        AxisService axisService = builder.populateService();
+
+        axisService.setName(this.getName());
+        axisService.setServiceDescription("Tuscany configured AxisService for service: '" + this.getName() + '\'');
+
+        // Use the existing WSDL
+        Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
+        wsdlParam.setValue(definition);
+        axisService.addParameter(wsdlParam);
+        Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
+        axisService.addParameter(userWSDL );
+
+        // FIXME:
+        // TypeHelper typeHelper = wsBinding.getTypeHelper();
+        // ClassLoader cl = wsBinding.getResourceLoader().getClassLoader();
+        TypeHelper typeHelper = null;
+        ClassLoader cl = null;
+
+        Class<?> serviceInterface = this.getInterface();
+
+        PortType wsdlPortType = wsdlPortInfo.getPortType();
+        for (Object o : wsdlPortType.getOperations()) {
+            Operation wsdlOperation = (Operation) o;
+            String operationName = wsdlOperation.getName();
+            QName operationQN = new QName(definition.getTargetNamespace(), operationName);
+            Object entryPointProxy = this.getServiceInstance();
+
+            WebServiceOperationMetaData omd = wsdlPortInfo.getOperationMetaData(operationName);
+
+            Method operationMethod = getMethod(serviceInterface, operationName);
+            // outElementQName is not needed when calling fromOMElement method, and we can not get elementQName for
+            // oneway operation.
+            SDODataBinding dataBinding = new SDODataBinding(cl, typeHelper, omd.isDocLitWrapped(), null);
+            Axis2ServiceInOutSyncMessageReceiver msgrec = new Axis2ServiceInOutSyncMessageReceiver(entryPointProxy, operationMethod,
+                    dataBinding, cl);
+
+            AxisOperation axisOp = axisService.getOperation(operationQN);
+            axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
+            axisOp.setMessageReceiver(msgrec);
+        }
+
+        return axisService;
     }
+
+    /**
+     * Get the Method from an interface matching the WSDL operation name
+     */
+    protected Method getMethod(Class<?> serviceInterface, String operationName) {
+        // Note: this doesn't support overloaded operations
+        Method[] methods = serviceInterface.getMethods();
+        for (Method m : methods) {
+            if (m.getName().equals(operationName)) {
+                return m;
+            }
+            // tolerate WSDL with capatalized operation name
+            StringBuilder sb = new StringBuilder(operationName);
+            sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+            if (m.getName().equals(sb.toString())) {
+                return m;
+            }
+        }
+        throw new BuilderConfigException("no operation named " + operationName + " found on service interface: " + serviceInterface.getName());
+    }
+
 }
