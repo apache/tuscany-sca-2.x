@@ -15,7 +15,7 @@
   limitations under the License.
  -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           name="groovy.test">
+           name="spring.test">
 
     <component name="Spring">
         <implementation.spring location="META-INF/sca/application-context.xml">
