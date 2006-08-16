@@ -18,19 +18,20 @@
  */
 package org.apache.tuscany.core.launcher;
 
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
-import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
-
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContext;
-import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.Map;
+import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.monitor.MonitorFactory;
 
 /**
  * Launcher for runtime environment that loads info from servlet context params.
@@ -108,7 +109,8 @@ public class ServletLauncherListener implements ServletContextListener {
 
         try {
             URL systemScdl = getClass().getResource(systemScdlPath);
-            launcher.bootRuntime(systemScdl, mf);
+            CompositeComponent<?> rt = launcher.bootRuntime(systemScdl, mf);
+            servletContext.setAttribute("Tuscany.SystemComposite", rt);
             servletContext.setAttribute(LAUNCHER_ATTRIBUTE, launcher);
 
             URL appScdl;
@@ -135,6 +137,7 @@ public class ServletLauncherListener implements ServletContextListener {
             component.start();
             context = new CompositeContextImpl(component);
             context.start();
+        
         } catch (Throwable t) {
             servletContext.setAttribute(LAUNCHER_THROWABLE_ATTRIBUTE, t);
             t.printStackTrace();
