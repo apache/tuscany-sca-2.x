@@ -65,7 +65,8 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
                      SpringImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         if (implementation.getComponentType() != null) {
-            // FIXME hack
+            // FIXME hack since the builder registry loads the implementation type and the Spring implementation loader
+            // needs to as well. The second call is done by the builder registry and we just ignore it.
             return;
         }
         Resource resource = implementation.getApplicationResource();

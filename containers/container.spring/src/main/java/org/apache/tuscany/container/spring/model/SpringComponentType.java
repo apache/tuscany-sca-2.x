@@ -29,6 +29,9 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.springframework.context.support.GenericApplicationContext;
 
 /**
+ * Component type information for a Spring composite component implementation type. A component type is associated with
+ * a Spring application context
+ *
  * @version $Rev$ $Date$
  */
 public class SpringComponentType<S extends ServiceDefinition,
@@ -43,22 +46,45 @@ public class SpringComponentType<S extends ServiceDefinition,
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * Returns the application context for the component type
+     */
     public GenericApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
+    /**
+     * Returns a collection of service types defined by <code>sca:service</code> elements in a Spring configuration.
+     * Service types define beans that can be targets of services defined in the SCDL Spring composite declaration. For
+     * each service type, there must be a corresponding service definition as part of the Spring composite declaration
+     * per the SCA specification.
+     */
     public Map<String, Class<?>> getServiceTypes() {
         return serviceTypes;
     }
 
+    /**
+     * Adds a service type to the component declaration defined by <code>sca:service</code> elements in a Spring
+     * configuration.
+     *
+     * @param name the name of the service
+     * @param type the interface type of the target bean
+     */
     public void addServiceType(String name, Class<?> type) {
         this.serviceTypes.put(name, type);
     }
 
+    /**
+     * Returns true if all beans in the Spring application context may be service targets or false if service types are
+     * defined
+     */
     public boolean isExposeAllBeans() {
         return exposeAllBeans;
     }
 
+    /**
+     * Sets if all beans in the Spring application context may be service targets or false if service types are defined
+     */
     public void setExposeAllBeans(boolean exposeAllBeans) {
         this.exposeAllBeans = exposeAllBeans;
     }

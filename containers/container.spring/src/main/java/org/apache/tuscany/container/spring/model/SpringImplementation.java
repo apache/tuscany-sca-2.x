@@ -27,13 +27,12 @@ import org.apache.tuscany.spi.model.Property;
 import org.springframework.core.io.Resource;
 
 /**
+ * Represents a composite whose implementation type is a Spring application context.
+ *
  * @version $$Rev$$ $$Date$$
  */
-public class SpringImplementation extends Implementation<
-    SpringComponentType<
-        BoundServiceDefinition<? extends Binding>,
-        BoundReferenceDefinition<? extends Binding>,
-        ? extends Property>> {
+public class SpringImplementation extends Implementation<SpringComponentType<BoundServiceDefinition<? extends Binding>,
+    BoundReferenceDefinition<? extends Binding>, ? extends Property>> {
 
     private String location;
     private Resource applicationResource;

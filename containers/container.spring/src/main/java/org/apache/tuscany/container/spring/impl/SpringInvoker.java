@@ -30,7 +30,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Dispatches to an operation on a Spring bean
+ * Dispatches to an operation on a Spring bean. Since Spring manages bean lifecycle and scope through resolution in the
+ * target proxy, the invoker can safely cache the target proxy.
  *
  * @version $$Rev$$ $$Date$$
  */
