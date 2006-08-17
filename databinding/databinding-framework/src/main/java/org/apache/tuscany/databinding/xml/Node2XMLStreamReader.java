@@ -24,6 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 
 import com.ctc.wstx.api.ReaderConfig;
@@ -33,7 +34,7 @@ import com.ctc.wstx.dom.DOMWrappingReader;
  * Transform DOM Node to XML XMLStreamReader
  * 
  */
-public class Node2XMLStreamReader implements PullTransformer<Node, XMLStreamReader> {
+public class Node2XMLStreamReader extends TransformerExtension<Node, XMLStreamReader> implements PullTransformer<Node, XMLStreamReader> {
 
     public XMLStreamReader transform(Node source, TransformationContext context) {
         try {
@@ -46,11 +47,11 @@ public class Node2XMLStreamReader implements PullTransformer<Node, XMLStreamRead
         }
     }
 
-    public Class<Node> getSourceType() {
+    public Class getSourceType() {
         return Node.class;
     }
 
-    public Class<XMLStreamReader> getTargetType() {
+    public Class getTargetType() {
         return XMLStreamReader.class;
     }
 

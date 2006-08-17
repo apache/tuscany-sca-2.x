@@ -18,31 +18,14 @@
  */
 package org.apache.tuscany.databinding.xml;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-
 import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.w3c.dom.Node;
 
-public class DOMBinding implements DataBinding {
+public class DOMBinding extends DataBindingExtension implements DataBinding {
 
-    public static final String NAME = "DOM";
-
-    public Result createResult(Class resultType) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Source createSource(Object source, Class sourceType) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public boolean isSink() {
-        return false;
-    }
-
-    public String getName() {
-        return NAME;
+    public DOMBinding() {
+        super(Node.class, false);
     }
 
 }

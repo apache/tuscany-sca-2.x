@@ -21,13 +21,13 @@ package org.apache.tuscany.databinding.xml;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tuscany.databinding.DataPipe;
-import org.apache.xalan.xsltc.trax.SAX2DOM;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
-public class SAX2DOMPipe implements DataPipe<ContentHandler, Node> {
+public class SAX2DOMPipe extends TransformerExtension<ContentHandler, Node> implements DataPipe<ContentHandler, Node> {
     private SAX2DOM pipe;
-    
+
     /**
      * 
      */
@@ -44,7 +44,7 @@ public class SAX2DOMPipe implements DataPipe<ContentHandler, Node> {
         return pipe.getDOM();
     }
 
-    public Class<Node> getTargetType() {
+    public Class getTargetType() {
         return Node.class;
     }
 
@@ -52,7 +52,7 @@ public class SAX2DOMPipe implements DataPipe<ContentHandler, Node> {
         return pipe;
     }
 
-    public Class<ContentHandler> getSourceType() {
+    public Class getSourceType() {
         return ContentHandler.class;
     }
 

@@ -18,32 +18,15 @@
  */
 package org.apache.tuscany.databinding.xml;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 
-public class StAXBinding implements DataBinding {
-    public static final String NAME = "StAX";
+public class StAXBinding extends DataBindingExtension implements DataBinding {
 
-    public Result createResult(Class resultType) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public Source createSource(Object source, Class sourceType) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public boolean isSink() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public String getName() {
-        // TODO Auto-generated method stub
-        return NAME;
+    public StAXBinding() {
+        super(XMLStreamReader.class);
     }
 
 }

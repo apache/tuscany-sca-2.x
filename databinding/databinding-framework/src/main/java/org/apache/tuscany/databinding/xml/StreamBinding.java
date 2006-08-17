@@ -18,41 +18,15 @@
  */
 package org.apache.tuscany.databinding.xml;
 
-import java.io.InputStream;
 import java.io.Reader;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 
-public class StreamBinding implements DataBinding {
-    public static final String NAME = "STREAM";
+public class StreamBinding extends DataBindingExtension implements DataBinding {
 
-    public static enum Type {
-        STREAM, READER, STRING
-    }
-
-    public Result createResult(Class resultType) {
-        return new StreamResult();
-    }
-
-    public Source createSource(Object source, Class sourceType) {
-        if (source instanceof InputStream)
-            return new StreamSource((InputStream) source);
-        else if (source instanceof Reader)
-            return new StreamSource((Reader) source);
-        return null;
-    }
-
-    public boolean isSink() {
-        return false;
-    }
-
-    public String getName() {
-        return NAME;
+    public StreamBinding() {
+        super(Reader.class);
     }
 
 }

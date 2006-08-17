@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding.trax;
 
+import java.io.InputStream;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXSource;
@@ -25,6 +27,7 @@ import javax.xml.transform.sax.SAXSource;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -32,7 +35,7 @@ import org.xml.sax.InputSource;
  * Push DOM InputSource to Node
  * 
  */
-public class InputStream2Node implements PullTransformer<InputSource, Node> {
+public class InputStream2Node extends TransformerExtension<InputStream, Node> implements PullTransformer<InputSource, Node> {
     private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
 
     public Node transform(InputSource source, TransformationContext context) {
@@ -46,11 +49,11 @@ public class InputStream2Node implements PullTransformer<InputSource, Node> {
         }
     }
 
-    public Class<InputSource> getSourceType() {
+    public Class getSourceType() {
         return InputSource.class;
     }
 
-    public Class<Node> getTargetType() {
+    public Class getTargetType() {
         return Node.class;
     }
 

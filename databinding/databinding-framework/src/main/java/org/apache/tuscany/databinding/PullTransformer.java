@@ -18,17 +18,22 @@
  */
 package org.apache.tuscany.databinding;
 
-
 /**
  * PullTransformer transforms data from one binding format to the other one which can be directly consumed
- * @param <S> The source data type
- * @param <R> the target data type
+ * 
+ * @param <S>
+ *            The source data type
+ * @param <R>
+ *            the target data type
  */
-public interface PullTransformer<S, R> extends Transformer<S, R>{
+public interface PullTransformer<S, R> extends Transformer {
     /**
-     * Transform source data into the result type.  
-     * @param source The source data
-     * @param context The context for the transformation
+     * Transform source data into the result type.
+     * 
+     * @param source
+     *            The source data
+     * @param context
+     *            The context for the transformation
      * @return The transformed result
      */
     public R transform(S source, TransformationContext context);

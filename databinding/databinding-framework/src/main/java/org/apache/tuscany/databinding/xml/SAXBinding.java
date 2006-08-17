@@ -18,41 +18,13 @@
  */
 package org.apache.tuscany.databinding.xml;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXSource;
-
 import org.apache.tuscany.databinding.DataBinding;
-import org.xml.sax.ContentHandler;
+import org.apache.tuscany.databinding.extension.DataBindingExtension;
 import org.xml.sax.InputSource;
 
-public class SAXBinding implements DataBinding {
-    public static final String NAME = "SAX";
-
-    private ContentHandler contentHandler;
-
-    public Result createResult(Class resultType) {
-        return new SAXResult(contentHandler);
-    }
-
-    public Source createSource(Object source, Class sourceType) {
-        if (source instanceof InputSource)
-            return new SAXSource((InputSource) source);
-        else
-            throw new IllegalArgumentException();
-    }
-
-    public boolean isSink() {
-        return true;
-    }
-
-    public String getName() {
-        return NAME;
-    }
-
-    public void setContentHandler(ContentHandler contentHandler) {
-        this.contentHandler = contentHandler;
+public class SAXBinding extends DataBindingExtension implements DataBinding {
+    public SAXBinding() {
+        super(InputSource.class);
     }
 
 }

@@ -19,54 +19,51 @@
 package org.apache.tuscany.databinding.impl;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.TransformationContext;
 
-public class TransformationContextImpl extends HashMap<String, Object> implements TransformationContext {
-    private static final long serialVersionUID = -3502340459778408138L;
+public class TransformationContextImpl implements TransformationContext {
+    private DataBinding sourceDataBinding;
 
-    private DataBinding sourceBinding;
-
-    private DataBinding targetBinding;
+    private DataBinding targetDataBinding;
 
     private WeakReference<ClassLoader> classLoaderRef;
 
-    public DataBinding getSourceBinding() {
-        return sourceBinding;
+    public TransformationContextImpl() {
+        super();
+        setClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
-    public Object getAttribute(String name) {
-        return get(name);
+    public TransformationContextImpl(DataBinding sourceDataBinding, DataBinding targetDataBinding, ClassLoader classLoader) {
+        super();
+        this.sourceDataBinding = sourceDataBinding;
+        this.targetDataBinding = targetDataBinding;
+        setClassLoader(classLoader);
     }
 
-    public void setAttribute(String name, Object object) {
-        put(name, object);
+    public DataBinding getSourceDataBinding() {
+        return sourceDataBinding;
     }
 
-    public DataBinding getTargetBinding() {
-        return targetBinding;
+    public DataBinding getTargetDataBinding() {
+        return targetDataBinding;
     }
 
-    public void setSourceBinding(DataBinding sourceBinding) {
-        this.sourceBinding = sourceBinding;
+    public void setSourceDataBinding(DataBinding sourceDataBinding) {
+        this.sourceDataBinding = sourceDataBinding;
     }
 
-    public void setTargetBinding(DataBinding targetBinding) {
-        this.targetBinding = targetBinding;
+    public void setTargetDataBinding(DataBinding targetDataBinding) {
+        this.targetDataBinding = targetDataBinding;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
+    final public void setClassLoader(ClassLoader classLoader) {
         this.classLoaderRef = new WeakReference<ClassLoader>(classLoader);
     }
 
     public ClassLoader getClassLoader() {
-        // FIXME
-        if (classLoaderRef == null)
-            return Thread.currentThread().getContextClassLoader();
-        else
-            return classLoaderRef.get();
+        return classLoaderRef.get();
     }
 
 }

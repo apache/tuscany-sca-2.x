@@ -21,6 +21,7 @@ package org.apache.tuscany.databinding.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.DataPipe;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
@@ -50,15 +51,19 @@ public class MediatorImpl implements Mediator {
      *      org.apache.tuscany.databinding.TransformationContext)
      */
     @SuppressWarnings("unchecked")
-    public Object mediate(Object source, Object sourceType, Object resultType, TransformationContext context) {
-        List<Transformer> path = registry.getTransformerChain(sourceType, resultType);
+    public Object mediate(Object source, DataBinding sourceBinding, DataBinding targetBinding) {
+        List<Transformer> path = registry.getTransformerChain(sourceBinding.getName(), targetBinding.getName());
 
         Object result = source;
         for (Iterator<Transformer> i = path.iterator(); i.hasNext();) {
             Transformer transformer = i.next();
+            // FIXME: We probably need to reset the context for each transformation on the path to reflect
+            // the source and target type
             if (transformer instanceof PullTransformer) {
+                TransformationContext context = new TransformationContextImpl(sourceBinding, targetBinding, Thread.currentThread().getContextClassLoader());
                 result = ((PullTransformer) transformer).transform(result, context);
             } else if (transformer instanceof PushTransformer) {
+                TransformationContext context = new TransformationContextImpl(sourceBinding, targetBinding, Thread.currentThread().getContextClassLoader());
                 DataPipe dataPipe = i.hasNext() ? (DataPipe) i.next() : null;
                 ((PushTransformer) transformer).transform(result, dataPipe.getSink(), context);
                 result = dataPipe.getResult();
@@ -69,22 +74,23 @@ public class MediatorImpl implements Mediator {
     }
 
     @SuppressWarnings("unchecked")
-    public Object mediate(Object source, Object target, Object sourceType, Object resultType, TransformationContext context) {
-        List<Transformer> path = registry.getTransformerChain(sourceType, resultType);
+    public void mediate(Object source, Object target, DataBinding sourceBinding, DataBinding targetBinding) {
+        List<Transformer> path = registry.getTransformerChain(sourceBinding.getName(), targetBinding.getName());
 
         Object result = source;
         for (Iterator<Transformer> i = path.iterator(); i.hasNext();) {
             Transformer transformer = i.next();
             if (transformer instanceof PullTransformer) {
+                TransformationContext context = new TransformationContextImpl(sourceBinding, targetBinding, Thread.currentThread().getContextClassLoader());
                 result = ((PullTransformer) transformer).transform(result, context);
             } else if (transformer instanceof PushTransformer) {
+                TransformationContext context = new TransformationContextImpl(sourceBinding, targetBinding, Thread.currentThread().getContextClassLoader());
                 DataPipe dataPipe = i.hasNext() ? (DataPipe) i.next() : null;
                 Object sink = dataPipe != null ? dataPipe.getSink() : target;
                 ((PushTransformer) transformer).transform(result, sink, context);
                 result = (dataPipe != null) ? dataPipe.getResult() : null;
             }
         }
-        return result;
     }
 
 }

@@ -29,8 +29,14 @@ import java.lang.annotation.Target;
 @Target( {})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DataContext {
+    /**
+     * @return key for the context entry
+     */
     String key();
 
+    /**
+     * @return key for the context value
+     */
     String value();
 
 }

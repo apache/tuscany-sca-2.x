@@ -24,11 +24,17 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.trax.Node2String;
 import org.apache.tuscany.databinding.trax.Node2Writer;
 import org.apache.tuscany.databinding.trax.String2SAX;
+import org.apache.tuscany.databinding.xml.DOMBinding;
 import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
+import org.apache.tuscany.databinding.xml.SAXContentHandlerBinding;
+import org.apache.tuscany.databinding.xml.WriterBinding;
+import org.apache.tuscany.databinding.xml.XMLStringBinding;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,14 +55,16 @@ public class MediatorImplTestCase extends TestCase {
             + "</ipo:purchaseOrder>";
 
     private MediatorImpl mediator;
+    private DataBindingRegistry bindingRegistry;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
     protected void setUp() throws Exception {
         super.setUp();
+        bindingRegistry = new DataBindingRegistryImpl();
+        bindingRegistry.register(new DOMBinding());
+        bindingRegistry.register(new SAXContentHandlerBinding());
+        bindingRegistry.register(new WriterBinding());
+        bindingRegistry.register(new XMLStringBinding());
+        
         TransformerRegistry registry = new TransformerRegistryImpl();
         registry.registerTransformer(new String2SAX());
         registry.registerTransformer(new SAX2DOMPipe());
@@ -67,8 +75,17 @@ public class MediatorImplTestCase extends TestCase {
         mediator.setRegistry(registry);
     }
 
+    @SuppressWarnings("unchecked")
+    private TransformationContext createTransformationContext(Class sourceType, Class targetType) {
+        TransformationContext context = new TransformationContextImpl();
+        context.setSourceDataBinding(bindingRegistry.introspectType(sourceType));
+        context.setTargetDataBinding(bindingRegistry.introspectType(targetType));
+        return context;
+    }
+
     public void testTransform1() {
-        Object node = mediator.mediate(IPO_XML, String.class, Node.class, null);
+        TransformationContext context = createTransformationContext(String.class, Node.class);
+        Object node = mediator.mediate(IPO_XML, context.getSourceDataBinding(), context.getTargetDataBinding());
         Assert.assertTrue(node instanceof Document);
         Element root = ((Document) node).getDocumentElement();
         Assert.assertEquals(root.getNamespaceURI(), "http://www.example.com/IPO");
@@ -76,8 +93,9 @@ public class MediatorImplTestCase extends TestCase {
     }
 
     public void testTransform2() {
+        TransformationContext context = createTransformationContext(String.class, Writer.class);
         Writer writer = new StringWriter();
-        mediator.mediate(IPO_XML, writer, String.class, Writer.class, null);
+        mediator.mediate(IPO_XML, writer, context.getSourceDataBinding(), context.getTargetDataBinding());
         String str = writer.toString();
         Assert.assertTrue(str != null && str.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }

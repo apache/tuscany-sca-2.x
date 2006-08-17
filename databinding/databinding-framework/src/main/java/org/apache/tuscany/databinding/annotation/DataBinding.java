@@ -34,6 +34,15 @@ public @interface DataBinding {
      * @return Name of the data binding
      */
     String name();
+
+    /**
+     * @return Type of the data
+     */
+    Class type() default Object.class;
+
+    /**
+     * @return Context
+     */
     DataContext[] context() default {};
 
 }

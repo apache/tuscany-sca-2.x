@@ -23,6 +23,7 @@ import java.io.StringReader;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
@@ -30,7 +31,7 @@ import org.xml.sax.InputSource;
  * Transform XML string to SAX
  * 
  */
-public class String2SAX implements PushTransformer<String, ContentHandler> {
+public class String2SAX extends TransformerExtension<String, ContentHandler> implements PushTransformer<String, ContentHandler> {
     /*
      * private static final TransformerFactory factory = TransformerFactory.newInstance();
      * 
@@ -48,11 +49,11 @@ public class String2SAX implements PushTransformer<String, ContentHandler> {
         }
     }
 
-    public Class<String> getSourceType() {
+    public Class getSourceType() {
         return String.class;
     }
 
-    public Class<ContentHandler> getTargetType() {
+    public Class getTargetType() {
         return ContentHandler.class;
     }
 
