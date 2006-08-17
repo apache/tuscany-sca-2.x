@@ -115,12 +115,9 @@
     </component>
     
     <!-- TODO: Hack the Axis extension in  -->
-    <component name="ws.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.WebServiceBindingLoader"/>
-    </component>
-    <component name="ws.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.binding.axis2.Axis2BindingBuilder"/>
-    </component>
+    <include name="binding.axis2" scdlLocation="binding.axis2.scdl"/>
     
+    <!-- TODO: Hack the SDO DataBinding extension in -->
+    <include name="databinding.sdo" scdlLocation="databinding.sdo.scdl"/>
 
 </composite>
