@@ -67,7 +67,7 @@ public class PropertyTestCase extends TestCase {
         configuration.setWireService(createWireService());
         GroovyAtomicComponent<Greeting> component = new GroovyAtomicComponent<Greeting>(configuration, null);
         ObjectFactory<?> factory = createMock(ObjectFactory.class);
-        expect(factory.getInstance()).andReturn("bar");
+        expect((String) factory.getInstance()).andReturn("bar");
         replay(factory);
         component.addPropertyFactory("property", factory);
         Greeting greeting = component.getServiceInstance();
