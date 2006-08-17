@@ -135,8 +135,9 @@ public class MainLauncherImpl extends LauncherImpl {
         try {
             parseArguments(args);
             // need to use the classloader as the path does not start with a '/'
-            URL scdl = getClass().getClassLoader().getResource(METAINF_SYSTEM_SCDL_PATH);
-            bootRuntime(scdl, new NullMonitorFactory());
+            ClassLoader systemClassLoader = getClass().getClassLoader();
+            URL scdl = systemClassLoader.getResource(METAINF_SYSTEM_SCDL_PATH);
+            bootRuntime(scdl, systemClassLoader, new NullMonitorFactory());
             URL appScdl = getApplicationLoader().getResource(METAINF_APPLICATION_SCDL_PATH);
             CompositeComponent application = bootApplication("application", appScdl);
             application.start();

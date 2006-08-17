@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.Launcher;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
+import org.apache.tuscany.api.TuscanyException;
 
 /**
  * Basic launcher implementation.
@@ -65,12 +66,58 @@ public class LauncherImpl implements Launcher {
 
     private CompositeComponent<?> composite;
 
-    public void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitorFactory) {
-        // FIXME implement
-        throw new UnsupportedOperationException();
+    public void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitor)
+        throws TuscanyException {
+        if (systemScdl == null) {
+            throw new LoaderException("Null system SCDL URL");
+        }
+
+        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
+        Bootstrapper bootstrapper = new DefaultBootstrapper(monitor, xmlFactory);
+        Deployer bootDeployer = bootstrapper.createDeployer();
+
+        // create and start the core runtime
+        runtime = bootstrapper.createRuntime();
+        runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
+
+        // initialize the runtime info
+        SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
+        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
+        parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
+
+        // create a ComponentDefinition to represent the component we are going to deploy
+        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
+        moduleImplementation.setScdlLocation(systemScdl);
+        moduleImplementation.setClassLoader(systemClassLoader);
+        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+            new ComponentDefinition<SystemCompositeImplementation>(
+                ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
+
+        // deploy the component into the runtime under the system parent
+        composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
+
+        // start the system
+        composite.start();
+
+        deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
     }
 
-    public CompositeContext bootApplication(URL applicationScdl, ClassLoader applicationClassLoader) {
+    /**
+     * Shuts down the active runtime being managed by this instance.
+     */
+    public void shutdownRuntime() {
+        if (composite != null) {
+            composite.stop();
+            composite = null;
+        }
+
+        if (runtime != null) {
+            runtime.stop();
+            runtime = null;
+        }
+    }
+
+    public CompositeContext bootApplication(URL applicationScdl, ClassLoader applicationLoader) {
         // FIXME implement
         throw new UnsupportedOperationException();
     }
@@ -101,56 +148,11 @@ public class LauncherImpl implements Launcher {
      * @return a CompositeComponent for the newly booted runtime system
      * @throws LoaderException
      */
-    public CompositeComponent<?> bootRuntime(URL systemScdl, MonitorFactory monitor) throws LoaderException {
-        if (systemScdl == null) {
-            throw new LoaderException("Null system SCDL URL");
-        }
-
+    @Deprecated
+    public CompositeComponent<?> bootRuntime(URL systemScdl, MonitorFactory monitor) throws TuscanyException {
         ClassLoader systemClassLoader = getClass().getClassLoader();
-        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
-        Bootstrapper bootstrapper = new DefaultBootstrapper(monitor, xmlFactory);
-        Deployer bootDeployer = bootstrapper.createDeployer();
-
-        // create and start the core runtime
-        runtime = bootstrapper.createRuntime();
-        runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
-
-        // initialize the runtime info
-        SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
-        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
-        parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
-
-        // create a ComponentDefinition to represent the component we are going to deploy
-        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
-        moduleImplementation.setScdlLocation(systemScdl);
-        moduleImplementation.setClassLoader(systemClassLoader);
-        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
-            new ComponentDefinition<SystemCompositeImplementation>(
-                ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
-
-        // deploy the component into the runtime under the system parent
-        composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
-
-        // start the system
-        composite.start();
-
-        deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
+        bootRuntime(systemScdl, systemClassLoader, monitor);
         return composite;
-    }
-
-    /**
-     * Shuts down the active runtime being managed by this instance.
-     */
-    public void shutdownRuntime() {
-        if (composite != null) {
-            composite.stop();
-            composite = null;
-        }
-
-        if (runtime != null) {
-            runtime.stop();
-            runtime = null;
-        }
     }
 
     /**
@@ -162,11 +164,13 @@ public class LauncherImpl implements Launcher {
      * @throws LoaderException
      * @see METAINF_APPLICATION_SCDL_PATH
      */
-    public CompositeComponent<?> bootApplication(String name, URL appScdl) throws LoaderException {
+    @Deprecated
+    public CompositeComponent<?> bootApplication(String name, URL appScdl) throws TuscanyException {
+        ClassLoader applicationLoader = getApplicationLoader();
+
         if (appScdl == null) {
             throw new LoaderException("No application scdl found");
         }
-        ClassLoader applicationLoader = getApplicationLoader();
 
         // create a ComponentDefinition to represent the component we are going to deploy
         CompositeImplementation impl = new CompositeImplementation();

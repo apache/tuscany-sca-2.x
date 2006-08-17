@@ -22,11 +22,14 @@ import java.net.URL;
 
 import org.osoa.sca.CompositeContext;
 
+import org.apache.tuscany.api.TuscanyException;
+
 /**
  * @version $Rev$ $Date$
  */
 public interface Launcher {
-    void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitorFactory);
+    void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitorFactory)
+        throws TuscanyException;
 
     void shutdownRuntime();
 
