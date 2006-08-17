@@ -24,12 +24,9 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.test.Implementation">
+           name="org.apache.tuscany.launcher.Implementation">
 
     <!-- Foundation implementation processors -->
-    <component name="implementation.Destroy">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConstructorProcessor"/>
-    </component>
     <component name="implementation.Destroy">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.DestroyProcessor"/>
     </component>
