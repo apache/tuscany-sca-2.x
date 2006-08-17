@@ -23,8 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import org.apache.tuscany.spi.annotation.Monitor;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.api.annotation.Monitor;
+import org.apache.tuscany.host.MonitorFactory;
 
 import org.apache.tuscany.core.implementation.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.monitor;
+package org.apache.tuscany.host;
 
 import java.util.Map;
 

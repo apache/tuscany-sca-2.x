@@ -30,7 +30,7 @@ import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.annotation.Monitor;
+import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 

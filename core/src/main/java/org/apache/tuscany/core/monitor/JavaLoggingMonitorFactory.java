@@ -33,8 +33,8 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.apache.tuscany.spi.monitor.LogLevel;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.api.annotation.LogLevel;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47) Logger}.

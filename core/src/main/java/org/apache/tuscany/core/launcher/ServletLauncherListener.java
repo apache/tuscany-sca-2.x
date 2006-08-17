@@ -31,7 +31,7 @@ import javax.servlet.ServletContextListener;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * Launcher for runtime environment that loads info from servlet context params.
@@ -137,7 +137,7 @@ public class ServletLauncherListener implements ServletContextListener {
             component.start();
             context = new CompositeContextImpl(component);
             context.start();
-        
+
         } catch (Throwable t) {
             servletContext.setAttribute(LAUNCHER_THROWABLE_ATTRIBUTE, t);
             t.printStackTrace();
