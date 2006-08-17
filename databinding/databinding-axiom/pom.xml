@@ -30,6 +30,18 @@
 	<name>Apache Tuscany Data Binding for Axiom</name>
 	<description>Tuscany Axiom Data Binding</description>
 
+    <repositories>
+      <repository>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+        <id>apache-nightly-repository</id>
+        <name>Apache Nightly Repository</name>
+        <url>http://people.apache.org/repository/</url>
+        <layout>legacy</layout>
+      </repository>
+    </repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tuscany.databinding</groupId>
