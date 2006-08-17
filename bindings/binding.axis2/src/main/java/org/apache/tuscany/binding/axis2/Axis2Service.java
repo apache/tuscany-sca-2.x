@@ -58,15 +58,18 @@ public class Axis2Service<T> extends ServiceExtension<T> {
     private ConfigurationContext configContext;
 
     private WebServiceBinding binding;
+    
+    private TypeHelper typeHelper;
 
     public Axis2Service(String theName, Class<T> interfaze, CompositeComponent parent, WireService wireService, WebServiceBinding binding,
-            ServletHost servletHost, ConfigurationContext configContext) {
+            ServletHost servletHost, ConfigurationContext configContext, TypeHelper typeHelper) {
 
         super(theName, interfaze, parent, wireService);
 
         this.binding = binding;
         this.servletHost = servletHost;
         this.configContext = configContext;
+        this.typeHelper = typeHelper;
     }
 
     public void start() {
@@ -113,12 +116,6 @@ public class Axis2Service<T> extends ServiceExtension<T> {
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
         axisService.addParameter(userWSDL );
 
-        // FIXME:
-        // TypeHelper typeHelper = wsBinding.getTypeHelper();
-        // ClassLoader cl = wsBinding.getResourceLoader().getClassLoader();
-        TypeHelper typeHelper = null;
-        ClassLoader cl = null;
-
         Class<?> serviceInterface = this.getInterface();
 
         PortType wsdlPortType = wsdlPortInfo.getPortType();
@@ -129,13 +126,14 @@ public class Axis2Service<T> extends ServiceExtension<T> {
             Object entryPointProxy = this.getServiceInstance();
 
             WebServiceOperationMetaData omd = wsdlPortInfo.getOperationMetaData(operationName);
+            QName responseQN = omd.getOutputPart(0).getElementName();
 
             Method operationMethod = getMethod(serviceInterface, operationName);
             // outElementQName is not needed when calling fromOMElement method, and we can not get elementQName for
             // oneway operation.
-            SDODataBinding dataBinding = new SDODataBinding(cl, typeHelper, omd.isDocLitWrapped(), null);
+            SDODataBinding dataBinding = new SDODataBinding(typeHelper, omd.isDocLitWrapped(), responseQN);
             Axis2ServiceInOutSyncMessageReceiver msgrec = new Axis2ServiceInOutSyncMessageReceiver(entryPointProxy, operationMethod,
-                    dataBinding, cl);
+                    dataBinding);
 
             AxisOperation axisOp = axisService.getOperation(operationQN);
             axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
@@ -163,6 +161,10 @@ public class Axis2Service<T> extends ServiceExtension<T> {
             }
         }
         throw new BuilderConfigException("no operation named " + operationName + " found on service interface: " + serviceInterface.getName());
+    }
+
+    TypeHelper getTypeHelper() {
+        return typeHelper;
     }
 
 }

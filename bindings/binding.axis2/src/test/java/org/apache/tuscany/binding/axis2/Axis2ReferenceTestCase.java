@@ -37,6 +37,8 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import commonj.sdo.helper.TypeHelper;
+
 public class Axis2ReferenceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
@@ -69,6 +71,6 @@ public class Axis2ReferenceTestCase extends TestCase {
         // TODO figure out what to do with the service contract
         ServiceContract contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
-        return new Axis2Reference(serviceName, parent, wireService, wsBinding, contract);
+        return new Axis2Reference(serviceName, parent, wireService, wsBinding, contract, TypeHelper.INSTANCE);
     }
 }

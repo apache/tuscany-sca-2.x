@@ -18,77 +18,133 @@
  */
 package org.apache.tuscany.binding.axis2.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
+import java.util.List;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.axiom.om.impl.llom.factory.OMXMLBuilderFactory;
+import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader;
+import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
+import org.apache.tuscany.databinding.xml.StAXBinding;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
+import commonj.sdo.DataObject;
+import commonj.sdo.Property;
+import commonj.sdo.Type;
+import commonj.sdo.helper.DataFactory;
 import commonj.sdo.helper.TypeHelper;
-import org.apache.axiom.om.OMElement;
+import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XMLHelper;
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * DataBinding for converting between AXIOM OMElement and Java Objects
  */
 public class SDODataBinding {
 
-    //private ClassLoader classLoader;
-    //private TypeHelper typeHelper;
-    //private boolean isWrapped;
-    //private QName outElementQName;
+    private TypeHelper typeHelper;
 
-    public SDODataBinding(ClassLoader classLoader, TypeHelper typeHelper, boolean isWrapped, QName outElementQName) {
-        //this.classLoader = classLoader;
-        //this.typeHelper = typeHelper;
-        //this.isWrapped = isWrapped;
-        //this.outElementQName = outElementQName;
+    private boolean isWrapped;
+
+    private QName elementName;
+
+    public SDODataBinding(TypeHelper typeHelper, boolean isWrapped, QName elementName) {
+        this.typeHelper = typeHelper;
+        this.isWrapped = isWrapped;
+        this.elementName = elementName;
     }
 
     public Object[] fromOMElement(OMElement omElement) {
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            omElement.serialize(baos);
-            baos.flush();
-            baos.close();
-
-            //FIXME: need to use SDOXMLHelper
-            //return SDOXMLHelper.toObjects(classLoader,typeHelper, baos.toByteArray(), isWrapped);
-            return null;
-
-        } catch (IOException e) {
-            throw new InvocationRuntimeException(e);
-        } catch (XMLStreamException e) {
-            throw new InvocationRuntimeException(e);
-        }
+        XMLStreamReader reader = omElement.getXMLStreamReader();
+        // HACK: [rfeng] We should use the transformer in an interceptor
+        XMLStreamReader2XMLDocument transformer = new XMLStreamReader2XMLDocument();
+        TransformationContext context = new TransformationContextImpl();
+        StAXBinding binding = new StAXBinding();
+        binding.setAttribute(TypeHelper.class.getName(), typeHelper);
+        context.setTargetDataBinding(binding);
+        XMLDocument document = transformer.transform(reader, context);
+        return toObjects(document, isWrapped);
     }
 
     public OMElement toOMElement(Object[] os) {
-        //FIXME
-/*
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        XMLDocument document = toXMLDocument(typeHelper, os, elementName, isWrapped);
+        // HACK: [rfeng] We should use the transformer in an interceptor
+        XMLDocument2XMLStreamReader transformer = new XMLDocument2XMLStreamReader();
+        XMLStreamReader reader = transformer.transform(document, null);
+        OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), reader);
+        OMElement omElement = builder.getDocumentElement();
+        return omElement;
+    }
 
-            DataObject dataObject = SDOXMLHelper.toDataObject(classLoader, typeHelper, os, outElementQName, isWrapped);
-            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
-            xmlHelper.save(dataObject, outElementQName.getNamespaceURI(), outElementQName.getLocalPart(), baos);
-            baos.close();
+    /**
+     * Convert a typed DataObject to Java objects
+     * 
+     * @param dataObject
+     * @param isWrapped
+     * @return the array of Objects from the DataObject
+     */
+    public static Object[] toObjects(XMLDocument document, boolean isWrapped) {
+        DataObject dataObject = document.getRootObject();
+        if (isWrapped) {
+            List ips = dataObject.getInstanceProperties();
+            Object[] os = new Object[ips.size()];
+            for (int i = 0; i < ips.size(); i++) {
+                os[i] = dataObject.get((Property) ips.get(i));
+            }
+            return os;
+        } else {
+            Object object = dataObject;
+            Type type = dataObject.getType();
+            if (type.isSequenced()) {
+                object = dataObject.getSequence().getValue(0);
+            }
+            return new Object[] { object };
+        }
+    }
 
-            XMLStreamReader xsr = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(
-            baos.toByteArray()));
-            OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), xsr);
-            OMElement omElement = builder.getDocumentElement();
+    /**
+     * Convert objects to typed DataObject
+     * 
+     * @param typeNS
+     * @param typeName
+     * @param os
+     * @return the DataObject
+     */
+    private static XMLDocument toXMLDocument(TypeHelper typeHelper, Object[] os, QName elementQName, boolean isWrapped) {
+        XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
 
-            return omElement;
-            return null;
-        } catch (IOException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (XMLStreamException e) {
-            throw new ServiceRuntimeException(e);
-        } catch (FactoryConfigurationError e) {
-            throw new ServiceRuntimeException(e);
-        }*/
-        return null;
+        Property property = xsdHelper.getGlobalProperty(elementQName.getNamespaceURI(), elementQName.getLocalPart(), true);
+        if (null == property) {
+            throw new InvocationRuntimeException("Type '" + elementQName.toString() + "' not found in registered SDO types.");
+        }
+        DataObject dataObject = null;
+        if (isWrapped) {
+            DataFactory dataFactory = SDOUtil.createDataFactory(typeHelper);
+            dataObject = dataFactory.create(property.getType());
+            List ips = dataObject.getInstanceProperties();
+            for (int i = 0; i < ips.size(); i++) {
+                dataObject.set(i, os[i]);
+            }
+        } else {
+            Object value = os[0];
+            Type type = property.getType();
+            if (!type.isDataType()) {
+                dataObject = (DataObject) value;
+            } else {
+                dataObject = SDOUtil.createDataTypeWrapper(type, value);
+            }
+        }
+
+        XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+        return xmlHelper.createDocument(dataObject, elementQName.getNamespaceURI(), elementQName.getLocalPart());
+
     }
 
 }

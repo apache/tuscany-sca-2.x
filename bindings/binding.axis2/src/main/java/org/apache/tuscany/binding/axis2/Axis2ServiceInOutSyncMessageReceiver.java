@@ -34,17 +34,16 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
 
     protected Method operationMethod;
     protected SDODataBinding dataBinding;
-    protected ClassLoader classLoader;
+    // protected ClassLoader classLoader;
     private Object entryPointProxy;
 
     public Axis2ServiceInOutSyncMessageReceiver(Object entryPointProxy,
                                                         Method operationMethod,
-                                                        SDODataBinding dataBinding,
-                                                        ClassLoader classLoader) {
+                                                        SDODataBinding dataBinding) {
         this.entryPointProxy = entryPointProxy;
         this.operationMethod = operationMethod;
         this.dataBinding = dataBinding;
-        this.classLoader = classLoader;
+        // this.classLoader = classLoader;
     }
 
     @Override
@@ -52,8 +51,17 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         try {
 
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-
-            OMElement responseOM = (OMElement) operationMethod.invoke(entryPointProxy, requestOM);
+            OMElement responseOM = null;
+            Class<?>[] parameterTypes = operationMethod.getParameterTypes();
+            // Try to guess if it's passing OMElements
+            if(parameterTypes.length>0 && OMElement.class.isAssignableFrom(parameterTypes[0])) {    
+                responseOM = (OMElement) operationMethod.invoke(entryPointProxy, requestOM);
+            } else {
+                // Assumming it's SDO then
+                Object[] args = dataBinding.fromOMElement(requestOM);
+                Object result = operationMethod.invoke(entryPointProxy,args);
+                responseOM = dataBinding.toOMElement(new Object[] {result} );
+            }
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             soapEnvelope.getBody().addChild(responseOM);

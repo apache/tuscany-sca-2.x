@@ -38,6 +38,8 @@ import org.apache.tuscany.spi.wire.WireService;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 
+import commonj.sdo.helper.TypeHelper;
+
 public class Axis2ServiceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
@@ -85,7 +87,7 @@ if(true) return ;
         EasyMock.replay(inboundWire);
 
         Axis2Service<Greeter> axis2Service =
-            new Axis2Service<Greeter>(serviceName, Greeter.class, null, wireService, wsBinding, tomcatHost, null);
+            new Axis2Service<Greeter>(serviceName, Greeter.class, null, wireService, wsBinding, tomcatHost, null, TypeHelper.INSTANCE);
         axis2Service.setInboundWire(inboundWire);
 
         return axis2Service;

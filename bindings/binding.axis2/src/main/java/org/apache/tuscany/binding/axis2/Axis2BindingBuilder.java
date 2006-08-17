@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -28,6 +29,8 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+
+import commonj.sdo.helper.TypeHelper;
 
 /**
  * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured with the Axis2 binding
@@ -41,25 +44,29 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     private ConfigurationContext configContext;
 
     @Autowire()
-    public void setServletHost(ServletHost servletHost) {
+    public void setServletHost(ServletHost servletHost) throws AxisFault {
         this.servletHost = servletHost;
-        this.configContext = new TuscanyAxisConfigurator(null).getConfigurationContext();
+        this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
     }
 
     public SCAObject build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
 
         WebServiceBinding wsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
+        TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
+        if(typeHelper==null) typeHelper = TypeHelper.INSTANCE;
 
-        return new Axis2Service(serviceDefinition.getName(), interfaze, parent, wireService, wsBinding, servletHost, configContext);
+        return new Axis2Service(serviceDefinition.getName(), interfaze, parent, wireService, wsBinding, servletHost, configContext, typeHelper);
     }
 
     public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
             DeploymentContext deploymentContext) {
         
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+        TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
+        if(typeHelper==null) typeHelper = TypeHelper.INSTANCE;
 
-        return new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding, boundReferenceDefinition.getServiceContract());
+        return new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding, boundReferenceDefinition.getServiceContract(), typeHelper);
     }
 
     protected Class<WebServiceBinding> getBindingType() {
