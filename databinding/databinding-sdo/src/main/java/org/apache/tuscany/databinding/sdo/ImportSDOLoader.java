@@ -20,6 +20,7 @@ package org.apache.tuscany.databinding.sdo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -38,18 +39,20 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.annotation.Autowire;
 
+import org.osoa.sca.Version;
 import org.osoa.sca.annotations.Constructor;
 
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ImportSDOLoader extends LoaderExtension {
-    public static final QName IMPORT_SDO = new QName("http://www.osoa.org/xmlns/sca/0.9", "import.sdo");
+    public static final QName IMPORT_SDO = new QName(Version.XML_NAMESPACE_1_0, "import.sdo");
 
-    @Constructor({"registry"})
-    public ImportSDOLoader(@Autowire LoaderRegistry registry) {
+    @Constructor( { "registry" })
+    public ImportSDOLoader(@Autowire
+    LoaderRegistry registry) {
         super(registry);
     }
 
@@ -57,22 +60,32 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext loaderContext)
-        throws XMLStreamException, LoaderException {
+    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException,
+            LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
-        importFactory(reader, loaderContext);
-        importWSDL(reader, loaderContext);
+        // FIXME: [rfeng] How to associate the TypeHelper with deployment context?
+        TypeHelper typeHelper = TypeHelper.INSTANCE;
+        if (deploymentContext != null && deploymentContext.getParent() != null) {
+            typeHelper = (TypeHelper) deploymentContext.getParent().getExtension(TypeHelper.class.getName());
+            if (typeHelper == null) {
+                typeHelper = SDOUtil.createTypeHelper();
+                deploymentContext.getParent().putExtension(TypeHelper.class.getName(), typeHelper);
+            }
+        }
+
+        importFactory(reader, deploymentContext);
+        importWSDL(reader, deploymentContext, typeHelper);
         LoaderUtil.skipToEndElement(reader);
         return null;
     }
 
-    private void importFactory(XMLStreamReader reader, DeploymentContext loaderContext) throws LoaderException {
+    private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext) throws LoaderException {
         String factoryName = reader.getAttributeValue(null, "factory");
         if (factoryName != null) {
             ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
             try {
                 // set TCCL as SDO needs it
-                ClassLoader cl = loaderContext.getClassLoader();
+                ClassLoader cl = deploymentContext.getClassLoader();
                 Thread.currentThread().setContextClassLoader(cl);
                 Class<?> factoryClass = cl.loadClass(factoryName);
                 SDOUtil.registerStaticTypes(factoryClass);
@@ -84,15 +97,20 @@ public class ImportSDOLoader extends LoaderExtension {
         }
     }
 
-    private void importWSDL(XMLStreamReader reader, DeploymentContext loaderContext) throws LoaderException {
-        String wsdLLocation = reader.getAttributeValue(null, "wsdlLocation");
-        if (wsdLLocation != null) {
-            URL wsdlURL = loaderContext.getClassLoader().getResource(wsdLLocation);
+    private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, TypeHelper typeHelper) throws LoaderException {
+        String location = reader.getAttributeValue(null, "location");
+        if (location == null)
+            location = reader.getAttributeValue(null, "wsdlLocation");
+        if (location != null) {
             try {
+                URL wsdlURL = null;
+                URI uri = URI.create(location);
+                if (uri.isAbsolute()) {
+                    wsdlURL = uri.toURL();
+                }
+                wsdlURL = deploymentContext.getClassLoader().getResource(location);
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
-                    // TODO: How do we get the associated TypeHelper for the given DeploymentContext?
-                    TypeHelper typeHelper = TypeHelper.INSTANCE;
                     XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
                     xsdHelper.define(xsdInputStream, null);
                 } finally {
@@ -100,7 +118,7 @@ public class ImportSDOLoader extends LoaderExtension {
                 }
             } catch (IOException e) {
                 LoaderException sfe = new LoaderException(e.getMessage());
-                sfe.setResourceURI(wsdLLocation);
+                sfe.setResourceURI(location);
                 throw sfe;
             }
         }
