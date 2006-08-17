@@ -34,8 +34,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.host.MonitorFactory;
 
 /**
- * Launcher for runtime environment that loads info from servlet context params.
- * This listener manages one top-level Launcher (and hence one Tuscany runtime context)
+ * LauncherImpl for runtime environment that loads info from servlet context params.
+ * This listener manages one top-level LauncherImpl (and hence one Tuscany runtime context)
  * per servlet context; the lifecycle of that runtime corresponds to the the lifecycle of the
  * associated servlet context.
  *
@@ -72,13 +72,13 @@ public class ServletLauncherListener implements ServletContextListener {
      * Context attribute to which an Exception or Error object will be bound to if the
      * launcher fails to initialize.
      */
-    public static final String LAUNCHER_THROWABLE_ATTRIBUTE = "Tuscany.Launcher.Throwable";
+    public static final String LAUNCHER_THROWABLE_ATTRIBUTE = "Tuscany.LauncherImpl.Throwable";
 
     /**
-     * Context attribute to which the active {@link Launcher} managing the runtime for this
+     * Context attribute to which the active {@link LauncherImpl} managing the runtime for this
      * servlet context is stored.
      */
-    private static final String LAUNCHER_ATTRIBUTE = "Tuscany.Launcher";
+    private static final String LAUNCHER_ATTRIBUTE = "Tuscany.LauncherImpl";
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
@@ -86,7 +86,7 @@ public class ServletLauncherListener implements ServletContextListener {
         // Read optional path to system SCDL from context-param
         String systemScdlPath = servletContext.getInitParameter(SYSTEM_SCDL_PATH_PARAM);
         if (systemScdlPath == null) {
-            systemScdlPath = "/" + Launcher.METAINF_SYSTEM_SCDL_PATH;
+            systemScdlPath = "/" + LauncherImpl.METAINF_SYSTEM_SCDL_PATH;
         }
 
         // Read optional path to application SCDL from context-param
@@ -99,7 +99,7 @@ public class ServletLauncherListener implements ServletContextListener {
         String systemLogging = servletContext.getInitParameter(SYSTEM_MONITORING_PARAM);
         MonitorFactory mf = getMonitorFactory(systemLogging);
 
-        Launcher launcher = new Launcher();
+        LauncherImpl launcher = new LauncherImpl();
 
         // Current thread context classloader should be the webapp classloader
         launcher.setApplicationLoader(Thread.currentThread().getContextClassLoader());
@@ -147,7 +147,7 @@ public class ServletLauncherListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
 
-        Launcher launcher = (Launcher) servletContext.getAttribute(LAUNCHER_ATTRIBUTE);
+        LauncherImpl launcher = (LauncherImpl) servletContext.getAttribute(LAUNCHER_ATTRIBUTE);
 
         if (launcher != null) {
             launcher.shutdownRuntime();

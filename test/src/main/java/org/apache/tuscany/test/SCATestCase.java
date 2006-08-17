@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
-import org.apache.tuscany.core.launcher.Launcher;
+import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -44,14 +44,14 @@ public class SCATestCase extends TestCase {
     protected CompositeComponent<?> component;
     private CompositeContextImpl context;
     private Map<String, URL> extensions = new HashMap<String, URL>();
-    private String applicationSCDL = Launcher.METAINF_APPLICATION_SCDL_PATH;
+    private String applicationSCDL = LauncherImpl.METAINF_APPLICATION_SCDL_PATH;
 
     protected void setUp() throws Exception {
         super.setUp();
         ClassLoader cl = getClass().getClassLoader();
-        Launcher launcher = new Launcher();
+        LauncherImpl launcher = new LauncherImpl();
         launcher.setApplicationLoader(cl);
-        CompositeComponent<?> composite = launcher.bootRuntime(cl.getResource(Launcher.METAINF_SYSTEM_SCDL_PATH),
+        CompositeComponent<?> composite = launcher.bootRuntime(cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH),
                 new NullMonitorFactory());
 
         for (String extensionName : extensions.keySet()) {

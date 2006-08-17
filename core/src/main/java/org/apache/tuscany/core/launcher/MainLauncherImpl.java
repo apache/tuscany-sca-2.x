@@ -33,11 +33,11 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
 
 /**
- * Launcher for launcher runtime environment that invokes a jar's Main class.
+ * LauncherImpl for launcher runtime environment that invokes a jar's Main class.
  *
  * @version $Rev$ $Date$
  */
-public class MainLauncher extends Launcher {
+public class MainLauncherImpl extends LauncherImpl {
     private String className;
     private String[] args;
 
@@ -198,7 +198,7 @@ public class MainLauncher extends Launcher {
 
 
     protected void usage() {
-        ResourceBundle bundle = ResourceBundle.getBundle(MainLauncher.class.getName());
+        ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherImpl.class.getName());
         System.err.print(bundle.getString("org.apache.tuscany.core.launcher.Usage"));
         System.exit(1);
     }

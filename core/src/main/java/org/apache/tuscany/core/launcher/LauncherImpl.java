@@ -22,6 +22,8 @@ import java.io.File;
 import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
+import org.osoa.sca.CompositeContext;
+
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
@@ -34,6 +36,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.Launcher;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
 /**
@@ -41,7 +44,7 @@ import org.apache.tuscany.spi.services.info.RuntimeInfo;
  *
  * @version $Rev$ $Date$
  */
-public class Launcher {
+public class LauncherImpl implements Launcher {
     /**
      * A conventional META-INF based location for the system SCDL.
      *
@@ -61,6 +64,16 @@ public class Launcher {
     private Deployer deployer;
 
     private CompositeComponent<?> composite;
+
+    public void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitorFactory) {
+        // FIXME implement
+        throw new UnsupportedOperationException();
+    }
+
+    public CompositeContext bootApplication(URL applicationScdl, ClassLoader applicationClassLoader) {
+        // FIXME implement
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Returns the classloader for application classes.
@@ -182,7 +195,7 @@ public class Launcher {
             return new File(property);
         }
 
-        URL url = getClass().getResource("Launcher.class");
+        URL url = getClass().getResource("LauncherImpl.class");
         if (!"jar".equals(url.getProtocol())) {
             throw new IllegalStateException("Must be run from a jar: " + url);
         }
