@@ -16,25 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.monitor;
+package org.apache.tuscany.host;
 
-import static java.lang.annotation.ElementType.METHOD;
-import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import java.lang.annotation.Target;
+import java.net.URL;
 
 /**
- * Annotation that can be applied to methods in a monitoring interface to indicate to logging frameworks the severity of
- * the event.
- *
  * @version $Rev$ $Date$
  */
-@Target({METHOD})
-@Retention(RUNTIME)
-public @interface LogLevel {
-
-    /**
-     * The log level as specified by {@link java.util.logging.Level}.
-     */
-    @SuppressWarnings({"JavaDoc"}) String value();
+public interface Launcher {
+    void bootRuntime(URL systemScdl, MonitorFactory monitorFactory);
 }

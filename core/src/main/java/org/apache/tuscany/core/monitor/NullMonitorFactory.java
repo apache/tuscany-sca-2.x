@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Init;
 
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * Implementation of a {@link MonitorFactory} that produces implementations that simply return.

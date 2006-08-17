@@ -61,7 +61,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         this.monitor = monitor;
     }
 
-    @org.apache.tuscany.spi.annotation.Monitor
+    @org.apache.tuscany.api.annotation.Monitor
     public void setMonitor(Monitor monitor) {
         this.monitor = monitor;
     }

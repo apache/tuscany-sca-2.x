@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.host.MonitorFactory;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;

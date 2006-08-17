@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.monitor.MonitorFactory;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * Interface that abstracts the process used to create a running Tuscany system.

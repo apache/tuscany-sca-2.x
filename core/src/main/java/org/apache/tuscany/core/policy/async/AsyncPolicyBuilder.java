@@ -62,7 +62,7 @@ public class AsyncPolicyBuilder implements TargetPolicyBuilder {
         this.builderRegistry = builderRegistry;
     }
 
-    @org.apache.tuscany.spi.annotation.Monitor
+    @org.apache.tuscany.api.annotation.Monitor
     public void setMonitor(AsyncMonitor monitor) {
         this.monitor = monitor;
     }
