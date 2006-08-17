@@ -102,7 +102,8 @@ public class ServletLauncherListener implements ServletContextListener {
         LauncherImpl launcher = new LauncherImpl();
 
         // Current thread context classloader should be the webapp classloader
-        launcher.setApplicationLoader(Thread.currentThread().getContextClassLoader());
+        ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
+        launcher.setApplicationLoader(webappClassLoader);
 
         CompositeComponent<?> component;
         CompositeContextImpl context;
