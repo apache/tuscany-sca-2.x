@@ -40,13 +40,19 @@ public class ImportSDOLoaderTestCase extends TestCase {
     private DeploymentContext deploymentContext;
 
     public void testMinimal() throws XMLStreamException, LoaderException {
-        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9'/>";
+        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/1.0'/>";
         XMLStreamReader reader = getReader(xml);
-        assertNull(loader.load(null, reader, null));
+        assertNull(loader.load(null, reader, deploymentContext));
     }
 
+    public void testLocation() throws XMLStreamException, LoaderException {
+        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/1.0' location='ipo.xsd'/>";
+        XMLStreamReader reader = getReader(xml);
+        assertNull(loader.load(null, reader, deploymentContext));
+    }
+    
     public void testFactory() throws XMLStreamException, LoaderException {
-        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/0.9' "
+        String xml = "<import.sdo xmlns='http://www.osoa.org/xmlns/sca/1.0' "
                 + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);

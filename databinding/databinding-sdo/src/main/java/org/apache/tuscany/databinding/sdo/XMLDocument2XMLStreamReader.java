@@ -24,13 +24,14 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
 
-public class XMLDocument2XMLStreamReader implements PullTransformer<XMLDocument, XMLStreamReader> {
+public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocument, XMLStreamReader> implements PullTransformer<XMLDocument, XMLStreamReader> {
     private XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(TypeHelper.INSTANCE);
 
     /**
@@ -46,11 +47,11 @@ public class XMLDocument2XMLStreamReader implements PullTransformer<XMLDocument,
         }
     }
 
-    public Class<commonj.sdo.helper.XMLDocument> getSourceType() {
+    public Class getSourceType() {
         return XMLDocument.class;
     }
 
-    public Class<XMLStreamReader> getTargetType() {
+    public Class getTargetType() {
         return XMLStreamReader.class;
     }
 

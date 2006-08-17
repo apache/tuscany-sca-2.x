@@ -21,11 +21,12 @@ package org.apache.tuscany.databinding.sdo;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.XMLHelper;
 
-public class DataObject2String implements PullTransformer<DataObject, String> {
+public class DataObject2String extends TransformerExtension<DataObject, String> implements PullTransformer<DataObject, String> {
 
     public String transform(DataObject source, TransformationContext context) {
         try {
@@ -35,11 +36,11 @@ public class DataObject2String implements PullTransformer<DataObject, String> {
         }
     }
 
-    public Class<DataObject> getSourceType() {
+    public Class getSourceType() {
         return DataObject.class;
     }
 
-    public Class<String> getTargetType() {
+    public Class getTargetType() {
         return String.class;
     }
 
