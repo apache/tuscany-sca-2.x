@@ -21,10 +21,11 @@ package org.apache.tuscany.databinding.castor;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Marshaller;
 import org.xml.sax.ContentHandler;
 
-public class Castor2Writer<T> implements PushTransformer<T, ContentHandler> {
+public class Castor2Writer<T> extends TransformerExtension<T, ContentHandler> implements PushTransformer<T, ContentHandler> {
     private Class<T> type;
 
     /**
@@ -35,11 +36,11 @@ public class Castor2Writer<T> implements PushTransformer<T, ContentHandler> {
         this.type = type;
     }
 
-    public Class<T> getSourceType() {
+    public Class getSourceType() {
         return type;
     }
 
-    public Class<ContentHandler> getTargetType() {
+    public Class getTargetType() {
         return ContentHandler.class;
     }
 

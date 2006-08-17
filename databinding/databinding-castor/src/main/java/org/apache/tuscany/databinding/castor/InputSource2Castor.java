@@ -21,10 +21,11 @@ package org.apache.tuscany.databinding.castor;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Unmarshaller;
 import org.xml.sax.InputSource;
 
-public class InputSource2Castor<T> implements PullTransformer<InputSource, T> {
+public class InputSource2Castor<T> extends TransformerExtension<InputSource, T> implements PullTransformer<InputSource, T> {
     private Class<T> type;
 
     /**
@@ -35,11 +36,11 @@ public class InputSource2Castor<T> implements PullTransformer<InputSource, T> {
         this.type = type;
     }
 
-    public Class<T> getTargetType() {
+    public Class getTargetType() {
         return type;
     }
 
-    public Class<InputSource> getSourceType() {
+    public Class getSourceType() {
         return InputSource.class;
     }
 

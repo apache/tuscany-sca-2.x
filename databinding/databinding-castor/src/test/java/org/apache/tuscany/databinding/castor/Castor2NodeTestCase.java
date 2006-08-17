@@ -39,10 +39,10 @@ public class Castor2NodeTestCase extends TestCase {
 
     public void testTransform() throws Exception {
         // FIXME: There's a bug in the castor-generated code which cannot handle subutype correctly
+        // http://jira.codehaus.org/browse/CASTOR-1475
         // shipTo should be able to accept UKAddress
-        // Reader2Castor<PurchaseOrder> t1 = new Reader2Castor<PurchaseOrder>(PurchaseOrder.class);
-        // PurchaseOrder po = t1.transform(new StringReader(IPO_XML), null);
-        // PurchaseOrderType po = PurchaseOrder.unmarshal();
+//         Reader2Castor<PurchaseOrder> t1 = new Reader2Castor<PurchaseOrder>(PurchaseOrder.class);
+//         PurchaseOrder po = t1.transform(new StringReader(IPO_XML), null);
         /*
          * Castor2Node t2 = new Castor2Node(); Node node = t2.transform(po, null); Assert.assertNotNull(node);
          */
