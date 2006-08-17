@@ -48,7 +48,7 @@ public class XmlObjectTestCase extends TestCase {
         super.setUp();
     }
 
-    public void testXmlObject() throws Exception {
+    public void testTransform() throws Exception {
         XmlObject object = XmlObject.Factory.parse(new StringReader(IPO_XML));
 
         // XmlObject to XMLStreamReader

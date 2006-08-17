@@ -27,7 +27,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>databinding-test</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>Data Binding Integration Test</name>
 	<description>Data Binding Integration Test</description>
 
@@ -68,13 +68,25 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+        
+        <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>2.0</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>test</artifactId>
+            <version>${sca.version}</version>
+            <scope>test</scope>
+        </dependency>    
 	</dependencies>
-
+    
 	<repositories>
 		<repository>
 			<snapshots>
@@ -103,8 +115,6 @@
 			</testResource>
 		</testResources>
         
-        <testSourceDirectory>target/jaxb-source</testSourceDirectory>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.tuscany</groupId>
@@ -112,7 +122,7 @@
 				<executions>
 					<execution>
 						<id>generate-sdo</id>
-						<phase>generate-test-sources</phase>
+						<phase>generate-sources</phase>
 						<configuration>
 							<schemaFile>${basedir}/src/test/resources/ipo.xsd</schemaFile>
 							<javaPackage>com.example.ipo.sdo</javaPackage>
@@ -126,35 +136,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
-			<!-- 
-				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>xmlbeans-maven-plugin</artifactId>
-				<executions>
-				<execution>
-				<goals>
-				<goal>xmlbeans</goal>
-				</goals>
-				</execution>
-				</executions>
-				<inherited>true</inherited>
-				<configuration>
-				<schemaDirectory>
-				${basedir}/src/test/resources
-				</schemaDirectory>
-				<sourceGenerationDirectory>
-				${project.build.directory}/xmlbeans-source
-				</sourceGenerationDirectory>
-				<xmlConfigs>
-				<xmlConfig implementation="java.io.File">
-				${basedir}/src/test/resources/xmlbeans/ipo.xsdconfig
-				</xmlConfig>
-				</xmlConfigs>
-				</configuration>
-				</plugin>
-			-->
 
 			<plugin>
 				<groupId>com.sun.tools.xjc.maven2</groupId>
