@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.databinding;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ import org.apache.tuscany.databinding.axiom.String2OMElement;
 import org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement;
 import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
 import org.apache.tuscany.databinding.jaxb.JAXB2Node;
+import org.apache.tuscany.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.databinding.jaxb.Node2JAXB;
 import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
 import org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader;
@@ -56,15 +61,15 @@ import commonj.sdo.helper.XSDHelper;
 
 public class TransformationTestCase extends TestCase {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-    + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "  xmlns:ipo=\"http://www.example.com/IPO\""
-    + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
-    + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>" + "    <street>47 Eden Street</street>"
-    + "    <city>Cambridge</city>" + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
-    + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>" + "    <city>Old Town</city>" + "    <state>PA</state>"
-    + "    <zip>95819</zip>" + "  </billTo>" + "  <items>" + "    <item partNum=\"833-AA\">"
-    + "      <productName>Lapis necklace</productName>" + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
-    + "      <ipo:comment>Want this for the holidays</ipo:comment>" + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>"
-    + "</ipo:purchaseOrder>";
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "  xmlns:ipo=\"http://www.example.com/IPO\""
+            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
+            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>" + "    <street>47 Eden Street</street>"
+            + "    <city>Cambridge</city>" + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
+            + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>" + "    <city>Old Town</city>" + "    <state>PA</state>"
+            + "    <zip>95819</zip>" + "  </billTo>" + "  <items>" + "    <item partNum=\"833-AA\">"
+            + "      <productName>Lapis necklace</productName>" + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
+            + "      <ipo:comment>Want this for the holidays</ipo:comment>" + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>"
+            + "</ipo:purchaseOrder>";
 
     private TransformerRegistry registry;
 
@@ -77,9 +82,9 @@ public class TransformationTestCase extends TestCase {
         List<Transformer> transformers = new ArrayList<Transformer>();
 
         // Adding JAXB transformers
-        transformers.add(new JAXB2Node(contextPath));
-        transformers.add(new Node2JAXB(contextPath));
-        transformers.add(new XMLStreamReader2JAXB(contextPath));
+        transformers.add(new JAXB2Node());
+        transformers.add(new Node2JAXB());
+        transformers.add(new XMLStreamReader2JAXB());
 
         // Adding XMLBeans transformers
         transformers.add(new XmlObject2Node());
@@ -124,12 +129,14 @@ public class TransformationTestCase extends TestCase {
         // URL/Stream/Reader to XmlObject
         XmlObject object = XmlObject.Factory.parse(new StringReader(IPO_XML));
 
-        List<Transformer> path = registry.getTransformerChain(XmlObject.class, DataObject.class);
+        List<Transformer> path = registry.getTransformerChain(XmlObject.class.getName(), DataObject.class.getName());
         System.out.println("Path: " + path);
+
+        TransformationContext tContext = createTransformationContext();
 
         Object result = object;
         for (Transformer transformer : path) {
-            result = transformer.transform(result, null);
+            result = ((PullTransformer) transformer).transform(result, tContext);
         }
         System.out.println("Result: " + result);
         Assert.assertNotNull(result);
@@ -146,12 +153,14 @@ public class TransformationTestCase extends TestCase {
         // URL/Stream/Reader to XmlObject
         XMLDocument object = XMLHelper.INSTANCE.load(xmlFile.openStream());
 
-        List<Transformer> path = registry.getTransformerChain(XMLDocument.class, Node.class);
+        List<Transformer> path = registry.getTransformerChain(XMLDocument.class.getName(), Node.class.getName());
         System.out.println("Path: " + path);
+
+        TransformationContext tContext = createTransformationContext();
 
         Object result = object;
         for (Transformer transformer : path) {
-            result = transformer.transform(result, null);
+            result = ((PullTransformer) transformer).transform(result, tContext);
         }
         System.out.println("Result: " + result);
         Assert.assertNotNull(result);
@@ -168,17 +177,36 @@ public class TransformationTestCase extends TestCase {
         // URL/Stream/Reader to XmlObject
         XMLDocument object = XMLHelper.INSTANCE.load(xmlFile.openStream());
 
-        List<Transformer> path = registry.getTransformerChain(XMLDocument.class, Object.class);
+        List<Transformer> path = registry.getTransformerChain(XMLDocument.class.getName(), Object.class.getName());
         System.out.println("Path: " + path);
+
+        TransformationContext tContext = createTransformationContext();
 
         Object result = object;
         for (Transformer transformer : path) {
-            result = transformer.transform(result, null);
+            result = ((PullTransformer) transformer).transform(result, tContext);
         }
         System.out.println("Result: " + result);
         Assert.assertNotNull(result);
         Assert.assertTrue(result instanceof Object);
 
+    }
+
+    private TransformationContext createTransformationContext() {
+        DataBinding targetContext = createMock(DataBinding.class);
+        expect(targetContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
+        replay(targetContext);
+
+        TransformationContext tContext = createMock(TransformationContext.class);
+        expect(tContext.getTargetDataBinding()).andReturn(targetContext).anyTimes();
+
+        DataBinding sourceContext = createMock(DataBinding.class);
+        expect(sourceContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
+        replay(sourceContext);
+
+        expect(tContext.getSourceDataBinding()).andReturn(sourceContext).anyTimes();
+        replay(tContext);
+        return tContext;
     }
 
     protected void tearDown() throws Exception {
