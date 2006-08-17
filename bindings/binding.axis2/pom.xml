@@ -65,6 +65,13 @@
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.databinding</groupId>
+            <artifactId>databinding-sdo</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>        
 
         <!-- axis 2.0 SNAPSHOT      -->
 

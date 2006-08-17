@@ -19,14 +19,10 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -36,6 +32,9 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service
@@ -70,8 +69,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
             operationClient.setOptions(options);
-            boolean pureOMelement =false;
-            
+            boolean pureOMelement = false;
 
             SOAPEnvelope env = soapFactory.getDefaultEnvelope();
 
@@ -79,25 +77,18 @@ public class Axis2TargetInvoker implements TargetInvoker {
                 // OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
                 // env.getBody().addChild(requestOM);
                 // TODO HACK
-                if(((Object [])payload)[0] instanceof OMElement){
+                if (((Object[]) payload)[0] instanceof OMElement) {
                     SOAPBody body = env.getBody();
-                    for(Object bc : ((Object [])payload)){
-                        if(bc instanceof OMElement){
-                            body.addChild((OMElement)bc);
-                        }else{
+                    for (Object bc : ((Object[]) payload)) {
+                        if (bc instanceof OMElement) {
+                            body.addChild((OMElement) bc);
+                        } else {
                             throw new IllegalArgumentException("Can't handle mixed payloads betweem OMElements and other types.");
                         }
                     }
-                }else{
-                    OMFactory fac = env.getOMFactory();
-                    OMElement opE = fac.createOMElement("getGreetings", "http://helloworld", "helloworld");
-                    // <helloworld:name>World</helloworld:name>
-
-                    OMElement parmE = fac.createOMElement("name", "http://helloworld", "helloworld");
-                    opE.addChild(parmE);
-                    parmE.addChild(fac.createOMText(((Object[]) payload)[0] + ""));
-                    env.getBody().addChild(opE);
-                    // TODO HACK
+                } else {
+                    OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
+                    env.getBody().addChild(requestOM);
                 }
 
             }
@@ -106,21 +97,21 @@ public class Axis2TargetInvoker implements TargetInvoker {
             requestMC.setEnvelope(env);
 
             operationClient.addMessageContext(requestMC);
-//Class loader switching is taken out 8/15/06 .. we shouldn't require this any more
-//            ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-//            ClassLoader scl = this.getClass().getClassLoader();
-//            try {
-//               if (tccl != scl) {
-//                    Thread.currentThread().setContextClassLoader(scl);
-//                }
+            // Class loader switching is taken out 8/15/06 .. we shouldn't require this any more
+            // ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+            // ClassLoader scl = this.getClass().getClassLoader();
+            // try {
+            // if (tccl != scl) {
+            // Thread.currentThread().setContextClassLoader(scl);
+            // }
 
-                operationClient.execute(true);
+            operationClient.execute(true);
 
-//            } finally {
-//                if (tccl != scl) {
-//                    Thread.currentThread().setContextClassLoader(tccl);
-//                }
-//            }
+            // } finally {
+            // if (tccl != scl) {
+            // Thread.currentThread().setContextClassLoader(tccl);
+            // }
+            // }
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
             OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
@@ -131,9 +122,9 @@ public class Axis2TargetInvoker implements TargetInvoker {
             }
 
             Object response;
-            if(pureOMelement){
-                response= responseOM;
-            }else{
+            if (pureOMelement) {
+                response = responseOM;
+            } else {
                 if (os == null || os.length < 1) {
                     response = null;
                 } else {

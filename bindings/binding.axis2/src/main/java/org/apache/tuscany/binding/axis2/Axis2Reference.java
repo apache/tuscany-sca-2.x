@@ -54,18 +54,21 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
+    private TypeHelper typeHelper;
     
     public Axis2Reference(String theName,
                           CompositeComponent<?> parent,
                           WireService wireService,
                           WebServiceBinding wsBinding,
-                          ServiceContract contract) {
+                          ServiceContract contract,
+                          TypeHelper typeHelper) {
         super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
             wsPortMetaData =
                 new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);
             serviceClient = createServiceClient(wsdlDefinition, wsPortMetaData);
+            this.typeHelper = typeHelper;
         } catch (AxisFault e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -76,11 +79,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
         Axis2TargetInvoker invoker = null;
         try {
             //FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
-            //TypeHelper typeHelper = wsBinding.getTypeHelper();
-            //ClassLoader cl = wsBinding.getResourceLoader().getClassLoader();
-            TypeHelper typeHelper = null;
-            ClassLoader cl = null;
-            invoker = createOperationInvokers(serviceClient, operation, typeHelper, cl, wsPortMetaData);
+            invoker = createOperationInvokers(serviceClient, operation, typeHelper, wsPortMetaData);
         } catch (AxisFault e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -94,7 +93,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
     private ServiceClient createServiceClient(Definition wsdlDefinition,
                                               WebServicePortMetaData wsPortMetaData) throws AxisFault {
 
-        TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator(null);
+        TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
         ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
         QName serviceQName = wsPortMetaData.getServiceName();
         String portName = wsPortMetaData.getPortName().getLocalPart();
@@ -109,7 +108,6 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
     private Axis2TargetInvoker createOperationInvokers(ServiceClient serviceClient,
                                                        Method m,
                                                        TypeHelper typeHelper,
-                                                       ClassLoader cl,
                                                        WebServicePortMetaData wsPortMetaData)
         throws AxisFault {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
@@ -122,7 +120,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
         List<?> sig = operationMetaData.getOperationSignature();
 
         SDODataBinding dataBinding =
-            new SDODataBinding(cl, typeHelper, isWrapped, sig.size() > 0 ? (QName) sig.get(0) : null);
+            new SDODataBinding(typeHelper, isWrapped, sig.size() > 0 ? (QName) sig.get(0) : null);
 
         Options options = new Options();
         options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
