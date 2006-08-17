@@ -18,24 +18,29 @@
  */
 package org.apache.tuscany.databinding.castor;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.xml.DOMHelper;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class Castor2Node implements PullTransformer<Object, Node> {
+public class Castor2Node<T> extends TransformerExtension<T, Node> implements PullTransformer<T, Node> {
+    private Class<T> type;
 
-    public Class<Node> getTargetType() {
+    public Castor2Node(Class<T> type) {
+        super();
+        this.type = type;
+    }
+
+    public Class getTargetType() {
         return Node.class;
     }
 
-    public Class<Object> getSourceType() {
-        return Object.class;
+    public Class getSourceType() {
+        return type;
     }
 
     public int getWeight() {
@@ -45,12 +50,9 @@ public class Castor2Node implements PullTransformer<Object, Node> {
     /**
      * @see org.apache.tuscany.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
      */
-    public Node transform(Object source, TransformationContext arg1) {
+    public Node transform(Object source, TransformationContext context) {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.newDocument();
-
+            Document document = DOMHelper.newDocument();
             Marshaller.marshal(source, document);
             return document;
         } catch (Exception e) {

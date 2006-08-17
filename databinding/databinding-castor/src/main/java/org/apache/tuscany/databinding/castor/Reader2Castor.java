@@ -23,9 +23,10 @@ import java.io.Reader;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Unmarshaller;
 
-public class Reader2Castor<T> implements PullTransformer<Reader, T> {
+public class Reader2Castor<T> extends TransformerExtension<Reader, T> implements PullTransformer<Reader, T> {
     private Class<T> type;
 
     /**
@@ -36,11 +37,11 @@ public class Reader2Castor<T> implements PullTransformer<Reader, T> {
         this.type = type;
     }
 
-    public Class<T> getTargetType() {
+    public Class getTargetType() {
         return type;
     }
 
-    public Class<Reader> getSourceType() {
+    public Class getSourceType() {
         return Reader.class;
     }
 
