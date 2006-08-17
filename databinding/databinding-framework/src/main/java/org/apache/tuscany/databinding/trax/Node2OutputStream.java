@@ -28,13 +28,14 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 
 /**
  * Push DOM Node to OutputStream
  * 
  */
-public class Node2OutputStream implements PushTransformer<Node, OutputStream> {
+public class Node2OutputStream extends TransformerExtension<Node, OutputStream> implements PushTransformer<Node, OutputStream> {
     private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
 
     public void transform(Node source, OutputStream writer, TransformationContext context) {
@@ -47,11 +48,11 @@ public class Node2OutputStream implements PushTransformer<Node, OutputStream> {
         }
     }
 
-    public Class<Node> getSourceType() {
+    public Class getSourceType() {
         return Node.class;
     }
 
-    public Class<OutputStream> getTargetType() {
+    public Class getTargetType() {
         return OutputStream.class;
     }
 

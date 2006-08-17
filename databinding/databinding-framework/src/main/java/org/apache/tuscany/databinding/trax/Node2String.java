@@ -23,13 +23,14 @@ import java.io.StringWriter;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML String
  *
  */
-public class Node2String implements PullTransformer<Node, String> {
+public class Node2String extends TransformerExtension<Node, String> implements PullTransformer<Node, String> {
     private static final Node2Writer transformer = new Node2Writer();
 
     public String transform(Node source, TransformationContext context) {
@@ -42,11 +43,11 @@ public class Node2String implements PullTransformer<Node, String> {
         }
     }
 
-    public Class<Node> getSourceType() {
+    public Class getSourceType() {
         return Node.class;
     }
 
-    public Class<String> getTargetType() {
+    public Class getTargetType() {
         return String.class;
     }
 

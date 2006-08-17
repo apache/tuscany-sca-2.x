@@ -24,20 +24,25 @@ import java.util.List;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.util.DirectedGraph;
+import org.osoa.sca.annotations.Init;
 
 public class TransformerRegistryImpl implements TransformerRegistry {
 
-    private DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
+    private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
+    
+    @Init(eager = true)
+    public void init() {
+    }    
 
-    public void registerTransformer(Object sourceType, Object resultType, Transformer transformer, int weight) {
+    public void registerTransformer(Object sourceType, Object resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
     }
 
     public void registerTransformer(Transformer transformer) {
-        graph.addEdge(transformer.getSourceType(), transformer.getTargetType(), transformer, transformer.getWeight());
+        graph.addEdge(transformer.getSourceBinding(), transformer.getTargetBinding(), transformer, transformer.getWeight());
     }
 
-    public boolean removeTransformer(Object sourceType, Object resultType) {
+    public boolean unregisterTransformer(Object sourceType, Object resultType) {
         return graph.removeEdge(sourceType, resultType);
     }
 

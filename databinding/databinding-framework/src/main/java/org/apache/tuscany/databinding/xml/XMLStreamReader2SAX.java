@@ -23,24 +23,25 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.xml.sax.ContentHandler;
 
 /**
  *
  */
-public class XMLStreamReader2SAX implements PushTransformer<XMLStreamReader, ContentHandler> {
+public class XMLStreamReader2SAX extends TransformerExtension<XMLStreamReader, ContentHandler> implements PushTransformer<XMLStreamReader, ContentHandler> {
 
     /**
      * @see org.apache.tuscany.databinding.PushTransformer#getSourceType()
      */
-    public Class<ContentHandler> getTargetType() {
+    public Class getTargetType() {
         return ContentHandler.class;
     }
 
     /**
      * @see org.apache.tuscany.databinding.PushTransformer#getSourceType()
      */
-    public Class<XMLStreamReader> getSourceType() {
+    public Class getSourceType() {
         return XMLStreamReader.class;
     }
 

@@ -18,11 +18,10 @@
  */
 package org.apache.tuscany.databinding.xml;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -31,11 +30,11 @@ import org.w3c.dom.ls.LSSerializer;
  * Transform DOM Node to XML String
  *
  */
-public class Node2String implements PullTransformer<Node, String> {
+public class Node2String extends TransformerExtension<Node, String> implements PullTransformer<Node, String> {
 
     public String transform(Node source, TransformationContext context) {
         try {
-            DOMImplementationLS impl = (DOMImplementationLS) DocumentBuilderFactory.newInstance().newDocumentBuilder().getDOMImplementation();
+            DOMImplementationLS impl = (DOMImplementationLS) DOMHelper.newDocumentBuilder().getDOMImplementation();
             LSSerializer serializer = impl.createLSSerializer();
             return serializer.writeToString(source);
         } catch (Exception e) {
@@ -43,11 +42,11 @@ public class Node2String implements PullTransformer<Node, String> {
         }
     }
 
-    public Class<Node> getSourceType() {
+    public Class getSourceType() {
         return Node.class;
     }
 
-    public Class<String> getTargetType() {
+    public Class getTargetType() {
         return String.class;
     }
 

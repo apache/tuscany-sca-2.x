@@ -25,12 +25,13 @@ import javax.xml.transform.TransformerFactory;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
 /**
  * Transform TrAX Source to Result
  * 
  */
-public class Source2ResultTransformer implements PushTransformer<Source, Result> {
+public class Source2ResultTransformer extends TransformerExtension<Source, Result> implements PushTransformer<Source, Result> {
     private static final TransformerFactory factory = TransformerFactory.newInstance();
 
     public void transform(Source source, Result result, TransformationContext context) {
@@ -42,11 +43,11 @@ public class Source2ResultTransformer implements PushTransformer<Source, Result>
         }
     }
 
-    public Class<Source> getSourceType() {
+    public Class getSourceType() {
         return Source.class;
     }
 
-    public Class<Result> getTargetType() {
+    public Class getTargetType() {
         return Result.class;
     }
 

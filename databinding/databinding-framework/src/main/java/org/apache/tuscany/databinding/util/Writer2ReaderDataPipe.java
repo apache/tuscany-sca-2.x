@@ -24,8 +24,9 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
-public class Writer2ReaderDataPipe implements DataPipe<Writer, Reader> {
+public class Writer2ReaderDataPipe extends TransformerExtension<Writer, Reader> implements DataPipe<Writer, Reader> {
 
     private StringWriter writer = new StringWriter();
 
@@ -33,7 +34,7 @@ public class Writer2ReaderDataPipe implements DataPipe<Writer, Reader> {
         return new StringReader(writer.toString());
     }
 
-    public Class<Reader> getTargetType() {
+    public Class getTargetType() {
         return Reader.class;
     }
 
@@ -45,7 +46,7 @@ public class Writer2ReaderDataPipe implements DataPipe<Writer, Reader> {
         return writer;
     }
 
-    public Class<Writer> getSourceType() {
+    public Class getSourceType() {
         return Writer.class;
     }
 

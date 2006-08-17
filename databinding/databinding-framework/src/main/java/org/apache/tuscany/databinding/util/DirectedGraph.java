@@ -209,12 +209,13 @@ public class DirectedGraph<V, E> {
     }
 
     /**
-     * Get the shortes path from the source vertex to the target vertex using Dijkstra's algorithm. If 
-     * there's no path, null will be returned. If the source is the same as the target, it returns a 
-     * path with empty edges with weight 0.
-     *  
-     * @param sourceValue The value identifies the source
-     * @param targetValue The value identifies the target
+     * Get the shortes path from the source vertex to the target vertex using Dijkstra's algorithm. If there's no path, null will be returned. If the
+     * source is the same as the target, it returns a path with empty edges with weight 0.
+     * 
+     * @param sourceValue
+     *            The value identifies the source
+     * @param targetValue
+     *            The value identifies the target
      * @return The shortest path
      */
     public Path getShortestPath(V sourceValue, V targetValue) {
@@ -320,5 +321,13 @@ public class DirectedGraph<V, E> {
 
     public Map<V, Vertex> getVertices() {
         return vertices;
+    }
+
+    public void addGraph(DirectedGraph<V, E> otherGraph) {
+        for (Vertex v : otherGraph.vertices.values()) {
+            for (Edge e : v.outEdges.values()) {
+                addEdge(e.sourceVertex.value, e.targetVertex.value, e.value, e.weight);
+            }
+        }
     }
 }

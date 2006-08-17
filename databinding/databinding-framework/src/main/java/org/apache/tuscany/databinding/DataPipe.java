@@ -24,7 +24,7 @@ package org.apache.tuscany.databinding;
  * @param <S> The data binding type of the sink
  * @param <R> The data binding type of the result
  */
-public interface DataPipe<S, R> extends Transformer<S, R>{
+public interface DataPipe<S, R> extends Transformer {
 
     /**
      * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to

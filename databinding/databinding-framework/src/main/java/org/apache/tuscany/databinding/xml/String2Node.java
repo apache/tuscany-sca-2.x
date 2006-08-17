@@ -21,19 +21,19 @@ package org.apache.tuscany.databinding.xml;
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-public class String2Node implements PullTransformer<String, Node> {
+public class String2Node extends TransformerExtension<String, Node> implements PullTransformer<String, Node> {
 
     public Node transform(String source, TransformationContext context) {
         try {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            DocumentBuilder builder = DOMHelper.newDocumentBuilder();
             InputSource inputSource = new InputSource(new StringReader(source));
             return builder.parse(inputSource);
         } catch (Exception e) {
@@ -41,11 +41,11 @@ public class String2Node implements PullTransformer<String, Node> {
         }
     }
 
-    public Class<String> getSourceType() {
+    public Class getSourceType() {
         return String.class;
     }
 
-    public Class<Node> getTargetType() {
+    public Class getTargetType() {
         return Node.class;
     }
 

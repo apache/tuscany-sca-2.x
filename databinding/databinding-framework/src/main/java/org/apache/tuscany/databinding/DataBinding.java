@@ -18,31 +18,36 @@
  */
 package org.apache.tuscany.databinding;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 
 /**
- * DataBinding interface defines a data binding 
+ * DataBinding interface defines a data binding. 
  */
 public interface DataBinding {
 
     /**
-     * Get the name of the data binding
+     * Get the name of the data binding. For example, "sdo" for Service Data Object (SDO).
+     * The name is NOT case sensitive. We recommond a pattern as "xxx.yyy", for example, "sdo.dataObject"
+     * 
+     * 
+     * 
      * @return The name which uniquely idetifies the data binding
      */
     public String getName();
-
+    
     /**
-     * @param source
-     * @param sourceType
+     * Check if the given java type is supported by this data type
+     * @param javaClass
      * @return
      */
-    public Source createSource(Object source, Class sourceType);
-
+    public boolean isSupported(Class javaClass);
+    
     /**
-     * Create a result object
-     * @param resultType
-     * @return
+     * Check if the data binding is for writing only (for example, Writer, OutputStream and ContentHandler)
+     * @return true if the data type if for writing only 
      */
-    public Result createResult(Class resultType);
+    public boolean isSinkOnly();    
+    
+    public Object getAttribute(String name);
+    public void setAttribute(String name, Object value);
+
 }

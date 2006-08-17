@@ -24,8 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.tuscany.databinding.DataPipe;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
-public class StreamDataPipe implements DataPipe<OutputStream, InputStream> {
+public class StreamDataPipe extends TransformerExtension<OutputStream, InputStream> implements DataPipe<OutputStream, InputStream> {
 
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -33,7 +34,7 @@ public class StreamDataPipe implements DataPipe<OutputStream, InputStream> {
         return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
-    public Class<InputStream> getTargetType() {
+    public Class getTargetType() {
         return InputStream.class;
     }
 
@@ -45,7 +46,7 @@ public class StreamDataPipe implements DataPipe<OutputStream, InputStream> {
         return outputStream;
     }
 
-    public Class<OutputStream> getSourceType() {
+    public Class getSourceType() {
         return OutputStream.class;
     }
 

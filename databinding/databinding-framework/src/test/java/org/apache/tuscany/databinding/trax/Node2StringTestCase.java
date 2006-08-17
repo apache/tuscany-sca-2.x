@@ -18,19 +18,15 @@
  */
 package org.apache.tuscany.databinding.trax;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.xml.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
-
 public class Node2StringTestCase extends TestCase {
     public void testTransformation() throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.newDocument();
+        Document document = DOMHelper.newDocument();
         Element element = document.createElementNS("http://ns1", "test");
         document.appendChild(element);
 

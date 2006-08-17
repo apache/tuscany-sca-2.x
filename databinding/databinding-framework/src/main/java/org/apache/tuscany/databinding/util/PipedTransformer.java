@@ -49,12 +49,12 @@ public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {
         return pipe.getResult();
     }
 
-    public Class<S> getSourceType() {
-        return pusher.getSourceType();
+    public String getSourceBinding() {
+        return pusher.getSourceBinding();
     }
 
-    public Class<R> getTargetType() {
-        return pipe.getTargetType();
+    public String getTargetBinding() {
+        return pipe.getTargetBinding();
     }
 
     public int getWeight() {

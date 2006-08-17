@@ -23,6 +23,7 @@ import java.io.InputStream;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -32,7 +33,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * Push InputStream to SAX
  * 
  */
-public class InputStream2SAX implements PushTransformer<InputStream, ContentHandler> {
+public class InputStream2SAX extends TransformerExtension<InputStream, ContentHandler> implements PushTransformer<InputStream, ContentHandler> {
     public void transform(InputStream source, ContentHandler target, TransformationContext context) {
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -43,11 +44,11 @@ public class InputStream2SAX implements PushTransformer<InputStream, ContentHand
         }
     }
 
-    public Class<InputStream> getSourceType() {
+    public Class getSourceType() {
         return InputStream.class;
     }
 
-    public Class<ContentHandler> getTargetType() {
+    public Class getTargetType() {
         return ContentHandler.class;
     }
 

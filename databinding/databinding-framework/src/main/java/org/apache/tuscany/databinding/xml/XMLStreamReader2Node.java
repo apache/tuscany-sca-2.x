@@ -19,39 +19,35 @@
 package org.apache.tuscany.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.dom.DOMResult;
 
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
-
-import com.ctc.wstx.api.WriterConfig;
-import com.ctc.wstx.dom.DOMWrappingWriter;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
  * 
  */
-public class XMLStreamReader2Node implements PullTransformer<XMLStreamReader, Node> {
-
+public class XMLStreamReader2Node extends TransformerExtension<XMLStreamReader, Node> implements PullTransformer<XMLStreamReader, Node> {
+    private SAX2DOMPipe pipe = new SAX2DOMPipe();
+    private XMLStreamReader2SAX stax2sax = new XMLStreamReader2SAX();
+    
     public Node transform(XMLStreamReader source, TransformationContext context) {
         try {
-            DOMResult result = new DOMResult();
-            WriterConfig config = WriterConfig.createFullDefaults();
-            DOMWrappingWriter wrappingWriter = DOMWrappingWriter.createFrom(config, result);
-            StAXHelper.save(source, wrappingWriter);
-            return result.getNode();
+            stax2sax.transform(source, pipe.getSink(), context);
+            return pipe.getResult();
         } catch (Exception e) {
             throw new TransformationException(e);
         }
     }
 
-    public Class<XMLStreamReader> getSourceType() {
+    public Class getSourceType() {
         return XMLStreamReader.class;
     }
 
-    public Class<Node> getTargetType() {
+    public Class getTargetType() {
         return Node.class;
     }
 

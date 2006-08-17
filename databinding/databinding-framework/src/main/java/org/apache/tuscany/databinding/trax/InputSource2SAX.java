@@ -21,6 +21,7 @@ package org.apache.tuscany.databinding.trax;
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -30,7 +31,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * Push InputSource to SAX
  *
  */
-public class InputSource2SAX implements PushTransformer<InputSource, ContentHandler> {
+public class InputSource2SAX extends TransformerExtension<InputSource, ContentHandler> implements PushTransformer<InputSource, ContentHandler> {
     public void transform(InputSource source, ContentHandler target, TransformationContext context) {
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -43,11 +44,11 @@ public class InputSource2SAX implements PushTransformer<InputSource, ContentHand
         }
     }
 
-    public Class<InputSource> getSourceType() {
+    public Class getSourceType() {
         return InputSource.class;
     }
 
-    public Class<ContentHandler> getTargetType() {
+    public Class getTargetType() {
         return ContentHandler.class;
     }
 

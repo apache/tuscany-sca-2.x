@@ -25,22 +25,22 @@ package org.apache.tuscany.databinding;
  *
  */
 public interface Mediator {
+
     /**
-     * @param source The source object to be mediated
-     * @param sourceType The type of the source data
-     * @param resultType The type of the result data
-     * @param context The context
-     * @return The mediated result
-     */
-    public Object mediate(Object source, Object sourceType, Object resultType, TransformationContext context);
-    /**
+     * Mediate the data from the source binding type to the target binding type
      * @param source
-     * @param target
-     * @param sourceType
-     * @param resultType
-     * @param context
+     * @param sourceBinding
+     * @param targetBinding
      * @return
      */
-    public Object mediate(Object source, Object target, Object sourceType, Object resultType, TransformationContext context);
+    public Object mediate(Object source, DataBinding sourceBinding, DataBinding targetBinding);
+    /**
+     * Mediate the data
+     * @param source
+     * @param target
+     * @param sourceBinding
+     * @param targetBinding
+     */
+    public void mediate(Object source, Object target, DataBinding sourceBinding, DataBinding targetBinding);
     
 }

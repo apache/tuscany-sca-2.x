@@ -18,34 +18,34 @@
  */
 package org.apache.tuscany.databinding;
 
-
-
 /**
  * Context for data transformation
- *
+ * 
  */
 public interface TransformationContext {
     /**
      * @return
      */
-    public DataBinding getSourceBinding();
+    public DataBinding getSourceDataBinding();
+
     /**
      * @return
      */
-    public DataBinding getTargetBinding();
+    public DataBinding getTargetDataBinding();
+
+    /**
+     * @param sourceNode
+     */
+    public void setSourceDataBinding(DataBinding sourceNode);
+
+    /**
+     * @param targetNode
+     */
+    public void setTargetDataBinding(DataBinding targetNode);
+
     /**
      * @return
      */
     public ClassLoader getClassLoader();
-    /**
-     * @param name
-     * @return
-     */
-    public Object getAttribute(String name);
-    
-    /**
-     * @param name
-     * @param object
-     */
-    public void setAttribute(String name, Object object);
+
 }

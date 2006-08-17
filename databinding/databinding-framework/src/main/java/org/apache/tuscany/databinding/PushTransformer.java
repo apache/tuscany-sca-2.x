@@ -24,7 +24,7 @@ package org.apache.tuscany.databinding;
  * @param <S>
  * @param <R>
  */
-public interface PushTransformer<S, R> extends Transformer<S, R>{
+public interface PushTransformer<S, R> extends Transformer {
     /**
      * @param source
      * @param sink

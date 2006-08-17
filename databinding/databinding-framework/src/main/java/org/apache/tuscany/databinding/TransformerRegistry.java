@@ -28,10 +28,10 @@ public interface TransformerRegistry {
     /**
      * @param sourceType
      * @param resultType
-     * @param transformer
      * @param weight
+     * @param transformer
      */
-    public void registerTransformer(Object sourceType, Object resultType, Transformer transformer, int weight);
+    public void registerTransformer(Object sourceType, Object resultType, int weight, Transformer transformer);
 
     /**
      * @param transformer
@@ -43,7 +43,7 @@ public interface TransformerRegistry {
      * @param resultType
      * @return
      */
-    public boolean removeTransformer(Object sourceType, Object resultType);
+    public boolean unregisterTransformer(Object sourceType, Object resultType);
 
     /**
      * Get the direct Transformer which can transform data from source type to result type
