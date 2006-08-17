@@ -18,14 +18,17 @@
  */
 package org.apache.tuscany.databinding.jaxb;
 
-import java.io.StringReader;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.w3c.dom.Node;
 
 public class JAXBTestCase extends TestCase {
@@ -47,17 +50,34 @@ public class JAXBTestCase extends TestCase {
     }
 
     public void testTransform() throws Exception {
-        JAXBContext context = JAXBContext.newInstance(contextPath);
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        Object object1 = unmarshaller.unmarshal(new StringReader(IPO_XML));
+        Reader2JAXB t0 = new Reader2JAXB();
+        
+        DataBinding targetContext = createMock(DataBinding.class);
+        expect(targetContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
+        replay(targetContext);
+        
+        TransformationContext tContext = createMock(TransformationContext.class);
+        expect(tContext.getTargetDataBinding()).andReturn(targetContext).anyTimes();
+        replay(tContext);
 
-        JAXB2Node t1 = new JAXB2Node(contextPath);
-        Node node = t1.transform(object1, null);
+        Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
+
+        DataBinding sourceContext = createMock(DataBinding.class);
+        expect(sourceContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
+        replay(sourceContext);
+        
+        TransformationContext tContext1 = createMock(TransformationContext.class);
+        expect(tContext1.getSourceDataBinding()).andReturn(sourceContext).anyTimes();
+        replay(tContext1);
+
+        
+        JAXB2Node t1 = new JAXB2Node();
+        Node node = t1.transform(object1, tContext1);
 
         Assert.assertNotNull(node);
 
-        Node2JAXB t2 = new Node2JAXB(contextPath);
-        Object object2 = t2.transform(node, null);
+        Node2JAXB t2 = new Node2JAXB();
+        Object object2 = t2.transform(node, tContext);
         Assert.assertNotNull(object2);
 
     }

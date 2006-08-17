@@ -20,29 +20,25 @@ package org.apache.tuscany.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.xml.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class JAXB2Node implements PullTransformer<Object, Node> {
+public class JAXB2Node extends TransformerExtension<Object, Node> implements PullTransformer<Object, Node> {
 
-    private String contextPath;
-
-    public Node transform(Object source, TransformationContext transformationContext) {
+    public Node transform(Object source, TransformationContext tContext) {
         if (source == null)
             return null;
         try {
-            JAXBContext context = JAXBContext.newInstance(contextPath);
+            JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
             // FIXME: The default Marshaller doesn't support marshaller.getNode()
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.newDocument();
+            Document document = DOMHelper.newDocument();
             marshaller.marshal(source, document);
             return document;
         } catch (Exception e) {
@@ -50,11 +46,11 @@ public class JAXB2Node implements PullTransformer<Object, Node> {
         }
     }
 
-    public Class<Object> getSourceType() {
+    public Class getSourceType() {
         return Object.class;
     }
 
-    public Class<Node> getTargetType() {
+    public Class getTargetType() {
         return Node.class;
     }
 
@@ -62,9 +58,8 @@ public class JAXB2Node implements PullTransformer<Object, Node> {
         return 30;
     }
 
-    public JAXB2Node(String contextPath) {
+    public JAXB2Node() {
         super();
-        this.contextPath = contextPath;
     }
 
 }

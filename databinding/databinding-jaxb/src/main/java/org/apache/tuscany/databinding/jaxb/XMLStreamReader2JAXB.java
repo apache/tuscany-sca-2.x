@@ -22,36 +22,34 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
-public class XMLStreamReader2JAXB implements PullTransformer<XMLStreamReader, Object> {
-    // TODO: How to pass context information
-    private String contextPath;
+public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, Object> implements PullTransformer<XMLStreamReader, Object> {
     
-    public XMLStreamReader2JAXB(String contextPath) {
+    public XMLStreamReader2JAXB() {
         super();
-        this.contextPath = contextPath;
     }
     
-    public Object transform(XMLStreamReader source, TransformationContext transformationContext) {
+    public Object transform(XMLStreamReader source, TransformationContext context) {
         if (source == null)
             return null;
         try {
-            JAXBContext context = JAXBContext.newInstance(contextPath);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
+            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return unmarshaller.unmarshal(source);
         } catch (Exception e) {
             throw new TransformationException(e);
         }
     }
 
-    public Class<XMLStreamReader> getSourceType() {
+    public Class getSourceType() {
         return XMLStreamReader.class;
     }
 
-    public Class<Object> getTargetType() {
+    public Class getTargetType() {
         return Object.class;
     }
 
