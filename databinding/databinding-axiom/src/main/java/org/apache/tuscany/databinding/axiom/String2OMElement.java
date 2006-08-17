@@ -25,8 +25,9 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
-public class String2OMElement implements PullTransformer<String, OMElement> {
+public class String2OMElement extends TransformerExtension<String, OMElement> implements PullTransformer<String, OMElement> {
 
     public OMElement transform(String source, TransformationContext context) {
         try {
@@ -37,11 +38,11 @@ public class String2OMElement implements PullTransformer<String, OMElement> {
         }
     }
 
-    public Class<OMElement> getTargetType() {
+    public Class getTargetType() {
         return OMElement.class;
     }
 
-    public Class<String> getSourceType() {
+    public Class getSourceType() {
         return String.class;
     }
 
