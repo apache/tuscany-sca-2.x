@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.idl.wsdl;
 
-import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.api.TuscanyException;
 
 /**
  * @version $Rev$ $Date$

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.databinding;
 
-import org.apache.tuscany.spi.TuscanyRuntimeException;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
 public class TransformationException extends TuscanyRuntimeException {
 

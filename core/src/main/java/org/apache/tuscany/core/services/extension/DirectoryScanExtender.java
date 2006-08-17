@@ -25,7 +25,7 @@ import java.net.URL;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;

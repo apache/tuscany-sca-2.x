@@ -20,6 +20,8 @@ package org.apache.tuscany.spi;
 
 import junit.framework.TestCase;
 
+import org.apache.tuscany.api.TuscanyException;
+
 /**
  * @version $Rev$ $Date$
  */

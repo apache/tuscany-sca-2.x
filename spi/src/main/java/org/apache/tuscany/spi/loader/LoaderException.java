@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.loader;
 
-import org.apache.tuscany.spi.TuscanyException;
+import org.apache.tuscany.api.TuscanyException;
 
 /**
  * Base class for Exceptions raised during the loading process. Loader implementations should throw a subclass of this
