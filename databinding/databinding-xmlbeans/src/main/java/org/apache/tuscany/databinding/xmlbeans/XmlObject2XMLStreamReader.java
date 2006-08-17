@@ -22,20 +22,21 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.xmlbeans.XmlObject;
 
-public class XmlObject2XMLStreamReader implements PullTransformer<XmlObject, XMLStreamReader> {
+public class XmlObject2XMLStreamReader extends TransformerExtension<XmlObject, XMLStreamReader> implements PullTransformer<XmlObject, XMLStreamReader> {
     // private XmlOptions options;
     
     public XMLStreamReader transform(XmlObject source, TransformationContext context) {
         return source.newXMLStreamReader();
     }
 
-    public Class<XmlObject> getSourceType() {
+    public Class getSourceType() {
         return XmlObject.class;
     }
 
-    public Class<XMLStreamReader> getTargetType() {
+    public Class getTargetType() {
         return XMLStreamReader.class;
     }
 

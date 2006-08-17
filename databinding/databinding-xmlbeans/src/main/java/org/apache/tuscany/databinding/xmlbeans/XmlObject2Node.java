@@ -20,10 +20,11 @@ package org.apache.tuscany.databinding.xmlbeans;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
-public class XmlObject2Node implements PullTransformer<XmlObject, Node> {
+public class XmlObject2Node extends TransformerExtension<XmlObject, Node> implements PullTransformer<XmlObject, Node> {
     // private XmlOptions options;
 
     public Node transform(XmlObject source, TransformationContext context) {
@@ -32,11 +33,11 @@ public class XmlObject2Node implements PullTransformer<XmlObject, Node> {
         return source.newDomNode();
     }
 
-    public Class<XmlObject> getSourceType() {
+    public Class getSourceType() {
         return XmlObject.class;
     }
 
-    public Class<Node> getTargetType() {
+    public Class getTargetType() {
         return Node.class;
     }
 
