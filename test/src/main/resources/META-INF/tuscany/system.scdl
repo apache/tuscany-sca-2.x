@@ -24,7 +24,7 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.test.System">
+           name="org.apache.tuscany.launcher.System">
 
     <!-- Component that provides the Deployer service -->
     <component name="deployer">
@@ -75,38 +75,43 @@
     </component>
 
     <!-- include loader configuration -->
-    <include name="org.apache.tuscany.test.Loader" scdlLocation="loader.scdl"/>
+    <include name="org.apache.tuscany.launcher.Loader" scdlLocation="loader.scdl"/>
 
     <!-- include implementation processor configuration -->
-    <include name="org.apache.tuscany.test.Implementation" scdlLocation="implementation.scdl"/>
+    <include name="org.apache.tuscany.launcher.Implementation" scdlLocation="implementation.scdl"/>
 
     <!-- Java interface definition language -->
     <include name="org.apache.tuscany.launcher.InterfaceJava" scdlLocation="interfaceJava.scdl"/>
 
     <!-- include omposite implementation type -->
-    <include name="org.apache.tuscany.test.Composite" scdlLocation="composite.scdl"/>
+    <include name="org.apache.tuscany.launcher.Composite" scdlLocation="composite.scdl"/>
 
     <!-- System implementation type -->
-    <include name="org.apache.tuscany.test.SystemImplementation" scdlLocation="systemImplementation.scdl"/>
+    <include name="org.apache.tuscany.launcher.SystemImplementation" scdlLocation="systemImplementation.scdl"/>
 
     <!-- Java implementation type -->
-    <include name="org.apache.tuscany.test.JavaImplementation" scdlLocation="javaImplementation.scdl"/>
+    <include name="org.apache.tuscany.launcher.JavaImplementation" scdlLocation="javaImplementation.scdl"/>
 
     <!-- component that scans the extension directory -->
-    <component name="directoryScanExtender">
+    <component name="directoryScanExtender" initLevel="90">
         <system:implementation.system class="org.apache.tuscany.core.services.extension.DirectoryScanExtender"/>
         <property name="path">extension</property>
     </component>
 
+    <!-- service for resolving artifacts against the user's local Maven repository -->
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+        <property name="repository">.m2/repository</property>
+    </component>
+
     <!-- WorkScheduler service -->
     <component name="workManager">
-        <system:implementation.system
-            class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
+        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
         <property name="poolSize">10</property>
     </component>
 
     <component name="workScheduler">
         <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
     </component>
-    
+
 </composite>
