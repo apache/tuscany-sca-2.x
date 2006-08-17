@@ -30,6 +30,9 @@
     <component name="composite.loader">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeLoader"/>
     </component>
+    <component name="composite.dependencyLoader">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.DependencyLoader"/>
+    </component>
     <component name="composite.componentTypeLoader">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeComponentTypeLoader"/>
     </component>
