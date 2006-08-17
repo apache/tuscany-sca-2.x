@@ -20,9 +20,15 @@ package org.apache.tuscany.host;
 
 import java.net.URL;
 
+import org.osoa.sca.CompositeContext;
+
 /**
  * @version $Rev$ $Date$
  */
 public interface Launcher {
-    void bootRuntime(URL systemScdl, MonitorFactory monitorFactory);
+    void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitorFactory);
+
+    void shutdownRuntime();
+
+    CompositeContext bootApplication(URL applicationScdl, ClassLoader applicationClassLoader);
 }

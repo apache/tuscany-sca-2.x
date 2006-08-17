@@ -45,7 +45,7 @@ public class MainLauncherBooter {
         ClassLoader tuscanyCL = booter.getTuscanyClassLoader();
 
         String className = System.getProperty("tuscany.launcherClass",
-                                              "org.apache.tuscany.core.launcher.MainLauncher");
+                                              "org.apache.tuscany.core.launcher.MainLauncherImpl");
         Object launcher = Beans.instantiate(tuscanyCL, className);
         try {
             LaunchHelper.invoke(launcher, "boot", new Class<?>[]{String[].class}, (Object[]) new Object[]{args});
