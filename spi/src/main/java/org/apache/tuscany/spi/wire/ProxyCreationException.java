@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.TuscanyRuntimeException;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
  * Denotes an error creating a proxy

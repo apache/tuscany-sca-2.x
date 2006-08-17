@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi;
 
+import org.apache.tuscany.api.TuscanyRuntimeException;
+
 /**
  * Denotes an error creating a new object instance
  *

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.spi.TuscanyRuntimeException;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
  * @version $Rev$ $Date$

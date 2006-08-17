@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi;
 
+import org.apache.tuscany.api.TuscanyRuntimeException;
+
 /**
  * The root exception for the runtime package. Exceptions occurring in the runtime are generally non-recoverable
  *
