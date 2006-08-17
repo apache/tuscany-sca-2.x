@@ -23,19 +23,20 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 
-public class OMElement2XMLStreamReader implements PullTransformer<OMElement, XMLStreamReader> {
+public class OMElement2XMLStreamReader extends TransformerExtension<OMElement, XMLStreamReader> implements PullTransformer<OMElement, XMLStreamReader> {
     // private XmlOptions options;
     
     public XMLStreamReader transform(OMElement source, TransformationContext context) {
         return source.getXMLStreamReader();
     }
 
-    public Class<OMElement> getSourceType() {
+    public Class getSourceType() {
         return OMElement.class;
     }
 
-    public Class<XMLStreamReader> getTargetType() {
+    public Class getTargetType() {
         return XMLStreamReader.class;
     }
 
