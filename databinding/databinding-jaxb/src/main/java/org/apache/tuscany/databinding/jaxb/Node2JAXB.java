@@ -24,29 +24,28 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 
-public class Node2JAXB implements PullTransformer<Node, Object> {
+public class Node2JAXB extends TransformerExtension<Node, Object> implements PullTransformer<Node, Object> {
 
-    private String contextPath;
-
-    public Object transform(Node source, TransformationContext transformationContext) {
+    public Object transform(Node source, TransformationContext context) {
         if (source == null)
             return null;
         try {
-            JAXBContext context = JAXBContext.newInstance(contextPath);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
+            JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             return unmarshaller.unmarshal(source);
         } catch (Exception e) {
             throw new TransformationException(e);
         }
     }
 
-    public Class<Node> getSourceType() {
+    public Class getSourceType() {
         return Node.class;
     }
 
-    public Class<Object> getTargetType() {
+    public Class getTargetType() {
         return Object.class;
     }
 
@@ -54,9 +53,8 @@ public class Node2JAXB implements PullTransformer<Node, Object> {
         return 30;
     }
 
-    public Node2JAXB(String contextPath) {
+    public Node2JAXB() {
         super();
-        this.contextPath = contextPath;
     }
 
 }
