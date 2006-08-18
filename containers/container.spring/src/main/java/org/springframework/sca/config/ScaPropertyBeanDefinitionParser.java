@@ -17,50 +17,47 @@
  */
 package org.springframework.sca.config;
 
+import org.w3c.dom.Element;
+
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.sca.ScaPropertyProxyFactoryBean;
-import org.w3c.dom.Element;
 
 /**
  * Parser for the &lt;sca:property/&gt; element
- * 
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaPropertyBeanDefinitionParser implements BeanDefinitionParser {
 
-	private static final String PROPERTY_NAME_ATTRIBUTE = "name";
-	private static final String PROPERTY_NAME_PROPERTY = "propertyName";
-	private static final String PROPERTY_TYPE_PROPERTY = "propertyType";
-	private static final String TYPE_ATTRIBUTE = "type";
-	private static final String ID_ATTRIBUTE = "id";
+    private static final String PROPERTY_NAME_ATTRIBUTE = "name";
+    private static final String PROPERTY_NAME_PROPERTY = "propertyName";
+    private static final String PROPERTY_TYPE_PROPERTY = "propertyType";
+    private static final String TYPE_ATTRIBUTE = "type";
+    private static final String ID_ATTRIBUTE = "id";
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
-	 */
-	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		// needs service type, reference name, sca component, and optionally default service name
-		BeanDefinitionRegistry registry = parserContext.getRegistry();
-		String beanName = element.getAttribute(ID_ATTRIBUTE);
-		BeanDefinition beanDef = createBeanDefinition(element);
-		registry.registerBeanDefinition(beanName, beanDef);
-		return beanDef;
-	}
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        // needs service type, reference name, sca component, and optionally default service name
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
+        String beanName = element.getAttribute(ID_ATTRIBUTE);
+        BeanDefinition beanDef = createBeanDefinition(element);
+        registry.registerBeanDefinition(beanName, beanDef);
+        return beanDef;
+    }
 
-	private BeanDefinition createBeanDefinition(Element element) {
-		RootBeanDefinition beanDefinition = new RootBeanDefinition();
-		beanDefinition.setBeanClass(ScaPropertyProxyFactoryBean.class);
-		MutablePropertyValues props = new MutablePropertyValues();
-		props.addPropertyValue(PROPERTY_NAME_PROPERTY, element.getAttribute(PROPERTY_NAME_ATTRIBUTE));
-		props.addPropertyValue(PROPERTY_TYPE_PROPERTY, element.getAttribute(TYPE_ATTRIBUTE));
-		beanDefinition.setPropertyValues(props);
-		return beanDefinition;
-	}
+    private BeanDefinition createBeanDefinition(Element element) {
+        RootBeanDefinition beanDefinition = new RootBeanDefinition();
+        beanDefinition.setBeanClass(ScaPropertyProxyFactoryBean.class);
+        MutablePropertyValues props = new MutablePropertyValues();
+        props.addPropertyValue(PROPERTY_NAME_PROPERTY, element.getAttribute(PROPERTY_NAME_ATTRIBUTE));
+        props.addPropertyValue(PROPERTY_TYPE_PROPERTY, element.getAttribute(TYPE_ATTRIBUTE));
+        beanDefinition.setPropertyValues(props);
+        return beanDefinition;
+    }
 
 }

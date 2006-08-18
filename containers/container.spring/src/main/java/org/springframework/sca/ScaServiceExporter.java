@@ -24,80 +24,82 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Exposes a bean instance to SCA to using the given service name.
- * 
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaServiceExporter implements InitializingBean, BeanFactoryAware, ScaAdapterAware {
 
-	/** the name of the service we want to advertise */
-	private String serviceName;
-	
-	/** the type the service should be published with */
-	private Class serviceType;
-	
-	/** the bean to be published */
-	private Object target;
+    /**
+     * the name of the service we want to advertise
+     */
+    private String serviceName;
 
-	/** for resolving the bean name */
-	private BeanFactory beanFactory;
-  private ScaAdapter scaAdapter;
+    /**
+     * the type the service should be published with
+     */
+    private Class serviceType;
 
-  public void setServiceName(String serviceName) {
-    this.serviceName = serviceName;
-  }
-	
-	public String getServiceName() {
-		return this.serviceName;
-	}
+    /**
+     * the bean to be published
+     */
+    private Object target;
 
-	public void setServiceType(Class serviceType) {
-		this.serviceType = serviceType;
-	}
-	
-	public Class getServiceType() {
-		return this.serviceType;
-	}
-	
-	public void setTarget(Object targetBean) {
-		this.target = targetBean;
-	}
-	
-	public Object getTarget() {
-		return this.target;
-	}
+    /**
+     * for resolving the bean name
+     */
+    private BeanFactory beanFactory;
+    private ScaAdapter scaAdapter;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.BeanFactoryAware#setBeanFactory(org.springframework.beans.factory.BeanFactory)
-	 */
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-	 */
-	public void afterPropertiesSet() throws Exception {
-		if (this.serviceType == null) {
-			throw new IllegalArgumentException("Required property serviceType was not set");
-		}
-		if (this.target == null) {
-			throw new IllegalArgumentException("Required property target was not set");
-		}
-		if (this.beanFactory == null) {
-			throw new IllegalArgumentException("Required property beanFactory was not set");
-		}
-		if (this.serviceName == null) {
-			throw new IllegalArgumentException("Required property serviceName was not set");
-		}
-		publishScaService();
-	}
+    public String getServiceName() {
+        return this.serviceName;
+    }
 
-	private void publishScaService() {
-    scaAdapter.publishAsService(target, serviceType, serviceName, null);
-  }
+    public void setServiceType(Class serviceType) {
+        this.serviceType = serviceType;
+    }
 
-  public void setScaAdapter(ScaAdapter adapter) {
-    this.scaAdapter = adapter;
-  }
+    public Class getServiceType() {
+        return this.serviceType;
+    }
+
+    public void setTarget(Object targetBean) {
+        this.target = targetBean;
+    }
+
+    public Object getTarget() {
+        return this.target;
+    }
+
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (this.serviceType == null) {
+            throw new IllegalArgumentException("Required property serviceType was not set");
+        }
+        if (this.target == null) {
+            throw new IllegalArgumentException("Required property target was not set");
+        }
+        if (this.beanFactory == null) {
+            throw new IllegalArgumentException("Required property beanFactory was not set");
+        }
+        if (this.serviceName == null) {
+            throw new IllegalArgumentException("Required property serviceName was not set");
+        }
+        publishScaService();
+    }
+
+    private void publishScaService() {
+        scaAdapter.publishAsService(target, serviceType, serviceName, null);
+    }
+
+    public void setScaAdapter(ScaAdapter adapter) {
+        this.scaAdapter = adapter;
+    }
 }

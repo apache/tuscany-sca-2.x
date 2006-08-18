@@ -17,6 +17,8 @@
  */
 package org.springframework.sca.config;
 
+import org.w3c.dom.Element;
+
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -25,43 +27,39 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.sca.ScaServiceExporter;
-import org.w3c.dom.Element;
 
 /**
- * Parser for the &lt;sca:service/&gt; element 
- * 
+ * Parser for the &lt;sca:service/&gt; element
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaServiceBeanDefinitionParser implements BeanDefinitionParser {
 
-	private static final String SERVICE_NAME_ATTRIBUTE = "name";
-	private static final String TYPE_ATTRIBUTE = "type";
-	private static final String TARGET_ATTRIBUTE = "target";
-	private static final String SERVICE_NAME_PROPERTY = "serviceName";
-	private static final String SERVICE_TYPE_PROPERTY = "serviceType";
-	private static final String TARGET_PROPERTY = "target";
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
-	 */
-	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		BeanDefinitionRegistry registry = parserContext.getRegistry();
-		String serviceName = element.getAttribute(SERVICE_NAME_ATTRIBUTE);
-		BeanDefinition beanDef = createBeanDefinition(element);
-		registry.registerBeanDefinition(serviceName, beanDef);
-		return beanDef;
-	}
-	
-	private BeanDefinition createBeanDefinition(Element element) {
-		RootBeanDefinition beanDefinition = new RootBeanDefinition();
-		beanDefinition.setBeanClass(ScaServiceExporter.class);
-		MutablePropertyValues props = new MutablePropertyValues();
-		props.addPropertyValue(SERVICE_TYPE_PROPERTY, element.getAttribute(TYPE_ATTRIBUTE));
-		props.addPropertyValue(TARGET_PROPERTY,new RuntimeBeanReference(element.getAttribute(TARGET_ATTRIBUTE)));
-		props.addPropertyValue(SERVICE_NAME_PROPERTY,element.getAttribute(SERVICE_NAME_ATTRIBUTE));
-		beanDefinition.setPropertyValues(props);
-		return beanDefinition;
-	}
+    private static final String SERVICE_NAME_ATTRIBUTE = "name";
+    private static final String TYPE_ATTRIBUTE = "type";
+    private static final String TARGET_ATTRIBUTE = "target";
+    private static final String SERVICE_NAME_PROPERTY = "serviceName";
+    private static final String SERVICE_TYPE_PROPERTY = "serviceType";
+    private static final String TARGET_PROPERTY = "target";
+
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
+        String serviceName = element.getAttribute(SERVICE_NAME_ATTRIBUTE);
+        BeanDefinition beanDef = createBeanDefinition(element);
+        registry.registerBeanDefinition(serviceName, beanDef);
+        return beanDef;
+    }
+
+    private BeanDefinition createBeanDefinition(Element element) {
+        RootBeanDefinition beanDefinition = new RootBeanDefinition();
+        beanDefinition.setBeanClass(ScaServiceExporter.class);
+        MutablePropertyValues props = new MutablePropertyValues();
+        props.addPropertyValue(SERVICE_TYPE_PROPERTY, element.getAttribute(TYPE_ATTRIBUTE));
+        props.addPropertyValue(TARGET_PROPERTY, new RuntimeBeanReference(element.getAttribute(TARGET_ATTRIBUTE)));
+        props.addPropertyValue(SERVICE_NAME_PROPERTY, element.getAttribute(SERVICE_NAME_ATTRIBUTE));
+        beanDefinition.setPropertyValues(props);
+        return beanDefinition;
+    }
 
 }

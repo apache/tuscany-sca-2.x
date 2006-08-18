@@ -21,32 +21,36 @@ import java.util.List;
 
 /**
  * Metadata for an SCA component.
+ *
  * @author Rod Johnson
  */
 public interface ServiceMetadata {
-	
-	/**
-	 * Return the service name
-	 * @return the service name of the component
-	 */
-	String getServiceName();
-	
-	/**
-	 * Return the service interfaces implemented by the component
-	 * @return interfaces implemented by the component
-	 */
-	Class<?>[] getServiceInterfaces();
-	
-	/**
-	 * Return a list of OneWay methods
-	 * @return never returns null
-	 */
-	List<Method> getOneWayMethods();
-	
-	/**
-	 * Return a list of SCA injections
-	 * @return a list of SCA injections. Never returns null.
-	 */
-	List<Injection> getInjections();
+
+    /**
+     * Return the service name
+     *
+     * @return the service name of the component
+     */
+    String getServiceName();
+
+    /**
+     * Return the service interfaces implemented by the component
+     *
+     * @return interfaces implemented by the component
+     */
+    Class<?>[] getServiceInterfaces();
+
+    /**
+     * Return a list of OneWay methods
+     *
+     * @return never returns null
+     */
+    List<Method> getOneWayMethods();
+
+    /**
+     * Return a list of SCA injections
+     * @return a list of SCA injections. Never returns null.
+     */
+    List<Injection> getInjections();
 
 }

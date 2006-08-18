@@ -30,111 +30,111 @@ import org.springframework.sca.metadata.NoSuchServiceException;
 import org.springframework.sca.metadata.ServiceMetadata;
 
 /**
- * Spring bean post processor that looks up service metadata by
- * name for each bean definition and performs SCA injection.
- * <p>
+ * Spring bean post processor that looks up service metadata by name for each bean definition and performs SCA
+ * injection.
+ * <p/>
  * Also performs proxying for OneWay.
+ *
  * @author Rod Johnson
  */
 public class ScaPostProcessor implements InstantiationAwareBeanPostProcessor, ApplicationContextAware {
-	
-	private DeploymentMetadata deploymentMetadata;
-	
-	private ApplicationContext applicationContext;
-	
-	private TaskExecutor taskExecutor;
-	
-	private ScaAdapter scaAdapter;
-	
-	
-	/**
-	 * @param taskExecutor The taskExecutor to set.
-	 */
-	public void setTaskExecutor(TaskExecutor taskExecutor) {
-		this.taskExecutor = taskExecutor;
-	}
-	
-	// TODO would process side files when container starts up
 
-	public void setDeploymentMetadata(DeploymentMetadata deploymentMetadata) {
-		this.deploymentMetadata = deploymentMetadata;
-	}
-	
-	/**
-	 * @param scaAdapter the ScaAdapter for use to export services if necessary
-	 */
-	public void setScaAdapter(ScaAdapter scaAdapter) {
-		this.scaAdapter = scaAdapter;
-	}
-	
+    private DeploymentMetadata deploymentMetadata;
 
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    private ApplicationContext applicationContext;
 
-	public Object postProcessBeforeInstantiation(Class beanClass,
-			String beanName) throws BeansException {
-		return null;
-	}
+    private TaskExecutor taskExecutor;
 
-	public boolean postProcessAfterInstantiation(Object bean, String beanName)
-			throws BeansException {
-		try {
-			ServiceMetadata smd = deploymentMetadata.getServiceMetadata(beanName);
-			doScaInjection(bean, smd);
-		}
-		catch (NoSuchServiceException ex) {
-			//
-		}
-		return true;
-	}
+    private ScaAdapter scaAdapter;
 
-  public PropertyValues postProcessPropertyValues(PropertyValues propertyValues, Object object, String string) throws BeansException {
-    return propertyValues;
-  }
 
-  protected void doScaInjection(Object bean, ServiceMetadata smd) {
-    for (Injection injection : smd.getInjections()) {
-      injection.apply(applicationContext, bean);
+    /**
+     * @param taskExecutor The taskExecutor to set.
+     */
+    public void setTaskExecutor(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
     }
-  }
 
-	public Object postProcessBeforeInitialization(Object bean, String beanName)
-			throws BeansException {
-		return bean;
-	}
+    // TODO would process side files when container starts up
 
-	public Object postProcessAfterInitialization(Object bean, String beanName)
-			throws BeansException {
-		try {
-			ServiceMetadata smd = deploymentMetadata.getServiceMetadata(beanName);
-			return createScaProxy(bean, smd);
-		}
-		catch (NoSuchServiceException ex) {
-			return bean;
-		}
-		
-		// TODO validate required injections here or earlier
-		
-		// TODO publish if necessary, using adapter
-	}
-	
-	protected Object createScaProxy(Object bean, ServiceMetadata smd) {
-		ProxyFactory pf = new ProxyFactory(bean);
-		for (Class intf : smd.getServiceInterfaces()) {
-			pf.addInterface(intf);
-		}
-		
-//		pf.addAdvisor(ExposeInvocationInterceptor.ADVISOR);
-//		pf.addAdvisor(new ExposeBeanNameAdvisor(smd.getServiceName()));
-		// TODO enforce call by value
-		
-		if (!smd.getOneWayMethods().isEmpty()) {
-			pf.addAdvisor(new OneWayAdvisor(smd, this.taskExecutor));
-		}
-		
-		return pf.getProxy();
-	}
-	
+    public void setDeploymentMetadata(DeploymentMetadata deploymentMetadata) {
+        this.deploymentMetadata = deploymentMetadata;
+    }
+
+    /**
+     * @param scaAdapter the ScaAdapter for use to export services if necessary
+     */
+    public void setScaAdapter(ScaAdapter scaAdapter) {
+        this.scaAdapter = scaAdapter;
+    }
+
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public Object postProcessBeforeInstantiation(Class beanClass,
+                                                 String beanName) throws BeansException {
+        return null;
+    }
+
+    public boolean postProcessAfterInstantiation(Object bean, String beanName)
+        throws BeansException {
+        try {
+            ServiceMetadata smd = deploymentMetadata.getServiceMetadata(beanName);
+            doScaInjection(bean, smd);
+        } catch (NoSuchServiceException ex) {
+            //
+        }
+        return true;
+    }
+
+    public PropertyValues postProcessPropertyValues(PropertyValues propertyValues, Object object, String string)
+        throws BeansException {
+        return propertyValues;
+    }
+
+    protected void doScaInjection(Object bean, ServiceMetadata smd) {
+        for (Injection injection : smd.getInjections()) {
+            injection.apply(applicationContext, bean);
+        }
+    }
+
+    public Object postProcessBeforeInitialization(Object bean, String beanName)
+        throws BeansException {
+        return bean;
+    }
+
+    public Object postProcessAfterInitialization(Object bean, String beanName)
+        throws BeansException {
+        try {
+            ServiceMetadata smd = deploymentMetadata.getServiceMetadata(beanName);
+            return createScaProxy(bean, smd);
+        } catch (NoSuchServiceException ex) {
+            return bean;
+        }
+
+        // TODO validate required injections here or earlier
+
+        // TODO publish if necessary, using adapter
+    }
+
+    protected Object createScaProxy(Object bean, ServiceMetadata smd) {
+        ProxyFactory pf = new ProxyFactory(bean);
+        for (Class intf : smd.getServiceInterfaces()) {
+            pf.addInterface(intf);
+        }
+
+//pf.addAdvisor(ExposeInvocationInterceptor.ADVISOR);
+//pf.addAdvisor(new ExposeBeanNameAdvisor(smd.getServiceName()));
+        // TODO enforce call by value
+
+        if (!smd.getOneWayMethods().isEmpty()) {
+            pf.addAdvisor(new OneWayAdvisor(smd, this.taskExecutor));
+        }
+
+        return pf.getProxy();
+    }
+
 
 }

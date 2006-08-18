@@ -18,61 +18,59 @@ package org.springframework.sca.metadata;
 import org.springframework.beans.factory.BeanFactory;
 
 /**
- * 
  * @author Rod Johnson
- *
  */
 public abstract class Injection {
 
-	private String lookupName;
-	
-	/**
-	 *Is it a literal value?
-	 */
-	private boolean literal;
-	
-	/**
-	 * Literal value if it's a literal
-	 */
-	private Object literalValue;
-	
-	public Object getLiteralValue() {
-		return literalValue;
-	}
+    private String lookupName;
 
-	public void setLiteralValue(Object literalValue) {
-		this.literal = true;
-		this.literalValue = literalValue;
-	}
+    /**
+     * Is it a literal value?
+     */
+    private boolean literal;
 
-	protected Injection(String lookupName) {
-		this.lookupName = lookupName;
-	}
-	
-	protected Injection() {
-		
-	}
-	
-	public boolean isLiteral() {
-		return literal;
-	}
+    /**
+     * Literal value if it's a literal
+     */
+    private Object literalValue;
 
-	protected void setLookupName(String lookupName) {
-		this.lookupName = lookupName;
-	}
-	
-	public String getLookupName() {
-		return lookupName;
-	}
-	
-	public void apply(BeanFactory owner, Object target) {
-		Object value = literalValue;
-		if (!isLiteral()) {
-			value = owner.getBean(lookupName);
-		}
-		injectValue(target, value);
-	}
-	
-	protected abstract void injectValue(Object target, Object value);
-	
+    protected Injection() {
+
+    }
+
+    protected Injection(String lookupName) {
+        this.lookupName = lookupName;
+    }
+
+    public Object getLiteralValue() {
+        return literalValue;
+    }
+
+    public void setLiteralValue(Object literalValue) {
+        this.literal = true;
+        this.literalValue = literalValue;
+    }
+
+    public boolean isLiteral() {
+        return literal;
+    }
+
+    protected void setLookupName(String lookupName) {
+        this.lookupName = lookupName;
+    }
+
+    public String getLookupName() {
+        return lookupName;
+    }
+
+    public void apply(BeanFactory owner, Object target) {
+        Object value = literalValue;
+        if (!isLiteral()) {
+            value = owner.getBean(lookupName);
+        }
+        injectValue(target, value);
+    }
+
+    protected abstract void injectValue(Object target, Object value);
+
 }

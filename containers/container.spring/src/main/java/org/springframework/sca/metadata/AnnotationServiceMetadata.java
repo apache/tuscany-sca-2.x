@@ -24,72 +24,73 @@ import org.osoa.sca.annotations.ComponentName;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
+
 import org.springframework.util.ReflectionUtils;
 
 /**
  * TODO not the way to get this
- * @author Rod Johnson
  *
+ * @author Rod Johnson
  */
 public class AnnotationServiceMetadata implements ServiceMetadata {
-	
-	private final String name;
-	
-	private final Class<?> serviceClass;
-	
-	public AnnotationServiceMetadata(String name, Class<?> serviceClass) throws NoSuchServiceException {
-		if (!serviceClass.isAnnotationPresent(Service.class)) {
-			throw new NoSuchServiceException();
-		}
-		this.name = name;
-		this.serviceClass = serviceClass;
-	}
-	
-	public String getServiceName() {
-		return name;
-	}
 
-	public Class<?>[] getServiceInterfaces() {
-		Service service = serviceClass.getAnnotation(Service.class);
-		return service.interfaces();
-	}
+    private final String name;
 
-	public List<Method> getOneWayMethods() {
-		List<Method> oneWayMethods = new LinkedList<Method>();
-		for (Method m : serviceClass.getMethods()) {
-			if (m.isAnnotationPresent(OneWay.class)) {
-				oneWayMethods.add(m);
-			}
-		}
-		
-		// TODO fields
-		
-		return oneWayMethods;
-	}
+    private final Class<?> serviceClass;
 
-	public List<Injection> getInjections() {
-		final List<Injection> injections = new LinkedList<Injection>();
-		for (Method m : serviceClass.getMethods()) {
-			if (m.isAnnotationPresent(Property.class)) {
-				injections.add(new MethodInjection(m));
-			}
-		}
-		
-		// TODO fields propertly
-		
-		ReflectionUtils.doWithFields(serviceClass, new ReflectionUtils.FieldCallback() {
-			public void doWith(Field f) throws IllegalArgumentException, IllegalAccessException {
-				if (f.isAnnotationPresent(ComponentName.class)) {
-					Injection componentNameInjection = new FieldInjection(f);
-					componentNameInjection.setLiteralValue(name);
-					injections.add(componentNameInjection);
-				}
-			}
-		});
-		
-		return injections;
-	}
-	
-	// TODO reference
+    public AnnotationServiceMetadata(String name, Class<?> serviceClass) throws NoSuchServiceException {
+        if (!serviceClass.isAnnotationPresent(Service.class)) {
+            throw new NoSuchServiceException();
+        }
+        this.name = name;
+        this.serviceClass = serviceClass;
+    }
+
+    public String getServiceName() {
+        return name;
+    }
+
+    public Class<?>[] getServiceInterfaces() {
+        Service service = serviceClass.getAnnotation(Service.class);
+        return service.interfaces();
+    }
+
+    public List<Method> getOneWayMethods() {
+        List<Method> oneWayMethods = new LinkedList<Method>();
+        for (Method m : serviceClass.getMethods()) {
+            if (m.isAnnotationPresent(OneWay.class)) {
+                oneWayMethods.add(m);
+            }
+        }
+
+        // TODO fields
+
+        return oneWayMethods;
+    }
+
+    public List<Injection> getInjections() {
+        final List<Injection> injections = new LinkedList<Injection>();
+        for (Method m : serviceClass.getMethods()) {
+            if (m.isAnnotationPresent(Property.class)) {
+                injections.add(new MethodInjection(m));
+            }
+        }
+
+        // TODO fields propertly
+
+        ReflectionUtils.doWithFields(serviceClass, new ReflectionUtils.FieldCallback() {
+            public void doWith(Field f) throws IllegalArgumentException, IllegalAccessException {
+                if (f.isAnnotationPresent(ComponentName.class)) {
+                    Injection componentNameInjection = new FieldInjection(f);
+                    componentNameInjection.setLiteralValue(name);
+                    injections.add(componentNameInjection);
+                }
+            }
+        });
+
+        return injections;
+    }
+
+    // TODO reference
 
 }

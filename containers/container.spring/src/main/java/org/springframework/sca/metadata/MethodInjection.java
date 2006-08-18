@@ -19,54 +19,47 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 /**
- * 
  * @author Rod Johnson
- *
  */
 public class MethodInjection extends Injection {
-	
-	private final Method method;
-	
-	public MethodInjection(Method method, String lookupName) {
-		super(lookupName);
-		this.method = method;
-	}
-	
-	public MethodInjection(Method method) {
-		// TODO reference also
-		Property annotation = method.getAnnotation(Property.class);
-		if (annotation == null) {
-			throw new IllegalArgumentException("Method " + method + " not annotated");
-		}
-		this.method = method;
-		if ("".equals(annotation.name())) {
-			setLookupName(method.getName());
-		}
-		else {
-			setLookupName(annotation.name());
-		}
-	}
 
-	@Override
-	protected void injectValue(Object target, Object value) {
-		try {
-			method.invoke(target, value);
-		} 
-		catch (IllegalArgumentException ex) {
-			// TODO
-			throw new UnsupportedOperationException();
-		} 
-		catch (IllegalAccessException ex) {
-			// TODO
-			throw new UnsupportedOperationException();
-		}
-		catch (InvocationTargetException ex) {
-			// TODO
-			throw new UnsupportedOperationException();
-		}
-	}
+    private final Method method;
+
+    public MethodInjection(Method method, String lookupName) {
+        super(lookupName);
+        this.method = method;
+    }
+
+    public MethodInjection(Method method) {
+        // TODO reference also
+        Property annotation = method.getAnnotation(Property.class);
+        if (annotation == null) {
+            throw new IllegalArgumentException("Method " + method + " not annotated");
+        }
+        this.method = method;
+        if ("".equals(annotation.name())) {
+            setLookupName(method.getName());
+        } else {
+            setLookupName(annotation.name());
+        }
+    }
+
+    @Override
+    protected void injectValue(Object target, Object value) {
+        try {
+            method.invoke(target, value);
+        } catch (IllegalArgumentException ex) {
+            // TODO
+            throw new UnsupportedOperationException();
+        } catch (IllegalAccessException ex) {
+            // TODO
+            throw new UnsupportedOperationException();
+        } catch (InvocationTargetException ex) {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
 
 }

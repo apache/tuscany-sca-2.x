@@ -18,16 +18,18 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
-import org.apache.tuscany.container.spring.config.ScaApplicationContext;
-import org.apache.tuscany.container.spring.model.SpringComponentType;
-import org.apache.tuscany.container.spring.model.SpringImplementation;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.osoa.sca.annotations.Constructor;
+
+import org.apache.tuscany.container.spring.config.ScaApplicationContext;
+import org.apache.tuscany.container.spring.model.SpringComponentType;
+import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.sca.ScaServiceExporter;
@@ -39,64 +41,63 @@ import org.springframework.sca.ScaServiceExporter;
  * @version $$Rev$$ $$Date$$
  */
 
-public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<SpringImplementation>
-{
-  public static final String SERVICE_BEAN_SUFFIX = ".SCAService";
+public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<SpringImplementation> {
+    public static final String SERVICE_BEAN_SUFFIX = ".SCAService";
 
-  @Constructor
-  public SpringComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
-    super(loaderRegistry);
-  }
-
-  @Override
-  protected Class<SpringImplementation> getImplementationClass() {
-    return SpringImplementation.class;
-  }
-
-  /**
-   * Responsible for loading the Spring composite component type. The the application context is instantiated here as
-   * it is needed to derive component type information. Since the component type is loaded per SCDL entry (i.e.
-   * composite use) one application context instance will be created per Spring composite instance.
-   */
-  @SuppressWarnings("unchecked")
-  public void load(CompositeComponent<?> parent,
-                   SpringImplementation implementation,
-                   DeploymentContext deploymentContext) throws LoaderException {
-    if (implementation.getComponentType() != null) {
-      // FIXME hack since the builder registry loads the implementation type and the Spring implementation loader
-      // needs to as well. The second call is done by the builder registry and we just ignore it.
-      return;
+    @Constructor
+    public SpringComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
+        super(loaderRegistry);
     }
-    Resource resource = implementation.getApplicationResource();
-    SpringComponentType componentType = new SpringComponentType();
-    // REVIEW andyp -- pass in deploymentContext.getClassLoader()?
-    AbstractRefreshableApplicationContext ctx = new ScaApplicationContext(resource, componentType);
-    componentType.setApplicationContext(ctx); // FIXME andyp@bea.com -- don't do this!
 
-    // If there are <sca:service> elements, they define (and limit) the services exposed
-    // in the componentType.
-    String [] serviceBeanNames = ctx.getBeanNamesForType(ScaServiceExporter.class);
-    for (String serviceBeanName : serviceBeanNames) {
-      int nSuffix = serviceBeanName.indexOf(SERVICE_BEAN_SUFFIX);
-      if (nSuffix == -1) {
-        continue;
-      }
-
-      String serviceName = serviceBeanName.substring(0, nSuffix);
-      ScaServiceExporter serviceBean = (ScaServiceExporter) ctx.getBean(serviceName);
-      // REVIEW andyp -- use the class directly?
-      String serviceTypeName = serviceBean.getServiceType().getName();
-      try {
-        Class serviceInterface = Class.forName(serviceTypeName, true, deploymentContext.getClassLoader());
-        componentType.addServiceType(serviceName, serviceInterface);
-        //ServiceDefinition service = createService(serviceInterface);
-        //componentType.getServices().put(serviceName, service);
-      } catch (ClassNotFoundException e) {
-        throw new LoaderException(e);
-      }
+    @Override
+    protected Class<SpringImplementation> getImplementationClass() {
+        return SpringImplementation.class;
     }
-    // if no service tags are specified, expose all beans
-    componentType.setExposeAllBeans(componentType.getServiceTypes().isEmpty());
-    implementation.setComponentType(componentType);
-  }
+
+    /**
+     * Responsible for loading the Spring composite component type. The the application context is instantiated here as
+     * it is needed to derive component type information. Since the component type is loaded per SCDL entry (i.e.
+     * composite use) one application context instance will be created per Spring composite instance.
+     */
+    @SuppressWarnings("unchecked")
+    public void load(CompositeComponent<?> parent,
+                     SpringImplementation implementation,
+                     DeploymentContext deploymentContext) throws LoaderException {
+        if (implementation.getComponentType() != null) {
+            // FIXME hack since the builder registry loads the implementation type and the Spring implementation loader
+            // needs to as well. The second call is done by the builder registry and we just ignore it.
+            return;
+        }
+        Resource resource = implementation.getApplicationResource();
+        SpringComponentType componentType = new SpringComponentType();
+        // REVIEW andyp -- pass in deploymentContext.getClassLoader()?
+        AbstractRefreshableApplicationContext ctx = new ScaApplicationContext(resource, componentType);
+        componentType.setApplicationContext(ctx); // FIXME andyp@bea.com -- don't do this!
+
+        // If there are <sca:service> elements, they define (and limit) the services exposed
+        // in the componentType.
+        String [] serviceBeanNames = ctx.getBeanNamesForType(ScaServiceExporter.class);
+        for (String serviceBeanName : serviceBeanNames) {
+            int nSuffix = serviceBeanName.indexOf(SERVICE_BEAN_SUFFIX);
+            if (nSuffix == -1) {
+                continue;
+            }
+
+            String serviceName = serviceBeanName.substring(0, nSuffix);
+            ScaServiceExporter serviceBean = (ScaServiceExporter) ctx.getBean(serviceName);
+            // REVIEW andyp -- use the class directly?
+            String serviceTypeName = serviceBean.getServiceType().getName();
+            try {
+                Class serviceInterface = Class.forName(serviceTypeName, true, deploymentContext.getClassLoader());
+                componentType.addServiceType(serviceName, serviceInterface);
+                //ServiceDefinition service = createService(serviceInterface);
+                //componentType.getServices().put(serviceName, service);
+            } catch (ClassNotFoundException e) {
+                throw new LoaderException(e);
+            }
+        }
+        // if no service tags are specified, expose all beans
+        componentType.setExposeAllBeans(componentType.getServiceTypes().isEmpty());
+        implementation.setComponentType(componentType);
+    }
 }

@@ -19,15 +19,12 @@
 package org.apache.tuscany.container.spring;
 
 import junit.framework.TestCase;
-import org.springframework.sca.ScaServiceProxyFactoryBean;
-import org.springframework.sca.ScaServiceExporter;
-import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.container.spring.mock.TestReference;
 import org.apache.tuscany.container.spring.config.ScaApplicationContext;
+import org.apache.tuscany.container.spring.mock.TestReference;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.sca.ScaServiceExporter;
+import org.springframework.sca.ScaServiceProxyFactoryBean;
 
 /**
  * Tests the SCA extensible schema elements for Spring's XML configuration files
@@ -41,20 +38,21 @@ public class SpringConfigSchemaTestCase extends TestCase {
 
     public void setUp() {
         applicationContext =
-            new ScaApplicationContext(null, new ClassPathResource("org/apache/tuscany/container/spring/SpringConfigSchemaTest.xml"), null);
+            new ScaApplicationContext(null,
+                new ClassPathResource("org/apache/tuscany/container/spring/SpringConfigSchemaTest.xml"), null);
     }
 
     public void testSCAService() {
         ScaServiceExporter service = (ScaServiceExporter) applicationContext.getBean("fooService");
-      // FIXME andyp -- this is not really right.
+        // FIXME andyp -- this is not really right.
 //        TestBean service = (TestBean) applicationContext.getBean("fooService");
 //        assertEquals("call me", service.echo("call me"));
     }
 
     public void testSCAReference() {
-      ScaServiceProxyFactoryBean pf = (ScaServiceProxyFactoryBean) applicationContext.getBean("&fooReference");
-      assertEquals("fooReference", pf.getReferenceName());
-      TestReference ref = (TestReference) applicationContext.getBean("fooReference");
+        ScaServiceProxyFactoryBean pf = (ScaServiceProxyFactoryBean) applicationContext.getBean("&fooReference");
+        assertEquals("fooReference", pf.getReferenceName());
+        TestReference ref = (TestReference) applicationContext.getBean("fooReference");
 //      assertNotNull(ref);
     }
 }

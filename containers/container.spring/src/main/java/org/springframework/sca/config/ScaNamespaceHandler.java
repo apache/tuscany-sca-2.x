@@ -20,13 +20,9 @@ package org.springframework.sca.config;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * Handler for the &lt;sca:&gt; namespace. Handles:
- * <ul>
- * <li>&lt;sca:composite module="xxxxx"/&gt;</li>
- * <li>&lt;sca:reference name="xxx" type="yyy" default-service="zzz"/&gt;</li>
- * <li>&lt;sca:property name="xxx" type="yyy"/&gt;</li>
- * <li>&lt;sca:service name="xxx" type="yyyy" target="zzz"/&gt;
- * </ul>
+ * Handler for the &lt;sca:&gt; namespace. Handles: <ul> <li>&lt;sca:composite module="xxxxx"/&gt;</li>
+ * <li>&lt;sca:reference name="xxx" type="yyy" default-service="zzz"/&gt;</li> <li>&lt;sca:property name="xxx"
+ * type="yyy"/&gt;</li> <li>&lt;sca:service name="xxx" type="yyyy" target="zzz"/&gt; </ul>
  *
  * @author Adrian Colyer
  * @since 2.0
@@ -34,17 +30,15 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 public class ScaNamespaceHandler extends NamespaceHandlerSupport {
 
     public ScaNamespaceHandler() {
+        // FIXME JFM
         init();
     }
 
-    /* (non-Javadoc)
-	 * @see org.springframework.beans.factory.xml.NamespaceHandler#init()
-	 */
-	public void init() {
-		registerBeanDefinitionParser("composite", new ScaCompositeBeanDefinitionParser());
-		registerBeanDefinitionParser("reference", new ScaReferenceBeanDefinitionParser());
-		registerBeanDefinitionParser("property", new ScaPropertyBeanDefinitionParser());
-		registerBeanDefinitionParser("service", new ScaServiceBeanDefinitionParser());
-	}
+    public void init() {
+        registerBeanDefinitionParser("composite", new ScaCompositeBeanDefinitionParser());
+        registerBeanDefinitionParser("reference", new ScaReferenceBeanDefinitionParser());
+        registerBeanDefinitionParser("property", new ScaPropertyBeanDefinitionParser());
+        registerBeanDefinitionParser("service", new ScaServiceBeanDefinitionParser());
+    }
 
 }

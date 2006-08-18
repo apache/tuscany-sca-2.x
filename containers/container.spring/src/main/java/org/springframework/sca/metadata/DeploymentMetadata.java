@@ -18,11 +18,11 @@ package org.springframework.sca.metadata;
 
 /**
  * Source of ServiceMetadata by name
+ *
  * @author Rod Johnson
  */
 public interface DeploymentMetadata {
 
-	public abstract ServiceMetadata getServiceMetadata(String serviceName)
-			throws NoSuchServiceException;
+    ServiceMetadata getServiceMetadata(String serviceName) throws NoSuchServiceException;
 
 }

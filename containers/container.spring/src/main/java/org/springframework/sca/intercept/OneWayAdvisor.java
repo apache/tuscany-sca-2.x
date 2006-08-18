@@ -26,62 +26,58 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.sca.metadata.ServiceMetadata;
 
 /**
- * An AOP Alliance MethodInterceptor, rather than AspectJ aspect, 
- * as there's no value in typed pointcuts. Oh, if it were only
- * annotations...
- * @author Rod Johnson
+ * An AOP Alliance MethodInterceptor, rather than AspectJ aspect, as there's no value in typed pointcuts. Oh, if it were
+ * only annotations...
  *
+ * @author Rod Johnson
  */
 
 public class OneWayAdvisor extends DefaultPointcutAdvisor {
-	
-	private TaskExecutor taskExecutor;
-	
-	private final ServiceMetadata smd;
-	
-	public OneWayAdvisor(final ServiceMetadata aSmd, TaskExecutor taskExecutor) {
-		this.smd = aSmd;
-		setPointcut(new StaticMethodMatcherPointcut() {
-			public boolean matches(Method method, Class targetClass) {				
-				for (Method m : smd.getOneWayMethods()) {					
-					if (m.getName().equals(method.getName())) {
-						return true;
-					}
-				}
-				return false;
-			}
-		});
-		setAdvice(new OneWayInterceptor());
-		this.taskExecutor = taskExecutor;
-	}
-	
-	
-	private class OneWayInterceptor implements MethodInterceptor {
-		public Object invoke(MethodInvocation mi) throws Throwable {
-			try {
-				// TODO this is not right
-				ReflectiveMethodInvocation rmi = (ReflectiveMethodInvocation) mi;
-				final MethodInvocation clone = rmi.invocableClone();
-				System.out.println("EXECUTE DEFERRED");
-				taskExecutor.execute(new Runnable() {
-					public void run() {
-						try {
-							clone.proceed();
-						} 
-						catch (Throwable ex) {
-							// TODO
-							throw new UnsupportedOperationException();
-						}
-					}
-				});
-			}
-			catch (Throwable t) {
-				t.printStackTrace();
-			}
-			finally {
-				return null;
-			}
-		}
-	}
+
+    private TaskExecutor taskExecutor;
+
+    private final ServiceMetadata smd;
+
+    public OneWayAdvisor(final ServiceMetadata aSmd, TaskExecutor taskExecutor) {
+        this.smd = aSmd;
+        setPointcut(new StaticMethodMatcherPointcut() {
+            public boolean matches(Method method, Class targetClass) {
+                for (Method m : smd.getOneWayMethods()) {
+                    if (m.getName().equals(method.getName())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        setAdvice(new OneWayInterceptor());
+        this.taskExecutor = taskExecutor;
+    }
+
+
+    private class OneWayInterceptor implements MethodInterceptor {
+        public Object invoke(MethodInvocation mi) throws Throwable {
+            try {
+                // TODO this is not right
+                ReflectiveMethodInvocation rmi = (ReflectiveMethodInvocation) mi;
+                final MethodInvocation clone = rmi.invocableClone();
+                System.out.println("EXECUTE DEFERRED");
+                taskExecutor.execute(new Runnable() {
+                    public void run() {
+                        try {
+                            clone.proceed();
+                        } catch (Throwable ex) {
+                            // TODO
+                            throw new UnsupportedOperationException();
+                        }
+                    }
+                });
+            } catch (Throwable t) {
+                t.printStackTrace();
+            } finally {
+                return null;
+            }
+        }
+    }
 
 }

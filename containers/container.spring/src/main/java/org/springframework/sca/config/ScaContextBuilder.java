@@ -21,27 +21,23 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.sca.ScaAdapter;
 import org.springframework.sca.ScaComposite;
 
 /**
- * @author Hal Hildebrand
- *         Date: Apr 11, 2006
- *         Time: 4:33:33 PM
+ * @author Hal Hildebrand Date: Apr 11, 2006 Time: 4:33:33 PM
  */
 public class ScaContextBuilder {
-
-    private String moduleId;
-
-    private ScaAdapter scaAdapter;
-
     private static final String MODULE_ID = "moduleId";
 
     private static final String SCA_ADAPTER = "scaAdapter";
 
     private static final String SCA_COMPOSITE_BEAN_NAME = "scaComposite";
+
+    private String moduleId;
+
+    private ScaAdapter scaAdapter;
 
     public String getModuleId() {
         return this.moduleId;

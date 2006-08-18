@@ -23,31 +23,30 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * @author Andy Piper
  * @since 2.1
  */
-public class ScaAdapterPostProcessor implements BeanPostProcessor
-{
-  private ScaAdapter scaAdapter;
+public class ScaAdapterPostProcessor implements BeanPostProcessor {
+    private ScaAdapter scaAdapter;
 
-  public ScaAdapterPostProcessor(ScaAdapter adapter) {
-    this.scaAdapter = adapter;
-  }
-
-  public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-    if (bean instanceof ScaAdapterAware) {
-      if (this.scaAdapter == null) {
-        throw new IllegalStateException("Cannot satisfy ScaAdapterAware for bean '" +
-            beanName + "' without ScaAdapater");
-      }
-      ((ScaAdapterAware) bean).setScaAdapter(scaAdapter);
+    public ScaAdapterPostProcessor(ScaAdapter adapter) {
+        this.scaAdapter = adapter;
     }
-    return bean;
-  }
 
-  public Object postProcessAfterInitialization(Object object, String string) throws BeansException {
-    return object;
-  }
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (bean instanceof ScaAdapterAware) {
+            if (this.scaAdapter == null) {
+                throw new IllegalStateException("Cannot satisfy ScaAdapterAware for bean '"
+                    + beanName + "' without ScaAdapater");
+            }
+            ((ScaAdapterAware) bean).setScaAdapter(scaAdapter);
+        }
+        return bean;
+    }
 
-  public ScaAdapter getScaAdapter() {
-    return scaAdapter;
-  }
+    public Object postProcessAfterInitialization(Object object, String string) throws BeansException {
+        return object;
+    }
+
+    public ScaAdapter getScaAdapter() {
+        return scaAdapter;
+    }
 
 }
