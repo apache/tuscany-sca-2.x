@@ -25,8 +25,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Component type information for a Spring composite component implementation type. A component type is associated with
@@ -36,57 +35,67 @@ import org.springframework.context.support.GenericApplicationContext;
  */
 public class SpringComponentType<S extends ServiceDefinition,
     R extends ReferenceDefinition,
-    P extends Property<?>> extends CompositeComponentType<S, R, P> {
+    P extends Property<?>> extends CompositeComponentType<S, R, P>
+{
 
-    private GenericApplicationContext applicationContext;
-    private Map<String, Class<?>> serviceTypes = new HashMap<String, Class<?>>();
-    private boolean exposeAllBeans;
+  private AbstractApplicationContext applicationContext;
+  private Map<String, Class<?>> serviceTypes = new HashMap<String, Class<?>>();
+  private boolean exposeAllBeans;
 
-    public SpringComponentType(GenericApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+  public SpringComponentType(AbstractApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
 
-    /**
-     * Returns the application context for the component type
-     */
-    public GenericApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
+  public SpringComponentType() {
+  }
 
-    /**
-     * Returns a collection of service types defined by <code>sca:service</code> elements in a Spring configuration.
-     * Service types define beans that can be targets of services defined in the SCDL Spring composite declaration. For
-     * each service type, there must be a corresponding service definition as part of the Spring composite declaration
-     * per the SCA specification.
-     */
-    public Map<String, Class<?>> getServiceTypes() {
-        return serviceTypes;
-    }
+  // FIXME andyp@bea.com -- this is a component type it should NOT contain bean instances!
 
-    /**
-     * Adds a service type to the component declaration defined by <code>sca:service</code> elements in a Spring
-     * configuration.
-     *
-     * @param name the name of the service
-     * @param type the interface type of the target bean
-     */
-    public void addServiceType(String name, Class<?> type) {
-        this.serviceTypes.put(name, type);
-    }
+  /**
+   * Returns the application context for the component type
+   */
+  public AbstractApplicationContext getApplicationContext() {
+    return applicationContext;
+  }
 
-    /**
-     * Returns true if all beans in the Spring application context may be service targets or false if service types are
-     * defined
-     */
-    public boolean isExposeAllBeans() {
-        return exposeAllBeans;
-    }
+  public void setApplicationContext(AbstractApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
 
-    /**
-     * Sets if all beans in the Spring application context may be service targets or false if service types are defined
-     */
-    public void setExposeAllBeans(boolean exposeAllBeans) {
-        this.exposeAllBeans = exposeAllBeans;
-    }
+  /**
+   * Returns a collection of service types defined by <code>sca:service</code> elements in a Spring configuration.
+   * Service types define beans that can be targets of services defined in the SCDL Spring composite declaration. For
+   * each service type, there must be a corresponding service definition as part of the Spring composite declaration
+   * per the SCA specification.
+   */
+  public Map<String, Class<?>> getServiceTypes() {
+    return serviceTypes;
+  }
+
+  /**
+   * Adds a service type to the component declaration defined by <code>sca:service</code> elements in a Spring
+   * configuration.
+   *
+   * @param name the name of the service
+   * @param type the interface type of the target bean
+   */
+  public void addServiceType(String name, Class<?> type) {
+    this.serviceTypes.put(name, type);
+  }
+
+  /**
+   * Returns true if all beans in the Spring application context may be service targets or false if service types are
+   * defined
+   */
+  public boolean isExposeAllBeans() {
+    return exposeAllBeans;
+  }
+
+  /**
+   * Sets if all beans in the Spring application context may be service targets or false if service types are defined
+   */
+  public void setExposeAllBeans(boolean exposeAllBeans) {
+    this.exposeAllBeans = exposeAllBeans;
+  }
 
 }

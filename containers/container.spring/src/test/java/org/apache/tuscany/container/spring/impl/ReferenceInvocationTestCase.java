@@ -32,6 +32,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Verifies wiring from a Spring bean to an SCA composite reference
@@ -41,7 +42,7 @@ import org.springframework.context.support.StaticApplicationContext;
 public class ReferenceInvocationTestCase extends TestCase {
 
     public void testInvocation() throws Exception {
-        ConfigurableApplicationContext ctx = createSpringContext();
+        AbstractApplicationContext ctx = createSpringContext();
         SpringCompositeComponent<?> parent = new SpringCompositeComponent("spring", ctx, null, null);
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
@@ -54,7 +55,7 @@ public class ReferenceInvocationTestCase extends TestCase {
         ctx.getBean("foo");
     }
 
-    private ConfigurableApplicationContext createSpringContext() {
+    private AbstractApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
         RuntimeBeanReference ref = new RuntimeBeanReference("bar");

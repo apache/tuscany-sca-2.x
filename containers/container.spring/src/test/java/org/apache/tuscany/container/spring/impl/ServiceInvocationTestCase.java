@@ -33,6 +33,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Tests a simple invocation through a service to a Spring bean
@@ -61,7 +62,7 @@ public class ServiceInvocationTestCase extends TestCase {
     }
 
 
-    private ConfigurableApplicationContext createSpringContext() {
+    private AbstractApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
         BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
         beanFactory.registerBeanDefinition("foo", definition);

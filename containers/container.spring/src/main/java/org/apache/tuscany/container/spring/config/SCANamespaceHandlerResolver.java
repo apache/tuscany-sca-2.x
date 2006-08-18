@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 
 import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.NamespaceHandler;
+import org.springframework.sca.config.ScaNamespaceHandler;
 
 /**
  * Overrides the default Spring namespace resolver to automatically register {@link SCANamespaceHandler} instead of
@@ -35,18 +36,18 @@ public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver
 
     private static final String SCA_NAMESPACE = "http://www.springframework.org/schema/sca";
 
-    private SCANamespaceHandler handler;
+    private ScaNamespaceHandler handler;
 
     public SCANamespaceHandlerResolver(ClassLoader classLoader, CompositeComponentType componentType) {
         super(classLoader);
-        handler = new SCANamespaceHandler(componentType);
+        handler = new ScaNamespaceHandler(/*componentType*/);
     }
 
     public SCANamespaceHandlerResolver(String handlerMappingsLocation,
                                        ClassLoader classLoader,
                                        CompositeComponentType componentType) {
         super(classLoader, handlerMappingsLocation);
-        handler = new SCANamespaceHandler(componentType);
+        handler = new ScaNamespaceHandler(/*componentType*/);
     }
 
     public NamespaceHandler resolve(String namespaceUri) {

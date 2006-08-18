@@ -43,6 +43,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
 /**
@@ -52,7 +53,7 @@ import org.springframework.core.io.Resource;
  */
 public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> {
     private static final String[] EMPTY_ARRAY = new String[0];
-    private ConfigurableApplicationContext springContext;
+    private AbstractApplicationContext springContext;
 
     /**
      * Creates a new composite
@@ -63,7 +64,7 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
      * @param propertyValues the values of this composite's Properties
      */
     public SpringCompositeComponent(String name,
-                                    ConfigurableApplicationContext springContext,
+                                    AbstractApplicationContext springContext,
                                     CompositeComponent parent,
                                     Map<String, Document> propertyValues) {
         super(name, parent, propertyValues);
