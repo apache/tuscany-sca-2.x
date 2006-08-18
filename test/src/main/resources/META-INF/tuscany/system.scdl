@@ -92,6 +92,9 @@
     <!-- Java implementation type -->
     <include name="org.apache.tuscany.launcher.JavaImplementation" scdlLocation="javaImplementation.scdl"/>
 
+    <!-- System implementation type -->
+    <include name="org.apache.tuscany.test.TestBindingImplementation" scdlLocation="test.binding.system.scdl"/>
+
     <!-- component that scans the extension directory -->
     <component name="directoryScanExtender" initLevel="90">
         <system:implementation.system class="org.apache.tuscany.core.services.extension.DirectoryScanExtender"/>

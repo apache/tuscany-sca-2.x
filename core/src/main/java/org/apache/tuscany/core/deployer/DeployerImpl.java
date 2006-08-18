@@ -22,8 +22,8 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -89,7 +89,12 @@ public class DeployerImpl implements Deployer {
         throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope, null);
-        load(parent, componentDefinition, deploymentContext);
+        try {
+            load(parent, componentDefinition, deploymentContext);
+        } catch (LoaderException e) {
+            e.addContextName(componentDefinition.getName());
+            throw e;
+        }
         Component<?> component = (Component<?>) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) component;

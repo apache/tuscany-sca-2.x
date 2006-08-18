@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,21 +15,18 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<!--
-    JavaScript configuration for the launcher environment.
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+ */
+package org.apache.tuscany.test.binding;
 
-           name="testbinding">
+import org.apache.tuscany.spi.model.Binding;
 
-    <component name="BindingLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.mock.binding.TestBindingLoader"/>
-    </component>
 
-    <component name="BindingBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.spring.mock.binding.TestBindingBuilder"/>
-    </component>
+/**
+ * A simple binding for test purposes.
+ *
+ * @version $$Rev: 431772 $$ $$Date: 2006-08-15 19:33:41 -0700 (Tue, 15 Aug 2006) $$
+ */
+public class TestBinding extends Binding {
 
-</composite>
+
+}
