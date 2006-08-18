@@ -38,6 +38,8 @@ import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Creates a {@link org.apache.tuscany.container.spring.impl.SpringCompositeComponent} from an assembly model
@@ -52,7 +54,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
-        ConfigurableApplicationContext applicationContext = implementation.getComponentType().getApplicationContext();
+        AbstractApplicationContext applicationContext = implementation.getComponentType().getApplicationContext();
         SpringCompositeComponent<?> component = new SpringCompositeComponent(name, applicationContext, parent, null);
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
             BoundReferenceDefinition<? extends Binding>,
