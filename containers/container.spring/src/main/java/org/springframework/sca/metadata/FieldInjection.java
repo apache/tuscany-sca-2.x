@@ -20,54 +20,49 @@ import java.lang.reflect.Field;
 import org.osoa.sca.annotations.Reference;
 
 /**
- * 
  * @author Rod Johnson
- *
  */
 public class FieldInjection extends Injection {
-	
-	private final Field field;
-	
-	public FieldInjection(Field field, String lookupName) {
-		super(lookupName);
-		this.field = field;
-	}
-	
-	public FieldInjection(Field field) {
-		Reference annotation = field.getAnnotation(Reference.class);
-		
-		this.field = field;
-		
-		if (annotation == null) {
-			//throw new IllegalArgumentException("Field " + field + " not annotated");
-			return;
-		}
-		
-		if ("".equals(annotation.name())) {
-			setLookupName(field.getName());
-		}
-		else {
-			setLookupName(annotation.name());
-		}
-	}
 
-	@Override
-	protected void injectValue(Object target, Object value) {
-		try {
-			if (!field.isAccessible()) {
-				field.setAccessible(true);
-			}
-			field.set(target, value);
-		} 
-		catch (IllegalArgumentException ex) {
-			// TODO
-			throw new UnsupportedOperationException();
-		} 
-		catch (IllegalAccessException ex) {
-			// TODO
-			ex.printStackTrace();
-			throw new UnsupportedOperationException();
-		}
-	}
+    private final Field field;
+
+    public FieldInjection(Field field, String lookupName) {
+        super(lookupName);
+        this.field = field;
+    }
+
+    public FieldInjection(Field field) {
+        Reference annotation = field.getAnnotation(Reference.class);
+
+        this.field = field;
+
+        if (annotation == null) {
+            //throw new IllegalArgumentException("Field " + field + " not annotated");
+            return;
+        }
+
+        if ("".equals(annotation.name())) {
+            setLookupName(field.getName());
+        } else {
+            setLookupName(annotation.name());
+        }
+    }
+
+    @Override
+    protected void injectValue(Object target, Object value) {
+        try {
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            field.set(target, value);
+        } catch (IllegalArgumentException ex) {
+            // TODO
+            throw new UnsupportedOperationException();
+        } catch (IllegalAccessException ex) {
+            // TODO
+            ex.printStackTrace();
+            throw new UnsupportedOperationException();
+        }
+    }
 
 }

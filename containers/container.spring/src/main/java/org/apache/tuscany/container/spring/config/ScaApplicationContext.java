@@ -16,49 +16,50 @@
  */
 package org.apache.tuscany.container.spring.config;
 
-import org.springframework.context.support.AbstractXmlApplicationContext;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.apache.tuscany.spi.model.CompositeComponentType;
+
+import org.apache.tuscany.container.spring.impl.SpringScaAdapter;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.sca.ScaAdapterAware;
 import org.springframework.sca.ScaAdapterPostProcessor;
-import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.container.spring.impl.SpringScaAdapter;
 
 /**
  * @author Andy Piper
  * @since 2.1
  */
-public class ScaApplicationContext extends AbstractXmlApplicationContext
-{
-  private Resource appXml;
-  private CompositeComponentType componentType;
+public class ScaApplicationContext extends AbstractXmlApplicationContext {
+    private Resource appXml;
+    private CompositeComponentType componentType;
 
-  public ScaApplicationContext(Resource appXml, CompositeComponentType componentType) {
-    this(null, appXml, componentType);
-  }
+    public ScaApplicationContext(Resource appXml, CompositeComponentType componentType) {
+        this(null, appXml, componentType);
+    }
 
-  public ScaApplicationContext(ApplicationContext parent, Resource appXml, CompositeComponentType componentType) {
-    super(parent);
-    this.appXml = appXml;
-    this.componentType = componentType;
-    refresh();
-  }
+    public ScaApplicationContext(ApplicationContext parent, Resource appXml, CompositeComponentType componentType) {
+        super(parent);
+        this.appXml = appXml;
+        this.componentType = componentType;
+        refresh();
+    }
 
-  protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
-    // beanDefinitionReader.setEntityResolver(null);
-    beanDefinitionReader.setNamespaceHandlerResolver(new SCANamespaceHandlerResolver(getClassLoader(), componentType));
-  }
+    protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
+        // beanDefinitionReader.setEntityResolver(null);
+        beanDefinitionReader
+            .setNamespaceHandlerResolver(new SCANamespaceHandlerResolver(getClassLoader(), componentType));
+    }
 
-  protected Resource[] getConfigResources() {
-    return new Resource[] { appXml };
-  }
+    protected Resource[] getConfigResources() {
+        return new Resource[]{appXml};
+    }
 
-  protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-    super.postProcessBeanFactory(beanFactory);
-    beanFactory.addBeanPostProcessor(new ScaAdapterPostProcessor(new SpringScaAdapter(componentType)));
-    beanFactory.ignoreDependencyInterface(ScaAdapterAware.class);
-  }
+    protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        super.postProcessBeanFactory(beanFactory);
+        beanFactory.addBeanPostProcessor(new ScaAdapterPostProcessor(new SpringScaAdapter(componentType)));
+        beanFactory.ignoreDependencyInterface(ScaAdapterAware.class);
+    }
 }

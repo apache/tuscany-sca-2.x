@@ -17,6 +17,8 @@
  */
 package org.springframework.sca.config;
 
+import org.w3c.dom.Element;
+
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -24,46 +26,42 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.sca.ScaComposite;
-import org.w3c.dom.Element;
 
 /**
  * Parser for &lt;sca:composite&gt; elements
- * 
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaCompositeBeanDefinitionParser implements BeanDefinitionParser {
 
-	static final String SCA_COMPOSITE_BEAN_NAME = "scaComposite";
-	private static final String MODULE_ATTRIBUTE_NAME = "component";
-	private static final String MODULE_ID = "component";
-	private static final String ADAPTER_ATTRIBUTE = "sca-adapter-class";
-	private static final String ADAPTER_CLASS_PROPERTY = "scaAdapterClass";
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.xml.BeanDefinitionParser#parse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
-	 */
-	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		BeanDefinitionRegistry registry = parserContext.getRegistry();
-		if (registry.containsBeanDefinition(SCA_COMPOSITE_BEAN_NAME)) {
-			throw new IllegalArgumentException(
-					"At most one <sca:composite> element can be declared in a bean factory");
-		}
-		BeanDefinition beanDef = createScaCompositeBeanDefinition(element);
-		registry.registerBeanDefinition(SCA_COMPOSITE_BEAN_NAME, beanDef);
-		return beanDef;
-	}
+    static final String SCA_COMPOSITE_BEAN_NAME = "scaComposite";
+    private static final String MODULE_ATTRIBUTE_NAME = "component";
+    private static final String MODULE_ID = "component";
+    private static final String ADAPTER_ATTRIBUTE = "sca-adapter-class";
+    private static final String ADAPTER_CLASS_PROPERTY = "scaAdapterClass";
 
-	private BeanDefinition createScaCompositeBeanDefinition(Element element) {
-		RootBeanDefinition beanDefinition = new RootBeanDefinition();
-		beanDefinition.setBeanClass(ScaComposite.class);
-		MutablePropertyValues props = new MutablePropertyValues();
-		props.addPropertyValue(MODULE_ID, element.getAttribute(MODULE_ATTRIBUTE_NAME));
-		if (element.hasAttribute(ADAPTER_ATTRIBUTE)) {
-			props.addPropertyValue(ADAPTER_CLASS_PROPERTY,element.getAttribute(ADAPTER_ATTRIBUTE));
-		}
-		beanDefinition.setPropertyValues(props);
-		return beanDefinition;
-	}
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
+        if (registry.containsBeanDefinition(SCA_COMPOSITE_BEAN_NAME)) {
+            throw new IllegalArgumentException(
+                "At most one <sca:composite> element can be declared in a bean factory");
+        }
+        BeanDefinition beanDef = createScaCompositeBeanDefinition(element);
+        registry.registerBeanDefinition(SCA_COMPOSITE_BEAN_NAME, beanDef);
+        return beanDef;
+    }
+
+    private BeanDefinition createScaCompositeBeanDefinition(Element element) {
+        RootBeanDefinition beanDefinition = new RootBeanDefinition();
+        beanDefinition.setBeanClass(ScaComposite.class);
+        MutablePropertyValues props = new MutablePropertyValues();
+        props.addPropertyValue(MODULE_ID, element.getAttribute(MODULE_ATTRIBUTE_NAME));
+        if (element.hasAttribute(ADAPTER_ATTRIBUTE)) {
+            props.addPropertyValue(ADAPTER_CLASS_PROPERTY, element.getAttribute(ADAPTER_ATTRIBUTE));
+        }
+        beanDefinition.setPropertyValues(props);
+        return beanDefinition;
+    }
 
 }

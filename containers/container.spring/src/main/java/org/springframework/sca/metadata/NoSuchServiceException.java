@@ -17,9 +17,7 @@
 package org.springframework.sca.metadata;
 
 /**
- * 
  * @author Rod Johnson
- *
  */
 public class NoSuchServiceException extends Exception {
 

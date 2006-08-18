@@ -30,9 +30,8 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.StaticApplicationContext;
 
 /**
  * Verifies wiring from a Spring bean to an SCA composite reference

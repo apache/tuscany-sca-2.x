@@ -19,27 +19,27 @@ package org.springframework.sca;
 
 /**
  * Encapsulates interaction with an SCA runtime
- * 
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public interface ScaAdapter {
 
-	Object getServiceReference(
-			String referenceName, 
-			Class referenceType, 
-			String moduleName,
-			String defaultServiceName);
-	
-	Object getPropertyReference(
-			String propertyName,
-			Class propertyType,
-			String moduleName);
-	
-	void publishAsService(
-			Object serviceImplementation,
-			Class serviceInterface,
-			String serviceName,
-			String moduleName);
-	
+    Object getServiceReference(
+        String referenceName,
+        Class referenceType,
+        String moduleName,
+        String defaultServiceName);
+
+    Object getPropertyReference(
+        String propertyName,
+        Class propertyType,
+        String moduleName);
+
+    void publishAsService(
+        Object serviceImplementation,
+        Class serviceInterface,
+        String serviceName,
+        String moduleName);
+
 }

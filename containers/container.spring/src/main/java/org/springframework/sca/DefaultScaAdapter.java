@@ -22,31 +22,25 @@ package org.springframework.sca;
  * @since 2.0
  */
 public class DefaultScaAdapter implements ScaAdapter {
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.sca.ScaAdapter#getServiceReference(java.lang.String, java.lang.Class, java.lang.String, java.lang.String)
-	 */
-	public Object getServiceReference(String referenceName,
-			Class referenceType, String moduleName, String defaultServiceName) {
-		// TODO
-		return new Object();
-	}
 
-	/* (non-Javadoc)
-	 * @see org.springframework.sca.ScaAdapter#getPropertyReference(java.lang.String, java.lang.Class, java.lang.String)
-	 */
-	public Object getPropertyReference(String propertyName, Class propertyType,
-			String moduleName) {
-		// TODO
-		return new Object();
-	}
+    public Object getServiceReference(String referenceName,
+                                      Class referenceType,
+                                      String moduleName,
+                                      String defaultServiceName) {
+        // TODO
+        return new Object();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.springframework.sca.ScaAdapter#publishAsService(java.lang.Object, java.lang.Class, java.lang.String, java.lang.String)
-	 */
-	public void publishAsService(Object serviceImplementation,
-			Class serviceInterface, String serviceName, String moduleName) {
-		// TODO
-	}
+    public Object getPropertyReference(String propertyName, Class propertyType, String moduleName) {
+        // TODO
+        return new Object();
+    }
+
+    public void publishAsService(Object serviceImplementation,
+                                 Class serviceInterface,
+                                 String serviceName,
+                                 String moduleName) {
+        // TODO
+    }
 
 }

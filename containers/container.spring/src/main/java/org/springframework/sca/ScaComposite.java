@@ -20,61 +20,58 @@ package org.springframework.sca;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Bean that represents an Sca composite component.
- * An instance of this bean is created when the
- * &lt;sca:composite module-id="xxx"/&gt; element
- * is declared.
+ * Bean that represents an Sca composite component. An instance of this bean is created when the &lt;sca:composite
+ * module-id="xxx"/&gt; element is declared.
  *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaComposite implements InitializingBean {
 
-	private String component;
-	private ScaAdapter scaAdapter = new DefaultScaAdapter();
+    private String component;
+    private ScaAdapter scaAdapter = new DefaultScaAdapter();
 
-	public String getComponent() {
-		return this.component;
-	}
+    public String getComponent() {
+        return this.component;
+    }
 
-	public void setComponent(String component) {
-		this.component = component;
-	}
+    public void setComponent(String component) {
+        this.component = component;
+    }
 
-	public void setScaAdapter(ScaAdapter scaAdapter) {
-	    this.scaAdapter = scaAdapter;
-	}
+    public void setScaAdapter(ScaAdapter scaAdapter) {
+        this.scaAdapter = scaAdapter;
+    }
 
-	public void setScaAdapterClass(Class adapterClass) {
-		if (!ScaAdapter.class.isAssignableFrom(adapterClass)) {
-			throw new IllegalArgumentException(
-					"Adapter class '" + adapterClass + "' specified for ScaComposite bean " +
-					"does not implement the ScaApapter interface"
-					);
-		}
-		try {
-			this.scaAdapter = (ScaAdapter) adapterClass.newInstance();
-		}
-		catch(Exception ex) {
-			// many exceptions may be thrown by the above, we treat them all
-			// the same
-			throw new IllegalStateException("Unable to create instance of ScaAdapter class '" +
-					adapterClass.getName() + "'",ex);
-		}
-	}
+    public void setScaAdapterClass(Class adapterClass) {
+        if (!ScaAdapter.class.isAssignableFrom(adapterClass)) {
+            throw new IllegalArgumentException(
+                "Adapter class '" + adapterClass + "' specified for ScaComposite bean "
+                    + "does not implement the ScaApapter interface"
+            );
+        }
+        try {
+            this.scaAdapter = (ScaAdapter) adapterClass.newInstance();
+        } catch (Exception ex) {
+            // many exceptions may be thrown by the above, we treat them all
+            // the same
+            throw new IllegalStateException("Unable to create instance of ScaAdapter class '"
+                + adapterClass.getName() + "'", ex);
+        }
+    }
 
-	public ScaAdapter getScaAdapter() {
-		return this.scaAdapter ;
-	}
+    public ScaAdapter getScaAdapter() {
+        return this.scaAdapter;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-	 */
-	public void afterPropertiesSet() throws Exception {
-		if (this.component == null) {
-			throw new IllegalArgumentException("Required property moduleId was not set");
-		}
-	}
+    /* (non-Javadoc)
+      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+      */
+    public void afterPropertiesSet() throws Exception {
+        if (this.component == null) {
+            throw new IllegalArgumentException("Required property moduleId was not set");
+        }
+    }
 
 
 }

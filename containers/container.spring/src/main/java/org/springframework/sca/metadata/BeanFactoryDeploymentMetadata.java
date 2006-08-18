@@ -24,32 +24,32 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
 /**
- * DeploymentMetadata implementation backed by Spring BeanFactory
- * metadata
+ * DeploymentMetadata implementation backed by Spring BeanFactory metadata
+ *
  * @author Rod Johnson
  */
 public class BeanFactoryDeploymentMetadata implements BeanFactoryAware, DeploymentMetadata {
-	
-	private BeanFactory beanFactory;
-	
-	private Map<String, ServiceMetadata> serviceNameToMetadataMap = new HashMap<String, ServiceMetadata>();
-	
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.sca.metadata.DeploymentMetadata#getServiceMetadata(java.lang.String)
-	 */
-	public synchronized ServiceMetadata getServiceMetadata(String serviceName) throws NoSuchServiceException {
-		ServiceMetadata sm = serviceNameToMetadataMap.get(serviceName);
-		if (sm == null) {
-			Class clazz = beanFactory.getType(serviceName);
-			sm = new AnnotationServiceMetadata(serviceName, clazz);
-			serviceNameToMetadataMap.put(serviceName, sm);
-		}
-		return sm;
-	}
-	
+    private BeanFactory beanFactory;
+
+    private Map<String, ServiceMetadata> serviceNameToMetadataMap = new HashMap<String, ServiceMetadata>();
+
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+
+    /* (non-Javadoc)
+      * @see org.springframework.sca.metadata.DeploymentMetadata#getServiceMetadata(java.lang.String)
+      */
+    public synchronized ServiceMetadata getServiceMetadata(String serviceName) throws NoSuchServiceException {
+        ServiceMetadata sm = serviceNameToMetadataMap.get(serviceName);
+        if (sm == null) {
+            Class clazz = beanFactory.getType(serviceName);
+            sm = new AnnotationServiceMetadata(serviceName, clazz);
+            serviceNameToMetadataMap.put(serviceName, sm);
+        }
+        return sm;
+    }
+
 }

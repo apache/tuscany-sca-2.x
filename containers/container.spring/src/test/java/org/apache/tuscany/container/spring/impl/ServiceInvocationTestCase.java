@@ -31,9 +31,8 @@ import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.StaticApplicationContext;
 
 /**
  * Tests a simple invocation through a service to a Spring bean

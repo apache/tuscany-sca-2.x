@@ -21,100 +21,103 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Factory bean that returns a reference to an SCA property
- * obtained by asking the SCA runtime for the property with
- * the given name for the given component.
- * 
+ * Factory bean that returns a reference to an SCA property obtained by asking the SCA runtime for the property with the
+ * given name for the given component.
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaPropertyProxyFactoryBean implements InitializingBean, FactoryBean {
 
-	/** the type of the property */
-	private Class propertyType;
-	
-	/** the name of the property to look up */
-	private String propertyName;
-	
-	/** 
-	 * the SCA component we should present ourselves as when asking for
-	 * a service reference
-	 */
-	private ScaComposite scaComposite;
-	
-	private Object resolvedPropertyVal;
-	
-	public void setPropertyType(Class serviceType) {
-		this.propertyType = serviceType;
-	}
+    /**
+     * the type of the property
+     */
+    private Class propertyType;
 
-	public Class getPropertyType() {
-		return this.propertyType;
-	}
-	
-	public void setPropertyName(String name) {
-		this.propertyName = name;
-	}
-	
-	public String getPropertyName() {
-		return this.propertyName;
-	}
-	
-	public void setScaComposite(ScaComposite scaComposite) {
-		this.scaComposite = scaComposite;
-	}
-	
-	public ScaComposite getScaComposite() {
-		return this.scaComposite;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-	 */
-	public void afterPropertiesSet() throws Exception {
-		if (this.propertyType == null) {
-			throw new IllegalArgumentException("Required property serviceType was not set");
-		}
-		if (this.scaComposite == null) {
-			throw new IllegalArgumentException("Required property scaComposite was not set");
-		}
-		if (this.propertyName == null) {
-			throw new IllegalArgumentException("Required property referenceName was not set");
-		}		
-	}
+    /**
+     * the name of the property to look up
+     */
+    private String propertyName;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.FactoryBean#getObject()
-	 */
-	public Object getObject() throws Exception {
-		if (this.resolvedPropertyVal != null) {
-			return this.resolvedPropertyVal;
-		}
-		
-		String moduleName = this.scaComposite.getComponent();
-		// TODO: AMC is there any merit in proxying this with a lazy target source?
-		Object propertyVal = this.scaComposite.getScaAdapter().getPropertyReference(this.propertyName, this.propertyType, moduleName);
-		if (!this.propertyType.isAssignableFrom(propertyVal.getClass())) {
-			throw new IllegalStateException("Property value '" + propertyVal.toString() + "'" + 
-					" of type '" + propertyVal.getClass().getName() + "' " + 
-					" is not of expected type '" + this.propertyType.getName() + "'");
-		}
-		this.resolvedPropertyVal = propertyVal;
-		return this.resolvedPropertyVal;
-	}
+    /**
+     * the SCA component we should present ourselves as when asking for a service reference
+     */
+    private ScaComposite scaComposite;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.FactoryBean#getObjectType()
-	 */
-	public Class getObjectType() {
-		return this.propertyType;
-	}
+    private Object resolvedPropertyVal;
 
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.FactoryBean#isSingleton()
-	 */
-	public boolean isSingleton() {
-		return true;
-	}
-	
+    public void setPropertyType(Class serviceType) {
+        this.propertyType = serviceType;
+    }
+
+    public Class getPropertyType() {
+        return this.propertyType;
+    }
+
+    public void setPropertyName(String name) {
+        this.propertyName = name;
+    }
+
+    public String getPropertyName() {
+        return this.propertyName;
+    }
+
+    public void setScaComposite(ScaComposite scaComposite) {
+        this.scaComposite = scaComposite;
+    }
+
+    public ScaComposite getScaComposite() {
+        return this.scaComposite;
+    }
+
+    /* (non-Javadoc)
+      * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+      */
+    public void afterPropertiesSet() throws Exception {
+        if (this.propertyType == null) {
+            throw new IllegalArgumentException("Required property serviceType was not set");
+        }
+        if (this.scaComposite == null) {
+            throw new IllegalArgumentException("Required property scaComposite was not set");
+        }
+        if (this.propertyName == null) {
+            throw new IllegalArgumentException("Required property referenceName was not set");
+        }
+    }
+
+    /* (non-Javadoc)
+      * @see org.springframework.beans.factory.FactoryBean#getObject()
+      */
+    public Object getObject() throws Exception {
+        if (this.resolvedPropertyVal != null) {
+            return this.resolvedPropertyVal;
+        }
+
+        String moduleName = this.scaComposite.getComponent();
+        // TODO: AMC is there any merit in proxying this with a lazy target source?
+        Object propertyVal =
+            this.scaComposite.getScaAdapter().getPropertyReference(this.propertyName, this.propertyType, moduleName);
+        if (!this.propertyType.isAssignableFrom(propertyVal.getClass())) {
+            throw new IllegalStateException("Property value '" + propertyVal.toString() + "'"
+                + " of type '" + propertyVal.getClass().getName() + "' "
+                + " is not of expected type '" + this.propertyType.getName() + "'");
+        }
+        this.resolvedPropertyVal = propertyVal;
+        return this.resolvedPropertyVal;
+    }
+
+    /* (non-Javadoc)
+      * @see org.springframework.beans.factory.FactoryBean#getObjectType()
+      */
+    public Class getObjectType() {
+        return this.propertyType;
+    }
+
+    /* (non-Javadoc)
+      * @see org.springframework.beans.factory.FactoryBean#isSingleton()
+      */
+    public boolean isSingleton() {
+        return true;
+    }
+
 }

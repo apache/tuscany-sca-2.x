@@ -17,122 +17,127 @@
  */
 package org.springframework.sca;
 
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
- * Factory bean that returns a reference to an SCA service
- * obtained by asking the SCA runtime for the service with
- * the given name for the given component.
- * 
+ * Factory bean that returns a reference to an SCA service obtained by asking the SCA runtime for the service with the
+ * given name for the given component.
+ *
  * @author Adrian Colyer
  * @since 2.0
  */
 public class ScaServiceProxyFactoryBean
-    implements InitializingBean, FactoryBean, ApplicationContextAware, ScaAdapterAware
-{
+    implements InitializingBean, FactoryBean, ApplicationContextAware, ScaAdapterAware {
 
-  /** the public interface type of the service (may be a class...) */
-  private Class serviceType;
+    /**
+     * the public interface type of the service (may be a class...)
+     */
+    private Class serviceType;
 
-  /** the name of the reference to look up */
-  private String referenceName;
+    /**
+     * the name of the reference to look up
+     */
+    private String referenceName;
 
-  /** the default service name to resolve the reference too */
-  private String defaultServiceName;
+    /**
+     * the default service name to resolve the reference too
+     */
+    private String defaultServiceName;
 
-  private Object resolvedServiceReference;
-  private ApplicationContext applicationContext;
-  private ScaAdapter scaAdapter;
+    private Object resolvedServiceReference;
+    private ApplicationContext applicationContext;
+    private ScaAdapter scaAdapter;
 
-  public void setServiceType(Class serviceType) {
-    this.serviceType = serviceType;
-  }
+    public void setServiceType(Class serviceType) {
+        this.serviceType = serviceType;
+    }
 
-  public Class getServiceType() {
-    return this.serviceType;
-  }
+    public Class getServiceType() {
+        return this.serviceType;
+    }
 
-  public void setReferenceName(String name) {
-    this.referenceName = name;
-  }
+    public void setReferenceName(String name) {
+        this.referenceName = name;
+    }
 
-  public String getReferenceName() {
-    return this.referenceName;
-  }
+    public String getReferenceName() {
+        return this.referenceName;
+    }
 
-  public void setDefaultServiceName(String defaultService) {
-    this.defaultServiceName = defaultService;
-  }
+    public void setDefaultServiceName(String defaultService) {
+        this.defaultServiceName = defaultService;
+    }
 
-  public String getDefaultServiceName() {
-    return this.defaultServiceName;
-  }
+    public String getDefaultServiceName() {
+        return this.defaultServiceName;
+    }
 
-  /* (non-Javadoc)
+    /* (non-Javadoc)
     * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
     */
-  public void afterPropertiesSet() throws Exception {
-    if (this.serviceType == null) {
-      throw new IllegalArgumentException("Required property serviceType was not set");
+    public void afterPropertiesSet() throws Exception {
+        if (this.serviceType == null) {
+            throw new IllegalArgumentException("Required property serviceType was not set");
+        }
+        if (this.referenceName == null) {
+            throw new IllegalArgumentException("Required property referenceName was not set");
+        }
     }
-    if (this.referenceName == null) {
-      throw new IllegalArgumentException("Required property referenceName was not set");
-    }
-  }
 
-  /* (non-Javadoc)
+    /* (non-Javadoc)
     * @see org.springframework.beans.factory.FactoryBean#getObject()
     */
-  public Object getObject() throws Exception {
-    if (this.resolvedServiceReference != null) {
-      return this.resolvedServiceReference;
+    public Object getObject() throws Exception {
+        if (this.resolvedServiceReference != null) {
+            return this.resolvedServiceReference;
+        }
+
+        // TODO: AMC is there any merit in proxying this with a lazy target source?
+        //       should the returned service ref be proxied? Only seems to add value
+        //       if SCA gives us any lifecycle events we can subscribe to and take
+        //       meaningful action on...
+        //       See OsgiServiceProxyFactoryBean for an example of how to do the
+        //       proxying if needed.
+        Object scaServiceRef;
+        if (this.applicationContext.getParent() == null) {
+            return null;
+        }
+
+        if (!this.applicationContext.getParent().containsBean(this.referenceName)) {
+            scaServiceRef = this.applicationContext.getParent().getBean(this.defaultServiceName);
+        } else {
+            scaServiceRef = this.applicationContext.getParent().getBean(this.referenceName);
+        }
+        if (!this.serviceType.isAssignableFrom(scaServiceRef.getClass())) {
+            throw new IllegalStateException("...");
+        }
+        this.resolvedServiceReference = scaServiceRef;
+        return this.resolvedServiceReference;
     }
 
-    // TODO: AMC is there any merit in proxying this with a lazy target source?
-    //       should the returned service ref be proxied? Only seems to add value
-    //       if SCA gives us any lifecycle events we can subscribe to and take
-    //       meaningful action on...
-    //       See OsgiServiceProxyFactoryBean for an example of how to do the
-    //       proxying if needed.
-    Object scaServiceRef;
-    if (this.applicationContext.getParent() == null) return null;
-
-    if (!this.applicationContext.getParent().containsBean(this.referenceName)) {
-      scaServiceRef = this.applicationContext.getParent().getBean(this.defaultServiceName);
-    }
-    else {
-      scaServiceRef = this.applicationContext.getParent().getBean(this.referenceName);
-    }
-    if (!this.serviceType.isAssignableFrom(scaServiceRef.getClass())) {
-      throw new IllegalStateException("...");
-    }
-    this.resolvedServiceReference = scaServiceRef;
-    return this.resolvedServiceReference;
-  }
-
-  /* (non-Javadoc)
+    /* (non-Javadoc)
     * @see org.springframework.beans.factory.FactoryBean#getObjectType()
     */
-  public Class getObjectType() {
-    return this.serviceType;
-  }
+    public Class getObjectType() {
+        return this.serviceType;
+    }
 
-  /* (non-Javadoc)
+    /* (non-Javadoc)
     * @see org.springframework.beans.factory.FactoryBean#isSingleton()
     */
-  public boolean isSingleton() {
-    return true;
-  }
+    public boolean isSingleton() {
+        return true;
+    }
 
-  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
-  }
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
-  public void setScaAdapter(ScaAdapter adapter) {
-   this.scaAdapter = adapter;
-  }
+    public void setScaAdapter(ScaAdapter adapter) {
+        this.scaAdapter = adapter;
+    }
 }

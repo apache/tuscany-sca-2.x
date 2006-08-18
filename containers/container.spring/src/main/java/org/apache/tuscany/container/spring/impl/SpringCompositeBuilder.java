@@ -37,8 +37,6 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 /**
