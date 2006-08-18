@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.container.spring.mock.binding;
+package org.apache.tuscany.test.binding;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;

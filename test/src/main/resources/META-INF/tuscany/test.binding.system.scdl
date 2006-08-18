@@ -17,30 +17,20 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project>
-    <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>host-api</artifactId>
-    <packaging>jar</packaging>
-    <name>Apache Tuscany Host API</name>
-    <description>Tuscany Host Programming Interfaces.</description>
+<!--
+    JavaScript configuration for the launcher environment.
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>api</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-</project>
+           name="org.apache.tuscany.test.TestBindingImplementation">
+
+    <component name="BindingLoader">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestBindingLoader"/>
+    </component>
+
+    <component name="BindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestBindingBuilder"/>
+    </component>
+
+</composite>
