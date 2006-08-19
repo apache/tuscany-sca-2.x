@@ -41,6 +41,7 @@
         <module>host-api</module>
         <module>hostutil</module>
         <module>runtime/webapp</module>
+        <module>runtime/webapp-host</module>
         <module>commands/launcher</module>
     </modules>
 
