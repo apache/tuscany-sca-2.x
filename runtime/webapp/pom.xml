@@ -38,16 +38,9 @@
 
         <dependency>
             <groupId>org.apache.tuscany</groupId>
-            <artifactId>spi</artifactId>
+            <artifactId>host-api</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>test</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
