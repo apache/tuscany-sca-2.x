@@ -25,7 +25,6 @@ import java.net.URL;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -36,6 +35,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.VoidService;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
+import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
@@ -100,13 +100,13 @@ public class DirectoryScanExtender implements VoidService {
             extensionURL = new URL("jar:" + file.toURI().toURL() + "!/");
             scdl = new URL(extensionURL, "META-INF/sca/default.scdl");
             //test if the scdl file exists
-        	scdl.openStream();
+            scdl.openStream();
         } catch (MalformedURLException e) {
             // file may not be a JAR file
             return;
         } catch (java.io.IOException e) {
-        	//The jar file is ignored as it does not contain a valid scdl
-        	return;
+            //The jar file is ignored as it does not contain a valid scdl
+            return;
         }
 
         // assume this class's ClassLoader is the Tuscany system classloader

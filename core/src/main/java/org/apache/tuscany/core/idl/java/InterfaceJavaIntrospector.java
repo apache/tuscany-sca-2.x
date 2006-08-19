@@ -41,5 +41,5 @@ public interface InterfaceJavaIntrospector {
      * @param callback the callback interface to inspec
      * @return a JavaServiceContract corresponding to the Java interface
      */
-    <I,C> JavaServiceContract introspect(Class<I> type, Class<C> callback) throws InvalidServiceContractException;
+    <I, C> JavaServiceContract introspect(Class<I> type, Class<C> callback) throws InvalidServiceContractException;
 }

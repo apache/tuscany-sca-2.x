@@ -42,7 +42,7 @@ public class InterfaceJavaIntrospectorImpl implements InterfaceJavaIntrospector 
         return introspect(type, null);
     }
 
-    public <I,C> JavaServiceContract introspect(Class<I> type, Class<C> callback)
+    public <I, C> JavaServiceContract introspect(Class<I> type, Class<C> callback)
         throws InvalidServiceContractException {
         JavaServiceContract contract = new JavaServiceContract();
 
