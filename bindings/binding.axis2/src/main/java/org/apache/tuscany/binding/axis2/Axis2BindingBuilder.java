@@ -22,6 +22,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -43,10 +44,13 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
 
     private ConfigurationContext configContext;
 
+    public Axis2BindingBuilder() {
+        initAxis();
+    }
+
     @Autowire()
-    public void setServletHost(ServletHost servletHost) throws AxisFault {
+    public void setServletHost(ServletHost servletHost) {
         this.servletHost = servletHost;
-        this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
     }
 
     public SCAObject build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
@@ -71,5 +75,26 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
 
     protected Class<WebServiceBinding> getBindingType() {
         return WebServiceBinding.class;
+    }
+    
+    protected void initAxis() {
+        // TODO: Fix classloader switching. See TUSCANY-647 
+        // TODO: also consider having a system component wrapping the Axis2 ConfigContext
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader scl = getClass().getClassLoader();
+        try { 
+            if (tccl != scl) {
+                Thread.currentThread().setContextClassLoader(scl);
+            }
+            try {
+                this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
+            } catch (AxisFault e) {
+                throw new BuilderConfigException(e);
+            }
+        } finally {
+            if (tccl != scl) {
+                Thread.currentThread().setContextClassLoader(tccl);
+            }
+        }
     }
 }
