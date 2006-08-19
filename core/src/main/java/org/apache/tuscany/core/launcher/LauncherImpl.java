@@ -198,18 +198,19 @@ public class LauncherImpl implements Launcher {
         if (property != null) {
             return new File(property);
         }
+        
+        // TODO: TUSCANY-648, should this throw an exception if it not running from a jar?
 
         URL url = getClass().getResource("LauncherImpl.class");
-        if (!"jar".equals(url.getProtocol())) {
-            throw new IllegalStateException("Must be run from a jar: " + url);
-        }
         String jarLocation = url.toString();
-        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
-        if (!jarLocation.startsWith("file:")) {
-            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
+        if ("jar".equals(url.getProtocol())) {
+            jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
+        }
+        if (jarLocation.startsWith("file:")) {
+            jarLocation = jarLocation.substring(5);
         }
 
-        File jarFile = new File(jarLocation.substring(5));
+        File jarFile = new File(jarLocation);
         return jarFile.getParentFile().getParentFile();
     }
 
