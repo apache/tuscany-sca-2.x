@@ -27,39 +27,27 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
- * A servlet that locates the ServletHost and forwards requests into the Tuscany runtime.
+ * A servlet that locates the ServletRequestInjector and forwards requests into the Tuscany runtime. 
  * Needs to be added to the webapp web.xml
  */
 public class TuscanyServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private ServletHostImpl servletHost;
+    private ServletRequestInjector servletRequestInjector;
 
     @Override
     public void init(ServletConfig config) {
-
         ServletContext servletContext = config.getServletContext();
-        CompositeComponent systemComposite = (CompositeComponent) servletContext.getAttribute("Tuscany.SystemComposite");
-        if (systemComposite == null) {
-            Throwable e = (Throwable) servletContext.getAttribute("Tuscany.Launcher.Throwable");
-            throw new RuntimeException("SystemComposite not found", e);
-        }
-
-        SCAObject o = systemComposite.getChild("ServletHost");
-        if (o == null) {
-            throw new RuntimeException("ServletHost not found");
-        }
-        servletHost = (ServletHostImpl) o.getServiceInstance();
+        this.servletRequestInjector = (ServletRequestInjector) servletContext.getAttribute("Tuscany.ServletRequestInjector");
     }
 
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        servletHost.handleService(req, res);
+        servletRequestInjector.service(req, res);
     }
 
 }
