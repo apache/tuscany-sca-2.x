@@ -18,13 +18,18 @@
  */
 package org.apache.tuscany.binding.celtix;
 
-import org.apache.tuscany.spi.annotation.Autowire;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+
+import org.objectweb.celtix.Bus;
 
 /**
  * Builds a {@link Service} or {@link org.apache.tuscany.spi.component.Reference} configured 
@@ -34,12 +39,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
 
-    private BusService busService;
-
-    @Autowire
-    public void setBusService(BusService service) {
-        this.busService = service;
-    }
+    private Bus bus;
 
     public SCAObject build(CompositeComponent parent,
                            BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
@@ -47,34 +47,48 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
         //FIXME: CeltixService needs an instance of BusService. How to get BusService wired in 
         //and where BusService is created?
         WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
-        //FIXME get interface
-        Class<?> interfaze = null;
+        if (bus == null) {
+            bus = getBus(wsBinding.getWSDLDefinitionRegistry());
+        }
         return new CeltixService(
             boundServiceDefinition.getName(),
-            interfaze,
+            boundServiceDefinition.getServiceContract().getInterfaceClass(),
             parent,
             wireService,
             wsBinding,
-            busService.getBus());
+            bus);
     }
 
     public SCAObject build(CompositeComponent parent,
                            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
-        //Definition definition = wsBinding.getWSDLDefinition();
-        //Port port = wsBinding.getWSDLPort();
-        //Service service = wsBinding.getWSDLService();
+        if (bus == null) {
+            bus = getBus(wsBinding.getWSDLDefinitionRegistry());
+        }
         return new CeltixReference(
             boundReferenceDefinition.getName(),
             boundReferenceDefinition.getServiceContract().getInterfaceClass(),
             parent,
             wireService,
             wsBinding,
-            busService.getBus());
+            bus);
     }
 
     protected Class<WebServiceBinding> getBindingType() {
         return WebServiceBinding.class;
     }
+    
+    private Bus getBus(WSDLDefinitionRegistry wsdlDefinitionRegistry) {
+        Bus celtixBus = null;
+        try {
+            Map<String, Object> properties = new WeakHashMap<String, Object>();
+            properties.put("celtix.WSDLManager", new TuscanyWSDLManager(wsdlDefinitionRegistry));
+            bus = Bus.init(new String[0], properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return celtixBus;
+    }
+
 }

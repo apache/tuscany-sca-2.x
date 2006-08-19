@@ -22,6 +22,7 @@ import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.spi.model.Binding;
 
 /**
@@ -36,6 +37,8 @@ public class WebServiceBinding extends Binding {
     private Service service;
     //private String portURI;
     private String uri;
+    //We have to use WebServiceBinding to pass WSDLDefinitionRegistry to BindingBuilder
+    private WSDLDefinitionRegistry wsdlDefinitionRegistry;
 
     public WebServiceBinding(Definition definition, Port port, String uri, String portURI, Service service) {
         this.definition = definition;
@@ -63,6 +66,14 @@ public class WebServiceBinding extends Binding {
 
     public void setWSDLDefinition(Definition def) {
         definition = def;
+    }
+    
+    public WSDLDefinitionRegistry getWSDLDefinitionRegistry() {
+        return wsdlDefinitionRegistry;
+    }
+
+    public void setWSDLDefinitionRegistry(WSDLDefinitionRegistry theWsdlDefinitionRegistry) {
+        wsdlDefinitionRegistry = theWsdlDefinitionRegistry;
     }
 
 //    public void setPortURI(String uri) {
