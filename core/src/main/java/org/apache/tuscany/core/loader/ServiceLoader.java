@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -111,6 +112,17 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                                                                        false,
                                                                        binding,
                                                                        targetURI);
+                        } else if (target != null) {
+                            URI targetURI;
+                            try {
+                                targetURI = new URI(target);
+                            } catch (URISyntaxException e) {
+                                InvalidReferenceException ire = new InvalidReferenceException(target);
+                                ire.setIdentifier(name);
+                                throw ire;
+                            }
+                            
+                            return new BindlessServiceDefinition(name, serviceContract, false, targetURI);
                         } else {
                             // FIXME need a way to specify "remotable" on a service
                             return new ServiceDefinition(name, serviceContract, false);

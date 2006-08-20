@@ -23,10 +23,12 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 
 /**
  * Implementations build <code>SCAObject</code> types from model objects.
@@ -59,4 +61,22 @@ public interface Builder {
     <B extends Binding> SCAObject build(CompositeComponent parent,
                                         BoundReferenceDefinition<B> boundReferenceDefinition,
                                         DeploymentContext deploymentContext);
+
+    /**
+     * TODO: Make sure that this method belongs here
+     * Allow a builder registry to provide building of bindless services via
+     * appropriate registered builder
+     */
+    SCAObject build(CompositeComponent parent,
+                                       BindlessServiceDefinition serviceDefinition,
+                                       DeploymentContext deploymentContext);
+
+    /**
+     * TODO: Make sure that this method belongs here
+     * Allow a builder registry to provide building of targetless references via
+     * appropriate registered builder
+     */
+    SCAObject build(CompositeComponent parent,
+                                       ReferenceDefinition referenceDefinition,
+                                       DeploymentContext deploymentContext);
 }

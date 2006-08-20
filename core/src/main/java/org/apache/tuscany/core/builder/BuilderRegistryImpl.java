@@ -28,6 +28,7 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
+import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
@@ -39,11 +40,13 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
@@ -65,6 +68,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Binding>,
         BindingBuilder<? extends Binding>> bindingBuilders =
         new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
+    private BindlessBuilder bindlessBuilder;
 
     public BuilderRegistryImpl() {
     }
@@ -162,6 +166,32 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         // create wires for the component
         if (wireService != null) {
             wireService.createWires((Reference) object);
+        }
+        return object;
+    }
+
+    public void register(BindlessBuilder builder) {
+        bindlessBuilder = builder;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SCAObject build(CompositeComponent parent,
+                           BindlessServiceDefinition serviceDefinition,
+                           DeploymentContext deploymentContext) {
+        SCAObject object = bindlessBuilder.build(parent, serviceDefinition, deploymentContext);
+        if (wireService != null) {
+            wireService.createWires((Service)object, serviceDefinition);
+        }
+        return object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SCAObject build(CompositeComponent parent,
+                           ReferenceDefinition referenceDefinition,
+                           DeploymentContext deploymentContext) {
+        SCAObject object = bindlessBuilder.build(parent, referenceDefinition, deploymentContext);
+        if (wireService != null) {
+            wireService.createWires((Reference)object);
         }
         return object;
     }

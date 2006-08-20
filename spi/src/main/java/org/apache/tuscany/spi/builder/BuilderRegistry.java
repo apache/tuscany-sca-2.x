@@ -54,4 +54,9 @@ public interface BuilderRegistry extends Builder {
      */
     <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder);
 
+    /**
+     * TODO: Make sure this belongs here
+     */
+    void register(BindlessBuilder builder);
+
 }
