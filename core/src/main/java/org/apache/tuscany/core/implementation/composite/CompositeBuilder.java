@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -34,6 +35,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Include;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
@@ -56,21 +58,27 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
 
         List<BoundServiceDefinition<? extends Binding>> allBoundServices =
             new ArrayList<BoundServiceDefinition<? extends Binding>>();
+        List<BindlessServiceDefinition> allBindlessServices = new ArrayList<BindlessServiceDefinition>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
                 BoundServiceDefinition<? extends Binding> boundService =
                     (BoundServiceDefinition<? extends Binding>) serviceDefinition;
                 allBoundServices.add(boundService);
+            } else if (serviceDefinition instanceof BindlessServiceDefinition) {
+                allBindlessServices.add((BindlessServiceDefinition) serviceDefinition);
             }
         }
 
         // FIXME is this right?
         List<BoundReferenceDefinition<? extends Binding>> allBoundReferences =
             new ArrayList<BoundReferenceDefinition<? extends Binding>>();
+        List<ReferenceDefinition> allTargetlessReferences = new ArrayList<ReferenceDefinition>();
 
         for (Object referenceTarget : componentType.getReferences().values()) {
             if (referenceTarget instanceof BoundReferenceDefinition<?>) {
                 allBoundReferences.add((BoundReferenceDefinition<? extends Binding>) referenceTarget);
+            } else if (referenceTarget instanceof ReferenceDefinition) {
+                allTargetlessReferences.add((ReferenceDefinition) referenceTarget);
             }
         }
 
@@ -93,11 +101,17 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
             context.register(builderRegistry.build(context, referenceDefinition, deploymentContext));
         }
+        for (BindlessServiceDefinition bindlessServiceDef : allBindlessServices) {
+            context.register(builderRegistry.build(context, bindlessServiceDef, deploymentContext));
+        }
         for (ComponentDefinition<? extends Implementation<?>> child : allComponents) {
             context.register(builderRegistry.build(context, child, deploymentContext));
         }
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
             context.register(builderRegistry.build(context, serviceDefinition, deploymentContext));
+        }
+        for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
+            context.register(builderRegistry.build(context, targetlessReferenceDef, deploymentContext));
         }
         return context;
     }

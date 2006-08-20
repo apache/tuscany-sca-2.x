@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -62,5 +63,7 @@ public interface WireService {
     void createWires(Reference<?> reference);
 
     void createWires(Service<?> service, BoundServiceDefinition<?> def);
+
+    void createWires(Service<?> service, BindlessServiceDefinition def);
 
 }

@@ -29,12 +29,15 @@ import org.osoa.sca.annotations.Scope;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
@@ -154,6 +157,15 @@ public class JDKWireService implements WireService {
             ReferenceDefinition mappedReference = references.get(reference.getReferenceName());
             OutboundWire wire = createWire(reference, mappedReference);
             component.addOutboundWire(wire);
+            if (componentType instanceof CompositeComponentType<?, ?, ?>) {
+                // If this is the case, then it means that component has already been returned
+                // by CompositeBuilder and thus its children, in particular composite references,
+                // have been registered
+                CompositeComponent compositeComponent = (CompositeComponent) component;
+                Reference<?> bindlessReference = (Reference) compositeComponent.getChild(reference.getReferenceName());
+                assert bindlessReference != null;
+                bindlessReference.setOutboundWire(wire);
+            }
         }
     }
 
@@ -170,12 +182,20 @@ public class JDKWireService implements WireService {
     }
 
     public void createWires(Service<?> service, BoundServiceDefinition<?> def) {
+        createWires(service, def.getTarget().getPath());
+    }
+
+    public void createWires(Service<?> service, BindlessServiceDefinition def) {
+        createWires(service, def.getTarget().getPath());
+    }
+
+    private void createWires(Service<?> service, String targetName) {
         InboundWire inboundWire = createInboundWire();
         OutboundWire outboundWire = createOutboundWire();
         Class interfaze = service.getInterface();
         inboundWire.setBusinessInterface(interfaze);
         outboundWire.setBusinessInterface(interfaze);
-        outboundWire.setTargetName(new QualifiedName(def.getTarget().getPath()));
+        outboundWire.setTargetName(new QualifiedName(targetName));
         for (Method method : interfaze.getMethods()) {
             InboundInvocationChain inboundChain = createInboundChain(method);
             inboundWire.addInvocationChain(method, inboundChain);
