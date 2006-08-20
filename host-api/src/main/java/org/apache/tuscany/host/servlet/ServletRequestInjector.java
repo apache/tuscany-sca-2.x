@@ -19,7 +19,6 @@
 package org.apache.tuscany.host.servlet;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -31,12 +30,12 @@ public interface ServletRequestInjector {
 
     /**
      * Dispatch servlet requests to the Tuscany runtime
-     * 
-     * @param req  the ServletRequest object that contains the request the client made of the servlet
-     * @param res  the ServletResponse object that contains the response the servlet returns to the client
-     * @throws ServletException  if the request cannot be handled
-     * @throws IOException  if an input or output error occurs while handling the request
+     *
+     * @param req the ServletRequest object that contains the request the client made of the servlet
+     * @param res the ServletResponse object that contains the response the servlet returns to the client
+     * @throws ServletException if the request cannot be handled
+     * @throws IOException      if an input or output error occurs while handling the request
      */
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException;
+    void service(ServletRequest req, ServletResponse res) throws ServletException, IOException;
 
 }
