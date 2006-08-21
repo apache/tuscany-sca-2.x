@@ -43,7 +43,7 @@
         <module>runtime/webapp</module>
         <module>runtime/webapp-host</module>
         <module>commands/launcher</module>
-        <module>plugin</module>
+        <!-- module>plugin</module -->
     </modules>
 
     <dependencyManagement>
