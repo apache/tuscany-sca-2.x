@@ -89,7 +89,7 @@ public class TuscanyContextListener implements ServletContextListener {
     protected ServletContextListener getLauncher(ServletContext servletContext, ClassLoader bootClassLoader) {
         String launcherClass = servletContext.getInitParameter(LAUNCHER_PARAM);
         if (launcherClass == null) {
-            launcherClass = "org.apache.tuscany.core.launcher.ServletLauncherListener";
+            launcherClass = "org.apache.tuscany.runtime.webapp.ServletLauncherListener";
         }
 
         try {
