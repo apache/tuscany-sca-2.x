@@ -18,21 +18,20 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.util.Set;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.net.URLClassLoader;
 import java.beans.Beans;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Set;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.ServletContext;
 
 /**
- * Launcher for runtime environment that loads info from servlet context params.
- * This listener manages one top-level Launcher (and hence one Tuscany runtime context)
- * per servlet context; the lifecycle of that runtime corresponds to the the lifecycle of the
- * associated servlet context.
+ * Launcher for runtime environment that loads info from servlet context params. This listener manages one top-level
+ * Launcher (and hence one Tuscany runtime context) per servlet context; the lifecycle of that runtime corresponds to
+ * the the lifecycle of the associated servlet context.
  *
  * @version $Rev$ $Date$
  */
@@ -76,7 +75,7 @@ public class TuscanyContextListener implements ServletContextListener {
             return contextClassLoader;
         }
         URL[] urls = new URL[paths.size()];
-        int i =0;
+        int i = 0;
         for (Object path : paths) {
             try {
                 urls[i++] = servletContext.getResource((String) path);
