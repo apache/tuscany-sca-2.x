@@ -49,17 +49,17 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
     public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
-        Class<?> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
+        Class<Object> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
         Component target = (Component) parent.getChild(targetName.getPartName());
         if (target == null) {
             throw new BuilderConfigException("Target not found: [" + targetName + ']');
         }
-        SystemInboundWire<?> inboundWire =
-            new SystemInboundWireImpl(boundServiceDefinition.getName(), interfaze, target);
-        SystemOutboundWire<?> outboundWire =
-            new SystemOutboundWireImpl(boundServiceDefinition.getName(), targetName, interfaze);
-        SystemService service = new SystemServiceImpl(boundServiceDefinition.getName(), parent);
+        SystemInboundWire<Object> inboundWire =
+            new SystemInboundWireImpl<Object>(boundServiceDefinition.getName(), interfaze, target);
+        SystemOutboundWire<Object> outboundWire =
+            new SystemOutboundWireImpl<Object>(boundServiceDefinition.getName(), targetName, interfaze);
+        SystemService<Object> service = new SystemServiceImpl<Object>(boundServiceDefinition.getName(), parent);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         return service;
