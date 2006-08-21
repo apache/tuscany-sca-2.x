@@ -111,7 +111,7 @@
     
     <!-- Web app ServletHost -->
     <component name="servletHost">
-        <system:implementation.system class="org.apache.tuscany.core.launcher.ServletHostImpl"/>
+        <system:implementation.system class="org.apache.tuscany.runtime.webapp.ServletHostImpl"/>
     </component>
     
     <!-- TODO: Hack the Axis extension in  -->

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.launcher;
+package org.apache.tuscany.runtime.webapp;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,19 +30,24 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import org.apache.tuscany.spi.host.ServletHost;
-import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Service;
 
 /**
  * ServletHost impl that forwards requests to registered servlets
  * TODO: TUSCANY-649, move this and ServletLauncherListener to a new webapp-host module
  */
-@Scope("MODULE")
+@Service(ServletHost.class)
 public class ServletHostImpl implements ServletHost, ServletRequestInjector {
 
     protected Map<String, Servlet> servlets;
 
     public ServletHostImpl() {
         this.servlets = new HashMap<String, Servlet>();
+    }
+
+    @Init(eager = true)
+    public void init() {
     }
 
     public void service(ServletRequest req, ServletResponse resp) throws ServletException, IOException {

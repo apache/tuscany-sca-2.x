@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.launcher;
+package org.apache.tuscany.runtime.webapp;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,10 +28,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.tuscany.core.launcher.CompositeContextImpl;
+import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
+import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * LauncherImpl for runtime environment that loads info from servlet context params.
@@ -111,8 +113,8 @@ public class ServletLauncherListener implements ServletContextListener {
         try {
             URL systemScdl = getClass().getResource(systemScdlPath);
             CompositeComponent<?> rt = launcher.bootRuntime(systemScdl, mf);
-            servletContext.setAttribute("Tuscany.SystemComposite", rt);
             servletContext.setAttribute(LAUNCHER_ATTRIBUTE, launcher);
+            servletContext.setAttribute("Tuscany.ServletRequestInjector", rt.getChild("servletHost").getServiceInstance());
 
             URL appScdl;
             if (applicationScdlPath.startsWith("/")) {
