@@ -25,12 +25,12 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 import static org.apache.tuscany.spi.model.Scope.MODULE;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.JavaMappedProperty;
 import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
 import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
@@ -49,8 +49,8 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
     private IntrospectionRegistryImpl registry;
 
     public void testSimpleComponentTypeParsing() throws Exception {
-        PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>> type =
-            new PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>>();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         registry.introspect(null, Foo.class, type, null);
         assertEquals(Foo.class.getMethod("init"), type.getInitMethod());
         assertEquals(Foo.class.getMethod("destroy"), type.getDestroyMethod());

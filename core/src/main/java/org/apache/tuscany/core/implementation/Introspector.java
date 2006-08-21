@@ -38,7 +38,9 @@ public interface Introspector {
      * @return the updated component type
      * @throws ProcessingException if an error is encountered evaluating the implementation class
      */
-    PojoComponentType introspect(CompositeComponent<?> parent, Class<?> clazz, PojoComponentType type,
+    PojoComponentType introspect(CompositeComponent<?> parent,
+                                 Class<?> clazz,
+                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context)
         throws ProcessingException;
 

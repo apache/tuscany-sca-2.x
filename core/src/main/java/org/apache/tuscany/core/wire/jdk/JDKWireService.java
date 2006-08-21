@@ -109,13 +109,13 @@ public class JDKWireService implements WireService {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public WireInvocationHandler createHandler(RuntimeWire<?> wire) {
+    public <T> WireInvocationHandler createHandler(RuntimeWire<T> wire) {
         assert wire != null : "WireDefinition was null";
         if (wire instanceof InboundWire) {
-            InboundWire<?> inbound = (InboundWire) wire;
+            InboundWire<T> inbound = (InboundWire<T>) wire;
             return new JDKInboundInvocationHandler(inbound.getInvocationChains());
         } else if (wire instanceof OutboundWire) {
-            OutboundWire<?> outbound = (OutboundWire) wire;
+            OutboundWire<T> outbound = (OutboundWire<T>) wire;
             return new JDKOutboundInvocationHandler(outbound);
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
@@ -169,9 +169,9 @@ public class JDKWireService implements WireService {
         }
     }
 
-    public void createWires(Reference<?> reference) {
-        InboundWire wire = createInboundWire();
-        Class interfaze = reference.getInterface();
+    public <T> void createWires(Reference<T> reference) {
+        InboundWire<T> wire = new InboundWireImpl<T>();
+        Class<T> interfaze = reference.getInterface();
         wire.setBusinessInterface(interfaze);
         for (Method method : interfaze.getMethods()) {
             InboundInvocationChain chain = createInboundChain(method);
@@ -189,10 +189,10 @@ public class JDKWireService implements WireService {
         createWires(service, def.getTarget().getPath());
     }
 
-    private void createWires(Service<?> service, String targetName) {
-        InboundWire inboundWire = createInboundWire();
-        OutboundWire outboundWire = createOutboundWire();
-        Class interfaze = service.getInterface();
+    private <T> void createWires(Service<T> service, String targetName) {
+        InboundWire<T> inboundWire = new InboundWireImpl<T>();
+        OutboundWire<T> outboundWire = new OutboundWireImpl<T>();
+        Class<T> interfaze = service.getInterface();
         inboundWire.setBusinessInterface(interfaze);
         outboundWire.setBusinessInterface(interfaze);
         outboundWire.setTargetName(new QualifiedName(targetName));

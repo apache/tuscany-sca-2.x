@@ -42,7 +42,7 @@ public interface WireService {
 
     <T> T createCallbackProxy(Class<T> interfaze) throws ProxyCreationException;
 
-    WireInvocationHandler createHandler(RuntimeWire<?> wire);
+    <T> WireInvocationHandler createHandler(RuntimeWire<T> wire);
 
     WireInvocationHandler createCallbackHandler();
 
@@ -60,7 +60,7 @@ public interface WireService {
 
     void createWires(Component component, ComponentDefinition<?> definition);
 
-    void createWires(Reference<?> reference);
+    <T> void createWires(Reference<T> reference);
 
     void createWires(Service<?> service, BoundServiceDefinition<?> def);
 

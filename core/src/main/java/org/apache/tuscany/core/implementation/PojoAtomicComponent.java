@@ -59,7 +59,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> propertySites;
     protected Map<String, Member> callbackSites;
-    protected List<Injector> injectors;
+    protected List<Injector<Object>> injectors;
 
     public PojoAtomicComponent(String name, PojoConfiguration configuration) {
         super(name,
@@ -75,7 +75,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         instanceFactory = configuration.getInstanceFactory();
         constructorParamNames = configuration.getConstructorParamNames();
         serviceInterfaces = configuration.getServiceInterfaces();
-        injectors = new ArrayList<Injector>();
+        injectors = new ArrayList<Injector<Object>>();
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
             : new HashMap<String, Member>();
         propertySites = configuration.getPropertySites() != null ? configuration.getPropertySites()
@@ -112,6 +112,7 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
+    @SuppressWarnings("unchecked")
     public T getTargetInstance() throws TargetException {
         return (T) scopeContainer.getInstance(this);
     }
@@ -128,9 +129,9 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
     public void addPropertyFactory(String name, ObjectFactory<?> factory) {
         Member member = propertySites.get(name);
         if (member instanceof Field) {
-            injectors.add(new FieldInjector((Field) member, factory));
+            injectors.add(new FieldInjector<Object>((Field) member, factory));
         } else if (member instanceof Method) {
-            injectors.add(new MethodInjector((Method) member, factory));
+            injectors.add(new MethodInjector<Object>((Method) member, factory));
         }
         // cycle through constructor param names as well
         for (int i = 0; i < constructorParamNames.size(); i++) {
@@ -176,12 +177,12 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         //TODO multiplicity for constructor injection
     }
 
-    protected Injector createInjector(Member member, RuntimeWire wire) {
+    protected Injector<Object> createInjector(Member member, RuntimeWire wire) {
         ObjectFactory<?> factory = createWireFactory(wire);
         if (member instanceof Field) {
-            return new FieldInjector((Field) member, factory);
+            return new FieldInjector<Object>((Field) member, factory);
         } else if (member instanceof Method) {
-            return new MethodInjector((Method) member, factory);
+            return new MethodInjector<Object>((Method) member, factory);
         } else {
             InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
             e.setIdentifier(member.getName());
@@ -189,9 +190,9 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
-    protected Injector createMultiplicityInjector(Member member,
-                                                  Class<?> interfaceType,
-                                                  List<OutboundWire> wireFactories) {
+    protected Injector<Object> createMultiplicityInjector(Member member,
+                                                          Class<?> interfaceType,
+                                                          List<OutboundWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (OutboundWire wire : wireFactories) {
             factories.add(createWireFactory(wire));
@@ -199,16 +200,16 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         if (member instanceof Field) {
             Field field = (Field) member;
             if (field.getType().isArray()) {
-                return new FieldInjector(field, new ArrayMultiplicityObjectFactory(interfaceType, factories));
+                return new FieldInjector<Object>(field, new ArrayMultiplicityObjectFactory(interfaceType, factories));
             } else {
-                return new FieldInjector(field, new ListMultiplicityObjectFactory(factories));
+                return new FieldInjector<Object>(field, new ListMultiplicityObjectFactory(factories));
             }
         } else if (member instanceof Method) {
             Method method = (Method) member;
             if (method.getParameterTypes()[0].isArray()) {
-                return new MethodInjector(method, new ArrayMultiplicityObjectFactory(interfaceType, factories));
+                return new MethodInjector<Object>(method, new ArrayMultiplicityObjectFactory(interfaceType, factories));
             } else {
-                return new MethodInjector(method, new ListMultiplicityObjectFactory(factories));
+                return new MethodInjector<Object>(method, new ListMultiplicityObjectFactory(factories));
             }
         } else {
             InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
