@@ -22,17 +22,21 @@ import java.net.URL;
 
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.core.implementation.IntrospectionRegistry;
-import org.apache.tuscany.core.implementation.Introspector;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+
+import org.apache.tuscany.core.implementation.IntrospectionRegistry;
+import org.apache.tuscany.core.implementation.Introspector;
+import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.core.implementation.JavaMappedReference;
+import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * @version $Rev$ $Date$
@@ -69,7 +73,8 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
     protected PojoComponentType loadByIntrospection(CompositeComponent<?> parent,
                                                     JavaImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
-        PojoComponentType componentType = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Class<?> implClass = implementation.getImplementationClass();
         introspector.introspect(parent, implClass, componentType, deploymentContext);
         return componentType;

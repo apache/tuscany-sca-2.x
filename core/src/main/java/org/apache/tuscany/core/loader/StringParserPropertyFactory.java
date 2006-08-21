@@ -39,6 +39,7 @@ import org.apache.tuscany.core.injection.SingletonObjectFactory;
  *
  * @version $Rev$ $Date$
  */
+@SuppressWarnings("unchecked")
 public class StringParserPropertyFactory implements StAXPropertyFactory {
     public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property)
         throws XMLStreamException, LoaderException {
@@ -98,7 +99,7 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
         if (editor != null) {
             try {
                 editor.setAsText(text);
-                return new SingletonObjectFactory(editor.getValue());
+                return new SingletonObjectFactory<T>((T) editor.getValue());
             } catch (IllegalArgumentException e) {
                 // FIXME we should throw something better
                 throw new LoaderException(e);

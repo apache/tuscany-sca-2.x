@@ -98,15 +98,15 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         }
     }
 
-    protected Injector createCallbackInjector(Member member) {
+    protected Injector<Object> createCallbackInjector(Member member) {
         if (member instanceof Field) {
             Field field = (Field) member;
             ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), wireService);
-            return new FieldInjector(field, factory);
+            return new FieldInjector<Object>(field, factory);
         } else if (member instanceof Method) {
             Method method = (Method) member;
             ObjectFactory<?> factory = new CallbackWireObjectFactory(method.getParameterTypes()[0], wireService);
-            return new MethodInjector(method, factory);
+            return new MethodInjector<Object>(method, factory);
         } else {
             InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
             e.setIdentifier(member.getName());

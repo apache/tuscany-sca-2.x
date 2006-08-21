@@ -119,12 +119,12 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
 
-        ConstructorDefinition definition = type.getConstructorDefinition();
+        ConstructorDefinition<?> definition = type.getConstructorDefinition();
         Class[] params = constructor.getParameterTypes();
         Map<String, JavaMappedProperty<?>> properties = type.getProperties();
         Annotation[][] annotations = constructor.getParameterAnnotations();
         for (int i = 0; i < params.length; i++) {
-            Class param = params[i];
+            Class<?> param = params[i];
             Annotation[] paramAnnotations = annotations[i];
             for (Annotation annotation : paramAnnotations) {
                 if (annotation.annotationType().equals(annotationClass)) {

@@ -46,7 +46,7 @@ public class ReferenceDefinition extends ModelObject {
         this.name = name;
     }
 
-    public ServiceContract getServiceContract() {
+    public ServiceContract<?> getServiceContract() {
         return serviceContract;
     }
 
