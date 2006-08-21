@@ -50,12 +50,12 @@ public class PolicyBuilderRegistryImpl implements PolicyBuilderRegistry {
     }
 
     public void registerTargetBuilder(int phase, TargetPolicyBuilder builder) {
-        assert phase >= FINAL : "Illegal phase";
+        assert INITIAL <= phase && phase <= FINAL : "Illegal phase";
         targetBuilders.get(phase).add(builder);
     }
 
     public void registerSourceBuilder(int phase, SourcePolicyBuilder builder) {
-        assert phase >= FINAL : "Illegal phase";
+        assert INITIAL <= phase && phase <= FINAL : "Illegal phase";
         sourceBuilders.get(phase).add(builder);
     }
 
