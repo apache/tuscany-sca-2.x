@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -35,6 +33,9 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
 
 /**
  * The JavaScript component implementation.
@@ -48,7 +49,8 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
     private RhinoScript rhinoScript;
 
     public JavaScriptComponent(String name, RhinoScript rhinoScript, List<Class<?>> services,
-            CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService, WorkContext workContext) {
+                               CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService,
+                               WorkContext workContext) {
         super(name, parent, scopeContainer, wireService, workContext, null, 0);
 
         this.rhinoScript = rhinoScript;
@@ -77,7 +79,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
     }
 
     // TODO: move all the following up to AtomicComponentExtension?
-    
+
     public List<Class<?>> getServiceInterfaces() {
         return services;
     }
@@ -87,7 +89,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
     }
 
     public RhinoScriptInstance getTargetInstance() throws TargetException {
-        return scopeContainer.getInstance(this);
+        return (RhinoScriptInstance) scopeContainer.getInstance(this);
     }
 
     public T getServiceInstance() throws TargetException {

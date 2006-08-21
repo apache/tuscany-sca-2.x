@@ -96,9 +96,10 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     }
 
     public GroovyObject getTargetInstance() throws TargetException {
-        return scopeContainer.getInstance(this);
+        return (GroovyObject) scopeContainer.getInstance(this);
     }
 
+    @SuppressWarnings("unchecked")
     public T getServiceInstance() throws TargetException {
         //TODO this should return a default service from a wire
         return (T) scopeContainer.getInstance(this);
