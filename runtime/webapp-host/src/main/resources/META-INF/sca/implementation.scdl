@@ -27,7 +27,7 @@
            name="org.apache.tuscany.test.Implementation">
 
     <!-- Foundation implementation processors -->
-    <component name="implementation.Destroy">
+    <component name="implementation.Constructor">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConstructorProcessor"/>
     </component>
     <component name="implementation.Destroy">
