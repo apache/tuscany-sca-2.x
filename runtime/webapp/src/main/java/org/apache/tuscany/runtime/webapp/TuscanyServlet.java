@@ -19,7 +19,6 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.io.IOException;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -30,8 +29,8 @@ import javax.servlet.http.HttpServlet;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
- * A servlet that locates the ServletRequestInjector and forwards requests into the Tuscany runtime. 
- * Needs to be added to the webapp web.xml
+ * A servlet that locates the ServletRequestInjector and forwards requests into the Tuscany runtime. Needs to be added
+ * to the webapp web.xml
  */
 public class TuscanyServlet extends HttpServlet {
 
@@ -42,7 +41,8 @@ public class TuscanyServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) {
         ServletContext servletContext = config.getServletContext();
-        this.servletRequestInjector = (ServletRequestInjector) servletContext.getAttribute("Tuscany.ServletRequestInjector");
+        this.servletRequestInjector =
+            (ServletRequestInjector) servletContext.getAttribute("Tuscany.ServletRequestInjector");
     }
 
     @Override
