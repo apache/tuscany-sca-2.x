@@ -28,8 +28,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>databinding-test</artifactId>
     <packaging>jar</packaging>
-    <name>Data Binding Integration Test</name>
-	<description>Data Binding Integration Test</description>
+    <name>Apache Tuscany Data Binding Integration Test</name>
+	<description>Apache Tuscany Data Binding Integration Test</description>
 
 	<dependencies>
 		<dependency>

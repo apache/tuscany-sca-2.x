@@ -31,8 +31,8 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
-import org.apache.tuscany.databinding.xml.StAXBinding;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
 import commonj.sdo.DataObject;
@@ -66,9 +66,9 @@ public class SDODataBinding {
         // HACK: [rfeng] We should use the transformer in an interceptor
         XMLStreamReader2XMLDocument transformer = new XMLStreamReader2XMLDocument();
         TransformationContext context = new TransformationContextImpl();
-        StAXBinding binding = new StAXBinding();
-        binding.setAttribute(TypeHelper.class.getName(), typeHelper);
-        context.setTargetDataBinding(binding);
+        DataType<QName> binding = new DataType<QName>(DataObject.class, null);
+        binding.setMetadata(TypeHelper.class.getName(), typeHelper);
+        context.setTargetDataType(binding);
         XMLDocument document = transformer.transform(reader, context);
         return toObjects(document, isWrapped);
     }

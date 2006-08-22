@@ -27,8 +27,8 @@ import java.io.StringReader;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Node;
 
 public class JAXBTestCase extends TestCase {
@@ -52,22 +52,20 @@ public class JAXBTestCase extends TestCase {
     public void testTransform() throws Exception {
         Reader2JAXB t0 = new Reader2JAXB();
         
-        DataBinding targetContext = createMock(DataBinding.class);
-        expect(targetContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
-        replay(targetContext);
+        DataType targetDataType = new DataType<Class>(Object.class, null);
+        targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
         
         TransformationContext tContext = createMock(TransformationContext.class);
-        expect(tContext.getTargetDataBinding()).andReturn(targetContext).anyTimes();
+        expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
         replay(tContext);
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
 
-        DataBinding sourceContext = createMock(DataBinding.class);
-        expect(sourceContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
-        replay(sourceContext);
+        DataType sourceDataType = new DataType<Class>(Object.class, null);
+        sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
         
         TransformationContext tContext1 = createMock(TransformationContext.class);
-        expect(tContext1.getSourceDataBinding()).andReturn(sourceContext).anyTimes();
+        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         replay(tContext1);
 
         

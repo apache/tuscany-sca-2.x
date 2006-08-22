@@ -20,13 +20,13 @@ package org.apache.tuscany.databinding.impl;
 
 import java.lang.ref.WeakReference;
 
-import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.spi.model.DataType;
 
 public class TransformationContextImpl implements TransformationContext {
-    private DataBinding sourceDataBinding;
+    private DataType sourceDataType;
 
-    private DataBinding targetDataBinding;
+    private DataType targetDataType;
 
     private WeakReference<ClassLoader> classLoaderRef;
 
@@ -35,27 +35,27 @@ public class TransformationContextImpl implements TransformationContext {
         setClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
-    public TransformationContextImpl(DataBinding sourceDataBinding, DataBinding targetDataBinding, ClassLoader classLoader) {
+    public TransformationContextImpl(DataType sourceDataType, DataType targetDataType, ClassLoader classLoader) {
         super();
-        this.sourceDataBinding = sourceDataBinding;
-        this.targetDataBinding = targetDataBinding;
+        this.sourceDataType = sourceDataType;
+        this.targetDataType = targetDataType;
         setClassLoader(classLoader);
     }
 
-    public DataBinding getSourceDataBinding() {
-        return sourceDataBinding;
+    public DataType getSourceDataType() {
+        return sourceDataType;
     }
 
-    public DataBinding getTargetDataBinding() {
-        return targetDataBinding;
+    public DataType getTargetDataType() {
+        return targetDataType;
     }
 
-    public void setSourceDataBinding(DataBinding sourceDataBinding) {
-        this.sourceDataBinding = sourceDataBinding;
+    public void setSourceDataType(DataType sourceDataType) {
+        this.sourceDataType = sourceDataType;
     }
 
-    public void setTargetDataBinding(DataBinding targetDataBinding) {
-        this.targetDataBinding = targetDataBinding;
+    public void setTargetDataType(DataType targetDataType) {
+        this.targetDataType = targetDataType;
     }
 
     final public void setClassLoader(ClassLoader classLoader) {

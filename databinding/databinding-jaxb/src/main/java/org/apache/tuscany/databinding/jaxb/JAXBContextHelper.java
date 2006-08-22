@@ -19,9 +19,9 @@ package org.apache.tuscany.databinding.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.spi.model.DataType;
 
 public class JAXBContextHelper {
     // TODO: Do we need to set them for source and target?
@@ -38,13 +38,13 @@ public class JAXBContextHelper {
 
         // FIXME: We should check the context path or classes
         // FIXME: What should we do if JAXB is an intermediate node?
-        DataBinding bindingContext = source ? tContext.getSourceDataBinding() : tContext.getTargetDataBinding();
-        String contextPath = (String) bindingContext.getAttribute(JAXB_CONTEXT_PATH);
+        DataType<?> bindingContext = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
+        String contextPath = (String) bindingContext.getMetadata(JAXB_CONTEXT_PATH);
         JAXBContext context = null;
         if (contextPath != null)
             context = JAXBContext.newInstance(contextPath);
         else {
-            Class[] classes = (Class[]) bindingContext.getAttribute(JAXB_CLASSES);
+            Class[] classes = (Class[]) bindingContext.getMetadata(JAXB_CLASSES);
             context = JAXBContext.newInstance(classes);
         }
         if (context == null)

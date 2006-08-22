@@ -37,7 +37,7 @@ public class XMLStreamReader2XMLDocument extends TransformerExtension<XMLStreamR
         try {
             TypeHelper typeHelper = null;
             if (context != null) {
-                typeHelper = (TypeHelper) context.getTargetDataBinding().getAttribute(TypeHelper.class.getName());
+                typeHelper = (TypeHelper) context.getTargetDataType().getMetadata(TypeHelper.class.getName());
             }
             if (typeHelper == null)
                 typeHelper = TypeHelper.INSTANCE;
