@@ -115,6 +115,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
             }
             // FIXME need to find out how to get wsdl and what context to use --- terrible hack attack!
             // URL wsdlurl = Thread.currentThread().getContextClassLoader().getResource(wsdlLocation);
+            if(null == wsdlLocation) throw new RuntimeException("Failed to determin wsdl location on binding. Try specifying 'location' attribute on  binding.");
             URL wsdlurl = deploymentContext.getClassLoader().getResource(wsdlLocation);
             if(wsdlurl == null) throw new RuntimeException("Failed to load wsdl from '" + wsdlLocation +"'" );
             
