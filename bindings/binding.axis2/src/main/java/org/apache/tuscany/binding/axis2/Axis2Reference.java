@@ -56,6 +56,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
     private ServiceClient serviceClient;
     private TypeHelper typeHelper;
     
+    @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
                           CompositeComponent<?> parent,
                           WireService wireService,

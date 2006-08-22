@@ -53,6 +53,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         this.servletHost = servletHost;
     }
 
+    @SuppressWarnings("unchecked")
     public SCAObject build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
 
         WebServiceBinding wsBinding = serviceDefinition.getBinding();
@@ -63,6 +64,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         return new Axis2Service(serviceDefinition.getName(), interfaze, parent, wireService, wsBinding, servletHost, configContext, typeHelper);
     }
 
+    @SuppressWarnings("unchecked")
     public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
             DeploymentContext deploymentContext) {
         
