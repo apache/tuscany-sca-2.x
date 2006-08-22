@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding;
 
+import org.apache.tuscany.spi.model.DataType;
+
 /**
  * This interface will be used as a Tuscany system service to perform data mediations
  * 
@@ -33,7 +35,7 @@ public interface Mediator {
      * @param targetBinding
      * @return
      */
-    public Object mediate(Object source, DataBinding sourceBinding, DataBinding targetBinding);
+    public Object mediate(Object source, DataType sourceBinding, DataType targetBinding);
     /**
      * Mediate the data
      * @param source
@@ -41,6 +43,6 @@ public interface Mediator {
      * @param sourceBinding
      * @param targetBinding
      */
-    public void mediate(Object source, Object target, DataBinding sourceBinding, DataBinding targetBinding);
+    public void mediate(Object source, Object target, DataType sourceBinding, DataType targetBinding);
     
 }

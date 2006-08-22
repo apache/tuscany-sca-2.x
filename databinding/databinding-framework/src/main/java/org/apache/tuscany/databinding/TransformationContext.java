@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding;
 
+import org.apache.tuscany.spi.model.DataType;
+
 /**
  * Context for data transformation
  * 
@@ -26,22 +28,22 @@ public interface TransformationContext {
     /**
      * @return
      */
-    public DataBinding getSourceDataBinding();
+    public DataType getSourceDataType();
 
     /**
      * @return
      */
-    public DataBinding getTargetDataBinding();
+    public DataType getTargetDataType();
 
     /**
      * @param sourceNode
      */
-    public void setSourceDataBinding(DataBinding sourceNode);
+    public void setSourceDataType(DataType sourceNode);
 
     /**
      * @param targetNode
      */
-    public void setTargetDataBinding(DataBinding targetNode);
+    public void setTargetDataType(DataType targetNode);
 
     /**
      * @return

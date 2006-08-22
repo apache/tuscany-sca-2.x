@@ -89,7 +89,7 @@
                             <tasks>
                                 <taskdef name="castor-srcgen"
                                     classname="org.exolab.castor.tools.ant.taskdefs.CastorSourceGenTask"
-                                    classpathref="maven.runtime.classpath" />
+                                    classpathref="maven.test.classpath" />
                                 <mkdir dir="${project.build.directory}/castor-source"></mkdir>
                                 <castor-srcgen file="${basedir}/src/test/resources/ipo.xsd"
                                     todir="${project.build.directory}/castor-source" package="com.example.ipo.castor" types="j2"

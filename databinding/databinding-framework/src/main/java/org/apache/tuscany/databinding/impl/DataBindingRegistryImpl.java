@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -69,6 +70,11 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
         if (object == null)
             return null;
         return introspectType(object.getClass());
+    }
+
+    public DataBinding introspectType(DataType dataType) {
+        // FIXME: [rfeng] To be implemented
+        return introspectType((Class) dataType.getPhysical());
     }
 
 }

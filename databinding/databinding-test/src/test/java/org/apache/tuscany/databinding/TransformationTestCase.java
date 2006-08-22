@@ -51,6 +51,7 @@ import org.apache.tuscany.databinding.xmlbeans.Node2XmlObject;
 import org.apache.tuscany.databinding.xmlbeans.XMLStreamReader2XmlObject;
 import org.apache.tuscany.databinding.xmlbeans.XmlObject2Node;
 import org.apache.tuscany.databinding.xmlbeans.XmlObject2XMLStreamReader;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
@@ -193,18 +194,14 @@ public class TransformationTestCase extends TestCase {
     }
 
     private TransformationContext createTransformationContext() {
-        DataBinding targetContext = createMock(DataBinding.class);
-        expect(targetContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
-        replay(targetContext);
+        DataType dataType = new DataType<Class>(Object.class, null);
+        dataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
+
 
         TransformationContext tContext = createMock(TransformationContext.class);
-        expect(tContext.getTargetDataBinding()).andReturn(targetContext).anyTimes();
+        expect(tContext.getTargetDataType()).andReturn(dataType).anyTimes();
 
-        DataBinding sourceContext = createMock(DataBinding.class);
-        expect(sourceContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
-        replay(sourceContext);
-
-        expect(tContext.getSourceDataBinding()).andReturn(sourceContext).anyTimes();
+        expect(tContext.getSourceDataType()).andReturn(dataType).anyTimes();
         replay(tContext);
         return tContext;
     }

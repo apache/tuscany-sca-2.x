@@ -17,6 +17,8 @@
 
 package org.apache.tuscany.databinding;
 
+import org.apache.tuscany.spi.model.DataType;
+
 /**
  * The registry for data bindings
  */
@@ -53,5 +55,8 @@ public interface DataBindingRegistry {
      * @param object The value
      * @return
      */
-    public DataBinding introspectValue(Object object); 
+    public DataBinding introspectValue(Object object);
+    
+    public DataBinding introspectType(DataType dataType);
+    
 }

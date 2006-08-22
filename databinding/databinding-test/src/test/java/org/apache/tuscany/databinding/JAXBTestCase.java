@@ -34,6 +34,7 @@ import org.apache.tuscany.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
 import org.apache.tuscany.databinding.xmlbeans.Node2XmlObject;
 import org.apache.tuscany.databinding.xmlbeans.XmlObject2XMLStreamReader;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
@@ -63,24 +64,22 @@ public class JAXBTestCase extends TestCase {
         XmlObject2XMLStreamReader t1 = new XmlObject2XMLStreamReader();
         XMLStreamReader reader = t1.transform(object, null);
 
-        DataBinding targetContext = createMock(DataBinding.class);
-        expect(targetContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
-        replay(targetContext);
+        DataType targetDataType = new DataType<Class>(Object.class, null);
+        targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext = createMock(TransformationContext.class);
-        expect(tContext.getTargetDataBinding()).andReturn(targetContext).anyTimes();
+        expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
         replay(tContext);
 
         // XMLStreamReader to JAXB
         XMLStreamReader2JAXB t2 = new XMLStreamReader2JAXB();
         Object object2 = t2.transform(reader, tContext);
 
-        DataBinding sourceContext = createMock(DataBinding.class);
-        expect(sourceContext.getAttribute(JAXBContextHelper.JAXB_CONTEXT_PATH)).andReturn(contextPath).anyTimes();
-        replay(sourceContext);
+        DataType sourceDataType = new DataType<Class>(Object.class, null);
+        sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext1 = createMock(TransformationContext.class);
-        expect(tContext1.getSourceDataBinding()).andReturn(sourceContext).anyTimes();
+        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         replay(tContext1);
 
         JAXB2Node t3 = new JAXB2Node();

@@ -35,6 +35,7 @@ import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
 import org.apache.tuscany.databinding.xml.SAXContentHandlerBinding;
 import org.apache.tuscany.databinding.xml.WriterBinding;
 import org.apache.tuscany.databinding.xml.XMLStringBinding;
+import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -72,20 +73,23 @@ public class MediatorImplTestCase extends TestCase {
         registry.registerTransformer(new Node2Writer());
 
         mediator = new MediatorImpl();
-        mediator.setRegistry(registry);
+        mediator.setTransformerRegistry(registry);
+        mediator.setDataBindingRegistry(bindingRegistry);
     }
 
     @SuppressWarnings("unchecked")
     private TransformationContext createTransformationContext(Class sourceType, Class targetType) {
         TransformationContext context = new TransformationContextImpl();
-        context.setSourceDataBinding(bindingRegistry.introspectType(sourceType));
-        context.setTargetDataBinding(bindingRegistry.introspectType(targetType));
+        DataType sourceDataType = new DataType<Class>(sourceType, sourceType);
+        DataType targetDataType = new DataType<Class>(targetType, targetType);
+        context.setSourceDataType(sourceDataType);
+        context.setTargetDataType(targetDataType);
         return context;
     }
 
     public void testTransform1() {
         TransformationContext context = createTransformationContext(String.class, Node.class);
-        Object node = mediator.mediate(IPO_XML, context.getSourceDataBinding(), context.getTargetDataBinding());
+        Object node = mediator.mediate(IPO_XML, context.getSourceDataType(), context.getTargetDataType());
         Assert.assertTrue(node instanceof Document);
         Element root = ((Document) node).getDocumentElement();
         Assert.assertEquals(root.getNamespaceURI(), "http://www.example.com/IPO");
@@ -95,7 +99,7 @@ public class MediatorImplTestCase extends TestCase {
     public void testTransform2() {
         TransformationContext context = createTransformationContext(String.class, Writer.class);
         Writer writer = new StringWriter();
-        mediator.mediate(IPO_XML, writer, context.getSourceDataBinding(), context.getTargetDataBinding());
+        mediator.mediate(IPO_XML, writer, context.getSourceDataType(), context.getTargetDataType());
         String str = writer.toString();
         Assert.assertTrue(str != null && str.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }
