@@ -42,7 +42,7 @@ import javax.xml.namespace.QName;
 /**
  * Metadata for a WSDL operation
  */
-@SuppressWarnings({"ALL"})
+@SuppressWarnings({"all"})
 public class WebServiceOperationMetaData implements Serializable {
     private static final long serialVersionUID = 2425306250256227724L;
 
