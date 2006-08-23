@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.binding.celtix.io;
 
@@ -55,8 +55,7 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
     @SuppressWarnings("unchecked")
     public <T> DataWriter<T> createWriter(Class<T> cls) {
         if (cls == Node.class) {
-            //FIXME
-            //return (DataWriter<T>)new NodeDataWriter(this);
+            return (DataWriter<T>)new NodeDataWriter(this);
         }
         return null;
     }
@@ -64,15 +63,14 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
     @SuppressWarnings("unchecked")
     public <T> DataReader<T> createReader(Class<T> cls) {
         if (cls == Node.class) {
-            //FIXME
-            //return (DataReader<T>)new NodeDataReader(this);
+            return (DataReader<T>)new NodeDataReader(this);
         }
         //REVISIT - need to figure out what to do with Faults
         return null;
     }
 
     public void initObjectContext(ObjectMessageContext octx) {
-        //REVISIT - is this even used?       
+        //REVISIT - is this even used?
     }
 
 
