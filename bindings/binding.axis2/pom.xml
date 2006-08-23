@@ -114,7 +114,8 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+             <version>2.3</version>
+           <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <!-- runtime -->
@@ -173,6 +174,7 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
+            <version>2.3</version>
             <artifactId>servlet-api</artifactId>
         </dependency>
 
@@ -233,4 +235,29 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
+            <build>
+                <defaultGoal>install</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.2-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/axis2.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
 </project>
