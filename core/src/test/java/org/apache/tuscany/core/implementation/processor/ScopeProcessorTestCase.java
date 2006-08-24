@@ -20,9 +20,10 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 

@@ -25,13 +25,15 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
 import static org.apache.tuscany.spi.model.Scope.MODULE;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;

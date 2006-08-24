@@ -20,10 +20,11 @@ package org.apache.tuscany.core.implementation.system.loader;
 
 import java.net.URL;
 
-import org.apache.tuscany.core.implementation.IntrospectionRegistry;
-import org.apache.tuscany.core.implementation.Introspector;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
+import org.apache.tuscany.spi.implementation.java.Introspector;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.annotation.Autowire;

@@ -26,13 +26,15 @@ import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.core.implementation.ImplementationProcessorSupport;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
 import org.apache.tuscany.core.idl.java.JavaServiceContract;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
@@ -43,7 +45,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
- * org.apache.tuscany.core.implementation.JavaMappedReference}
+ * org.apache.tuscany.spi.implementation.java.JavaMappedReference}
  *
  * @version $Rev$ $Date$
  */

@@ -33,8 +33,8 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
-import org.apache.tuscany.core.implementation.PojoComponentType;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;

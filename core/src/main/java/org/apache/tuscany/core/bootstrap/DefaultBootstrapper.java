@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.implementation.java.Introspector;
+
 import org.apache.tuscany.host.MonitorFactory;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
@@ -41,7 +43,6 @@ import org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
-import org.apache.tuscany.core.implementation.Introspector;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;

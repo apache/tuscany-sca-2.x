@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
-import org.apache.tuscany.core.implementation.Introspector;
+import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.Connector;
@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+
 import org.apache.tuscany.host.MonitorFactory;
 
 /**

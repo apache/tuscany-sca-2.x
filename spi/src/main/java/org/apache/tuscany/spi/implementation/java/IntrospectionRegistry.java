@@ -16,28 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
-
-import org.apache.tuscany.spi.loader.LoaderException;
+package org.apache.tuscany.spi.implementation.java;
 
 /**
- * Denotes a problem processing annotations on a POJO implementation
+ * A system service which tracks {@link ImplementationProcessor}s
  *
  * @version $Rev$ $Date$
  */
-public class ProcessingException extends LoaderException {
-    public ProcessingException() {
-    }
+public interface IntrospectionRegistry extends Introspector {
 
-    public ProcessingException(String message) {
-        super(message);
-    }
+    /**
+     * Registers the given processor and makes it available during assembly evaluation (i.e. build)
+     */
+    void registerProcessor(ImplementationProcessor processor);
 
-    public ProcessingException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    /**
+     * Deregisters the given processor
+     */
+    void unregisterProcessor(ImplementationProcessor processor);
 
-    public ProcessingException(Throwable cause) {
-        super(cause);
-    }
 }

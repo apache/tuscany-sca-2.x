@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
+package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

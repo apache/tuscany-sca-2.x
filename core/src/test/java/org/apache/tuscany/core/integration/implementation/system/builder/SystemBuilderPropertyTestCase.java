@@ -23,9 +23,11 @@ import org.jmock.MockObjectTestCase;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;

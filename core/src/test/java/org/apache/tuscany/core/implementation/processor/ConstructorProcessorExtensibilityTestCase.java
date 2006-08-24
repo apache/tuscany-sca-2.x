@@ -23,11 +23,12 @@ import java.lang.reflect.Constructor;
 import org.osoa.sca.annotations.Property;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 /**
  * Verifies the constructor processor works when parameters are marked with custom extension annotations

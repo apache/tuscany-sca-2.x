@@ -16,43 +16,47 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
+package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Member;
+import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Property;
 
 /**
- * A ReferenceDefinition definition that is mapped to a specific location in the implementation class. This location
- * will typically be used to inject reference values.
+ * A Property definition that is mapped to a specific location in the implementation class. This location will typically
+ * be used to inject property values.
  *
  * @version $Rev$ $Date$
  */
-public class JavaMappedReference extends ReferenceDefinition {
+public class JavaMappedProperty<T> extends Property<T> {
     private Member member;
 
-    public JavaMappedReference() {
+    public JavaMappedProperty() {
     }
 
-    public JavaMappedReference(String name, ServiceContract serviceContract, Member member) {
-        super(name, serviceContract);
+    public JavaMappedProperty(String name, QName xmlType, Class<T> javaType) {
+        super(name, xmlType, javaType);
+    }
+
+    public JavaMappedProperty(String name, QName xmlType, Class<T> javaType, Member member) {
+        super(name, xmlType, javaType);
         this.member = member;
     }
 
     /**
-     * Returns the Member that this reference is mapped to.
+     * Returns the Member that this property is mapped to.
      *
-     * @return the Member that this reference is mapped to
+     * @return the Member that this property is mapped to
      */
     public Member getMember() {
         return member;
     }
 
     /**
-     * Sets the Member that this reference is mapped to
+     * Sets the Member that this property is mapped to
      *
-     * @param member the Member that this reference is mapped to
+     * @param member the Member that this property is mapped to
      */
     public void setMember(Member member) {
         this.member = member;

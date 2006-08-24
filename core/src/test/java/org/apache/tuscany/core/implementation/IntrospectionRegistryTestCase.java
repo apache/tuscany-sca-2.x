@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl.Monitor;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.jmock.Mock;
