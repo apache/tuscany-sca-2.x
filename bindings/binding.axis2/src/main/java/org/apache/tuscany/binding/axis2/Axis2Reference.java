@@ -21,9 +21,23 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.Method;
 import java.util.List;
+
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.description.AxisService;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.tuscany.binding.axis2.util.SDODataBinding;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
+import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -31,20 +45,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 import commonj.sdo.helper.TypeHelper;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.soap.SOAPFactory;
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.addressing.EndpointReference;
-import org.apache.axis2.client.OperationClient;
-import org.apache.axis2.client.Options;
-import org.apache.axis2.client.ServiceClient;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.axis2.context.MessageContextConstants;
-import org.apache.axis2.description.AxisService;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
-import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
-import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 
 
 /**
@@ -80,7 +80,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
         Axis2TargetInvoker invoker = null;
         try {
             //FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
-            invoker = createOperationInvokers(serviceClient, operation, typeHelper, wsPortMetaData);
+            invoker = createOperationInvoker(serviceClient, operation, typeHelper, wsPortMetaData);
         } catch (AxisFault e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
     /**
      * Create and configure an Axis2TargetInvoker for each operations
      */
-    private Axis2TargetInvoker createOperationInvokers(ServiceClient serviceClient,
+    private Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
                                                        Method m,
                                                        TypeHelper typeHelper,
                                                        WebServicePortMetaData wsPortMetaData)
@@ -125,7 +125,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
 
         Options options = new Options();
         options.setTo(new EndpointReference(wsPortMetaData.getEndpoint()));
-        options.setProperty(MessageContextConstants.CHUNKED, Boolean.FALSE);
+        options.setProperty(HTTPConstants.CHUNKED, Boolean.FALSE);
 
         String wsdlOperationName = operationMetaData.getBindingOperation().getOperation().getName();
 
@@ -135,10 +135,8 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
         }
 
         QName wsdlOperationQName = new QName(portTypeNS, wsdlOperationName);
-        // Axis2 operationClients can not be shared so create a new one for each request
-        OperationClient operationClient = serviceClient.createClient(wsdlOperationQName);
 
-        return new Axis2TargetInvoker(wsdlOperationQName, options, dataBinding, soapFactory, operationClient);
+        return new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, dataBinding, soapFactory);
     }
 
 }

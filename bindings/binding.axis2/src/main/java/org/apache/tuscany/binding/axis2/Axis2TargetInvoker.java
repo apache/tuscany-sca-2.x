@@ -29,6 +29,7 @@ import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
+import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
@@ -41,22 +42,21 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class Axis2TargetInvoker implements TargetInvoker {
 
-    // private QName wsdlOperationName;
+    private QName wsdlOperationName;
     private Options options;
 
     private SDODataBinding dataBinding;
 
     private SOAPFactory soapFactory;
 
-    private OperationClient operationClient;
+    private ServiceClient serviceClient;
 
-    public Axis2TargetInvoker(QName wsdlOperationName, Options options, SDODataBinding dataBinding, SOAPFactory soapFactory,
-            OperationClient operationClient) {
-        // this.wsdlOperationName = wsdlOperationName;
+    public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options, SDODataBinding dataBinding, SOAPFactory soapFactory) {
+        this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.dataBinding = dataBinding;
         this.soapFactory = soapFactory;
-        this.operationClient = operationClient;
+        this.serviceClient = serviceClient;
     }
 
     /**
@@ -68,6 +68,8 @@ public class Axis2TargetInvoker implements TargetInvoker {
      */
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
+            // Axis2 operationClients can not be shared so create a new one for each request
+            OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
             operationClient.setOptions(options);
             boolean pureOMelement = false;
 
