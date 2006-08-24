@@ -167,13 +167,14 @@
     </dependencies>
 
     <!-- The assembly plugin cannot understand maven1 pom -->
+    <!--
     <build>
         <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.2-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -190,5 +191,6 @@
             </plugin>
         </plugins>
     </build>
+        -->
 
 </project>
