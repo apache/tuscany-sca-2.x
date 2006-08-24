@@ -21,6 +21,7 @@ package org.apache.tuscany.databinding.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.util.DirectedGraph;
@@ -29,10 +30,10 @@ import org.osoa.sca.annotations.Init;
 public class TransformerRegistryImpl implements TransformerRegistry {
 
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
-    
+
     @Init(eager = true)
     public void init() {
-    }    
+    }
 
     public void registerTransformer(Object sourceType, Object resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
@@ -54,6 +55,12 @@ public class TransformerRegistryImpl implements TransformerRegistry {
     public List<Transformer> getTransformerChain(Object sourceType, Object resultType) {
         List<Transformer> transformers = new ArrayList<Transformer>();
         DirectedGraph<Object, Transformer>.Path path = graph.getShortestPath(sourceType, resultType);
+        if (path == null) {
+            TransformationException ex = new TransformationException("No path found for the transformation");
+            ex.addContextName("Source: " + sourceType.toString());
+            ex.addContextName("Target: " + resultType.toString());
+            throw ex;
+        }
         for (DirectedGraph<Object, Transformer>.Edge edge : path.getEdges()) {
             transformers.add(edge.getValue());
         }

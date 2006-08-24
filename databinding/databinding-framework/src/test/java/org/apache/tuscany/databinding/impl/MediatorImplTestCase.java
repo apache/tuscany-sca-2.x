@@ -24,24 +24,19 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.trax.Node2String;
 import org.apache.tuscany.databinding.trax.Node2Writer;
 import org.apache.tuscany.databinding.trax.String2SAX;
-import org.apache.tuscany.databinding.xml.DOMBinding;
 import org.apache.tuscany.databinding.xml.SAX2DOMPipe;
-import org.apache.tuscany.databinding.xml.SAXContentHandlerBinding;
-import org.apache.tuscany.databinding.xml.WriterBinding;
-import org.apache.tuscany.databinding.xml.XMLStringBinding;
 import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * 
+ * Test case for MediatorImpl
  */
 public class MediatorImplTestCase extends TestCase {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
@@ -56,15 +51,9 @@ public class MediatorImplTestCase extends TestCase {
             + "</ipo:purchaseOrder>";
 
     private MediatorImpl mediator;
-    private DataBindingRegistry bindingRegistry;
 
     protected void setUp() throws Exception {
         super.setUp();
-        bindingRegistry = new DataBindingRegistryImpl();
-        bindingRegistry.register(new DOMBinding());
-        bindingRegistry.register(new SAXContentHandlerBinding());
-        bindingRegistry.register(new WriterBinding());
-        bindingRegistry.register(new XMLStringBinding());
         
         TransformerRegistry registry = new TransformerRegistryImpl();
         registry.registerTransformer(new String2SAX());
@@ -74,7 +63,6 @@ public class MediatorImplTestCase extends TestCase {
 
         mediator = new MediatorImpl();
         mediator.setTransformerRegistry(registry);
-        mediator.setDataBindingRegistry(bindingRegistry);
     }
 
     @SuppressWarnings("unchecked")
