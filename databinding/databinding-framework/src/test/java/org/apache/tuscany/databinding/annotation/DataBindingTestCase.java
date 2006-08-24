@@ -18,39 +18,33 @@
  */
 package org.apache.tuscany.databinding.annotation;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.api.annotation.DataContext;
+import org.apache.tuscany.api.annotation.DataType;
+
 public class DataBindingTestCase extends TestCase {
     @SuppressWarnings("unused")
-    @DataBinding(name = "sdo")
-    private Object sdo;
-
-    @DataBinding(name = "sdo")
-    public Object m1(@DataBinding(name = "jaxb", context = { @DataContext(key = "contextPath", value = "com.example.ipo.jaxb") })
-    Object input) {
-        return null;
-    }
-
-    public void testDataBinding() throws Exception {
-        Field field = getClass().getDeclaredField("sdo");
-        DataBinding d = field.getAnnotation(DataBinding.class);
+    public void testDataType() throws Exception {
+        Class<Test> testClass = Test.class;
+        DataType d = testClass.getAnnotation(DataType.class);
         Assert.assertEquals(d.name(), "sdo");
         Assert.assertEquals(d.context().length, 0);
 
-        Method method = getClass().getMethod("m1", new Class[] { Object.class });
-        Annotation[][] annotations = method.getParameterAnnotations();
-        DataBinding d2 = (DataBinding) annotations[0][0];
+        Method method = testClass.getMethod("test", new Class[] { Object.class });
+        DataType d2 = method.getAnnotation(DataType.class);
         Assert.assertEquals(d2.name(), "jaxb");
         Assert.assertEquals(d2.context()[0].key(), "contextPath");
         Assert.assertEquals(d2.context()[0].value(), "com.example.ipo.jaxb");
+    }
 
-        DataBinding d3 = method.getAnnotation(DataBinding.class);
-        Assert.assertEquals(d3.name(), "sdo");
-        Assert.assertEquals(d3.context().length, 0);
+    @DataType(name = "sdo")
+    private static interface Test {
+        @DataType(name = "jaxb", context = { @DataContext(key = "contextPath", value = "com.example.ipo.jaxb") })
+        public Object test(Object object);
     }
 }
