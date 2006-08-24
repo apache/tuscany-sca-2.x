@@ -21,7 +21,6 @@ package org.apache.tuscany.databinding.impl;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.DataPipe;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
@@ -39,8 +38,6 @@ import org.osoa.sca.annotations.Scope;
 @Scope("MODULE")
 public class MediatorImpl implements Mediator {
 
-    private DataBindingRegistry dataBindingRegistry;
-
     private TransformerRegistry transformerRegistry;
 
     @Autowire
@@ -48,20 +45,13 @@ public class MediatorImpl implements Mediator {
         this.transformerRegistry = transformerRegistry;
     }
 
-    @Autowire
-    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
-        this.dataBindingRegistry = dataBindingRegistry;
-    }
-
-    /*
-     * 
-     * @see org.apache.tuscany.databinding.Mediator#mediate(java.lang.Object, java.lang.Object, java.lang.Object,
-     *      org.apache.tuscany.databinding.TransformationContext)
+    /**
+     * @see org.apache.tuscany.databinding.Mediator#mediate(java.lang.Object, org.apache.tuscany.spi.model.DataType, org.apache.tuscany.spi.model.DataType)
      */
     @SuppressWarnings("unchecked")
     public Object mediate(Object source, DataType sourceDataType, DataType targetDataType) {
-        String sourceId = dataBindingRegistry.introspectType(sourceDataType).getName();
-        String targetId = dataBindingRegistry.introspectType(targetDataType).getName();
+        String sourceId = sourceDataType.getDataBinding();
+        String targetId = targetDataType.getDataBinding();
         List<Transformer> path = transformerRegistry.getTransformerChain(sourceId, targetId);
 
         Object result = source;
@@ -87,8 +77,8 @@ public class MediatorImpl implements Mediator {
 
     @SuppressWarnings("unchecked")
     public void mediate(Object source, Object target, DataType sourceDataType, DataType targetDataType) {
-        String sourceId = dataBindingRegistry.introspectType(sourceDataType).getName();
-        String targetId = dataBindingRegistry.introspectType(targetDataType).getName();
+        String sourceId = sourceDataType.getDataBinding();
+        String targetId = targetDataType.getDataBinding();
         List<Transformer> path = transformerRegistry.getTransformerChain(sourceId, targetId);
 
         Object result = source;

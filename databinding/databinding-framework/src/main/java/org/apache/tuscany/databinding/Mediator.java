@@ -23,26 +23,26 @@ import org.apache.tuscany.spi.model.DataType;
 /**
  * This interface will be used as a Tuscany system service to perform data mediations
  * 
- * Mediate the data from one binding type to the other one
+ * Mediate the data from one type to the other one
  *
  */
 public interface Mediator {
 
     /**
-     * Mediate the data from the source binding type to the target binding type
-     * @param source
-     * @param sourceBinding
-     * @param targetBinding
+     * Mediate the data from the source type to the target type
+     * @param source The data to be mediated
+     * @param sourceDataType Data type for the source data
+     * @param targetDataType Data type for the target data
      * @return
      */
-    public Object mediate(Object source, DataType sourceBinding, DataType targetBinding);
+    public Object mediate(Object source, DataType sourceDataType, DataType targetDataType);
     /**
-     * Mediate the data
-     * @param source
-     * @param target
-     * @param sourceBinding
-     * @param targetBinding
+     * Mediate the source data into the target which is a sink to receive the data
+     * @param source The data to be mediated
+     * @param target The sink to receive data
+     * @param sourceDataType Data type for the source data
+     * @param targetDataType Data type for the target data
      */
-    public void mediate(Object source, Object target, DataType sourceBinding, DataType targetBinding);
+    public void mediate(Object source, Object target, DataType sourceDataType, DataType targetDataType);
     
 }
