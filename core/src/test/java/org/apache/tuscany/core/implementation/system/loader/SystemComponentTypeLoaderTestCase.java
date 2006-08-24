@@ -24,8 +24,9 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;

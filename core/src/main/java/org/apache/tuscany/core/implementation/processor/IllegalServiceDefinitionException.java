@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * Denotes an illegal use of the {@link @org.osoa.sca.annotations.Service} annotation

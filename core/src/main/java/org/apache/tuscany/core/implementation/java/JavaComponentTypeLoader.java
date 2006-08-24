@@ -29,13 +29,16 @@ import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
-import org.apache.tuscany.core.implementation.IntrospectionRegistry;
-import org.apache.tuscany.core.implementation.Introspector;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+
+import org.apache.tuscany.spi.implementation.java.Introspector;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**

@@ -30,13 +30,15 @@ import org.osoa.sca.annotations.Scope;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
 import org.apache.tuscany.core.idl.java.JavaServiceContract;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
@@ -134,7 +136,7 @@ public final class ProcessorUtils {
      * @param pos              the declaration position of the constructor parameter
      * @param type             the component type associated with implementation being reflected
      * @param injectionNames   the list of parameter constructorNames specified on parameter annotations
-     * @throws org.apache.tuscany.core.implementation.ProcessingException
+     * @throws org.apache.tuscany.spi.implementation.java.ProcessingException
      *
      */
     public static boolean processParam(Class<?> param,

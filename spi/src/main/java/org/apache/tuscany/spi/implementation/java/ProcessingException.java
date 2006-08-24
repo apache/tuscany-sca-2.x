@@ -16,36 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
+package org.apache.tuscany.spi.implementation.java;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
- * Hold injection information for the constructor used to instantiate a component implementation instance
+ * Denotes a problem processing annotations on a POJO implementation
  *
  * @version $Rev$ $Date$
  */
-public class ConstructorDefinition<T> {
-
-    private Constructor<T> constructor;
-    private List<String> injectionNames;
-
-    public ConstructorDefinition(Constructor<T> constructor) {
-        this.constructor = constructor;
-        injectionNames = new ArrayList<String>();
+public class ProcessingException extends LoaderException {
+    public ProcessingException() {
     }
 
-    public Constructor<T> getConstructor() {
-        return constructor;
+    public ProcessingException(String message) {
+        super(message);
     }
 
-    public List<String> getInjectionNames() {
-        return injectionNames;
+    public ProcessingException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public void setInjectionNames(List<String> injectionNames) {
-        this.injectionNames = injectionNames;
+    public ProcessingException(Throwable cause) {
+        super(cause);
     }
 }

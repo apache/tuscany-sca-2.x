@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * Thrown when more than one component implementation constructor is annotated with {@link

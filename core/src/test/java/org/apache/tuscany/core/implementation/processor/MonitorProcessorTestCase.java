@@ -23,14 +23,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.host.MonitorFactory;
 
-import org.apache.tuscany.core.implementation.ConstructorDefinition;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;

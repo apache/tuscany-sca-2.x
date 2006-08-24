@@ -23,11 +23,12 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 /**
  * @version $Rev$ $Date$

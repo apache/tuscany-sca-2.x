@@ -16,23 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation;
+package org.apache.tuscany.spi.implementation.java;
+
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * A system service which tracks {@link ImplementationProcessor}s
+ * Hold injection information for the constructor used to instantiate a component implementation instance
  *
  * @version $Rev$ $Date$
  */
-public interface IntrospectionRegistry extends Introspector {
+public class ConstructorDefinition<T> {
 
-    /**
-     * Registers the given processor and makes it available during assembly evaluation (i.e. build)
-     */
-    void registerProcessor(ImplementationProcessor processor);
+    private Constructor<T> constructor;
+    private List<String> injectionNames;
 
-    /**
-     * Deregisters the given processor 
-     */
-    void unregisterProcessor(ImplementationProcessor processor);
+    public ConstructorDefinition(Constructor<T> constructor) {
+        this.constructor = constructor;
+        injectionNames = new ArrayList<String>();
+    }
 
+    public Constructor<T> getConstructor() {
+        return constructor;
+    }
+
+    public List<String> getInjectionNames() {
+        return injectionNames;
+    }
+
+    public void setInjectionNames(List<String> injectionNames) {
+        this.injectionNames = injectionNames;
+    }
 }

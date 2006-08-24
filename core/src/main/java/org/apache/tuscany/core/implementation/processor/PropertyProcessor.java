@@ -22,11 +22,12 @@ import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;

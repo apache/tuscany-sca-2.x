@@ -27,6 +27,13 @@ import java.util.Set;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * Denotes an invalid usage of {@link org.apache.tuscany.spi.annotation.Autowire}

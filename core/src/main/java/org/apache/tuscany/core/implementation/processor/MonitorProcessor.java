@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.api.annotation.Monitor;
@@ -28,7 +28,7 @@ import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * Processes an {@link @Monitor} annotation, updating the component type with corresponding
- * {@link org.apache.tuscany.core.implementation.JavaMappedProperty}
+ * {@link org.apache.tuscany.spi.implementation.java.JavaMappedProperty}
  *
  * @version $Rev$ $Date$
  */

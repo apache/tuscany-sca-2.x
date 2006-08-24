@@ -24,9 +24,9 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.JavaMappedService;
 
 /**
  * @version $Rev$ $Date$

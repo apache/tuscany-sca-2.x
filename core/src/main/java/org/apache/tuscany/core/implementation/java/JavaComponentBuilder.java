@@ -23,6 +23,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -32,11 +34,11 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 
-import org.apache.tuscany.core.implementation.ConstructorDefinition;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;

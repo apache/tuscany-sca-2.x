@@ -27,13 +27,15 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.ConstructorDefinition;
-import org.apache.tuscany.core.implementation.JavaMappedProperty;
-import org.apache.tuscany.core.implementation.JavaMappedReference;
-import org.apache.tuscany.core.implementation.JavaMappedService;
-import org.apache.tuscany.core.implementation.PojoComponentType;
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 /**
  * Verfies component type information is properly introspected from an unadorned POJO according to the SCA Java Client

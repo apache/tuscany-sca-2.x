@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.apache.tuscany.core.implementation.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * Thrown when a service type specified by an {@link org.osoa.sca.annotations.Service} annotation is invalid, e.g. it is
