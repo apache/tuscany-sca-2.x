@@ -33,13 +33,14 @@ import org.osoa.sca.annotations.Scope;
 
 /**
  * Loader for handling <binding.rmi> elements.
- *
+ * 
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
-    public static final QName BINDING_RMI = new QName("http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT",
-                                                      "binding.rmi");
+    public static final QName BINDING_RMI = 
+        new QName("http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT",
+                    "binding.rmi");
 
     public RMIBindingLoader(@Autowire LoaderRegistry registry) {
         super(registry);
@@ -49,11 +50,12 @@ public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
         return BINDING_RMI;
     }
 
-    public RMIBinding load(CompositeComponent parent,
-                           XMLStreamReader reader,
-                           DeploymentContext deploymentContext)
-        throws XMLStreamException, LoaderException {
-        String uri = reader.getAttributeValue(null, "uri");
+    public RMIBinding load(CompositeComponent parent, 
+                           XMLStreamReader reader, 
+                           DeploymentContext deploymentContext) throws XMLStreamException,
+                                                                       LoaderException {
+        String uri = reader.getAttributeValue(null,
+                                              "uri");
         LoaderUtil.skipToEndElement(reader);
 
         RMIBinding binding = new RMIBinding();

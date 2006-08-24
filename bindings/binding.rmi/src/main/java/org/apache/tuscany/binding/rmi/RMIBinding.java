@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.model.Binding;
 
 /**
  * Represents a binding to an RMI service.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class RMIBinding extends Binding {

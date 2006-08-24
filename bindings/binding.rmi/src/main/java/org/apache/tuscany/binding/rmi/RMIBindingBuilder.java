@@ -17,9 +17,9 @@
  * under the License.    
  */
 package org.apache.tuscany.binding.rmi;
- 
+
 import java.rmi.Remote;
- 
+
 import org.apache.tuscany.spi.builder.InvalidServiceInterfaceException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -44,7 +44,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
         String name = boundServiceDefinition.getName();
         Class<Remote> service = getServiceInterface(boundServiceDefinition);
         String uri = boundServiceDefinition.getBinding().getURI();
-        
+
         RMIService rmiService = new RMIService<Remote>(name, parent, wireService, uri, service);
         return rmiService;
     }
@@ -65,14 +65,10 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
         String name = boundReferenceDefinition.getName();
         String uri = boundReferenceDefinition.getBinding().getURI();
         Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
-        RMIReference rmiReference =  new RMIReference(name, 
-                parent, 
-                wireService, 
-                uri, 
-                boundReferenceDefinition.getServiceContract().getInterfaceClass());
+        RMIReference rmiReference = new RMIReference(name, parent, wireService, uri, boundReferenceDefinition
+                .getServiceContract().getInterfaceClass());
 
-
-return rmiReference;
+        return rmiReference;
 
     }
 }
