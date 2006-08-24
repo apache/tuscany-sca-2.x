@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.rmi;    
- 
+package org.apache.tuscany.binding.rmi;
+
 import java.lang.reflect.Method;
 
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -25,28 +25,24 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
-public class RemoteMethodHandler implements MethodInterceptor  
-{
+public class RemoteMethodHandler implements MethodInterceptor {
     public static final String FINALIZE_METHOD = "finalize";
-    private WireInvocationHandler wireHandler = null;
- 
 
-    public RemoteMethodHandler(WireInvocationHandler handler ) 
-    {
+    private WireInvocationHandler wireHandler;
+
+    public RemoteMethodHandler(WireInvocationHandler handler) {
         this.wireHandler = handler;
     }
 
-    
-    public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable 
-    {
-        //TO BE FIXED: don't know why it hangs for the finalize method... so blocking it for now
-        if ( !method.getName().equals(FINALIZE_METHOD) )
-        {
-            return wireHandler.invoke(method, args);
+    public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+        // TO BE FIXED: don't know why it hangs for the finalize method... so blocking it for now
+        if (!method.getName().equals(FINALIZE_METHOD)) {
+            return wireHandler.invoke(method,
+                                      args);
         }
-        return methodProxy.invoke(object, args);
+        return methodProxy.invoke(object,
+                                  args);
         //return null;
     }
 
 }
-

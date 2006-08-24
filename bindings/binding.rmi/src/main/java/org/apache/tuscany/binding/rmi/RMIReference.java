@@ -34,14 +34,13 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $Rev$ $Date$
  */
 public class RMIReference<T> extends ReferenceExtension<T> {
-    private final String uri; 
+    private final String uri;
 
     public RMIReference(String name, 
                         CompositeComponent<?> parent, 
                         WireService wireService, 
-                        String uri,
-                        Class<T> service) 
-    {
+                        String uri, 
+                        Class<T> service) {
         super(name, service, parent, wireService);
         setInterface(service);
         this.uri = uri;
@@ -50,7 +49,8 @@ public class RMIReference<T> extends ReferenceExtension<T> {
     public TargetInvoker createTargetInvoker(Method operation) {
         try {
             Remote proxy = getProxy();
-            Method remoteMethod = proxy.getClass().getMethod(operation.getName(), operation.getParameterTypes());
+            Method remoteMethod = proxy.getClass().getMethod(operation.getName(),
+                                                             operation.getParameterTypes());
             return new RMIInvoker(proxy, remoteMethod);
         } catch (NoSuchMethodException e) {
             throw new NoRemoteMethodException(operation.toString(), e);

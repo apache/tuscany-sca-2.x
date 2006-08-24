@@ -28,11 +28,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Invoke an RMI reference.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class RMIInvoker implements TargetInvoker {
     private final Method remoteMethod;
+
     private final Remote proxy;
 
     public RMIInvoker(Remote proxy, Method remoteMethod) {
@@ -40,7 +41,7 @@ public class RMIInvoker implements TargetInvoker {
         this.remoteMethod = remoteMethod;
         this.proxy = proxy;
     }
- 
+
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             Object resp = invokeTarget(msg.getBody());
@@ -53,7 +54,8 @@ public class RMIInvoker implements TargetInvoker {
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         try {
-            return remoteMethod.invoke(proxy, (Object[]) payload);
+            return remoteMethod.invoke(proxy,
+                                       (Object[]) payload);
         } catch (IllegalAccessException e) {
             // the method we are passed must be accessible
             throw new AssertionError(e);
