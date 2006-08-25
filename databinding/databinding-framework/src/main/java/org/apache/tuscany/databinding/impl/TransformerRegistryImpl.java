@@ -21,7 +21,6 @@ package org.apache.tuscany.databinding.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.util.DirectedGraph;
@@ -35,7 +34,7 @@ public class TransformerRegistryImpl implements TransformerRegistry {
     public void init() {
     }
 
-    public void registerTransformer(Object sourceType, Object resultType, int weight, Transformer transformer) {
+    public void registerTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
     }
 
@@ -43,23 +42,20 @@ public class TransformerRegistryImpl implements TransformerRegistry {
         graph.addEdge(transformer.getSourceBinding(), transformer.getTargetBinding(), transformer, transformer.getWeight());
     }
 
-    public boolean unregisterTransformer(Object sourceType, Object resultType) {
+    public boolean unregisterTransformer(String sourceType, String resultType) {
         return graph.removeEdge(sourceType, resultType);
     }
 
-    public Transformer getTransformer(Object sourceType, Object resultType) {
+    public Transformer getTransformer(String sourceType, String resultType) {
         DirectedGraph<Object, Transformer>.Edge edge = graph.getEdge(sourceType, resultType);
         return (edge == null) ? null : edge.getValue();
     }
 
-    public List<Transformer> getTransformerChain(Object sourceType, Object resultType) {
+    public List<Transformer> getTransformerChain(String sourceType, String resultType) {
         List<Transformer> transformers = new ArrayList<Transformer>();
         DirectedGraph<Object, Transformer>.Path path = graph.getShortestPath(sourceType, resultType);
         if (path == null) {
-            TransformationException ex = new TransformationException("No path found for the transformation");
-            ex.addContextName("Source: " + sourceType.toString());
-            ex.addContextName("Target: " + resultType.toString());
-            throw ex;
+            return null;
         }
         for (DirectedGraph<Object, Transformer>.Edge edge : path.getEdges()) {
             transformers.add(edge.getValue());
