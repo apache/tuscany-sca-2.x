@@ -110,7 +110,9 @@ public class ImportSDOLoader extends LoaderExtension {
                 }
                 wsdlURL = deploymentContext.getClassLoader().getResource(location);
                 if(null == wsdlURL){
-                    throw new LoaderException("WSDL location error '" +location+"'");
+                    LoaderException loaderException = new LoaderException("WSDL location error");
+                    loaderException.setResourceURI(location);
+                    throw loaderException;
                 }
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
