@@ -117,8 +117,11 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
             // URL wsdlurl = Thread.currentThread().getContextClassLoader().getResource(wsdlLocation);
             if(null == wsdlLocation) throw new RuntimeException("Failed to determin wsdl location on binding. Try specifying 'location' attribute on  binding.");
             URL wsdlurl = deploymentContext.getClassLoader().getResource(wsdlLocation);
-            if(wsdlurl == null) throw new RuntimeException("Failed to load wsdl from '" + wsdlLocation +"'" );
-            
+            if(wsdlurl == null){
+                Axis2BindingBuilderRuntimeException   axis2BindingLoaderException = new Axis2BindingBuilderRuntimeException("Failed to load wsdl");
+                axis2BindingLoaderException.setResourceURI(wsdlLocation); 
+                throw axis2BindingLoaderException;
+            }
             WSDLFactory factory = WSDLFactory.newInstance();
             WSDLReader reader = factory.newWSDLReader();
             reader.setFeature("javax.wsdl.verbose", false);
