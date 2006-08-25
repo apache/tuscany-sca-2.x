@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
  * @version $Rev$ $Date$
  */
 public interface InterfaceJavaIntrospector {
+
     /**
      * Introspect a Java interface and return a service contract definition.
      *

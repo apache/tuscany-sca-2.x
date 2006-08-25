@@ -25,19 +25,18 @@ import java.util.Set;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
-
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.ServiceContract;
 
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
@@ -49,6 +48,12 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  */
 public class ServiceProcessor extends ImplementationProcessorSupport {
 
+    private ImplementationProcessorService implService;
+
+    public ServiceProcessor(@Autowire ImplementationProcessorService implService) {
+        this.implService = implService;
+    }
+
     public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
@@ -58,7 +63,12 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
             Set<Class> interfaces = getAllInterfaces(clazz);
             for (Class<?> interfaze : interfaces) {
                 if (interfaze.getAnnotation(Remotable.class) != null) {
-                    JavaMappedService service = createService(interfaze);
+                    JavaMappedService service;
+                    try {
+                        service = implService.createService(interfaze);
+                    } catch (InvalidServiceContractException e) {
+                        throw new ProcessingException(e);
+                    }
                     type.getServices().put(service.getName(), service);
                 }
             }
@@ -80,7 +90,12 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
                 e.setIdentifier(interfaze.getName());
                 throw e;
             }
-            JavaMappedService service = createService(interfaze);
+            JavaMappedService service;
+            try {
+                service = implService.createService(interfaze);
+            } catch (InvalidServiceContractException e) {
+                throw new ProcessingException(e);
+            }
             type.getServices().put(service.getName(), service);
         }
     }
@@ -96,7 +111,8 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
             return;
         }
         if (method.getParameterTypes().length != 1) {
-            IllegalCallbackException e = new IllegalCallbackException("Setter must have one parameter");
+            IllegalCallbackReferenceException e =
+                new IllegalCallbackReferenceException("Setter must have one parameter");
             e.setIdentifier(method.toString());
             throw e;
         }
@@ -110,7 +126,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
             }
         }
         if (callbackService == null) {
-            throw new IllegalCallbackException("Callback type does not match a service callback interface");
+            throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
         }
         callbackService.setCallbackReferenceName(name);
         callbackService.setCallbackMember(method);
@@ -134,7 +150,7 @@ public class ServiceProcessor extends ImplementationProcessorSupport {
             }
         }
         if (callbacksService == null) {
-            throw new IllegalCallbackException("Callback type does not match a service callback interface");
+            throw new IllegalCallbackReferenceException("Callback type does not match a service callback interface");
         }
         callbacksService.setCallbackReferenceName(name);
         callbacksService.setCallbackMember(field);

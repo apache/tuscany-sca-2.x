@@ -22,21 +22,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
-
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.addName;
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
 
 /**
  * Handles processing of a constructor decorated with {@link org.osoa.sca.annotations.Constructor}
@@ -45,6 +41,12 @@ import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.pr
  */
 @SuppressWarnings("unchecked")
 public class ConstructorProcessor extends ImplementationProcessorSupport {
+
+    private ImplementationProcessorService service;
+
+    public ConstructorProcessor(@Autowire ImplementationProcessorService service) {
+        this.service = service;
+    }
 
     public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
@@ -89,9 +91,9 @@ public class ConstructorProcessor extends ImplementationProcessorSupport {
             Class<?> param = params[i];
             Annotation[] paramAnnotations = annotations[i];
             try {
-                if (!processParam(param, paramAnnotations, names, i, type, injectionNames)) {
+                if (!service.processParam(param, paramAnnotations, names, i, type, injectionNames)) {
                     String name = (i < names.length) ? names[i] : "";
-                    addName(injectionNames, i, name);
+                    service.addName(injectionNames, i, name);
                 }
             } catch (ProcessingException
                 e) {

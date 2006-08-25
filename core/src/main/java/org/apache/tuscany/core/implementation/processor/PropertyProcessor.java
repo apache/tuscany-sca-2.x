@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * Processes an {@link @Property} annotation, updating the component type with corresponding {@link JavaMappedProperty}
@@ -39,8 +40,8 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
 
-    public PropertyProcessor() {
-        super(Property.class);
+    public PropertyProcessor(@Autowire ImplementationProcessorService service) {
+        super(Property.class, service);
     }
 
     protected String getName(Property annotation) {

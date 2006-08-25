@@ -22,29 +22,33 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Scope;
 
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ProcessorUtilsServiceTestCase extends TestCase {
+public class ImplementationProcessorServiceTestCase extends TestCase {
+
+    private ImplementationProcessorService implService =
+        new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl());
 
     public void testCreateConversationalService() throws Exception {
-        JavaMappedService service = ProcessorUtils.createService(Foo.class);
+        JavaMappedService service = implService.createService(Foo.class);
         assertTrue(Foo.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(service.isRemotable());
         assertEquals(InteractionScope.CONVERSATIONAL, service.getServiceContract().getInteractionScope());
         ServiceContract serviceContract = service.getServiceContract();
         assertTrue(Bar.class.equals(serviceContract.getCallbackClass()));
-        assertTrue("ProcessorUtilsServiceTestCase$Bar".equals(serviceContract.getCallbackName()));
+        assertTrue("ImplementationProcessorServiceTestCase$Bar".equals(serviceContract.getCallbackName()));
     }
 
     public void testCreateDefaultService() throws Exception {
-        JavaMappedService service = ProcessorUtils.createService(Baz.class);
+        JavaMappedService service = implService.createService(Baz.class);
         assertTrue(Baz.class.equals(service.getServiceContract().getInterfaceClass()));
         assertTrue(!service.isRemotable());
         assertEquals(InteractionScope.NONCONVERSATIONAL, service.getServiceContract().getInteractionScope());

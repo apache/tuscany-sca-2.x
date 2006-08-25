@@ -18,30 +18,26 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processCallback;
-
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Reference;
-
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.ServiceContract;
+
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospector;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
  * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
@@ -50,6 +46,12 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $Rev$ $Date$
  */
 public class ReferenceProcessor extends ImplementationProcessorSupport {
+
+    private InterfaceJavaIntrospector implService;
+
+    public ReferenceProcessor(@Autowire InterfaceJavaIntrospector implService) {
+        this.implService = implService;
+    }
 
     public void visitMethod(CompositeComponent<?> parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
@@ -87,14 +89,24 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setAutowire(autowire);
         reference.setRequired(required);
         reference.setName(name);
-        ServiceContract contract = new JavaServiceContract();
-        Class<?> interfaceType = method.getParameterTypes()[0];
-        String interfaceName = getBaseName(interfaceType);
-        contract.setInterfaceName(interfaceName);
-        contract.setInterfaceClass(interfaceType);
+        ServiceContract contract;
+        try {
+            contract = implService.introspect(method.getParameterTypes()[0]);
+        } catch (InvalidServiceContractException e) {
+            throw new ProcessingException(e);
+        }
+//        ServiceContract contract = new JavaServiceContract();
+//        Class<?> interfaceType = method.getParameterTypes()[0];
+//        String interfaceName = getBaseName(interfaceType);
+//        contract.setInterfaceName(interfaceName);
+//        contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
-        processCallback(interfaceType, contract);
+//        try {
+//            implService.processCallback(interfaceType, contract);
+//        } catch (IllegalCallbackException e) {
+//            throw new ProcessingException(e);
+//        }
     }
 
     public void visitField(CompositeComponent<?> parent, Field field,
@@ -124,14 +136,25 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setRequired(required);
         reference.setAutowire(autowire);
         reference.setName(name);
-        ServiceContract contract = new JavaServiceContract();
-        Class<?> interfaceType = field.getType();
-        String interfaceName = getBaseName(interfaceType);
-        contract.setInterfaceName(interfaceName);
-        contract.setInterfaceClass(interfaceType);
+        ServiceContract contract;
+        try {
+            contract = implService.introspect(field.getType());
+        } catch (InvalidServiceContractException e) {
+            throw new ProcessingException(e);
+        }
+
+//        ServiceContract contract = new JavaServiceContract();
+//        Class<?> interfaceType = field.getType();
+//        String interfaceName = getBaseName(interfaceType);
+//        contract.setInterfaceName(interfaceName);
+//        contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
-        processCallback(interfaceType, contract);
+//        try {
+//            implService.processCallback(interfaceType, contract);
+//        } catch (IllegalCallbackException e) {
+//            throw new ProcessingException(e);
+//        }
 
     }
 
@@ -140,7 +163,6 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
                                  DeploymentContext context) throws ProcessingException {
 
     }
-
 
 
 }

@@ -23,19 +23,20 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConstructorReferenceTestCase extends TestCase {
 
-    ConstructorProcessor processor = new ConstructorProcessor();
+    ConstructorProcessor processor;
 
     public void testReference() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -110,6 +111,12 @@ public class ConstructorReferenceTestCase extends TestCase {
         } catch (InvalidConstructorException e) {
             // expected
         }
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        processor =
+            new ConstructorProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
     }
 
 //    public void testMultiplicityRequired() throws Exception {

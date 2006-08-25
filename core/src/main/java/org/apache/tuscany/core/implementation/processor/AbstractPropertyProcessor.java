@@ -47,9 +47,11 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  */
 public abstract class AbstractPropertyProcessor<A extends Annotation> extends ImplementationProcessorSupport {
     private final Class<A> annotationClass;
+    private ImplementationProcessorService service;
 
-    protected AbstractPropertyProcessor(Class<A> annotationClass) {
+    protected AbstractPropertyProcessor(Class<A> annotationClass, ImplementationProcessorService service) {
         this.annotationClass = annotationClass;
+        this.service = service;
     }
 
     public void visitMethod(CompositeComponent<?> parent,
@@ -143,7 +145,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
                     JavaMappedProperty<?> property = createProperty(name, param, constructor);
                     initProperty(property, monitorAnnot, parent, context);
                     properties.put(name, property);
-                    ProcessorUtils.addName(definition.getInjectionNames(), i, name);
+                    service.addName(definition.getInjectionNames(), i, name);
                 }
             }
         }

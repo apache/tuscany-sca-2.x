@@ -54,6 +54,8 @@ import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -71,6 +73,7 @@ import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
 import org.apache.tuscany.core.loader.IncludeLoader;
 import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
 import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospector;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
 import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
@@ -132,7 +135,8 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
     public Deployer createDeployer() {
         ScopeRegistry scopeRegistry = createScopeRegistry(new WorkContextImpl());
         Builder builder = createBuilder(scopeRegistry);
-        Introspector introspector = createIntrospector();
+        InterfaceJavaIntrospector interfaceIntrospector = new InterfaceJavaIntrospectorImpl();
+        Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new StringParserPropertyFactory(), introspector);
         Connector connector = createConnector();
         return new DeployerImpl(xmlFactory, loader, builder, connector);
@@ -149,21 +153,6 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
         new ModuleScopeObjectFactory(scopeRegistry); // self-registers
         return scopeRegistry;
-    }
-
-    /**
-     * Create a Builder that can be used to build the components in the system definition. The default implementation
-     * only supports implementations from the system programming model.
-     *
-     * @param scopeRegistry the ScopeRegistry defining the component scopes that will be supported
-     * @return a new Builder
-     */
-    public Builder createBuilder(ScopeRegistry scopeRegistry) {
-        BuilderRegistry builderRegistry = new BuilderRegistryImpl(scopeRegistry);
-        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder(builderRegistry));
-        builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
-        builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());
-        return builderRegistry;
     }
 
     /**
@@ -203,33 +192,23 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
     }
 
     /**
-     * Helper method for registering a loader with the registry. The Loader is registered once for the QName returned by
-     * its {@link LoaderExtension#getXMLType()} method.
-     *
-     * @param registry the LoaderRegistry to register with
-     * @param loader   the Loader to register
-     */
-    protected void registerLoader(LoaderRegistry registry, LoaderExtension<?> loader) {
-        registry.registerLoader(loader.getXMLType(), loader);
-    }
-
-    /**
      * Create new Introspector for extracting a ComponentType definition from a Java class.
      *
      * @return a new Introspector
      */
-    public Introspector createIntrospector() {
+    public Introspector createIntrospector(InterfaceJavaIntrospector interfaceIntrospector) {
+        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(interfaceIntrospector);
         IntrospectionRegistryImpl introspectionRegistry =
             new IntrospectionRegistryImpl(monitorFactory.getMonitor(IntrospectionRegistryImpl.Monitor.class));
-        introspectionRegistry.registerProcessor(new ConstructorProcessor());
+        introspectionRegistry.registerProcessor(new ConstructorProcessor(service));
         introspectionRegistry.registerProcessor(new DestroyProcessor());
         introspectionRegistry.registerProcessor(new InitProcessor());
         introspectionRegistry.registerProcessor(new ScopeProcessor());
-        introspectionRegistry.registerProcessor(new PropertyProcessor());
-        introspectionRegistry.registerProcessor(new ReferenceProcessor());
-        introspectionRegistry.registerProcessor(new ServiceProcessor());
-        introspectionRegistry.registerProcessor(new HeuristicPojoProcessor());
-        introspectionRegistry.registerProcessor(new MonitorProcessor(monitorFactory));
+        introspectionRegistry.registerProcessor(new PropertyProcessor(service));
+        introspectionRegistry.registerProcessor(new ReferenceProcessor(interfaceIntrospector));
+        introspectionRegistry.registerProcessor(new ServiceProcessor(service));
+        introspectionRegistry.registerProcessor(new HeuristicPojoProcessor(service));
+        introspectionRegistry.registerProcessor(new MonitorProcessor(monitorFactory, service));
         return introspectionRegistry;
     }
 
@@ -241,4 +220,31 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
     public Connector createConnector() {
         return new ConnectorImpl();
     }
+
+    /**
+     * Helper method for registering a loader with the registry. The Loader is registered once for the QName returned by
+     * its {@link LoaderExtension#getXMLType()} method.
+     *
+     * @param registry the LoaderRegistry to register with
+     * @param loader   the Loader to register
+     */
+    protected void registerLoader(LoaderRegistry registry, LoaderExtension<?> loader) {
+        registry.registerLoader(loader.getXMLType(), loader);
+    }
+
+    /**
+     * Create a Builder that can be used to build the components in the system definition. The default implementation
+     * only supports implementations from the system programming model.
+     *
+     * @param scopeRegistry the ScopeRegistry defining the component scopes that will be supported
+     * @return a new Builder
+     */
+    private Builder createBuilder(ScopeRegistry scopeRegistry) {
+        BuilderRegistry builderRegistry = new BuilderRegistryImpl(scopeRegistry);
+        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder(builderRegistry));
+        builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
+        builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());
+        return builderRegistry;
+    }
+
 }

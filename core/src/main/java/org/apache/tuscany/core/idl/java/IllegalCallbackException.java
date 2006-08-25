@@ -16,15 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.core.idl.java;
+
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
 /**
- * Denotes an illegal callback definition
+ * Denotes an illegal callback interface
  *
  * @version $Rev$ $Date$
  */
 
-public class IllegalCallbackException extends IllegalServiceDefinitionException {
+public class IllegalCallbackException extends InvalidServiceContractException {
     public IllegalCallbackException() {
     }
 

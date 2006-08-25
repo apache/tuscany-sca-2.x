@@ -21,13 +21,14 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Constructor;
 import java.util.List;
 
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * Verifies constructors that have extensible annotation types, i.e. that have parameters marked by annotations which
@@ -37,7 +38,8 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
  */
 public class HeutisticExtensibleConstructorTestCase extends TestCase {
 
-    private HeuristicPojoProcessor processor = new HeuristicPojoProcessor();
+    private HeuristicPojoProcessor processor =
+        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
 
     /**
      * Verifies heuristic processing can be called priot to an extension annotation processors being called.

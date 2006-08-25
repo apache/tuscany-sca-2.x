@@ -35,26 +35,21 @@ import java.util.Set;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ServiceContract;
-
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.ServiceContract;
 
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.areUnique;
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.createService;
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.injectionAnnotationsPresent;
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processCallback;
-import static org.apache.tuscany.core.implementation.processor.ProcessorUtils.processParam;
+import org.apache.tuscany.core.idl.java.IllegalCallbackException;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
@@ -72,6 +67,13 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  * @version $Rev$ $Date$
  */
 public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
+
+    private ImplementationProcessorService implService;
+
+    public HeuristicPojoProcessor(@Autowire ImplementationProcessorService service) {
+        this.implService = service;
+    }
+
     public void visitEnd(CompositeComponent<?> parent, Class<?> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException {
@@ -82,10 +84,20 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             Set<Class> interfaces = getAllInterfaces(clazz);
             if (interfaces.size() == 0) {
                 // class is the interface
-                JavaMappedService service = createService(clazz);
+                JavaMappedService service;
+                try {
+                    service = implService.createService(clazz);
+                } catch (InvalidServiceContractException e) {
+                    throw new ProcessingException(e);
+                }
                 type.getServices().put(service.getName(), service);
             } else if (interfaces.size() == 1) {
-                JavaMappedService service = createService(interfaces.iterator().next());
+                JavaMappedService service;
+                try {
+                    service = implService.createService(interfaces.iterator().next());
+                } catch (InvalidServiceContractException e) {
+                    throw new ProcessingException(e);
+                }
                 type.getServices().put(service.getName(), service);
             }
         }
@@ -220,15 +232,15 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         if (!explict) {
             // the constructor wasn't defined by an annotation, so check to see if any of the params have an annotation
             // which we can impute as explicitly defining the constructor, e.g. @Property, @Reference, or @Autowire
-            explict = injectionAnnotationsPresent(annotations);
+            explict = implService.injectionAnnotationsPresent(annotations);
         }
         if (explict) {
             for (int i = 0; i < params.length; i++) {
                 Class param = params[i];
-                processParam(param, annotations[i], new String[0], i, type, paramNames);
+                implService.processParam(param, annotations[i], new String[0], i, type, paramNames);
             }
         } else {
-            if (!areUnique(params)) {
+            if (!implService.areUnique(params)) {
                 throw new AmbiguousConstructorException("Cannot resolve non-unique parameter types, use @Constructor");
             }
             if (!calcPropRefUniqueness(props.values(), refs.values())) {
@@ -275,7 +287,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
             classes[i] = reference.getServiceContract().getInterfaceClass();
             i++;
         }
-        return areUnique(classes);
+        return implService.areUnique(classes);
     }
 
     /**
@@ -383,7 +395,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
      * @param paramType the service interface of the reference
      */
     private JavaMappedReference createReference(String name, Member member, Class<?> paramType)
-        throws IllegalCallbackException {
+        throws ProcessingException {
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName(name);
         reference.setMember(member);
@@ -392,7 +404,11 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         String interfaceName = getBaseName(paramType);
         contract.setInterfaceName(interfaceName);
         contract.setInterfaceClass(paramType);
-        processCallback(paramType, contract);
+        try {
+            implService.processCallback(paramType, contract);
+        } catch (IllegalCallbackException e) {
+            throw new ProcessingException(e);
+        }
         reference.setServiceContract(contract);
         return reference;
     }
@@ -425,7 +441,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
     private void calculateServiceInterface(
         Class<?> clazz,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        Set<Method> methods) throws IllegalCallbackException {
+        Set<Method> methods) throws ProcessingException {
         List<Method> nonPropRefMethods = new ArrayList<Method>();
         //Map<String, JavaMappedService> services = type.getServices();
         Map<String, JavaMappedReference> references = type.getReferences();
@@ -444,7 +460,12 @@ public class HeuristicPojoProcessor extends ImplementationProcessorSupport {
         }
         for (Class interfaze : interfaces) {
             if (analyzeInterface(interfaze, nonPropRefMethods)) {
-                JavaMappedService service = createService(interfaze);
+                JavaMappedService service;
+                try {
+                    service = implService.createService(interfaze);
+                } catch (InvalidServiceContractException e) {
+                    throw new ProcessingException(e);
+                }
                 type.getServices().put(service.getName(), service);
             }
         }

@@ -22,20 +22,22 @@ import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Property;
 
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+
 /**
  * @version $Rev$ $Date$
  */
 public class HeuristicAndPropertyTestCase extends TestCase {
 
-    private PropertyProcessor propertyProcessor = new PropertyProcessor();
-    private HeuristicPojoProcessor heuristicProcessor = new HeuristicPojoProcessor();
+    private PropertyProcessor propertyProcessor;
+    private HeuristicPojoProcessor heuristicProcessor;
 
     /**
      * Verifies the property and heuristic processors don't collide
@@ -52,6 +54,13 @@ public class HeuristicAndPropertyTestCase extends TestCase {
         assertNotNull(type.getProperties().get("foo"));
     }
 
+    protected void setUp() throws Exception {
+        super.setUp();
+        ImplementationProcessorServiceImpl service =
+            new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl());
+        propertyProcessor = new PropertyProcessor(service);
+        heuristicProcessor = new HeuristicPojoProcessor(service);
+    }
 
     public static class Foo {
         public Foo(@Property(name = "foo") String prop) {

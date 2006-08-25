@@ -24,19 +24,23 @@ import java.lang.reflect.Method;
 import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.IllegalCallbackException;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ServiceCallbackTestCase extends TestCase {
 
-    ServiceProcessor processor = new ServiceProcessor();
+    ServiceProcessor processor =
+        new ServiceProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
 
     public void testMethodCallbackInterface() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -68,7 +72,7 @@ public class ServiceCallbackTestCase extends TestCase {
         try {
             processor.visitMethod(null, method, type, null);
             fail();
-        } catch (IllegalCallbackException e) {
+        } catch (IllegalCallbackReferenceException e) {
             // expected
         }
     }
@@ -81,7 +85,7 @@ public class ServiceCallbackTestCase extends TestCase {
         try {
             processor.visitMethod(null, method, type, null);
             fail();
-        } catch (IllegalCallbackException e) {
+        } catch (IllegalCallbackReferenceException e) {
             // expected
         }
     }
@@ -94,7 +98,7 @@ public class ServiceCallbackTestCase extends TestCase {
         try {
             processor.visitField(null, field, type, null);
             fail();
-        } catch (IllegalCallbackException e) {
+        } catch (IllegalCallbackReferenceException e) {
             // expected
         }
     }
@@ -105,8 +109,9 @@ public class ServiceCallbackTestCase extends TestCase {
         try {
             processor.visitClass(null, BadFooImpl.class, type, null);
             fail();
-        } catch (IllegalCallbackException e) {
+        } catch (ProcessingException e) {
             // expected
+            assertTrue(e.getCause() instanceof IllegalCallbackException);
         }
     }
 

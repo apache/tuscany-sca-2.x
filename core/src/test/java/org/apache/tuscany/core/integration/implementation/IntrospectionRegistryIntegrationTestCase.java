@@ -24,17 +24,18 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
 
-import static org.apache.tuscany.spi.model.Scope.MODULE;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import static org.apache.tuscany.spi.model.Scope.MODULE;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
@@ -68,8 +69,10 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         registry.registerProcessor(new DestroyProcessor());
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
-        registry.registerProcessor(new PropertyProcessor());
-        registry.registerProcessor(new ReferenceProcessor());
+        InterfaceJavaIntrospectorImpl introspector = new InterfaceJavaIntrospectorImpl();
+        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(introspector);
+        registry.registerProcessor(new PropertyProcessor(service));
+        registry.registerProcessor(new ReferenceProcessor(introspector));
     }
 
     @Scope("MODULE")

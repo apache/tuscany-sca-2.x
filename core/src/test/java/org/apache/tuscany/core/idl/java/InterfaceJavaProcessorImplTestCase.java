@@ -28,6 +28,8 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -36,7 +38,8 @@ public class InterfaceJavaProcessorImplTestCase extends TestCase {
 
     public void testSimpleInterface() throws InvalidServiceContractException {
         JavaServiceContract contract = impl.introspect(Simple.class);
-        assertEquals(Simple.class.getName(), contract.getInterfaceName());
+        // TODO spec to clairfy interface name
+        assertEquals(JavaIntrospectionHelper.getBaseName(Simple.class), contract.getInterfaceName());
         assertEquals(Simple.class, contract.getInterfaceClass());
         Map<String, Operation<Type>> operations = contract.getOperations();
         assertEquals(1, operations.size());

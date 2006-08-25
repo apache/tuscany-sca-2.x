@@ -19,30 +19,34 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ProcessorUtilsUniqueTestCase extends TestCase {
+public class ImplementationProcessorServiceUniqueTestCase extends TestCase {
+
+    private ImplementationProcessorService service =
+        new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl());
 
     public void testUniquess1() throws Exception {
         Class[] classes = new Class[2];
         classes[0] = String.class;
         classes[1] = Integer.class;
-        assertTrue(ProcessorUtils.areUnique(classes));
+        assertTrue(service.areUnique(classes));
     }
 
     public void testUniquess2() throws Exception {
         Class[] classes = new Class[2];
         classes[0] = String.class;
         classes[1] = String.class;
-        assertFalse(ProcessorUtils.areUnique(classes));
+        assertFalse(service.areUnique(classes));
     }
 
     public void testUniquess3() throws Exception {
         Class[] classes = new Class[1];
         classes[0] = String.class;
-        assertTrue(ProcessorUtils.areUnique(classes));
+        assertTrue(service.areUnique(classes));
     }
 
     public void testUniquess4() throws Exception {
@@ -50,12 +54,12 @@ public class ProcessorUtilsUniqueTestCase extends TestCase {
         classes[0] = String.class;
         classes[1] = Integer.class;
         classes[2] = String.class;
-        assertFalse(ProcessorUtils.areUnique(classes));
+        assertFalse(service.areUnique(classes));
     }
 
     public void testUniquess5() throws Exception {
         Class[] classes = new Class[0];
-        assertTrue(ProcessorUtils.areUnique(classes));
+        assertTrue(service.areUnique(classes));
     }
 
 }
