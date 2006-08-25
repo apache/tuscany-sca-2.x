@@ -25,70 +25,50 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.ServiceContract;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.idl.java.IllegalCallbackException;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospector;
+import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
 /**
- * Contains various utility methods for <code>ImplementationProcessor</code>s
+ * The default implementation of an <code>ImplementationProcessorService</code>
  *
  * @version $Rev$ $Date$
  */
-public final class ProcessorUtils {
+public class ImplementationProcessorServiceImpl implements ImplementationProcessorService {
 
-    private ProcessorUtils() {
+    private InterfaceJavaIntrospector introspector;
+
+    public ImplementationProcessorServiceImpl(@Autowire InterfaceJavaIntrospector introspector) {
+        this.introspector = introspector;
     }
 
-    /**
-     * Convenience method for creating a mapped service from the given interface
-     */
-    public static JavaMappedService createService(Class<?> interfaze) throws IllegalCallbackException {
+    public JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException {
         JavaMappedService service = new JavaMappedService();
-        service.setName(JavaIntrospectionHelper.getBaseName(interfaze));
+        service.setName(getBaseName(interfaze));
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-        ServiceContract<?> contract = new JavaServiceContract();
-        contract.setInterfaceClass(interfaze);
-        Scope interactionScope = interfaze.getAnnotation(Scope.class);
-        if (interactionScope == null) {
-            contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        } else {
-            if ("CONVERSATIONAL".equalsIgnoreCase(interactionScope.value())) {
-                contract.setInteractionScope(InteractionScope.CONVERSATIONAL);
-            } else {
-                contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-            }
-        }
-        processCallback(interfaze, contract);
+        ServiceContract<?> contract = introspector.introspect(interfaze);
         service.setServiceContract(contract);
         return service;
     }
 
-    /**
-     * Processes the callback contract for a given interface type
-     *
-     * @param interfaze the interface type to examine
-     * @param contract  the service contract the callback is associated wth
-     * @throws IllegalCallbackException
-     */
-    public static void processCallback(Class<?> interfaze, ServiceContract<?> contract)
+    public void processCallback(Class<?> interfaze, ServiceContract<?> contract)
         throws IllegalCallbackException {
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             Class<?> callbackClass = callback.value();
             contract.setCallbackClass(callbackClass);
-            contract.setCallbackName(JavaIntrospectionHelper.getBaseName(callbackClass));
+            contract.setCallbackName(getBaseName(callbackClass));
         } else if (callback != null && Void.class.equals(callback.value())) {
             IllegalCallbackException e =
                 new IllegalCallbackException("Callback annotation must specify an interface on service type");
@@ -97,23 +77,14 @@ public final class ProcessorUtils {
         }
     }
 
-    /**
-     * Determines if all the members of a collection have unique types
-     *
-     * @param collection the collection to analyze
-     * @return true if the types are unique
-     */
-    public static boolean areUnique(Class[] collection) {
+    public boolean areUnique(Class[] collection) {
         if (collection.length == 0) {
             return true;
         }
         return areUnique(collection, 0);
     }
 
-    /**
-     * Inserts a name at the specified position, paddiling the list if its size is less than the position
-     */
-    public static void addName(List<String> names, int pos, String name) {
+    public void addName(List<String> names, int pos, String name) {
         if (names.size() < pos) {
             for (int i = 0; i < pos; i++) {
                 names.add(i, "");
@@ -127,25 +98,12 @@ public final class ProcessorUtils {
         }
     }
 
-    /**
-     * Processes a constructor parameter by introspecting its annotations
-     *
-     * @param param            the parameter to process
-     * @param paramAnnotations the parameter annotations
-     * @param constructorNames the array of constructorNames specified by @Constructor
-     * @param pos              the declaration position of the constructor parameter
-     * @param type             the component type associated with implementation being reflected
-     * @param injectionNames   the list of parameter constructorNames specified on parameter annotations
-     * @throws org.apache.tuscany.spi.implementation.java.ProcessingException
-     *
-     */
-    public static boolean processParam(Class<?> param,
-                                       Annotation[] paramAnnotations,
-                                       String[] constructorNames,
-                                       int pos,
-                                       PojoComponentType<JavaMappedService, JavaMappedReference,
-                                           JavaMappedProperty<?>> type,
-                                       List<String> injectionNames)
+    public boolean processParam(Class<?> param,
+                                Annotation[] paramAnnotations,
+                                String[] constructorNames,
+                                int pos,
+                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                List<String> injectionNames)
         throws ProcessingException {
         boolean processed = false;
         for (Annotation annot : paramAnnotations) {
@@ -163,31 +121,7 @@ public final class ProcessorUtils {
         return processed;
     }
 
-    /**
-     * Determines if all the members of a collection have unique types
-     *
-     * @param collection the collection to analyze
-     * @param start      the position in the collection to start
-     * @return true if the types are unique
-     */
-    private static boolean areUnique(Class[] collection, int start) {
-        Object compare = collection[start];
-        for (int i = start + 1; i < collection.length; i++) {
-            if (compare.equals(collection[i])) {
-                return false;
-            }
-        }
-        if (start + 1 < collection.length) {
-            return areUnique(collection, start + 1);
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Returns true if {@link @Autowire}, {@link @Property}, or {@link @Reference} are present in the given array
-     */
-    public static boolean injectionAnnotationsPresent(Annotation[][] annots) {
+    public boolean injectionAnnotationsPresent(Annotation[][] annots) {
         for (Annotation[] annotations : annots) {
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();
@@ -199,6 +133,27 @@ public final class ProcessorUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Determines if all the members of a collection have unique types
+     *
+     * @param collection the collection to analyze
+     * @param start      the position in the collection to start
+     * @return true if the types are unique
+     */
+    private boolean areUnique(Class[] collection, int start) {
+        Object compare = collection[start];
+        for (int i = start + 1; i < collection.length; i++) {
+            if (compare.equals(collection[i])) {
+                return false;
+            }
+        }
+        if (start + 1 < collection.length) {
+            return areUnique(collection, start + 1);
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -214,13 +169,13 @@ public final class ProcessorUtils {
      * @throws InvalidAutowireException
      * @throws InvalidConstructorException
      */
-    private static void processAutowire(Annotation annot, String[] constructorNames,
-                                        int pos,
-                                        Class<?> param,
-                                        PojoComponentType<JavaMappedService, JavaMappedReference,
-                                            JavaMappedProperty<?>> type,
-                                        List<String> injectionNames) throws InvalidAutowireException,
-                                                                            InvalidConstructorException {
+    private void processAutowire(Annotation annot, String[] constructorNames,
+                                 int pos,
+                                 Class<?> param,
+                                 PojoComponentType<JavaMappedService, JavaMappedReference,
+                                     JavaMappedProperty<?>> type,
+                                 List<String> injectionNames) throws InvalidAutowireException,
+                                                                     InvalidConstructorException {
         // the param is marked as an autowire
         Autowire autowireAnnot = (Autowire) annot;
         JavaMappedReference reference = new JavaMappedReference();
@@ -262,13 +217,13 @@ public final class ProcessorUtils {
      * @param explicitNames    the collection of injection names to update
      * @throws ProcessingException
      */
-    private static <T> void processProperty(Annotation annot,
-                                            String[] constructorNames,
-                                            int pos,
-                                            PojoComponentType<JavaMappedService, JavaMappedReference,
-                                                JavaMappedProperty<?>> type,
-                                            Class<T> param,
-                                            List<String> explicitNames)
+    private <T> void processProperty(Annotation annot,
+                                     String[] constructorNames,
+                                     int pos,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference,
+                                         JavaMappedProperty<?>> type,
+                                     Class<T> param,
+                                     List<String> explicitNames)
         throws ProcessingException {
         // TODO multiplicity
         // the param is marked as a property
@@ -310,12 +265,12 @@ public final class ProcessorUtils {
      * @param explicitNames    the collection of injection names to update
      * @throws ProcessingException
      */
-    private static void processReference(Annotation annot, String[] constructorNames,
-                                         int pos,
-                                         PojoComponentType<JavaMappedService, JavaMappedReference,
-                                             JavaMappedProperty<?>> type,
-                                         Class<?> param,
-                                         List<String> explicitNames)
+    private void processReference(Annotation annot, String[] constructorNames,
+                                  int pos,
+                                  PojoComponentType<JavaMappedService, JavaMappedReference,
+                                      JavaMappedProperty<?>> type,
+                                  Class<?> param,
+                                  List<String> explicitNames)
         throws ProcessingException {
 
         // TODO multiplicity

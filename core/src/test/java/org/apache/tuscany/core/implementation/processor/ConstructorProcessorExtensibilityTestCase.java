@@ -22,13 +22,14 @@ import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Property;
 
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * Verifies the constructor processor works when parameters are marked with custom extension annotations
@@ -36,7 +37,8 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
  * @version $Rev$ $Date$
  */
 public class ConstructorProcessorExtensibilityTestCase extends TestCase {
-    private ConstructorProcessor processor = new ConstructorProcessor();
+    private ConstructorProcessor processor =
+        new ConstructorProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
 
     public void testProcessFirst() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

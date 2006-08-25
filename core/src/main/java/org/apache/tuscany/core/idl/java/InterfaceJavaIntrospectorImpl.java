@@ -25,12 +25,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.OneWay;
+import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.OverloadedOperationException;
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
+
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
 /**
  * Basic implementation of an InterfaceJavaIntrospector.
@@ -39,31 +45,54 @@ import org.apache.tuscany.spi.model.Operation;
  */
 public class InterfaceJavaIntrospectorImpl implements InterfaceJavaIntrospector {
     public <T> JavaServiceContract introspect(Class<T> type) throws InvalidServiceContractException {
-        return introspect(type, null);
+        Class<?> callbackClass = null;
+        Callback callback = type.getAnnotation(Callback.class);
+        if (callback != null && !Void.class.equals(callback.value())) {
+            callbackClass = callback.value();
+        } else if (callback != null && Void.class.equals(callback.value())) {
+            IllegalCallbackException e =
+                new IllegalCallbackException("Callback annotation must specify an interface on service type");
+            e.setIdentifier(type.getName());
+            throw e;
+        }
+        return introspect(type, callbackClass);
     }
 
     public <I, C> JavaServiceContract introspect(Class<I> type, Class<C> callback)
         throws InvalidServiceContractException {
         JavaServiceContract contract = new JavaServiceContract();
 
-        contract.setInterfaceName(type.getName());
+        contract.setInterfaceName(getBaseName(type));
         contract.setInterfaceClass(type);
-        contract.setOperations(getOperations(type));
+        boolean remotable = type.isAnnotationPresent(Remotable.class);
+        contract.setOperations(getOperations(type, remotable));
 
         if (callback != null) {
-            contract.setCallbackName(callback.getName());
+            contract.setCallbackName(getBaseName(callback));
             contract.setCallbackClass(callback);
-            contract.setCallbacksOperations(getOperations(callback));
+            contract.setCallbacksOperations(getOperations(callback, remotable));
+        }
+
+        Scope interactionScope = type.getAnnotation(Scope.class);
+        if (interactionScope == null) {
+            contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        } else {
+            if ("CONVERSATIONAL".equalsIgnoreCase(interactionScope.value())) {
+                contract.setInteractionScope(InteractionScope.CONVERSATIONAL);
+            } else {
+                contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+            }
         }
         return contract;
     }
 
-    private <T> Map<String, Operation<Type>> getOperations(Class<T> type) throws OverloadedOperationException {
+    private <T> Map<String, Operation<Type>> getOperations(Class<T> type, boolean remotable)
+        throws OverloadedOperationException {
         Method[] methods = type.getMethods();
         Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>(methods.length);
         for (Method method : methods) {
             String name = method.getName();
-            if (operations.containsKey(name)) {
+            if (remotable && operations.containsKey(name)) {
                 throw new OverloadedOperationException(method.toString());
             }
 

@@ -20,18 +20,20 @@ package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * @version $Rev$ $Date$
  */
 public class ConstructorProcessorTestCase extends TestCase {
-    private ConstructorProcessor processor = new ConstructorProcessor();
+    private ConstructorProcessor processor =
+        new ConstructorProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
 
     public void testDuplicateConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

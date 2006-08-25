@@ -19,22 +19,24 @@
 package org.apache.tuscany.core.implementation.system.loader;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
+import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.mock.component.BasicInterfaceImpl;
@@ -63,16 +65,19 @@ public class SystemComponentTypeLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        InterfaceJavaIntrospectorImpl introspector = new InterfaceJavaIntrospectorImpl();
+        ImplementationProcessorService service =
+            new ImplementationProcessorServiceImpl(introspector);
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl();
         registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.Monitor.class));
-        registry.registerProcessor(new ConstructorProcessor());
+        registry.registerProcessor(new ConstructorProcessor(service));
         registry.registerProcessor(new DestroyProcessor());
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
-        registry.registerProcessor(new PropertyProcessor());
-        registry.registerProcessor(new ReferenceProcessor());
-        registry.registerProcessor(new ServiceProcessor());
-        registry.registerProcessor(new HeuristicPojoProcessor());
+        registry.registerProcessor(new PropertyProcessor(service));
+        registry.registerProcessor(new ReferenceProcessor(introspector));
+        registry.registerProcessor(new ServiceProcessor(service));
+        registry.registerProcessor(new HeuristicPojoProcessor(service));
         loader = new SystemComponentTypeLoader(registry);
     }
 }

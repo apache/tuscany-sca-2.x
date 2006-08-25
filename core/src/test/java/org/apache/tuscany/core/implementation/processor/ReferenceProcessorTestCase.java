@@ -20,14 +20,14 @@ package org.apache.tuscany.core.implementation.processor;
 
 import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.ServiceContract;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -36,7 +36,8 @@ public class ReferenceProcessorTestCase extends TestCase {
 
     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
         new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-    ReferenceProcessor processor = new ReferenceProcessor();
+    ReferenceProcessor processor =
+        new ReferenceProcessor(new InterfaceJavaIntrospectorImpl());
 
     public void testMethodAnnotation() throws Exception {
         processor.visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type, null);
@@ -116,7 +117,7 @@ public class ReferenceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor = new ReferenceProcessor();
+        processor = new ReferenceProcessor(new InterfaceJavaIntrospectorImpl());
     }
 
     private interface Ref {

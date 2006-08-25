@@ -30,6 +30,8 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
+import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -88,7 +90,7 @@ public class ServiceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        processor = new ServiceProcessor();
+        processor = new ServiceProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
     }
 

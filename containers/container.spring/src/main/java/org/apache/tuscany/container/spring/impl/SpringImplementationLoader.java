@@ -81,7 +81,6 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
 
     private final RuntimeInfo runtimeInfo;
 
-    @Constructor
     public SpringImplementationLoader(@Autowire LoaderRegistry registry, @Autowire RuntimeInfo runtimeInfo) {
         super(registry);
         this.runtimeInfo = runtimeInfo;
