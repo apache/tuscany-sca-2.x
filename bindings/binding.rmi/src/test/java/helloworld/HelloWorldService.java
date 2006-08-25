@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2006 The Apache Software Foundation
+ *  Copyright 2005 The Apache Software Foundation or its licensors, as applicable.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,24 +14,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package org.apache.tuscany.binding.rmi;
+package helloworld;
 
 /**
- * @version $Rev$ $Date$
+ * This is the business interface of the HelloWorld greetings service.
  */
-public class NoRemoteMethodException extends RMIRuntimeException {
-    public NoRemoteMethodException() { 
-    }
+public interface HelloWorldService {
 
-    public NoRemoteMethodException(String message) {
-        super(message);
-    }
+    String sayHello(String name);
 
-    public NoRemoteMethodException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoRemoteMethodException(Throwable cause) {
-        super(cause);
-    }
 }
