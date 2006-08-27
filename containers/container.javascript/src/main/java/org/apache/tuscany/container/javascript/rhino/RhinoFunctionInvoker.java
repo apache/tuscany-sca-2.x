@@ -18,6 +18,14 @@
  */
 package org.apache.tuscany.container.javascript.rhino;
 
+import java.io.ByteArrayInputStream;
+
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.axiom.om.util.StAXUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
@@ -52,17 +60,28 @@ public class RhinoFunctionInvoker {
             Object response = fromJavaScript(jsResponse);
             return response;
 
-        } finally {
+        } catch ( Exception e ) {
+            throw new RuntimeException(e);
+        }
+        finally {
             Context.exit();
         }
     }
 
-    protected Object[] toJavaScript(Object[] arg, Scriptable scope, Context cx) {
+    protected Object[] toJavaScript(Object[] arg, Scriptable scope, Context cx) throws RuntimeException {
         Object[] jsArgs;
         if (arg == null) {
             jsArgs = new Object[0];
+        }  else if (arg.length == 1 && arg[0] instanceof OMElement) {
+            try {
+                XmlObject xmlObject = XmlObject.Factory.parse(arg[0].toString());
+                Object jsXML = cx.getWrapFactory().wrap(cx, scope, xmlObject, XmlObject.class);
+                jsArgs = new Object[] { cx.newObject(scope, "XML", new Object[] { jsXML }) };
+            } catch ( Exception e ) {
+                throw new RuntimeException(e);
+            } 
         } else if (arg.length == 1 && arg[0] instanceof XmlObject) {
-            Object jsXML = cx.getWrapFactory().wrap(cx, scope, (XmlObject) arg[0], XmlObject.class);
+            Object jsXML = cx.getWrapFactory().wrap(cx, scope, (XmlObject)arg[0], XmlObject.class);
             jsArgs = new Object[] { cx.newObject(scope, "XML", new Object[] { jsXML }) };
         } else {
             jsArgs = new Object[arg.length];
@@ -70,10 +89,11 @@ public class RhinoFunctionInvoker {
                 jsArgs[i] = Context.toObject(arg[i], scope);
             }
         }
+        
         return jsArgs;
     }
 
-    protected Object fromJavaScript(Object o) {
+    protected Object fromJavaScript(Object o) throws Exception {
         Object response;
         if (Context.getUndefinedValue().equals(o)) {
             response = null;
@@ -82,6 +102,12 @@ public class RhinoFunctionInvoker {
             Scriptable jsXML = (Scriptable) ScriptableObject.callMethod((Scriptable) o, "copy", new Object[0]);
             Wrapper wrapper = (Wrapper) ScriptableObject.callMethod(jsXML, "getXmlObject", new Object[0]);
             response = wrapper.unwrap();
+            
+            XMLStreamReader xmlReader = 
+                StAXUtils.createXMLStreamReader(new ByteArrayInputStream(response.toString().getBytes()));
+            StAXOMBuilder staxOMBuilder = new StAXOMBuilder(OMAbstractFactory.getOMFactory(), xmlReader);
+            response = staxOMBuilder.getDocumentElement();
+            
         } else if (o instanceof Wrapper) {
             response = ((Wrapper) o).unwrap();
         } else {

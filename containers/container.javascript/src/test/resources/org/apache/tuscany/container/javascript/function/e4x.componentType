@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <service name="HelloWorldService">
+<!--        <interface.wsdl interface="http://integration.rhino.container.tuscany.apache.org#HelloWorld"/> -->
+			<interface.java interface="helloworld.HelloWorldService"/>
+    </service>
+    
+   	<reference name="extHelloWorldService">
+		<interface.java interface="helloworld.HelloWorldService"/>
+	</reference>
+    
+
+</componentType>

@@ -16,12 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package helloworld;
+package org.apache.tuscany.container.javascript.utils.xmlfromxsd;
 
-import org.apache.axiom.om.OMElement;
+import java.util.Map;
 
-public interface HelloWorldService {
+import org.apache.xmlbeans.XmlObject;
 
-    String sayHello(String s);
-    OMElement sayE4XHello(OMElement xmlObject);
+/**
+ * Interface for system registry of xml instances
+ *
+ */
+public interface XmlInstanceRegistry {
+    public Map<String, XmlObject> getXmlInstance(String wsdlPath) throws XmlInstanceCreationException;
 }

@@ -118,7 +118,7 @@ public class RhinoScript {
     /**
      * Initialize the Rhino Scope for this script instance
      */
-    protected Scriptable createInstanceScope(Map<String, Object> context) {
+    public Scriptable createInstanceScope(Map<String, Object> context) {
         Context cx = Context.enter();
         try {
 
@@ -138,7 +138,7 @@ public class RhinoScript {
     /**
      * Create a Rhino scope and compile the script into it
      */
-    protected void initScriptScope(String fileName, String scriptCode, Map context, ClassLoader cl) {
+    public void initScriptScope(String fileName, String scriptCode, Map context, ClassLoader cl) {
         Context cx = Context.enter();
         try {
             if (cl != null) {
@@ -201,6 +201,10 @@ public class RhinoScript {
     
     public RhinoSCAConfig getSCAConfig() {
         return new RhinoSCAConfig(getScriptScope());
+    }
+
+    public void setScript(String script) {
+        this.script = script;
     }
 
 }

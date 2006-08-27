@@ -36,5 +36,10 @@
     <component name="javascript.componentBuilder">
         <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptComponentBuilder"/>
     </component>
+    
+    <!-- Xml Instance Registry service -->
+    <component name="xmlInstRegistry">
+        <system:implementation.system class="org.apache.tuscany.container.javascript.utils.xmlfromxsd.XmlInstanceRegistryImpl"/>
+    </component>
 
 </composite>

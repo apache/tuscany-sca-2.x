@@ -16,12 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package helloworld;
+package org.apache.tuscany.container.javascript.utils.xmlfromxsd;
 
-import org.apache.axiom.om.OMElement;
+/**
+ * The Exception wrapper class for encasulating exceptions that occur during xml instance creation
+ *
+ */
+public class XmlInstanceCreationException extends Exception {
 
-public interface HelloWorldService {
+    public XmlInstanceCreationException(String message) {
+        super(message);
+    }
 
-    String sayHello(String s);
-    OMElement sayE4XHello(OMElement xmlObject);
+    public XmlInstanceCreationException(Exception e) {
+        super(e);
+    }
 }
