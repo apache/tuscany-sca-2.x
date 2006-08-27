@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 
@@ -166,8 +167,8 @@ public class RhinoFunctionInvokerTestCase extends TestCase {
 
         Object xml = invoker.invoke(new Object[] { "petra" });
         assertNotNull(xml);
-        assertTrue(xml instanceof XmlObject);
-        assertEquals("<a>petra</a>", ((XmlObject) xml).toString());
+        assertTrue(xml instanceof OMElement);
+        assertEquals("<a>petra</a>", ((OMElement) xml).toString());
     }
 
 }

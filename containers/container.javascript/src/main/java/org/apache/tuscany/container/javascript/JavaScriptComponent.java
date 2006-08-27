@@ -65,7 +65,19 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
 
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
             for (OutboundWire<?> wire : referenceWires) {
-                context.put(wire.getReferenceName(), wireService.createProxy(wire));
+                 Object wireProxy = wireService.createProxy(wire);
+                //since all types that may be used in the reference interface may not be known to Rhino
+                //using the wireProxy as is will fail result in type conversion exceptions in cases where
+                //Rhino does not know enough of the tpypes used.  Hence introduce a interceptor proxy, 
+                //with weak typing (java.lang.Object) so that Rhino's call to the proxy succeeds.  Then
+                //within this interceptor proxy perform data mediations required to correctly call the 
+                //referenced service.                
+                JavaScriptReferenceProxy interceptingProxy = 
+                    new JavaScriptReferenceProxy(wire.getBusinessInterface(), 
+                                                 wireProxy, 
+                                                 rhinoScript.createInstanceScope(context));
+                context.put(wire.getReferenceName(),  interceptingProxy.createProxy());
+
             }
         }
 

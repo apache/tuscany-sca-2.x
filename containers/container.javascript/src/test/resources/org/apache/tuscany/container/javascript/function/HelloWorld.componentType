@@ -5,5 +5,4 @@
     <service name="HelloWorldService">
         <interface.java interface="helloworld.HelloWorldService"/>
     </service>
-
 </componentType>

@@ -29,5 +29,14 @@
     <component name="IntrospectableHelloWorldComponent">
 		<js:implementation.js script="org/apache/tuscany/container/javascript/function/IntrospectableHelloWorld.js"/>
     </component>
+    
+    <component name="HelloWorldComponentE4X">
+        <js:implementation.js script="org/apache/tuscany/container/javascript/function/e4x.js"/>
+        <reference name="extHelloWorldService" target="HelloWorldJavaReference">HelloWorldJavaReference</reference>
+    </component>
+    
+  	<component name="HelloWorldJavaReference">
+        <implementation.java class="helloworld.HelloWorldServiceImpl"/>
+    </component>
 
 </composite>

@@ -21,8 +21,11 @@ package org.apache.tuscany.container.javascript;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.container.javascript.utils.xmlfromxsd.XmlInstanceRegistry;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -32,11 +35,29 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.xmlbeans.XmlObject;
+import org.osoa.sca.annotations.Constructor;
 
 /**
  * Extension point for creating {@link JavaScriptComponent}s from an assembly configuration
  */
 public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaScriptImplementation> {
+
+    private static String head = "var xmlInstanceMap = new Array();";
+    private static String part1 = "xmlInstanceMap[\"";
+    private static String part2 = "\"] = ";
+    private static String part3 = ";";
+    
+    private static String getXmlObjectFunction = 
+        "function getXmlObject(xmlElementNamespace, xmlElementName){\n" +
+        "return xmlInstanceMap[xmlElementNamespace + \"#\" + xmlElementName];\n}";
+    
+    XmlInstanceRegistry xmlInstRegistry;
+
+    @Constructor({"xmlInstRegistry"})
+    public JavaScriptComponentBuilder(@Autowire XmlInstanceRegistry reg) {
+        this.xmlInstRegistry = reg;
+    }
 
     protected Class<JavaScriptImplementation> getImplementationType() {
         return JavaScriptImplementation.class;
@@ -55,6 +76,8 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
         List<Class<?>> services = new ArrayList<Class<?>>(collection.size());
         for (ServiceDefinition serviceDefinition : collection) {
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
+            //do this for the set of references also
+            enhanceRhinoScript(serviceDefinition, implementation);       
         }
 
         RhinoScript rhinoScript = implementation.getRhinoScript();
@@ -69,6 +92,49 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
         }
 
         return new JavaScriptComponent(name, rhinoScript, services, parent, scopeContainer, wireService, workContext);
+    }
+
+    private void enhanceRhinoScript(ServiceDefinition serviceDefn, JavaScriptImplementation implementation) throws BuilderConfigException {
+        //if the service interface of the component is a wsdl get the wsdl interface and generate 
+        //xml instances for the elements in it.  Add these xml instances to the rhinoscript.
+        //TODO : when interface.wsdl and wsdl registry is integrated remove this hardcoding and 
+        //obtain wsdl from the interface.wsdl or wsdl registry
+        String wsdlPath = "org/apache/tuscany/container/javascript/rhino/helloworld.wsdl";
+
+        //this if block is a tempfix to get other testcases working. Again when a the interface.wsdl 
+        //extension is in place this will be deleted.  Right now this is the only way we know that 
+        //a js has to do with an interface that is wsdl.
+        if (!implementation.getRhinoScript().getScriptName().endsWith("e4x.js")) {
+            return;
+        }
+
+        try {
+            Map<String, XmlObject> xmlInstanceMap = xmlInstRegistry.getXmlInstance(wsdlPath);
+            StringBuffer sb = new StringBuffer();
+
+            sb.append(head);
+            sb.append("\n");
+            for (String xmlInstanceKey : xmlInstanceMap.keySet()) {
+                sb.append(part1);
+                sb.append(xmlInstanceKey);
+                sb.append(part2);
+                sb.append(xmlInstanceMap.get(xmlInstanceKey).toString());
+                sb.append(part3);
+                sb.append("\n");
+            }
+            // System.out.println(" **** - " + sb.toString());
+
+            sb.append(getXmlObjectFunction);
+
+            RhinoScript rhinoScript = implementation.getRhinoScript();
+            sb.append(rhinoScript.getScript());
+            rhinoScript.setScript(sb.toString());
+            rhinoScript.initScriptScope(rhinoScript.getScriptName(), sb.toString(), null, rhinoScript.getClassLoader());
+            implementation.setRhinoScript(rhinoScript);
+
+        } catch (Exception e) {
+            throw new BuilderConfigException(e);
+        }
     }
 
 }
