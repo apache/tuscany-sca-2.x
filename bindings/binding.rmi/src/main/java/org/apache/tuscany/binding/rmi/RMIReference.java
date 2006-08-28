@@ -59,24 +59,24 @@ public class RMIReference<T> extends ReferenceExtension<T> {
              (Class[]) operation.getParameterTypes());
              return new RMIInvoker(proxy, remoteMethod);
              */
-            Method remoteMethod = getInterface().getMethod(operation.getName(),
-                                                           (Class[]) operation.getParameterTypes());
+            Method remoteMethod =
+                getInterface().getMethod(operation.getName(), (Class[]) operation.getParameterTypes());
             return new RMIInvoker(rmiHost, host, port, svcName, remoteMethod);
         } catch (NoSuchMethodException e) {
-            throw new NoRemoteMethodException(operation.toString(), e); 
-        } 
-    } 
+            throw new NoRemoteMethodException(operation.toString(), e);
+        }
+    }
 
     /*protected Remote getProxy() {
-     try {
-     // todo do we need to cache this result?
-     return Naming.lookup(uri);
-     } catch (NotBoundException e) {
-     throw new NoRemoteServiceException(uri);
-     } catch (MalformedURLException e) {
-     throw new NoRemoteServiceException(uri);
-     } catch (RemoteException e) {
-     throw new NoRemoteServiceException(uri);
-     }
-     }*/
+    try {
+    // todo do we need to cache this result?
+    return Naming.lookup(uri);
+    } catch (NotBoundException e) {
+    throw new NoRemoteServiceException(uri);
+    } catch (MalformedURLException e) {
+    throw new NoRemoteServiceException(uri);
+    } catch (RemoteException e) {
+    throw new NoRemoteServiceException(uri);
+    }
+    }*/
 }

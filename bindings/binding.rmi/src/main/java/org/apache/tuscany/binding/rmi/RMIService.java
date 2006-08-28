@@ -20,33 +20,28 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 
-import net.sf.cglib.asm.ClassWriter;
-import net.sf.cglib.asm.Constants;
-import net.sf.cglib.asm.Type;
-import net.sf.cglib.proxy.Enhancer;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.RMIHost;
 import org.apache.tuscany.spi.host.RemoteServiceException;
 import org.apache.tuscany.spi.wire.WireService;
 
+import net.sf.cglib.asm.ClassWriter;
+import net.sf.cglib.asm.Constants;
+import net.sf.cglib.asm.Type;
+import net.sf.cglib.proxy.Enhancer;
+
 /**
  * @version $Rev$ $Date$
  */
 public class RMIService<T extends Remote> extends ServiceExtension<T> {
+
     public static final String URI_PREFIX = "//localhost";
-
     public static final String SLASH = "/";
- 
     public static final String COLON = ":";
-
-    private final String host;
-
+    //private final String host;
     private final String port;
-
     private final String serviceName;
-
     private RMIHost rmiHost;
 
     // need this member to morph the service interface to extend from Remote if it does not
@@ -67,7 +62,7 @@ public class RMIService<T extends Remote> extends ServiceExtension<T> {
 
         this.serviceInterface = service;
         this.rmiHost = rHost;
-        this.host = host;
+        //this.host = host;
         this.port = port;
         this.serviceName = svcName;
     }
@@ -79,8 +74,8 @@ public class RMIService<T extends Remote> extends ServiceExtension<T> {
         try {
             // startRMIRegistry();
             rmiHost.registerService(serviceName,
-                                    getPort(port),
-                                    rmiProxy);
+                getPort(port),
+                rmiProxy);
             // bindRmiService(uri,rmiProxy);
         } catch (RemoteServiceException e) {
             throw new NoRemoteServiceException(e);
@@ -114,7 +109,7 @@ public class RMIService<T extends Remote> extends ServiceExtension<T> {
     private int getPort(String port) {
         int portNumber = RMIHost.RMI_DEFAULT_PORT;
         if (port != null && port.length() > 0) {
-            portNumber = Integer.decode(port).intValue();
+            portNumber = Integer.decode(port);
         }
 
         return portNumber;
@@ -129,45 +124,32 @@ public class RMIService<T extends Remote> extends ServiceExtension<T> {
         String interfazeName = serviceInterface.getCanonicalName();
         ClassWriter cw = new ClassWriter(false);
 
-        cw.visit(Constants.V1_5,
-                 Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE,
-                 interfazeName.replace('.',
-                                       '/'),
-                 "java/lang/Object",
-                 new String[]{"java/rmi/Remote"},
-                 serviceInterface.getSimpleName() + ".java");
+        String simpleName = serviceInterface.getSimpleName();
+        cw.visit(Constants.V1_5, Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE,
+            interfazeName.replace('.', '/'), "java/lang/Object", new String[]{"java/rmi/Remote"}, simpleName + ".java");
 
         StringBuffer argsAndReturn = new StringBuffer("(");
         Method[] methods = serviceInterface.getMethods();
-        for (int count = 0; count < methods.length; ++count) {
-            Class[] paramTypes = methods[count].getParameterTypes();
-            Class returnType = methods[count].getReturnType();
+        for (Method method : methods) {
+            Class[] paramTypes = method.getParameterTypes();
+            Class returnType = method.getReturnType();
 
-            for (int paramCount = 0; paramCount < paramTypes.length; ++paramCount) {
-                argsAndReturn.append(Type.getType(paramTypes[paramCount]));
+            for (Class paramType : paramTypes) {
+                argsAndReturn.append(Type.getType(paramType));
             }
             argsAndReturn.append(")");
             argsAndReturn.append(Type.getType(returnType));
 
-            cw.visitMethod(Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT,
-                           methods[count].getName(),
-                           argsAndReturn.toString(),
-                           new String[]{"java/rmi/RemoteException"},
-                           null);
+            cw.visitMethod(Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT, method.getName(), argsAndReturn.toString(),
+                new String[]{"java/rmi/RemoteException"}, null);
         }
-
         cw.visitEnd();
-
         return cw.toByteArray();
     }
 
     private class RMIServiceClassLoader extends ClassLoader {
         public Class defineClass(byte[] byteArray) {
-            return defineClass(null,
-                               byteArray,
-                               0,
-                               byteArray.length);
+            return defineClass(null, byteArray, 0, byteArray.length);
         }
-
     }
 }

@@ -18,10 +18,10 @@ package org.apache.tuscany.binding.rmi;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 public class RemoteMethodHandler implements MethodInterceptor {
     public static final String FINALIZE_METHOD = "finalize";
@@ -40,8 +40,8 @@ public class RemoteMethodHandler implements MethodInterceptor {
         // wired component's method signatures. Hence need to pull in the corresponding method from the
         // component's service contract interface to make this invocation.
         return wireHandler.invoke(compSvcIntf.getMethod(method.getName(),
-                                                        (Class[]) method.getParameterTypes()),
-                                  args);
+            (Class[]) method.getParameterTypes()),
+            args);
     }
 
 }

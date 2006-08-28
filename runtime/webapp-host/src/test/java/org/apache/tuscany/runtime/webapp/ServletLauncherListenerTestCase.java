@@ -21,7 +21,6 @@ package org.apache.tuscany.runtime.webapp;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 
 import junit.framework.TestCase;
@@ -72,7 +71,8 @@ public class ServletLauncherListenerTestCase extends TestCase {
     }
 
     /**
-     * Verifies a {@link LoaderException} is thrown when the application SCDL is not found
+     * Verifies a {@link org.apache.tuscany.spi.loader.LoaderException} is thrown when the application SCDL is not
+     * found
      * <p/>
      * FIXME Uncomment this test case when the webapp project is fixed by removing the dependency on web services
      */

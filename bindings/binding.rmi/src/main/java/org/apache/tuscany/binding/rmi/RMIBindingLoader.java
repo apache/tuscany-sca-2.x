@@ -20,6 +20,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -27,20 +29,18 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * Loader for handling <binding.rmi> elements.
- * 
+ *
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
     public static final QName BINDING_RMI = new QName(
-            "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");
+        "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");
 
-    public RMIBindingLoader(@Autowire
-    LoaderRegistry registry) {
+    public RMIBindingLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
@@ -50,17 +50,11 @@ public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
 
     public RMIBinding load(CompositeComponent parent,
                            XMLStreamReader reader,
-                           DeploymentContext deploymentContext) throws XMLStreamException,
-                                                               LoaderException {
-        String host = reader.getAttributeValue(null,
-                                               "host");
-        String port = reader.getAttributeValue(null,
-                                               "port");
-        String svcName = reader.getAttributeValue(null,
-                                                  "serviceName");
-
+                           DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+        String host = reader.getAttributeValue(null, "host");
+        String port = reader.getAttributeValue(null, "port");
+        String svcName = reader.getAttributeValue(null, "serviceName");
         LoaderUtil.skipToEndElement(reader);
-
         RMIBinding binding = new RMIBinding();
         binding.setHost(host);
         binding.setPort(port);
