@@ -18,7 +18,7 @@ import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
 /**
- * @version $Rev: 431772 $ $Date: 2006-08-15 19:33:41 -0700 (Tue, 15 Aug 2006) $
+ * @version $Rev$ $Date$
  */
 public class Bootstrapper extends TestCase {
     protected CompositeComponent<?> component;

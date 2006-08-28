@@ -19,7 +19,7 @@ package org.apache.tuscany.osgi.binding;
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
- * @version $Rev: 424773 $ $Date: 2006-07-23 14:14:09 -0400 (Sun, 23 Jul 2006) $
+ * @version $Rev$ $Date$
  */
 public abstract class OSGiBindingException extends TuscanyRuntimeException {
     protected OSGiBindingException() {

@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
- * @version $Rev: 431036 $ $Date: 2006-08-12 06:58:50 -0700 (Sat, 12 Aug 2006) $
+ * @version $Rev$ $Date$
  */
 public class TestBindingService<T> extends ServiceExtension<T> {
     public TestBindingService(String name,

@@ -32,7 +32,7 @@ import org.apache.tuscany.osgi.OSGiHost;
 /**
  * Builds a Service or Reference for an OSGi binding.
  *
- * @version $Rev: 424773 $ $Date: 2006-07-23 14:14:09 -0400 (Sun, 23 Jul 2006) $
+ * @version $Rev$ $Date$
  */
 public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
 

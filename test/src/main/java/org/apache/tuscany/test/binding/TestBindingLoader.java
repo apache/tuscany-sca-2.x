@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 /**
- * @version $Rev: 431036 $ $Date: 2006-08-12 06:58:50 -0700 (Sat, 12 Aug 2006) $
+ * @version $Rev$ $Date$
  */
 public class TestBindingLoader extends LoaderExtension<TestBinding> {
 
