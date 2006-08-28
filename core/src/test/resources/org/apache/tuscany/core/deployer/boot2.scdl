@@ -87,8 +87,31 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.ServiceLoader"/>
     </component>
 
+    <component name="wireService">
+            <system:implementation.system class="org.apache.tuscany.core.wire.jdk.JDKWireService"/>
+    </component>
+
     <!-- Composite implementation type -->
     <component name="composite.loader">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeLoader"/>
     </component>
+
+    <component name="interfaceJava.introspector">
+        <system:implementation.system class="org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl"/>
+    </component>
+
+    <component name="artifactRepository">
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+        <property name="repository">.m2/repository</property>
+    </component>
+
+    <component name="propertyFactory">
+        <system:implementation.system class="org.apache.tuscany.core.loader.StringParserPropertyFactory"/>
+    </component>
+
+    <component name="policyBuilderRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
+    </component>
+
+
 </composite>

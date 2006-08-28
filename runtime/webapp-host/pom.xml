@@ -71,13 +71,20 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
-        </dependency>
+        <!-- test dependencies -->
         <dependency>
             <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>test</artifactId>
+            <version>${sca.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>

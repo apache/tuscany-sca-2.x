@@ -85,6 +85,9 @@ public class LauncherImpl implements Launcher {
         RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
+        // registory the monitor factory
+        parent.registerJavaObject("MonitorFactory", MonitorFactory.class, monitor);
+        
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         moduleImplementation.setScdlLocation(systemScdl);

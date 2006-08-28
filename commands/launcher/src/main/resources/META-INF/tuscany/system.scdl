@@ -114,4 +114,12 @@
         <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
     </component>
 
+    <component name="policyBuilderRegistry">
+         <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
+    </component>
+
+    <component name="propertyFactory">
+        <system:implementation.system class="org.apache.tuscany.core.loader.StringParserPropertyFactory"/>
+    </component>
+
 </composite>
