@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.model.Binding;
 /**
  * A simple binding for test purposes.
  *
- * @version $$Rev: 431772 $$ $$Date: 2006-08-15 19:33:41 -0700 (Tue, 15 Aug 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class TestBinding extends Binding {
 

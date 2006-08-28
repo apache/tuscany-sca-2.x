@@ -23,7 +23,7 @@ import java.io.File;
 import org.apache.tuscany.core.launcher.LauncherImpl;
 
 /**
- * @version $Rev: 430937 $ $Date: 2006-08-11 18:17:56 -0700 (Fri, 11 Aug 2006) $
+ * @version $Rev$ $Date$
  */
 public class TestLauncher extends LauncherImpl {
 

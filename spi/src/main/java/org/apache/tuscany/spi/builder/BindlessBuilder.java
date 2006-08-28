@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
  * will create and return corresponding {@link org.apache.tuscany.spi.component.Service} or {@link
  * org.apache.tuscany.spi.component.Reference}
  *
- * @version $Rev: 430937 $ $Date: 2006-08-11 21:17:56 -0400 (Fri, 11 Aug 2006) $
+ * @version $Rev$ $Date$
  */
 public interface BindlessBuilder {
 

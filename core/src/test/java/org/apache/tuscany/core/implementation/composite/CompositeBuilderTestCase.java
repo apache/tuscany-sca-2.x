@@ -52,7 +52,7 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
 /**
- * @version $$Rev: 431080 $$ $$Date: 2006-08-12 16:18:23 -0400 (Sat, 12 Aug 2006) $$
+ * @version $$Rev$$ $$Date$$
  */
 public class CompositeBuilderTestCase extends MockObjectTestCase {
     private DeploymentContext deploymentContext;

@@ -23,7 +23,7 @@ import java.net.URI;
 /**
  * Represents a service in a composite, with an interface and a reference target.
  *
- * @version $Rev: 430937 $ $Date: 2006-08-11 21:17:56 -0400 (Fri, 11 Aug 2006) $
+ * @version $Rev$ $Date$
  */
 public class BindlessServiceDefinition extends ServiceDefinition {
     private URI target;
