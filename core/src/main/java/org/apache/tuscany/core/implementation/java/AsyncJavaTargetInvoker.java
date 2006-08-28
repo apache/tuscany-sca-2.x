@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.TargetException;
 
-import org.apache.tuscany.core.policy.async.AsyncMonitor;
 import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
 /**
