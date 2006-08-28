@@ -28,20 +28,15 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Invoke an RMI reference.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class RMIInvoker implements TargetInvoker {
     private Method remoteMethod;
-
     private String host;
-
     private String port;
-
     private String svcName;
-
     private RMIHost rmiHost;
-
     private Remote proxy;
 
     /*@Constructor({"rmiHost", "host", "port", "svnName", "remoteMethod"})
@@ -81,13 +76,10 @@ public class RMIInvoker implements TargetInvoker {
     public Object invokeTarget(Object payload) throws InvocationTargetException {
         try {
             if (proxy == null) {
-                proxy = rmiHost.findService(host,
-                                            port,
-                                            svcName);
+                proxy = rmiHost.findService(host, port, svcName);
                 // proxy = Naming.lookup(serviceURI);
             }
-            return remoteMethod.invoke(proxy,
-                                       (Object[]) payload);
+            return remoteMethod.invoke(proxy, (Object[]) payload);
         } catch (RemoteServiceException e) {
             // the method we are passed must be accessible
             throw new AssertionError(e);

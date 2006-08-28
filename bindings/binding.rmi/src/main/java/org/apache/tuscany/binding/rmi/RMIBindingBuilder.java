@@ -18,6 +18,8 @@ package org.apache.tuscany.binding.rmi;
 
 import java.rmi.Remote;
 
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -26,11 +28,10 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.RMIHost;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.osoa.sca.annotations.Constructor;
 
 /**
  * Builds a Service or Reference for an RMI binding.
- * 
+ *
  * @version $Rev$ $Date$
  */
 
@@ -42,7 +43,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
     public RMIBindingBuilder(@Autowire RMIHost rHost) {
         this.rmiHost = rHost;
     }
-    
+
     protected Class<RMIBinding> getBindingType() {
         return RMIBinding.class;
     }
@@ -52,14 +53,11 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
                            BoundServiceDefinition<RMIBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
 
-        String name = boundServiceDefinition.getName();
         Class intf = boundServiceDefinition.getServiceContract().getInterfaceClass();
-        String host = boundServiceDefinition.getBinding().getHost();
 
-        RMIService rmiService = new RMIService<Remote>(boundServiceDefinition.getName(), parent, wireService, rmiHost,
-                boundServiceDefinition.getBinding().getHost(), boundServiceDefinition.getBinding().getPort(),
-                boundServiceDefinition.getBinding().getServiceName(), intf);
-        return rmiService;
+        return new RMIService<Remote>(boundServiceDefinition.getName(), parent, wireService, rmiHost,
+            boundServiceDefinition.getBinding().getHost(), boundServiceDefinition.getBinding().getPort(),
+            boundServiceDefinition.getBinding().getServiceName(), intf);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -71,10 +69,9 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
         String port = boundReferenceDefinition.getBinding().getPort();
         String svcName = boundReferenceDefinition.getBinding().getServiceName();
         // Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
-        RMIReference rmiReference = new RMIReference(name, parent, wireService, rmiHost, host, port, svcName,
-                boundReferenceDefinition.getServiceContract().getInterfaceClass());
 
-        return rmiReference;
+        return new RMIReference(name, parent, wireService, rmiHost, host, port, svcName,
+            boundReferenceDefinition.getServiceContract().getInterfaceClass());
 
     }
 

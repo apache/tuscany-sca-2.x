@@ -1,16 +1,14 @@
-package org.apache.tuscany.binding.rmi; 
-
-import helloworld.HelloWorldRmiService;
-import helloworld.HelloWorldService;
+package org.apache.tuscany.binding.rmi;
 
 import org.apache.tuscany.test.SCATestCase;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
 
 public class BindingTestCase extends SCATestCase {
-    HelloWorldService helloWorldService;
+    //private HelloWorldService helloWorldService;
+    //private HelloWorldRmiService helloWorldRmiService;
 
-    HelloWorldRmiService helloWorldRmiService;
+    public void testRmiService() {
+        // System.out.println(helloWorldRmiService.sayRmiHello("Tuscany World!"));
+    }
 
     protected void setUp() throws Exception {
         //addExtension("rmi.binding",
@@ -23,15 +21,12 @@ public class BindingTestCase extends SCATestCase {
         //CompositeContext context = CurrentCompositeContext.getContext();
         //helloWorldRmiService = context.locateService(HelloWorldRmiService.class,
         //                                             "HelloWorldRmiServiceComponent");
-                                                             
+
     }
 
-    public void testRmiService() {
-       // System.out.println(helloWorldRmiService.sayRmiHello("Tuscany World!"));
-    }
 
     protected void tearDown() throws Exception {
-        //super.tearDown();
+//        super.tearDown();
     }
 
 }
