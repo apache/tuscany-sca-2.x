@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
@@ -65,9 +65,9 @@ public class SystemComponentTypeLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        InterfaceJavaIntrospectorImpl introspector = new InterfaceJavaIntrospectorImpl();
+        JavaInterfaceProcessorRegistryImpl interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
         ImplementationProcessorService service =
-            new ImplementationProcessorServiceImpl(introspector);
+            new ImplementationProcessorServiceImpl(interfaceProcessorRegistry);
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl();
         registry.setMonitor(new NullMonitorFactory().getMonitor(IntrospectionRegistryImpl.Monitor.class));
         registry.registerProcessor(new ConstructorProcessor(service));
@@ -75,7 +75,7 @@ public class SystemComponentTypeLoaderTestCase extends MockObjectTestCase {
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
         registry.registerProcessor(new PropertyProcessor(service));
-        registry.registerProcessor(new ReferenceProcessor(introspector));
+        registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
         registry.registerProcessor(new ServiceProcessor(service));
         registry.registerProcessor(new HeuristicPojoProcessor(service));
         loader = new SystemComponentTypeLoader(registry);

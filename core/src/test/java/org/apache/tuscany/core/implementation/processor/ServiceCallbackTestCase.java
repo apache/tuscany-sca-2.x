@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.idl.java.IllegalCallbackException;
 
 /**
@@ -40,7 +40,7 @@ import org.apache.tuscany.core.idl.java.IllegalCallbackException;
 public class ServiceCallbackTestCase extends TestCase {
 
     ServiceProcessor processor =
-        new ServiceProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+        new ServiceProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
 
     public void testMethodCallbackInterface() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

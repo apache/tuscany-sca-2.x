@@ -29,7 +29,7 @@ import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;

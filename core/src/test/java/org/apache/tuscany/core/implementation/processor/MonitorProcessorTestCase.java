@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.host.MonitorFactory;
 import org.jmock.Mock;
@@ -132,7 +132,7 @@ public class MonitorProcessorTestCase extends MockObjectTestCase {
         super.setUp();
         monitorFactory = mock(MonitorFactory.class);
         processor = new MonitorProcessor((MonitorFactory) monitorFactory.proxy(),
-            new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+            new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
     }
 
     private class Foo {

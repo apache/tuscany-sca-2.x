@@ -22,18 +22,21 @@ import java.rmi.registry.Registry;
 import java.util.List;
 
 /**
- * RMI Service hosting Admin Interface to be implemented by host environments that allows 
- * SCA Components to register RMI Services to handle inbound service requests over RMI to
- * SCA Components. This interface can be used by admin functions to obtain information on
- * RMI registries started and running in the host environment
+ * RMI Service hosting Admin Interface to be implemented by host environments that allows SCA Components to register RMI
+ * Services to handle inbound service requests over RMI to SCA Components. This interface can be used by admin functions
+ * to obtain information on RMI registries started and running in the host environment
+ *
+ * @version $Rev$ $Date$
  */
 public interface RMIHostAdmin {
-    // gets all RMI registries running on the host. Each element of the list is an object of type
-    // java.rmi.registry
-    public List getAllRegistries() throws RemoteServiceException;
+    /**
+     * Returns all RMI registries running on the host.
+     */
+    List<Registry> getAllRegistries() throws RemoteServiceException;
 
-    // gets a registry that is running at a particular port
-    public Registry getRegistry(int port) throws RemoteServiceException;
+    /**
+     * Returns a registry that is running at a particular port
+     */
+    Registry getRegistry(int port) throws RemoteServiceException;
 
-    // more methods to be added
 }

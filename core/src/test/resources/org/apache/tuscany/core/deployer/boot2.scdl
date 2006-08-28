@@ -58,7 +58,7 @@
     </component>
 
     <!-- Introspector and IntrospectionRegistry -->
-    <component name="introspector">
+    <component name="interfaceProcessorRegistry">
         <system:implementation.system class="org.apache.tuscany.core.implementation.IntrospectionRegistryImpl"/>
     </component>
 
@@ -96,8 +96,8 @@
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeLoader"/>
     </component>
 
-    <component name="interfaceJava.introspector">
-        <system:implementation.system class="org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl"/>
+    <component name="interfaceJava.interfaceProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl"/>
     </component>
 
     <component name="artifactRepository">

@@ -22,19 +22,26 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessor;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InterfaceJavaProcessorImplTestCase extends TestCase {
-    private InterfaceJavaIntrospectorImpl impl;
+public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
+    private JavaInterfaceProcessorRegistryImpl impl;
 
     public void testSimpleInterface() throws InvalidServiceContractException {
         JavaServiceContract contract = impl.introspect(Simple.class);
@@ -63,9 +70,22 @@ public class InterfaceJavaProcessorImplTestCase extends TestCase {
         assertEquals(RuntimeException.class, fault0.getLogical());
     }
 
+    public void testUnregister() throws Exception {
+        JavaInterfaceProcessor processor = createMock(JavaInterfaceProcessor.class);
+        processor.visitInterface(eq(Base.class), isA(JavaServiceContract.class));
+        expectLastCall().once();
+        replay(processor);
+        impl.registerProcessor(processor);
+        impl.introspect(Base.class);
+        impl.unregisterProcessor(processor);
+        impl.introspect(Base.class);
+        verify(processor);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
-        impl = new InterfaceJavaIntrospectorImpl();
+        impl = new JavaInterfaceProcessorRegistryImpl();
+
     }
 
     private static interface Base {

@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
 import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.model.ComponentType;

@@ -44,8 +44,8 @@ import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;

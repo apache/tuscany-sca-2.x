@@ -28,10 +28,10 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -39,7 +39,7 @@ import org.apache.tuscany.core.idl.java.JavaServiceContract;
 public class HeuristicConstructorTestCase extends TestCase {
 
     private HeuristicPojoProcessor processor =
-        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
 
     /**
      * Verifies a single constructor is chosen with a parameter as the type

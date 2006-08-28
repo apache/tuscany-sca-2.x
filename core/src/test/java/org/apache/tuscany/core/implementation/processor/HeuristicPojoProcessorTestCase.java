@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * Verfies component type information is properly introspected from an unadorned POJO according to the SCA Java Client
@@ -46,7 +46,7 @@ import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 public class HeuristicPojoProcessorTestCase extends TestCase {
 
     private HeuristicPojoProcessor processor =
-        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+        new HeuristicPojoProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
 
     /**
      * Verifies a single service interface is computed when only one interface is implemented

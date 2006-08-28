@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import static org.apache.tuscany.spi.model.Scope.MODULE;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
@@ -69,10 +69,10 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         registry.registerProcessor(new DestroyProcessor());
         registry.registerProcessor(new InitProcessor());
         registry.registerProcessor(new ScopeProcessor());
-        InterfaceJavaIntrospectorImpl introspector = new InterfaceJavaIntrospectorImpl();
-        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(introspector);
+        JavaInterfaceProcessorRegistryImpl interfaceProcessorRegistry = new JavaInterfaceProcessorRegistryImpl();
+        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(interfaceProcessorRegistry);
         registry.registerProcessor(new PropertyProcessor(service));
-        registry.registerProcessor(new ReferenceProcessor(introspector));
+        registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
     }
 
     @Scope("MODULE")

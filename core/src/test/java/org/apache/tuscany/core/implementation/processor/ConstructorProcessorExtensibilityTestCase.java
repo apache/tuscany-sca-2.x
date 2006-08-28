@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * Verifies the constructor processor works when parameters are marked with custom extension annotations
@@ -38,7 +38,7 @@ import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
  */
 public class ConstructorProcessorExtensibilityTestCase extends TestCase {
     private ConstructorProcessor processor =
-        new ConstructorProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+        new ConstructorProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
 
     public void testProcessFirst() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

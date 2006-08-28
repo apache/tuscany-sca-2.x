@@ -33,7 +33,8 @@ import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.SourceImpl;

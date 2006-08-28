@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -38,7 +38,7 @@ import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 public class ConstructorAutowireTestCase extends TestCase {
 
     ConstructorProcessor processor =
-        new ConstructorProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+        new ConstructorProcessor(new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl()));
 
     public void testAutowire() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =

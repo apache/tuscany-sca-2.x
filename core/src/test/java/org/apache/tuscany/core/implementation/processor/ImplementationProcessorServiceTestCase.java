@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -35,7 +35,7 @@ import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 public class ImplementationProcessorServiceTestCase extends TestCase {
 
     private ImplementationProcessorService implService =
-        new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl());
+        new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl());
 
     public void testCreateConversationalService() throws Exception {
         JavaMappedService service = implService.createService(Foo.class);
