@@ -42,7 +42,6 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.policy.async.AsyncMonitor;
 
 /**
  * Builds a Java-based atomic context from a component definition

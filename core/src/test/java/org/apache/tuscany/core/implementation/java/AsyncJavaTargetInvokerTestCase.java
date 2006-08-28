@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import junit.framework.TestCase;
 import static org.apache.tuscany.core.implementation.java.mock.MockFactory.createJavaComponent;
 import org.apache.tuscany.core.implementation.java.mock.components.AsyncTarget;
-import org.apache.tuscany.core.policy.async.AsyncMonitor;
+import org.apache.tuscany.core.implementation.java.AsyncMonitor;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;
