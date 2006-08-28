@@ -38,13 +38,18 @@ import javax.wsdl.extensions.soap.SOAPBody;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceProvider;
 
-import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
+import org.osoa.sca.annotations.Destroy;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
+
+import commonj.sdo.helper.TypeHelper;
+import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
 import org.objectweb.celtix.Bus;
+import org.objectweb.celtix.bindings.BindingFactory;
 import org.objectweb.celtix.bindings.DataBindingCallback;
 import org.objectweb.celtix.bindings.ServerBinding;
 import org.objectweb.celtix.bindings.ServerBindingEndpointCallback;
@@ -55,8 +60,8 @@ import org.objectweb.celtix.context.ObjectMessageContext;
 import org.objectweb.celtix.ws.addressing.AttributedURIType;
 import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
 import org.objectweb.celtix.wsdl.EndpointReferenceUtils;
-import org.osoa.sca.annotations.Destroy;
 import org.xmlsoap.schemas.wsdl.http.AddressType;
+
 
 /**
  * An implementation of a {@link Service} configured with the Celtix binding
@@ -70,6 +75,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
     private Definition wsdlDef;
     private Service wsdlService;
     private WSDLMetaDataCache wsdlCache;
+    private TypeHelper typeHelper;
 
     private Map<QName, ServerDataBindingCallback> opMap =
         new ConcurrentHashMap<QName, ServerDataBindingCallback>();
@@ -80,13 +86,15 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
                          CompositeComponent parent,
                          WireService wireService,
                          WebServiceBinding binding,
-                         Bus bus) {
+                         Bus bus,
+                         TypeHelper theTypeHelper) {
         super(theName, interfaze, parent, wireService);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();
         this.bus = bus;
         this.wsdlCache = new WSDLMetaDataCache(wsdlDef, port);
+        this.typeHelper = theTypeHelper;
     }
 
     public void start() {
@@ -104,9 +112,9 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             throw new CeltixServiceInitException(e);
         }
 
-        EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,
-                                                                                      wsdlService.getQName(),
-                                                                                      port.getName());
+        QName qName = wsdlService.getQName();
+        String portName = port.getName();
+        EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,qName,portName);
 
         AttributedURIType address = new AttributedURIType();
 
@@ -138,20 +146,21 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             //REVIST - bug in Celtix that the HTTP transport won't find the address correctly
             reference.setAddress(address);
         }
-
+        ClassLoader previousLoader = null;
         try {
             //FIXME: This hack is because SAAJImpl uses Thread.currentThread().getContextClassLoader(),
             //this classloader is different from current classLoader.
-            ClassLoader previousLoader = Thread.currentThread().getContextClassLoader();
+            previousLoader = Thread.currentThread().getContextClassLoader();
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-
-            ServerBinding serverBinding = bus.getBindingManager()
-                .getBindingFactory(bindingId).createServerBinding(reference, this);
+            BindingFactory bindingFactory = bus.getBindingManager().getBindingFactory(bindingId);
+            ServerBinding serverBinding = bindingFactory.createServerBinding(reference, this);
             serverBinding.activate();
-
-            Thread.currentThread().setContextClassLoader(previousLoader);
         } catch (Exception e) {
             throw new CeltixServiceInitException(e);
+        } finally {
+            if (previousLoader != null) {
+                Thread.currentThread().setContextClassLoader(previousLoader);
+            }
         }
     }
 
@@ -173,8 +182,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
                 }
             }
 
-            ServerDataBindingCallback cb = getDataBindingCallback(qn, null,
-                                                                  DataBindingCallback.Mode.PARTS);
+            ServerDataBindingCallback cb = getDataBindingCallback(qn, null, DataBindingCallback.Mode.PARTS);
             opMap.put(qn, cb);
             if (!"".equals(cb.getRequestWrapperQName().getLocalPart())) {
                 opMap.put(cb.getRequestWrapperQName(), cb);
@@ -210,7 +218,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
 
         Object proxy = this.getServiceInstance();
 
-        return new SCAServerDataBindingCallback(opInfo, inout, meth, proxy);
+        return new SCAServerDataBindingCallback(opInfo, inout, meth, proxy, typeHelper);
     }
 
     protected Method getMethod(Class<?> serviceInterface, String operationName) {
@@ -228,7 +236,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
             }
         }
         throw new BuilderConfigException("no operation named " + operationName
-                                         + " found on service interface: " + serviceInterface.getName());
+            + " found on service interface: " + serviceInterface.getName());
     }
 
     public DataBindingCallback getFaultDataBindingCallback(ObjectMessageContext objContext) {

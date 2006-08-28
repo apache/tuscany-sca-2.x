@@ -34,9 +34,11 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl.Monitor;
+import org.xml.sax.InputSource;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -44,10 +46,9 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Scope;
-import org.xml.sax.InputSource;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl.Monitor;
 
 /**
  * Parses a <code>WebServiceBinding</code> entry in an assembly XML file
@@ -60,7 +61,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
 
     protected WSDLDefinitionRegistry wsdlRegistry;
 
-    @Constructor({"registry", "wsdlregistry" })
+    @Constructor({"registry", "wsdlregistry"})
     public WebServiceBindingLoader(@Autowire LoaderRegistry registry,
                                    @Autowire WSDLDefinitionRegistry theWsdlRegistry) {
         super(registry);
@@ -73,11 +74,12 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 Monitor monitor = new Monitor() {
                     public void readingWSDL(String namespace, URL location) {
                     }
+
                     public void cachingDefinition(String namespace, URL location) {
                     }
                 };
 
-                ((WSDLDefinitionRegistryImpl)wsdlRegistry).setMonitor(monitor);
+                ((WSDLDefinitionRegistryImpl) wsdlRegistry).setMonitor(monitor);
             } catch (javax.wsdl.WSDLException e) {
                 //do nothing
             }

@@ -20,24 +20,26 @@ package org.apache.tuscany.binding.celtix.io;
 
 import org.w3c.dom.Node;
 
+import commonj.sdo.helper.TypeHelper;
 import org.objectweb.celtix.bindings.DataReader;
 import org.objectweb.celtix.bindings.DataWriter;
 import org.objectweb.celtix.bus.bindings.AbstractWSDLOperationDataBindingCallback;
 import org.objectweb.celtix.bus.bindings.WSDLOperationInfo;
 import org.objectweb.celtix.context.ObjectMessageContext;
 
+
 /**
- *
  * @version $Rev$ $Date$
  */
 public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCallback {
 
     protected boolean hasInOut;
+    protected TypeHelper typeHelper;
 
-    public SCADataBindingCallback(WSDLOperationInfo op,
-                                  boolean inout) {
+    public SCADataBindingCallback(WSDLOperationInfo op, boolean inout, TypeHelper theTypeHelper) {
         super(op);
-        hasInOut = inout;
+        this.hasInOut = inout;
+        this.typeHelper = theTypeHelper;
     }
 
     public boolean hasInOut() {
@@ -52,10 +54,14 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
         return new Class<?>[]{Node.class};
     }
 
+    public TypeHelper getTypeHelper() {
+        return typeHelper;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> DataWriter<T> createWriter(Class<T> cls) {
         if (cls == Node.class) {
-            return (DataWriter<T>)new NodeDataWriter(this);
+            return (DataWriter<T>) new NodeDataWriter(this);
         }
         return null;
     }
@@ -63,7 +69,7 @@ public class SCADataBindingCallback extends AbstractWSDLOperationDataBindingCall
     @SuppressWarnings("unchecked")
     public <T> DataReader<T> createReader(Class<T> cls) {
         if (cls == Node.class) {
-            return (DataReader<T>)new NodeDataReader(this);
+            return (DataReader<T>) new NodeDataReader(this);
         }
         //REVISIT - need to figure out what to do with Faults
         return null;

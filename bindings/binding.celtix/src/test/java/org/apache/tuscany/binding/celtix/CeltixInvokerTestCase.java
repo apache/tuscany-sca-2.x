@@ -6,21 +6,19 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.binding.celtix;
 
 import java.net.URL;
-
-
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -31,11 +29,8 @@ import javax.xml.namespace.QName;
 import org.xml.sax.InputSource;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.binding.celtix.io.SCADataBindingCallback;
-
 import org.easymock.classextension.EasyMock;
-
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.bindings.BindingManager;
 import org.objectweb.celtix.bus.bindings.soap.SOAPBindingFactory;
@@ -53,12 +48,11 @@ public class CeltixInvokerTestCase extends TestCase {
         String operationName = "greetMe";
         ObjectMessageContextImpl inputCtx = new ObjectMessageContextImpl();
         CeltixInvoker invoker = createCeltixInvoker(wsdlLocation,
-                operationName, inputCtx);
+            operationName, inputCtx);
 
         Object[] args = new Object[1];
-        String inputvalue = new String("hello");
-        args[0] = inputvalue;
-        Object result = invoker.invokeTarget(args);
+        args[0] = new String("hello");
+        invoker.invokeTarget(args);
 
         // Check the input object after processing is correct
         // Should be no change for input if only IN parameters involved
@@ -72,7 +66,7 @@ public class CeltixInvokerTestCase extends TestCase {
         String operationName = "greetMe";
         ObjectMessageContextImpl inputCtx = new ObjectMessageContextImpl();
         CeltixInvoker invoker = createCeltixInvoker(wsdlLocation,
-                operationName, inputCtx);
+            operationName, inputCtx);
 
         Object[] args = new Object[1];
         String inputvalue = new String("hello");
@@ -90,29 +84,27 @@ public class CeltixInvokerTestCase extends TestCase {
     // NOTE: For convenience this method presumes the soap service name is
     // SOAPService and port name is SoapPort
     private CeltixInvoker createCeltixInvoker(String wsdlLocation,
-            String operationName, ObjectMessageContextImpl inputCtx)
+                                              String operationName,
+                                              ObjectMessageContextImpl inputCtx)
         throws Exception {
-        
+
         // Make following call to return a mocked SOAPClientBinding:
         // bus.getBindingManager().getBindingFactory(bindingId).createClientBinding(reference)
         SOAPClientBinding clientBinding = EasyMock
-                .createMock(SOAPClientBinding.class);
+            .createMock(SOAPClientBinding.class);
         clientBinding.createObjectContext();
         EasyMock.expectLastCall().andReturn(inputCtx);
         clientBinding.invoke(EasyMock.isA(ObjectMessageContextImpl.class),
-                EasyMock.isA(SCADataBindingCallback.class));
+            EasyMock.isA(SCADataBindingCallback.class));
         EasyMock.expectLastCall().andReturn(new ObjectMessageContextImpl());
         EasyMock.replay(clientBinding);
 
-        SOAPBindingFactory bindingFactory = EasyMock
-                .createNiceMock(SOAPBindingFactory.class);
-        bindingFactory.createClientBinding(EasyMock
-                .isA(EndpointReferenceType.class));
+        SOAPBindingFactory bindingFactory = EasyMock.createNiceMock(SOAPBindingFactory.class);
+        bindingFactory.createClientBinding(EasyMock.isA(EndpointReferenceType.class));
         EasyMock.expectLastCall().andReturn(clientBinding);
         EasyMock.replay(bindingFactory);
 
-        BindingManager bindingManager = EasyMock
-                .createNiceMock(BindingManager.class);
+        BindingManager bindingManager = EasyMock.createNiceMock(BindingManager.class);
         String bindingId = "http://schemas.xmlsoap.org/wsdl/soap/";
         bindingManager.getBindingFactory(bindingId);
         EasyMock.expectLastCall().andReturn(bindingFactory);
@@ -132,13 +124,11 @@ public class CeltixInvokerTestCase extends TestCase {
         reader.setFeature("javax.wsdl.verbose", false);
         InputSource input = new InputSource(url.openStream());
         Definition wsdlDef = reader.readWSDL(url.toString(), input);
-        Service wsdlService = wsdlDef.getService(new QName(
-                "http://objectweb.org/hello_world_soap_http", "SOAPService"));
+        QName qName = new QName("http://objectweb.org/hello_world_soap_http", "SOAPService");
+        Service wsdlService = wsdlDef.getService(qName);
         Port port = wsdlService.getPort("SoapPort");
 
-        CeltixInvoker invoker = new CeltixInvoker(operationName, bus, port,
-                wsdlService, wsdlDef);
-        return invoker;
+        return new CeltixInvoker(operationName, bus, port, wsdlService, wsdlDef, null);
     }
 
 }
