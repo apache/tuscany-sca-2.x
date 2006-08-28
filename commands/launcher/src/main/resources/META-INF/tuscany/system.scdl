@@ -57,7 +57,7 @@
     </component>
 
     <!-- Introspector and IntrospectionRegistry -->
-    <component name="introspector">
+    <component name="interfaceProcessorRegistry">
         <system:implementation.system class="org.apache.tuscany.core.implementation.IntrospectionRegistryImpl"/>
     </component>
 

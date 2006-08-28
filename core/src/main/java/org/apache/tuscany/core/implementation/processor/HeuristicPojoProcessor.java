@@ -49,7 +49,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import org.apache.tuscany.core.idl.java.IllegalCallbackException;
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;

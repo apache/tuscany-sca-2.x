@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
@@ -36,7 +37,6 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.ServiceContract;
 
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospector;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
@@ -47,10 +47,10 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  */
 public class ReferenceProcessor extends ImplementationProcessorSupport {
 
-    private InterfaceJavaIntrospector implService;
+    private JavaInterfaceProcessorRegistry regsitry;
 
-    public ReferenceProcessor(@Autowire InterfaceJavaIntrospector implService) {
-        this.implService = implService;
+    public ReferenceProcessor(@Autowire JavaInterfaceProcessorRegistry registry) {
+        this.regsitry = registry;
     }
 
     public void visitMethod(CompositeComponent<?> parent, Method method,
@@ -91,7 +91,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setName(name);
         ServiceContract contract;
         try {
-            contract = implService.introspect(method.getParameterTypes()[0]);
+            contract = regsitry.introspect(method.getParameterTypes()[0]);
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }
@@ -138,7 +138,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         reference.setName(name);
         ServiceContract contract;
         try {
-            contract = implService.introspect(field.getType());
+            contract = regsitry.introspect(field.getType());
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }

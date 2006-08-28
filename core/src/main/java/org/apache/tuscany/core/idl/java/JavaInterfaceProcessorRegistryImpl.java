@@ -32,6 +32,9 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.OverloadedOperationException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessor;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
@@ -39,11 +42,25 @@ import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
 /**
- * Basic implementation of an InterfaceJavaIntrospector.
+ * Default implementation of an InterfaceJavaIntrospector.
  *
  * @version $Rev$ $Date$
  */
-public class InterfaceJavaIntrospectorImpl implements InterfaceJavaIntrospector {
+public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcessorRegistry {
+
+    private List<JavaInterfaceProcessor> processors = new ArrayList<JavaInterfaceProcessor>();
+
+    public JavaInterfaceProcessorRegistryImpl() {
+    }
+
+    public void registerProcessor(JavaInterfaceProcessor processor) {
+        processors.add(processor);
+    }
+
+    public void unregisterProcessor(JavaInterfaceProcessor processor) {
+        processors.remove(processor);
+    }
+
     public <T> JavaServiceContract introspect(Class<T> type) throws InvalidServiceContractException {
         Class<?> callbackClass = null;
         Callback callback = type.getAnnotation(Callback.class);
@@ -83,6 +100,9 @@ public class InterfaceJavaIntrospectorImpl implements InterfaceJavaIntrospector 
                 contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
             }
         }
+        for (JavaInterfaceProcessor processor : processors) {
+            processor.visitInterface(type, contract);
+        }
         return contract;
     }
 
@@ -116,4 +136,5 @@ public class InterfaceJavaIntrospectorImpl implements InterfaceJavaIntrospector 
         }
         return operations;
     }
+
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,30 +6,27 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
--->
-<!--
-    Configuration for Java IDL support.
-    
-    $Rev$ $Date$
--->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.launcher.InterfaceJava">
+ * under the License.
+ */
+package org.apache.tuscany.spi.idl.java;
 
-    <component name="interfaceJava.interfaceProcessorRegistry">
-        <system:implementation.system class="org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl"/>
-    </component>
-    <component name="interfaceJava.loader">
-        <system:implementation.system class="org.apache.tuscany.core.idl.java.InterfaceJavaLoader"/>
-    </component>
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
- </composite>
+/**
+ * Implementations introspect metadata on a Java interface, populating the corresponding {@link JavaServiceContract}
+ *
+ * @version $Rev$ $Date$
+ */
+public interface JavaInterfaceProcessor {
+
+    void visitInterface(Class<?> clazz, JavaServiceContract contract) throws InvalidServiceContractException;
+
+}

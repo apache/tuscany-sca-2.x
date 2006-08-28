@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -27,7 +27,7 @@ import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
 public class ImplementationProcessorServiceUniqueTestCase extends TestCase {
 
     private ImplementationProcessorService service =
-        new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl());
+        new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl());
 
     public void testUniquess1() throws Exception {
         Class[] classes = new Class[2];

@@ -31,6 +31,8 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -45,13 +47,13 @@ import org.apache.tuscany.spi.model.InteractionScope;
 public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
     public static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
 
-    private final InterfaceJavaIntrospector introspector;
+    private final JavaInterfaceProcessorRegistry interfaceRegsitry;
 
-    @Constructor({"registry", "introspector"})
+    @Constructor({"registry", "interfaceRegsitry"})
     public InterfaceJavaLoader(@Autowire LoaderRegistry registry,
-                               @Autowire InterfaceJavaIntrospector introspector) {
+                               @Autowire JavaInterfaceProcessorRegistry interfaceRegistry) {
         super(registry);
-        this.introspector = introspector;
+        this.interfaceRegsitry = interfaceRegistry;
     }
 
     public QName getXMLType() {
@@ -81,7 +83,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
 
         JavaServiceContract serviceContract;
         try {
-            serviceContract = introspector.introspect(interfaceClass, callbackClass);
+            serviceContract = interfaceRegsitry.introspect(interfaceClass, callbackClass);
         } catch (InvalidServiceContractException e) {
             LoaderException le = new LoaderException(e);
             le.setIdentifier(interfaceClass.getName());

@@ -22,15 +22,14 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.ServiceContract;
 
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -90,7 +89,8 @@ public class ServiceProcessorTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        processor = new ServiceProcessor(new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl()));
+        JavaInterfaceProcessorRegistryImpl registry = new JavaInterfaceProcessorRegistryImpl();
+        processor = new ServiceProcessor(new ImplementationProcessorServiceImpl(registry));
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
     }
 

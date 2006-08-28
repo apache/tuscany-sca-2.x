@@ -36,8 +36,9 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import org.apache.tuscany.core.idl.java.IllegalCallbackException;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospector;
-import org.apache.tuscany.core.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
 /**
@@ -47,17 +48,17 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
  */
 public class ImplementationProcessorServiceImpl implements ImplementationProcessorService {
 
-    private InterfaceJavaIntrospector introspector;
+    private JavaInterfaceProcessorRegistry registry;
 
-    public ImplementationProcessorServiceImpl(@Autowire InterfaceJavaIntrospector introspector) {
-        this.introspector = introspector;
+    public ImplementationProcessorServiceImpl(@Autowire JavaInterfaceProcessorRegistry registry) {
+        this.registry = registry;
     }
 
     public JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException {
         JavaMappedService service = new JavaMappedService();
         service.setName(getBaseName(interfaze));
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
-        ServiceContract<?> contract = introspector.introspect(interfaze);
+        ServiceContract<?> contract = registry.introspect(interfaze);
         service.setServiceContract(contract);
         return service;
     }

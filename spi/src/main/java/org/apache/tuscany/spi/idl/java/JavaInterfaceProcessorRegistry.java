@@ -6,34 +6,34 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.core.idl.java;
-
-import java.lang.reflect.Type;
-
-import org.apache.tuscany.spi.model.ServiceContract;
+package org.apache.tuscany.spi.idl.java;
 
 /**
- * Represents a service contract specified using a Java interface
+ * A registry of {@link JavaInterfaceProcessor}s. Interface processors update a service contract definition based on a
+ * Java interface
  *
  * @version $Rev$ $Date$
  */
-public class JavaServiceContract extends ServiceContract<Type> {
+public interface JavaInterfaceProcessorRegistry extends InterfaceJavaIntrospector {
 
-    public JavaServiceContract() {
-    }
+    /**
+     * Registers the given processor
+     */
+    void registerProcessor(JavaInterfaceProcessor processor);
 
-    public JavaServiceContract(Class<?> interfaceClass) {
-        super(interfaceClass);
-    }
+    /**
+     * Deregisters the given processor
+     */
+    void unregisterProcessor(JavaInterfaceProcessor processor);
 
 }

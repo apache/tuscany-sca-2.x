@@ -30,11 +30,10 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.implementation.java.Introspector;
-
-import org.apache.tuscany.host.MonitorFactory;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
@@ -42,20 +41,22 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
+import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
+import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.MonitorProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
-import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -71,14 +72,12 @@ import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.loader.ComponentLoader;
 import org.apache.tuscany.core.loader.ComponentTypeElementLoader;
 import org.apache.tuscany.core.loader.IncludeLoader;
-import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospector;
 import org.apache.tuscany.core.loader.LoaderRegistryImpl;
 import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.loader.StringParserPropertyFactory;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on the individual methods for how the
@@ -135,7 +134,7 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
     public Deployer createDeployer() {
         ScopeRegistry scopeRegistry = createScopeRegistry(new WorkContextImpl());
         Builder builder = createBuilder(scopeRegistry);
-        InterfaceJavaIntrospector interfaceIntrospector = new InterfaceJavaIntrospectorImpl();
+        JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new StringParserPropertyFactory(), introspector);
         Connector connector = createConnector();
@@ -173,16 +172,17 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
 
         // register component type loaders
         loaderRegistry.registerLoader(SystemImplementation.class,
-                                      new SystemComponentTypeLoader(introspector));
+            new SystemComponentTypeLoader(introspector));
         loaderRegistry.registerLoader(SystemCompositeImplementation.class,
-                                      new SystemCompositeComponentTypeLoader(loaderRegistry));
+            new SystemCompositeComponentTypeLoader(loaderRegistry));
 
         // register element loaders
         registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));
         registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
         registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, null));
         registerLoader(loaderRegistry, new IncludeLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry, new InterfaceJavaIntrospectorImpl()));
+        registerLoader(loaderRegistry,
+            new InterfaceJavaLoader(loaderRegistry, new JavaInterfaceProcessorRegistryImpl()));
         registerLoader(loaderRegistry, new PropertyLoader(loaderRegistry));
         registerLoader(loaderRegistry, new ReferenceLoader(loaderRegistry));
         registerLoader(loaderRegistry, new ServiceLoader(loaderRegistry));
@@ -196,8 +196,8 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
      *
      * @return a new Introspector
      */
-    public Introspector createIntrospector(InterfaceJavaIntrospector interfaceIntrospector) {
-        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(interfaceIntrospector);
+    public Introspector createIntrospector(JavaInterfaceProcessorRegistry registry) {
+        ImplementationProcessorService service = new ImplementationProcessorServiceImpl(registry);
         IntrospectionRegistryImpl introspectionRegistry =
             new IntrospectionRegistryImpl(monitorFactory.getMonitor(IntrospectionRegistryImpl.Monitor.class));
         introspectionRegistry.registerProcessor(new ConstructorProcessor(service));
@@ -205,7 +205,7 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
         introspectionRegistry.registerProcessor(new InitProcessor());
         introspectionRegistry.registerProcessor(new ScopeProcessor());
         introspectionRegistry.registerProcessor(new PropertyProcessor(service));
-        introspectionRegistry.registerProcessor(new ReferenceProcessor(interfaceIntrospector));
+        introspectionRegistry.registerProcessor(new ReferenceProcessor(registry));
         introspectionRegistry.registerProcessor(new ServiceProcessor(service));
         introspectionRegistry.registerProcessor(new HeuristicPojoProcessor(service));
         introspectionRegistry.registerProcessor(new MonitorProcessor(monitorFactory, service));

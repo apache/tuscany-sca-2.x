@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.InterfaceJavaIntrospectorImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -57,7 +57,7 @@ public class HeuristicAndPropertyTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         ImplementationProcessorServiceImpl service =
-            new ImplementationProcessorServiceImpl(new InterfaceJavaIntrospectorImpl());
+            new ImplementationProcessorServiceImpl(new JavaInterfaceProcessorRegistryImpl());
         propertyProcessor = new PropertyProcessor(service);
         heuristicProcessor = new HeuristicPojoProcessor(service);
     }

@@ -35,21 +35,25 @@ public @interface DataType {
 
     /**
      * Returns the unique name of the data binding
+     * @return the unique name of the data binding
      */
     String name();
 
     /**
-     * @return Type of the logical data type
+     * Returns the logical data type
+     * @return the logical data type
      */
     Class logicalType() default Object.class;
 
     /**
-     * @return Type of the physical data type
+     * Returns the physical data type
+     * @return the physical data type
      */
     Class physicalType() default Object.class;
 
     /**
-     * @return Context
+     * Returns an array of extensibility elements
+     * @return an array of extensibility elements
      */
     DataContext[] context() default {};
 
