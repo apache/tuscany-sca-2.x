@@ -61,11 +61,9 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
 
     protected WSDLDefinitionRegistry wsdlRegistry;
 
-    @Constructor({"registry", "wsdlregistry"})
-    public WebServiceBindingLoader(@Autowire LoaderRegistry registry,
-                                   @Autowire WSDLDefinitionRegistry theWsdlRegistry) {
+    @Constructor({"registry"})
+    public WebServiceBindingLoader(@Autowire LoaderRegistry registry) {
         super(registry);
-        this.wsdlRegistry = theWsdlRegistry;
 
         //FIXME:  this is a  hack, WSDLDefinitionRegistry should not be created here
         if (wsdlRegistry == null) {
