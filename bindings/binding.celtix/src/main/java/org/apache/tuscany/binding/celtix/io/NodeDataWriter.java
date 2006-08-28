@@ -18,28 +18,35 @@
  */
 package org.apache.tuscany.binding.celtix.io;
 
-
+import java.util.List;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.DefaultHandler;
-//import commonj.sdo.DataObject;
-//import commonj.sdo.Property;
-//import commonj.sdo.helper.TypeHelper;
-//import commonj.sdo.helper.XSDHelper;
 
-//import org.apache.tuscany.databinding.sdo.SDOXMLHelper;
-//import org.apache.tuscany.sdo.helper.DataFactoryImpl;
-//import org.apache.tuscany.sdo.helper.XMLHelperImpl;
-//import org.apache.tuscany.sdo.helper.XSDHelperImpl;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+
+import commonj.sdo.DataObject;
+import commonj.sdo.Property;
+import commonj.sdo.Type;
+import commonj.sdo.helper.DataFactory;
+import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XMLHelper;
+import commonj.sdo.helper.XSDHelper;
+import org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.objectweb.celtix.bindings.DataWriter;
 import org.objectweb.celtix.context.ObjectMessageContext;
 
 public class NodeDataWriter implements DataWriter<Node> {
-    SCADataBindingCallback callback;
+    private static final String XML_NS = "http://www.w3.org/2000/xmlns/";
+    private SCADataBindingCallback callback;
 
     public NodeDataWriter(SCADataBindingCallback cb) {
         callback = cb;
@@ -50,37 +57,23 @@ public class NodeDataWriter implements DataWriter<Node> {
     }
 
     public void write(Object obj, QName elName, Node output) {
-        Document doc = output.getOwnerDocument();
-        if (doc == null && output instanceof Document) {
-            doc = (Document)output;
-        }
+        boolean isWrapped = false;
 
-        Element newEl = doc.createElementNS("anyuri", elName.getLocalPart());
-        output.appendChild(newEl);
+        XMLDocument document = toXMLDocument(callback.getTypeHelper(), new Object[]{obj}, elName, isWrapped);
+        // HACK: [rfeng] We should use the transformer in an interceptor
+        XMLDocument2XMLStreamReader transformer = new XMLDocument2XMLStreamReader();
+        XMLStreamReader reader = transformer.transform(document, null);
 
-        /*
-        byte bytes[] = SDOXMLHelper.toXMLBytes(
-            callback.getTypeHelper(),
-            new Object[] {obj},
-            elName,
-            false);
-        ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setNamespaceAware(true);
         try {
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(bin, new NodeContentHandler(output));
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new WebServiceException(e);
+            //CeltixFire supports Stax, we should not need to do following anymore.
+            readDocElements(output, reader, true, null);
+        } catch (XMLStreamException e) {
+            throw new InvocationRuntimeException(e.getMessage());
         }
-        */
-
     }
 
-    public void writeWrapper(ObjectMessageContext objCtx, boolean isOutbound, Node nd) {
-/*
+    public void writeWrapper(ObjectMessageContext objCtx, boolean isOutbound, Node output) {
+        boolean isWrapped = true;
         QName wrapperName;
         if (isOutbound) {
             wrapperName = callback.getOperationInfo().getResponseWrapperQName();
@@ -88,39 +81,21 @@ public class NodeDataWriter implements DataWriter<Node> {
             wrapperName = callback.getOperationInfo().getRequestWrapperQName();
         }
 
-        DataObject obj = toWrappedDataObject(callback.getTypeHelper(),
-            isOutbound ? objCtx.getReturn() : null,
-            objCtx.getMessageObjects(),
-            wrapperName);
+        XMLDocument document = toXMLDocument(
+            callback.getTypeHelper(), objCtx.getMessageObjects(), wrapperName, isWrapped);
+        // HACK: [rfeng] We should use the transformer in an interceptor
+        XMLDocument2XMLStreamReader transformer = new XMLDocument2XMLStreamReader();
+        XMLStreamReader reader = transformer.transform(document, null);
 
         try {
-            //REVISIT - this is SUCH a hack.   SDO needs to be able to
-            //go directly to some formats other than streams.  They are working
-            //on stax, but not there yet.
-            RawByteArrayOutputStream bout = new RawByteArrayOutputStream();
-            new XMLHelperImpl(callback.getTypeHelper()).save(obj,
-                wrapperName.getNamespaceURI(),
-                wrapperName.getLocalPart(),
-                bout);
-            ByteArrayInputStream bin = new ByteArrayInputStream(bout.getBytes(),
-                                                                0,
-                                                                bout.size());
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setNamespaceAware(true);
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(bin, new NodeContentHandler(nd));
-        } catch (IOException e) {
-            throw new WebServiceException(e);
-        } catch (ParserConfigurationException e) {
-            throw new WebServiceException(e);
-        } catch (SAXException e) {
-            throw new WebServiceException(e);
+            readDocElements(output, reader, true, null);
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+            throw new InvocationRuntimeException(e.getMessage());
         }
-*/
     }
-
 /*
-    public static DataObject toWrappedDataObject(TypeHelper typeHelper,
+    private DataObject toWrappedDataObject(TypeHelper typeHelper,
                                                  Object ret,
                                                  Object[] os,
                                                  QName typeQN) {
@@ -145,38 +120,203 @@ public class NodeDataWriter implements DataWriter<Node> {
         return dataObject;
     }
 */
-    class NodeContentHandler extends DefaultHandler {
-        Node current;
-        Document doc;
 
-        public NodeContentHandler(Node nd) {
-            doc = nd.getOwnerDocument();
-            if (doc == null && nd instanceof Document) {
-                doc = (Document)nd;
+    /**
+     * Convert objects to typed DataObject
+     *
+     * @param typeHelper
+     * @param os
+     * @param elementQName
+     * @param isWrapped
+     * @return the DataObject
+     */
+    private static XMLDocument toXMLDocument(TypeHelper typeHelper,
+                                             Object[] os,
+                                             QName elementQName,
+                                             boolean isWrapped) {
+        XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
+
+        Property property = xsdHelper.getGlobalProperty(
+            elementQName.getNamespaceURI(), elementQName.getLocalPart(), true);
+        if (null == property) {
+            throw new InvocationRuntimeException(
+                "Type '" + elementQName.toString() + "' not found in registered SDO types.");
+        }
+        DataObject dataObject;
+        if (isWrapped) {
+            DataFactory dataFactory = SDOUtil.createDataFactory(typeHelper);
+            dataObject = dataFactory.create(property.getType());
+            List ips = dataObject.getInstanceProperties();
+            for (int i = 0; i < ips.size(); i++) {
+                dataObject.set(i, os[i]);
             }
-            current = nd;
-        }
-
-        public void characters(char[] ch, int start, int length) {
-            current.appendChild(doc.createTextNode(new String(ch, start, length)));
-        }
-
-        public void startElement(String uri, String localName,
-                                 String qName, Attributes attributes) {
-            Element newEl = doc.createElementNS(uri, qName);
-            current.appendChild(newEl);
-            current = newEl;
-            for (int x = 0; x < attributes.getLength(); x++) {
-                newEl.setAttributeNS(attributes.getURI(x),
-                                     attributes.getQName(x),
-                                     attributes.getValue(x));
+        } else {
+            Object value = os[0];
+            Type type = property.getType();
+            if (!type.isDataType()) {
+                dataObject = (DataObject) value;
+            } else {
+                dataObject = SDOUtil.createDataTypeWrapper(type, value);
             }
         }
 
-        public void endElement(String uri, String localName, String qName) {
-            current = current.getParentNode();
+        XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+        return xmlHelper.createDocument(dataObject, elementQName.getNamespaceURI(), elementQName.getLocalPart());
+
+    }
+
+    //REVISIT: We should not need to do following anymore with CeltixFire.
+    //As CeltixFire supports stax directly.
+
+    /**
+     * @param parent
+     * @param reader
+     * @param repairing
+     * @param stopAt:   stop at the specified element
+     * @throws XMLStreamException
+     */
+    public static void readDocElements(Node parent, XMLStreamReader reader, boolean repairing, QName stopAt)
+        throws XMLStreamException {
+        Document doc = getDocument(parent);
+
+        int event = reader.getEventType();
+
+        while (reader.hasNext()) {
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (startElement(parent, reader, repairing, stopAt) == null) {
+                        return;
+                    }
+                    if (parent instanceof Document && stopAt != null) {
+                        if (reader.hasNext()) {
+                            reader.next();
+                        }
+                        return;
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    return;
+                case XMLStreamConstants.NAMESPACE:
+                    break;
+                case XMLStreamConstants.ATTRIBUTE:
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    if (parent != null) {
+                        parent.appendChild(doc.createTextNode(reader.getText()));
+                    }
+
+                    break;
+                case XMLStreamConstants.COMMENT:
+                    if (parent != null) {
+                        parent.appendChild(doc.createComment(reader.getText()));
+                    }
+
+                    break;
+                case XMLStreamConstants.CDATA:
+                    parent.appendChild(doc.createCDATASection(reader.getText()));
+
+                    break;
+                case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                    parent.appendChild(doc.createProcessingInstruction(reader.getPITarget(), reader.getPIData()));
+
+                    break;
+                case XMLStreamConstants.ENTITY_REFERENCE:
+                    parent.appendChild(doc.createProcessingInstruction(reader.getPITarget(), reader.getPIData()));
+
+                    break;
+                default:
+                    break;
+            }
+
+            if (reader.hasNext()) {
+                event = reader.next();
+            }
         }
     }
 
+    private static Document getDocument(Node parent) {
+        return (parent instanceof Document) ? (Document) parent : parent.getOwnerDocument();
+    }
 
+    /**
+     * @param parent
+     * @param reader
+     * @return
+     * @throws XMLStreamException
+     */
+    private static Element startElement(Node parent, XMLStreamReader reader, boolean repairing, QName stopAt)
+        throws XMLStreamException {
+        Document doc = getDocument(parent);
+
+        if (stopAt != null && stopAt.getNamespaceURI().equals(reader.getNamespaceURI())
+            && stopAt.getLocalPart().equals(reader.getLocalName())) {
+            return null;
+        }
+
+        Element e = doc.createElementNS(reader.getNamespaceURI(), reader.getLocalName());
+
+        if (reader.getPrefix() != null) {
+            e.setPrefix(reader.getPrefix());
+        }
+
+        parent.appendChild(e);
+
+        for (int ns = 0; ns < reader.getNamespaceCount(); ns++) {
+            String uri = reader.getNamespaceURI(ns);
+            String prefix = reader.getNamespacePrefix(ns);
+
+            declare(e, uri, prefix);
+        }
+
+        for (int att = 0; att < reader.getAttributeCount(); att++) {
+            String name = reader.getAttributeLocalName(att);
+            String prefix = reader.getAttributePrefix(att);
+            if (prefix != null && prefix.length() > 0) {
+                name = prefix + ":" + name;
+            }
+
+            Attr attr = doc.createAttributeNS(reader.getAttributeNamespace(att), name);
+            attr.setValue(reader.getAttributeValue(att));
+            e.setAttributeNode(attr);
+        }
+
+        reader.next();
+
+        readDocElements(e, reader, repairing, stopAt);
+
+        if (repairing && !isDeclared(e, reader.getNamespaceURI(), reader.getPrefix())) {
+            declare(e, reader.getNamespaceURI(), reader.getPrefix());
+        }
+
+        return e;
+    }
+
+    private static void declare(Element node, String uri, String prefix) {
+        if (prefix != null && prefix.length() > 0) {
+            node.setAttributeNS(XML_NS, "xmlns:" + prefix, uri);
+        } else {
+            if (uri != null /* && uri.length() > 0 */) {
+                node.setAttributeNS(XML_NS, "xmlns", uri);
+            }
+        }
+    }
+
+    private static boolean isDeclared(Element e, String namespaceURI, String prefix) {
+        Attr att;
+        if (prefix != null && prefix.length() > 0) {
+            att = e.getAttributeNodeNS(XML_NS, "xmlns:" + prefix);
+        } else {
+            att = e.getAttributeNode("xmlns");
+        }
+
+        if (att != null && att.getNodeValue().equals(namespaceURI)) {
+            return true;
+        }
+
+        if (e.getParentNode() instanceof Element) {
+            return isDeclared((Element) e.getParentNode(), namespaceURI, prefix);
+        }
+
+        return false;
+    }
 }

@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.binding.celtix;
 
@@ -28,15 +28,14 @@ import javax.xml.namespace.QName;
 
 import org.xml.sax.InputSource;
 
-import junit.framework.TestCase;
-
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
+import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
 import org.objectweb.celtix.Bus;
 import org.objectweb.celtix.bindings.BindingManager;
-import org.objectweb.celtix.bindings.DataBindingCallback;
+import static org.objectweb.celtix.bindings.DataBindingCallback.Mode.PARTS;
 import org.objectweb.celtix.bindings.ServerBindingEndpointCallback;
 import org.objectweb.celtix.bindings.ServerDataBindingCallback;
 import org.objectweb.celtix.bus.bindings.soap.SOAPBindingFactory;
@@ -55,12 +54,11 @@ public class CeltixServiceTestCase extends TestCase {
         QName operationName = new QName("greetMe");
         ObjectMessageContextImpl ctx = new ObjectMessageContextImpl();
         ctx.setMessageObjects(new String[]{"Celtix"});
-        ServerDataBindingCallback callback1 = celtixService.getDataBindingCallback(operationName,
-                ctx, DataBindingCallback.Mode.PARTS);
+        ServerDataBindingCallback callback1 = celtixService.getDataBindingCallback(operationName, ctx, PARTS);
         assertNotNull(callback1);
 
         callback1.invoke(ctx);
-        Object rtn = (String)ctx.getReturn();
+        Object rtn = (String) ctx.getReturn();
         assertEquals("Hello Celtix", rtn);
 
     }
@@ -72,11 +70,11 @@ public class CeltixServiceTestCase extends TestCase {
         serverBinding.activate();
         EasyMock.replay(serverBinding);
 
-        ServerBindingEndpointCallback callback = EasyMock.createNiceMock(ServerBindingEndpointCallback.class);
+        //ServerBindingEndpointCallback callback = EasyMock.createNiceMock(ServerBindingEndpointCallback.class);
 
         SOAPBindingFactory bindingFactory = EasyMock.createNiceMock(SOAPBindingFactory.class);
         bindingFactory.createServerBinding(EasyMock.isA(EndpointReferenceType.class),
-                                           EasyMock.isA(ServerBindingEndpointCallback.class));
+            EasyMock.isA(ServerBindingEndpointCallback.class));
         EasyMock.expectLastCall().andReturn(serverBinding);
         EasyMock.replay(bindingFactory);
 
@@ -102,7 +100,7 @@ public class CeltixServiceTestCase extends TestCase {
         InputSource input = new InputSource(url.openStream());
         Definition wsdlDef = reader.readWSDL(url.toString(), input);
         Service wsdlService = wsdlDef.getService(new QName("http://objectweb.org/hello_world_soap_http",
-                                                           "SOAPService"));
+            "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
 
         WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
@@ -119,7 +117,7 @@ public class CeltixServiceTestCase extends TestCase {
         EasyMock.expectLastCall().andReturn(new GreeterImpl()).anyTimes();
         EasyMock.replay(wireService);
 
-        CeltixService celtixService = new CeltixService("name", Greeter.class, null, wireService, wsBinding, bus);
+        CeltixService celtixService = new CeltixService("name", Greeter.class, null, wireService, wsBinding, bus, null);
         //Not sure how InboundWire is set to CeltixService, is the following way correct?
         celtixService.setInboundWire(inboundWire);
         celtixService.start();

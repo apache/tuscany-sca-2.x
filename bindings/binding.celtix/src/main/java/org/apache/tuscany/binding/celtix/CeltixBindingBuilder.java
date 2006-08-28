@@ -21,7 +21,6 @@ package org.apache.tuscany.binding.celtix;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -29,11 +28,13 @@ import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
+import commonj.sdo.helper.TypeHelper;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.objectweb.celtix.Bus;
 
 /**
- * Builds a {@link Service} or {@link org.apache.tuscany.spi.component.Reference} configured
- * with the Celtix binding
+ * Builds a {@link org.apache.tuscany.spi.component.Service} or {@link org.apache.tuscany.spi.component.Reference}
+ * configured with the Celtix binding
  *
  * @version $Rev$ $Date$
  */
@@ -45,6 +46,10 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
                            BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
+        TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
+        if (typeHelper == null) {
+            typeHelper = TypeHelper.INSTANCE;
+        }
         if (bus == null) {
             bus = getBus(wsBinding.getWSDLDefinitionRegistry());
         }
@@ -54,13 +59,18 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             parent,
             wireService,
             wsBinding,
-            bus);
+            bus,
+            typeHelper);
     }
 
     public SCAObject build(CompositeComponent parent,
                            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+        TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
+        if (typeHelper == null) {
+            typeHelper = TypeHelper.INSTANCE;
+        }
         if (bus == null) {
             bus = getBus(wsBinding.getWSDLDefinitionRegistry());
         }
@@ -70,7 +80,8 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             parent,
             wireService,
             wsBinding,
-            bus);
+            bus,
+            typeHelper);
     }
 
     protected Class<WebServiceBinding> getBindingType() {

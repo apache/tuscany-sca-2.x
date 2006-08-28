@@ -58,9 +58,24 @@
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.tuscany.idl</groupId>
             <artifactId>wsdl</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.tuscany.databinding</groupId>
+            <artifactId>databinding-sdo</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>tuscany-sdo-impl</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
