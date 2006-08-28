@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -39,12 +40,12 @@ import org.apache.tuscany.core.wire.OutboundAutowire;
 public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOutboundWire<T> {
     private String referenceName;
     private Class<T> businessInterface;
-    private AutowireComponent<?> context;
+    private AutowireComponent<?> component;
 
-    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> context) {
+    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component) {
         this.referenceName = referenceName;
         this.businessInterface = businessInterface;
-        this.context = context;
+        this.component = component;
     }
 
     public String getReferenceName() {
@@ -63,7 +64,13 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     }
 
     public T getTargetService() throws TargetException {
-        return context.resolveInstance(businessInterface);
+        T service = component.resolveInstance(businessInterface);
+        if (service == null) {
+            TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
+            e.setIdentifier(businessInterface.getName());
+            throw e;
+        }
+        return service;
     }
 
     public Class<T> getBusinessInterface() {

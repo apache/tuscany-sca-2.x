@@ -21,21 +21,22 @@ package org.apache.tuscany.runtime.webapp;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import org.apache.tuscany.spi.host.ServletHost;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.host.ServletHost;
+
+import org.apache.tuscany.host.servlet.ServletRequestInjector;
+
 /**
- * ServletHost impl that forwards requests to registered servlets
- * TODO: TUSCANY-649, move this and ServletLauncherListener to a new webapp-host module
+ * ServletHost impl that forwards requests to registered servlets TODO: TUSCANY-649, move this and
+ * ServletLauncherListener to a new webapp-host module
  */
 @Service(ServletHost.class)
 public class ServletHostImpl implements ServletHost, ServletRequestInjector {
@@ -51,17 +52,19 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector {
     }
 
     public void service(ServletRequest req, ServletResponse resp) throws ServletException, IOException {
+        assert req instanceof HttpServletRequest : "implementation only supports HttpServletRequest";
         String path = ((HttpServletRequest) req).getPathInfo();
         Servlet servlet = servlets.get(path);
         if (servlet == null) {
-            throw new IllegalStateException("no servlet registered for path: " + path);
+            throw new IllegalStateException("No servlet registered for path: " + path);
         }
         servlet.service(req, resp);
     }
 
     public void registerMapping(String path, Servlet servlet) {
+
         if (servlets.containsKey(path)) {
-            throw new IllegalStateException("servlet already registered at path: " + path);
+            throw new IllegalStateException("Servlet already registered at path: " + path);
         }
         servlets.put(path, servlet);
     }

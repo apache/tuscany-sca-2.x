@@ -113,11 +113,26 @@
     <component name="servletHost">
         <system:implementation.system class="org.apache.tuscany.runtime.webapp.ServletHostImpl"/>
     </component>
-    
-    <!-- TODO: Hack the Axis extension in  -->
-    <include name="binding.axis2" scdlLocation="binding.axis2.scdl"/>
+
+    <component name="policyBuilderRegistry">
+         <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
+    </component>
+
+    <component name="propertyFactory">
+        <system:implementation.system class="org.apache.tuscany.core.loader.StringParserPropertyFactory"/>
+    </component>
+
+    <component name="artifactRepository">
+            <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+            <!-- this value needs to change to a correct one -->
+            <property name = "repository">.</property>
+    </component>
+
+
+    <!-- TODO: Hack the Axis extension in -->
+    <include name="binding.axis2" scdlLocation="binding.axis2.scdl"/> 
     
     <!-- TODO: Hack the SDO DataBinding extension in -->
-    <include name="databinding.sdo" scdlLocation="databinding.sdo.scdl"/>
+    <include name="databinding.sdo" scdlLocation="databinding.sdo.scdl"/>  
 
 </composite>

@@ -23,27 +23,27 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
- * LauncherImpl for runtime environment that loads info from servlet context params.
- * This listener manages one top-level LauncherImpl (and hence one Tuscany runtime context)
- * per servlet context; the lifecycle of that runtime corresponds to the the lifecycle of the
- * associated servlet context.
- *
+ * LauncherImpl for runtime environment that loads info from servlet context params. This listener manages one top-level
+ * LauncherImpl (and hence one Tuscany runtime context) per servlet context; the lifecycle of that runtime corresponds
+ * to the the lifecycle of the associated servlet context.
+ * <p/>
  * Web application code may obtain the top-level CompositeContext via
- * {@link org.osoa.sca.CurrentCompositeContext#getContext()}.  If that returns null,
- * it is likely the runtime failed to boot: the context param {@link LAUNCHER_THROWABLE_ATTRIBUTE}
+ * {@link org.osoa.sca.CurrentCompositeContext#getContext()}.
+ * If that returns null, it is likely the runtime failed to boot: the context param {@link LAUNCHER_THROWABLE_ATTRIBUTE}
  * will contain a {@link Throwable} with diagnostic information.
  *
  * @version $$Rev$$ $$Date$$
@@ -59,9 +59,8 @@ public class ServletLauncherListener implements ServletContextListener {
      */
     public static final String APPLICATION_SCDL_PATH_PARAM = "applicationScdlPath";
     /**
-     * Servlet context-param name for system monitoring level.
-     * Supported values are the names of statics defined in java.util.logging.Level.
-     * If absent, no monitoring will take place.
+     * Servlet context-param name for system monitoring level. Supported values are the names of statics defined in
+     * java.util.logging.Level. If absent, no monitoring will take place.
      */
     public static final String SYSTEM_MONITORING_PARAM = "tuscanyMonitoringLevel";
 
@@ -71,16 +70,17 @@ public class ServletLauncherListener implements ServletContextListener {
     public static final String DEFAULT_APPLICATION_SCDL_PATH = "/WEB-INF/default.scdl";
 
     /**
-     * Context attribute to which an Exception or Error object will be bound to if the
-     * launcher fails to initialize.
+     * Context attribute to which an Exception or Error object will be bound to if the launcher fails to initialize.
      */
     public static final String LAUNCHER_THROWABLE_ATTRIBUTE = "Tuscany.LauncherImpl.Throwable";
 
     /**
-     * Context attribute to which the active {@link LauncherImpl} managing the runtime for this
-     * servlet context is stored.
+     * Context attribute to which the active {@link LauncherImpl} managing the runtime for this servlet context is
+     * stored.
      */
     private static final String LAUNCHER_ATTRIBUTE = "Tuscany.LauncherImpl";
+
+    private URL testSystemScdl;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ServletContext servletContext = servletContextEvent.getServletContext();
@@ -111,10 +111,21 @@ public class ServletLauncherListener implements ServletContextListener {
         CompositeContextImpl context;
 
         try {
-            URL systemScdl = getClass().getResource(systemScdlPath);
+            URL systemScdl;
+            if (testSystemScdl != null) {
+                systemScdl = testSystemScdl;
+            } else {
+                systemScdl = getClass().getResource(systemScdlPath);
+                if (systemScdl == null) {
+                    MissingResourceException e = new MissingResourceException("System SCDL not found");
+                    e.setIdentifier(systemScdlPath);
+                    throw e;
+                }
+            }
             CompositeComponent<?> rt = launcher.bootRuntime(systemScdl, mf);
             servletContext.setAttribute(LAUNCHER_ATTRIBUTE, launcher);
-            servletContext.setAttribute("Tuscany.ServletRequestInjector", rt.getChild("servletHost").getServiceInstance());
+            servletContext
+                .setAttribute("Tuscany.ServletRequestInjector", rt.getChild("servletHost").getServiceInstance());
 
             URL appScdl;
             if (applicationScdlPath.startsWith("/")) {
@@ -143,7 +154,7 @@ public class ServletLauncherListener implements ServletContextListener {
 
         } catch (Throwable t) {
             servletContext.setAttribute(LAUNCHER_THROWABLE_ATTRIBUTE, t);
-            t.printStackTrace();
+            servletContext.log("Error launching Tuscany Runtime", t);
         }
     }
 
@@ -155,6 +166,13 @@ public class ServletLauncherListener implements ServletContextListener {
         if (launcher != null) {
             launcher.shutdownRuntime();
         }
+    }
+
+    /**
+     * Sets the system SCDL url for testing
+     */
+    void setTestSystemScdl(URL testSystemScdl) {
+        this.testSystemScdl = testSystemScdl;
     }
 
     private MonitorFactory getMonitorFactory(String loggingLevel) {

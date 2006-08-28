@@ -34,6 +34,7 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  */
 public class TuscanyServlet extends HttpServlet {
 
+    public static final String TUSCANY_SERVLET_REQUEST_INJECTOR = "Tuscany.ServletRequestInjector";
     private static final long serialVersionUID = 1L;
 
     private ServletRequestInjector servletRequestInjector;
@@ -42,7 +43,7 @@ public class TuscanyServlet extends HttpServlet {
     public void init(ServletConfig config) {
         ServletContext servletContext = config.getServletContext();
         this.servletRequestInjector =
-            (ServletRequestInjector) servletContext.getAttribute("Tuscany.ServletRequestInjector");
+            (ServletRequestInjector) servletContext.getAttribute(TUSCANY_SERVLET_REQUEST_INJECTOR);
     }
 
     @Override
