@@ -57,7 +57,7 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
     private ComponentLoader loader;
 
     public void testEmptyComponent() throws LoaderException, XMLStreamException {
-        mockReader.expects(once()).method("getName").will(returnValue(COMPONENT));
+        mockReader.expects(atLeastOnce()).method("getName").will(returnValue(COMPONENT));
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
             .with(ANYTHING, ANYTHING)
             .will(onConsecutiveCalls(returnValue(NAME), returnValue(null)));
@@ -71,7 +71,7 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
     }
 
     public void testInitValue20() throws LoaderException, XMLStreamException {
-        mockReader.expects(once()).method("getName").will(returnValue(COMPONENT));
+        mockReader.expects(atLeastOnce()).method("getName").will(returnValue(COMPONENT));
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
             .with(ANYTHING, ANYTHING)
             .will(onConsecutiveCalls(returnValue(NAME), returnValue("20")));
