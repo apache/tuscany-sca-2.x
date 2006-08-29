@@ -66,8 +66,8 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         List<DataType<Type>> faultTypes = baseInt.getFaultTypes();
         assertEquals(1, faultTypes.size());
         DataType<Type> fault0 = faultTypes.get(0);
-        assertEquals(RuntimeException.class, fault0.getPhysical());
-        assertEquals(RuntimeException.class, fault0.getLogical());
+        assertEquals(IllegalArgumentException.class, fault0.getPhysical());
+        assertEquals(IllegalArgumentException.class, fault0.getLogical());
     }
 
     public void testUnregister() throws Exception {
@@ -89,7 +89,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
     }
 
     private static interface Base {
-        int baseInt(int param) throws RuntimeException;
+        int baseInt(int param) throws IllegalArgumentException;
     }
 
     private static interface Simple extends Base {
