@@ -151,11 +151,25 @@
             <url>http://www.ibiblio.org/maven2</url>
         </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>apache-snapshot-repository</id>
             <name>Apache SNAPSHOT Repository</name>
             <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+
+        <!-- used for Plexus plugins -->
+        <pluginRepository>
+            <id>codehaus-snapshot</id>
+            <name>Codehaus Snapshot Repository</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
