@@ -6,7 +6,9 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/SpringSCA.xsd">
 
-    <bean id="testBean" class="org.apache.tuscany.container.spring.mock.TestBeanImpl">
+    <bean id="testBean" class="org.apache.tuscany.container.spring.mock.TestBeanImpl" lazy-init="true">
+        <property name="bean" ref="testReference"/>
     </bean>
+    <!-- <sca:reference name="testReference" type="org.apache.tuscany.container.spring.mock.TestReference"/> -->
 
 </beans>

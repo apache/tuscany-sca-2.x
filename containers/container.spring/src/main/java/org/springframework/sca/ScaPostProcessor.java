@@ -16,6 +16,8 @@
 
 package org.springframework.sca;
 
+import java.beans.PropertyDescriptor;
+
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
@@ -87,6 +89,11 @@ public class ScaPostProcessor implements InstantiationAwareBeanPostProcessor, Ap
             //
         }
         return true;
+    }
+
+    public PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean,
+                                                    String beanName) throws BeansException {
+        return pvs;
     }
 
     public PropertyValues postProcessPropertyValues(PropertyValues propertyValues, Object object, String string)

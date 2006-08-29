@@ -24,6 +24,7 @@ import org.osoa.sca.annotations.Scope;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Implementation;
@@ -46,6 +47,7 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected WorkScheduler workScheduler;
     protected WorkContext workContext;
     protected PolicyBuilderRegistry policyBuilderRegistry;
+    protected Connector connector;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -75,6 +77,11 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setPolicyBuilderRegistry(PolicyBuilderRegistry registry) {
         policyBuilderRegistry = registry;
+    }
+
+    @Autowire
+    public void setConnector(Connector connector) {
+        this.connector = connector;
     }
 
     @Init(eager = true)

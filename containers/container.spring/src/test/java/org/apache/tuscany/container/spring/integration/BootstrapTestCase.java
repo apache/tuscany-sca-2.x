@@ -26,6 +26,7 @@ public class BootstrapTestCase extends Bootstrapper {
         Service service = (Service) comp.getChild("fooService");
         TestBean bean = (TestBean) service.getServiceInstance();
         bean.echo("foo");
+        bean.getBean().echo("foo");
     }
 
     protected void setUp() throws Exception {

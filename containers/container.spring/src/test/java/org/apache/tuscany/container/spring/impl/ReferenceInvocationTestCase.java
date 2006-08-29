@@ -56,7 +56,9 @@ public class ReferenceInvocationTestCase extends TestCase {
 
     private AbstractApplicationContext createSpringContext() {
         StaticApplicationContext beanFactory = new StaticApplicationContext();
-        BeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
+        RootBeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
+        //REVIEW we need to figure out how to handle eager init components
+        definition.setLazyInit(true);
         RuntimeBeanReference ref = new RuntimeBeanReference("bar");
         PropertyValue val = new PropertyValue("bean", ref);
         definition.getPropertyValues().addPropertyValue(val);

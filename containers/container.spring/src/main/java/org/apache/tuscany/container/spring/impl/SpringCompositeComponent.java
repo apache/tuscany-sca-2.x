@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.builder.Connector;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -66,10 +67,13 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
     public SpringCompositeComponent(String name,
                                     AbstractApplicationContext springContext,
                                     CompositeComponent parent,
-                                    Map<String, Document> propertyValues) {
+                                    Map<String, Document> propertyValues
+    ) {
         super(name, parent, propertyValues);
         SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
+        // REVIEW we need to refresh to pick up the parent but this is not optimal
+        springContext.refresh();
         this.springContext = springContext;
         // Spring wires itself
         this.selfWiring = true;
@@ -106,32 +110,28 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
     private class SCAApplicationContext implements ApplicationContext {
 
         public Object getBean(String name) throws BeansException {
-            SCAObject context = (SCAObject) children.get(name); // keep cast due to compiler error
-            if (context == null) {
-                throw new NoSuchBeanDefinitionException("SCA service not found [" + name + "]");
-            }
-            return context.getServiceInstance();
+            return getBean(name, null);
         }
 
         @SuppressWarnings("unchecked")
         public Object getBean(String name, Class requiredType) throws BeansException {
-            SCAObject context = (SCAObject) children.get(name);   // keep cast due to compiler error
-            if (context == null) {
+            SCAObject object = (SCAObject) children.get(name);   // keep cast due to compiler error
+            if (object == null) {
                 throw new NoSuchBeanDefinitionException("SCA service not found [" + name + "]");
             }
             Class<?> type;
-            if (context instanceof Reference) {
-                type = ((Reference) context).getInterface();
-            } else if (context instanceof Service) {
-                type = ((Service) context).getInterface();
+            if (object instanceof Reference) {
+                type = ((Reference) object).getInterface();
+            } else if (object instanceof Service) {
+                type = ((Service) object).getInterface();
             } else {
-                throw new AssertionError("Illegal context type [" + name + "]");
+                throw new AssertionError("Illegal object type [" + name + "]");
             }
             if (requiredType != null && requiredType.isAssignableFrom(type)) {
                 // need null check since Spring may pass in a null
                 throw new BeanNotOfRequiredTypeException(name, requiredType, type);
             }
-            return context.getServiceInstance();
+            return object.getServiceInstance();
         }
 
         public boolean containsBean(String name) {
