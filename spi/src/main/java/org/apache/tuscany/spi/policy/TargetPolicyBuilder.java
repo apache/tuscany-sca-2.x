@@ -30,6 +30,11 @@ import org.apache.tuscany.spi.wire.InboundWire;
  */
 public interface TargetPolicyBuilder {
 
+    /**
+     * @param serviceDefinition
+     * @param wire
+     * @throws BuilderException
+     */
     void build(ServiceDefinition serviceDefinition, InboundWire<?> wire) throws BuilderException;
 
 }

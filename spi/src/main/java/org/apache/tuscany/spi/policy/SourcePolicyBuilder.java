@@ -30,6 +30,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public interface SourcePolicyBuilder {
 
-    void build(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException;
+    /**
+     * @param referenceDefinition
+     * @param wire
+     * @throws BuilderException
+     */
+    void build(ReferenceDefinition referenceDefinition, OutboundWire<?> wire) throws BuilderException;
 
 }
