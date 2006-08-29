@@ -32,18 +32,18 @@ import javax.xml.namespace.QName;
 import org.xml.sax.InputSource;
 
 import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
+import commonj.sdo.helper.TypeHelper;
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
-
-import commonj.sdo.helper.TypeHelper;
 
 public class Axis2ServiceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
-if(true) return ;       
+        if (true) return;
         TestServletHost tomcatHost = new TestServletHost();
         Axis2Service axis2Service = createAxis2Service("testWebAppName", "testServiceName", tomcatHost);
         axis2Service.start();
@@ -82,12 +82,19 @@ if(true) return ;
 
         //Create a mocked InboundWire, make the call of ServiceExtension.getInterface() returns a Class
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
-        inboundWire.getBusinessInterface();
-        EasyMock.expectLastCall().andReturn(Greeter.class).anyTimes();
+        JavaServiceContract contract = new JavaServiceContract(Greeter.class);
+        EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 
         Axis2Service<Greeter> axis2Service =
-            new Axis2Service<Greeter>(serviceName, Greeter.class, null, wireService, wsBinding, tomcatHost, null, TypeHelper.INSTANCE);
+            new Axis2Service<Greeter>(serviceName,
+                Greeter.class,
+                null,
+                wireService,
+                wsBinding,
+                tomcatHost,
+                null,
+                TypeHelper.INSTANCE);
         axis2Service.setInboundWire(inboundWire);
 
         return axis2Service;

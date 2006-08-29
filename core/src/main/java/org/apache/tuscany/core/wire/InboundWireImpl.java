@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -38,7 +39,7 @@ import org.apache.tuscany.core.util.MethodHashMap;
 public class InboundWireImpl<T> implements InboundWire<T> {
 
     private String serviceName;
-    private Class[] businessInterfaces;
+    private ServiceContract serviceContract;
     private OutboundWire<T> targetWire;
     private String callbackReferenceName;
     private Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
@@ -52,21 +53,16 @@ public class InboundWireImpl<T> implements InboundWire<T> {
         throw new TargetException("Target wire not optimized");
     }
 
-    public void setBusinessInterface(Class interfaze) {
-        businessInterfaces = new Class[]{interfaze};
+    public ServiceContract getServiceContract() {
+        return serviceContract;
     }
 
-    @SuppressWarnings("unchecked")
-    public Class<T> getBusinessInterface() {
-        return businessInterfaces[0];
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
     }
 
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
-    }
-
-    public Class[] getImplementedInterfaces() {
-        return businessInterfaces;
     }
 
     public String getServiceName() {

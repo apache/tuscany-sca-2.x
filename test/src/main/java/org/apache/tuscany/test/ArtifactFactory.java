@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 /**
  * A factory for creating runtime artifacts to facilitate testing without directly instantiating core
@@ -66,7 +67,8 @@ public final class ArtifactFactory {
      */
     public static <T> InboundWire<T> createInboundWire(String serviceName, Class<T> interfaze) {
         InboundWire<T> wire = new InboundWireImpl<T>();
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(createInboundChains(interfaze));
         return wire;
@@ -84,7 +86,8 @@ public final class ArtifactFactory {
         OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createOutboundChains(interfaze));
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         return wire;
     }
 

@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import java.util.Collections;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 
@@ -53,7 +54,9 @@ public class GetServiceByNameTestCase extends TestCase {
         final JavaAtomicComponent<?> component = new JavaAtomicComponent("target", configuration, null);
 
         InboundWire wire = createMock(InboundWire.class);
-        expect(wire.getBusinessInterface()).andReturn(Target.class);
+
+        JavaServiceContract contract = new JavaServiceContract(Target.class);
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract).anyTimes();
         expect(wire.getServiceName()).andReturn("Target");
         expect(wire.getInvocationChains()).andReturn(Collections.emptyMap());
         expect(wire.getCallbackReferenceName()).andReturn(null);

@@ -76,10 +76,6 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
         return referenceInterface;
     }
 
-    public void setInterface(Class<T> referenceInterface) {
-        this.referenceInterface = referenceInterface;
-    }
-
     public T getServiceInstance() throws TargetException {
         return wireService.createProxy(inboundWire);
     }

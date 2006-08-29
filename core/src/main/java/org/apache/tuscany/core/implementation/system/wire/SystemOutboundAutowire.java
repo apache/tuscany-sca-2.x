@@ -25,6 +25,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -39,13 +41,21 @@ import org.apache.tuscany.core.wire.OutboundAutowire;
  */
 public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOutboundWire<T> {
     private String referenceName;
-    private Class<T> businessInterface;
+    private ServiceContract serviceContract;
     private AutowireComponent<?> component;
 
     public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component) {
         this.referenceName = referenceName;
-        this.businessInterface = businessInterface;
         this.component = component;
+        serviceContract = new JavaServiceContract(businessInterface);
+    }
+
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
     }
 
     public String getReferenceName() {
@@ -64,25 +74,14 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     }
 
     public T getTargetService() throws TargetException {
-        T service = component.resolveInstance(businessInterface);
+        Class interfaze = serviceContract.getInterfaceClass();
+        T service = (T) component.resolveInstance(interfaze);
         if (service == null) {
             TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
-            e.setIdentifier(businessInterface.getName());
+            e.setIdentifier(interfaze.getName());
             throw e;
         }
         return service;
-    }
-
-    public Class<T> getBusinessInterface() {
-        return businessInterface;
-    }
-
-    public void setBusinessInterface(Class<T> businessInterface) {
-        this.businessInterface = businessInterface;
-    }
-
-    public Class[] getImplementedInterfaces() {
-        return new Class[0];
     }
 
     @SuppressWarnings("unchecked")

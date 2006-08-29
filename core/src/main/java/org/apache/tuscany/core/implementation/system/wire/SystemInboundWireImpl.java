@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -34,26 +36,33 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
     private String serviceName;
-    private Class<T> businessInterface;
+    private ServiceContract serviceContract;
     private Component<?> component;
     private SystemOutboundWire<T> wire;
 
     /**
      * Constructs a new inbound wire
      *
-     * @param serviceName       the name of the service the inbound wire represents
-     * @param businessInterface the service interface
-     * @param target            the target context the wire is connected to
+     * @param serviceName the name of the service the inbound wire represents
+     * @param interfaze   the service interface
+     * @param target      the target context the wire is connected to
      */
-    public SystemInboundWireImpl(String serviceName, Class<T> businessInterface, Component<?> target) {
+    public SystemInboundWireImpl(String serviceName, Class<T> interfaze, Component<?> target) {
         this.serviceName = serviceName;
-        this.businessInterface = businessInterface;
         this.component = target;
+        serviceContract = new JavaServiceContract(interfaze);
     }
 
-    public SystemInboundWireImpl(String serviceName, Class<T> businessInterface) {
-        this.serviceName = serviceName;
-        this.businessInterface = businessInterface;
+    public SystemInboundWireImpl(String serviceName, Class<T> interfaze) {
+        this(serviceName, interfaze, null);
+    }
+
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
     }
 
     public String getServiceName() {
@@ -70,14 +79,6 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
             return wire.getTargetService();
         }
         return (T) component.getServiceInstance(serviceName);
-    }
-
-    public Class<T> getBusinessInterface() {
-        return businessInterface;
-    }
-
-    public void setBusinessInterface(Class<T> businessInterface) {
-        this.businessInterface = businessInterface;
     }
 
     public Class[] getImplementedInterfaces() {

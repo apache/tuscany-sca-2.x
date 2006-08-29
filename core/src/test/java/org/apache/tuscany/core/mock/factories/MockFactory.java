@@ -28,6 +28,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -154,7 +155,8 @@ public final class MockFactory {
     public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
         InboundWire<T> wire = new InboundWireImpl<T>();
         wire.setServiceName(serviceName);
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         wire.addInvocationChains(createInboundChains(interfaze));
         return wire;
     }

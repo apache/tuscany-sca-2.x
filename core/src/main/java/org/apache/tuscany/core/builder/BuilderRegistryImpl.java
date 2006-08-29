@@ -165,7 +165,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         SCAObject object = bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);
         // create wires for the component
         if (wireService != null) {
-            wireService.createWires((Reference) object);
+            wireService.createWires((Reference) object, boundReferenceDefinition.getServiceContract());
         }
         return object;
     }
@@ -191,7 +191,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                            DeploymentContext deploymentContext) {
         SCAObject object = bindlessBuilder.build(parent, referenceDefinition, deploymentContext);
         if (wireService != null) {
-            wireService.createWires((Reference)object);
+            wireService.createWires((Reference)object, referenceDefinition.getServiceContract());
         }
         return object;
     }

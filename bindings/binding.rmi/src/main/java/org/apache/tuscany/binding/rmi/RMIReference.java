@@ -45,7 +45,6 @@ public class RMIReference<T> extends ReferenceExtension<T> {
                         String svcName,
                         Class<T> service) {
         super(name, service, parent, wireService);
-        setInterface(service);
         this.host = host;
         this.port = port;
         this.svcName = svcName;
