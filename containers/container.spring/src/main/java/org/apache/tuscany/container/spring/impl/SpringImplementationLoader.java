@@ -50,7 +50,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -59,6 +58,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
@@ -123,7 +123,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                         }
                         implementation.getComponentType().getServices().put(service.getName(), service);
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
-                        throw new UnsupportedOperationException();
+                        BoundReferenceDefinition reference =
+                            (BoundReferenceDefinition) registry.load(parent, reader, deploymentContext);
+                        implementation.getComponentType().getReferences().put(reference.getName(), reference);
                     }
                     break;
                 case END_ELEMENT:

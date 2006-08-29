@@ -24,6 +24,10 @@
                 <interface.java class="org.apache.tuscany.container.spring.mock.TestBean"/>
                 <reference>testBean</reference>
             </service>
+            <reference name="testReference">
+                <interface.java class="org.apache.tuscany.container.spring.mock.TestBean"/>
+                <binding.test/>
+            </reference>
         </implementation.spring>
     </component>
 
