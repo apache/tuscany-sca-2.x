@@ -30,6 +30,7 @@ import org.xml.sax.InputSource;
 
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -107,8 +108,8 @@ public class CeltixServiceTestCase extends TestCase {
 
         //Create mocked InboundWire, for ServiceExtension.getInterface()
         InboundWire<Greeter> inboundWire = EasyMock.createNiceMock(InboundWire.class);
-        inboundWire.getBusinessInterface();
-        EasyMock.expectLastCall().andReturn(Greeter.class).anyTimes();
+        JavaServiceContract contract = new JavaServiceContract(Greeter.class);
+        EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 
         //Create mocked WireService, for ServiceExtension.getServiceInstance()

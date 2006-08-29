@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -185,7 +186,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
     public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze) {
         OutboundWire<T> wire = new OutboundWireImpl<T>();
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         wire.setTargetName(targetName);
         wire.addInvocationChains(createInvocationChains(interfaze));
         return wire;

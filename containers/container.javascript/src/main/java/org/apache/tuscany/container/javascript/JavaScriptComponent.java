@@ -72,9 +72,10 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
                 //with weak typing (java.lang.Object) so that Rhino's call to the proxy succeeds.  Then
                 //within this interceptor proxy perform data mediations required to correctly call the 
                 //referenced service.                
-                JavaScriptReferenceProxy interceptingProxy = 
-                    new JavaScriptReferenceProxy(wire.getBusinessInterface(), 
-                                                 wireProxy, 
+                Class<?> businessInterface = wire.getServiceContract().getInterfaceClass();
+                JavaScriptReferenceProxy interceptingProxy =
+                    new JavaScriptReferenceProxy(businessInterface,
+                                                 wireProxy,
                                                  rhinoScript.createInstanceScope(context));
                 context.put(wire.getReferenceName(),  interceptingProxy.createProxy());
 

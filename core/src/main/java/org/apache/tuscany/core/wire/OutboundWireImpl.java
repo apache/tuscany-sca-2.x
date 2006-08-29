@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -39,7 +40,7 @@ import org.apache.tuscany.core.util.MethodHashMap;
  */
 public class OutboundWireImpl<T> implements OutboundWire<T> {
 
-    private Class<T>[] businessInterfaces;
+    private ServiceContract serviceContract;
     private Class<T>[] callbackInterfaces;
     private Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
     private Map<Method, InboundInvocationChain> callbackTargetChains = new MethodHashMap<InboundInvocationChain>();
@@ -48,7 +49,6 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
     private QualifiedName targetName;
     private InboundWire<T> targetWire;
 
-    @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
         if (targetWire != null) {
             // optimized, no interceptors or handlers on either end
@@ -57,21 +57,16 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         throw new TargetException("Target wire not optimized");
     }
 
-    @SuppressWarnings("unchecked")
-    public void setBusinessInterface(Class<T> interfaze) {
-        businessInterfaces = new Class[]{interfaze};
+    public ServiceContract getServiceContract() {
+        return serviceContract;
     }
 
-    public Class<T> getBusinessInterface() {
-        return businessInterfaces[0];
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
     }
 
     public void addInterface(Class<?> claz) {
         throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
-    }
-
-    public Class[] getImplementedInterfaces() {
-        return businessInterfaces;
     }
 
     @SuppressWarnings("unchecked")

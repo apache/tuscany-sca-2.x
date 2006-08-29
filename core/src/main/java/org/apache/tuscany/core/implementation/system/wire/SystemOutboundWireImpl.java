@@ -24,6 +24,8 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -36,13 +38,21 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
     private String referenceName;
     private QualifiedName targetName;
-    private Class<T> businessInterface;
+    private ServiceContract serviceContract;
     private SystemInboundWire<T> targetWire;
 
     public SystemOutboundWireImpl(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
         this.referenceName = referenceName;
         this.targetName = targetName;
-        this.businessInterface = businessInterface;
+        serviceContract = new JavaServiceContract(businessInterface);
+    }
+
+    public ServiceContract getServiceContract() {
+        return serviceContract;
+    }
+
+    public void setServiceContract(ServiceContract serviceContract) {
+        this.serviceContract = serviceContract;
     }
 
     public String getReferenceName() {
@@ -66,18 +76,6 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
             throw new TargetException("No target wire connected to source wire");
         }
         return targetWire.getTargetService();
-    }
-
-    public Class<T> getBusinessInterface() {
-        return businessInterface;
-    }
-
-    public void setBusinessInterface(Class<T> businessInterface) {
-        this.businessInterface = businessInterface;
-    }
-
-    public Class[] getImplementedInterfaces() {
-        return new Class[0];
     }
 
     @SuppressWarnings("unchecked")

@@ -68,7 +68,7 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
     }
 
     public Class<T> getInterface() {
-        return inboundWire.getBusinessInterface();
+        return (Class<T>)inboundWire.getServiceContract().getInterfaceClass();
     }
 
     public WireInvocationHandler getHandler() {

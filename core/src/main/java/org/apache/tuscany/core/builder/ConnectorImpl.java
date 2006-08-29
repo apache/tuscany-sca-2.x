@@ -312,7 +312,9 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
-            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
+            Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+            Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
+            if (!sourceInterface.isAssignableFrom(targetInterface)) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
@@ -320,7 +322,9 @@ public class ConnectorImpl implements Connector {
         } else if (target instanceof Reference) {
             InboundWire<T> targetWire = ((Reference) target).getInboundWire();
             assert targetWire != null;
-            if (!sourceWire.getBusinessInterface().isAssignableFrom(targetWire.getBusinessInterface())) {
+            Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+            Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
+            if (!sourceInterface.isAssignableFrom(targetInterface)) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());

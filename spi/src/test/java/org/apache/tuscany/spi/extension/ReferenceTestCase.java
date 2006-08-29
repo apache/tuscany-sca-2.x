@@ -41,13 +41,12 @@ import static org.easymock.EasyMock.replay;
 public class ReferenceTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        TestReference ref = new TestReference();
+        TestReference ref = new TestReference<Object>(Object.class);
         assertEquals(Scope.COMPOSITE, ref.getScope());
     }
 
     public void testSetGetInterface() throws Exception {
-        TestReference<TestReference> ref = new TestReference<TestReference>();
-        ref.setInterface(TestReference.class);
+        TestReference<TestReference> ref = new TestReference<TestReference>(TestReference.class);
         assertEquals(TestReference.class, ref.getInterface());
 
     }
@@ -72,15 +71,15 @@ public class ReferenceTestCase extends TestCase {
         replay(chain);
         replay(wire);
         replay(outboundWire);
-        TestReference<?> ref = new TestReference();
+        TestReference<?> ref = new TestReference<Object>(Object.class);
         ref.setInboundWire(wire);
         ref.setOutboundWire(outboundWire);
         ref.prepare();
     }
 
     private class TestReference<T> extends ReferenceExtension<T> {
-        public TestReference() {
-            super(null, null, null, null);
+        public TestReference(Class<T> clazz) {
+            super(null, clazz, null, null);
         }
 
         public TargetInvoker createTargetInvoker(Method operation) {

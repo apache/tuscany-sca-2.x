@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.wire;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * The base wire type used to connect references and services
@@ -32,25 +33,14 @@ public interface RuntimeWire<T> {
      */
     T getTargetService() throws TargetException;
 
-    /**
-     * Sets the primary interface type generated proxies implement
-     */
-    void setBusinessInterface(Class<T> interfaze);
+    ServiceContract getServiceContract();
 
-    /**
-     * Returns the primary interface type implemented by generated proxies
-     */
-    Class<T> getBusinessInterface();
+    void setServiceContract(ServiceContract contract);
 
     /**
      * Adds an interface type generated proxies implement
      */
     void addInterface(Class<?> claz);
-
-    /**
-     * Returns an array of all interfaces implemented by generated proxies
-     */
-    Class[] getImplementedInterfaces();
 
     /**
      * Returns true if the wire and all of its interceptors and handlers can be optimized

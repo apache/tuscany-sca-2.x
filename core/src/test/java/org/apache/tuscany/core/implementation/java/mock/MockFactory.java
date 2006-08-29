@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
@@ -264,7 +265,8 @@ public final class MockFactory {
                                                        MessageHandler headRequestHandler,
                                                        MessageHandler headResponseHandler) {
         InboundWire<T> wire = new InboundWireImpl<T>();
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(
             createInboundChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
@@ -280,7 +282,8 @@ public final class MockFactory {
         wire.setReferenceName(refName);
         wire.addInvocationChains(
             createOutboundChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         return wire;
     }
 
@@ -288,7 +291,8 @@ public final class MockFactory {
         OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createOutboundChains(interfaze));
-        wire.setBusinessInterface(interfaze);
+        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        wire.setServiceContract(contract);
         return wire;
     }
 

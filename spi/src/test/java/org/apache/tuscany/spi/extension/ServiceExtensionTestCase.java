@@ -18,12 +18,13 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
 /**
@@ -39,8 +40,8 @@ public class ServiceExtensionTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testSetGetInterface() throws Exception {
         InboundWire wire = createMock(InboundWire.class);
-        wire.getBusinessInterface();
-        expectLastCall().andReturn(getClass());
+        JavaServiceContract contract = new JavaServiceContract(getClass());
+        expect(wire.getServiceContract()).andReturn(contract);
         replay(wire);
         ServiceExtension<?> service = new ServiceExtension(null, null, null, null);
         service.setInboundWire(wire);

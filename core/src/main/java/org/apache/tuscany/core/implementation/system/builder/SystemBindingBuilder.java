@@ -18,6 +18,16 @@
  */
 package org.apache.tuscany.core.implementation.system.builder;
 
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.builder.BindingBuilder;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemReference;
 import org.apache.tuscany.core.implementation.system.component.SystemReferenceImpl;
@@ -29,15 +39,6 @@ import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.builder.BindingBuilder;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Creates {@link SystemService}s and {@link SystemReference}s by evaluating an assembly definition
@@ -49,7 +50,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
     public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
-        Class<Object> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
+        Class interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
         Component target = (Component) parent.getChild(targetName.getPartName());
         if (target == null) {
@@ -74,8 +75,8 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
         SystemReferenceImpl reference = new SystemReferenceImpl(boundReferenceDefinition.getName(), interfaze, parent);
         SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
-        OutboundWire<?> outboundWire =
-            new SystemOutboundAutowire(boundReferenceDefinition.getName(), interfaze, autowireComponent);
+        String refName = boundReferenceDefinition.getName();
+        OutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze, autowireComponent);
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);
         return reference;
