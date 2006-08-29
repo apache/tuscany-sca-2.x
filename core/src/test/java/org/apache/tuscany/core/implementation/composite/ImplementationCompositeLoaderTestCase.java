@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
@@ -27,6 +30,7 @@ import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 import org.osoa.sca.Version;
 
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 
@@ -40,14 +44,16 @@ public class ImplementationCompositeLoaderTestCase extends MockObjectTestCase {
     private ImplementationCompositeLoader loader;
     private Mock mockReader;
 
-    public void testName() throws LoaderException, XMLStreamException {
+    public void testName() throws LoaderException, XMLStreamException, MalformedURLException {
         String name = "foo";
         mockReader.expects(once()).method("getName").will(returnValue(IMPLEMENTATION_COMPOSITE));
         mockReader.expects(atLeastOnce()).method("getAttributeValue")
                 .with(ANYTHING, ANYTHING)
                 .will(returnValue(name));
         mockReader.expects(once()).method("next").will(returnValue(END_ELEMENT));
-        CompositeImplementation impl = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
+        URL scdlLocation = new URL("http://META-INF/sca/");
+        CompositeImplementation impl = loader.load(null, (XMLStreamReader) mockReader.proxy(),
+                new RootDeploymentContext(getClass().getClassLoader(), null, null, scdlLocation));
         assertEquals(name, impl.getName());
     }
 

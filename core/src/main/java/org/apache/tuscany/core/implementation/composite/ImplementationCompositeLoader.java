@@ -18,21 +18,22 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URL;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.Version;
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
  * Loader that handles an &lt;implementation.composite&gt; element.
@@ -41,7 +42,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
  */
 public class ImplementationCompositeLoader extends LoaderExtension<CompositeImplementation> {
     private static final QName IMPLEMENTATION_COMPOSITE =
-            new QName(Version.XML_NAMESPACE_1_0, "implementation.composite");
+        new QName(Version.XML_NAMESPACE_1_0, "implementation.composite");
 
     @Constructor({"registry"})
     public ImplementationCompositeLoader(@Autowire LoaderRegistry registry) {
@@ -59,8 +60,17 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
 
         assert IMPLEMENTATION_COMPOSITE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
+        String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
         CompositeImplementation impl = new CompositeImplementation();
         impl.setName(name);
+        URL scdlLocationURL;
+        try {
+            scdlLocationURL = new URL(deploymentContext.getScdlLocation(), scdlLocation);
+        } catch (Exception e) {
+            throw new LoaderException(e);
+        }
+        impl.setScdlLocation(scdlLocationURL);
+        impl.setClassLoader(deploymentContext.getClassLoader());
         LoaderUtil.skipToEndElement(reader);
         return impl;
     }
