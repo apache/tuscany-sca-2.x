@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URL;
+import java.net.MalformedURLException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 
 /**
@@ -61,17 +63,20 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
         assert IMPLEMENTATION_COMPOSITE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
+        LoaderUtil.skipToEndElement(reader);
+
         CompositeImplementation impl = new CompositeImplementation();
         impl.setName(name);
-        URL scdlLocationURL;
-        try {
-            scdlLocationURL = new URL(deploymentContext.getScdlLocation(), scdlLocation);
-        } catch (Exception e) {
-            throw new LoaderException(e);
+        if (scdlLocation != null) {
+            try {
+                impl.setScdlLocation(new URL(deploymentContext.getScdlLocation(), scdlLocation));
+            } catch (MalformedURLException e) {
+                InvalidValueException ive = new InvalidValueException(scdlLocation, e);
+                ive.setIdentifier(name);
+                throw ive;
+            }
         }
-        impl.setScdlLocation(scdlLocationURL);
         impl.setClassLoader(deploymentContext.getClassLoader());
-        LoaderUtil.skipToEndElement(reader);
         return impl;
     }
 }

@@ -51,6 +51,25 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         String name = "foo";
         expect(reader.getName()).andReturn(IMPLEMENTATION_COMPOSITE);
         expect(reader.getAttributeValue(null, "name")).andReturn(name);
+        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn(null);
+        expect(reader.next()).andReturn(END_ELEMENT);
+        replay(reader);
+
+        expect(context.getClassLoader()).andReturn(cl);
+        replay(context);
+
+        CompositeImplementation impl = loader.load(null, reader, context);
+        verify(reader);
+        verify(context);
+        assertEquals(name, impl.getName());
+        assertNull(impl.getScdlLocation());
+        assertSame(cl, impl.getClassLoader());
+    }
+
+    public void testWithScdlLocation() throws LoaderException, XMLStreamException, MalformedURLException {
+        String name = "foo";
+        expect(reader.getName()).andReturn(IMPLEMENTATION_COMPOSITE);
+        expect(reader.getAttributeValue(null, "name")).andReturn(name);
         expect(reader.getAttributeValue(null, "scdlLocation")).andReturn("bar.scdl");
         expect(reader.next()).andReturn(END_ELEMENT);
         replay(reader);
