@@ -20,8 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 
-import org.apache.tuscany.spi.host.RMIHost;
-import org.apache.tuscany.spi.host.RemoteServiceException;
+import org.apache.tuscany.host.rmi.RMIHost;
+import org.apache.tuscany.host.rmi.RMIHostException;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -80,7 +80,7 @@ public class RMIInvoker implements TargetInvoker {
                 // proxy = Naming.lookup(serviceURI);
             }
             return remoteMethod.invoke(proxy, (Object[]) payload);
-        } catch (RemoteServiceException e) {
+        } catch (RMIHostException e) {
             // the method we are passed must be accessible
             throw new AssertionError(e);
         } catch (IllegalAccessException e) {

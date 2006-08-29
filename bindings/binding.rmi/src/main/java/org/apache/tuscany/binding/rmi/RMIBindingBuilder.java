@@ -18,16 +18,15 @@ package org.apache.tuscany.binding.rmi;
 
 import java.rmi.Remote;
 
-import org.osoa.sca.annotations.Constructor;
-
+import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
-import org.apache.tuscany.spi.host.RMIHost;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.osoa.sca.annotations.Constructor;
 
 /**
  * Builds a Service or Reference for an RMI binding.
