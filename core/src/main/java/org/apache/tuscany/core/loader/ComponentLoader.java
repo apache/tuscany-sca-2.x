@@ -113,8 +113,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                         reader.next();
                         break;
                     case END_ELEMENT:
-                        if(reader.getName().equals(COMPONENT))
+                        if (reader.getName().equals(COMPONENT)) {
                             return componentDefinition;
+                        }
+                        break;
                 }
             }
         } catch (LoaderException e) {
