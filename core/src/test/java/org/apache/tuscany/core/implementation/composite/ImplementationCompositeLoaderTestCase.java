@@ -32,7 +32,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -43,6 +42,7 @@ import org.apache.tuscany.spi.model.CompositeImplementation;
 public class ImplementationCompositeLoaderTestCase extends TestCase {
     private static final QName IMPLEMENTATION_COMPOSITE = new QName(XML_NAMESPACE_1_0, "implementation.composite");
 
+    private ClassLoader cl;
     private ImplementationCompositeLoader loader;
     private XMLStreamReader reader;
     private DeploymentContext context;
@@ -54,16 +54,24 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         expect(reader.getAttributeValue(null, "scdlLocation")).andReturn("bar.scdl");
         expect(reader.next()).andReturn(END_ELEMENT);
         replay(reader);
+
+        expect(context.getScdlLocation()).andReturn(new URL("http://www.example.com/sca/base.scdl"));
+        expect(context.getClassLoader()).andReturn(cl);
+        replay(context);
+
         CompositeImplementation impl = loader.load(null, reader, context);
         verify(reader);
+        verify(context);
         assertEquals(name, impl.getName());
         assertEquals(new URL("http://www.example.com/sca/bar.scdl"), impl.getScdlLocation());
+        assertSame(cl, impl.getClassLoader());
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         loader = new ImplementationCompositeLoader(null);
         reader = createMock(XMLStreamReader.class);
-        context = new RootDeploymentContext(null, null, null, new URL("http://www.example.com/sca/base.scdl"));
+        context = createMock(DeploymentContext.class);
+        cl = getClass().getClassLoader();
     }
 }
