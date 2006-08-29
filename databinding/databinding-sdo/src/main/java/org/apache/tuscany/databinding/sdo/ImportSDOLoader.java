@@ -51,8 +51,7 @@ public class ImportSDOLoader extends LoaderExtension {
     public static final QName IMPORT_SDO = new QName(Version.XML_NAMESPACE_1_0, "import.sdo");
 
     @Constructor( { "registry" })
-    public ImportSDOLoader(@Autowire
-    LoaderRegistry registry) {
+    public ImportSDOLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
@@ -109,7 +108,7 @@ public class ImportSDOLoader extends LoaderExtension {
                     wsdlURL = uri.toURL();
                 }
                 wsdlURL = deploymentContext.getClassLoader().getResource(location);
-                if(null == wsdlURL){
+                if (null == wsdlURL) {
                     LoaderException loaderException = new LoaderException("WSDL location error");
                     loaderException.setResourceURI(location);
                     throw loaderException;
@@ -117,7 +116,7 @@ public class ImportSDOLoader extends LoaderExtension {
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
                     XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
-                    xsdHelper.define(xsdInputStream, null);
+                    xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
                 } finally {
                     xsdInputStream.close();
                 }
