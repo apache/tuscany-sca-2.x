@@ -32,7 +32,7 @@
     </component>
     
  <!--   <component name="binding.rmi.bindingInvoker">
-        <system:implementation.system class="org.apache.tuscany.binding.rmi.RMIInvoker"/>
+        <system:implementation.system class="org.apache.tuscany.binding.rmi.host.RMIInvoker"/>
     </component>
   -->
     

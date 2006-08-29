@@ -18,9 +18,9 @@ package org.apache.tuscany.binding.rmi;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
-import org.apache.tuscany.spi.host.RMIHost;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 

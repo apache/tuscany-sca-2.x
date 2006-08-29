@@ -20,16 +20,16 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.host.RMIHost;
-import org.apache.tuscany.spi.host.RemoteServiceException;
-import org.apache.tuscany.spi.wire.WireService;
-
 import net.sf.cglib.asm.ClassWriter;
 import net.sf.cglib.asm.Constants;
 import net.sf.cglib.asm.Type;
 import net.sf.cglib.proxy.Enhancer;
+
+import org.apache.tuscany.host.rmi.RMIHost;
+import org.apache.tuscany.host.rmi.RMIHostException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
@@ -77,15 +77,15 @@ public class RMIService<T extends Remote> extends ServiceExtension<T> {
                 getPort(port),
                 rmiProxy);
             // bindRmiService(uri,rmiProxy);
-        } catch (RemoteServiceException e) {
-            throw new NoRemoteServiceException(e);
+        } catch (RMIHostException e) {
+            throw new NoRemoteServiceException(e); 
         }
     }
 
     public void stop() {
         try {
             rmiHost.unregisterService(serviceName);
-        } catch (RemoteServiceException e) {
+        } catch (RMIHostException e) {
             throw new NoRemoteServiceException(e.getMessage());
         }
         super.stop();
@@ -128,9 +128,10 @@ public class RMIService<T extends Remote> extends ServiceExtension<T> {
         cw.visit(Constants.V1_5, Constants.ACC_PUBLIC + Constants.ACC_ABSTRACT + Constants.ACC_INTERFACE,
             interfazeName.replace('.', '/'), "java/lang/Object", new String[]{"java/rmi/Remote"}, simpleName + ".java");
 
-        StringBuffer argsAndReturn = new StringBuffer("(");
+        StringBuffer argsAndReturn = null;
         Method[] methods = serviceInterface.getMethods();
         for (Method method : methods) {
+            argsAndReturn = new StringBuffer("(");
             Class[] paramTypes = method.getParameterTypes();
             Class returnType = method.getReturnType();
 

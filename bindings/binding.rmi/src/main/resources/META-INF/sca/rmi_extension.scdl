@@ -38,7 +38,7 @@
     
     <!-- RMI Host service -->
     <component name="rmiHost">
-        <system:implementation.system class="org.apache.tuscany.binding.rmi.RMIHostImpl"/>
+        <system:implementation.system class="org.apache.tuscany.binding.rmi.host.RMIHostImpl"/>
     </component>
     
 </composite>
