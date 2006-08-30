@@ -32,6 +32,7 @@ public class Operation<T> {
     private final List<DataType<T>> parameterTypes;
     private final List<DataType<T>> faultTypes;
     private final boolean nonBlocking;
+    private final String dataBinding;
 
     /**
      * Construct an operation specifying all characteristics.
@@ -46,12 +47,14 @@ public class Operation<T> {
                      DataType<T> returnType,
                      List<DataType<T>> parameterTypes,
                      List<DataType<T>> faultTypes,
-                     boolean nonBlocking) {
+                     boolean nonBlocking,
+                     String dataBinding) {
         this.name = name;
         this.returnType = returnType;
         this.parameterTypes = parameterTypes;
         this.faultTypes = faultTypes;
         this.nonBlocking = nonBlocking;
+        this.dataBinding = dataBinding;
     }
 
     /**
@@ -94,5 +97,9 @@ public class Operation<T> {
      */
     public boolean isNonBlocking() {
         return nonBlocking;
+    }
+
+    public String getDataBinding() {
+        return dataBinding;
     }
 }
