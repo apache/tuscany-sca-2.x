@@ -38,6 +38,7 @@ import javax.xml.namespace.QName;
  */
 public class WSDLLoaderImpl implements WSDLLoader {
     private final WSDLFactory wsdlFactory;
+
     private final ExtensionRegistry registry;
 
     public WSDLLoaderImpl() throws WSDLException {
@@ -74,8 +75,8 @@ public class WSDLLoaderImpl implements WSDLLoader {
         Definition definition = reader.readWSDL(location.getLocation().toString());
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
-            throw new WSDLException(WSDLException.CONFIGURATION_ERROR,
-                                    namespace + " != " + definition.getTargetNamespace());
+            throw new WSDLException(WSDLException.CONFIGURATION_ERROR, namespace + " != "
+                    + definition.getTargetNamespace());
         }
         return definition;
     }
@@ -121,8 +122,7 @@ public class WSDLLoaderImpl implements WSDLLoader {
         String[] parts = fragment.split("\\s");
         for (String part : parts) {
             if (part.startsWith("wsdl.interface(") && part.charAt(part.length() - 1) == ')') {
-                part = part.substring(15, part.length() - 1);
-                return part;
+                return part.substring(15, part.length() - 1);
             }
         }
         throw new InvalidFragmentException(fragment);
@@ -130,8 +130,7 @@ public class WSDLLoaderImpl implements WSDLLoader {
 
     public String getNamespace(URI iri) throws UnresolveableResourceException {
         if (!iri.isAbsolute()) {
-            UnresolveableResourceException ure =
-                new UnresolveableResourceException("no namespace defined in " + iri);
+            UnresolveableResourceException ure = new UnresolveableResourceException("no namespace defined in " + iri);
             ure.setIdentifier(iri.toString());
             throw ure;
         }
