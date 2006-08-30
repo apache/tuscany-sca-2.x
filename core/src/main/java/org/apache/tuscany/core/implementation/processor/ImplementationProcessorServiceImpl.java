@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.util.List;
 
 import org.osoa.sca.annotations.Callback;
@@ -43,7 +44,7 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
 /**
  * The default implementation of an <code>ImplementationProcessorService</code>
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ImplementationProcessorServiceImpl implements ImplementationProcessorService {
@@ -63,16 +64,15 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         return service;
     }
 
-    public void processCallback(Class<?> interfaze, ServiceContract<?> contract)
-        throws IllegalCallbackException {
+    public void processCallback(Class<?> interfaze, ServiceContract<?> contract) throws IllegalCallbackException {
         Callback callback = interfaze.getAnnotation(Callback.class);
         if (callback != null && !Void.class.equals(callback.value())) {
             Class<?> callbackClass = callback.value();
             contract.setCallbackClass(callbackClass);
             contract.setCallbackName(getBaseName(callbackClass));
         } else if (callback != null && Void.class.equals(callback.value())) {
-            IllegalCallbackException e =
-                new IllegalCallbackException("Callback annotation must specify an interface on service type");
+            IllegalCallbackException e = new IllegalCallbackException(
+                    "Callback annotation must specify an interface on service type");
             e.setIdentifier(interfaze.getName());
             throw e;
         }
@@ -99,13 +99,13 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         }
     }
 
-    public boolean processParam(Class<?> param,
-                                Annotation[] paramAnnotations,
-                                String[] constructorNames,
-                                int pos,
-                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                List<String> injectionNames)
-        throws ProcessingException {
+    public boolean processParam(
+            Class<?> param,
+            Annotation[] paramAnnotations,
+            String[] constructorNames,
+            int pos,
+            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+            List<String> injectionNames) throws ProcessingException {
         boolean processed = false;
         for (Annotation annot : paramAnnotations) {
             if (Autowire.class.equals(annot.annotationType())) {
@@ -126,9 +126,8 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         for (Annotation[] annotations : annots) {
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();
-                if (annotType.equals(Autowire.class)
-                    || annotType.equals(Property.class)
-                    || annotType.equals(Reference.class)) {
+                if (annotType.equals(Autowire.class) || annotType.equals(Property.class)
+                        || annotType.equals(Reference.class)) {
                     return true;
                 }
             }
@@ -138,9 +137,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     /**
      * Determines if all the members of a collection have unique types
-     *
+     * 
      * @param collection the collection to analyze
-     * @param start      the position in the collection to start
+     * @param start the position in the collection to start
      * @return true if the types are unique
      */
     private boolean areUnique(Class[] collection, int start) {
@@ -159,24 +158,24 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     /**
      * Processes autowire metadata for a constructor parameter
-     *
-     * @param annot            the autowire annotation
+     * 
+     * @param annot the autowire annotation
      * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
-     *                         annotation
-     * @param pos              the position of the parameter in the constructor's parameter list
-     * @param param            the parameter type
-     * @param type             the component type associated with the implementation being processed
-     * @param injectionNames   the collection of injection names to update
+     *            annotation
+     * @param pos the position of the parameter in the constructor's parameter list
+     * @param param the parameter type
+     * @param type the component type associated with the implementation being processed
+     * @param injectionNames the collection of injection names to update
      * @throws InvalidAutowireException
      * @throws InvalidConstructorException
      */
-    private void processAutowire(Annotation annot, String[] constructorNames,
-                                 int pos,
-                                 Class<?> param,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference,
-                                     JavaMappedProperty<?>> type,
-                                 List<String> injectionNames) throws InvalidAutowireException,
-                                                                     InvalidConstructorException {
+    private void processAutowire(
+            Annotation annot,
+            String[] constructorNames,
+            int pos,
+            Class<?> param,
+            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+            List<String> injectionNames) throws InvalidAutowireException, InvalidConstructorException {
         // the param is marked as an autowire
         Autowire autowireAnnot = (Autowire) annot;
         JavaMappedReference reference = new JavaMappedReference();
@@ -184,19 +183,17 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         String name = autowireAnnot.name();
         if (name == null || name.length() == 0) {
             if (constructorNames.length > 0 && (constructorNames.length < pos + 1 || constructorNames[pos] == null)) {
-                throw new InvalidAutowireException(
-                    "Names in @Constructor and autowire parameter do not match at " + (pos + 1));
+                throw new InvalidAutowireException("Names in @Constructor and autowire parameter do not match at "
+                        + (pos + 1));
             } else if (constructorNames.length == 0 || constructorNames[pos].length() == 0) {
                 name = param.getName();
             } else {
                 name = constructorNames[pos];
             }
-        } else if (pos < constructorNames.length
-            && constructorNames[pos] != null
-            && constructorNames[pos].length() != 0
-            && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException(
-                "Name specified by @Constructor does not match autowire name at " + (pos + 1));
+        } else if (pos < constructorNames.length && constructorNames[pos] != null
+                && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException("Name specified by @Constructor does not match autowire name at "
+                    + (pos + 1));
         }
         reference.setName(name);
         ServiceContract<?> contract = new JavaServiceContract();
@@ -208,24 +205,23 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     /**
      * Processes parameter metadata for a constructor parameter
-     *
-     * @param annot            the parameter annotation
+     * 
+     * @param annot the parameter annotation
      * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
-     *                         annotation
-     * @param pos              the position of the parameter in the constructor's parameter list
-     * @param type             the component type associated with the implementation being processed
-     * @param param            the parameter type
-     * @param explicitNames    the collection of injection names to update
+     *            annotation
+     * @param pos the position of the parameter in the constructor's parameter list
+     * @param type the component type associated with the implementation being processed
+     * @param param the parameter type
+     * @param explicitNames the collection of injection names to update
      * @throws ProcessingException
      */
-    private <T> void processProperty(Annotation annot,
-                                     String[] constructorNames,
-                                     int pos,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference,
-                                         JavaMappedProperty<?>> type,
-                                     Class<T> param,
-                                     List<String> explicitNames)
-        throws ProcessingException {
+    private <T> void processProperty(
+            Annotation annot,
+            String[] constructorNames,
+            int pos,
+            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+            Class<T> param,
+            List<String> explicitNames) throws ProcessingException {
         // TODO multiplicity
         // the param is marked as a property
         Property propAnnot = (Property) annot;
@@ -233,16 +229,14 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         String name = propAnnot.name();
         if (name == null || name.length() == 0) {
             if (constructorNames.length < pos + 1 || constructorNames[pos] == null
-                || constructorNames[pos].length() == 0) {
+                    || constructorNames[pos].length() == 0) {
                 throw new InvalidPropertyException("No name specified for property parameter " + (pos + 1));
             }
             name = constructorNames[pos];
-        } else if (pos < constructorNames.length
-            && constructorNames[pos] != null
-            && constructorNames[pos].length() != 0
-            && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException(
-                "Name specified by @Constructor does not match property name at " + (pos + 1));
+        } else if (pos < constructorNames.length && constructorNames[pos] != null
+                && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException("Name specified by @Constructor does not match property name at "
+                    + (pos + 1));
         }
         if (type.getProperties().get(name) != null) {
             throw new DuplicatePropertyException(name);
@@ -256,23 +250,23 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     /**
      * Processes reference metadata for a constructor parameter
-     *
-     * @param annot            the parameter annotation
+     * 
+     * @param annot the parameter annotation
      * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
-     *                         annotation
-     * @param pos              the position of the parameter in the constructor's parameter list
-     * @param type             the component type associated with the implementation being processed
-     * @param param            the parameter type
-     * @param explicitNames    the collection of injection names to update
+     *            annotation
+     * @param pos the position of the parameter in the constructor's parameter list
+     * @param type the component type associated with the implementation being processed
+     * @param param the parameter type
+     * @param explicitNames the collection of injection names to update
      * @throws ProcessingException
      */
-    private void processReference(Annotation annot, String[] constructorNames,
-                                  int pos,
-                                  PojoComponentType<JavaMappedService, JavaMappedReference,
-                                      JavaMappedProperty<?>> type,
-                                  Class<?> param,
-                                  List<String> explicitNames)
-        throws ProcessingException {
+    private void processReference(
+            Annotation annot,
+            String[] constructorNames,
+            int pos,
+            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+            Class<?> param,
+            List<String> explicitNames) throws ProcessingException {
 
         // TODO multiplicity
         // the param is marked as a reference
@@ -281,27 +275,49 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         String name = refAnnotation.name();
         if (name == null || name.length() == 0) {
             if (constructorNames.length < pos + 1 || constructorNames[pos] == null
-                || constructorNames[pos].length() == 0) {
+                    || constructorNames[pos].length() == 0) {
                 throw new InvalidReferenceException("No name specified for reference parameter " + (pos + 1));
             }
             name = constructorNames[pos];
-        } else if (pos < constructorNames.length
-            && constructorNames[pos] != null
-            && constructorNames[pos].length() != 0
-            && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException(
-                "Name specified by @Constructor does not match reference name at " + (pos + 1));
+        } else if (pos < constructorNames.length && constructorNames[pos] != null
+                && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException("Name specified by @Constructor does not match reference name at "
+                    + (pos + 1));
         }
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
         reference.setName(name);
         reference.setRequired(refAnnotation.required());
-        ServiceContract<?> contract = new JavaServiceContract();
-        contract.setInterfaceClass(param);
-        reference.setServiceContract(contract);
+        try {
+            ServiceContract<?> contract = registry.introspect(param);
+            reference.setServiceContract(contract);
+        } catch (InvalidServiceContractException e) {
+            throw new ProcessingException(e);
+        }
         type.getReferences().put(name, reference);
         addName(explicitNames, pos, name);
+    }
+
+    public JavaMappedReference createReference(String name, Member member, Class<?> paramType)
+        throws ProcessingException {
+        JavaMappedReference reference = new JavaMappedReference();
+        reference.setName(name);
+        reference.setMember(member);
+        reference.setRequired(false);
+        ServiceContract contract = null;
+        try {
+            contract = registry.introspect(paramType);
+        } catch (InvalidServiceContractException e1) {
+            throw new ProcessingException(e1);
+        }
+        try {
+            processCallback(paramType, contract);
+        } catch (IllegalCallbackException e) {
+            throw new ProcessingException(e);
+        }
+        reference.setServiceContract(contract);
+        return reference;
     }
 
 }

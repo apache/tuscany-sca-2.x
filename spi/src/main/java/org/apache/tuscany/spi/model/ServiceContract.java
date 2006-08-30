@@ -18,21 +18,30 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Base class representing service contract information
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract<T> extends ModelObject {
-    private InteractionScope interactionScope;
-    private Class<?> interfaceClass;
-    private String interfaceName;
-    private String callbackName;
-    private Class<?> callbackClass;
-    private Map<String, Operation<T>> operations;
-    private Map<String, Operation<T>> callbacksOperations;
+    protected InteractionScope interactionScope;
+
+    protected Class<?> interfaceClass;
+
+    protected String interfaceName;
+
+    protected String callbackName;
+
+    protected Class<?> callbackClass;
+
+    protected Map<String, Operation<T>> operations;
+
+    protected Map<String, Operation<T>> callbacksOperations;
+    
+    protected String dataBinding;
 
     protected ServiceContract() {
     }
@@ -107,18 +116,24 @@ public abstract class ServiceContract<T> extends ModelObject {
     }
 
     public Map<String, Operation<T>> getOperations() {
+        if (operations == null) {
+            operations = new HashMap<String, Operation<T>>();
+        }
         return operations;
     }
 
-    public void setOperations(Map<String, Operation<T>> operations) {
-        this.operations = operations;
-    }
-
     public Map<String, Operation<T>> getCallbacksOperations() {
+        if (callbacksOperations == null) {
+            callbacksOperations = new HashMap<String, Operation<T>>();
+        }
         return callbacksOperations;
     }
 
-    public void setCallbacksOperations(Map<String, Operation<T>> callbacksOperations) {
-        this.callbacksOperations = callbacksOperations;
+    public String getDataBinding() {
+        return dataBinding;
+    }
+
+    public void setDataBinding(String dataBinding) {
+        this.dataBinding = dataBinding;
     }
 }
