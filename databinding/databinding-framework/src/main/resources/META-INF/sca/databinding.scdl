@@ -27,9 +27,14 @@
         <system:implementation.system class="org.apache.tuscany.databinding.impl.TransformerRegistryImpl" />
     </component>
 
-    <!-- Transformer registry -->
-    <component name="dataBindingLoader">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingDefinitionLoader" />
+    <component name="dataType.loader">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataTypeLoader" />
+    </component>
+    
+    <!-- Simple databindings -->
+    <component name="databinding.dom">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.SimpleDataBinding" />
+        <property name="className">org.w3c.dom.Node</property>
     </component>
 
 </composite>

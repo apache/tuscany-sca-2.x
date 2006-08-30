@@ -20,7 +20,7 @@
     <service name="ClientService">
         <interface.java class="org.apache.tuscany.databinding.sample.Client" />
         <reference>Client</reference>
-        <binding.sca/>
+        <!-- <binding.sca/> -->
         <db:databinding name="sdo"/>
     </service>
 
@@ -32,7 +32,7 @@
 
     <reference name="EchoReference">
         <interface.java interface="org.apache.tuscany.databinding.sample.Echo" />
-        <binding.sca/>
+        <!-- <binding.sca/> -->
     </reference>
 
 </composite>
