@@ -18,16 +18,14 @@
  */
 package org.apache.tuscany.core.injection;
 
-import static org.easymock.EasyMock.verify;
-
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * @version $Rev$ $Date$
