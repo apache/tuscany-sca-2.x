@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.WorkContext;
@@ -26,6 +27,9 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+
+import org.apache.tuscany.core.wire.AbstractOutboundInvocationHandler;
 
 /**
  * Responsible for invoking on an outbound wire associated with a callback. The handler retrieves the correct outbound
@@ -35,7 +39,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $Rev$ $Date$
  */
-public class JDKCallbackInvocationHandler extends AbstractJDKOutboundInvocationHandler {
+public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHandler
+    implements WireInvocationHandler, InvocationHandler {
 
     private WorkContext context;
 

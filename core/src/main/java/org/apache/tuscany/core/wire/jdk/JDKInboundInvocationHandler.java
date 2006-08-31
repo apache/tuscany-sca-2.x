@@ -19,19 +19,16 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+
+import org.apache.tuscany.core.wire.AbstractInboundInvocationHandler;
 
 /**
  * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.InboundWire} via
@@ -39,7 +36,8 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public class JDKInboundInvocationHandler implements WireInvocationHandler, InvocationHandler {
+public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandler
+    implements WireInvocationHandler, InvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains the invocation chain
@@ -87,47 +85,7 @@ public class JDKInboundInvocationHandler implements WireInvocationHandler, Invoc
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        MessageChannel requestChannel = chain.getRequestChannel();
-        MessageChannel responseChannel = chain.getResponseChannel();
-        Interceptor headInterceptor = chain.getHeadInterceptor();
-        if (requestChannel == null && headInterceptor == null && responseChannel == null) {
-            try {
-                // short-circuit the dispatch and invoke the target directly
-                if (chain.getTargetInvoker() == null) {
-                    throw new AssertionError("No target invoker [" + method.getName() + "]");
-                }
-                return chain.getTargetInvoker().invokeTarget(args);
-            } catch (InvocationTargetException e) {
-                // the cause was thrown by the target so throw it
-                throw e.getCause();
-            }
-        } else {
-            Message msg = new MessageImpl();
-            msg.setTargetInvoker(invoker);
-            msg.setBody(args);
-            Message resp;
-            if (requestChannel != null) {
-                requestChannel.send(msg);
-                resp = msg.getRelatedCallbackMessage();
-                if (responseChannel != null) {
-                    responseChannel.send(resp);
-                }
-            } else {
-                if (headInterceptor == null) {
-                    throw new TargetException("Expected interceptor on target chain");
-                }
-                // dispatch the wire down the chain and get the response
-                resp = headInterceptor.invoke(msg);
-                if (responseChannel != null) {
-                    responseChannel.send(resp);
-                }
-            }
-            Object body = resp.getBody();
-            if (body instanceof Throwable) {
-                throw (Throwable) body;
-            }
-            return body;
-        }
+        return invoke(chain, invoker, args);
     }
 
 

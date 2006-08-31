@@ -16,18 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Base class for performing invocations on an outbound chain. Subclasses are responsible for retrieving and supplying
@@ -35,10 +32,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractJDKOutboundInvocationHandler implements WireInvocationHandler, InvocationHandler {
-
-    public AbstractJDKOutboundInvocationHandler() {
-    }
+public abstract class AbstractOutboundInvocationHandler {
 
     protected Object invoke(OutboundInvocationChain chain, TargetInvoker invoker, Object[] args) throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
@@ -85,10 +79,6 @@ public abstract class AbstractJDKOutboundInvocationHandler implements WireInvoca
                 return body;
             }
         }
-    }
-
-    public Object invoke(Method method, Object[] args) throws Throwable {
-        return invoke(null, method, args);
     }
 
 
