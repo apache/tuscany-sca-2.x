@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -50,7 +49,7 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         return getTargetInstance();
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
         return null;
     }
 

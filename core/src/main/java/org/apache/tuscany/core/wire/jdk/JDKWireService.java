@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
@@ -33,12 +34,14 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -81,12 +84,31 @@ public class JDKWireService implements WireService {
     public void init() {
     }
 
+    private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire<?> wire, Method[] methods)
+        throws NoMethodForOperationException {
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
+        for (Map.Entry<Operation, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
+            Operation operation = entry.getKey();
+            InboundInvocationChain chain = entry.getValue();
+            Method method = findMethod(operation, methods);
+            if (method == null) {
+                NoMethodForOperationException e = new NoMethodForOperationException();
+                e.setIdentifier(operation.getName());
+            }
+            chains.put(method, chain);
+        }
+        return chains;
+    }
+
+    @SuppressWarnings("unchecked")
     public <T> T createProxy(RuntimeWire<T> wire) throws ProxyCreationException {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
             InboundWire<T> inbound = (InboundWire<T>) wire;
-            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound.getInvocationChains());
-            Class<?> interfaze = inbound.getServiceContract().getInterfaceClass();
+            Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
+            Method[] methods = interfaze.getMethods();
+            Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
+            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
             ClassLoader cl = interfaze.getClassLoader();
             //FIXME
             return (T) Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
@@ -103,7 +125,9 @@ public class JDKWireService implements WireService {
         }
     }
 
-    public <T> T createCallbackProxy(Class<T> interfaze) throws ProxyCreationException {
+    @SuppressWarnings("unchecked")
+    public <T> T createCallbackProxy(ServiceContract<?> contract) throws ProxyCreationException {
+        Class<T> interfaze = (Class<T>) contract.getCallbackClass();
         ClassLoader cl = interfaze.getClassLoader();
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(context);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
@@ -113,7 +137,9 @@ public class JDKWireService implements WireService {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
             InboundWire<T> inbound = (InboundWire<T>) wire;
-            return new JDKInboundInvocationHandler(inbound.getInvocationChains());
+            Method[] methods = inbound.getServiceContract().getInterfaceClass().getMethods();
+            Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
+            return new JDKInboundInvocationHandler(chains);
         } else if (wire instanceof OutboundWire) {
             OutboundWire<T> outbound = (OutboundWire<T>) wire;
             return new JDKOutboundInvocationHandler(outbound);
@@ -128,19 +154,11 @@ public class JDKWireService implements WireService {
         return new JDKCallbackInvocationHandler(context);
     }
 
-    public OutboundWire createOutboundWire() {
-        return new OutboundWireImpl();
-    }
-
-    public InboundWire createInboundWire() {
-        return new InboundWireImpl();
-    }
-
-    public OutboundInvocationChain createOutboundChain(Method operation) {
+    public OutboundInvocationChain createOutboundChain(Operation operation) {
         return new OutboundInvocationChainImpl(operation);
     }
 
-    public InboundInvocationChain createInboundChain(Method operation) {
+    public InboundInvocationChain createInboundChain(Operation operation) {
         return new InboundInvocationChainImpl(operation);
     }
 
@@ -169,14 +187,13 @@ public class JDKWireService implements WireService {
         }
     }
 
-    public <T> void createWires(Reference<T> reference, ServiceContract contract) {
+    public <T> void createWires(Reference<T> reference, ServiceContract<?> contract) {
         InboundWire<T> wire = new InboundWireImpl<T>();
-        Class<T> interfaze = reference.getInterface();
         wire.setServiceContract(contract);
-        for (Method method : interfaze.getMethods()) {
-            InboundInvocationChain chain = createInboundChain(method);
+        for (Operation operation : contract.getOperations().values()) {
+            InboundInvocationChain chain = createInboundChain(operation);
             chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(method, chain);
+            wire.addInvocationChain(operation, chain);
         }
         reference.setInboundWire(wire);
     }
@@ -189,76 +206,73 @@ public class JDKWireService implements WireService {
         createWires(service, def.getTarget().getPath(), def.getServiceContract());
     }
 
-    private <T> void createWires(Service<T> service, String targetName, ServiceContract contract) {
-        InboundWire<T> inboundWire = new InboundWireImpl<T>();
-        OutboundWire<T> outboundWire = new OutboundWireImpl<T>();
-        Class<T> interfaze = service.getInterface();
-        inboundWire.setServiceContract(contract);
-        outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(new QualifiedName(targetName));
-        for (Method method : interfaze.getMethods()) {
-            InboundInvocationChain inboundChain = createInboundChain(method);
-            inboundWire.addInvocationChain(method, inboundChain);
-            OutboundInvocationChain outboundChain = createOutboundChain(method);
-            outboundWire.addInvocationChain(method, outboundChain);
-        }
-        service.setInboundWire(inboundWire);
-        service.setOutboundWire(outboundWire);
-    }
-
-
     @SuppressWarnings("unchecked")
     public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
         //TODO multiplicity
         if (reference.getTargets().size() != 1) {
             throw new UnsupportedOperationException();
         }
-        ServiceContract contract = def.getServiceContract();
-        Class<?> interfaze = def.getServiceContract().getInterfaceClass();
-        OutboundWire wire = createOutboundWire();
+        ServiceContract<?> contract = def.getServiceContract();
+        OutboundWire wire = new OutboundWireImpl();
         QualifiedName qName = new QualifiedName(reference.getTargets().get(0).toString());
         wire.setTargetName(qName);
         wire.setServiceContract(contract);
         wire.setReferenceName(reference.getReferenceName());
-        for (Method method : interfaze.getMethods()) {
+        for (Operation operation : contract.getOperations().values()) {
             //TODO handle policy
-            OutboundInvocationChain chain = createOutboundChain(method);
-            wire.addInvocationChain(method, chain);
+            OutboundInvocationChain chain = createOutboundChain(operation);
+            wire.addInvocationChain(operation, chain);
+
         }
         Class<?> callbackInterface = contract.getCallbackClass();
         if (callbackInterface != null) {
             wire.setCallbackInterface(callbackInterface);
-            for (Method callbackMethod : callbackInterface.getMethods()) {
-                InboundInvocationChain callbackTargetChain = createInboundChain(callbackMethod);
-                OutboundInvocationChain callbackSourceChain = createOutboundChain(callbackMethod);
+            for (Operation operation : contract.getCallbacksOperations().values()) {
+                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
+                OutboundInvocationChain callbackSourceChain = createOutboundChain(operation);
                 // TODO handle policy
                 //TODO statement below could be cleaner
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                wire.addTargetCallbackInvocationChain(callbackMethod, callbackTargetChain);
-                wire.addSourceCallbackInvocationChain(callbackMethod, callbackSourceChain);
+                wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
+                wire.addSourceCallbackInvocationChain(operation, callbackSourceChain);
             }
         }
         return wire;
     }
 
     public InboundWire createWire(ServiceDefinition service) {
-        Class<?> interfaze = service.getServiceContract().getInterfaceClass();
-        InboundWire wire = createInboundWire();
-        wire.setServiceContract(service.getServiceContract());
+        InboundWire wire = new InboundWireImpl();
+        ServiceContract<?> contract = service.getServiceContract();
+        wire.setServiceContract(contract);
         wire.setServiceName(service.getName());
-        for (Method method : interfaze.getMethods()) {
-            InboundInvocationChain chain = createInboundChain(method);
+        for (Operation operation : contract.getOperations().values()) {
+            InboundInvocationChain chain = createInboundChain(operation);
             // TODO handle policy
             //TODO statement below could be cleaner
             chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(method, chain);
+            wire.addInvocationChain(operation, chain);
         }
-        ServiceContract contract = service.getServiceContract();
         Class<?> callbackInterface = contract.getCallbackClass();
         if (callbackInterface != null) {
             wire.setCallbackReferenceName(service.getCallbackReferenceName());
         }
         return wire;
+    }
+
+    private <T> void createWires(Service<T> service, String targetName, ServiceContract<?> contract) {
+        InboundWire<T> inboundWire = new InboundWireImpl<T>();
+        OutboundWire<T> outboundWire = new OutboundWireImpl<T>();
+        inboundWire.setServiceContract(contract);
+        outboundWire.setServiceContract(contract);
+        outboundWire.setTargetName(new QualifiedName(targetName));
+        for (Operation operation : contract.getOperations().values()) {
+            InboundInvocationChain inboundChain = createInboundChain(operation);
+            inboundWire.addInvocationChain(operation, inboundChain);
+            OutboundInvocationChain outboundChain = createOutboundChain(operation);
+            outboundWire.addInvocationChain(operation, outboundChain);
+        }
+        service.setInboundWire(inboundWire);
+        service.setOutboundWire(outboundWire);
     }
 
 }

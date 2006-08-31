@@ -18,11 +18,13 @@
  */
 package org.apache.tuscany.container.groovy;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
@@ -142,8 +144,8 @@ public class WireTestCase extends TestCase {
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent<Greeting> component = new GroovyAtomicComponent<Greeting>(configuration, null);
-        TargetInvoker invoker =
-            component.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class));
+        Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null);
+        TargetInvoker invoker = component.createTargetInvoker(null, operation);
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
     }
 
@@ -164,7 +166,7 @@ public class WireTestCase extends TestCase {
         InboundWire<?> wire = createInboundWire("Greeting", Greeting.class);
         terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(component.createTargetInvoker("Greeting", chain.getMethod()));
+            chain.setTargetInvoker(component.createTargetInvoker(null, chain.getOperation()));
         }
         component.addInboundWire(wire);
         Greeting greeting = (Greeting) component.getServiceInstance("Greeting");

@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * Implementations are responsible for managing the reference side of a wire, including the invocation chains associated
@@ -66,54 +66,53 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
      * service.
      */
-    Map<Method, OutboundInvocationChain> getInvocationChains();
+    Map<Operation<?>, OutboundInvocationChain> getInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, OutboundInvocationChain> chains);
+    void addInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Method method, OutboundInvocationChain chain);
+    void addInvocationChain(Operation<?> operation, OutboundInvocationChain chain);
 
     /**
-     * Returns the callback invocation configuration for each operation on a service specified by a reference or
-     * a target service.
+     * Returns the callback invocation configuration for each operation on a service specified by a reference or a
+     * target service.
      */
-    Map<Method, InboundInvocationChain> getTargetCallbackInvocationChains();
-
-    /**
-     * Adds the collection of callback invocation chains keyed by operation
-     */
-    void addTargetCallbackInvocationChains(Map<Method, InboundInvocationChain> chains);
-
-    /**
-     * Adds the callback invocation chain associated with the given operation
-     */
-    void addTargetCallbackInvocationChain(Method method, InboundInvocationChain chain);
-
-    /**
-     * Returns the callback invocation configuration for each operation on a service specified by a reference or
-     * a target service.
-     */
-    Map<Method, OutboundInvocationChain> getSourceCallbackInvocationChains();
+    Map<Operation<?>, InboundInvocationChain> getTargetCallbackInvocationChains();
 
     /**
      * Adds the collection of callback invocation chains keyed by operation
      */
-    void addSourceCallbackInvocationChains(Map<Method, OutboundInvocationChain> chains);
+    void addTargetCallbackInvocationChains(Map<Operation<?>, InboundInvocationChain> chains);
 
     /**
      * Adds the callback invocation chain associated with the given operation
      */
-    void addSourceCallbackInvocationChain(Method method, OutboundInvocationChain chain);
+    void addTargetCallbackInvocationChain(Operation<?> operation, InboundInvocationChain chain);
+
+    /**
+     * Returns the callback invocation configuration for each operation on a service specified by a reference or a
+     * target service.
+     */
+    Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains();
+
+    /**
+     * Adds the collection of callback invocation chains keyed by operation
+     */
+    void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains);
+
+    /**
+     * Adds the callback invocation chain associated with the given operation
+     */
+    void addSourceCallbackInvocationChain(Operation<?> operation, OutboundInvocationChain chain);
 
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
     void setTargetWire(InboundWire<T> wire);
-
 
 }

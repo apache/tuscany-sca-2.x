@@ -19,16 +19,21 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
 import org.jmock.MockObjectTestCase;
 
@@ -40,11 +45,12 @@ import org.jmock.MockObjectTestCase;
 public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
 
     private Method echo;
+    private Operation operation;
 
     public void testHandlersInterceptorInvoke() throws Throwable {
-        Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
-        InboundInvocationChain chain = new InboundInvocationChainImpl(echo);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         chain.addInterceptor(interceptor);
         chain.addInterceptor(new InvokerInterceptor());
@@ -63,9 +69,9 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
     }
 
     public void testInterceptorInvoke() throws Throwable {
-        Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
-        InboundInvocationChain chain = new InboundInvocationChainImpl(echo);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         chain.addInterceptor(interceptor);
         chain.addInterceptor(new InvokerInterceptor());
@@ -79,11 +85,11 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
 
 
     public void testDirectErrorInvoke() throws Throwable {
-        InboundInvocationChain source = new InboundInvocationChainImpl(echo);
+        InboundInvocationChain source = new InboundInvocationChainImpl(operation);
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         chains.put(echo, source);
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
@@ -95,11 +101,11 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
     }
 
     public void testDirectInvoke() throws Throwable {
-        InboundInvocationChain source = new InboundInvocationChainImpl(echo);
+        InboundInvocationChain source = new InboundInvocationChainImpl(operation);
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
 
-        Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         chains.put(echo, source);
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         assertEquals("foo", handler.invoke(echo, new Object[]{"foo"}));
@@ -108,6 +114,14 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract;
+        try {
+            contract = registry.introspect(SimpleTarget.class);
+        } catch (InvalidServiceContractException e) {
+            throw new AssertionError();
+        }
+        operation = contract.getOperations().get("echo");
         echo = SimpleTarget.class.getMethod("echo", String.class);
     }
 

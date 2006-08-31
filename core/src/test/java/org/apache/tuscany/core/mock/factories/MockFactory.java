@@ -28,21 +28,25 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
-import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
-import org.apache.tuscany.core.util.MethodHashMap;
+import org.apache.tuscany.core.injection.MethodEventInvoker;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -152,7 +156,8 @@ public final class MockFactory {
         return new SystemAtomicComponentImpl(name, configuration);
     }
 
-    public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze) {
+    public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze)
+        throws InvalidServiceContractException {
         InboundWire<T> wire = new InboundWireImpl<T>();
         wire.setServiceName(serviceName);
         JavaServiceContract contract = new JavaServiceContract(interfaze);
@@ -161,14 +166,17 @@ public final class MockFactory {
         return wire;
     }
 
-    public static Map<Method, InboundInvocationChain> createInboundChains(Class<?> interfaze) {
-        Map<Method, InboundInvocationChain> invocations = new MethodHashMap<InboundInvocationChain>();
-        Method[] methods = interfaze.getMethods();
-        for (Method method : methods) {
-            InboundInvocationChain iConfig = new InboundInvocationChainImpl(method);
+    public static Map<Operation, InboundInvocationChain> createInboundChains(Class<?> interfaze)
+        throws InvalidServiceContractException {
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        Map<Operation, InboundInvocationChain> invocations = new HashMap<Operation, InboundInvocationChain>();
+        ServiceContract<?> contract = registry.introspect(interfaze);
+
+        for (Operation operation : contract.getOperations().values()) {
+            InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
             // add tail interceptor
-            iConfig.addInterceptor(new InvokerInterceptor());
-            invocations.put(method, iConfig);
+            chain.addInterceptor(new InvokerInterceptor());
+            invocations.put(operation, chain);
         }
         return invocations;
     }

@@ -22,8 +22,8 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Binding;
@@ -67,13 +67,13 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
             InboundWire<?> wire = service.getInboundWire();
             QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
             for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
-                chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(), chain.getMethod()));
+                chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(), chain.getOperation()));
             }
             component.register(service);
         }
         for (BoundReferenceDefinition<?> referenceDefinition : componentType.getReferences().values()) {
             // call back into builder registry to handle building of references
-            Reference<?> reference = (Reference)builderRegistry.build(parent, referenceDefinition, deploymentContext);
+            Reference<?> reference = (Reference) builderRegistry.build(parent, referenceDefinition, deploymentContext);
             connector.connect(reference);
             component.register(reference);
         }

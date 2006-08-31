@@ -20,34 +20,51 @@ package org.apache.tuscany.container.javascript;
 
 import java.net.URL;
 
-import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
-import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ComponentType;
+
+import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
 
 /**
  * @version $Rev$ $Date$
  */
 public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<JavaScriptImplementation> {
 
+    private JavaInterfaceProcessorRegistry processorRegistry;
+
+    public JavaScriptComponentTypeLoader(@Autowire JavaInterfaceProcessorRegistry processorRegistry) {
+        this.processorRegistry = processorRegistry;
+    }
+
     @Override
     protected Class<JavaScriptImplementation> getImplementationClass() {
         return JavaScriptImplementation.class;
     }
 
-    protected JavaScriptComponentType loadByIntrospection(CompositeComponent<?> parent, JavaScriptImplementation implementation,
-            DeploymentContext deploymentContext) {
+    protected JavaScriptComponentType loadByIntrospection(CompositeComponent<?> parent,
+                                                          JavaScriptImplementation implementation,
+                                                          DeploymentContext deploymentContext) throws
+                                                                                               MissingResourceException,
+                                                                                               InvalidServiceContractException {
 
         RhinoScript rhinoScript = implementation.getRhinoScript();
         RhinoSCAConfig scaConfig = rhinoScript.getSCAConfig();
         if (!scaConfig.hasSCAConfig()) {
-            throw new IllegalArgumentException("must use either .componentType side file or JS SCA varriable definition");
+            throw new IllegalArgumentException(
+                "must use either .componentType side file or JS SCA varriable definition");
         }
 
-        JavaScriptComponentType componentType = new JavaScriptIntrospector(null).introspectScript(scaConfig,rhinoScript.getClassLoader());
+        // FIXME this should be a system service, not instantiated here
+        JavaScriptComponentType componentType = new JavaScriptIntrospector(null, processorRegistry)
+            .introspectScript(scaConfig, rhinoScript.getClassLoader());
 
         return componentType;
     }
@@ -57,14 +74,19 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
     }
 
     // TODO: must be possible to move all the following up in to ComponentTypeLoaderExtension 
-    
-    public void load(CompositeComponent<?> parent, JavaScriptImplementation implementation, DeploymentContext deploymentContext)
-            throws LoaderException {
+
+    public void load(CompositeComponent<?> parent, JavaScriptImplementation implementation,
+                     DeploymentContext deploymentContext)
+        throws LoaderException {
 
         URL resource = implementation.getRhinoScript().getClassLoader().getResource(getSideFileName(implementation));
         JavaScriptComponentType componentType;
         if (resource == null) {
-            componentType = loadByIntrospection(parent, implementation, deploymentContext);
+            try {
+                componentType = loadByIntrospection(parent, implementation, deploymentContext);
+            } catch (InvalidServiceContractException e) {
+                throw new LoaderException("Invalid service contract", e);
+            }
         } else {
             componentType = loadFromSidefile(resource, deploymentContext);
         }
@@ -72,7 +94,8 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
         implementation.setComponentType(componentType);
     }
 
-    protected JavaScriptComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
+    protected JavaScriptComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext)
+        throws LoaderException {
         ComponentType ct = loaderRegistry.load(null, url, ComponentType.class, deploymentContext);
         JavaScriptComponentType jsct = new JavaScriptComponentType(ct);
         return jsct;

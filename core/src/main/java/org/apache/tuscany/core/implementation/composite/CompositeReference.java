@@ -17,24 +17,28 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
+
+import org.apache.tuscany.core.injection.WireObjectFactory;
 
 public class CompositeReference<T> extends ReferenceExtension<T> {
 
     public CompositeReference(String name,
-                          CompositeComponent<?> parent,
-                          WireService wireService,
-                          ServiceContract contract) {
-        super(name, (Class<T>)contract.getInterfaceClass(), parent, wireService);
+                              CompositeComponent<?> parent,
+                              WireService wireService,
+                              ServiceContract contract) {
+        super(name, (Class<T>) contract.getInterfaceClass(), parent, wireService);
     }
-    
-    public TargetInvoker createTargetInvoker(Method operation) {
+
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         WireObjectFactory wireFactory = new WireObjectFactory(outboundWire, wireService);
-        return new CompositeReferenceTargetInvoker(operation, wireFactory);
+        Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
+        return new CompositeReferenceTargetInvoker(method, wireFactory);
     }
 }

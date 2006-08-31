@@ -18,11 +18,12 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -30,8 +31,6 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-
-import org.apache.tuscany.core.util.MethodHashMap;
 
 /**
  * Default implementation of an outbound wire
@@ -42,9 +41,11 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
 
     private ServiceContract serviceContract;
     private Class<T>[] callbackInterfaces;
-    private Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
-    private Map<Method, InboundInvocationChain> callbackTargetChains = new MethodHashMap<InboundInvocationChain>();
-    private Map<Method, OutboundInvocationChain> callbackSourceChains = new MethodHashMap<OutboundInvocationChain>();
+    private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
+    private Map<Operation<?>, InboundInvocationChain> callbackTargetChains =
+        new HashMap<Operation<?>, InboundInvocationChain>();
+    private Map<Operation<?>, OutboundInvocationChain> callbackSourceChains =
+        new HashMap<Operation<?>, OutboundInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
     private InboundWire<T> targetWire;
@@ -90,40 +91,40 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         this.targetWire = wire;
     }
 
-    public Map<Method, OutboundInvocationChain> getInvocationChains() {
+    public Map<Operation<?>, OutboundInvocationChain> getInvocationChains() {
         return chains;
     }
 
-    public void addInvocationChains(Map<Method, OutboundInvocationChain> chains) {
+    public void addInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
         this.chains.putAll(chains);
     }
 
-    public void addInvocationChain(Method method, OutboundInvocationChain chain) {
-        chains.put(method, chain);
+    public void addInvocationChain(Operation<?> operation, OutboundInvocationChain chain) {
+        chains.put(operation, chain);
     }
 
-    public Map<Method, InboundInvocationChain> getTargetCallbackInvocationChains() {
+    public Map<Operation<?>, InboundInvocationChain> getTargetCallbackInvocationChains() {
         return callbackTargetChains;
     }
 
-    public void addTargetCallbackInvocationChains(Map<Method, InboundInvocationChain> chains) {
+    public void addTargetCallbackInvocationChains(Map<Operation<?>, InboundInvocationChain> chains) {
         callbackTargetChains.putAll(chains);
     }
 
-    public void addTargetCallbackInvocationChain(Method method, InboundInvocationChain chain) {
-        callbackTargetChains.put(method, chain);
+    public void addTargetCallbackInvocationChain(Operation operation, InboundInvocationChain chain) {
+        callbackTargetChains.put(operation, chain);
     }
 
-    public Map<Method, OutboundInvocationChain> getSourceCallbackInvocationChains() {
+    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains() {
         return callbackSourceChains;
     }
 
-    public void addSourceCallbackInvocationChains(Map<Method, OutboundInvocationChain> chains) {
+    public void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
         callbackSourceChains.putAll(chains);
     }
 
-    public void addSourceCallbackInvocationChain(Method method, OutboundInvocationChain chain) {
-        callbackSourceChains.put(method, chain);
+    public void addSourceCallbackInvocationChain(Operation opeation, OutboundInvocationChain chain) {
+        callbackSourceChains.put(opeation, chain);
     }
 
     public String getReferenceName() {

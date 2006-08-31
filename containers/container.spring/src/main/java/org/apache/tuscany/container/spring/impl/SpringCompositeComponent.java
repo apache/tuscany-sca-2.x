@@ -31,8 +31,10 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.builder.Connector;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -79,9 +81,13 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
         this.selfWiring = true;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method method) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+        ServiceContract contract = operation.getServiceContract();
+        Method[] methods = contract.getInterfaceClass().getMethods();
+        Method method = findMethod(operation, methods);
+        // FIXME test m == null
         // Treat the serviceName as the Spring bean name to look up
-        return new SpringInvoker(serviceName, method, springContext);
+        return new SpringInvoker(targetName, method, springContext);
     }
 
     public void setScopeContainer(ScopeContainer scopeContainer) {

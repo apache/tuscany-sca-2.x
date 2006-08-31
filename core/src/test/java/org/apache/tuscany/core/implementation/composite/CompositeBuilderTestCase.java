@@ -20,23 +20,14 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
 
-import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
-import org.apache.tuscany.core.wire.jdk.JDKWireService;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -48,6 +39,16 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.builder.BuilderRegistryImpl;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.apache.tuscany.core.implementation.java.mock.components.Source;
+import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
+import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -66,7 +67,7 @@ public class CompositeBuilderTestCase extends MockObjectTestCase {
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
-        
+
         CompositeBuilder builder = new CompositeBuilder();
         WireService wireService = new JDKWireService();
         builder.setWireService(wireService);
@@ -79,71 +80,74 @@ public class CompositeBuilderTestCase extends MockObjectTestCase {
         builderRegistry.register(bindlessBuilder);
         builder.setBuilderRegistry(builderRegistry);
         CompositeComponent component =
-            (CompositeComponent)builder.build(parent, createTopComponentDef(), deploymentContext);
+            (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
         deploymentContext.getModuleScope().start();
         component.start();
-        CompositeComponent sourceComponent = (CompositeComponent)component.getChild("SourceComponent");
-        Source source = (Source)sourceComponent.getServiceInstance("InnerSourceService");
+        CompositeComponent sourceComponent = (CompositeComponent) component.getChild("SourceComponent");
+        Source source = (Source) sourceComponent.getServiceInstance("InnerSourceService");
         assertNotNull(source);
         component.stop();
     }
-    
+
     private ComponentDefinition createTopComponentDef() throws Exception {
-        
+
         CompositeComponentType outerType = new CompositeComponentType();
         outerType.add(createSourceComponentDef());
         outerType.add(createTargetComponentDef());
-        
+
         CompositeImplementation outerImpl = new CompositeImplementation();
         outerImpl.setComponentType(outerType);
-        
+
         ComponentDefinition<CompositeImplementation> topComponentDefinition =
             new ComponentDefinition<CompositeImplementation>(outerImpl);
-        
+
         return topComponentDefinition;
     }
-    
+
     private ComponentDefinition createSourceComponentDef() throws Exception {
-        
+
         CompositeComponentType innerType = new CompositeComponentType();
         innerType.add(createInnerSourceComponentDef());
         ReferenceDefinition reference = new ReferenceDefinition();
         reference.setName("targetComponentRef");
-        ServiceContract targetContract = new JavaServiceContract(Target.class);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> targetContract = registry.introspect(Target.class);
         reference.setServiceContract(targetContract);
         innerType.add(reference);
         BindlessServiceDefinition service = new BindlessServiceDefinition();
         service.setName("InnerSourceService");
-        ServiceContract sourceContract = new JavaServiceContract(Source.class);
+        ServiceContract<?> sourceContract = registry.introspect(Source.class);
         service.setServiceContract(sourceContract);
         service.setTarget(new URI("InnerSourceComponent"));
         innerType.add(service);
-        
+
         CompositeImplementation innerImpl = new CompositeImplementation();
         innerImpl.setComponentType(innerType);
-        
+
         ComponentDefinition<CompositeImplementation> sourceComponentDefinition =
             new ComponentDefinition<CompositeImplementation>("SourceComponent", innerImpl);
         ReferenceTarget refTarget = new ReferenceTarget();
         refTarget.setReferenceName("targetComponentRef");
         refTarget.addTarget(new URI("TargetComponent"));
         sourceComponentDefinition.add(refTarget);
-        
+
         return sourceComponentDefinition;
     }
-    
+
     private ComponentDefinition createInnerSourceComponentDef() throws Exception {
 
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setImplementationScope(Scope.MODULE);
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName("targetReference");
-        ServiceContract targetContract = new JavaServiceContract(Target.class);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> targetContract = registry.introspect(Target.class);
         reference.setServiceContract(targetContract);
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
         sourceType.add(reference);
 
-        ServiceContract sourceContract = new JavaServiceContract(Source.class);
+        ServiceContract<?> sourceContract = registry.introspect(Source.class);
+
         ServiceDefinition sourceServiceDefinition = new JavaMappedService();
         sourceServiceDefinition.setName("Source");
         sourceServiceDefinition.setServiceContract(sourceContract);
@@ -159,16 +163,18 @@ public class CompositeBuilderTestCase extends MockObjectTestCase {
         refTarget.setReferenceName("targetReference");
         refTarget.addTarget(new URI("TargetComponentRef"));
         innerSourceComponentDefinition.add(refTarget);
-        
+
         return innerSourceComponentDefinition;
     }
-    
+
     private ComponentDefinition createTargetComponentDef() throws Exception {
-        
+
         PojoComponentType targetType = new PojoComponentType();
         targetType.setImplementationScope(Scope.MODULE);
 
-        ServiceContract targetContract = new JavaServiceContract(Target.class);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> targetContract = registry.introspect(Target.class);
+
         ServiceDefinition targetServiceDefinition = new JavaMappedService();
         targetServiceDefinition.setName("Target");
         targetServiceDefinition.setServiceContract(targetContract);
@@ -180,7 +186,7 @@ public class CompositeBuilderTestCase extends MockObjectTestCase {
         targetImpl.setImplementationClass(TargetImpl.class);
         ComponentDefinition<JavaImplementation> targetComponentDefinition =
             new ComponentDefinition<JavaImplementation>("TargetComponent", targetImpl);
-        
+
         return targetComponentDefinition;
     }
 

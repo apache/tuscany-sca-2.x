@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.core.implementation.system.wire;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -85,11 +85,11 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         return new Class[0];
     }
 
-    public Map<Method, InboundInvocationChain> getInvocationChains() {
+    public Map<Operation, InboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, InboundInvocationChain chain) {
+    public void addInvocationChain(Operation operation, InboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 

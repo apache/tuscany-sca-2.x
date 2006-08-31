@@ -20,15 +20,20 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
 
 /**
@@ -40,6 +45,8 @@ public class InboundInvocationErrorTestCase extends TestCase {
 
     private Method checkedMethod;
     private Method runtimeMethod;
+    private Operation checkedOperation;
+    private Operation runtimeOperation;
 
     public InboundInvocationErrorTestCase() {
         super();
@@ -50,17 +57,28 @@ public class InboundInvocationErrorTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
+        super.setUp();
         checkedMethod =
-            InboundInvocationErrorTestCase.TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
+            TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
         runtimeMethod =
-            InboundInvocationErrorTestCase.TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
+            TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
         assertNotNull(checkedMethod);
         assertNotNull(runtimeMethod);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract;
+        try {
+            contract = registry.introspect(TestBean.class);
+        } catch (InvalidServiceContractException e) {
+            throw new AssertionError();
+        }
+
+        checkedOperation = contract.getOperations().get("checkedException");
+        runtimeOperation = contract.getOperations().get("runtimeException");
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
-        chains.put(checkedMethod, createChain(checkedMethod));
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
+        chains.put(checkedMethod, createChain(checkedMethod, checkedOperation));
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
@@ -74,8 +92,8 @@ public class InboundInvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
-        chains.put(runtimeMethod, createChain(runtimeMethod));
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
+        chains.put(runtimeMethod, createChain(runtimeMethod, runtimeOperation));
         JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
@@ -88,9 +106,9 @@ public class InboundInvocationErrorTestCase extends TestCase {
         fail(InboundInvocationErrorTestCase.TestException.class.getName() + " should have been thrown");
     }
 
-    private InboundInvocationChain createChain(Method m) {
+    private InboundInvocationChain createChain(Method m, Operation operation) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new InboundInvocationErrorTestCase.TestBeanImpl());
-        InboundInvocationChain chain = new InboundInvocationChainImpl(m);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new MockSyncInterceptor());
         chain.addRequestHandler(new MockHandler());
         chain.setTargetInvoker(invoker);

@@ -28,8 +28,12 @@ import java.util.Map;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -38,13 +42,12 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaTargetInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -63,6 +66,7 @@ import static org.easymock.EasyMock.replay;
 public final class MockFactory {
 
     private static final WireService WIRE_SERVICE = new JDKWireService();
+    private static final JavaInterfaceProcessorRegistry REGISTRY = new JavaInterfaceProcessorRegistryImpl();
 
     private MockFactory() {
     }
@@ -92,21 +96,6 @@ public final class MockFactory {
 
     @SuppressWarnings("unchecked")
     public static <T> JavaAtomicComponent<T> createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
-        throws NoSuchMethodException {
-        PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scope);
-        configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
-        configuration.addServiceInterface(clazz);
-        configuration.setWireService(WIRE_SERVICE);
-        return new JavaAtomicComponent(name, configuration, null);
-
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> JavaAtomicComponent<T> createJavaComponent(String name,
-                                                                 ScopeContainer scope,
-                                                                 Class<T> clazz,
-                                                                 WorkScheduler scheduler)
         throws NoSuchMethodException {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
@@ -255,7 +244,8 @@ public final class MockFactory {
         return contexts;
     }
 
-    public static <T> InboundWire<T> createTargetWire(String serviceName, Class<T> interfaze) {
+    public static <T> InboundWire<T> createTargetWire(String serviceName, Class<T> interfaze)
+        throws InvalidServiceContractException {
         return createServiceWire(serviceName, interfaze, null, null, null);
     }
 
@@ -263,9 +253,10 @@ public final class MockFactory {
     public static <T> InboundWire<T> createServiceWire(String serviceName, Class<T> interfaze,
                                                        Interceptor headInterceptor,
                                                        MessageHandler headRequestHandler,
-                                                       MessageHandler headResponseHandler) {
+                                                       MessageHandler headResponseHandler)
+        throws InvalidServiceContractException {
         InboundWire<T> wire = new InboundWireImpl<T>();
-        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(
@@ -276,22 +267,25 @@ public final class MockFactory {
     public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze,
                                                           Interceptor headInterceptor,
                                                           MessageHandler headRequestHandler,
-                                                          MessageHandler headResponseHandler) {
+                                                          MessageHandler headResponseHandler)
+        throws InvalidServiceContractException {
 
         OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
-        wire.addInvocationChains(
-            createOutboundChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
-        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        Map<Operation<?>, OutboundInvocationChain> outboundChains =
+            createOutboundChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler);
+        wire.addInvocationChains(outboundChains);
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         return wire;
     }
 
-    public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze) {
+    public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze)
+        throws InvalidServiceContractException {
         OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createOutboundChains(interfaze));
-        JavaServiceContract contract = new JavaServiceContract(interfaze);
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         return wire;
     }
@@ -310,11 +304,11 @@ public final class MockFactory {
                                boolean cacheable) throws Exception {
         if (inboundWire != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Method, InboundInvocationChain> targetInvocationConfigs = inboundWire.getInvocationChains();
+            Map<Operation, InboundInvocationChain> targetInvocationConfigs = inboundWire.getInvocationChains();
             for (OutboundInvocationChain outboundInvocationConfig : outboundWire.getInvocationChains().values()) {
                 // match wire chains
                 InboundInvocationChain inboundInvocationConfig =
-                    targetInvocationConfigs.get(outboundInvocationConfig.getMethod());
+                    targetInvocationConfigs.get(outboundInvocationConfig.getOperation());
                 if (inboundInvocationConfig == null) {
                     BuilderConfigException e =
                         new BuilderConfigException("Incompatible source and target interface types for reference");
@@ -332,7 +326,7 @@ public final class MockFactory {
                     if (inboundInvocationConfig.getHeadInterceptor() == null) {
                         BuilderConfigException e =
                             new BuilderConfigException("No target handler or interceptor for operation");
-                        e.setIdentifier(inboundInvocationConfig.getMethod().getName());
+                        e.setIdentifier(inboundInvocationConfig.getOperation().getName());
                         throw e;
                     }
                     if (!(outboundInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor
@@ -344,28 +338,31 @@ public final class MockFactory {
                 }
             }
 
-            for (OutboundInvocationChain outboundInvocationConfig : outboundWire.getInvocationChains()
-                .values()) {
+            for (OutboundInvocationChain chain : outboundWire.getInvocationChains().values()) {
                 //FIXME should use target method, not outboundInvocationConfig.getMethod()
-                TargetInvoker invoker = new JavaTargetInvoker(outboundInvocationConfig.getMethod(), targetContext);
+                Method[] methods = outboundWire.getServiceContract().getInterfaceClass().getMethods();
+                Method m = JavaIDLUtils.findMethod(chain.getOperation(), methods);
+                TargetInvoker invoker = new JavaTargetInvoker(m, targetContext);
                 invoker.setCacheable(cacheable);
-                outboundInvocationConfig.setTargetInvoker(invoker);
+                chain.setTargetInvoker(invoker);
             }
         }
     }
 
-    private static Map<Method, OutboundInvocationChain> createOutboundChains(Class<?> interfaze) {
+    private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze)
+        throws InvalidServiceContractException {
         return createOutboundChains(interfaze, null, null, null);
     }
 
-    private static Map<Method, OutboundInvocationChain> createOutboundChains(Class<?> interfaze,
-                                                                             Interceptor headInterceptor,
-                                                                             MessageHandler headRequestHandler,
-                                                                             MessageHandler headResponseHandler) {
-        Map<Method, OutboundInvocationChain> invocations = new HashMap<Method, OutboundInvocationChain>();
-        Method[] methods = interfaze.getMethods();
-        for (Method method : methods) {
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
+    private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze,
+                                                                                   Interceptor headInterceptor,
+                                                                                   MessageHandler headRequestHandler,
+                                                                                   MessageHandler headResponseHandler)
+        throws InvalidServiceContractException {
+        Map<Operation<?>, OutboundInvocationChain> invocations = new HashMap<Operation<?>, OutboundInvocationChain>();
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
+        for (Operation operation : contract.getOperations().values()) {
+            OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
             if (headInterceptor != null) {
                 chain.addInterceptor(headInterceptor);
             }
@@ -375,18 +372,20 @@ public final class MockFactory {
             if (headResponseHandler != null) {
                 chain.addRequestHandler(headResponseHandler);
             }
-            invocations.put(method, chain);
+            invocations.put(operation, chain);
         }
         return invocations;
     }
 
-    private static Map<Method, InboundInvocationChain> createInboundChains(Class<?> interfaze,
-                                                                           Interceptor headInterceptor,
-                                                                           MessageHandler headRequestHandler,
-                                                                           MessageHandler headResponseHandler) {
-        Map<Method, InboundInvocationChain> invocations = new MethodHashMap<InboundInvocationChain>();
-        Method[] methods = interfaze.getMethods();
-        for (Method method : methods) {
+    private static Map<Operation, InboundInvocationChain> createInboundChains(Class<?> interfaze,
+                                                                              Interceptor headInterceptor,
+                                                                              MessageHandler headRequestHandler,
+                                                                              MessageHandler headResponseHandler)
+        throws InvalidServiceContractException {
+
+        Map<Operation, InboundInvocationChain> invocations = new HashMap<Operation, InboundInvocationChain>();
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
+        for (Operation method : contract.getOperations().values()) {
             InboundInvocationChain chain = new InboundInvocationChainImpl(method);
             if (headInterceptor != null) {
                 chain.addInterceptor(headInterceptor);

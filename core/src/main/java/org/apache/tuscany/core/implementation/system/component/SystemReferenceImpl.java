@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -33,8 +33,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 
 /**
- * Default implementation of a reference configured with the
- * {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
+ * Default implementation of a reference configured with the {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
  *
  * @version $Rev$ $Date$
  */
@@ -89,11 +88,11 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createTargetInvoker(Method operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createAsyncTargetInvoker(Method operation, OutboundWire wire) {
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
 

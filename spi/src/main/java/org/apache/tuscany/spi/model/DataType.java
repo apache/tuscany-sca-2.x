@@ -122,4 +122,34 @@ public class DataType<L> extends ModelObject {
     public String getDataBinding() {
         return dataBinding;
     }
+
+    public int hashCode() {
+        int result;
+        result = (dataBinding != null ? dataBinding.hashCode() : 0);
+        result = 29 * result + (physical != null ? physical.hashCode() : 0);
+        result = 29 * result + (logical != null ? logical.hashCode() : 0);
+        result = 29 * result + (metadata != null ? metadata.hashCode() : 0);
+        return result;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final DataType dataType = (DataType) o;
+
+        if (dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null) {
+            return false;
+        }
+        if (logical != null ? !logical.equals(dataType.logical) : dataType.logical != null) {
+            return false;
+        }
+        return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
+
+    }
+
 }

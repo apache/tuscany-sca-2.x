@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.lang.reflect.Method;
 import java.util.List;
+
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * A source- or target-side invocation pipeline for a service operation. Invocation chains are associated with the
@@ -48,7 +49,7 @@ public interface InvocationChain {
     /**
      * Returns the target operation for this invocation chain
      */
-    Method getMethod();
+    Operation getOperation();
 
     /**
      * Adds a request handler to the invocation chain

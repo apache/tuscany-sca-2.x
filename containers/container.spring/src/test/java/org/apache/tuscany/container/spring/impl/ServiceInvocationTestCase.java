@@ -21,6 +21,7 @@ package org.apache.tuscany.container.spring.impl;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -29,7 +30,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.test.ArtifactFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
+import static org.apache.tuscany.test.ArtifactFactory.createWireService;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
@@ -41,20 +42,20 @@ import org.springframework.context.support.StaticApplicationContext;
  */
 public class ServiceInvocationTestCase extends TestCase {
 
-    public void testInvocation() {
-        SpringCompositeComponent<?> context = new SpringCompositeComponent("parent", createSpringContext(), null, null
-        );
+    public void testInvocation() throws InvalidServiceContractException {
+        AbstractApplicationContext springContext = createSpringContext();
+        SpringCompositeComponent<?> context = new SpringCompositeComponent("parent", springContext, null, null);
         InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
         Service<TestBean> service =
-            new ServiceExtension<TestBean>("fooService", TestBean.class, context, ArtifactFactory.createWireService());
+            new ServiceExtension<TestBean>("fooService", TestBean.class, context, createWireService());
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         Connector connector = ArtifactFactory.createConnector();
         connector.connect(inboundWire, outboundWire, true);
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getMethod()));
+            chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getOperation()));
         }
         context.register(service);
         TestBean serviceInstance = (TestBean) context.getService("fooService").getServiceInstance();

@@ -21,6 +21,9 @@ import java.rmi.Remote;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -35,11 +38,12 @@ public class OSGiReference<T> extends ReferenceExtension<T> {
         //this.uri = uri;
     }
 
-    public TargetInvoker createTargetInvoker(Method operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         try {
             Object proxy = getProxy();
             String name = operation.getName();
-            Class<?>[] parameterTypes = operation.getParameterTypes();
+            Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
+            Class<?>[] parameterTypes = method.getParameterTypes();
             Method remoteMethod = proxy.getClass().getMethod(name, parameterTypes);
             return new OSGiInvoker(proxy, remoteMethod);
         } catch (NoSuchMethodException e) {

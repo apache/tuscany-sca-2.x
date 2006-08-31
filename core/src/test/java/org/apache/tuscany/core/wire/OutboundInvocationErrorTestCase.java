@@ -21,10 +21,14 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
@@ -39,6 +43,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
 
     private Method checkedMethod;
     private Method runtimeMethod;
+    private JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
 
     public OutboundInvocationErrorTestCase() {
         super();
@@ -49,6 +54,7 @@ public class OutboundInvocationErrorTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
+        super.setUp();
         checkedMethod = TestBean.class.getDeclaredMethod("checkedException", (Class[]) null);
         runtimeMethod = TestBean.class.getDeclaredMethod("runtimeException", (Class[]) null);
         assertNotNull(checkedMethod);
@@ -57,7 +63,10 @@ public class OutboundInvocationErrorTestCase extends TestCase {
 
     public void testCheckedException() throws Exception {
         OutboundWire wire = new OutboundWireImpl();
-        wire.addInvocationChain(checkedMethod, createChain(checkedMethod));
+        ServiceContract<?> contract = registry.introspect(TestBean.class);
+        wire.setServiceContract(contract);
+        Operation operation = contract.getOperations().get("checkedException");
+        wire.addInvocationChain(operation, createChain(checkedMethod, operation));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
@@ -71,7 +80,11 @@ public class OutboundInvocationErrorTestCase extends TestCase {
 
     public void testRuntimeException() throws Exception {
         OutboundWire wire = new OutboundWireImpl();
-        wire.addInvocationChain(runtimeMethod, createChain(runtimeMethod));
+        ServiceContract<?> contract = registry.introspect(TestBean.class);
+        wire.setServiceContract(contract);
+        Operation operation = contract.getOperations().get("runtimeException");
+        OutboundInvocationChain chain = createChain(runtimeMethod, operation);
+        wire.addInvocationChain(operation, chain);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         try {
             TestBean proxy = (TestBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
@@ -83,9 +96,9 @@ public class OutboundInvocationErrorTestCase extends TestCase {
         fail(TestException.class.getName() + " should have been thrown");
     }
 
-    private OutboundInvocationChain createChain(Method m) {
+    private OutboundInvocationChain createChain(Method m, Operation operation) {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(m);
+        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new MockSyncInterceptor());
         chain.addRequestHandler(new MockHandler());
         chain.setTargetInvoker(invoker);

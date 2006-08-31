@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -32,8 +31,8 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
@@ -219,11 +218,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
         }
 
-        public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
-            return null;
-        }
-
-        public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+        public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
             return null;
         }
     }

@@ -42,13 +42,13 @@ public abstract class AbstractJDKOutboundInvocationHandler implements WireInvoca
 
     protected Object invoke(OutboundInvocationChain chain, TargetInvoker invoker, Object[] args) throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        Method method = chain.getMethod();
         if (chain.getTargetRequestChannel() == null && chain.getTargetResponseChannel() == null
             && headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
                 if (chain.getTargetInvoker() == null) {
-                    throw new AssertionError("No target invoker [" + method.getName() + "]");
+                    String name = chain.getOperation().getName();
+                    throw new AssertionError("No target invoker [" + name + "]");
                 }
                 return chain.getTargetInvoker().invokeTarget(args);
             } catch (InvocationTargetException e) {
@@ -69,7 +69,8 @@ public abstract class AbstractJDKOutboundInvocationHandler implements WireInvoca
                 return body;
 
             } else if (headInterceptor == null) {
-                throw new AssertionError("No target interceptor configured [" + method.getName() + "]");
+                String name = chain.getOperation().getName();
+                throw new AssertionError("No target interceptor configured [" + name + "]");
 
             } else {
                 Message resp = headInterceptor.invoke(msg);

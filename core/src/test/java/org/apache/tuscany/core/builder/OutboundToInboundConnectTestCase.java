@@ -18,10 +18,13 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
@@ -30,6 +33,7 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
@@ -463,13 +467,15 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
                                               List<MessageHandler> requestHandlers,
                                               List<MessageHandler> responseHandlers) {
 
-        Method echo;
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract;
         try {
-            echo = SimpleTarget.class.getMethod("echo", String.class);
-        } catch (NoSuchMethodException e) {
+            contract = registry.introspect(SimpleTarget.class);
+        } catch (InvalidServiceContractException e) {
             throw new AssertionError();
         }
-        InboundInvocationChainImpl chain = new InboundInvocationChainImpl(echo);
+        Operation operation = contract.getOperations().get("echo");
+        InboundInvocationChainImpl chain = new InboundInvocationChainImpl(operation);
         if (interceptors != null) {
             for (Interceptor interceptor : interceptors) {
                 chain.addInterceptor(interceptor);
@@ -493,13 +499,15 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
                                                List<MessageHandler> requestHandlers,
                                                List<MessageHandler> responseHandlers) {
 
-        Method echo;
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract;
         try {
-            echo = SimpleTarget.class.getMethod("echo", String.class);
-        } catch (NoSuchMethodException e) {
+            contract = registry.introspect(SimpleTarget.class);
+        } catch (InvalidServiceContractException e) {
             throw new AssertionError();
         }
-        OutboundInvocationChainImpl chain = new OutboundInvocationChainImpl(echo);
+        Operation operation = contract.getOperations().get("echo");
+        OutboundInvocationChainImpl chain = new OutboundInvocationChainImpl(operation);
         if (interceptors != null) {
             for (Interceptor interceptor : interceptors) {
                 chain.addInterceptor(interceptor);

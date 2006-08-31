@@ -73,7 +73,7 @@ public class JDKInboundInvocationHandler implements WireInvocationHandler, Invoc
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
                 TargetException e = new TargetException("No target invoker configured for operation");
-                e.setIdentifier(chain.getMethod().getName());
+                e.setIdentifier(chain.getOperation().getName());
                 throw e;
             }
             if (chain.getTargetInvoker().isCacheable()) {

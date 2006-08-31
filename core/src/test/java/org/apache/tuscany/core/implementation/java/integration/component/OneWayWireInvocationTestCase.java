@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.java.integration.component;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
@@ -26,6 +27,7 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.model.Operation;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.java.AsyncJavaTargetInvoker;
@@ -73,7 +75,8 @@ public class OneWayWireInvocationTestCase extends TestCase {
         AsyncJavaTargetInvoker invoker = new AsyncJavaTargetInvoker(method, null, component, scheduler, null, context);
         InboundWire<AsyncTarget> wire =
             createServiceWire("foo", AsyncTarget.class, null, null, null);
-        InboundInvocationChain chain = wire.getInvocationChains().get(method);
+        Map<Operation, InboundInvocationChain> chains = wire.getInvocationChains();
+        InboundInvocationChain chain = chains.get(wire.getServiceContract().getOperations().get("invoke"));              
         chain.setTargetInvoker(invoker);
         chain.prepare();
         MessageImpl msg = new MessageImpl();

@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.core.implementation.system.wire;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -95,11 +95,11 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public Map<Method, OutboundInvocationChain> getInvocationChains() {
+    public Map<Operation<?>, OutboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Method method, OutboundInvocationChain chains) {
+    public void addInvocationChain(Operation operation, OutboundInvocationChain chains) {
         throw new UnsupportedOperationException();
     }
 
@@ -107,27 +107,27 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public Map<Method, InboundInvocationChain> getTargetCallbackInvocationChains() {
+    public Map<Operation<?>, InboundInvocationChain> getTargetCallbackInvocationChains() {
         throw new UnsupportedOperationException();
     }
 
-    public void addTargetCallbackInvocationChains(Map<Method, InboundInvocationChain> chains) {
+    public void addTargetCallbackInvocationChains(Map<Operation<?>, InboundInvocationChain> chains) {
         throw new UnsupportedOperationException();
     }
 
-    public void addTargetCallbackInvocationChain(Method method, InboundInvocationChain chain) {
+    public void addTargetCallbackInvocationChain(Operation operation, InboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 
-    public Map<Method, OutboundInvocationChain> getSourceCallbackInvocationChains() {
+    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains() {
         return null;
     }
 
-    public void addSourceCallbackInvocationChains(Map<Method, OutboundInvocationChain> chains) {
+    public void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
         throw new UnsupportedOperationException();
     }
 
-    public void addSourceCallbackInvocationChain(Method method, OutboundInvocationChain chain) {
+    public void addSourceCallbackInvocationChain(Operation operation, OutboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 

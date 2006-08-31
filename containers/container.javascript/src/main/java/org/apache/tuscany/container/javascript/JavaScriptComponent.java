@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +28,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -65,7 +65,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
 
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
             for (OutboundWire<?> wire : referenceWires) {
-                 Object wireProxy = wireService.createProxy(wire);
+                Object wireProxy = wireService.createProxy(wire);
                 //since all types that may be used in the reference interface may not be known to Rhino
                 //using the wireProxy as is will fail result in type conversion exceptions in cases where
                 //Rhino does not know enough of the tpypes used.  Hence introduce a interceptor proxy, 
@@ -75,9 +75,9 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
                 Class<?> businessInterface = wire.getServiceContract().getInterfaceClass();
                 JavaScriptReferenceProxy interceptingProxy =
                     new JavaScriptReferenceProxy(businessInterface,
-                                                 wireProxy,
-                                                 rhinoScript.createInstanceScope(context));
-                context.put(wire.getReferenceName(),  interceptingProxy.createProxy());
+                        wireProxy,
+                        rhinoScript.createInstanceScope(context));
+                context.put(wire.getReferenceName(), interceptingProxy.createProxy());
 
             }
         }
@@ -87,8 +87,8 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
         return instance;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method method) {
-        return new JavaScriptInvoker(method.getName(), this);
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+        return new JavaScriptInvoker(operation.getName(), this);
     }
 
     // TODO: move all the following up to AtomicComponentExtension?

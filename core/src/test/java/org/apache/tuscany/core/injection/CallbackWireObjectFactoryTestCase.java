@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.injection;
 
+import static org.easymock.EasyMock.verify;
+
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
@@ -32,13 +35,15 @@ import static org.easymock.EasyMock.replay;
 public class CallbackWireObjectFactoryTestCase extends TestCase {
 
     public void testCreateInstance() throws Exception {
+        JavaServiceContract contract = new JavaServiceContract();
+        contract.setCallbackClass(Foo.class);
         WireService service = createMock(WireService.class);
-        service.createCallbackProxy(Foo.class);
+        service.createCallbackProxy(contract);
         expectLastCall().andReturn(null);
         replay(service);
-        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(Foo.class, service);
+        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(contract, service);
         factory.getInstance();
-        EasyMock.verify(service);
+        verify(service);
     }
 
     private interface Foo {

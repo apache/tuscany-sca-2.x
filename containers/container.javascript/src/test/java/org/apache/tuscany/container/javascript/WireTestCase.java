@@ -18,21 +18,22 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import static org.easymock.EasyMock.reportMatcher;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.container.javascript.mock.Greeting;
-import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.container.javascript.mock.Greeting;
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.test.ArtifactFactory;
+import static org.easymock.EasyMock.reportMatcher;
 import org.easymock.IArgumentMatcher;
 
 /**
@@ -40,18 +41,18 @@ import org.easymock.IArgumentMatcher;
  */
 public class WireTestCase extends TestCase {
 
-    private static final String SCRIPT = 
-        "   function setWire(ref){" + 
-        "       wire = ref;" + "   }" +
-        "   " +
-        "   function greet(name){" +
-        "       return wire.greet(name);  " +
-        "   }";
+    private static final String SCRIPT =
+        "   function setWire(ref){" +
+            "       wire = ref;" + "   }" +
+            "   " +
+            "   function greet(name){" +
+            "       return wire.greet(name);  " +
+            "   }";
 
-    private static final String SCRIPT2 = 
+    private static final String SCRIPT2 =
         "   function greet(name){" +
-        "       return name;  " +
-        "   }";
+            "       return name;  " +
+            "   }";
 
     private RhinoScript implClass1;
 
@@ -116,12 +117,13 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
+        JavaScriptComponent<Greeting> context =
+            new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
-        TargetInvoker invoker = context.createTargetInvoker("greeting", Greeting.class.getMethod("greet", String.class)
-        );
-        assertEquals("foo", invoker.invokeTarget(new String[] { "foo" }));
+        Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null);
+        TargetInvoker invoker = context.createTargetInvoker(null, operation);
+        assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
         scope.stop();
     }
 
@@ -133,14 +135,15 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
+        JavaScriptComponent<Greeting> context =
+            new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
 
         InboundWire<?> wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);
         ArtifactFactory.terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(context.createTargetInvoker("Greeting", chain.getMethod()));
+            chain.setTargetInvoker(context.createTargetInvoker(null, chain.getOperation()));
         }
         context.addInboundWire(wire);
         Greeting greeting = (Greeting) context.getServiceInstance("Greeting");

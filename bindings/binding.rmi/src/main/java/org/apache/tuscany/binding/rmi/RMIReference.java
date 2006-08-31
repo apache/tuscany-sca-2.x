@@ -16,13 +16,19 @@
  */
 package org.apache.tuscany.binding.rmi;
 
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
+
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.host.rmi.RMIHost;
 
 /**
  * @version $Rev$ $Date$
@@ -51,15 +57,16 @@ public class RMIReference<T> extends ReferenceExtension<T> {
         this.rmiHost = rmiHost;
     }
 
-    public TargetInvoker createTargetInvoker(Method operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         try {
             /*Remote proxy = getProxy();
              Method remoteMethod = proxy.getClass().getMethod(operation.getName(),
              (Class[]) operation.getParameterTypes());
              return new RMIInvoker(proxy, remoteMethod);
              */
+            Method method = findMethod(operation, contract.getInterfaceClass().getMethods());
             Method remoteMethod =
-                getInterface().getMethod(operation.getName(), (Class[]) operation.getParameterTypes());
+                getInterface().getMethod(operation.getName(), (Class[]) method.getParameterTypes());
             return new RMIInvoker(rmiHost, host, port, svcName, remoteMethod);
         } catch (NoSuchMethodException e) {
             throw new NoRemoteMethodException(operation.toString(), e);

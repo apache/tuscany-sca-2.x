@@ -20,7 +20,6 @@ package org.apache.tuscany.container.javascript;
 
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
 import javax.wsdl.WSDLException;
@@ -28,32 +27,39 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+
 /**
  * Introspects JavaScript files for SCA configuration
- * 
  */
 public class JavaScriptIntrospector {
 
     private WSDLDefinitionRegistry wsdlRegistry;
+    private JavaInterfaceProcessorRegistry processorRegistry;
 
-    public JavaScriptIntrospector(@Autowire WSDLDefinitionRegistry wsdlRegistry) {
+    public JavaScriptIntrospector(@Autowire WSDLDefinitionRegistry wsdlRegistry,
+                                  @Autowire JavaInterfaceProcessorRegistry processorRegistry) {
         this.wsdlRegistry = wsdlRegistry;
+        this.processorRegistry = processorRegistry;
     }
 
-    public JavaScriptComponentType introspectScript(RhinoSCAConfig scaConfig, ClassLoader cl) {
+    public JavaScriptComponentType introspectScript(RhinoSCAConfig scaConfig, ClassLoader cl)
+        throws MissingResourceException, InvalidServiceContractException {
         JavaScriptComponentType componentType = new JavaScriptComponentType();
         introspectJavaInterface(componentType, cl, scaConfig.getJavaInterface());
-        introspectWSDLInterface(componentType, cl, scaConfig.getWSDLNamespace(), scaConfig.getWSDLPortType(), scaConfig.getWSDLLocation());
+        introspectWSDLInterface(componentType, cl, scaConfig.getWSDLNamespace(), scaConfig.getWSDLPortType(),
+            scaConfig.getWSDLLocation());
         introspectReferences(componentType, cl, scaConfig.getReferences());
         introspectProperties(componentType, cl, scaConfig.getProperties());
         introspectScope(componentType, scaConfig.getScope());
@@ -67,22 +73,23 @@ public class JavaScriptIntrospector {
     }
 
     @SuppressWarnings("unchecked")
-    private void introspectJavaInterface(ComponentType componentType, ClassLoader cl, String serviceClass) {
+    private void introspectJavaInterface(ComponentType componentType, ClassLoader cl, String serviceClass)
+        throws MissingResourceException, InvalidServiceContractException {
         if (serviceClass != null) {
             ServiceDefinition service = new ServiceDefinition();
-            ServiceContract sc = new JavaServiceContract();
             try {
-                sc.setInterfaceClass(Class.forName(serviceClass.toString(), true, cl));
+                ServiceContract<?> sc = processorRegistry.introspect(Class.forName(serviceClass));
+                service.setServiceContract(sc);
+                componentType.add(service);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new MissingResourceException("Interface not found", e);
             }
-            service.setServiceContract(sc);
-            componentType.add(service);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    private void introspectWSDLInterface(ComponentType componentType, ClassLoader cl, String wsdlNamespace, String wsdlPortType, String wsdlLocation) {
+    private void introspectWSDLInterface(ComponentType componentType, ClassLoader cl, String wsdlNamespace,
+                                         String wsdlPortType, String wsdlLocation) {
         if (wsdlNamespace == null && wsdlPortType == null && wsdlLocation == null) {
             return;
         }
@@ -101,7 +108,8 @@ public class JavaScriptIntrospector {
         componentType.add(service);
     }
 
-    private PortType readWSDLPortType(String wsdlNamespace, String wsdlPortType, String wsdlLocation, PortType portType) {
+    private PortType readWSDLPortType(String wsdlNamespace, String wsdlPortType, String wsdlLocation,
+                                      PortType portType) {
         Definition wsdlDefinition;
         try {
             WSDLReader reader = WSDLFactory.newInstance().newWSDLReader();

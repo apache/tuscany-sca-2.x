@@ -18,29 +18,22 @@
  */
 package org.apache.tuscany.spi.model;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 /**
  * Base class representing service contract information
- * 
+ *
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract<T> extends ModelObject {
     protected InteractionScope interactionScope;
-
     protected Class<?> interfaceClass;
-
     protected String interfaceName;
-
     protected String callbackName;
-
     protected Class<?> callbackClass;
-
     protected Map<String, Operation<T>> operations;
-
     protected Map<String, Operation<T>> callbacksOperations;
-    
     protected String dataBinding;
 
     protected ServiceContract() {
@@ -54,10 +47,18 @@ public abstract class ServiceContract<T> extends ModelObject {
         this.interfaceName = interfaceName;
     }
 
+    /**
+     * Returns the interface name for the contract
+     *
+     * @return the interface name for the contract
+     */
     public String getInterfaceName() {
         return interfaceName;
     }
 
+    /**
+     * Sets the interface name for the contract
+     */
     public void setInterfaceName(String interfaceName) {
         this.interfaceName = interfaceName;
     }
@@ -117,16 +118,31 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     public Map<String, Operation<T>> getOperations() {
         if (operations == null) {
-            operations = new HashMap<String, Operation<T>>();
+            return Collections.emptyMap();
         }
-        return operations;
+        return Collections.unmodifiableMap(operations);
+    }
+
+    public void setOperations(Map<String, Operation<T>> operations) {
+        for (Operation<T> operation : operations.values()) {
+            operation.setServiceContract(this);
+        }
+        this.operations = operations;
     }
 
     public Map<String, Operation<T>> getCallbacksOperations() {
         if (callbacksOperations == null) {
-            callbacksOperations = new HashMap<String, Operation<T>>();
+            return Collections.emptyMap();
         }
-        return callbacksOperations;
+        return Collections.unmodifiableMap(callbacksOperations);
+    }
+
+    public void setCallbacksOperations(Map<String, Operation<T>> callbacksOperations) {
+        for (Operation<T> operation : callbacksOperations.values()) {
+            operation.setServiceContract(this);
+            operation.setCallback(true);
+        }
+        this.callbacksOperations = callbacksOperations;
     }
 
     public String getDataBinding() {
@@ -135,5 +151,42 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     public void setDataBinding(String dataBinding) {
         this.dataBinding = dataBinding;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final ServiceContract that = (ServiceContract) o;
+
+        if (callbackName != null ? !callbackName.equals(that.callbackName) : that.callbackName != null) {
+            return false;
+        }
+        if (callbacksOperations != null ? !callbacksOperations.equals(that.callbacksOperations) :
+            that.callbacksOperations != null) {
+            return false;
+        }
+        if (interfaceClass != null ? !interfaceClass.equals(that.interfaceClass) : that.interfaceClass != null) {
+            return false;
+        }
+        if (interfaceName != null ? !interfaceName.equals(that.interfaceName) : that.interfaceName != null) {
+            return false;
+        }
+        return !(operations != null ? !operations.equals(that.operations) : that.operations != null);
+
+    }
+
+    public int hashCode() {
+        int result;
+        result = (interfaceClass != null ? interfaceClass.hashCode() : 0);
+        result = 29 * result + (interfaceName != null ? interfaceName.hashCode() : 0);
+        result = 29 * result + (callbackName != null ? callbackName.hashCode() : 0);
+        result = 29 * result + (operations != null ? operations.hashCode() : 0);
+        result = 29 * result + (callbacksOperations != null ? callbacksOperations.hashCode() : 0);
+        return result;
     }
 }
