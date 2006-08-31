@@ -77,7 +77,6 @@ public class ConnectorImpl implements Connector {
             // connect inbound wires
             for (InboundWire<T> inboundWire : sourceComponent.getInboundWires().values()) {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                    ServiceContract contract = inboundWire.getServiceContract();
                     Operation operation = chain.getOperation();
                     TargetInvoker invoker = sourceComponent.createTargetInvoker(null, operation);
                     chain.setTargetInvoker(invoker);
@@ -186,7 +185,6 @@ public class ConnectorImpl implements Connector {
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    ServiceContract inboundContract = targetWire.getServiceContract();
                     Operation inboundOperation = inboundChain.getOperation();
                     invoker = component.createTargetInvoker(null, inboundOperation);
                 }
@@ -228,7 +226,6 @@ public class ConnectorImpl implements Connector {
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    ServiceContract inboundContract = targetWire.getServiceContract();
                     Operation inboundOperation = inboundChain.getOperation();
                     invoker = component.createTargetInvoker(null, inboundOperation);
                 }

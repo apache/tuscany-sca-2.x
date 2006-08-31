@@ -33,7 +33,8 @@ import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 
 /**
- * Default implementation of a reference configured with the {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
+ * Default implementation of a reference configured with the
+ * {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
  *
  * @version $Rev$ $Date$
  */
