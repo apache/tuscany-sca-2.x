@@ -43,11 +43,15 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     private String referenceName;
     private ServiceContract serviceContract;
     private AutowireComponent<?> component;
+    final private boolean required;
 
-    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component) {
+    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component,
+            boolean required) {
+        
         this.referenceName = referenceName;
         this.component = component;
         serviceContract = new JavaServiceContract(businessInterface);
+        this.required= required;
     }
 
     public ServiceContract getServiceContract() {
@@ -76,7 +80,7 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     public T getTargetService() throws TargetException {
         Class interfaze = serviceContract.getInterfaceClass();
         T service = (T) component.resolveInstance(interfaze);
-        if (service == null) {
+        if (service == null && required) {
             TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
             e.setIdentifier(interfaze.getName());
             throw e;

@@ -196,6 +196,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
                     + (pos + 1));
         }
         reference.setName(name);
+        
+        reference.setRequired(autowireAnnot.required());
+        
         ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);

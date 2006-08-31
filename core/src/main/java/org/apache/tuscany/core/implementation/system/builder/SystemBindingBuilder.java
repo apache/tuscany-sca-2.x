@@ -76,7 +76,8 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         SystemReferenceImpl reference = new SystemReferenceImpl(boundReferenceDefinition.getName(), interfaze, parent);
         SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
         String refName = boundReferenceDefinition.getName();
-        OutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze, autowireComponent);
+        OutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze,
+                autowireComponent, boundReferenceDefinition.isRequired());
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);
         return reference;
