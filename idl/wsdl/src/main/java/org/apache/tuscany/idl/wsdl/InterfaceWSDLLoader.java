@@ -49,7 +49,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
 
     private WSDLDefinitionRegistry wsdlRegistry;
 
-    @Constructor({"registry"})
+    @Constructor({"registry","wsdlRegistry"})
     public InterfaceWSDLLoader(@Autowire LoaderRegistry registry,
                                @Autowire WSDLDefinitionRegistry wsdlRegistry) {
         super(registry);
