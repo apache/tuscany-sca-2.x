@@ -125,7 +125,7 @@ public class DataType<L> extends ModelObject {
 
     public int hashCode() {
         int result;
-        result = (dataBinding != null ? dataBinding.hashCode() : 0);
+        result = dataBinding != null ? dataBinding.hashCode() : 0;
         result = 29 * result + (physical != null ? physical.hashCode() : 0);
         result = 29 * result + (logical != null ? logical.hashCode() : 0);
         result = 29 * result + (metadata != null ? metadata.hashCode() : 0);

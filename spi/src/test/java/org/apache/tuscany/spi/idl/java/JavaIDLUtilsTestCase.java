@@ -62,7 +62,7 @@ public class JavaIDLUtilsTestCase extends TestCase {
     }
 
     public void testParamsFindOperation() throws Exception {
-        Method method = Foo.class.getMethod("foo",String.class);
+        Method method = Foo.class.getMethod("foo", String.class);
         Operation ret = findOperation(method, operations);
         assertEquals("foo", ret.getName());
         assertEquals(String.class, method.getParameterTypes()[0]);

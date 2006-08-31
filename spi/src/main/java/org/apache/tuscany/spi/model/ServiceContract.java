@@ -166,8 +166,8 @@ public abstract class ServiceContract<T> extends ModelObject {
         if (callbackName != null ? !callbackName.equals(that.callbackName) : that.callbackName != null) {
             return false;
         }
-        if (callbacksOperations != null ? !callbacksOperations.equals(that.callbacksOperations) :
-            that.callbacksOperations != null) {
+        if (callbacksOperations != null ? !callbacksOperations.equals(that.callbacksOperations)
+            : that.callbacksOperations != null) {
             return false;
         }
         if (interfaceClass != null ? !interfaceClass.equals(that.interfaceClass) : that.interfaceClass != null) {
@@ -182,7 +182,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     public int hashCode() {
         int result;
-        result = (interfaceClass != null ? interfaceClass.hashCode() : 0);
+        result = interfaceClass != null ? interfaceClass.hashCode() : 0;
         result = 29 * result + (interfaceName != null ? interfaceName.hashCode() : 0);
         result = 29 * result + (callbackName != null ? callbackName.hashCode() : 0);
         result = 29 * result + (operations != null ? operations.hashCode() : 0);
