@@ -159,7 +159,9 @@ public class Operation<T> {
     }
 
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -172,8 +174,8 @@ public class Operation<T> {
         if (name != null ? !name.equals(operation.name) : operation.name != null) {
             return false;
         }
-        if (parameterTypes != null ? !parameterTypes.equals(operation.parameterTypes) :
-            operation.parameterTypes != null) {
+        if (parameterTypes != null ? !parameterTypes.equals(operation.parameterTypes)
+            : operation.parameterTypes != null) {
             return false;
         }
         return !(returnType != null ? !returnType.equals(operation.returnType) : operation.returnType != null);
@@ -181,7 +183,7 @@ public class Operation<T> {
 
     public int hashCode() {
         int result;
-        result = (name != null ? name.hashCode() : 0);
+        result = name != null ? name.hashCode() : 0;
         result = 29 * result + (returnType != null ? returnType.hashCode() : 0);
         result = 29 * result + (parameterTypes != null ? parameterTypes.hashCode() : 0);
         result = 29 * result + (faultTypes != null ? faultTypes.hashCode() : 0);
