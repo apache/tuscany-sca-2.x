@@ -58,17 +58,24 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
                             DeploymentContext context)
         throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
-        boolean autowire = method.getAnnotation(Autowire.class) != null;
-        if (annotation == null && !autowire) {
-            return;
+        Autowire autowire = method.getAnnotation(Autowire.class);
+        boolean isAutowire= autowire != null;
+        if (annotation == null && !isAutowire) {
+            return; //Not a reference or autowire annotation.
         }
         if (method.getParameterTypes().length != 1) {
             IllegalReferenceException e = new IllegalReferenceException("Setter must have one parameter");
             e.setIdentifier(method.toString());
             throw e;
         }
-        String name = null;
+        //process autowire required first let reference override. or if conflicting should this fault?
         boolean required = false;
+        if(isAutowire) {
+            required= autowire.required();
+        }
+        
+        String name = null;
+        
         if (annotation != null) {
             if (annotation.name() != null && annotation.name().length() > 0) {
                 name = annotation.name();
@@ -84,9 +91,10 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
+       
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(method);
-        reference.setAutowire(autowire);
+        reference.setAutowire(isAutowire);
         reference.setRequired(required);
         reference.setName(name);
         ServiceContract contract;

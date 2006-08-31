@@ -37,5 +37,10 @@ public @interface Autowire {
      * The name of the autowire. If not specified then the name will be derived from the annotated field.
      */
     String name() default "";
+    
+    /**
+     * Indicates if a reference must be specified.
+     */
+    public boolean required() default true;
 
 }

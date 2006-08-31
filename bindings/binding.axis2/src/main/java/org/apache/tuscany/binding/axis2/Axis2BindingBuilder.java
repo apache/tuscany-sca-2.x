@@ -48,7 +48,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         initAxis();
     }
 
-    @Autowire()
+    @Autowire(required=false)
     public void setServletHost(ServletHost servletHost) {
         this.servletHost = servletHost;
     }

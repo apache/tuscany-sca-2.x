@@ -138,7 +138,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
             Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
             OutboundWire<?> wire;
             if (referenceDefiniton.isAutowire()) {
-                wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext);
+                wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext, referenceDefiniton.isRequired());
             } else {
                 //FIXME support multiplicity!
                 assert target.getTargets().size() == 1 : "Multiplicity not yet implemented";
@@ -151,7 +151,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         for (ReferenceDefinition reference : componentType.getReferences().values()) {
             if (reference.isAutowire()) {
                 Class interfaze = reference.getServiceContract().getInterfaceClass();
-                OutboundWire<?> wire = new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext);
+                OutboundWire<?> wire = new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext, reference.isRequired());
                 component.addOutboundWire(wire);
             }
         }
