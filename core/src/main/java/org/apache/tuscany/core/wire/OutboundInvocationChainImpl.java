@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -35,7 +35,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
     /**
      * Creates an new outbound chain
      */
-    public OutboundInvocationChainImpl(Method operation) {
+    public OutboundInvocationChainImpl(Operation operation) {
         super(operation);
     }
 

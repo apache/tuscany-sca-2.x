@@ -18,18 +18,17 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundWire;
-
-import org.apache.tuscany.core.util.MethodHashMap;
 
 /**
  * Default implementation of an inbound wire
@@ -42,7 +41,7 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     private ServiceContract serviceContract;
     private OutboundWire<T> targetWire;
     private String callbackReferenceName;
-    private Map<Method, InboundInvocationChain> chains = new MethodHashMap<InboundInvocationChain>();
+    private Map<Operation, InboundInvocationChain> chains = new HashMap<Operation, InboundInvocationChain>();
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -73,16 +72,16 @@ public class InboundWireImpl<T> implements InboundWire<T> {
         this.serviceName = serviceName;
     }
 
-    public Map<Method, InboundInvocationChain> getInvocationChains() {
+    public Map<Operation, InboundInvocationChain> getInvocationChains() {
         return chains;
     }
 
-    public void addInvocationChains(Map<Method, InboundInvocationChain> chains) {
+    public void addInvocationChains(Map<Operation, InboundInvocationChain> chains) {
         this.chains.putAll(chains);
     }
 
-    public void addInvocationChain(Method method, InboundInvocationChain chain) {
-        chains.put(method, chain);
+    public void addInvocationChain(Operation operation, InboundInvocationChain chain) {
+        chains.put(operation, chain);
     }
 
     public void setTargetWire(OutboundWire<T> wire) {

@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.MessageChannel;
@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public abstract class InvocationChainImpl implements InvocationChain {
-    protected Method operation;
+    protected Operation operation;
     protected TargetInvoker targetInvoker;
     protected Interceptor interceptorChainHead;
     protected Interceptor interceptorChainTail;
@@ -51,12 +51,12 @@ public abstract class InvocationChainImpl implements InvocationChain {
     // the pointer to a bridged target head interceptor or null if the target has no interceptors
     protected Interceptor targetInterceptorChainHead;
 
-    public InvocationChainImpl(Method operation) {
+    public InvocationChainImpl(Operation operation) {
         assert operation != null : "No operation type specified";
         this.operation = operation;
     }
 
-    public Method getMethod() {
+    public Operation getOperation() {
         return operation;
     }
 

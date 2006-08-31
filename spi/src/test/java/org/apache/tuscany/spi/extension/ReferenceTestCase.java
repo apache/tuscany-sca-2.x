@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -52,18 +54,18 @@ public class ReferenceTestCase extends TestCase {
     }
 
     public void testPrepare() throws Exception {
-        Method method = getClass().getMethod("testPrepare");
         InboundInvocationChain chain = createMock(InboundInvocationChain.class);
+        Operation<Type> operation = new Operation<Type>("test", null, null, null, false, null);
         chain.setTargetInvoker(null);
         expectLastCall();
-        chain.getMethod();
-        expectLastCall().andReturn(method);
+        chain.getOperation();
+        expectLastCall().andReturn(operation);
         chain.prepare();
         expectLastCall();
         InboundWire wire = createMock(InboundWire.class);
         wire.getInvocationChains();
-        Map<Method, InvocationChain> chains = new HashMap<Method, InvocationChain>();
-        chains.put(method, chain);
+        Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
+        chains.put(operation, chain);
         expectLastCall().andReturn(chains);
         OutboundWire outboundWire = createMock(OutboundWire.class);
         outboundWire.getTargetName();
@@ -82,8 +84,10 @@ public class ReferenceTestCase extends TestCase {
             super(null, clazz, null, null);
         }
 
-        public TargetInvoker createTargetInvoker(Method operation) {
+        public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
             return null;
         }
+
+
     }
 }

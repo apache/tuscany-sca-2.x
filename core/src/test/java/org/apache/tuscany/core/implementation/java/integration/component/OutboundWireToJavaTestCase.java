@@ -18,16 +18,20 @@
  */
 package org.apache.tuscany.core.implementation.java.integration.component;
 
-import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -46,13 +50,13 @@ import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.mock.MockFactory;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.util.MethodHashMap;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
@@ -168,7 +172,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private OutboundWire<Target> getWire(ScopeContainer scope) throws NoSuchMethodException {
+    private OutboundWire<Target> getWire(ScopeContainer scope) throws NoSuchMethodException,
+                                                                      InvalidServiceContractException {
         ConnectorImpl connector = new ConnectorImpl();
         OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 
@@ -184,7 +189,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         return wire;
     }
 
-    public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze) {
+    public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze)
+        throws InvalidServiceContractException {
         OutboundWire<T> wire = new OutboundWireImpl<T>();
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         wire.setServiceContract(contract);
@@ -193,12 +199,14 @@ public class OutboundWireToJavaTestCase extends TestCase {
         return wire;
     }
 
-    private static Map<Method, OutboundInvocationChain> createInvocationChains(Class<?> interfaze) {
-        Map<Method, OutboundInvocationChain> invocations = new MethodHashMap<OutboundInvocationChain>();
-        Method[] methods = interfaze.getMethods();
-        for (Method method : methods) {
-            OutboundInvocationChain chain = new OutboundInvocationChainImpl(method);
-            invocations.put(method, chain);
+    private static Map<Operation<?>, OutboundInvocationChain> createInvocationChains(Class<?> interfaze)
+        throws InvalidServiceContractException {
+        Map<Operation<?>, OutboundInvocationChain> invocations = new HashMap<Operation<?>, OutboundInvocationChain>();
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract = registry.introspect(interfaze);
+        for (Operation operation : contract.getOperations().values()) {
+            OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
+            invocations.put(operation, chain);
         }
         return invocations;
     }

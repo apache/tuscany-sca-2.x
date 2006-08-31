@@ -33,8 +33,18 @@ public interface RuntimeWire<T> {
      */
     T getTargetService() throws TargetException;
 
+    /**
+     * Returns the service contract associated with the wire
+     *
+     * @return the service contract associated with the wire
+     */
     ServiceContract getServiceContract();
 
+    /**
+     * Sets the contract associated with the wire
+     *
+     * @param contract the contract associated with the wire
+     */
     void setServiceContract(ServiceContract contract);
 
     /**

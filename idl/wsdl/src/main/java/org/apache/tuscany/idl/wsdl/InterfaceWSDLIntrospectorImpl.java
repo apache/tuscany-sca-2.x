@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.wsdl.Fault;
 import javax.wsdl.Input;
 import javax.wsdl.Message;
@@ -46,7 +45,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     protected Map<String, org.apache.tuscany.spi.model.Operation<QName>> introspectOperations(PortType portType)
         throws NotSupportedWSDLException {
         Map<String, org.apache.tuscany.spi.model.Operation<QName>> operations =
-                new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
+            new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
         for (Object op : portType.getOperations()) {
             Operation wsdlOp = (Operation) op;
             String name = wsdlOp.getName();
@@ -55,7 +54,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
             Message inputMsg = (input == null) ? null : input.getMessage();
             List<DataType<QName>> parameterTypes = introspectTypes(inputMsg);
 
-            Message outputMsg = null;
+            Message outputMsg;
             Output output = wsdlOp.getOutput();
             outputMsg = (output == null) ? null : output.getMessage();
 
@@ -87,8 +86,8 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
 
             // FIXME: [rfeng] How to figure the nonBlocking and dataBinding?
             org.apache.tuscany.spi.model.Operation<QName> operation =
-                    new org.apache.tuscany.spi.model.Operation<QName>(name, returnType, parameterTypes, faultTypes,
-                            true, null);
+                new org.apache.tuscany.spi.model.Operation<QName>(name, returnType, parameterTypes, faultTypes,
+                    true, null);
             operations.put(name, operation);
         }
         return operations;
@@ -124,7 +123,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         WSDLServiceContract contract = new WSDLServiceContract();
         contract.setPortType(portType);
         contract.setInterfaceName(portType.getQName().getLocalPart());
-        contract.getOperations().putAll(introspectOperations(portType));
+        contract.setOperations(introspectOperations(portType));
         return contract;
     }
 
@@ -136,10 +135,10 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         WSDLServiceContract contract = new WSDLServiceContract();
         contract.setPortType(portType);
         contract.setInterfaceName(portType.getQName().getLocalPart());
-        contract.getOperations().putAll(introspectOperations(portType));
+        contract.setOperations(introspectOperations(portType));
         contract.setCallbackPortType(callbackPortType);
         contract.setCallbackName(callbackPortType.getQName().getLocalPart());
-        contract.getCallbacksOperations().putAll(introspectOperations(callbackPortType));
+        contract.setCallbacksOperations(introspectOperations(callbackPortType));
         return contract;
     }
 

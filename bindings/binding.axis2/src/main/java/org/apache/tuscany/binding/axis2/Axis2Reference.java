@@ -19,12 +19,18 @@
 package org.apache.tuscany.binding.axis2;
 
 
-import java.lang.reflect.Method;
 import java.util.List;
-
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
+
+import commonj.sdo.helper.TypeHelper;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
@@ -38,13 +44,6 @@ import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
-
-import commonj.sdo.helper.TypeHelper;
 
 
 /**
@@ -55,7 +54,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
     private TypeHelper typeHelper;
-    
+
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
                           CompositeComponent<?> parent,
@@ -63,7 +62,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
                           WebServiceBinding wsBinding,
                           ServiceContract contract,
                           TypeHelper typeHelper) {
-        super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
+        super(theName, (Class<T>) contract.getInterfaceClass(), parent, wireService);
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
             wsPortMetaData =
@@ -76,8 +75,8 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
         }
     }
 
-    public TargetInvoker createTargetInvoker(Method operation) {
-        Axis2TargetInvoker invoker = null;
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
+        Axis2TargetInvoker invoker;
         try {
             //FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
             invoker = createOperationInvoker(serviceClient, operation, typeHelper, wsPortMetaData);
@@ -107,9 +106,9 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
      * Create and configure an Axis2TargetInvoker for each operations
      */
     private Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
-                                                       Method m,
-                                                       TypeHelper typeHelper,
-                                                       WebServicePortMetaData wsPortMetaData)
+                                                      Operation m,
+                                                      TypeHelper typeHelper,
+                                                      WebServicePortMetaData wsPortMetaData)
         throws AxisFault {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();

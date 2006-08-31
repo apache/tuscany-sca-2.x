@@ -67,8 +67,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         if (callback != null && !Void.class.equals(callback.value())) {
             callbackClass = callback.value();
         } else if (callback != null && Void.class.equals(callback.value())) {
-            IllegalCallbackException e =
-                new IllegalCallbackException("Callback annotation must specify an interface on service type");
+            IllegalCallbackException e = new IllegalCallbackException("No callback interface specified on annotation");
             e.setIdentifier(type.getName());
             throw e;
         }
@@ -78,16 +77,15 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
     public <I, C> JavaServiceContract introspect(Class<I> type, Class<C> callback)
         throws InvalidServiceContractException {
         JavaServiceContract contract = new JavaServiceContract();
-
         contract.setInterfaceName(getBaseName(type));
         contract.setInterfaceClass(type);
         boolean remotable = type.isAnnotationPresent(Remotable.class);
-        contract.getOperations().putAll(getOperations(type, remotable));
+        contract.setOperations(getOperations(type, remotable));
 
         if (callback != null) {
             contract.setCallbackName(getBaseName(callback));
             contract.setCallbackClass(callback);
-            contract.getCallbacksOperations().putAll(getOperations(callback, remotable));
+            contract.setCallbacksOperations(getOperations(callback, remotable));
         }
 
         Scope interactionScope = type.getAnnotation(Scope.class);
@@ -130,11 +128,11 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             for (Type faultType : faultTypes) {
                 faultDataTypes.add(new DataType<Type>(faultType, faultType));
             }
-            
-            org.apache.tuscany.api.annotation.DataType dataType = 
+
+            org.apache.tuscany.api.annotation.DataType dataType =
                 method.getAnnotation(org.apache.tuscany.api.annotation.DataType.class);
             String dataBinding = (dataType != null) ? dataType.name() : Object.class.getName();
-                
+
             Operation<Type> operation =
                 new Operation<Type>(name, returnDataType, paramDataTypes, faultDataTypes, nonBlocking, dataBinding);
             operations.put(name, operation);

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * Contains a target-side invocation chain
@@ -33,7 +34,7 @@ public class InboundInvocationChainImpl extends InvocationChainImpl implements I
     /**
      * Creates an new target-side chain for the given operation
      */
-    public InboundInvocationChainImpl(Method operation) {
+    public InboundInvocationChainImpl(Operation operation) {
         super(operation);
     }
 

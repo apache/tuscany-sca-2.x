@@ -25,6 +25,9 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
@@ -76,13 +79,21 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         }
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation
-    ) {
-        return new JavaTargetInvoker(operation, this);
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+        Method[] methods = operation.getServiceContract().getInterfaceClass().getMethods();
+        Method method = findMethod(operation, methods);
+        return new JavaTargetInvoker(method, this);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
-        return new AsyncJavaTargetInvoker(operation, wire, this, workScheduler, monitor, workContext);
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+        Method method;
+        if (operation.isCallback()) {
+            method = findMethod(operation, operation.getServiceContract().getCallbackClass().getMethods());
+
+        } else {
+            method = findMethod(operation, operation.getServiceContract().getInterfaceClass().getMethods());
+        }
+        return new AsyncJavaTargetInvoker(method, wire, this, workScheduler, monitor, workContext);
     }
 
     protected void onServiceWire(InboundWire wire) {
@@ -93,18 +104,18 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         }
         Member member = callbackSites.get(name);
         if (member != null) {
-            injectors.add(createCallbackInjector(member));
+            injectors.add(createCallbackInjector(member, wire.getServiceContract()));
         }
     }
 
-    protected Injector<Object> createCallbackInjector(Member member) {
+    protected Injector<Object> createCallbackInjector(Member member, ServiceContract<?> contract) {
         if (member instanceof Field) {
             Field field = (Field) member;
-            ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), wireService);
+            ObjectFactory<?> factory = new CallbackWireObjectFactory(contract, wireService);
             return new FieldInjector<Object>(field, factory);
         } else if (member instanceof Method) {
             Method method = (Method) member;
-            ObjectFactory<?> factory = new CallbackWireObjectFactory(method.getParameterTypes()[0], wireService);
+            ObjectFactory<?> factory = new CallbackWireObjectFactory(contract, wireService);
             return new MethodInjector<Object>(method, factory);
         } else {
             InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");

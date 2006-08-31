@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
@@ -78,8 +78,9 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             return null;
         }
 
-        public TargetInvoker createTargetInvoker(String serviceName, Method operation) {
+        public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
             return null;
         }
+
     }
 }

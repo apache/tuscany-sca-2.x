@@ -18,25 +18,26 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import helloworld.HelloWorldService;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
-import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import helloworld.HelloWorldService;
+import junit.framework.TestCase;
+import org.apache.tuscany.container.javascript.rhino.RhinoSCAConfig;
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 
 public class RhinoScriptIntrospectorTestCase extends TestCase {
 
@@ -48,11 +49,13 @@ public class RhinoScriptIntrospectorTestCase extends TestCase {
         }
     };
 
-    public void testJavaInterface() {
-        RhinoScript rs = new RhinoScript("javaInterfaceTest", "SCA = { javaInterface : 'helloworld.HelloWorldService',};",
+    public void testJavaInterface() throws MissingResourceException, InvalidServiceContractException {
+        RhinoScript rs =
+            new RhinoScript("javaInterfaceTest", "SCA = { javaInterface : 'helloworld.HelloWorldService',};",
                 null, getClass().getClassLoader());
         RhinoSCAConfig scaConfig = new RhinoSCAConfig(rs.getScriptScope());
-        JavaScriptIntrospector introspector = new JavaScriptIntrospector(null);
+        JavaScriptIntrospector introspector =
+            new JavaScriptIntrospector(null, new JavaInterfaceProcessorRegistryImpl());
         ComponentType comonentType = introspector.introspectScript(scaConfig, rs.getClassLoader());
         assertNotNull(comonentType);
         Map services = comonentType.getServices();
@@ -81,17 +84,21 @@ public class RhinoScriptIntrospectorTestCase extends TestCase {
 //        assertEquals(new QName("http://helloworld", "HelloWorld"), wsdlServiceContract.getPortType().getQName());
     }
 
-    public void testWSDLPortType() throws WSDLException, IOException {
-        RhinoScript rs = new RhinoScript("wsdlPortType", "SCA = { wsdlPortType : 'HelloWorld', wsdlNamespace : 'http://helloworld',};", null,
-                getClass().getClassLoader());
+    public void testWSDLPortType() throws WSDLException, IOException, MissingResourceException,
+                                          InvalidServiceContractException {
+        RhinoScript rs = new RhinoScript("wsdlPortType",
+            "SCA = { wsdlPortType : 'HelloWorld', wsdlNamespace : 'http://helloworld',};", null,
+            getClass().getClassLoader());
         RhinoSCAConfig scaConfig = new RhinoSCAConfig(rs.getScriptScope());
 
         WSDLDefinitionRegistryImpl wsdlReg = new WSDLDefinitionRegistryImpl();
         wsdlReg.setMonitor(NULL_MONITOR);
-        URL wsdlURL = getClass().getClassLoader().getResource("org/apache/tuscany/container/javascript/rhino/helloworld.wsdl");
+        URL wsdlURL =
+            getClass().getClassLoader().getResource("org/apache/tuscany/container/javascript/rhino/helloworld.wsdl");
         wsdlReg.loadDefinition("http://helloworld", wsdlURL);
 
-        JavaScriptIntrospector introspector = new JavaScriptIntrospector(wsdlReg);
+        JavaScriptIntrospector introspector =
+            new JavaScriptIntrospector(wsdlReg, new JavaInterfaceProcessorRegistryImpl());
         ComponentType comonentType = introspector.introspectScript(scaConfig, rs.getClassLoader());
         assertNotNull(comonentType);
         Map services = comonentType.getServices();

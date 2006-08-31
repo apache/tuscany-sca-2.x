@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -43,7 +42,7 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
     protected Class<T> referenceInterface;
     protected WireService wireService;
 
-    protected ReferenceExtension(String name, 
+    protected ReferenceExtension(String name,
                                  Class<T> referenceInterface,
                                  CompositeComponent<?> parent,
                                  WireService wireService) {
@@ -84,7 +83,7 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
         return wireService.createHandler(inboundWire);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(Method operation, OutboundWire wire) {
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
 

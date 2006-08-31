@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.container.groovy;
 
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -63,11 +63,11 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         return services;
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method method) {
-        return new GroovyInvoker(method.getName(), this);
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+        return new GroovyInvoker(operation.getName(), this);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         return new AsyncGroovyInvoker(operation.getName(), wire, this, workScheduler, monitor, workContext);
     }
 

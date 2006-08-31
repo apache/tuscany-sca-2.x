@@ -18,11 +18,12 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents an operation that is part of a service contract.
- * The type paramter of this operation identifies the logical type system for all data types.
+ * Represents an operation that is part of a service contract. The type paramter of this operation identifies the
+ * logical type system for all data types.
  *
  * @version $Rev$ $Date$
  */
@@ -32,16 +33,19 @@ public class Operation<T> {
     private final List<DataType<T>> parameterTypes;
     private final List<DataType<T>> faultTypes;
     private final boolean nonBlocking;
+    private ServiceContract<?> contract;
+    private boolean callback;
     private final String dataBinding;
 
     /**
      * Construct an operation specifying all characteristics.
      *
-     * @param name the name of the operation
-     * @param returnType the data type returned by the operation
+     * @param name           the name of the operation
+     * @param returnType     the data type returned by the operation
      * @param parameterTypes the data types of parameters passed to the operation
-     * @param faultTypes the data type of faults raised by the operation
-     * @param nonBlocking true if the operation is non-blocking
+     * @param faultTypes     the data type of faults raised by the operation
+     * @param nonBlocking    true if the operation is non-blocking
+     * @param dataBinding    the data binding type for the operation
      */
     public Operation(String name,
                      DataType<T> returnType,
@@ -58,7 +62,44 @@ public class Operation<T> {
     }
 
     /**
+     * Returns the service contract the operation is part of.
+     *
+     * @return the service contract the operation is part of.
+     */
+    public ServiceContract<?> getServiceContract() {
+        return contract;
+    }
+
+    /**
+     * Sets the service contract the operation is part of.
+     *
+     * @param contract the service contract the operation is part of.
+     */
+    public void setServiceContract(ServiceContract<?> contract) {
+        this.contract = contract;
+    }
+
+    /**
+     * Returns true if the operation is part of the callback contract.
+     *
+     * @return true if the operation is part of the callback contract.
+     */
+    public boolean isCallback() {
+        return callback;
+    }
+
+    /**
+     * Sets whether the operation is part of the callback contract.
+     *
+     * @param callback whether the operation is part of the callback contract.
+     */
+    public void setCallback(boolean callback) {
+        this.callback = callback;
+    }
+
+    /**
      * Returns the name of the operation.
+     *
      * @return the name of the operation
      */
     public String getName() {
@@ -67,6 +108,7 @@ public class Operation<T> {
 
     /**
      * Returns the data type returned by the operation.
+     *
      * @return the data type returned by the operation
      */
     public DataType<T> getReturnType() {
@@ -75,23 +117,31 @@ public class Operation<T> {
 
     /**
      * Returns the data types of the parameters passed to the operation.
+     *
      * @return the data types of the parameters passed to the operation
      */
     public List<DataType<T>> getParameterTypes() {
+        if (parameterTypes == null) {
+            return Collections.emptyList();
+        }
         return parameterTypes;
     }
 
     /**
      * Returns the data types of the faults raised by the operation.
+     *
      * @return the data types of the faults raised by the operation
      */
     public List<DataType<T>> getFaultTypes() {
+        if (faultTypes == null) {
+            return Collections.emptyList();
+        }
         return faultTypes;
     }
 
     /**
-     * Returns true if the operation is non-blocking.
-     * A non-blocking operation may not have completed execution at the time an invocation of the operation returns.
+     * Returns true if the operation is non-blocking. A non-blocking operation may not have completed execution at the
+     * time an invocation of the operation returns.
      *
      * @return true if the operation is non-blocking
      */
@@ -99,7 +149,42 @@ public class Operation<T> {
         return nonBlocking;
     }
 
+    /**
+     * Returns the data binding type specified for the operation or null.
+     *
+     * @return the data binding type specified for the operation or null.
+     */
     public String getDataBinding() {
         return dataBinding;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Operation operation = (Operation) o;
+
+        if (faultTypes != null ? !faultTypes.equals(operation.faultTypes) : operation.faultTypes != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(operation.name) : operation.name != null) {
+            return false;
+        }
+        if (parameterTypes != null ? !parameterTypes.equals(operation.parameterTypes) :
+            operation.parameterTypes != null) {
+            return false;
+        }
+        return !(returnType != null ? !returnType.equals(operation.returnType) : operation.returnType != null);
+    }
+
+    public int hashCode() {
+        int result;
+        result = (name != null ? name.hashCode() : 0);
+        result = 29 * result + (returnType != null ? returnType.hashCode() : 0);
+        result = 29 * result + (parameterTypes != null ? parameterTypes.hashCode() : 0);
+        result = 29 * result + (faultTypes != null ? faultTypes.hashCode() : 0);
+        return result;
     }
 }

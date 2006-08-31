@@ -28,29 +28,31 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
+import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
-
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;
@@ -137,14 +139,16 @@ public class CallbackInvocationTestCase extends TestCase {
     }
 
 
-    private ComponentDefinition<JavaImplementation> createTarget() throws NoSuchMethodException {
+    private ComponentDefinition<JavaImplementation> createTarget() throws NoSuchMethodException,
+                                                                          InvalidServiceContractException {
         ConstructorDefinition<FooImpl> ctorDef = new ConstructorDefinition<FooImpl>(FooImpl.class.getConstructor());
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         type.setConstructorDefinition(ctorDef);
         type.setImplementationScope(Scope.MODULE);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
-        ServiceContract contract = new JavaServiceContract(Foo.class);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract = registry.introspect(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
         JavaMappedService mappedService = new JavaMappedService("Foo", contract, false, "callback", method);
@@ -157,7 +161,7 @@ public class CallbackInvocationTestCase extends TestCase {
     }
 
     private ComponentDefinition<JavaImplementation> createSource(String name)
-        throws NoSuchMethodException, URISyntaxException {
+        throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
         ConstructorDefinition<FooClient> ctorDef =
             new ConstructorDefinition<FooClient>(FooClient.class.getConstructor());
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -165,7 +169,8 @@ public class CallbackInvocationTestCase extends TestCase {
         type.setConstructorDefinition(ctorDef);
         type.setImplementationScope(Scope.MODULE);
         Method method = FooClient.class.getMethod("setFoo", Foo.class);
-        ServiceContract contract = new JavaServiceContract(Foo.class);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract = registry.introspect(Foo.class);
         contract.setCallbackClass(FooCallback.class);
         contract.setCallbackName("callback");
         JavaMappedReference mappedReference = new JavaMappedReference("foo", contract, method);

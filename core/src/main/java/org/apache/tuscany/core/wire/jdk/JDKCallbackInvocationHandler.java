@@ -21,15 +21,18 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Responsible for invoking on an outbound wire associated with a callback. The handler retrieves the correct outbound
- * callback wire from the work context.  
- *
+ * callback wire from the work context.
+ * <p/>
  * TODO cache target invoker
+ *
  * @version $Rev$ $Date$
  */
 public class JDKCallbackInvocationHandler extends AbstractJDKOutboundInvocationHandler {
@@ -43,7 +46,9 @@ public class JDKCallbackInvocationHandler extends AbstractJDKOutboundInvocationH
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         OutboundWire<?> wire = context.getCurrentInvocationWire();
         context.setCurrentInvocationWire(null);
-        OutboundInvocationChain chain = wire.getSourceCallbackInvocationChains().get(method);
+        //TODO optimize as this is slow in local invocations
+        Operation operation = findOperation(method, wire.getSourceCallbackInvocationChains().keySet());
+        OutboundInvocationChain chain = wire.getSourceCallbackInvocationChains().get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, args);
     }

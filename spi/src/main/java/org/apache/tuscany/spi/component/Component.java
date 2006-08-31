@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -82,18 +82,18 @@ public interface Component<T> extends SCAObject<T> {
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered by
      * the component
      *
-     * @param serviceName the name of the service
-     * @param operation   the operation to invoke
+     * @param targetName
+     * @param operation  the operation to invoke
      */
-    TargetInvoker createTargetInvoker(String serviceName, Method operation);
+    TargetInvoker createTargetInvoker(String targetName, Operation operation);
 
     /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered by
      * the component
      *
-     * @param serviceName the name of the service
-     * @param operation   the operation to invoke
+     * @param wire      the wire associated with the callback
+     * @param operation the operation to invoke
      */
-    TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire);
+    TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation);
 
 }

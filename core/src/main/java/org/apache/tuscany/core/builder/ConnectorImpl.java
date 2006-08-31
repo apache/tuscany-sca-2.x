@@ -18,13 +18,9 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.OneWay;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -36,7 +32,9 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.MessageChannel;
@@ -79,9 +77,9 @@ public class ConnectorImpl implements Connector {
             // connect inbound wires
             for (InboundWire<T> inboundWire : sourceComponent.getInboundWires().values()) {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                    String serviceName = inboundWire.getServiceName();
-                    TargetInvoker invoker =
-                        sourceComponent.createTargetInvoker(serviceName, chain.getMethod());
+                    ServiceContract contract = inboundWire.getServiceContract();
+                    Operation operation = chain.getOperation();
+                    TargetInvoker invoker = sourceComponent.createTargetInvoker(null, operation);
                     chain.setTargetInvoker(invoker);
                     chain.prepare();
                 }
@@ -96,11 +94,12 @@ public class ConnectorImpl implements Connector {
             }
         } else if (source instanceof Reference) {
             Reference<?> reference = (Reference) source;
-            Map<Method, InboundInvocationChain> chains = reference.getInboundWire().getInvocationChains();
+            InboundWire<?> wire = reference.getInboundWire();
+            Map<Operation, InboundInvocationChain> chains = wire.getInvocationChains();
             // for references, no need to have an outbound wire
             for (InboundInvocationChain chain : chains.values()) {
                 //TODO handle async
-                TargetInvoker invoker = reference.createTargetInvoker(chain.getMethod());
+                TargetInvoker invoker = reference.createTargetInvoker(wire.getServiceContract(), chain.getOperation());
                 chain.setTargetInvoker(invoker);
                 chain.prepare();
             }
@@ -132,7 +131,7 @@ public class ConnectorImpl implements Connector {
     public <T> void connect(InboundWire<T> sourceWire,
                             OutboundWire<T> targetWire,
                             boolean optimizable) throws BuilderConfigException {
-        Map<Method, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
+        Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
             sourceWire.setTargetWire(targetWire);
@@ -140,9 +139,9 @@ public class ConnectorImpl implements Connector {
         }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
             // match wire chains
-            OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getMethod());
+            OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
             if (outboundChain == null) {
-                BuilderConfigException e = new BuilderConfigException("Incompatible source and target wire interfaces");
+                BuilderConfigException e = new BuilderConfigException("Incompatible source and target interfaces");
                 e.setIdentifier(sourceWire.getServiceName());
                 throw e;
             }
@@ -155,7 +154,7 @@ public class ConnectorImpl implements Connector {
                             OutboundWire<T> sourceWire,
                             InboundWire<T> targetWire,
                             boolean optimizable) {
-        Map<Method, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
+        Map<Operation, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         // REVIEW: (kentaminator@gmail.com) shouldn't this check whether the interceptors in the
         // source & target chains are marked as optimizable?  (and if so, optimize them away?)
@@ -163,10 +162,11 @@ public class ConnectorImpl implements Connector {
             sourceWire.setTargetWire(targetWire);
             return;
         }
+        ServiceContract contract = sourceWire.getServiceContract();
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
             // match wire chains
-            Method method = outboundChain.getMethod();
-            InboundInvocationChain inboundChain = targetChains.get(method);
+            Operation operation = outboundChain.getOperation();
+            InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
                 BuilderConfigException e =
                     new BuilderConfigException("Incompatible source and target chain interfaces for reference");
@@ -176,29 +176,29 @@ public class ConnectorImpl implements Connector {
             TargetInvoker invoker = null;
             if (target instanceof Component) {
                 Component component = (Component) target;
-                Method operation = outboundChain.getMethod();
 
                 // FIXME should not relay on annotations
-                boolean isOneWayOperation = operation.getAnnotation(OneWay.class) != null;
-                boolean operationHasCallback = operation.getDeclaringClass().getAnnotation(Callback.class) != null;
+                boolean isOneWayOperation = operation.isNonBlocking();
+                boolean operationHasCallback = contract.getCallbackName() != null;
                 if (isOneWayOperation && operationHasCallback) {
-                    throw new ComponentRuntimeException("Operation can't both be one-way and have a callback");
+                    throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
                 }
                 if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
+                    invoker = component.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    invoker = component
-                        .createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
+                    ServiceContract inboundContract = targetWire.getServiceContract();
+                    Operation inboundOperation = inboundChain.getOperation();
+                    invoker = component.createTargetInvoker(null, inboundOperation);
                 }
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
-                invoker = reference.createTargetInvoker(inboundChain.getMethod());
+                invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
             }
             if (source instanceof Service) {
                 // services are a special case: invoker must go on the inbound chain
                 connect(outboundChain, inboundChain, null);
                 Service<?> service = (Service) source;
-                InboundInvocationChain chain = service.getInboundWire().getInvocationChains().get(method);
+                InboundInvocationChain chain = service.getInboundWire().getInvocationChains().get(operation);
                 chain.setTargetInvoker(invoker);
             } else {
                 connect(outboundChain, inboundChain, invoker);
@@ -208,29 +208,29 @@ public class ConnectorImpl implements Connector {
         // connect callback wires if they exist
         for (OutboundInvocationChain outboundChain : sourceWire.getSourceCallbackInvocationChains().values()) {
             // match wire chains
-            Map<Method, InboundInvocationChain> chains = sourceWire.getTargetCallbackInvocationChains();
-            InboundInvocationChain inboundChain = chains.get(outboundChain.getMethod());
+            Map<Operation<?>, InboundInvocationChain> chains = sourceWire.getTargetCallbackInvocationChains();
+            InboundInvocationChain inboundChain = chains.get(outboundChain.getOperation());
             if (inboundChain == null) {
                 BuilderConfigException e =
-                    new BuilderConfigException("Incompatible source and target chain interfaces for reference");
+                    new BuilderConfigException("Incompatible source and target interfaces for reference");
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
             if (source instanceof Component) {
                 Component component = (Component) source;
-                Method operation = outboundChain.getMethod();
-                // FIXME should not relay on annotations
-                boolean isOneWayOperation = operation.getAnnotation(OneWay.class) != null;
-                boolean operationHasCallback = operation.getDeclaringClass().getAnnotation(Callback.class) != null;
+                Operation operation = outboundChain.getOperation();
+                boolean isOneWayOperation = operation.isNonBlocking();
+                boolean operationHasCallback = contract.getCallbackName() != null;
                 if (isOneWayOperation && operationHasCallback) {
-                    throw new ComponentRuntimeException("Operation can't both be one-way and have a callback");
+                    throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
                 }
                 TargetInvoker invoker;
                 if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(targetWire.getServiceName(), operation, sourceWire);
+                    invoker = component.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    invoker = component
-                        .createTargetInvoker(targetWire.getServiceName(), inboundChain.getMethod());
+                    ServiceContract inboundContract = targetWire.getServiceContract();
+                    Operation inboundOperation = inboundChain.getOperation();
+                    invoker = component.createTargetInvoker(null, inboundOperation);
                 }
                 connect(outboundChain, inboundChain, invoker);
             } else if (target instanceof Service) {
@@ -253,7 +253,7 @@ public class ConnectorImpl implements Connector {
                     sourceChain.setTargetRequestChannel(channel);
                 } else {
                     BuilderConfigException e = new BuilderConfigException("Service chain must have an interceptor");
-                    e.setIdentifier(targetChain.getMethod().getName());
+                    e.setIdentifier(targetChain.getOperation().getName());
                     throw e;
                 }
             } else {
@@ -264,7 +264,7 @@ public class ConnectorImpl implements Connector {
             // no handlers, just connect interceptors
             if (targetChain.getHeadInterceptor() == null) {
                 BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
-                e.setIdentifier(targetChain.getMethod().getName());
+                e.setIdentifier(targetChain.getOperation().getName());
                 throw e;
             }
             if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor && targetChain
@@ -331,7 +331,7 @@ public class ConnectorImpl implements Connector {
             connect(source, target, sourceWire, targetWire, optimizable);
         } else {
             String name = sourceWire.getReferenceName();
-            BuilderConfigException e = new BuilderConfigException("Invalid wire target type for reference " + name);
+            BuilderConfigException e = new BuilderConfigException("Invalid target type for reference " + name);
             e.setIdentifier(targetName.getQualifiedName());
         }
     }

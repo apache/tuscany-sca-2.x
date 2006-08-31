@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +31,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -132,7 +132,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         onReferenceWires(multiplicityClass, wires);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
 

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
@@ -226,12 +226,11 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         }
     }
 
-    public TargetInvoker createTargetInvoker(String serviceName, Method operation
-    ) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
         return null;
     }
 
-    public TargetInvoker createAsyncTargetInvoker(String serviceName, Method operation, OutboundWire wire) {
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         return null;
     }
 

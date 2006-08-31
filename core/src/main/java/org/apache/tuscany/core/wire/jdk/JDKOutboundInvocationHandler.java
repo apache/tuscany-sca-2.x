@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -44,11 +46,18 @@ public class JDKOutboundInvocationHandler extends AbstractJDKOutboundInvocationH
      */
     private Map<Method, ChainHolder> chains;
 
-    public JDKOutboundInvocationHandler(OutboundWire<?> wire) {
-        Map<Method, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
+    public JDKOutboundInvocationHandler(OutboundWire<?> wire) throws NoMethodForOperationException {
+        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Method, OutboundInvocationChain> entry : invocationChains.entrySet()) {
-            this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
+        Method[] methods = wire.getServiceContract().getInterfaceClass().getMethods();
+        // TODO optimize this
+        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
+            Operation operation = entry.getKey();
+            Method method = findMethod(operation, methods);
+            if (method == null) {
+                throw new NoMethodForOperationException(operation.getName());
+            }
+            this.chains.put(method, new ChainHolder(entry.getValue()));
         }
     }
 
@@ -66,7 +75,7 @@ public class JDKOutboundInvocationHandler extends AbstractJDKOutboundInvocationH
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
                 TargetException e = new TargetException("No target invoker configured for operation");
-                e.setIdentifier(chain.getMethod().getName());
+                e.setIdentifier(chain.getOperation().getName());
                 throw e;
             }
             if (chain.getTargetInvoker().isCacheable()) {

@@ -20,9 +20,13 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
@@ -39,9 +43,11 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
     private Method echo;
 
     public void testHandlersInterceptorInvoke() throws Throwable {
-        //Map<Method, OutboundInvocationChain> chains = new MethodHashMap<OutboundInvocationChain>();
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract = registry.introspect(SimpleTarget.class);
+        Operation<?> operation = contract.getOperations().get("echo");
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(echo);
+        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         chain.addInterceptor(interceptor);
         chain.setTargetInterceptor(new InvokerInterceptor());
@@ -53,7 +59,8 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         chain.prepare();
         //chains.put(echo, chain);
         OutboundWire wire = new OutboundWireImpl();
-        wire.addInvocationChain(echo, chain);
+        wire.addInvocationChain(operation, chain);
+        wire.setServiceContract(contract);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());

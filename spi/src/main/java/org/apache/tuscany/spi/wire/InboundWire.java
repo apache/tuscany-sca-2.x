@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * Implementations are responsible for managing the service side of a wire, including the invocation chains associated
  * with each service operation. A <Code>InboundWire</code> can be connected to another <code>InboundWire</code> when
- * connecting a {@link org.apache.tuscany.spi.component.Service} to an
- * {@link org.apache.tuscany.spi.component.AtomicComponent}.
+ * connecting a {@link org.apache.tuscany.spi.component.Service} to an {@link org.apache.tuscany.spi.component.AtomicComponent}.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -45,17 +45,17 @@ public interface InboundWire<T> extends RuntimeWire<T> {
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
      * service.
      */
-    Map<Method, InboundInvocationChain> getInvocationChains();
+    Map<Operation, InboundInvocationChain> getInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Method, InboundInvocationChain> chains);
+    void addInvocationChains(Map<Operation, InboundInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Method method, InboundInvocationChain chain);
+    void addInvocationChain(Operation operation, InboundInvocationChain chain);
 
     /**
      * Returns the name of the callback associated with the service of the wire
@@ -66,7 +66,7 @@ public interface InboundWire<T> extends RuntimeWire<T> {
      * Sets the name of the callback associated with the service of the wire
      */
     void setCallbackReferenceName(String callbackReferenceName);
-    
+
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */

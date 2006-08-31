@@ -24,6 +24,9 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
@@ -31,6 +34,7 @@ import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * Tests error propagation through an innvocation
@@ -39,7 +43,7 @@ import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
  */
 public class InvocationConfigurationErrorTestCase extends TestCase {
 
-
+    private ServiceContract<?> contract;
     private Method hello;
 
     public InvocationConfigurationErrorTestCase() {
@@ -51,11 +55,15 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
     }
 
     public void setUp() throws Exception {
+        super.setUp();
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        contract = registry.introspect(SimpleTarget.class);
         hello = SimpleTarget.class.getMethod("hello", String.class);
     }
 
     public void testInvokeWithHandlers() throws Exception {
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
+        Operation operation = contract.getOperations().get("hello");
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
         MockHandler sourceRequestHandler = new MockHandler();
         MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
@@ -63,7 +71,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
-        InboundInvocationChain target = new InboundInvocationChainImpl(hello);
+        InboundInvocationChain target = new InboundInvocationChainImpl(operation);
         MockHandler targetRequestHandler = new MockHandler();
         MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
@@ -93,13 +101,14 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
     }
 
     public void testInvokeWithRequestHandlers() throws Exception {
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
+        Operation operation = contract.getOperations().get("hello");
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
         MockHandler sourceRequestHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addRequestHandler(sourceRequestHandler);
         source.addInterceptor(sourceInterceptor);
 
-        InboundInvocationChain target = new InboundInvocationChainImpl(hello);
+        InboundInvocationChain target = new InboundInvocationChainImpl(operation);
         MockHandler targetRequestHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addRequestHandler(targetRequestHandler);
@@ -128,11 +137,12 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
      * Tests basic wiring of a source to a target, including handlers and interceptors
      */
     public void testInvokeWithInterceptorsOnly() throws Exception {
-        OutboundInvocationChain source = new OutboundInvocationChainImpl(hello);
+        Operation operation = contract.getOperations().get("hello");
+        OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
         source.addInterceptor(sourceInterceptor);
 
-        InboundInvocationChain target = new InboundInvocationChainImpl(hello);
+        InboundInvocationChain target = new InboundInvocationChainImpl(operation);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());

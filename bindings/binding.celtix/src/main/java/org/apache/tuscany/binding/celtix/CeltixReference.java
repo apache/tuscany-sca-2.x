@@ -18,23 +18,22 @@
  */
 package org.apache.tuscany.binding.celtix;
 
-import java.lang.reflect.Method;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 
-import commonj.sdo.helper.TypeHelper;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import commonj.sdo.helper.TypeHelper;
 import org.objectweb.celtix.Bus;
 
 /**
- * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix
- * binding
+ * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix binding
  *
  * @version $Rev$ $Date$
  */
@@ -61,7 +60,7 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
         this.typeHelper = theTypeHelper;
     }
 
-    public TargetInvoker createTargetInvoker(Method operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         return new CeltixInvoker(operation.getName(), bus, port, wsdlService, wsdlDef, typeHelper);
     }
 }
