@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,9 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+
+import org.apache.tuscany.core.wire.AbstractOutboundInvocationHandler;
 
 /**
  * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.OutboundWire} via
@@ -35,7 +39,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $Rev$ $Date$
  */
-public class JDKOutboundInvocationHandler extends AbstractJDKOutboundInvocationHandler {
+public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHandler
+    implements WireInvocationHandler, InvocationHandler {
 
     /*
      * an association of an operation to chain holder. The holder contains an invocation chain
@@ -90,6 +95,10 @@ public class JDKOutboundInvocationHandler extends AbstractJDKOutboundInvocationH
             invoker = chain.getTargetInvoker();
         }
         return invoke(chain, invoker, args);
+    }
+
+    public Object invoke(Method method, Object[] args) throws Throwable {
+        return invoke(null, method, args);
     }
 
     /**
