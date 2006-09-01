@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+-->
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apache.tuscany</groupId>
+        <artifactId>parent</artifactId>
+        <version>1-SNAPSHOT</version>
+    </parent>
+    <groupId>org.apache.tuscany.sca.kernel</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <name>Apache Tuscany SCA Kernel Sub-Project</name>
+    <version>${sca.version}</version>
+    <properties>
+        <sca.version>1.0-SNAPSHOT</sca.version>
+        <notice.dir>.</notice.dir>
+    </properties>
+
+    <modules>
+        <module>api</module>
+        <module>host-api</module>
+        <module>spi</module>
+        <module>core</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- org.osoa.sca API -->
+            <dependency>
+                <groupId>org.osoa</groupId>
+                <artifactId>sca-api-r0.95</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- javax.servlet API -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>2.4</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- javax.resource API -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- javax.transaction API -->
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
+                <version>1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- StAX implementation -->
+            <dependency>
+                <groupId>woodstox</groupId>
+                <artifactId>wstx-asl</artifactId>
+                <version>2.9.3</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.8.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>jmock</groupId>
+                <artifactId>jmock</artifactId>
+                <version>1.0.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>2.2</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.tuscany</groupId>
+                            <artifactId>buildtools</artifactId>
+                            <version>${pom.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>process-sources</id>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <configLocation>tuscany-checkstyle.xml</configLocation>
+                                <suppressionsLocation>tuscany-suppressions.xml</suppressionsLocation>
+                                <consoleOutput>true</consoleOutput>
+                                <failsOnError>true</failsOnError>
+                                <linkXRef>false</linkXRef>
+                                <sourceDirectory>${basedir}/src</sourceDirectory>
+                                <propertyExpansion>${checkstyle.properties}</propertyExpansion>
+                            </configuration>
+                            <goals>
+                                <goal>checkstyle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+						  <configuration>
+                        <rulesets>
+                            <ruleset>${basedir}/.ruleset</ruleset>
+                        </rulesets>
+                        <linkXRef>false</linkXRef>
+                        <targetJdk>1.5</targetJdk>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>process-sources</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <includes>
+                            <include>**/*TestCase.java</include>
+                        </includes>
+                        <reportFormat>brief</reportFormat>
+                        <useFile>false</useFile>
+                        <forkMode>once</forkMode>
+                        <argLine>-ea</argLine>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
