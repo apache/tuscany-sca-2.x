@@ -25,12 +25,15 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -39,11 +42,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -128,7 +126,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         // handle inbound wires
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             Class interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-            SystemInboundWire<?> wire =  new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, component);
+            SystemInboundWire<?> wire = new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, component);
             component.addInboundWire(wire);
         }
         // handle references directly with no proxies
@@ -138,7 +136,8 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
             Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
             OutboundWire<?> wire;
             if (referenceDefiniton.isAutowire()) {
-                wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext, referenceDefiniton.isRequired());
+                wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext,
+                    referenceDefiniton.isRequired());     
             } else {
                 //FIXME support multiplicity!
                 assert target.getTargets().size() == 1 : "Multiplicity not yet implemented";
@@ -151,7 +150,8 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         for (ReferenceDefinition reference : componentType.getReferences().values()) {
             if (reference.isAutowire()) {
                 Class interfaze = reference.getServiceContract().getInterfaceClass();
-                OutboundWire<?> wire = new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext, reference.isRequired());
+                OutboundWire<?> wire =
+                    new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext, reference.isRequired());
                 component.addOutboundWire(wire);
             }
         }

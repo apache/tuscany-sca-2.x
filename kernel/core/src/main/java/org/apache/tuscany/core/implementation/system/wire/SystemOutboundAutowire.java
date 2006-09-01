@@ -43,15 +43,15 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     private String referenceName;
     private ServiceContract serviceContract;
     private AutowireComponent<?> component;
-    final private boolean required;
+    private final boolean required;
 
     public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component,
-            boolean required) {
-        
+                                  boolean required) {
+
         this.referenceName = referenceName;
         this.component = component;
         serviceContract = new JavaServiceContract(businessInterface);
-        this.required= required;
+        this.required = required;
     }
 
     public ServiceContract getServiceContract() {
