@@ -28,7 +28,7 @@
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Kernel Sub-Project</name>
-    <version>${sca.version}</version>
+    <version>1.0-SNAPSHOT</version>
     <properties>
         <sca.version>1.0-SNAPSHOT</sca.version>
         <notice.dir>.</notice.dir>

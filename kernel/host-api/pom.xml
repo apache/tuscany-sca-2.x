@@ -31,8 +31,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>api</artifactId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-api</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>

@@ -30,10 +30,7 @@
     </properties>
 
     <modules>
-        <module>kernel/api</module>
-        <module>kernel/host-api</module>
-        <module>kernel/spi</module>
-        <module>kernel/core</module>
+        <module>kernel</module>
         <module>test</module>
         <module>containers</module>
         <module>idl/wsdl</module>
