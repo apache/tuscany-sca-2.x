@@ -74,7 +74,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
