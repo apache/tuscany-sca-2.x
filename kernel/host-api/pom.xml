@@ -19,12 +19,12 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
+        <groupId>org.apache.tuscany.sca.kernel</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>host-api</artifactId>
+    <artifactId>tuscany-host-api</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany Host API</name>
     <description>Tuscany Host Programming Interfaces.</description>
