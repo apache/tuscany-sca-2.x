@@ -100,9 +100,24 @@
             </testResource>
         </testResources>
 
-        <testSourceDirectory>target/jaxb-source</testSourceDirectory>
-
         <plugins>
+            <!-- A hack to add target/jaxb-source to testCompileSourceRoots -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>set-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <testSourceRoot>target/jaxb-source</testSourceRoot>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+                    
             <plugin>
                 <groupId>com.sun.tools.xjc.maven2</groupId>
                 <artifactId>maven-jaxb-plugin</artifactId>
