@@ -18,12 +18,7 @@
  */
 package org.apache.tuscany.databinding.castor;
 
-import java.io.StringReader;
-
 import junit.framework.TestCase;
-
-import com.example.ipo.castor.PurchaseOrder;
-import com.example.ipo.castor.PurchaseOrderType;
 
 public class Castor2NodeTestCase extends TestCase {
     private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
