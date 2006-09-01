@@ -31,15 +31,9 @@
     <description>Apache Tuscany Groovy Container</description>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>-->
-		  <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>spi</artifactId>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -50,10 +44,10 @@
             <version>1.0-jsr-05</version>
             <scope>provided</scope>
             <exclusions>
-              <exclusion>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-full</artifactId>
-              </exclusion>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>

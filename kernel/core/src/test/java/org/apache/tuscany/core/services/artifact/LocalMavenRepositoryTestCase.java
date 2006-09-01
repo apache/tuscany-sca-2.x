@@ -37,19 +37,22 @@ public class LocalMavenRepositoryTestCase extends TestCase {
     private Artifact artifact;
 
     public void testPathWithNoClassifier() {
-        assertEquals("org/apache/tuscany/spi/1.0-SNAPSHOT/spi-1.0-SNAPSHOT.jar", repo.getPath(artifact));
+        String path = "org/apache/tuscany/sca/kernel/tuscany-spi/1.0-SNAPSHOT/tuscany-spi-1.0-SNAPSHOT.jar";
+        assertEquals(path, repo.getPath(artifact));
     }
 
     public void testPathWithClassifier() {
         artifact.setClassifier("x86");
-        assertEquals("org/apache/tuscany/spi/1.0-SNAPSHOT/spi-1.0-SNAPSHOT-x86.jar", repo.getPath(artifact));
+        String path = "org/apache/tuscany/sca/kernel/tuscany-spi/1.0-SNAPSHOT/tuscany-spi-1.0-SNAPSHOT-x86.jar";
+        assertEquals(path, repo.getPath(artifact));
     }
 
     public void testArtifactFoundInRepo() throws MalformedURLException, UnsupportedEncodingException {
         String home = System.getProperty("user.home");
-        File file = new File(home, ".m2/repository/org/apache/tuscany/spi/1.0-SNAPSHOT/spi-1.0-SNAPSHOT.jar");
+        String path = "org/apache/tuscany/sca/kernel/tuscany-spi/1.0-SNAPSHOT/tuscany-spi-1.0-SNAPSHOT.jar";
+        File file = new File(home + "/.m2/repository", path);
         repo.resolve(artifact);
-        assertEquals(file.toURL().toString(), java.net.URLDecoder.decode(artifact.getUrl().toString(), "UTF-8"));
+        assertEquals(file.toURI().toURL(), artifact.getUrl());
     }
 
     public void testArtifactNotFoundInRepo() throws MalformedURLException {
@@ -70,8 +73,8 @@ public class LocalMavenRepositoryTestCase extends TestCase {
         repo = new LocalMavenRepository(".m2/repository");
 
         artifact = new Artifact();
-        artifact.setGroup("org.apache.tuscany");
-        artifact.setName("spi");
+        artifact.setGroup("org.apache.tuscany.sca.kernel");
+        artifact.setName("tuscany-spi");
         artifact.setVersion("1.0-SNAPSHOT");
         artifact.setType("jar");
     }
