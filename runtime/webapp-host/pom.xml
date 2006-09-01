@@ -51,13 +51,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
-            <artifactId>host-api</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.tuscany.runtime</groupId>
             <artifactId>webapp</artifactId>
             <version>${sca.version}</version>
