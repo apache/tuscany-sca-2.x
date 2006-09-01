@@ -103,16 +103,16 @@ public class ConnectorImpl implements Connector {
                 chain.prepare();
             }
         } else if (source instanceof Service) {
-            Service<?> service = (Service) source;
-            InboundWire inboundWire = service.getInboundWire();
-            OutboundWire outboundWire = service.getOutboundWire();
-            // connect the outbound service wire to the target    xcv
+            Service<T> service = (Service<T>) source;
+            InboundWire<T> inboundWire = service.getInboundWire();
+            OutboundWire<T> outboundWire = service.getOutboundWire();
+            // connect the outbound service wire to the target
             connect(service, outboundWire);
             // services have inbound and outbound wires
             // NB: this connect must be done after the outbound service chain is connected to its target above
             connect(inboundWire, outboundWire, true);
         } else {
-            BuilderConfigException e = new BuilderConfigException("Invalid source context type");
+            BuilderConfigException e = new BuilderConfigException("Invalid source type");
             e.setIdentifier(source.getName());
             e.addContextName(parent.getName());
             throw e;
@@ -287,7 +287,7 @@ public class ConnectorImpl implements Connector {
      * @throws BuilderConfigException
      */
     @SuppressWarnings("unchecked")
-    private <T> void connect(SCAObject<?> source,
+    private <T> void connect(SCAObject<T> source,
                              OutboundWire<T> sourceWire) throws BuilderConfigException {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();

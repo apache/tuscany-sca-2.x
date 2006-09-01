@@ -59,7 +59,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
         Autowire autowire = method.getAnnotation(Autowire.class);
-        boolean isAutowire= autowire != null;
+        boolean isAutowire = autowire != null;
         if (annotation == null && !isAutowire) {
             return; //Not a reference or autowire annotation.
         }
@@ -70,12 +70,12 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         }
         //process autowire required first let reference override. or if conflicting should this fault?
         boolean required = false;
-        if(isAutowire) {
-            required= autowire.required();
+        if (isAutowire) {
+            required = autowire.required();
         }
-        
+
         String name = null;
-        
+
         if (annotation != null) {
             if (annotation.name() != null && annotation.name().length() > 0) {
                 name = annotation.name();
@@ -91,7 +91,7 @@ public class ReferenceProcessor extends ImplementationProcessorSupport {
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
-       
+
         JavaMappedReference reference = new JavaMappedReference();
         reference.setMember(method);
         reference.setAutowire(isAutowire);
