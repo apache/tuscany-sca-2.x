@@ -31,7 +31,6 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <sca.version>1.0-SNAPSHOT</sca.version>
-        <notice.dir>.</notice.dir>
     </properties>
 
     <modules>
