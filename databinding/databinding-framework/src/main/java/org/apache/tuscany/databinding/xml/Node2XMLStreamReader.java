@@ -19,16 +19,13 @@
 package org.apache.tuscany.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.databinding.xml.StAXHelper.XMLDocumentStreamReader;
 import org.w3c.dom.Node;
-
-import com.ctc.wstx.api.ReaderConfig;
-import com.ctc.wstx.dom.DOMWrappingReader;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
@@ -38,10 +35,8 @@ public class Node2XMLStreamReader extends TransformerExtension<Node, XMLStreamRe
 
     public XMLStreamReader transform(Node source, TransformationContext context) {
         try {
-            DOMSource domSource = new DOMSource(source);
-            ReaderConfig config = ReaderConfig.createFullDefaults();
-            DOMWrappingReader wrappingReader = DOMWrappingReader.createFrom(config, domSource);
-            return wrappingReader;
+            DOMXMLStreamReader reader = new DOMXMLStreamReader(source);
+            return new XMLDocumentStreamReader(reader);
         } catch (Exception e) {
             throw new TransformationException(e);
         }
