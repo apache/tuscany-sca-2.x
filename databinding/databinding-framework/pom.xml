@@ -32,8 +32,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.tuscany</groupId>
-			<artifactId>spi</artifactId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
 			<version>${pom.version}</version>
 			<scope>compile</scope>
 		</dependency>
