@@ -66,7 +66,7 @@ public class CompositeBuilderTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null, null);
 
         CompositeBuilder builder = new CompositeBuilder();
         WireService wireService = new JDKWireService();

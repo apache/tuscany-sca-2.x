@@ -34,7 +34,7 @@ import org.jmock.MockObjectTestCase;
 public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
 
     public void testLifecycle() throws Exception {
-        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null);
+        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null, null);
         composite.start();
         assertNull(composite.getChild("nothtere"));
         composite.stop();
@@ -55,7 +55,7 @@ public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
         mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
         SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
 
-        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null);
+        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null, null);
         composite.start();
         composite.register(context);
 

@@ -24,6 +24,7 @@ import org.w3c.dom.Document;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.builder.Connector;
 
 /**
  * The standard implementation of a composite component. Autowiring is performed by delegating to the parent composite.
@@ -36,25 +37,36 @@ public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
     public CompositeComponentImpl(String name,
                                   CompositeComponent parent,
                                   AutowireComponent autowireContext,
+                                  Connector connector,
                                   Map<String, Document> propertyValues) {
-        this(name, null, parent, autowireContext, propertyValues);
+        this(name, null, parent, autowireContext, connector, propertyValues);
     }
 
     /**
      * Constructor specifying name and URI.
      *
      * @param name              the name of this Component
-     * @param uri               the unique identifier for this component
-     * @param parent            this component's parent
-     * @param autowireComponent the component that should be used to resolve autowired references
+
+
+     @param uri               the unique identifier for this component
+
+
+      * @param parent            this component's parent
+
+     @param autowireComponent the component that should be used to resolve autowired references
+
+
+      * @param connector
      * @param propertyValues    this composite's Property values
+
      */
     public CompositeComponentImpl(String name,
                                   String uri,
                                   CompositeComponent parent,
                                   AutowireComponent autowireComponent,
+                                  Connector connector,
                                   Map<String, Document> propertyValues) {
-        super(name, parent, autowireComponent, propertyValues);
+        super(name, parent, autowireComponent, connector, propertyValues);
         this.uri = uri;
     }
 

@@ -211,7 +211,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     private class Composite<T> extends CompositeComponentExtension<T> {
         public Composite() {
-            super(null, null, null);
+            super(null, null, null, null);
         }
 
         public void setScopeContainer(ScopeContainer scopeContainer) {

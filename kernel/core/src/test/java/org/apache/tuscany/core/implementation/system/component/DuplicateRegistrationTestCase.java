@@ -35,7 +35,7 @@ import org.jmock.MockObjectTestCase;
 public class DuplicateRegistrationTestCase extends MockObjectTestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();

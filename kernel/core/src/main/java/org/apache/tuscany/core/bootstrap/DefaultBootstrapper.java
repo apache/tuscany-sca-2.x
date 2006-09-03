@@ -118,10 +118,10 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
     public RuntimeComponent<SystemCompositeComponent<?>> createRuntime() {
         DefaultRuntime runtime = new DefaultRuntime();
         SystemCompositeComponentImpl systemComponent =
-            new SystemCompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM, runtime, runtime, null);
+            new SystemCompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM, runtime, runtime, null, null);
         runtime.setSystemComponent(systemComponent);
         CompositeComponent<?> rootComponent =
-            new CompositeComponentImpl(ComponentNames.TUSCANY_ROOT, runtime, runtime, null);
+            new CompositeComponentImpl(ComponentNames.TUSCANY_ROOT, runtime, runtime, null, null);
         runtime.setRootComponent(rootComponent);
         return runtime;
     }

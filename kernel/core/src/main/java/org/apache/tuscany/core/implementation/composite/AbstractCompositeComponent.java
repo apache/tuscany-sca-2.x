@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -82,13 +83,15 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
      * @param name            the name of the SCA composite
      * @param parent          the SCA composite parent
      * @param autowireContext the component that should be to resolve autowires
+     * @param connector
      * @param propertyValues  the values of this composite's Properties
      */
     public AbstractCompositeComponent(String name,
                                       CompositeComponent parent,
                                       AutowireComponent autowireContext,
+                                      Connector connector,
                                       Map<String, Document> propertyValues) {
-        super(name, parent, propertyValues);
+        super(name, parent, connector, propertyValues);
         this.autowireContext = autowireContext;
     }
 

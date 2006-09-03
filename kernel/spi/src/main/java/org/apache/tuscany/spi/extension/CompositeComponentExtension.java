@@ -44,6 +44,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.builder.Connector;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -56,12 +57,16 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
     protected final Map<String, Document> propertyValues;
+    protected final Connector connector;
     protected boolean selfWiring;
 
-    protected CompositeComponentExtension(String name, CompositeComponent<?> parent,
+    protected CompositeComponentExtension(String name,
+                                          CompositeComponent<?> parent,
+                                          Connector connector,
                                           Map<String, Document> propertyValues) {
         super(name, parent);
         this.propertyValues = propertyValues;
+        this.connector = connector;
     }
 
     public boolean isSelfWiring() {

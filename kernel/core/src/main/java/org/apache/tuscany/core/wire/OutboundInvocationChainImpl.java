@@ -73,7 +73,7 @@ public class OutboundInvocationChainImpl extends InvocationChainImpl implements 
                     interceptorChainTail.setNext(channelInterceptor);
                 }
             } else {
-                // no source interceptor chain or source handlers, conntect to target interceptor chain or channel
+                // no source interceptor chain or source handlers, connect to target interceptor chain or channel
                 if (targetInterceptorChainHead != null) {
                     interceptorChainHead = targetInterceptorChainHead;
                     interceptorChainTail = targetInterceptorChainHead;

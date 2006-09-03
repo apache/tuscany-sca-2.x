@@ -65,7 +65,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
 
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
         ComponentDefinition<SystemImplementation> sourceComponentDefinition =
@@ -103,8 +103,9 @@ public class SystemBuilderWireTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeComponent grandParent = new SystemCompositeComponentImpl("grandparent", null, null, null);
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", grandParent, grandParent, null);
+        SystemCompositeComponent grandParent = new SystemCompositeComponentImpl("grandparent", null, null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", grandParent, grandParent, null,
+            null);
 
         // create a context in the grandparent that the reference will be autowired to
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
@@ -149,7 +150,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
 
         BoundServiceDefinition<SystemBinding> serviceDefinition = MockComponentFactory.createBoundService();
         ComponentDefinition<SystemImplementation> componentDefinition = MockComponentFactory.createTarget();

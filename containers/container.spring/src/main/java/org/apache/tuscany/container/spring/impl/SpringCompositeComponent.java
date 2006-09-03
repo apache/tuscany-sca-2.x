@@ -35,6 +35,7 @@ import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.builder.Connector;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -64,13 +65,15 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
      * @param name           the name of the SCA composite
      * @param springContext  the pre-instantiated Spring applicaiton context
      * @param parent         the SCA composite parent
+     * @param connector      the connector to use for wiring children
      * @param propertyValues the values of this composite's Properties
      */
     public SpringCompositeComponent(String name,
                                     AbstractApplicationContext springContext,
                                     CompositeComponent parent,
+                                    Connector connector,
                                     Map<String, Document> propertyValues) {
-        super(name, parent, propertyValues);
+        super(name, parent, connector, propertyValues);
         SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
         // REVIEW we need to refresh to pick up the parent but this is not optimal
