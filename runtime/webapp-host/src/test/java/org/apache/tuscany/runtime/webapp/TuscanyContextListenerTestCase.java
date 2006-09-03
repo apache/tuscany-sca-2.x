@@ -20,14 +20,18 @@ package org.apache.tuscany.runtime.webapp;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+
+import org.osoa.sca.SCA;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import static org.easymock.EasyMock.expect;
 import org.easymock.classextension.EasyMock;
 
 /**
- * Verifies a context listener is properly instantiated and lifecycle events are sent to it
+ * Verifies a context listener is properly instantiated and lifecycle events are sent to it. this must be tested in
+ * webapp-host as the listener isntantiates {@link ServletLauncherListener} reflectively
  *
  * @version $Rev$ $Date$
  */
@@ -35,26 +39,25 @@ public class TuscanyContextListenerTestCase extends TestCase {
 
     public void testLifecycle() {
         ServletContext context = EasyMock.createMock(ServletContext.class);
-        expect(context.getInitParameter(TuscanyContextListener.BOOTDIR_PARAM)).andReturn("foo");
+        expect(context.getInitParameter(Constants.BOOTDIR_PARAM)).andReturn("foo");
         expect(context.getResourcePaths("foo")).andReturn(null);
-        expect(context.getInitParameter(TuscanyContextListener.LAUNCHER_PARAM)).andReturn(TestLauncher.class.getName());
+        expect(context.getInitParameter(Constants.LAUNCHER_PARAM)).andReturn(TestRuntime.class.getName());
         EasyMock.replay(context);
         ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-        EasyMock.expect(event.getServletContext()).andReturn(context);
+        expect(event.getServletContext()).andReturn(context);
         EasyMock.replay(event);
         TuscanyContextListener listener = new TuscanyContextListener();
         listener.contextInitialized(event);
-        assertEquals(1, TestLauncher.getInitialized());
         listener.contextDestroyed(event);
-        assertEquals(1, TestLauncher.getDestroyed());
+        EasyMock.verify(context);
     }
 
-    public static class TestLauncher implements ServletContextListener {
+    public static class TestRuntime implements TuscanyWebappRuntime {
 
         private static int initialized;
         private static int destroyed;
 
-        public TestLauncher() {
+        public TestRuntime() {
         }
 
         public static int getInitialized() {
@@ -71,6 +74,30 @@ public class TuscanyContextListenerTestCase extends TestCase {
 
         public void contextDestroyed(ServletContextEvent servletContextEvent) {
             ++destroyed;
+        }
+
+        public void sessionCreated(HttpSessionEvent httpSessionEvent) {
+
+        }
+
+        public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+
+        }
+
+        public SCA getContext() {
+            return null;
+        }
+
+        public ServletRequestInjector getRequestInjector() {
+            return null;
+        }
+
+        public void startRequest() {
+
+        }
+
+        public void stopRequest() {
+
         }
     }
 }

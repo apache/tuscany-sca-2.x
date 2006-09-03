@@ -20,14 +20,20 @@ package org.apache.tuscany.runtime.webapp;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * Verifies {@link TuscanyServlet} properly services a request
@@ -36,23 +42,39 @@ import static org.easymock.EasyMock.isA;
  */
 public class TuscanyServletTestCase extends TestCase {
 
-    public void testService() throws Exception {
-        ServletRequestInjector requestInjector = EasyMock.createMock(ServletRequestInjector.class);
-        requestInjector.service(isA(ServletRequest.class), isA(ServletResponse.class));
-        EasyMock.expectLastCall();
-        EasyMock.replay(requestInjector);
-        ServletContext context = org.easymock.classextension.EasyMock.createMock(ServletContext.class);
-        expect(context.getAttribute(TuscanyServlet.TUSCANY_SERVLET_REQUEST_INJECTOR)).andReturn(requestInjector);
-        org.easymock.classextension.EasyMock.replay(context);
-        ServletConfig config = EasyMock.createMock(ServletConfig.class);
-        EasyMock.expect(config.getServletContext()).andReturn(context);
-        EasyMock.replay(config);
+    public void testRequestInjection() throws Exception {
+        ServletRequest req = createNiceMock(ServletRequest.class);
+        ServletResponse resp = createNiceMock(ServletResponse.class);
+        ServletRequestInjector injector = createMock(ServletRequestInjector.class);
+        injector.service(eq(req), eq(resp));
+        EasyMock.replay(injector);
+        TuscanyWebappRuntime runtime = createMock(TuscanyWebappRuntime.class);
+        expect(runtime.getRequestInjector()).andReturn(injector);
+        replay(runtime);
+        ServletContext context = createNiceMock(ServletContext.class);
+        EasyMock.expect(context.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
+        EasyMock.replay(context);
         TuscanyServlet servlet = new TuscanyServlet();
+        ServletConfig config = createMock(ServletConfig.class);
+        expect(config.getServletContext()).andReturn(context);
+        replay(config);
         servlet.init(config);
-        ServletRequest req = EasyMock.createNiceMock(ServletRequest.class);
-        ServletResponse res = EasyMock.createNiceMock(ServletResponse.class);
-        servlet.service(req, res);
-        EasyMock.verify(requestInjector);
+        servlet.service(req, resp);
+        verify(context);
+        verify(injector);
     }
 
+    public void testRuntimeNotConfigured() throws Exception {
+        ServletContext context = createNiceMock(ServletContext.class);
+        TuscanyServlet servlet = new TuscanyServlet();
+        ServletConfig config = createMock(ServletConfig.class);
+        expect(config.getServletContext()).andReturn(context);
+        replay(config);
+        try {
+            servlet.init(config);
+            fail();
+        } catch (ServletException e) {
+            //expected
+        }
+    }
 }

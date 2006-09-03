@@ -18,16 +18,18 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
+import java.net.URL;
+import java.util.Collections;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.apache.tuscany.spi.loader.MissingResourceException;
-
 import junit.framework.TestCase;
-import static org.apache.tuscany.runtime.webapp.ServletLauncherListener.APPLICATION_SCDL_PATH_PARAM;
-import static org.apache.tuscany.runtime.webapp.ServletLauncherListener.SYSTEM_MONITORING_PARAM;
-import static org.apache.tuscany.runtime.webapp.ServletLauncherListener.SYSTEM_SCDL_PATH_PARAM;
+import org.apache.tuscany.api.TuscanyException;
+import static org.apache.tuscany.runtime.webapp.Constants.DEFAULT_EXTENSION_PATH_PARAM;
+import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
+import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM;
 import static org.easymock.EasyMock.expect;
+import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -37,85 +39,76 @@ public class ServletLauncherListenerTestCase extends TestCase {
 
     /**
      * Verifies the web app host is configured properly to perform a basic boot
-     * <p/>
-     * FIXME Uncomment this test case when the webapp project is fixed by removing the dependency on web services
      */
     public void testBoot() throws Exception {
-//        final Launcher[] launcher = new Launcher[1];
-//        ServletLauncherListener listener = new ServletLauncherListener();
-//        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
-//        ServletContext context = EasyMock.createMock(ServletContext.class);
-//        expect(context.getServletContextName()).andReturn("foo").anyTimes();
-//        expect(context.getInitParameter(SYSTEM_SCDL_PATH_PARAM)).andReturn(null);
-//        expect(context.getInitParameter(APPLICATION_SCDL_PATH_PARAM)).andReturn(null);
-//        expect(context.getInitParameter(SYSTEM_MONITORING_PARAM)).andReturn(null);
-//        context.setAttribute(EasyMock.eq("Tuscany.LauncherImpl"), EasyMock.isA(Launcher.class));
-//        EasyMock.expectLastCall().andStubAnswer(new IAnswer() {
-//            public Object answer() throws Throwable {
-//                Object o = EasyMock.getCurrentArguments()[1];
-//                launcher[0] = (Launcher) o;
-//                return null;
-//            }
-//        });
-//        context.setAttribute(EasyMock.eq("Tuscany.ServletRequestInjector"), EasyMock.isA(ServletHost.class));
-//        expect(context.getResource("/WEB-INF/default.scdl"))
-//            .andReturn(getClass().getClassLoader().getResource("testapp.scdl"));
-//        expect(context.getAttribute(EasyMock.eq("Tuscany.LauncherImpl"))).andReturn(launcher[0]);
-//        EasyMock.replay(context);
-//        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-//        EasyMock.expect(event.getServletContext()).andReturn(context).anyTimes();
-//        EasyMock.replay(event);
-//        listener.contextInitialized(event);
-//        listener.contextDestroyed(event);
-//        EasyMock.verify(context);
+        final TuscanyWebappRuntime[] runtime = new TuscanyWebappRuntime[1];
+        ServletLauncherListener listener = new ServletLauncherListener();
+        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
+        ServletContext context = EasyMock.createNiceMock(ServletContext.class);
+        expect(context.getServletContextName()).andReturn("foo").anyTimes();
+        expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
+        context.setAttribute(EasyMock.eq(RUNTIME_ATTRIBUTE), EasyMock.isA(TuscanyWebappRuntime.class));
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                Object o = EasyMock.getCurrentArguments()[1];
+                runtime[0] = (TuscanyWebappRuntime) o;
+                return null;
+            }
+        });
+        URL resource = getClass().getClassLoader().getResource("testapp.scdl");
+        expect(context.getResource("/WEB-INF/default.scdl")).andReturn(resource);
+        context.setAttribute(EasyMock.eq(RUNTIME_ATTRIBUTE), EasyMock.isA(TuscanyWebappRuntime.class));
+        EasyMock.replay(context);
+        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
+        EasyMock.expect(event.getServletContext()).andReturn(context).anyTimes();
+        EasyMock.replay(event);
+        listener.contextInitialized(event);
+        listener.contextDestroyed(event);
+        EasyMock.verify(context);
     }
 
     /**
-     * Verifies a {@link org.apache.tuscany.spi.loader.LoaderException} is thrown when the application SCDL is not
-     * found
-     * <p/>
-     * FIXME Uncomment this test case when the webapp project is fixed by removing the dependency on web services
+     * Verifies a an is thrown when the application SCDL is not found
      */
     public void testApplicationSCDLNotFound() throws Exception {
-//        ServletLauncherListener listener = new ServletLauncherListener();
-//        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
-//        ServletContext context = EasyMock.createMock(ServletContext.class);
-//        expect(context.getInitParameter(SYSTEM_SCDL_PATH_PARAM)).andReturn(null);
-//        expect(context.getServletContextName()).andReturn("foo").anyTimes();
-//        context.setAttribute(EasyMock.eq("Tuscany.LauncherImpl"), EasyMock.isA(Launcher.class));
-//        context.setAttribute(EasyMock.eq("Tuscany.ServletRequestInjector"), EasyMock.isA(ServletHost.class));
-//        expect(context.getInitParameter(APPLICATION_SCDL_PATH_PARAM)).andReturn(null);
-//        expect(context.getInitParameter(SYSTEM_MONITORING_PARAM)).andReturn(null);
-//        expect(context.getResource("/WEB-INF/default.scdl")).andReturn(null);
-//        context.setAttribute(EasyMock.eq("Tuscany.LauncherImpl.Throwable"), EasyMock.isA(LoaderException.class));
-//        context.log(EasyMock.isA(String.class), EasyMock.isA(Throwable.class));
-//        EasyMock.replay(context);
-//        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-//        expect(event.getServletContext()).andReturn(context);
-//        EasyMock.replay(event);
-//        listener.contextInitialized(event);
-//        EasyMock.verify(context);
+        ServletLauncherListener listener = new ServletLauncherListener();
+        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
+        ServletContext context = EasyMock.createNiceMock(ServletContext.class);
+        expect(context.getServletContextName()).andReturn("foo").anyTimes();
+        expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
+        EasyMock.replay(context);
+        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
+        expect(event.getServletContext()).andReturn(context);
+        EasyMock.replay(event);
+        try {
+            listener.contextInitialized(event);
+            fail();
+        } catch (ServletLauncherInitException e) {
+            assertTrue(e.getCause() instanceof TuscanyException);
+        }
+        EasyMock.verify(context);
     }
 
     /**
-     * Verifies a {@link MissingResourceException} is thrown if the system SCDL is not found
-     *
-     * @throws Exception
+     * Verifies an exception is thrown if the system SCDL is not found
      */
     public void testSystemSCDLNotFound() throws Exception {
         ServletLauncherListener listener = new ServletLauncherListener();
-        ServletContext context = EasyMock.createMock(ServletContext.class);
+        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
+        ServletContext context = EasyMock.createNiceMock(ServletContext.class);
+        expect(context.getServletContextName()).andReturn("foo").anyTimes();
         expect(context.getInitParameter(SYSTEM_SCDL_PATH_PARAM)).andReturn("notthere");
-        context
-            .setAttribute(EasyMock.eq("Tuscany.LauncherImpl.Throwable"), EasyMock.isA(MissingResourceException.class));
-        expect(context.getInitParameter(APPLICATION_SCDL_PATH_PARAM)).andReturn(null);
-        expect(context.getInitParameter(SYSTEM_MONITORING_PARAM)).andReturn(null);
-        context.log(EasyMock.isA(String.class), EasyMock.isA(Throwable.class));
+        expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
         EasyMock.replay(context);
         ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-        EasyMock.expect(event.getServletContext()).andReturn(context);
+        expect(event.getServletContext()).andReturn(context);
         EasyMock.replay(event);
-        listener.contextInitialized(event);
+        try {
+            listener.contextInitialized(event);
+            fail();
+        } catch (ServletLauncherInitException e) {
+            assertTrue(e.getCause() instanceof TuscanyException);
+        }
         EasyMock.verify(context);
     }
 

@@ -34,7 +34,7 @@ public class ScaNamespaceHandler extends NamespaceHandlerSupport {
         init();
     }
 
-    public void init() {
+    public final void init() {
         registerBeanDefinitionParser("composite", new ScaCompositeBeanDefinitionParser());
         registerBeanDefinitionParser("reference", new ScaReferenceBeanDefinitionParser());
         registerBeanDefinitionParser("property", new ScaPropertyBeanDefinitionParser());

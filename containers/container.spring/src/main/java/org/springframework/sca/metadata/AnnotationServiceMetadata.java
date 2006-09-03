@@ -51,8 +51,7 @@ public class AnnotationServiceMetadata implements ServiceMetadata {
     }
 
     public Class<?>[] getServiceInterfaces() {
-        Service service = serviceClass.getAnnotation(Service.class);
-        return service.interfaces();
+        return serviceClass.getAnnotation(Service.class).interfaces();
     }
 
     public List<Method> getOneWayMethods() {
@@ -79,7 +78,7 @@ public class AnnotationServiceMetadata implements ServiceMetadata {
         // TODO fields propertly
 
         ReflectionUtils.doWithFields(serviceClass, new ReflectionUtils.FieldCallback() {
-            public void doWith(Field f) throws IllegalArgumentException, IllegalAccessException {
+            public void doWith(Field f) throws IllegalArgumentException {
                 if (f.isAnnotationPresent(ComponentName.class)) {
                     Injection componentNameInjection = new FieldInjection(f);
                     componentNameInjection.setLiteralValue(name);

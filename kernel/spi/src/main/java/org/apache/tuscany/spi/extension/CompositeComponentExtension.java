@@ -136,6 +136,10 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         return (Service) ctx;
     }
 
+    public <T> T locateService(Class<T> serviceInterface, String name) {
+        return serviceInterface.cast(children.get(name).getServiceInstance());
+    }
+
     public List<Reference> getReferences() {
         return Collections.unmodifiableList(references);
     }

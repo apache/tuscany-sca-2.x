@@ -67,6 +67,11 @@ public interface CompositeComponent<T> extends Component<T>, RuntimeEventListene
     Service getService(String name) throws ComponentNotFoundException;
 
     /**
+     * Returns the service instance for associated with the child registered for the given name
+     */
+    <T> T locateService(Class<T> serviceInterface, String serviceName);
+
+    /**
      * Returns the references contained by the composite
      */
     List<Reference> getReferences();

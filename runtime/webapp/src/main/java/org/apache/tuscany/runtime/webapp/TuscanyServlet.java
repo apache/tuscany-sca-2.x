@@ -27,28 +27,33 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 
 /**
- * A servlet that locates the ServletRequestInjector and forwards requests into the Tuscany runtime. Needs to be added
- * to the webapp web.xml
+ * A servlet that forwards requests intended for SCA services into the Tuscany runtime via a ServletRequestInjector.
+ * This servlet is typically mapped to relative paths beginning with <code>/services</code> in the <code>web.xml</code>
+ * <p/>
+ * TODO a better URL mapping scheme out to be implemented that corresponds to the SCA specification
  */
 public class TuscanyServlet extends HttpServlet {
 
-    public static final String TUSCANY_SERVLET_REQUEST_INJECTOR = "Tuscany.ServletRequestInjector";
     private static final long serialVersionUID = 1L;
 
-    private ServletRequestInjector servletRequestInjector;
+    private ServletRequestInjector requestInjector;
 
     @Override
-    public void init(ServletConfig config) {
+    public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        this.servletRequestInjector =
-            (ServletRequestInjector) servletContext.getAttribute(TUSCANY_SERVLET_REQUEST_INJECTOR);
+        TuscanyWebappRuntime runtime = (TuscanyWebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
+        if (runtime == null) {
+            throw new ServletException("Tuscany runtime not configured for web application");
+        }
+        requestInjector = runtime.getRequestInjector();
     }
 
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        servletRequestInjector.service(req, res);
+        requestInjector.service(req, res);
     }
 
 }

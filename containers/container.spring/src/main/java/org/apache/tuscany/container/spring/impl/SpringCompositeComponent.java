@@ -69,8 +69,7 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
     public SpringCompositeComponent(String name,
                                     AbstractApplicationContext springContext,
                                     CompositeComponent parent,
-                                    Map<String, Document> propertyValues
-    ) {
+                                    Map<String, Document> propertyValues) {
         super(name, parent, propertyValues);
         SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
         springContext.setParent(scaApplicationContext);
@@ -108,6 +107,10 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
         springContext.stop();
     }
 
+    public <T> T locateService(Class<T> serviceInterface, String name) {
+        return serviceInterface.cast(springContext.getBean(name));
+    }
+
     /**
      * An inner class is required to act as the Spring application context parent as opposed to implementing the
      * interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()} and
@@ -123,7 +126,7 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
         public Object getBean(String name, Class requiredType) throws BeansException {
             SCAObject object = (SCAObject) children.get(name);   // keep cast due to compiler error
             if (object == null) {
-                throw new NoSuchBeanDefinitionException("SCA service not found [" + name + "]");
+                return null;
             }
             Class<?> type;
             if (object instanceof Reference) {

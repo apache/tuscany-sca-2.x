@@ -19,9 +19,9 @@
 package org.apache.tuscany.core.launcher;
 
 import org.osoa.sca.CompositeContext;
-import org.osoa.sca.ServiceReference;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.SCA;
+import org.osoa.sca.ServiceReference;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 
@@ -62,7 +62,7 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
     }
 
     public <T> T locateService(Class<T> serviceInterface, String serviceName) {
-        return serviceInterface.cast(composite.getChild(serviceName).getServiceInstance());
+        return composite.locateService(serviceInterface, serviceName);
     }
 
     public ServiceReference newSession(String arg0) {

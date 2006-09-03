@@ -25,10 +25,10 @@ import org.springframework.sca.ScaAdapter;
  * @since 2.1
  */
 public class SpringScaAdapter implements ScaAdapter {
-    private final CompositeComponentType componentType;
+    //private final CompositeComponentType componentType;
 
     public SpringScaAdapter(CompositeComponentType componentType) {
-        this.componentType = componentType;
+        //this.componentType = componentType;
     }
 
     public Object getServiceReference(String referenceName, Class referenceType, String moduleName,

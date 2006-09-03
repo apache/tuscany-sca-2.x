@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.core.launcher;
 
+import org.apache.tuscany.api.TuscanyException;
+
 /**
  * Exception indicating that there was a problem launching an application.
  *  
  * @version $Rev$ $Date$
  */
-public abstract class LaunchException extends Exception {
+public abstract class LaunchException extends TuscanyException {
     public LaunchException() {
     }
 
