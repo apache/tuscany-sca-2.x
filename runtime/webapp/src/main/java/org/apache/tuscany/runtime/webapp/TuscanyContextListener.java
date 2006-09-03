@@ -28,44 +28,56 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.tuscany.api.TuscanyRuntimeException;
+import static org.apache.tuscany.runtime.webapp.Constants.LAUNCHER_PARAM;
+
 /**
- * Launcher for runtime environment that loads info from servlet context params. This listener manages one top-level
- * Launcher (and hence one Tuscany runtime context) per servlet context; the lifecycle of that runtime corresponds to
- * the the lifecycle of the associated servlet context.
+ * Launches a Tuscany runtime in a web application, loading information from servlet context parameters. This listener
+ * manages one runtime per servlet context; the lifecycle of that runtime corresponds to the the lifecycle of the
+ * associated servlet context.
+ * <p/>
+ * The runtime is launched in a child classloader of the web application, thereby providing isolation between
+ * application and system artifacts. Application code only has access to the SCA API and may not reference Tuscany
+ * system artifacts directly.
+ * <p/>
+ * The <code>web.xml</code> of a web application embedding Tuscany must have entries for this listener and {@link
+ * TuscanySessionListener}. The latter notifies the runtime of session creation and expiration events through a
+ * "bridging" contract, {@link TuscanyWebappRuntime}. The <code>web.xml</code> may also optionally be configured with
+ * entries for {@link TuscanyFilter} and {@link TuscanyServlet}. The former must be mapped to all urls that execute
+ * "unmanaged" code which accesses the Tuscany runtime though the SCA API, for example, JSPs and Servlets. The latter
+ * forwards service requests into the runtime, by default requests sent to URLs relative to the context path beginning
+ * with <code>/services</code>.
  *
  * @version $Rev$ $Date$
  */
 public class TuscanyContextListener implements ServletContextListener {
-    /**
-     * Name of the context parameter that defines the directory containing bootstrap jars.
-     */
-    public static final String BOOTDIR_PARAM = "tuscany.bootDir";
 
-    /**
-     * Name of the class to load to launch the runtime.
-     */
-    public static final String LAUNCHER_PARAM = "tuscany.launcherClass";
+    private TuscanyWebappRuntime runtime;
 
-    private ServletContextListener runtime;
-
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ServletContext servletContext = servletContextEvent.getServletContext();
-        ClassLoader bootClassLoader = getBootClassLoader(servletContext);
-
-        runtime = getLauncher(servletContext, bootClassLoader);
-
-        runtime.contextInitialized(servletContextEvent);
+    public void contextInitialized(ServletContextEvent event) {
+        ServletContext servletContext = event.getServletContext();
+        try {
+            ClassLoader bootClassLoader = getBootClassLoader(servletContext);
+            runtime = getRuntime(servletContext, bootClassLoader);
+            runtime.contextInitialized(event);
+        } catch (IOException e) {
+            servletContext.log("Error instantiating Tuscany bootstrap", e);
+        } catch (ClassNotFoundException e) {
+            servletContext.log("Tuscany bootstrap class not found ", e);
+        } catch (TuscanyRuntimeException e) {
+            servletContext.log("Error instantiating Tuscany bootstrap", e);
+        }
     }
 
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    public void contextDestroyed(ServletContextEvent event) {
         if (runtime != null) {
-            runtime.contextDestroyed(servletContextEvent);
+            runtime.contextDestroyed(event);
         }
     }
 
     protected ClassLoader getBootClassLoader(ServletContext servletContext) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        String bootDirName = servletContext.getInitParameter(BOOTDIR_PARAM);
+        String bootDirName = servletContext.getInitParameter(Constants.BOOTDIR_PARAM);
         if (bootDirName == null) {
             bootDirName = "/WEB-INF/tuscany/boot/";
         }
@@ -86,18 +98,13 @@ public class TuscanyContextListener implements ServletContextListener {
         return new URLClassLoader(urls, contextClassLoader);
     }
 
-    protected ServletContextListener getLauncher(ServletContext servletContext, ClassLoader bootClassLoader) {
+    protected TuscanyWebappRuntime getRuntime(ServletContext servletContext, ClassLoader bootClassLoader)
+        throws IOException, ClassNotFoundException {
         String launcherClass = servletContext.getInitParameter(LAUNCHER_PARAM);
         if (launcherClass == null) {
             launcherClass = "org.apache.tuscany.runtime.webapp.ServletLauncherListener";
         }
-
-        try {
-            return (ServletContextListener) Beans.instantiate(bootClassLoader, launcherClass);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        // launch the runtime in a separate classloader to preserve isolation of system artifacts
+        return (TuscanyWebappRuntime) Beans.instantiate(bootClassLoader, launcherClass);
     }
 }

@@ -47,7 +47,7 @@ public class ScaPostProcessor implements InstantiationAwareBeanPostProcessor, Ap
 
     private TaskExecutor taskExecutor;
 
-    private ScaAdapter scaAdapter;
+    //private ScaAdapter scaAdapter;
 
 
     /**
@@ -67,7 +67,7 @@ public class ScaPostProcessor implements InstantiationAwareBeanPostProcessor, Ap
      * @param scaAdapter the ScaAdapter for use to export services if necessary
      */
     public void setScaAdapter(ScaAdapter scaAdapter) {
-        this.scaAdapter = scaAdapter;
+        //this.scaAdapter = scaAdapter;
     }
 
 

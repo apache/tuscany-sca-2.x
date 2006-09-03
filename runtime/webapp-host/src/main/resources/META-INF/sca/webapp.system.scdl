@@ -130,9 +130,9 @@
 
 
     <!-- TODO: Hack the Axis extension in -->
-    <include name="binding.axis2" scdlLocation="binding.axis2.scdl"/> 
+    <!--<include name="binding.axis2" scdlLocation="binding.axis2.scdl"/> -->
     
     <!-- TODO: Hack the SDO DataBinding extension in -->
-    <include name="databinding.sdo" scdlLocation="databinding.sdo.scdl"/>  
+   <!-- <include name="databinding.sdo" scdlLocation="databinding.sdo.scdl"/>  -->
 
 </composite>

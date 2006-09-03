@@ -74,9 +74,8 @@ public class OneWayAdvisor extends DefaultPointcutAdvisor {
                 });
             } catch (Throwable t) {
                 t.printStackTrace();
-            } finally {
-                return null;
             }
+            return null;
         }
     }
 

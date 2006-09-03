@@ -50,7 +50,7 @@ public class ScaServiceProxyFactoryBean
 
     private Object resolvedServiceReference;
     private ApplicationContext applicationContext;
-    private ScaAdapter scaAdapter;
+    //private ScaAdapter scaAdapter;
 
     public void setServiceType(Class serviceType) {
         this.serviceType = serviceType;
@@ -138,6 +138,6 @@ public class ScaServiceProxyFactoryBean
     }
 
     public void setScaAdapter(ScaAdapter adapter) {
-        this.scaAdapter = adapter;
+        //  this.scaAdapter = adapter;
     }
 }

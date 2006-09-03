@@ -92,12 +92,12 @@ public class LauncherImpl implements Launcher {
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         moduleImplementation.setScdlLocation(systemScdl);
         moduleImplementation.setClassLoader(systemClassLoader);
-        ComponentDefinition<SystemCompositeImplementation> moduleDefinition =
+        ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(
                 ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
 
         // deploy the component into the runtime under the system parent
-        composite = (CompositeComponent<?>) bootDeployer.deploy(parent, moduleDefinition);
+        composite = (CompositeComponent<?>) bootDeployer.deploy(parent, definition);
 
         // start the system
         composite.start();

@@ -35,8 +35,7 @@ import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
- * ServletHost impl that forwards requests to registered servlets TODO: TUSCANY-649, move this and
- * ServletLauncherListener to a new webapp-host module
+ * A <code>ServletHost</code> implementation that forwards requests to registered servlets 
  */
 @Service(ServletHost.class)
 public class ServletHostImpl implements ServletHost, ServletRequestInjector {
@@ -62,7 +61,6 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector {
     }
 
     public void registerMapping(String path, Servlet servlet) {
-
         if (servlets.containsKey(path)) {
             throw new IllegalStateException("Servlet already registered at path: " + path);
         }
