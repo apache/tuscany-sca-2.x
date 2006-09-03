@@ -41,7 +41,7 @@ public class ReferenceInvocationTestCase extends TestCase {
 
     public void testInvocation() throws Exception {
         AbstractApplicationContext ctx = createSpringContext();
-        SpringCompositeComponent<?> parent = new SpringCompositeComponent("spring", ctx, null, null);
+        SpringCompositeComponent<?> parent = new SpringCompositeComponent("spring", ctx, null, null, null);
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
         Reference reference = createMock(Reference.class);

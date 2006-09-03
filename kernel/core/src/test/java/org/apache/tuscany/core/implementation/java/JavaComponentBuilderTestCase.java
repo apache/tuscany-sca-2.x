@@ -55,7 +55,7 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null, null);
 
         PojoComponentType sourceType = new PojoComponentType();
         sourceType.setImplementationScope(Scope.MODULE);

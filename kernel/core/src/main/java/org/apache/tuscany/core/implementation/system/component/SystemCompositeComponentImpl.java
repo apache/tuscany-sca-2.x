@@ -23,6 +23,7 @@ import java.util.Map;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.builder.Connector;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.AutowireResolutionException;
@@ -41,8 +42,9 @@ public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<
     public SystemCompositeComponentImpl(String name,
                                         CompositeComponent parent,
                                         AutowireComponent autowireContext,
+                                        Connector connector,
                                         Map<String, Document> propertyValues) {
-        super(name, parent, autowireContext, propertyValues);
+        super(name, parent, autowireContext, connector, propertyValues);
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)

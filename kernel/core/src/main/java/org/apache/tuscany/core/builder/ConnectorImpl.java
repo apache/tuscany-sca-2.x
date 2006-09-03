@@ -83,7 +83,6 @@ public class ConnectorImpl implements Connector {
                     chain.prepare();
                 }
             }
-
         } else if (source instanceof CompositeComponent) {
             CompositeComponent<?> composite = (CompositeComponent) source;
             if (!composite.isSelfWiring()) {
