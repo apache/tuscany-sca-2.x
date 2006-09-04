@@ -27,6 +27,7 @@
     <name>Tuscany SCA Maven Plugins</name>
 
     <modules>
+        <module>plugin.war</module>
         <module>plugin.wsdl2java</module>
         <module>plugin.java2wsdl</module>
     </modules>
