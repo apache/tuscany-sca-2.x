@@ -209,12 +209,6 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         }
     }
 
-    public void prepare() {
-        for (SCAObject object : children.values()) {
-            object.prepare();
-        }
-    }
-
     public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
