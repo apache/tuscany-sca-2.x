@@ -33,14 +33,18 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * Verifies connection strategies between {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}s and {@link
@@ -48,7 +52,7 @@ import org.jmock.MockObjectTestCase;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
+public class InboundtoOutboundConnectTestCase extends TestCase {
     private Operation operation;
 
     @SuppressWarnings("unchecked")
@@ -57,13 +61,14 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         InboundInvocationChain inboundChain = setupInbound(null, null, null);
         OutboundInvocationChain outboundChain = setupOutbound(null, null, null);
         String[] val = new String[]{"foo"};
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invokeTarget").with(eq(val)).will(returnValue(val));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invokeTarget(EasyMock.eq(val))).andReturn(val);
+        replay(invoker);
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
         inboundChain.prepare();
-        assertEquals(val, inboundChain.getTargetInvoker().invokeTarget(val));
+        inboundChain.getTargetInvoker().invokeTarget(val);
+        verify(invoker);
     }
 
 
@@ -80,9 +85,9 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         InboundInvocationChain inboundChain = setupInbound(interceptors, null, null);
         OutboundInvocationChain outboundChain = setupOutbound(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
@@ -90,6 +95,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
+        verify(invoker);
     }
 
     /**
@@ -105,9 +111,9 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         InboundInvocationChain inboundChain = setupInbound(interceptors, null, null);
         OutboundInvocationChain outboundChain = setupOutbound(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
@@ -115,6 +121,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
+        verify(invoker);
     }
 
     /**
@@ -133,9 +140,9 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupOutbound(sourceInterceptors, null, null);
         InboundInvocationChain inboundChain = setupInbound(targetInterceptors, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
         connector.connect(inboundChain, outboundChain);
@@ -145,6 +152,7 @@ public class InboundtoOutboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());
         assertEquals(1, targetInterceptor.getCount());
+        verify(invoker);
     }
 
     public InboundInvocationChain setupInbound(List<Interceptor> interceptors,

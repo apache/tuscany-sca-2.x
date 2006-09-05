@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.w3c.dom.Document;
 
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -35,7 +36,6 @@ import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.builder.Connector;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -79,8 +79,6 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
         // REVIEW we need to refresh to pick up the parent but this is not optimal
         springContext.refresh();
         this.springContext = springContext;
-        // Spring wires itself
-        this.selfWiring = true;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
@@ -98,6 +96,10 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
 
     public ConfigurableApplicationContext getApplicationContext() {
         return springContext;
+    }
+
+    public void prepare() {
+        // TODO handle only references with a composite binding
     }
 
     public void start() {

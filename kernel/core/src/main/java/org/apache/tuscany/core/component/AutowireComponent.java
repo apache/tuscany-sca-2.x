@@ -51,4 +51,5 @@ public interface AutowireComponent<S> extends CompositeComponent<S> {
      */
     <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException;
 
+
 }

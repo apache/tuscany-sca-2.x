@@ -37,12 +37,7 @@ public interface CompositeComponent<T> extends Component<T>, RuntimeEventListene
      * @param context the context to add as a child
      * @throws InvalidComponentTypeException
      */
-    void register(SCAObject context) throws InvalidComponentTypeException;
-
-    /**
-     * Returns true if the composite wires its own children
-     */
-    boolean isSelfWiring();
+    void register(SCAObject<?> context) throws InvalidComponentTypeException;
 
     /**
      * Returns the child associated with a given name

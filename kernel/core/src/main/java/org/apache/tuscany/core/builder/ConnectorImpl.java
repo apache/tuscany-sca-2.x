@@ -83,13 +83,6 @@ public class ConnectorImpl implements Connector {
                     chain.prepare();
                 }
             }
-        } else if (source instanceof CompositeComponent) {
-            CompositeComponent<?> composite = (CompositeComponent) source;
-            if (!composite.isSelfWiring()) {
-                for (SCAObject<?> child : composite.getChildren()) {
-                    connect(child);
-                }
-            }
         } else if (source instanceof Reference) {
             Reference<?> reference = (Reference) source;
             InboundWire<?> wire = reference.getInboundWire();
@@ -110,11 +103,6 @@ public class ConnectorImpl implements Connector {
             // services have inbound and outbound wires
             // NB: this connect must be done after the outbound service chain is connected to its target above
             connect(inboundWire, outboundWire, true);
-        } else {
-            BuilderConfigException e = new BuilderConfigException("Invalid source type");
-            e.setIdentifier(source.getName());
-            e.addContextName(parent.getName());
-            throw e;
         }
     }
 
@@ -274,7 +262,14 @@ public class ConnectorImpl implements Connector {
     }
 
 
+    /**
+     * Connects an inbound source chain to an outbound target chain
+     *
+     * @param sourceChain
+     * @param targetChain
+     */
     public void connect(InboundInvocationChain sourceChain, OutboundInvocationChain targetChain) {
+        // the are always interceptors so the connection algorithm is simple
         sourceChain.addInterceptor(new BridgingInterceptor(targetChain.getHeadInterceptor()));
     }
 

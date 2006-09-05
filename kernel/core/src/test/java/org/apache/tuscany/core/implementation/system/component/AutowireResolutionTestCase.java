@@ -20,44 +20,61 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.AutowireComponent;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * Verfies specific autowire resolution scenarios
  *
  * @version $Rev$ $Date$
  */
-public class AutowireResolutionTestCase extends MockObjectTestCase {
-    private SystemCompositeComponentImpl<?> context;
-    private Mock parent;
-    private Mock autowire;
+public class AutowireResolutionTestCase extends TestCase {
 
     public void testConstruction() {
-        assertEquals("test", context.getName());
-        assertSame(parent.proxy(), context.getParent());
+        CompositeComponent<?> parent = createMock(CompositeComponent.class);
+        AutowireComponent<?> autowire = createMock(AutowireComponent.class);
+        replay(parent);
+        replay(autowire);
+        SystemCompositeComponent<?> component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
+        assertEquals("test", component.getName());
+        assertSame(parent, component.getParent());
+        verify(parent);
+        verify(autowire);
     }
 
     public void testResolveToSelf() {
-        assertSame(context, context.resolveInstance(CompositeComponent.class));
-        assertSame(context, context.resolveInstance(SystemCompositeComponent.class));
+        CompositeComponent<?> parent = createMock(CompositeComponent.class);
+        AutowireComponent<?> autowire = createMock(AutowireComponent.class);
+        replay(parent);
+        replay(autowire);
+        SystemCompositeComponent<?> component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
+        assertSame(component, component.resolveInstance(CompositeComponent.class));
+        assertSame(component, component.resolveInstance(SystemCompositeComponent.class));
+        verify(parent);
+        verify(autowire);
     }
 
     public void testResolvedByAutowire() {
         Foo foo = new Foo() {
         };
-        autowire.expects(once()).method("resolveInstance").with(eq(Foo.class)).will(returnValue(foo));
-        assertSame(foo, context.resolveInstance(Foo.class));
+        CompositeComponent<?> parent = createMock(CompositeComponent.class);
+        AutowireComponent<?> autowire = createMock(AutowireComponent.class);
+        EasyMock.expect(autowire.resolveInstance(eq(Foo.class))).andReturn(foo);
+        replay(parent);
+        replay(autowire);
+        SystemCompositeComponent<?> component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
+        assertSame(foo, component.resolveInstance(Foo.class));
+        verify(parent);
+        verify(autowire);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = mock(CompositeComponent.class);
-        autowire = mock(AutowireComponent.class);
-        context = new SystemCompositeComponentImpl("test",
-            (CompositeComponent) parent.proxy(),
-            (AutowireComponent) autowire.proxy(), null, null);
     }
 
     public static interface Foo {

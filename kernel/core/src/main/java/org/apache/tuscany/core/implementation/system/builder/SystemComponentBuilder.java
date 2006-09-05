@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.system.builder;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
@@ -111,7 +112,55 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(definition.getName(), configuration);
         // handle properties
         Map<String, PropertyValue<?>> propertyValues = definition.getPropertyValues();
-        for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
+        processProperties(propertyValues, componentType.getProperties().values(), component);
+        // handle inbound wires
+        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
+            Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
+            String name = serviceDefinition.getName();
+            SystemInboundWire<Object> wire = new SystemInboundWireImpl(name, interfaze, component);
+            component.addInboundWire(wire);
+        }
+        // handle references
+        processReferences(definition, componentType.getReferences(), autowireContext, component);
+        // FIXME we need a way to build configuration references from autowires in the loader to eliminate this eval
+        for (ReferenceDefinition reference : componentType.getReferences().values()) {
+            if (reference.isAutowire()) {
+                Class interfaze = reference.getServiceContract().getInterfaceClass();
+                OutboundWire<?> wire =
+                    new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext, reference.isRequired());
+                component.addOutboundWire(wire);
+            }
+        }
+        return component;
+    }
+
+    private void processReferences(ComponentDefinition<SystemImplementation> definition,
+                                   Map<String, JavaMappedReference> references,
+                                   AutowireComponent autowireContext,
+                                   SystemAtomicComponentImpl component) {
+        // no proxies needed for system components
+        for (ReferenceTarget target : definition.getReferenceTargets().values()) {
+            String referenceName = target.getReferenceName();
+            JavaMappedReference referenceDefiniton = references.get(referenceName);
+            Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
+            OutboundWire<?> wire;
+            if (referenceDefiniton.isAutowire()) {
+                boolean required = referenceDefiniton.isRequired();
+                wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext, required);
+            } else {
+                //FIXME support multiplicity!
+                assert target.getTargets().size() == 1 : "Multiplicity not yet implemented";
+                QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
+                wire = new SystemOutboundWireImpl(referenceName, targetName, interfaze);
+            }
+            component.addOutboundWire(wire);
+        }
+    }
+
+    private void processProperties(Map<String, PropertyValue<?>> propertyValues,
+                                   Collection<JavaMappedProperty<?>> properties,
+                                   SystemAtomicComponentImpl component) {
+        for (JavaMappedProperty<?> property : properties) {
             PropertyValue value = propertyValues.get(property.getName());
             ObjectFactory<?> factory;
             if (value != null) {
@@ -123,38 +172,5 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
                 component.addPropertyFactory(property.getName(), factory);
             }
         }
-        // handle inbound wires
-        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            Class interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-            SystemInboundWire<?> wire = new SystemInboundWireImpl(serviceDefinition.getName(), interfaze, component);
-            component.addInboundWire(wire);
-        }
-        // handle references directly with no proxies
-        for (ReferenceTarget target : definition.getReferenceTargets().values()) {
-            String referenceName = target.getReferenceName();
-            JavaMappedReference referenceDefiniton = componentType.getReferences().get(referenceName);
-            Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
-            OutboundWire<?> wire;
-            if (referenceDefiniton.isAutowire()) {
-                wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext,
-                    referenceDefiniton.isRequired());     
-            } else {
-                //FIXME support multiplicity!
-                assert target.getTargets().size() == 1 : "Multiplicity not yet implemented";
-                QualifiedName targetName = new QualifiedName(target.getTargets().get(0).getPath());
-                wire = new SystemOutboundWireImpl(referenceName, targetName, interfaze);
-            }
-            component.addOutboundWire(wire);
-        }
-        // FIXME we need a way to build configuration references from autowires in the loader to eliminate this eval
-        for (ReferenceDefinition reference : componentType.getReferences().values()) {
-            if (reference.isAutowire()) {
-                Class interfaze = reference.getServiceContract().getInterfaceClass();
-                OutboundWire<?> wire =
-                    new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext, reference.isRequired());
-                component.addOutboundWire(wire);
-            }
-        }
-        return component;
     }
 }

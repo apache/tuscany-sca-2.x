@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.model;
 
-import org.apache.tuscany.spi.model.AtomicImplementation;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.AtomicImplementation;
 
 /**
  * Represents the system composite implementation

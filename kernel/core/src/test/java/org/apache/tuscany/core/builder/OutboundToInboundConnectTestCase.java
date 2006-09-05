@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.wire.MockHandler;
@@ -40,8 +41,11 @@ import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * Verifies connection strategies between {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}s and {@link
@@ -49,7 +53,7 @@ import org.jmock.MockObjectTestCase;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
+public class OutboundToInboundConnectTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testNoInterceptorsNoHandlers() throws Exception {
@@ -57,12 +61,13 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         String[] val = new String[]{"foo"};
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invokeTarget").with(eq(val)).will(returnValue(val));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invokeTarget(EasyMock.eq(val))).andReturn(val);
+        replay(invoker);
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         assertEquals(val, outboundChain.getTargetInvoker().invokeTarget(val));
+        verify(invoker);
     }
 
 
@@ -79,15 +84,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(interceptors, null, null);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
+        verify(invoker);
     }
 
     /**
@@ -103,15 +109,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         InboundInvocationChain inboundChain = setupTarget(interceptors, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
+        verify(invoker);
     }
 
     /**
@@ -130,9 +137,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(sourceInterceptors, null, null);
         InboundInvocationChain inboundChain = setupTarget(targetInterceptors, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -141,6 +148,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());
         assertEquals(1, targetInterceptor.getCount());
+        verify(invoker);
     }
 
     /**
@@ -159,9 +167,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(interceptors, handlers, null);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -170,6 +178,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -188,9 +197,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         InboundInvocationChain inboundChain = setupTarget(interceptors, handlers, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -199,6 +208,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
 
@@ -218,9 +228,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(interceptors, null, handlers);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -229,6 +239,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -247,9 +258,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         InboundInvocationChain inboundChain = setupTarget(interceptors, null, handlers);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -258,6 +269,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -276,9 +288,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(interceptors, handlers, handlers);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -287,6 +299,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
         assertEquals(2, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -305,9 +318,9 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, handlers);
         InboundInvocationChain inboundChain = setupTarget(interceptors, handlers, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, interceptor.getCount());
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
@@ -316,6 +329,7 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
         assertEquals(2, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -331,15 +345,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, handlers, handlers);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(2, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -355,15 +370,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         InboundInvocationChain inboundChain = setupTarget(null, handlers, handlers);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(2, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -379,15 +395,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, handlers, null);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -403,15 +420,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         InboundInvocationChain inboundChain = setupTarget(null, handlers, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -427,15 +445,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, handlers);
         InboundInvocationChain inboundChain = setupTarget(null, null, null);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
     /**
@@ -451,15 +470,16 @@ public class OutboundToInboundConnectTestCase extends MockObjectTestCase {
         OutboundInvocationChain outboundChain = setupSource(null, null, null);
         InboundInvocationChain inboundChain = setupTarget(null, null, handlers);
         Message msg = new MessageImpl();
-        Mock mock = mock(TargetInvoker.class);
-        mock.expects(once()).method("invoke").with(eq(msg)).will(returnValue(msg));
-        TargetInvoker invoker = (TargetInvoker) mock.proxy();
+        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
+        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        replay(invoker);
         assertEquals(0, handler.getCount());
         connector.connect(outboundChain, inboundChain, invoker);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, handler.getCount());
+        verify(invoker);
     }
 
 

@@ -97,23 +97,23 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         }
 
         String name = componentDefinition.getName();
-        CompositeComponentImpl<?> context = new CompositeComponentImpl(name, parent, null, connector, null);
+        CompositeComponentImpl<?> component = new CompositeComponentImpl(name, parent, null, connector, null);
         for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
-            context.register(builderRegistry.build(context, referenceDefinition, deploymentContext));
+            component.register(builderRegistry.build(component, referenceDefinition, deploymentContext));
         }
         for (BindlessServiceDefinition bindlessServiceDef : allBindlessServices) {
-            context.register(builderRegistry.build(context, bindlessServiceDef, deploymentContext));
+            component.register(builderRegistry.build(component, bindlessServiceDef, deploymentContext));
         }
         for (ComponentDefinition<? extends Implementation<?>> child : allComponents) {
-            context.register(builderRegistry.build(context, child, deploymentContext));
+            component.register(builderRegistry.build(component, child, deploymentContext));
         }
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
-            context.register(builderRegistry.build(context, serviceDefinition, deploymentContext));
+            component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
         }
         for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
-            context.register(builderRegistry.build(context, targetlessReferenceDef, deploymentContext));
+            component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
         }
-        return context;
+        return component;
     }
 
     protected Class<CompositeImplementation> getImplementationType() {

@@ -35,7 +35,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     extends ComponentType<S, R, P> {
 
     private Scope implementationScope = Scope.UNDEFINED;
-    private ConstructorDefinition constructorDefinition;
+    private ConstructorDefinition<?> constructorDefinition;
     private Method initMethod;
     private Method destroyMethod;
 
@@ -63,7 +63,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     /**
      * Sets the constructor used to instantiate implementation instances
      */
-    public void setConstructorDefinition(ConstructorDefinition definition) {
+    public void setConstructorDefinition(ConstructorDefinition<?> definition) {
         this.constructorDefinition = definition;
     }
 
