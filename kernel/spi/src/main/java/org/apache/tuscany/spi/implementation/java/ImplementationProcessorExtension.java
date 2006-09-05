@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  *
  * @version $Rev$ $Date$
  */
-public abstract class ImplementationProcessorSupport implements ImplementationProcessor {
+public abstract class ImplementationProcessorExtension implements ImplementationProcessor {
     private IntrospectionRegistry registry;
 
     @Autowire

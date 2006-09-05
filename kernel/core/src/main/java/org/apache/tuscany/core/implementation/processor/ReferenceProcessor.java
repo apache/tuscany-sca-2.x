@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -45,7 +45,7 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyNam
  *
  * @version $Rev$ $Date$
  */
-public class ReferenceProcessor extends ImplementationProcessorSupport {
+public class ReferenceProcessor extends ImplementationProcessorExtension {
 
     private JavaInterfaceProcessorRegistry regsitry;
 
