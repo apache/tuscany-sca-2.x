@@ -166,13 +166,13 @@ public final class MockFactory {
         return wire;
     }
 
-    public static Map<Operation, InboundInvocationChain> createInboundChains(Class<?> interfaze)
+    public static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze)
         throws InvalidServiceContractException {
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
-        Map<Operation, InboundInvocationChain> invocations = new HashMap<Operation, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> invocations = new HashMap<Operation<?>, InboundInvocationChain>();
         ServiceContract<?> contract = registry.introspect(interfaze);
 
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());

@@ -78,7 +78,7 @@ public interface WireService {
      * @param operation the operation to create the chain for
      * @return the outbound invocation chain for a given operation
      */
-    OutboundInvocationChain createOutboundChain(Operation operation);
+    OutboundInvocationChain createOutboundChain(Operation<?> operation);
 
     /**
      * Creates an inbound invocation chain for a given operation
@@ -86,7 +86,7 @@ public interface WireService {
      * @param operation the operation to create the chain for
      * @return the inbound invocation chain for a given operation
      */
-    InboundInvocationChain createInboundChain(Operation operation);
+    InboundInvocationChain createInboundChain(Operation<?> operation);
 
     /**
      * Creates a wire for flowing inbound invocations to a service

@@ -128,12 +128,12 @@ public final class ArtifactFactory {
         return invocations;
     }
 
-    private static Map<Operation, InboundInvocationChain> createInboundChains(Class<?> interfaze)
+    private static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze)
         throws InvalidServiceContractException {
-        Map<Operation, InboundInvocationChain> invocations = new HashMap<Operation, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> invocations = new HashMap<Operation<?>, InboundInvocationChain>();
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(interfaze);
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
             // add tail interceptor
             //chain.addInterceptor(new InvokerInterceptor());

@@ -87,8 +87,8 @@ public class JDKWireService implements WireService {
     private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire<?> wire, Method[] methods)
         throws NoMethodForOperationException {
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        for (Map.Entry<Operation, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
-            Operation operation = entry.getKey();
+        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
+            Operation<?> operation = entry.getKey();
             InboundInvocationChain chain = entry.getValue();
             Method method = findMethod(operation, methods);
             if (method == null) {
@@ -154,11 +154,11 @@ public class JDKWireService implements WireService {
         return new JDKCallbackInvocationHandler(context);
     }
 
-    public OutboundInvocationChain createOutboundChain(Operation operation) {
+    public OutboundInvocationChain createOutboundChain(Operation<?> operation) {
         return new OutboundInvocationChainImpl(operation);
     }
 
-    public InboundInvocationChain createInboundChain(Operation operation) {
+    public InboundInvocationChain createInboundChain(Operation<?> operation) {
         return new InboundInvocationChainImpl(operation);
     }
 
@@ -190,7 +190,7 @@ public class JDKWireService implements WireService {
     public <T> void createWires(Reference<T> reference, ServiceContract<?> contract) {
         InboundWire<T> wire = new InboundWireImpl<T>();
         wire.setServiceContract(contract);
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
@@ -218,7 +218,7 @@ public class JDKWireService implements WireService {
         wire.setTargetName(qName);
         wire.setServiceContract(contract);
         wire.setReferenceName(reference.getReferenceName());
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             //TODO handle policy
             OutboundInvocationChain chain = createOutboundChain(operation);
             wire.addInvocationChain(operation, chain);
@@ -227,7 +227,7 @@ public class JDKWireService implements WireService {
         Class<?> callbackInterface = contract.getCallbackClass();
         if (callbackInterface != null) {
             wire.setCallbackInterface(callbackInterface);
-            for (Operation operation : contract.getCallbacksOperations().values()) {
+            for (Operation<?> operation : contract.getCallbacksOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 OutboundInvocationChain callbackSourceChain = createOutboundChain(operation);
                 // TODO handle policy
@@ -245,7 +245,7 @@ public class JDKWireService implements WireService {
         ServiceContract<?> contract = service.getServiceContract();
         wire.setServiceContract(contract);
         wire.setServiceName(service.getName());
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             // TODO handle policy
             //TODO statement below could be cleaner
@@ -265,7 +265,7 @@ public class JDKWireService implements WireService {
         inboundWire.setServiceContract(contract);
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetName(new QualifiedName(targetName));
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
             inboundWire.addInvocationChain(operation, inboundChain);
             OutboundInvocationChain outboundChain = createOutboundChain(operation);

@@ -91,7 +91,7 @@ public class ConnectorImpl implements Connector {
             // connect inbound wires
             for (InboundWire<T> inboundWire : sourceComponent.getInboundWires().values()) {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                    Operation operation = chain.getOperation();
+                    Operation<?> operation = chain.getOperation();
                     TargetInvoker invoker = sourceComponent.createTargetInvoker(null, operation);
                     chain.setTargetInvoker(invoker);
                     chain.prepare();
@@ -100,7 +100,7 @@ public class ConnectorImpl implements Connector {
         } else if (source instanceof Reference) {
             Reference<?> reference = (Reference) source;
             InboundWire<?> wire = reference.getInboundWire();
-            Map<Operation, InboundInvocationChain> chains = wire.getInvocationChains();
+            Map<Operation<?>, InboundInvocationChain> chains = wire.getInvocationChains();
             // for references, no need to have an outbound wire
             for (InboundInvocationChain chain : chains.values()) {
                 //TODO handle async
@@ -162,7 +162,7 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
-        Map<Operation, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
+        Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         // REVIEW: (kentaminator@gmail.com) shouldn't this check whether the interceptors in the
         // source & target chains are marked as optimizable?  (and if so, optimize them away?)
@@ -173,7 +173,7 @@ public class ConnectorImpl implements Connector {
         ServiceContract contract = sourceWire.getServiceContract();
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
             // match wire chains
-            Operation operation = outboundChain.getOperation();
+            Operation<?> operation = outboundChain.getOperation();
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
                 BuilderConfigException e =
@@ -194,7 +194,7 @@ public class ConnectorImpl implements Connector {
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    Operation inboundOperation = inboundChain.getOperation();
+                    Operation<?> inboundOperation = inboundChain.getOperation();
                     invoker = component.createTargetInvoker(null, inboundOperation);
                 }
             } else if (target instanceof Reference) {
@@ -225,7 +225,7 @@ public class ConnectorImpl implements Connector {
             }
             if (source instanceof Component) {
                 Component component = (Component) source;
-                Operation operation = outboundChain.getOperation();
+                Operation<?> operation = outboundChain.getOperation();
                 boolean isOneWayOperation = operation.isNonBlocking();
                 boolean operationHasCallback = contract.getCallbackName() != null;
                 if (isOneWayOperation && operationHasCallback) {
@@ -235,7 +235,7 @@ public class ConnectorImpl implements Connector {
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    Operation inboundOperation = inboundChain.getOperation();
+                    Operation<?> inboundOperation = inboundChain.getOperation();
                     invoker = component.createTargetInvoker(null, inboundOperation);
                 }
                 connect(outboundChain, inboundChain, invoker);

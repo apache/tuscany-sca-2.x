@@ -41,7 +41,7 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     private ServiceContract serviceContract;
     private OutboundWire<T> targetWire;
     private String callbackReferenceName;
-    private Map<Operation, InboundInvocationChain> chains = new HashMap<Operation, InboundInvocationChain>();
+    private Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -72,15 +72,15 @@ public class InboundWireImpl<T> implements InboundWire<T> {
         this.serviceName = serviceName;
     }
 
-    public Map<Operation, InboundInvocationChain> getInvocationChains() {
+    public Map<Operation<?>, InboundInvocationChain> getInvocationChains() {
         return chains;
     }
 
-    public void addInvocationChains(Map<Operation, InboundInvocationChain> chains) {
+    public void addInvocationChains(Map<Operation<?>, InboundInvocationChain> chains) {
         this.chains.putAll(chains);
     }
 
-    public void addInvocationChain(Operation operation, InboundInvocationChain chain) {
+    public void addInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
         chains.put(operation, chain);
     }
 

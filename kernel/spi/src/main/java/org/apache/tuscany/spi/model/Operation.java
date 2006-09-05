@@ -37,7 +37,7 @@ public class Operation<T> {
     private final boolean nonBlocking;
     private ServiceContract<?> contract;
     private boolean callback;
-    private final String dataBinding;
+    private String dataBinding;
     protected Map<String, Object> metaData;
 
     /**
@@ -160,6 +160,16 @@ public class Operation<T> {
     public String getDataBinding() {
         return dataBinding;
     }
+    
+    /**
+     * Set the databinding for this operation
+     *  
+     * @param dataBinding The databinding
+     */
+    public void setDataBinding(String dataBinding) {
+        this.dataBinding = dataBinding;
+    }
+    
 
     /**
      * Returns a map of metadata key to value mappings for the operation.
@@ -216,4 +226,5 @@ public class Operation<T> {
         result = 29 * result + (faultTypes != null ? faultTypes.hashCode() : 0);
         return result;
     }
+
 }
