@@ -239,6 +239,8 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
 
     public void prepare() {
         for (SCAObject<?> child : children.values()) {
+            // connect all children
+            // TODO for composite wires, should delegate down
             connector.connect(child);
             child.prepare();
         }
