@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
-public class ConstructorProcessor extends ImplementationProcessorSupport {
+public class ConstructorProcessor extends ImplementationProcessorExtension {
 
     private ImplementationProcessorService service;
 

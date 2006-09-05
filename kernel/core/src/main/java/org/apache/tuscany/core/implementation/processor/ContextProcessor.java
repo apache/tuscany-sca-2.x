@@ -25,7 +25,7 @@ import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  *
  * @version $Rev$ $Date$
  */
-public class ContextProcessor extends ImplementationProcessorSupport {
+public class ContextProcessor extends ImplementationProcessorExtension {
 
     public void visitMethod(CompositeComponent<?> parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,

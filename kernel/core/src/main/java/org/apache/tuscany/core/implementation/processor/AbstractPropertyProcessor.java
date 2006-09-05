@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorSupport;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -45,7 +45,7 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractPropertyProcessor<A extends Annotation> extends ImplementationProcessorSupport {
+public abstract class AbstractPropertyProcessor<A extends Annotation> extends ImplementationProcessorExtension {
     private final Class<A> annotationClass;
     private ImplementationProcessorService service;
 
