@@ -19,9 +19,11 @@
 package org.apache.tuscany.spi.builder;
 
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 
+@Scope("MODULE")
 /**
  * @version $Rev$ $Date$
  */
@@ -34,7 +36,7 @@ public abstract class WirePostProcessorExtension implements WirePostProcessor {
         this.registry = registry;
     }
 
-    @Init
+    @Init(eager = true)
     public void init() {
         registry.register(this);
     }
