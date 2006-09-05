@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.model;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,6 +36,7 @@ public abstract class ServiceContract<T> extends ModelObject {
     protected Map<String, Operation<T>> operations;
     protected Map<String, Operation<T>> callbacksOperations;
     protected String dataBinding;
+    protected Map<String, Object> metaData;
 
     protected ServiceContract() {
     }
@@ -151,6 +153,31 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     public void setDataBinding(String dataBinding) {
         this.dataBinding = dataBinding;
+    }
+
+    /**
+     * Returns a map of metadata key to value mappings for the operation.
+     *
+     * @return a map of metadata key to value mappings for the operation.
+     */
+    public Map<String, Object> getMetaData() {
+        if (metaData == null) {
+            return Collections.emptyMap();
+        }
+        return metaData;
+    }
+
+    /**
+     * Adds metadata associated with the operation.
+     *
+     * @param key the metadata key
+     * @param val the metadata value
+     */
+    public void addMetaData(String key, Object val) {
+        if (metaData == null) {
+            metaData = new HashMap<String, Object>();
+        }
+        metaData.put(key, val);
     }
 
     public boolean equals(Object o) {
