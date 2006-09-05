@@ -25,7 +25,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.runtime</groupId>
-    <artifactId>osgi</artifactId>
+    <artifactId>equinox</artifactId>
     <packaging>jar</packaging>
     <name>Tuscany Equinox Runtime</name>
     <description>Tuscany Equinox Runtime Host</description>
