@@ -66,6 +66,10 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>
     </component>
 
+    <component name="wirePostProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
+    </component>
+
     <!-- Default scopes -->
     <component name="scope.module">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory"/>

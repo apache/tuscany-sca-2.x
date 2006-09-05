@@ -66,6 +66,10 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>
     </component>
 
+    <component name="wirePostProcessorRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
+    </component>
+    
     <!-- Default scopes -->
     <component name="scope.module">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory"/>
@@ -106,7 +110,8 @@
 
     <!-- WorkScheduler service -->
     <component name="workManager">
-        <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.services.work.jsr237.workmanager.ThreadPoolWorkManager"/>
         <property name="poolSize">10</property>
     </component>
 
@@ -115,7 +120,7 @@
     </component>
 
     <component name="policyBuilderRegistry">
-         <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
+        <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
     </component>
 
     <component name="propertyFactory">
