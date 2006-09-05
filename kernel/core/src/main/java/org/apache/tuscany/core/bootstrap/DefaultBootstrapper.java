@@ -137,8 +137,7 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new StringParserPropertyFactory(), introspector);
-        Connector connector = createConnector();
-        return new DeployerImpl(xmlFactory, loader, builder, connector);
+        return new DeployerImpl(xmlFactory, loader, builder);
     }
 
     /**
@@ -241,7 +240,8 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
         BuilderRegistry builderRegistry = new BuilderRegistryImpl(scopeRegistry);
-        builderRegistry.register(SystemCompositeImplementation.class, new SystemCompositeBuilder(builderRegistry));
+        SystemCompositeBuilder builder = new SystemCompositeBuilder(builderRegistry, createConnector());
+        builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
         builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());
         return builderRegistry;

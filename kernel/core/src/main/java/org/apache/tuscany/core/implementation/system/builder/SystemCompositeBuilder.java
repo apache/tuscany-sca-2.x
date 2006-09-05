@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -49,8 +50,9 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
     public SystemCompositeBuilder() {
     }
 
-    public SystemCompositeBuilder(BuilderRegistry builderRegistry) {
+    public SystemCompositeBuilder(BuilderRegistry builderRegistry, Connector connector) {
         this.builderRegistry = builderRegistry;
+        this.connector = connector;
     }
 
     protected Class<SystemCompositeImplementation> getImplementationType() {
@@ -93,26 +95,26 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
         // create the composite component
         String name = componentDefinition.getName();
-        AutowireComponent autowireContext = getAutowireContext(parent);
-        SystemCompositeComponent<?> context =
+        AutowireComponent autowireContext = getAutowireComponent(parent);
+        SystemCompositeComponent<?> component =
             new SystemCompositeComponentImpl(name, parent, autowireContext, connector, null);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
-            context.register(builderRegistry.build(context, childComponentDefinition, deploymentContext));
+            component.register(builderRegistry.build(component, childComponentDefinition, deploymentContext));
         }
 
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
-            context.register(builderRegistry.build(context, serviceDefinition, deploymentContext));
+            component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
         }
-        return context;
+        return component;
     }
 
     /**
-     * Return the autowire context for the supplied parent
+     * Return the autowire component for the supplied parent
      *
      * @param parent the parent for a new context
      * @return the autowire context for the parent or null if it does not support autowire
      */
-    protected AutowireComponent getAutowireContext(CompositeComponent<?> parent) {
+    protected AutowireComponent getAutowireComponent(CompositeComponent<?> parent) {
         if (parent instanceof AutowireComponent) {
             return (AutowireComponent) parent;
         } else {

@@ -24,6 +24,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -33,37 +34,41 @@ import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Include;
+import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * Verifies the default boostrap deployer
  *
  * @version $Rev$ $Date$
  */
-public class BootstrapDeployerTestCase extends MockObjectTestCase {
+public class BootstrapDeployerTestCase extends TestCase {
     private DeployerImpl deployer;
     private DeploymentContext deploymentContext;
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
-    private Mock parent;
 
     public void testBoot1Load() throws LoaderException {
-        Mock mock = mock(CompositeComponent.class);
-        CompositeComponent parent = (CompositeComponent) mock.proxy();
+        CompositeComponent parent = createNiceMock(CompositeComponent.class);
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         deployer.load(parent, componentDefinition, deploymentContext);
-        CompositeComponentType<ServiceDefinition, ?, ?> composite = implementation.getComponentType();
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
+            implementation.getComponentType();
         assertNotNull(composite);
         assertEquals("boot1", composite.getName());
 
@@ -101,25 +106,28 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
     public void testBoot1Deployment() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
-        parent.expects(once()).method("register").withAnyArguments();
-
+        CompositeComponent<?> parent = createNiceMock(CompositeComponent.class);
+        parent.register(isA(SCAObject.class));
+        replay(parent);
         // load the boot1 file using the bootstrap deployer
         componentDefinition.setName("simple");
-        Component<?> component = deployer.deploy((CompositeComponent<?>) parent.proxy(), componentDefinition);
+        Component<?> component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
-        parent.verify();
+        verify(parent);
     }
 
     public void testBoot2Deployment() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
-        parent.expects(once()).method("register").withAnyArguments();
+        CompositeComponent<?> parent = createNiceMock(CompositeComponent.class);
+        parent.register(isA(SCAObject.class));
+        replay(parent);
 
         // load the boot2 file using the bootstrap deployer
         componentDefinition.setName("newDeployer");
-        Component<?> component = deployer.deploy((CompositeComponent<?>) parent.proxy(), componentDefinition);
+        Component<?> component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
-        parent.verify();
+        verify(parent);
         component.start();
         Deployer newDeployer = (Deployer) component.getServiceInstance("deployer");
         assertNotNull(newDeployer);
@@ -147,6 +155,5 @@ public class BootstrapDeployerTestCase extends MockObjectTestCase {
         implementation = new SystemCompositeImplementation();
         implementation.setClassLoader(getClass().getClassLoader());
         componentDefinition = new ComponentDefinition<SystemCompositeImplementation>(implementation);
-        parent = mock(CompositeComponent.class);
     }
 }

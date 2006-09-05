@@ -21,39 +21,42 @@ package org.apache.tuscany.core.implementation.system.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
- * Tests registering arbirarily deep child composite contexts
+ * Tests registering arbitrarily deep child composite contexts
  *
  * @version $Rev$ $Date$
  */
-public class CompositePropagationTestCase extends MockObjectTestCase {
+public class CompositePropagationTestCase extends TestCase {
 
     private SystemCompositeComponent parent;
-    private SystemCompositeComponent child1;
     private SystemCompositeComponent child2;
 
     public void testLifecyclePropagation() throws NoSuchMethodException {
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        Mock mock = mock(SystemAtomicComponent.class);
-        mock.stubs().method("getName").will(returnValue("source"));
-        mock.expects(once()).method("stop");
-        mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
-        child2.register(context);
+        SystemAtomicComponent component = createMock(SystemAtomicComponent.class);
+        expect(component.getName()).andReturn("source").anyTimes();
+        component.stop();
+        expect(component.getServiceInterfaces()).andReturn(interfaces);
+        replay(component);
+        child2.register(component);
         parent.stop();
+        verify(component);
     }
 
 
     protected void setUp() throws Exception {
         super.setUp();
         parent = new SystemCompositeComponentImpl("parent", null, null, null, null);
-        child1 = new SystemCompositeComponentImpl("child1", parent, null, null, null);
+        SystemCompositeComponent child1 = new SystemCompositeComponentImpl("child1", parent, null, null, null);
         child2 = new SystemCompositeComponentImpl("child2", child1, null, null, null);
         child1.register(child2);
         parent.register(child1);

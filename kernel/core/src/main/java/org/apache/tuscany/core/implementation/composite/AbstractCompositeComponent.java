@@ -28,7 +28,6 @@ import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
@@ -39,6 +38,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -142,7 +142,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         lifecycleState = STOPPED;
     }
 
-    public void register(SCAObject child) {
+    public void register(SCAObject<?> child) {
         if (children.get(child.getName()) != null) {
             DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
             e.setIdentifier(child.getName());
@@ -237,6 +237,12 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         return null;
     }
 
+    public void prepare() {
+        for (SCAObject<?> child : children.values()) {
+            connector.connect(child);
+            child.prepare();
+        }
+    }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemService context) {
         assert interfaze != null;

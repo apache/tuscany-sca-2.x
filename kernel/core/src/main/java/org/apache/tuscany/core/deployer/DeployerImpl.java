@@ -23,7 +23,6 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -47,41 +46,25 @@ public class DeployerImpl implements Deployer {
     private XMLInputFactory xmlFactory;
     private Loader loader;
     private Builder builder;
-    private Connector connector;
 
-    public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder, Connector connector) {
+    public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder) {
         this.xmlFactory = xmlFactory;
         this.loader = loader;
         this.builder = builder;
-        this.connector = connector;
     }
 
     public DeployerImpl() {
         xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", getClass().getClassLoader());
     }
 
-/*
-    @Autowire
-    public void setXmlFactory(XMLInputFactory xmlFactory) {
-        this.xmlFactory = xmlFactory;
-    }
-*/
-
-    //FIXME allow autowire to register multiple service types
     @Autowire
     public void setLoader(LoaderRegistry loader) {
         this.loader = loader;
     }
 
-    //FIXME allow autowire to register multiple service types
     @Autowire
     public void setBuilder(BuilderRegistry builder) {
         this.builder = builder;
-    }
-
-    @Autowire
-    public void setConnector(Connector connector) {
-        this.connector = connector;
     }
 
     public <I extends Implementation<?>> Component<?> deploy(CompositeComponent<?> parent,
@@ -100,7 +83,7 @@ public class DeployerImpl implements Deployer {
             CompositeComponent composite = (CompositeComponent) component;
             composite.setScopeContainer(moduleScope);
         }
-        connect(component);
+        component.prepare();
         parent.register(component);
         return component;
     }
@@ -132,12 +115,4 @@ public class DeployerImpl implements Deployer {
         return builder.build(parent, componentDefinition, deploymentContext);
     }
 
-    /**
-     * Connect the context's source wires to other target wires within the scope of the parent.
-     *
-     * @param object the SCA artifact to connect
-     */
-    protected void connect(SCAObject<?> object) {
-        connector.connect(object);
-    }
 }

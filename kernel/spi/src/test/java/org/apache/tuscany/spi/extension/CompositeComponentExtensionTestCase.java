@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.extension;
 
 import java.util.List;
 
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentNotFoundException;
 import org.apache.tuscany.spi.component.DuplicateNameException;
@@ -37,6 +38,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
@@ -211,7 +213,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     private class Composite<T> extends CompositeComponentExtension<T> {
         public Composite() {
-            super(null, null, null, null);
+            super(null, null, createNiceMock(Connector.class), null);
         }
 
         public void setScopeContainer(ScopeContainer scopeContainer) {

@@ -65,7 +65,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
+        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, connector, null);
 
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
         ComponentDefinition<SystemImplementation> sourceComponentDefinition =
@@ -76,9 +76,7 @@ public class SystemBuilderWireTestCase extends TestCase {
 
         parent.register(sourceComponent);
         parent.register(targetComponent);
-
-        connector.connect(sourceComponent);
-        connector.connect(targetComponent);
+        parent.prepare();
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
         Source source = (Source) parent.getChild("source").getServiceInstance();
