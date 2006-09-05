@@ -24,7 +24,8 @@ import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -54,7 +55,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @SuppressWarnings("unchecked")
-    public SCAObject build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
+    public Service<?> build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
 
         WebServiceBinding wsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
@@ -65,7 +66,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @SuppressWarnings("unchecked")
-    public SCAObject build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
+    public Reference<?> build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
             DeploymentContext deploymentContext) {
         
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();

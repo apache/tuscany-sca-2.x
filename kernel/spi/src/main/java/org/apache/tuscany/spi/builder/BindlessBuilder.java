@@ -19,7 +19,8 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -33,11 +34,11 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
  */
 public interface BindlessBuilder {
 
-    SCAObject build(CompositeComponent parent,
+    Service<?> build(CompositeComponent parent,
                     BindlessServiceDefinition serviceDefinition,
                     DeploymentContext deploymentContext);
 
-    SCAObject build(CompositeComponent parent,
+    Reference<?> build(CompositeComponent parent,
                     ReferenceDefinition referenceDefinition,
                     DeploymentContext deploymentContext);
 }

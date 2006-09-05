@@ -19,7 +19,8 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -33,11 +34,11 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends Binding> {
-    SCAObject build(CompositeComponent parent,
+    Service<?> build(CompositeComponent parent,
                     BoundServiceDefinition<B> boundServiceDefinition,
                     DeploymentContext deploymentContext);
 
-    SCAObject build(CompositeComponent parent,
+    Reference<?> build(CompositeComponent parent,
                     BoundReferenceDefinition<B> boundReferenceDefinition,
                     DeploymentContext deploymentContext);
 }
