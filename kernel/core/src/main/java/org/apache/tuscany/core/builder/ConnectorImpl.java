@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRuntimeException;
@@ -55,6 +59,16 @@ import org.apache.tuscany.core.wire.OutboundAutowire;
  * @version $$Rev$$ $$Date$$
  */
 public class ConnectorImpl implements Connector {
+
+    private WirePostProcessorRegistry postProcessorRegistry;
+
+    public ConnectorImpl() {
+    }
+
+    @Constructor
+    public ConnectorImpl(@Autowire WirePostProcessorRegistry postProcessorRegistry) {
+        this.postProcessorRegistry = postProcessorRegistry;
+    }
 
     public <T> void connect(SCAObject<T> source) {
         CompositeComponent parent = source.getParent();
@@ -117,6 +131,10 @@ public class ConnectorImpl implements Connector {
     public <T> void connect(InboundWire<T> sourceWire,
                             OutboundWire<T> targetWire,
                             boolean optimizable) throws BuilderConfigException {
+        if (postProcessorRegistry != null){
+            // run wire post-processors
+            postProcessorRegistry.process(sourceWire, targetWire);
+        }
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
@@ -140,6 +158,10 @@ public class ConnectorImpl implements Connector {
                             OutboundWire<T> sourceWire,
                             InboundWire<T> targetWire,
                             boolean optimizable) {
+        if (postProcessorRegistry != null){
+            // run wire post-processors
+            postProcessorRegistry.process(sourceWire, targetWire);
+        }
         Map<Operation, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         // REVIEW: (kentaminator@gmail.com) shouldn't this check whether the interceptors in the
