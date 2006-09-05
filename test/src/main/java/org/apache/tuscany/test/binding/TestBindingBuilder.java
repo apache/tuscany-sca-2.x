@@ -19,7 +19,8 @@
 package org.apache.tuscany.test.binding;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -31,7 +32,7 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 public class TestBindingBuilder extends BindingBuilderExtension<TestBinding> {
 
     @SuppressWarnings("unchecked")
-    public SCAObject build(CompositeComponent parent,
+    public Service<?> build(CompositeComponent parent,
                            BoundServiceDefinition<TestBinding> definition,
                            DeploymentContext context) {
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
@@ -39,7 +40,7 @@ public class TestBindingBuilder extends BindingBuilderExtension<TestBinding> {
     }
 
     @SuppressWarnings("unchecked")
-    public SCAObject build(CompositeComponent parent,
+    public Reference<?> build(CompositeComponent parent,
                                BoundReferenceDefinition<TestBinding> definition,
                                DeploymentContext context) {
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();

@@ -15,18 +15,18 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 @Scope("MODULE")
 public class CompositeBindlessBuilder implements BindlessBuilder {
@@ -49,7 +49,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
         builderRegistry.register(this);
     }
 
-    public SCAObject build(CompositeComponent parent,
+    public Service<?> build(CompositeComponent parent,
                            BindlessServiceDefinition definition,
                            DeploymentContext deploymentContext) {
         return new CompositeService(definition.getName(),
@@ -58,7 +58,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
             wireService);
     }
 
-    public SCAObject build(CompositeComponent parent,
+    public Reference<?> build(CompositeComponent parent,
                            ReferenceDefinition definition,
                            DeploymentContext deploymentContext) {
         return new CompositeReference(definition.getName(), parent, wireService, definition.getServiceContract());

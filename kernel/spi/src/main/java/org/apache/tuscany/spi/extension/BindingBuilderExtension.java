@@ -25,7 +25,8 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -59,13 +60,13 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
         builderRegistry.register(getBindingType(), this);
     }
 
-    public SCAObject build(CompositeComponent parent,
+    public Service<?> build(CompositeComponent parent,
                            BoundServiceDefinition<B> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
         return null;
     }
 
-    public SCAObject build(CompositeComponent parent,
+    public Reference<?> build(CompositeComponent parent,
                            BoundReferenceDefinition<B> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
         return null;

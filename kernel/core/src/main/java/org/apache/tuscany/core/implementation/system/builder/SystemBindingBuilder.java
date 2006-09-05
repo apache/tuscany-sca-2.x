@@ -23,6 +23,8 @@ import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -47,7 +49,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl
  */
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
-    public SystemService build(CompositeComponent parent,
+    public Service<?> build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
         Class interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
@@ -66,7 +68,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         return service;
     }
 
-    public SystemReference build(CompositeComponent parent,
+    public Reference<?> build(CompositeComponent parent,
                                  BoundReferenceDefinition<SystemBinding> boundReferenceDefinition,
                                  DeploymentContext deploymentContext) {
         assert parent.getParent() instanceof AutowireComponent

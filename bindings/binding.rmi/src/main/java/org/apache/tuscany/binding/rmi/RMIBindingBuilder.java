@@ -21,7 +21,8 @@ import java.rmi.Remote;
 import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -48,7 +49,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
     }
 
     @SuppressWarnings({"unchecked"})
-    public SCAObject build(CompositeComponent parent,
+    public Service<?> build(CompositeComponent parent,
                            BoundServiceDefinition<RMIBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
 
@@ -60,7 +61,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
     }
 
     @SuppressWarnings({"unchecked"})
-    public RMIReference build(CompositeComponent parent,
+    public Reference<?> build(CompositeComponent parent,
                               BoundReferenceDefinition<RMIBinding> boundReferenceDefinition,
                               DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
