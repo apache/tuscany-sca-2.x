@@ -75,7 +75,7 @@ public class OneWayWireInvocationTestCase extends TestCase {
         AsyncJavaTargetInvoker invoker = new AsyncJavaTargetInvoker(method, null, component, scheduler, null, context);
         InboundWire<AsyncTarget> wire =
             createServiceWire("foo", AsyncTarget.class, null, null, null);
-        Map<Operation, InboundInvocationChain> chains = wire.getInvocationChains();
+        Map<Operation<?>, InboundInvocationChain> chains = wire.getInvocationChains();
         InboundInvocationChain chain = chains.get(wire.getServiceContract().getOperations().get("invoke"));
         chain.setTargetInvoker(invoker);
         chain.prepare();

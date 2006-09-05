@@ -85,11 +85,11 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         return new Class[0];
     }
 
-    public Map<Operation, InboundInvocationChain> getInvocationChains() {
+    public Map<Operation<?>, InboundInvocationChain> getInvocationChains() {
         return Collections.emptyMap();
     }
 
-    public void addInvocationChain(Operation operation, InboundInvocationChain chain) {
+    public void addInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
         throw new UnsupportedOperationException();
     }
 

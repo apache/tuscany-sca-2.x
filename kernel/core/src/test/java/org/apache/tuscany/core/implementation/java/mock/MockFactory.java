@@ -304,7 +304,7 @@ public final class MockFactory {
                                boolean cacheable) throws Exception {
         if (inboundWire != null) {
             // if null, the target side has no interceptors or handlers
-            Map<Operation, InboundInvocationChain> targetInvocationConfigs = inboundWire.getInvocationChains();
+            Map<Operation<?>, InboundInvocationChain> targetInvocationConfigs = inboundWire.getInvocationChains();
             for (OutboundInvocationChain outboundInvocationConfig : outboundWire.getInvocationChains().values()) {
                 // match wire chains
                 InboundInvocationChain inboundInvocationConfig =
@@ -361,7 +361,7 @@ public final class MockFactory {
         throws InvalidServiceContractException {
         Map<Operation<?>, OutboundInvocationChain> invocations = new HashMap<Operation<?>, OutboundInvocationChain>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        for (Operation operation : contract.getOperations().values()) {
+        for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
             if (headInterceptor != null) {
                 chain.addInterceptor(headInterceptor);
@@ -377,15 +377,15 @@ public final class MockFactory {
         return invocations;
     }
 
-    private static Map<Operation, InboundInvocationChain> createInboundChains(Class<?> interfaze,
+    private static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze,
                                                                               Interceptor headInterceptor,
                                                                               MessageHandler headRequestHandler,
                                                                               MessageHandler headResponseHandler)
         throws InvalidServiceContractException {
 
-        Map<Operation, InboundInvocationChain> invocations = new HashMap<Operation, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> invocations = new HashMap<Operation<?>, InboundInvocationChain>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        for (Operation method : contract.getOperations().values()) {
+        for (Operation<?> method : contract.getOperations().values()) {
             InboundInvocationChain chain = new InboundInvocationChainImpl(method);
             if (headInterceptor != null) {
                 chain.addInterceptor(headInterceptor);

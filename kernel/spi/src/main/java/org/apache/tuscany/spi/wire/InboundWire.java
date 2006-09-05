@@ -46,17 +46,17 @@ public interface InboundWire<T> extends RuntimeWire<T> {
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
      * service.
      */
-    Map<Operation, InboundInvocationChain> getInvocationChains();
+    Map<Operation<?>, InboundInvocationChain> getInvocationChains();
 
     /**
      * Adds the collection of invocation chains keyed by operation
      */
-    void addInvocationChains(Map<Operation, InboundInvocationChain> chains);
+    void addInvocationChains(Map<Operation<?>, InboundInvocationChain> chains);
 
     /**
      * Adds the invocation chain associated with the given operation
      */
-    void addInvocationChain(Operation operation, InboundInvocationChain chain);
+    void addInvocationChain(Operation<?> operation, InboundInvocationChain chain);
 
     /**
      * Returns the name of the callback associated with the service of the wire
