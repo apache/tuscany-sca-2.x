@@ -21,12 +21,37 @@ package org.apache.tuscany.spi.model;
 /**
  * The default implementation scopes supported by assemblies.
  */
-public enum Scope {
-    STATELESS,
-    REQUEST,
-    SESSION,
-    MODULE,
-    COMPOSITE,
-    UNDEFINED
+public class Scope {
+    public static final Scope STATELESS = new Scope("STATELESS");
+    public static final Scope REQUEST = new Scope("REQUEST");
+    public static final Scope SESSION = new Scope("SESSION");
+    public static final Scope MODULE = new Scope("MODULE");
+    public static final Scope COMPOSITE = new Scope("COMPOSITE");
+    public static final Scope UNDEFINED = new Scope("UNDEFINED");
+
+    private String scope;
+
+    public Scope(String scope) {
+        this.scope = scope.toUpperCase().intern();
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Scope scope1 = (Scope) o;
+        return !(scope != null ? scope != scope1.scope.intern() : scope1.scope != null);
+    }
+
+    public int hashCode() {
+        return scope != null ? scope.hashCode() : 0;
+    }
 
 }

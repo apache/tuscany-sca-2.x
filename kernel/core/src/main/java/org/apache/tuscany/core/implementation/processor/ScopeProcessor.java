@@ -18,16 +18,17 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Scope;
+
+import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 
 /**
  * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope
@@ -51,7 +52,6 @@ public class ScopeProcessor extends ImplementationProcessorExtension {
             return;
         }
         //FIXME deal with eager init
-        //FIXME needs to be extensible
         String name = annotation.value();
         Scope scope;
         if ("MODULE".equals(name)) {
@@ -63,7 +63,7 @@ public class ScopeProcessor extends ImplementationProcessorExtension {
         } else if ("COMPOSITE".equals(name)) {
             scope = Scope.COMPOSITE;
         } else {
-            scope = Scope.STATELESS;
+            scope = new Scope(name);
         }
         type.setImplementationScope(scope);
     }

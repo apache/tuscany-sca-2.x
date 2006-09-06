@@ -63,20 +63,8 @@ public class ScopeRegistryImpl implements ScopeRegistry {
             ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);
             if (factory == null) {
                 ScopeNotFoundException e = new ScopeNotFoundException("Scope object factory not registered for scope");
-                switch (scope) {
-                    case SESSION:
-                        e.setIdentifier("SESSION");
-                        break;
-                    case REQUEST:
-                        e.setIdentifier("REQUEST");
-                        break;
-                    case STATELESS:
-                        e.setIdentifier("STATELESS");
-                        break;
-                    default:
-                        e.setIdentifier("UNKNOWN");
-                        break;
-                }
+                e.setIdentifier(scope.getScope());
+                
                 throw e;
             }
             container = factory.getInstance();

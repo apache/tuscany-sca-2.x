@@ -131,7 +131,7 @@ public class ConnectorImpl implements Connector {
     public <T> void connect(InboundWire<T> sourceWire,
                             OutboundWire<T> targetWire,
                             boolean optimizable) throws BuilderConfigException {
-        if (postProcessorRegistry != null){
+        if (postProcessorRegistry != null) {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
@@ -158,7 +158,7 @@ public class ConnectorImpl implements Connector {
                             OutboundWire<T> sourceWire,
                             InboundWire<T> targetWire,
                             boolean optimizable) {
-        if (postProcessorRegistry != null){
+        if (postProcessorRegistry != null) {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
