@@ -30,6 +30,7 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public class Operation<T> {
+    protected Map<String, Object> metaData;
     private final String name;
     private final DataType<T> returnType;
     private final List<DataType<T>> parameterTypes;
@@ -38,7 +39,6 @@ public class Operation<T> {
     private ServiceContract<?> contract;
     private boolean callback;
     private String dataBinding;
-    protected Map<String, Object> metaData;
 
     /**
      * Construct an operation specifying all characteristics.
@@ -185,6 +185,7 @@ public class Operation<T> {
 
     /**
      * Adds metadata associated with the operation.
+     *
      * @param key the metadata key
      * @param val the metadata value
      */

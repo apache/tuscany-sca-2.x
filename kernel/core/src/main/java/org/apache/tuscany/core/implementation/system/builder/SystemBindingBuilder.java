@@ -23,8 +23,6 @@ import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -43,13 +41,14 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 
 /**
- * Creates {@link SystemService}s and {@link SystemReference}s by evaluating an assembly definition
+ * Creates {@link SystemService}s and {@link org.apache.tuscany.core.implementation.system.component.SystemReference}s
+ * by evaluating an assembly definition
  *
  * @version $$Rev$$ $$Date$$
  */
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
-    public Service<?> build(CompositeComponent parent,
+    public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
         Class interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
@@ -68,7 +67,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         return service;
     }
 
-    public Reference<?> build(CompositeComponent parent,
+    public SystemReference build(CompositeComponent parent,
                                  BoundReferenceDefinition<SystemBinding> boundReferenceDefinition,
                                  DeploymentContext deploymentContext) {
         assert parent.getParent() instanceof AutowireComponent
@@ -79,7 +78,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
         String refName = boundReferenceDefinition.getName();
         OutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze,
-                autowireComponent, boundReferenceDefinition.isRequired());
+            autowireComponent, boundReferenceDefinition.isRequired());
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);
         return reference;
