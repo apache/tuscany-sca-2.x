@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.loader.MissingIncludeException;
 import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -62,26 +63,39 @@ public class IncludeLoader extends LoaderExtension<Include> {
         assert INCLUDE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
+        String scdlResource = reader.getAttributeValue(null, "scdlResource");
+        LoaderUtil.skipToEndElement(reader);
 
-        Include include = new Include();
-        include.setName(name);
+        ClassLoader cl = deploymentContext.getClassLoader();
+        URL url;
         if (scdlLocation != null) {
             try {
-                include.setScdlLocation(new URL(deploymentContext.getScdlLocation(), scdlLocation));
+                url = new URL(deploymentContext.getScdlLocation(), scdlLocation);
             } catch (MalformedURLException e) {
                 MissingResourceException mre = new MissingResourceException(scdlLocation, e);
                 mre.setIdentifier(name);
                 throw mre;
             }
-            URL location = include.getScdlLocation();
-            DeploymentContext childContext = new ChildDeploymentContext(deploymentContext,
-                                                                        deploymentContext.getClassLoader(),
-                                                                        location);
-            CompositeComponentType composite = loadFromSidefile(parent, location, childContext);
-            include.setIncluded(composite);
+        } else if (scdlResource != null) {
+            url = cl.getResource(scdlResource);
+            if (url == null) {
+                MissingResourceException mre = new MissingResourceException(scdlResource);
+                mre.setIdentifier(name);
+                throw mre;
+            }
+        } else {
+            MissingIncludeException mie = new MissingIncludeException();
+            mie.setIdentifier(name);
+            throw mie;
         }
 
-        LoaderUtil.skipToEndElement(reader);
+        DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url);
+        CompositeComponentType composite = loadFromSidefile(parent, url, childContext);
+
+        Include include = new Include();
+        include.setName(name);
+        include.setScdlLocation(url);
+        include.setIncluded(composite);
         return include;
     }
 
