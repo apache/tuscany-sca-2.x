@@ -18,20 +18,56 @@
  */
 package org.apache.tuscany.osgi;
 
+import java.net.URL;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+
+import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.core.launcher.LauncherImpl;
+import org.apache.tuscany.osgi.util.BundleContextUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.apache.tuscany.osgi.util.BundleContextUtil;
 
 /**
  * Responsible for launching the Tuscany Runtime in as part of an OSGi bundle
  */
 public class LauncherActivator implements BundleActivator {
 
+    private LauncherImpl launcher;
+
     public void start(BundleContext context) throws Exception {
         BundleContextUtil.setContext(context);
     }
 
     public void stop(BundleContext context) throws Exception {
+        if (launcher != null) {
+            launcher.shutdownRuntime();
+        }
+    }
+
+
+    private void startRuntime() throws OSGILauncherInitException {
+        launcher = new LauncherImpl();
+        // Current thread context classloader should be the webapp classloader
+        ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
+        launcher.setApplicationLoader(webappClassLoader);
+
+        try {
+            // URL systemScdl = getSystemSCDL(systemScdlPath);
+            // CompositeComponent<?> rt = launcher.bootRuntime(systemScdl, mf);
+        } catch (Exception e) {
+            throw new OSGILauncherInitException(e);
+        }
+    }
+
+    private void bootApplication(String name, URL scdl) throws TuscanyException {
+        CompositeComponent<?> root = launcher.bootApplication(name, scdl);
+        root.start();
+    }
+
+    private void loadExtension(String name, URL scdl) throws TuscanyException {
+        CompositeComponent<?> root = launcher.bootApplication(name, scdl);
+        root.start();
     }
 
 }

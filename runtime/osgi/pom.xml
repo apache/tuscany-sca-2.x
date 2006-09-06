@@ -27,15 +27,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.apache.tuscany.runtime</groupId>
-    <artifactId>osgi</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>tuscany-osgi</artifactId>
+    <packaging>osgi-bundle</packaging>
     <name>Apache Tuscany OSGi Runtime</name>
-    <description>Integration code to embed the Tuscany runtime in an OSGi container and a binding implementation for consuming OSGi services and publishing SCA services to OSGi.</description>
+    <description>Integration code to embed the Tuscany runtime in an OSGi container and a binding implementation for
+        consuming OSGi services and publishing SCA services to OSGi.</description>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
+            <groupId>org.apache.tuscany</groupId>
+            <artifactId>core</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -63,4 +65,30 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix.plugins</groupId>
+                <artifactId>maven-osgi-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <ignorePackage>com.sun.msv.grammar, com.sun.msv.grammar.trex, com.sun.msv.reader,
+                        com.sun.msv.reader.trex.ng, com.sun.msv.reader.util, com.sun.msv.util, com.sun.msv.verifier,
+                        com.sun.msv.verifier.regexp, javax.resource.spi.work</ignorePackage>
+
+                    <osgiManifest>
+                        <bundleName>${pom.name}</bundleName>
+                        <bundleDescription>${pom.description}</bundleDescription>
+                        <bundleVendor>${pom.organization.name}</bundleVendor>
+                        <bundleLocalization>plugin</bundleLocalization>
+                        <bundleSymbolicName>org.apache.tuscany</bundleSymbolicName>
+                        <bundleActivator>org.apache.tuscany.osgi.LauncherActivator</bundleActivator>
+
+                        <!--<exportPackage>org.apache.tuscany.*</exportPackage>-->
+                    </osgiManifest>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
