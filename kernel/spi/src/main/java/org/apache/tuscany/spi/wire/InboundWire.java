@@ -59,6 +59,22 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     void addInvocationChain(Operation<?> operation, InboundInvocationChain chain);
 
     /**
+     * Returns the callback invocation configuration for each operation on a service specified by a reference or a
+     * target service.
+     */
+    Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(Object targetAddr);
+
+    /**
+     * Adds the collection of callback invocation chains keyed by operation for a given target addr
+     */
+    void addSourceCallbackInvocationChains(Object targetAddr, Map<Operation<?>, OutboundInvocationChain> chains);
+
+    /**
+     * Adds the callback invocation chain associated with the given operation for a given target addr
+     */
+    void addSourceCallbackInvocationChain(Object targetAddr, Operation<?> operation, OutboundInvocationChain chain);
+
+    /**
      * Returns the name of the callback associated with the service of the wire
      */
     String getCallbackReferenceName();
@@ -73,5 +89,20 @@ public interface InboundWire<T> extends RuntimeWire<T> {
      */
     void setTargetWire(OutboundWire<T> wire);
 
+    /**
+     * Creates an association between a message id and the address of the SCAObject that the corresponding
+     * message originates from
+     */
+    void addMapping(Object messageId, Object fromAddress);
+    
+    /**
+     * Retrieves the SCAObject address that is associated with a message id
+     */
+    Object retrieveMapping(Object messageId);
 
+    /**
+     * Removes an association between a message id and the address of the SCAObject that the corresponding
+     * message originates from
+     */
+    void removeMapping(Object messageId);
 }

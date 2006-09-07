@@ -28,6 +28,9 @@ public class MessageImpl implements Message, MessageChannel {
     private Object body;
     private Message relatedCallbackMessage;
     private TargetInvoker invoker;
+    private Object fromAddress;
+    private Object messageId;
+    private Object correlationId;
 
     public MessageImpl() {
     }
@@ -58,5 +61,29 @@ public class MessageImpl implements Message, MessageChannel {
 
     public TargetInvoker getTargetInvoker() {
         return invoker;
+    }
+    
+    public Object getFromAddress() {
+        return fromAddress;
+    }
+    
+    public void setFromAddress(Object fromAddress) {
+        this.fromAddress = fromAddress;
+    }
+    
+    public Object getMessageId() {
+        return messageId;
+    }
+    
+    public void setMessageId(Object messageId) {
+        this.messageId = messageId;
+    }
+    
+    public Object getCorrelationId() {
+        return correlationId;
+    }
+    
+    public void setCorrelationId(Object correlationId) {
+        this.correlationId = correlationId;
     }
 }

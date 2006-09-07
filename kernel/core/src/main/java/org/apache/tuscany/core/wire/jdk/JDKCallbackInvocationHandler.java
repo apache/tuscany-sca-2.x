@@ -20,12 +20,13 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
@@ -43,17 +44,25 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     implements WireInvocationHandler, InvocationHandler {
 
     private WorkContext context;
+    private InboundWire<?> inboundWire;
 
-    public JDKCallbackInvocationHandler(WorkContext context) {
+    public JDKCallbackInvocationHandler(WorkContext context, InboundWire inboundWire) {
         this.context = context;
+        this.inboundWire = inboundWire;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        OutboundWire<?> wire = context.getCurrentInvocationWire();
-        context.setCurrentInvocationWire(null);
+        Object correlationId = context.getCurrentMessageId();
+        context.setCurrentMessageId(null);
+        Object targetAddress = inboundWire.retrieveMapping(correlationId);
+        if (targetAddress == null) {
+            throw new AssertionError("No from address associated with message id [" + correlationId + "]");
+        }
         //TODO optimize as this is slow in local invocations
-        Operation operation = findOperation(method, wire.getSourceCallbackInvocationChains().keySet());
-        OutboundInvocationChain chain = wire.getSourceCallbackInvocationChains().get(operation);
+        Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
+            inboundWire.getSourceCallbackInvocationChains(targetAddress);
+        Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
+        OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, args);
     }
@@ -61,5 +70,9 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
 
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
+    }
+
+    protected Object getFromAddress() {
+        return inboundWire.getContainerName();
     }
 }

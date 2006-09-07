@@ -50,10 +50,12 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
      * is not cacheable, the master associated with the wire chains will be used.
      */
     private Map<Method, ChainHolder> chains;
+    private Object fromAddress;
 
     public JDKOutboundInvocationHandler(OutboundWire<?> wire) throws NoMethodForOperationException {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
+        this.fromAddress = wire.getContainerName();
         Method[] methods = wire.getServiceContract().getInterfaceClass().getMethods();
         // TODO optimize this
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
@@ -110,6 +112,10 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
 
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
+    }
+    
+    protected Object getFromAddress() {
+        return fromAddress;
     }
 
     /**

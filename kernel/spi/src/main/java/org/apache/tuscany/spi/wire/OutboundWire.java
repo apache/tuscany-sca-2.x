@@ -95,22 +95,6 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     void addTargetCallbackInvocationChain(Operation<?> operation, InboundInvocationChain chain);
 
     /**
-     * Returns the callback invocation configuration for each operation on a service specified by a reference or a
-     * target service.
-     */
-    Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains();
-
-    /**
-     * Adds the collection of callback invocation chains keyed by operation
-     */
-    void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains);
-
-    /**
-     * Adds the callback invocation chain associated with the given operation
-     */
-    void addSourceCallbackInvocationChain(Operation<?> operation, OutboundInvocationChain chain);
-
-    /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
     void setTargetWire(InboundWire<T> wire);

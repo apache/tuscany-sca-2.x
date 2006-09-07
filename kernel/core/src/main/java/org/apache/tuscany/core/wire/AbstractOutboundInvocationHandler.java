@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -52,6 +53,10 @@ public abstract class AbstractOutboundInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
+            msg.setFromAddress(getFromAddress());
+            if (msg.getMessageId() == null) {
+                msg.setMessageId(new MessageId());
+            }
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
             if (chain.getTargetRequestChannel() != null) {
@@ -81,5 +86,5 @@ public abstract class AbstractOutboundInvocationHandler {
         }
     }
 
-
+    protected abstract Object getFromAddress();
 }

@@ -36,10 +36,10 @@ public class CallbackWireObjectFactoryTestCase extends TestCase {
         JavaServiceContract contract = new JavaServiceContract();
         contract.setCallbackClass(Foo.class);
         WireService service = createMock(WireService.class);
-        service.createCallbackProxy(contract);
+        service.createCallbackProxy(contract, null);
         expectLastCall().andReturn(null);
         replay(service);
-        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(contract, service);
+        CallbackWireObjectFactory factory = new CallbackWireObjectFactory(contract, service, null);
         factory.getInstance();
         verify(service);
     }

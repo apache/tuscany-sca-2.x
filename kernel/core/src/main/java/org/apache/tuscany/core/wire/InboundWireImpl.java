@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.MessageHandler;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
@@ -42,6 +43,10 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     private OutboundWire<T> targetWire;
     private String callbackReferenceName;
     private Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+    private Map<Object, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
+        new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
+    private String containerName;
+    private Map<Object, Object> msgIdsToAddrs = new HashMap<Object, Object>();
 
     @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
@@ -81,6 +86,25 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     }
 
     public void addInvocationChain(Operation<?> operation, InboundInvocationChain chain) {
+        chains.put(operation, chain);
+    }
+
+    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(Object targetAddr) {
+        return callbackSourceChainMaps.get(targetAddr);
+    }
+
+    public void addSourceCallbackInvocationChains(Object targetAddr,
+                                                  Map<Operation<?>, OutboundInvocationChain> chains) {
+        callbackSourceChainMaps.put(targetAddr, chains);
+    }
+
+    public void addSourceCallbackInvocationChain(Object targetAddr, Operation operation,
+                                                 OutboundInvocationChain chain) {
+        Map<Operation<?>, OutboundInvocationChain> chains = callbackSourceChainMaps.get(targetAddr);
+        if (chains == null) {
+            chains = new HashMap<Operation<?>, OutboundInvocationChain>();
+            callbackSourceChainMaps.put(targetAddr, chains);
+        }
         chains.put(operation, chain);
     }
 
@@ -128,4 +152,23 @@ public class InboundWireImpl<T> implements InboundWire<T> {
         return true;
     }
 
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public void setContainerName(String name) {
+        this.containerName = name;
+    }
+
+    public void addMapping(Object messageId, Object fromAddress) {
+        this.msgIdsToAddrs.put(messageId, fromAddress);
+    }
+
+    public Object retrieveMapping(Object messageId) {
+        return this.msgIdsToAddrs.get(messageId);
+    }
+
+    public void removeMapping(Object messageId) {
+        this.msgIdsToAddrs.remove(messageId);
+    }
 }

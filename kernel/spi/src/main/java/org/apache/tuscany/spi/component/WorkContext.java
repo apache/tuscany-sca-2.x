@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.wire.OutboundWire;
-
 /**
  * Implementations track information associated with a request as it is processed by the runtime
  *
@@ -27,10 +25,10 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public interface WorkContext {
 
-    OutboundWire getCurrentInvocationWire();
+    Object getCurrentMessageId();
 
-    void setCurrentInvocationWire(OutboundWire wire);
-    
+    void setCurrentMessageId(Object messageId);
+
     /**
      * Returns the composite where a remote request came in
      */

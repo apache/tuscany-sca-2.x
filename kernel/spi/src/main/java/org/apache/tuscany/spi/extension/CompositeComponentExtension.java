@@ -209,7 +209,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         }
     }
 
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
 

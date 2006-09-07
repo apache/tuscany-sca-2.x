@@ -67,7 +67,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         return new GroovyInvoker(operation.getName(), this);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
         return new AsyncGroovyInvoker(operation.getName(), wire, this, workScheduler, monitor, workContext);
     }
 

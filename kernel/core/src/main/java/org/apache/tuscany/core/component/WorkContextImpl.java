@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * An implementation of an {@link org.apache.tuscany.spi.component.WorkContext} that handles event-to-thread
@@ -34,7 +33,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 public class WorkContextImpl implements WorkContext {
 
     private static final Object REMOTE_CONTEXT = new Object();
-    private static final Object OUTBOUND_WIRE = new Object();
+    private static final Object MESSAGE_ID = new Object();
 
     // TODO implement propagation strategy for creating new threads
 
@@ -46,21 +45,21 @@ public class WorkContextImpl implements WorkContext {
         super();
     }
 
-    public OutboundWire getCurrentInvocationWire() {
+    public Object getCurrentMessageId() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (OutboundWire) map.get(OUTBOUND_WIRE);
+        return map.get(MESSAGE_ID);
     }
 
-    public void setCurrentInvocationWire(OutboundWire wire) {
+    public void setCurrentMessageId(Object messageId) {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             map = new HashMap<Object, Object>();
             workContext.set(map);
         }
-        map.put(OUTBOUND_WIRE, wire);
+        map.put(MESSAGE_ID, messageId);
     }
 
     public CompositeComponent getRemoteComponent() {

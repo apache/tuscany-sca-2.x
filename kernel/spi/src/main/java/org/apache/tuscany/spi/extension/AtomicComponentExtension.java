@@ -132,7 +132,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
         onReferenceWires(multiplicityClass, wires);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
 
