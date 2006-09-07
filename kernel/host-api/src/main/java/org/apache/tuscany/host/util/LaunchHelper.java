@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.hostutil;
+package org.apache.tuscany.host.util;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;

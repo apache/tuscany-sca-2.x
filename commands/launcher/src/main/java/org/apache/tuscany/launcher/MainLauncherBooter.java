@@ -26,7 +26,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ResourceBundle;
 
-import org.apache.tuscany.hostutil.LaunchHelper;
+import org.apache.tuscany.host.util.LaunchHelper;
 
 /**
  * Launcher for launcher runtime environment that invokes a jar's Main class.
