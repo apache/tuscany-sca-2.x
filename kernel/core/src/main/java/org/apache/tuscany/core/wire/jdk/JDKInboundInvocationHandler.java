@@ -61,6 +61,17 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         ChainHolder holder = chains.get(method);
         if (holder == null) {
+            if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
+                return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
+            } else if (method.getDeclaringClass().equals(Object.class)
+                && "equals".equals(method.getName())) {
+                // TODO implement
+                throw new UnsupportedOperationException();
+            } else if (Object.class.equals(method.getDeclaringClass())
+                && "hashCode".equals(method.getName())) {
+                return hashCode();
+                // TODO beter hash algorithm
+            }
             TargetException e = new TargetException("Operation not configured");
             e.setIdentifier(method.getName());
             throw e;
