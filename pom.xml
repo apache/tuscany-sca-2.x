@@ -36,7 +36,6 @@
         <module>idl/wsdl</module>
         <module>databinding</module>
         <module>bindings</module>
-        <module>hostutil</module>
         <module>runtime/webapp</module>
         <module>runtime/webapp-host</module>
         <module>commands/launcher</module>

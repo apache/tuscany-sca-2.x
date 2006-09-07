@@ -16,8 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.hostutil;
+package org.apache.tuscany.host.util;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**
@@ -34,7 +35,7 @@ public class LaunchHelperTestCase extends TestCase {
 
     public void testSetObject() {
         LaunchHelper.setProperty(instance, "string", "Hello");
-        assertEquals("Hello", instance.aString);
+        Assert.assertEquals("Hello", instance.aString);
     }
 
     protected void setUp() throws Exception {
