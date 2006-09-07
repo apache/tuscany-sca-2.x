@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.osgi;
 
+import java.io.File;
 import java.net.URL;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 
 import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.core.launcher.LauncherImpl;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.osgi.util.BundleContextUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -37,6 +39,8 @@ public class LauncherActivator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         BundleContextUtil.setContext(context);
+        startRuntime(context);
+
     }
 
     public void stop(BundleContext context) throws Exception {
@@ -46,15 +50,17 @@ public class LauncherActivator implements BundleActivator {
     }
 
 
-    private void startRuntime() throws OSGILauncherInitException {
+    private void startRuntime(BundleContext context) throws OSGILauncherInitException {
         launcher = new LauncherImpl();
         // Current thread context classloader should be the webapp classloader
         ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
         launcher.setApplicationLoader(webappClassLoader);
 
         try {
+            System.out.println(":::" + new File(".").toURL().toString());
             // URL systemScdl = getSystemSCDL(systemScdlPath);
-            // CompositeComponent<?> rt = launcher.bootRuntime(systemScdl, mf);
+            CompositeComponent<?> rt =
+                launcher.bootRuntime(new File("./sca/system.scdl").toURI().toURL(), new NullMonitorFactory());
         } catch (Exception e) {
             throw new OSGILauncherInitException(e);
         }

@@ -74,8 +74,8 @@
                 <configuration>
                     <ignorePackage>com.sun.msv.grammar, com.sun.msv.grammar.trex, com.sun.msv.reader,
                         com.sun.msv.reader.trex.ng, com.sun.msv.reader.util, com.sun.msv.util, com.sun.msv.verifier,
-                        com.sun.msv.verifier.regexp, javax.resource.spi.work</ignorePackage>
-
+                        com.sun.msv.verifier.regexp, javax.resource.spi.work
+                    </ignorePackage>
                     <osgiManifest>
                         <bundleName>${pom.name}</bundleName>
                         <bundleDescription>${pom.description}</bundleDescription>
@@ -83,7 +83,6 @@
                         <bundleLocalization>plugin</bundleLocalization>
                         <bundleSymbolicName>org.apache.tuscany</bundleSymbolicName>
                         <bundleActivator>org.apache.tuscany.osgi.LauncherActivator</bundleActivator>
-
                         <!--<exportPackage>org.apache.tuscany.*</exportPackage>-->
                     </osgiManifest>
                 </configuration>
