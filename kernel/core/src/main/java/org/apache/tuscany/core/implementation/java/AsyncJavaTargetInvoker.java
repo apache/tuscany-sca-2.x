@@ -27,11 +27,11 @@ import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.TargetException;
 
@@ -48,11 +48,12 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
     private static final Message RESPONSE = new ImmutableMessage();
 
     private JavaAtomicComponent component;
-    private OutboundWire wire;
+    private InboundWire wire;
     private WorkScheduler workScheduler;
     private AsyncMonitor monitor;
     private WorkContext workContext;
     private Object target;
+    private Object messageId;
 
     /**
      * Creates a new invoker
@@ -65,7 +66,7 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
      * @param workContext
      */
     public AsyncJavaTargetInvoker(Method operation,
-                                  OutboundWire wire,
+                                  InboundWire wire,
                                   JavaAtomicComponent component,
                                   WorkScheduler workScheduler,
                                   AsyncMonitor monitor,
@@ -87,12 +88,12 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
+                private Object currentMessageId = messageId;
                 public void run() {
-                    workContext.setCurrentInvocationWire(wire);
+                    workContext.setCurrentMessageId(currentMessageId);
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
                         BINDER.setContext(currentContext);
-                        // REVIEW response must be null for one-way and non-null for callback
                         AsyncJavaTargetInvoker.super.invokeTarget(payload);
                     } catch (Exception e) {
                         // REVIEW uncomment when it is available
@@ -112,6 +113,8 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         // can't just call overriden invoke because it would bypass async
         try {
+            messageId = msg.getMessageId();
+            wire.addMapping(messageId, msg.getFromAddress());
             Object resp = invokeTarget(msg.getBody());
             return (Message) resp;
         } catch (InvocationTargetException e) {
@@ -188,6 +191,30 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
 
         public Message getRelatedCallbackMessage() {
             return null;
+        }
+        
+        public Object getFromAddress() {
+            return null;
+        }
+        
+        public void setFromAddress(Object fromAddress) {
+            throw new UnsupportedOperationException();
+        }
+        
+        public Object getMessageId() {
+            return null;
+        }
+        
+        public void setMessageId(Object messageId) {
+            throw new UnsupportedOperationException();
+        }
+        
+        public Object getCorrelationId() {
+            return null;
+        }
+        
+        public void setCorrelationId(Object correlationId) {
+            throw new UnsupportedOperationException();
         }
     }
 }

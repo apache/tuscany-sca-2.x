@@ -44,11 +44,10 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
     private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
     private Map<Operation<?>, InboundInvocationChain> callbackTargetChains =
         new HashMap<Operation<?>, InboundInvocationChain>();
-    private Map<Operation<?>, OutboundInvocationChain> callbackSourceChains =
-        new HashMap<Operation<?>, OutboundInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
     private InboundWire<T> targetWire;
+    private String containerName;
 
     public T getTargetService() throws TargetException {
         if (targetWire != null) {
@@ -113,18 +112,6 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
 
     public void addTargetCallbackInvocationChain(Operation operation, InboundInvocationChain chain) {
         callbackTargetChains.put(operation, chain);
-    }
-
-    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains() {
-        return callbackSourceChains;
-    }
-
-    public void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
-        callbackSourceChains.putAll(chains);
-    }
-
-    public void addSourceCallbackInvocationChain(Operation opeation, OutboundInvocationChain chain) {
-        callbackSourceChains.put(opeation, chain);
     }
 
     public String getReferenceName() {
@@ -201,5 +188,13 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         }
 
         return true;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+    
+    public void setContainerName(String name) {
+        this.containerName = name;
     }
 }

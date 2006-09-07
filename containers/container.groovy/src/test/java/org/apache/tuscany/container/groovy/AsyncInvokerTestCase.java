@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
@@ -66,7 +67,8 @@ public class AsyncInvokerTestCase extends TestCase {
         WorkContext context = createMock(WorkContext.class);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
-        AsyncGroovyInvoker invoker = new AsyncGroovyInvoker("invoke", null, component, scheduler, monitor, context);
+        InboundWire wire = createMock(InboundWire.class);
+        AsyncGroovyInvoker invoker = new AsyncGroovyInvoker("invoke", wire, component, scheduler, monitor, context);
         Message msg = new MessageImpl();
         invoker.invoke(msg);
         verify(instance);

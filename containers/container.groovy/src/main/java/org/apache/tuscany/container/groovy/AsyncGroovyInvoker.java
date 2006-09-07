@@ -28,10 +28,10 @@ import org.osoa.sca.ServiceRuntimeException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -44,11 +44,12 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
     private static final ContextBinder BINDER = new ContextBinder();
     private static final Message RESPONSE = new AsyncGroovyInvoker.ImmutableMessage();
 
-    private OutboundWire wire;
+    private InboundWire wire;
     private WorkScheduler workScheduler;
     private AsyncMonitor monitor;
     private WorkContext workContext;
     private Object target;
+    private Object messageId;
 
     /**
      * Creates a new invoker
@@ -61,7 +62,7 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
      * @param workContext
      */
     public AsyncGroovyInvoker(String operation,
-                              OutboundWire wire,
+                              InboundWire wire,
                               GroovyAtomicComponent component,
                               WorkScheduler workScheduler,
                               AsyncMonitor monitor,
@@ -82,8 +83,10 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
+                private Object currentMessageId = messageId;
+
                 public void run() {
-                    workContext.setCurrentInvocationWire(wire);
+                    workContext.setCurrentMessageId(currentMessageId);
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
                         BINDER.setContext(currentContext);
@@ -107,6 +110,8 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         // can't just call overriden invoke because it would bypass async
         try {
+            messageId = msg.getMessageId();
+            wire.addMapping(messageId, msg.getFromAddress());
             return (Message) invokeTarget(msg.getBody());
         } catch (InvocationTargetException e) {
             // FIXME need to log exceptions
@@ -181,6 +186,30 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
 
         public Message getRelatedCallbackMessage() {
             return null;
+        }
+
+        public Object getFromAddress() {
+            return null;
+        }
+
+        public void setFromAddress(Object fromAddress) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object getMessageId() {
+            return null;
+        }
+
+        public void setMessageId(Object messageId) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object getCorrelationId() {
+            return null;
+        }
+
+        public void setCorrelationId(Object correlationId) {
+            throw new UnsupportedOperationException();
         }
     }
 }

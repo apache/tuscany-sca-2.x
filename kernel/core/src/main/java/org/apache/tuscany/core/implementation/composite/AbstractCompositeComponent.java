@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.component.AutowireComponent;
@@ -233,7 +233,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         return null;
     }
 
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
         return null;
     }
 

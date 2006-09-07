@@ -91,9 +91,8 @@ public interface Component<T> extends SCAObject<T> {
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered by
      * the component
      *
-     * @param wire      the wire associated with the callback
      * @param operation the operation to invoke
      */
-    TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation);
+    TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation);
 
 }

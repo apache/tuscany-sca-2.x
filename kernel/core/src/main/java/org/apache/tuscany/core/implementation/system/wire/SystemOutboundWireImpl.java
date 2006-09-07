@@ -40,6 +40,7 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
     private QualifiedName targetName;
     private ServiceContract serviceContract;
     private SystemInboundWire<T> targetWire;
+    private String containerName;
 
     public SystemOutboundWireImpl(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
         this.referenceName = referenceName;
@@ -119,18 +120,6 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains() {
-        return null;
-    }
-
-    public void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void addSourceCallbackInvocationChain(Operation operation, OutboundInvocationChain chain) {
-        throw new UnsupportedOperationException();
-    }
-
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
     }
@@ -142,6 +131,14 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
 
     public boolean isOptimizable() {
         return true;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+    
+    public void setContainerName(String name) {
+        this.containerName = name;
     }
 
 }

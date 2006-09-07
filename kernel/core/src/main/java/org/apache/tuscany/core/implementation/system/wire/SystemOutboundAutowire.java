@@ -44,6 +44,7 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     private ServiceContract serviceContract;
     private AutowireComponent<?> component;
     private final boolean required;
+    private String containerName;
 
     public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component,
                                   boolean required) {
@@ -133,23 +134,19 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
         throw new UnsupportedOperationException();
     }
 
-    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains() {
-        return null;
-    }
-
-    public void addSourceCallbackInvocationChains(Map<Operation<?>, OutboundInvocationChain> chains) {
-
-    }
-
-    public void addSourceCallbackInvocationChain(Operation operation, OutboundInvocationChain chain) {
-
-    }
-
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
     }
 
     public boolean isOptimizable() {
         return true;
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+    
+    public void setContainerName(String name) {
+        this.containerName = name;
     }
 }

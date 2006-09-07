@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
@@ -39,6 +40,7 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
     private ServiceContract serviceContract;
     private Component<?> component;
     private SystemOutboundWire<T> wire;
+    private String containerName;
 
     /**
      * Constructs a new inbound wire
@@ -97,6 +99,21 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
+    public Map<Operation<?>, OutboundInvocationChain> getSourceCallbackInvocationChains(Object targetAddr) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addSourceCallbackInvocationChains(Object targetAddr,
+                                                  Map<Operation<?>,
+                                                  OutboundInvocationChain> chains) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void addSourceCallbackInvocationChain(Object targetAddr, Operation operation,
+                                                 OutboundInvocationChain chain) {
+        throw new UnsupportedOperationException();
+    }
+
     public void addInterface(Class claz) {
         throw new UnsupportedOperationException();
     }
@@ -118,4 +135,23 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         this.wire = (SystemOutboundWire<T>) wire;
     }
 
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public void setContainerName(String name) {
+        this.containerName = name;
+    }
+
+    public void addMapping(Object messageId, Object fromAddress) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Object retrieveMapping(Object messageId) {
+        return null;
+    }
+
+    public void removeMapping(Object messageId) {
+        throw new UnsupportedOperationException();
+    }
 }

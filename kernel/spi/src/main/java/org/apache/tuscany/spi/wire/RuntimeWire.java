@@ -57,4 +57,13 @@ public interface RuntimeWire<T> {
      */
     boolean isOptimizable();
 
+    /**
+     * Returns the name of the SCAObject that contains this wire
+     */
+    String getContainerName();
+
+    /**
+     * Sets the name of the SCAObject that contains this wire
+     */
+    void setContainerName(String name);
 }

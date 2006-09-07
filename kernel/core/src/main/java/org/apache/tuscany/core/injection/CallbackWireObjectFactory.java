@@ -21,6 +21,7 @@ package org.apache.tuscany.core.injection;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -32,14 +33,16 @@ public class CallbackWireObjectFactory implements ObjectFactory {
 
     private WireService wireService;
     private ServiceContract<?> contract;
+    private InboundWire wire;
 
-    public CallbackWireObjectFactory(ServiceContract<?> contract, WireService wireService) {
+    public CallbackWireObjectFactory(ServiceContract<?> contract, WireService wireService, InboundWire wire) {
         this.contract = contract;
         this.wireService = wireService;
+        this.wire = wire;
     }
 
     public Object getInstance() throws ObjectCreationException {
-        return wireService.createCallbackProxy(contract);
+        return wireService.createCallbackProxy(contract, wire);
     }
 
 }

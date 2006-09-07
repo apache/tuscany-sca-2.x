@@ -54,7 +54,7 @@ public interface WireService {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createCallbackProxy(ServiceContract<?> contract) throws ProxyCreationException;
+    <T> T createCallbackProxy(ServiceContract<?> contract, InboundWire<?> wire) throws ProxyCreationException;
 
 
     /**
@@ -70,7 +70,7 @@ public interface WireService {
      *
      * @return the invocation handler for flowing invocations through a callback
      */
-    WireInvocationHandler createCallbackHandler();
+    WireInvocationHandler createCallbackHandler(InboundWire<?> wire);
 
     /**
      * Creates an outbound invocation chain for a given operation

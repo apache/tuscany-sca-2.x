@@ -52,6 +52,7 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.MessageDispatcher;
 import org.apache.tuscany.core.wire.OutboundAutowire;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 
 /**
  * The default connector implmentation
@@ -192,7 +193,7 @@ public class ConnectorImpl implements Connector {
                     throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
                 }
                 if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(sourceWire, operation);
+                    invoker = component.createAsyncTargetInvoker(targetWire, operation);
                 } else {
                     Operation<?> inboundOperation = inboundChain.getOperation();
                     invoker = component.createTargetInvoker(null, inboundOperation);
@@ -212,6 +213,31 @@ public class ConnectorImpl implements Connector {
             }
         }
 
+        // create source callback chains and connect them if target callback chains exist
+        Map<Operation<?>, OutboundInvocationChain> sourceCallbackChains =
+            targetWire.getSourceCallbackInvocationChains(source.getName());
+        for (InboundInvocationChain inboundChain : sourceWire.getTargetCallbackInvocationChains().values()) {
+            Operation<?> operation = inboundChain.getOperation();
+            if (sourceCallbackChains != null && sourceCallbackChains.get(operation) != null) {
+                BuilderConfigException e =
+                    new BuilderConfigException(
+                        "Source callback chain should not exist for operation [" + operation.getName() + "]");
+                e.setIdentifier(sourceWire.getReferenceName());
+                throw e;
+            }
+            OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
+            targetWire.addSourceCallbackInvocationChain(source.getName(), operation, outboundChain);
+            if (source instanceof Component) {
+                Component<?> component = (Component<?>) source;
+                TargetInvoker invoker;
+                invoker = component.createTargetInvoker(null, operation);
+                connect(outboundChain, inboundChain, invoker);
+            } else if (target instanceof Service) {
+                throw new UnsupportedOperationException();
+            }
+        }
+
+        /*
         // connect callback wires if they exist
         for (OutboundInvocationChain outboundChain : sourceWire.getSourceCallbackInvocationChains().values()) {
             // match wire chains
@@ -233,7 +259,7 @@ public class ConnectorImpl implements Connector {
                 }
                 TargetInvoker invoker;
                 if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(sourceWire, operation);
+                    invoker = component.createAsyncTargetInvoker(operation);
                 } else {
                     Operation<?> inboundOperation = inboundChain.getOperation();
                     invoker = component.createTargetInvoker(null, inboundOperation);
@@ -243,6 +269,7 @@ public class ConnectorImpl implements Connector {
                 throw new UnsupportedOperationException();
             }
         }
+        */
     }
 
     public void connect(OutboundInvocationChain sourceChain,

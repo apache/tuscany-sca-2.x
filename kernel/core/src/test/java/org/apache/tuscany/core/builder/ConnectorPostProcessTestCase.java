@@ -23,6 +23,7 @@ import static org.easymock.EasyMock.expect;
 import java.util.Collections;
 
 import org.apache.tuscany.spi.builder.WirePostProcessorRegistry;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -56,16 +57,20 @@ public class ConnectorPostProcessTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testOutboundToInboundPostProcessCalled() throws Exception {
         OutboundWire owire = createNiceMock(OutboundWire.class);
-        expect(owire.getSourceCallbackInvocationChains()).andReturn(Collections.emptyMap());
         expect(owire.getInvocationChains()).andReturn(Collections.emptyMap());
+        expect(owire.getTargetCallbackInvocationChains()).andReturn(Collections.emptyMap());
         replay(owire);
         InboundWire iwire = createNiceMock(InboundWire.class);
+        expect(iwire.getSourceCallbackInvocationChains("Component")).andReturn(Collections.emptyMap());
         replay(iwire);
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
         registry.process(EasyMock.eq(owire), EasyMock.eq(iwire));
         replay(registry);
+        Component source = createNiceMock(Component.class);
+        expect(source.getName()).andReturn("Component");
+        replay(source);
         ConnectorImpl connector = new ConnectorImpl(registry);
-        connector.connect(null, null, owire, iwire, false);
+        connector.connect(source, null, owire, iwire, false);
         verify(registry);
     }
 
