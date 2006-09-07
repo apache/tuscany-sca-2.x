@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,8 @@ import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
-import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.jmock.MockObjectTestCase;
 
 /**
@@ -111,6 +113,19 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
         assertEquals("foo", handler.invoke(echo, new Object[]{"foo"}));
     }
 
+    public void testToString() {
+        JDKInboundInvocationHandler handler =
+            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>());
+        Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
+        assertNotNull(foo.toString());
+    }
+
+    public void testHashCode() {
+        JDKInboundInvocationHandler handler =
+            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>());
+        Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
+        assertNotNull(foo.hashCode());
+    }
 
     public void setUp() throws Exception {
         super.setUp();
@@ -123,6 +138,10 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
         }
         operation = contract.getOperations().get("echo");
         echo = SimpleTarget.class.getMethod("echo", String.class);
+    }
+
+    private interface Foo {
+
     }
 
 }
