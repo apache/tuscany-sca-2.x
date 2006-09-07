@@ -108,7 +108,8 @@ public class ScaServiceProxyFactoryBean
         }
 
         if (!this.applicationContext.getParent().containsBean(this.referenceName)) {
-            scaServiceRef = this.applicationContext.getParent().getBean(this.defaultServiceName);
+            return new Object();
+            //scaServiceRef = this.applicationContext.getParent().getBean(this.defaultServiceName);
         } else {
             scaServiceRef = this.applicationContext.getParent().getBean(this.referenceName);
         }
@@ -130,7 +131,7 @@ public class ScaServiceProxyFactoryBean
     * @see org.springframework.beans.factory.FactoryBean#isSingleton()
     */
     public boolean isSingleton() {
-        return true;
+        return false;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
