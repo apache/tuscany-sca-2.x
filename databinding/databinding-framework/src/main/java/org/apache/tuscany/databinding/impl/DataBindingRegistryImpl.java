@@ -56,9 +56,8 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
     public void init() {
     }
 
-    @SuppressWarnings("unchecked")
-    public DataType<?> introspectType(Class<?> javaType) {
-        DataType<?> dataType = null;
+    public DataType introspectType(Class<?> javaType) {
+        DataType dataType = null;
         for (DataBinding binding : bindings.values()) {
             dataType = binding.introspect(javaType);
             if (dataType != null) {
@@ -67,5 +66,15 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
         }
         return null;
     }
+
+    public DataType introspectType(Object value) {
+        DataType dataType = null;
+        for (DataBinding binding : bindings.values()) {
+            dataType = binding.introspect(value);
+            if (dataType != null) {
+                return dataType;
+            }
+        }
+        return null;    }
 
 }

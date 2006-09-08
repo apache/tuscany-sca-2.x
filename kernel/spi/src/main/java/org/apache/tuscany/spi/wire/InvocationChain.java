@@ -95,6 +95,7 @@ public interface InvocationChain {
      * Adds an interceptor to the chain
      */
     void addInterceptor(Interceptor interceptor);
+    void addInterceptor(int index, Interceptor interceptor);
 
     /**
      * Returns the first interceptor in the chain

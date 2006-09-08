@@ -38,7 +38,9 @@ public class JavaIDLUtilsTestCase extends TestCase {
     private List<Operation<?>> operations;
 
     public void testNoParamsFindMethod() {
-        Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null);
+        List<DataType<Type>> types = new ArrayList<DataType<Type>>();
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("foo", inputType, null, null, false, null);
         Method method = findMethod(operation, methods);
         assertEquals("foo", method.getName());
         assertEquals(0, method.getParameterTypes().length);
@@ -55,7 +57,8 @@ public class JavaIDLUtilsTestCase extends TestCase {
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         DataType<Type> type = new DataType<Type>(String.class, Object.class);
         types.add(type);
-        Operation<Type> operation = new Operation<Type>("foo", null, types, null, false, null);
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("foo", inputType, null, null, false, null);
         Method method = findMethod(operation, methods);
         assertEquals("foo", method.getName());
         assertEquals(String.class, method.getParameterTypes()[0]);
@@ -75,7 +78,8 @@ public class JavaIDLUtilsTestCase extends TestCase {
         DataType<Type> type2 = new DataType<Type>(String.class, Object.class);
         types.add(type);
         types.add(type2);
-        Operation<Type> operation = new Operation<Type>("foo", null, types, null, false, null);
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("foo", inputType, null, null, false, null);
         Method method = findMethod(operation, methods);
         assertNull(method);
     }
@@ -84,7 +88,8 @@ public class JavaIDLUtilsTestCase extends TestCase {
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         DataType<Type> type = new DataType<Type>(Integer.class, Object.class);
         types.add(type);
-        Operation<Type> operation = new Operation<Type>("foo", null, types, null, false, null);
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("foo", inputType, null, null, false, null);
         Method method = findMethod(operation, methods);
         assertNull(method);
     }
@@ -93,7 +98,8 @@ public class JavaIDLUtilsTestCase extends TestCase {
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         DataType<Type> type = new DataType<Type>(Integer.class, Object.class);
         types.add(type);
-        Operation<Type> operation = new Operation<Type>("foo", null, types, null, false, null);
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("foo", inputType, null, null, false, null);
         Method method = findMethod(operation, methods);
         assertNull(method);
     }
@@ -102,7 +108,8 @@ public class JavaIDLUtilsTestCase extends TestCase {
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         DataType<Type> type = new DataType<Type>(Integer.TYPE, Object.class);
         types.add(type);
-        Operation<Type> operation = new Operation<Type>("foo", null, types, null, false, null);
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("foo", inputType, null, null, false, null);
         Method method = findMethod(operation, methods);
         assertEquals("foo", method.getName());
         assertEquals(Integer.TYPE, method.getParameterTypes()[0]);
@@ -111,7 +118,7 @@ public class JavaIDLUtilsTestCase extends TestCase {
     public void testPrimitiveParamFindOperation() throws NoSuchMethodException {
         Method method = Foo.class.getMethod("foo", Integer.TYPE);
         Operation<?> operation = findOperation(method, operations);
-        assertEquals(Integer.TYPE, operation.getParameterTypes().get(0).getPhysical());
+        assertEquals(Integer.TYPE, operation.getInputType().getLogical().get(0).getPhysical());
     }
 
 
@@ -129,9 +136,10 @@ public class JavaIDLUtilsTestCase extends TestCase {
         operations.add(operation);
 
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
+        DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
         DataType<Type> type = new DataType<Type>(String.class, Object.class);
         types.add(type);
-        operation = new Operation<Type>("foo", null, types, null, false, null);
+        operation = new Operation<Type>("foo", inputType, null, null, false, null);
         operations.add(operation);
 
         types = new ArrayList<DataType<Type>>();
@@ -139,19 +147,22 @@ public class JavaIDLUtilsTestCase extends TestCase {
         DataType<Type> type2 = new DataType<Type>(String.class, Object.class);
         types.add(type);
         types.add(type2);
-        operation = new Operation<Type>("foo", null, types, null, false, null);
+        inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        operation = new Operation<Type>("foo", inputType, null, null, false, null);
         operations.add(operation);
 
         types = new ArrayList<DataType<Type>>();
         type = new DataType<Type>(Integer.class, Object.class);
         types.add(type);
-        operation = new Operation<Type>("foo", null, types, null, false, null);
+        inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        operation = new Operation<Type>("foo", inputType, null, null, false, null);
         operations.add(operation);
 
         types = new ArrayList<DataType<Type>>();
         type = new DataType<Type>(Integer.TYPE, Object.class);
         types.add(type);
-        operation = new Operation<Type>("foo", null, types, null, false, null);
+        inputType = new DataType<List<DataType<Type>>>(Object[].class, types);
+        operation = new Operation<Type>("foo", inputType, null, null, false, null);
         operations.add(operation);
 
     }

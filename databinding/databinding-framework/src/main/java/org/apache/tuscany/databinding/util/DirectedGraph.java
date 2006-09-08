@@ -229,6 +229,17 @@ public class DirectedGraph<V, E> {
         VertexPair pair = new VertexPair(source, target);
         if (paths.containsKey(pair))
             return paths.get(pair);
+        
+        // HACK: To support same vertex
+        if (source == target) {
+            Path path = new Path();
+            Edge edge = getEdge(source, target);
+            if (edge != null) {
+                path.addEdge(edge);
+            }
+            paths.put(pair, path);
+            return path;
+        }
 
         Map<Vertex, Node> nodes = new HashMap<Vertex, Node>();
         for (Vertex v : vertices.values()) {

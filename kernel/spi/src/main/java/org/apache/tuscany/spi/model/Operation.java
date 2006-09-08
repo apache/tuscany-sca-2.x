@@ -23,68 +23,90 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.model.DataType;
+
 /**
  * Represents an operation that is part of a service contract. The type paramter of this operation identifies the
  * logical type system for all data types.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class Operation<T> {
     protected Map<String, Object> metaData;
+
     private final String name;
-    private final DataType<T> returnType;
-    private final List<DataType<T>> parameterTypes;
+
+    private final DataType<T> outputType;
+
+    private final DataType<List<DataType<T>>> inputType;
+
     private final List<DataType<T>> faultTypes;
-    private final boolean nonBlocking;
-    private ServiceContract<?> contract;
+
+    private boolean nonBlocking;
+
+    private ServiceContract<T> contract;
+
     private boolean callback;
+
     private String dataBinding;
 
     /**
      * Construct an operation specifying all characteristics.
-     *
-     * @param name           the name of the operation
-     * @param returnType     the data type returned by the operation
-     * @param parameterTypes the data types of parameters passed to the operation
-     * @param faultTypes     the data type of faults raised by the operation
-     * @param nonBlocking    true if the operation is non-blocking
-     * @param dataBinding    the data binding type for the operation
+     * 
+     * @param name the name of the operation
+     * @param outputType the data type returned by the operation
+     * @param inputType the data types of parameters passed to the operation
+     * @param faultTypes the data type of faults raised by the operation
+     * @param nonBlocking true if the operation is non-blocking
+     * @param dataBinding the data binding type for the operation
      */
-    public Operation(String name,
-                     DataType<T> returnType,
-                     List<DataType<T>> parameterTypes,
-                     List<DataType<T>> faultTypes,
-                     boolean nonBlocking,
-                     String dataBinding) {
+    public Operation(String name, DataType<List<DataType<T>>> inputType, DataType<T> outputType,
+            List<DataType<T>> faultTypes) {
+        this(name, inputType, outputType, faultTypes, true, null);
+    }
+
+    /**
+     * @param name
+     * @param inputType
+     * @param outputType
+     * @param faultTypes
+     * @param nonBlocking
+     * @param dataBinding
+     */
+    public Operation(final String name, final DataType<List<DataType<T>>> inputType, final DataType<T> outputType,
+            final List<DataType<T>> faultTypes, boolean nonBlocking, String dataBinding) {
+        super();
         this.name = name;
-        this.returnType = returnType;
-        this.parameterTypes = parameterTypes;
+        List<DataType<T>> types = Collections.emptyList();
+        this.inputType = (inputType != null) ? inputType : new DataType<List<DataType<T>>>(Object[].class, types);
+        this.outputType = (outputType != null) ? outputType : new DataType<T>(void.class, null);
         this.faultTypes = faultTypes;
         this.nonBlocking = nonBlocking;
         this.dataBinding = dataBinding;
+
     }
 
     /**
      * Returns the service contract the operation is part of.
-     *
+     * 
      * @return the service contract the operation is part of.
      */
-    public ServiceContract<?> getServiceContract() {
+    public ServiceContract<T> getServiceContract() {
         return contract;
     }
 
     /**
      * Sets the service contract the operation is part of.
-     *
+     * 
      * @param contract the service contract the operation is part of.
      */
-    public void setServiceContract(ServiceContract<?> contract) {
+    public void setServiceContract(ServiceContract<T> contract) {
         this.contract = contract;
     }
 
     /**
      * Returns true if the operation is part of the callback contract.
-     *
+     * 
      * @return true if the operation is part of the callback contract.
      */
     public boolean isCallback() {
@@ -93,7 +115,7 @@ public class Operation<T> {
 
     /**
      * Sets whether the operation is part of the callback contract.
-     *
+     * 
      * @param callback whether the operation is part of the callback contract.
      */
     public void setCallback(boolean callback) {
@@ -102,7 +124,7 @@ public class Operation<T> {
 
     /**
      * Returns the name of the operation.
-     *
+     * 
      * @return the name of the operation
      */
     public String getName() {
@@ -111,28 +133,27 @@ public class Operation<T> {
 
     /**
      * Returns the data type returned by the operation.
-     *
+     * 
      * @return the data type returned by the operation
      */
-    public DataType<T> getReturnType() {
-        return returnType;
+    public DataType<T> getOutputType() {
+        return outputType;
     }
 
     /**
      * Returns the data types of the parameters passed to the operation.
-     *
+     * 
+     * The inputType's logical type is a list of DataTypes which describes the parameter types
+     * 
      * @return the data types of the parameters passed to the operation
      */
-    public List<DataType<T>> getParameterTypes() {
-        if (parameterTypes == null) {
-            return Collections.emptyList();
-        }
-        return parameterTypes;
+    public DataType<List<DataType<T>>> getInputType() {
+        return inputType;
     }
 
     /**
      * Returns the data types of the faults raised by the operation.
-     *
+     * 
      * @return the data types of the faults raised by the operation
      */
     public List<DataType<T>> getFaultTypes() {
@@ -145,7 +166,7 @@ public class Operation<T> {
     /**
      * Returns true if the operation is non-blocking. A non-blocking operation may not have completed execution at the
      * time an invocation of the operation returns.
-     *
+     * 
      * @return true if the operation is non-blocking
      */
     public boolean isNonBlocking() {
@@ -154,26 +175,25 @@ public class Operation<T> {
 
     /**
      * Returns the data binding type specified for the operation or null.
-     *
+     * 
      * @return the data binding type specified for the operation or null.
      */
     public String getDataBinding() {
         return dataBinding;
     }
-    
+
     /**
      * Set the databinding for this operation
-     *  
+     * 
      * @param dataBinding The databinding
      */
     public void setDataBinding(String dataBinding) {
         this.dataBinding = dataBinding;
     }
-    
 
     /**
      * Returns a map of metadata key to value mappings for the operation.
-     *
+     * 
      * @return a map of metadata key to value mappings for the operation.
      */
     public Map<String, Object> getMetaData() {
@@ -185,7 +205,7 @@ public class Operation<T> {
 
     /**
      * Adds metadata associated with the operation.
-     *
+     * 
      * @param key the metadata key
      * @param val the metadata value
      */
@@ -206,26 +226,55 @@ public class Operation<T> {
 
         final Operation operation = (Operation) o;
 
-        if (faultTypes != null ? !faultTypes.equals(operation.faultTypes) : operation.faultTypes != null) {
-            return false;
-        }
         if (name != null ? !name.equals(operation.name) : operation.name != null) {
             return false;
         }
-        if (parameterTypes != null ? !parameterTypes.equals(operation.parameterTypes)
-            : operation.parameterTypes != null) {
+
+        // HACK: If the operation is mappable, then the equality test is relaxed
+        if (isMappable()) {
+            return true;
+        }
+
+        if (faultTypes != null ? !faultTypes.equals(operation.faultTypes) : operation.faultTypes != null) {
             return false;
         }
-        return !(returnType != null ? !returnType.equals(operation.returnType) : operation.returnType != null);
+
+        if (inputType != null ? !inputType.equals(operation.inputType) : operation.inputType != null) {
+            return false;
+        }
+        return !(outputType != null ? !outputType.equals(operation.outputType) : operation.outputType != null);
+    }
+
+    private boolean isMappable() {
+        if (contract != null) {
+            return contract.isRemotable();
+        } else {
+            return false;
+        }
     }
 
     public int hashCode() {
         int result;
         result = name != null ? name.hashCode() : 0;
-        result = 29 * result + (returnType != null ? returnType.hashCode() : 0);
-        result = 29 * result + (parameterTypes != null ? parameterTypes.hashCode() : 0);
+        // HACK:
+        if (isMappable()) {
+            return result;
+        }
+        result = 29 * result + (outputType != null ? outputType.hashCode() : 0);
+        result = 29 * result + (inputType != null ? inputType.hashCode() : 0);
         result = 29 * result + (faultTypes != null ? faultTypes.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * @param nonBlocking the nonBlocking to set
+     */
+    public void setNonBlocking(boolean nonBlocking) {
+        this.nonBlocking = nonBlocking;
+    }
+    
+    public String toString() {
+        return name;
     }
 
 }

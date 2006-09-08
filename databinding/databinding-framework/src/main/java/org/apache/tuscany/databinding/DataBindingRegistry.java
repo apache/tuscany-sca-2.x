@@ -48,5 +48,6 @@ public interface DataBindingRegistry {
      * @param javaType The java class or interface
      * @return
      */
-    public DataType<?> introspectType(Class<?> javaType);
+    public DataType introspectType(Class<?> javaType);
+    public DataType introspectType(Object value);
 }

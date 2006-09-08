@@ -80,12 +80,13 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         contract.setInterfaceName(getBaseName(type));
         contract.setInterfaceClass(type);
         boolean remotable = type.isAnnotationPresent(Remotable.class);
+        contract.setRemotable(remotable);
         contract.setOperations(getOperations(type, remotable));
 
         if (callback != null) {
             contract.setCallbackName(getBaseName(callback));
             contract.setCallbackClass(callback);
-            contract.setCallbacksOperations(getOperations(callback, remotable));
+            contract.setCallbackOperations(getOperations(callback, remotable));
         }
 
         Scope interactionScope = type.getAnnotation(Scope.class);
@@ -129,12 +130,10 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
                 faultDataTypes.add(new DataType<Type>(faultType, faultType));
             }
 
-            org.apache.tuscany.api.annotation.DataType dataType =
-                method.getAnnotation(org.apache.tuscany.api.annotation.DataType.class);
-            String dataBinding = (dataType != null) ? dataType.name() : Object.class.getName();
-
+            String dataBinding = "java.lang.Object";
+            DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>("java:parameters", Object[].class, paramDataTypes);
             Operation<Type> operation =
-                new Operation<Type>(name, returnDataType, paramDataTypes, faultDataTypes, nonBlocking, dataBinding);
+                new Operation<Type>(name, inputType, returnDataType, faultDataTypes, nonBlocking, dataBinding);
             operations.put(name, operation);
         }
         return operations;

@@ -53,7 +53,7 @@ public final class ArtifactFactory {
     }
 
     public static Connector createConnector() {
-        return new ConnectorImpl();
+        return new ConnectorImpl(createWireService(), null);
     }
 
     public static WireService createWireService() {

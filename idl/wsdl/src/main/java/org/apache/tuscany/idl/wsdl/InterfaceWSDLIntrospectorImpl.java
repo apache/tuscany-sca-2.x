@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.wsdl.Fault;
 import javax.wsdl.Input;
 import javax.wsdl.Message;
@@ -52,21 +53,21 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
 
             Input input = wsdlOp.getInput();
             Message inputMsg = (input == null) ? null : input.getMessage();
-            List<DataType<QName>> parameterTypes = introspectTypes(inputMsg);
+            DataType<List<DataType<QName>>> inputType = introspectType(inputMsg);
 
             Message outputMsg;
             Output output = wsdlOp.getOutput();
             outputMsg = (output == null) ? null : output.getMessage();
 
             List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
-            DataType<QName> returnType = null;
+            DataType<QName> outputType = null;
             if (outputParts != null || outputParts.size() > 0) {
                 if (outputParts.size() > 1) {
                     // We don't support output with multiple parts
                     throw new NotSupportedWSDLException("Multi-part output is not supported");
                 }
                 Part part = (Part) outputParts.get(0);
-                returnType = introspectType(part);
+                outputType = introspectType(part);
             }
 
             Collection faults = wsdlOp.getFaults().values();
@@ -86,14 +87,13 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
 
             // FIXME: [rfeng] How to figure the nonBlocking and dataBinding?
             org.apache.tuscany.spi.model.Operation<QName> operation =
-                new org.apache.tuscany.spi.model.Operation<QName>(name, returnType, parameterTypes, faultTypes,
-                    true, null);
+                new org.apache.tuscany.spi.model.Operation<QName>(name, inputType, outputType, faultTypes);
             operations.put(name, operation);
         }
         return operations;
     }
 
-    protected List<DataType<QName>> introspectTypes(Message message) {
+    protected DataType<List<DataType<QName>>> introspectType(Message message) {
         List<DataType<QName>> dataTypes = new ArrayList<DataType<QName>>();
         if (message != null) {
             List parts = message.getOrderedParts(null);
@@ -103,7 +103,8 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
                 dataTypes.add(dataType);
             }
         }
-        return dataTypes;
+        DataType<List<DataType<QName>>> msgType = new DataType<List<DataType<QName>>>(Object.class, dataTypes);
+        return msgType;
     }
 
     protected DataType<QName> introspectType(Part part) {
@@ -138,7 +139,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         contract.setOperations(introspectOperations(portType));
         contract.setCallbackPortType(callbackPortType);
         contract.setCallbackName(callbackPortType.getQName().getLocalPart());
-        contract.setCallbacksOperations(introspectOperations(callbackPortType));
+        contract.setCallbackOperations(introspectOperations(callbackPortType));
         return contract;
     }
 

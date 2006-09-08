@@ -25,8 +25,11 @@ import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 
+@Service(Transformer.class)
 public class String2OMElement extends TransformerExtension<String, OMElement> implements PullTransformer<String, OMElement> {
 
     public OMElement transform(String source, TransformationContext context) {

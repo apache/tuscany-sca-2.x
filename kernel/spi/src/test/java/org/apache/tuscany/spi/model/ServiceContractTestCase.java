@@ -44,7 +44,7 @@ public class ServiceContractTestCase extends TestCase {
         Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null);
         Map<String, Operation<Type>> ops = new HashMap<String, Operation<Type>>();
         ops.put("foo", operation);
-        contract.setCallbacksOperations(ops);
+        contract.setCallbackOperations(ops);
         assertEquals(contract, operation.getServiceContract());
         assertTrue(operation.isCallback());
     }

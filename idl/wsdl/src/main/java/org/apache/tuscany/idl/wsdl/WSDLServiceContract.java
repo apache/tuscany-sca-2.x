@@ -32,6 +32,15 @@ public class WSDLServiceContract extends ServiceContract<QName> {
     private PortType portType;
     private PortType callbackPortType;
 
+    /**
+     * 
+     */
+    public WSDLServiceContract() {
+        super();
+        this.remotable = true; // WSDL interface is always remotable by the SCA spec
+    }
+
+    
     public PortType getPortType() {
         return portType;
     }

@@ -123,6 +123,13 @@ public class DataType<L> extends ModelObject {
         return dataBinding;
     }
 
+    /**
+     * @param dataBinding the dataBinding to set
+     */
+    public void setDataBinding(String dataBinding) {
+        this.dataBinding = dataBinding;
+    }
+
     public int hashCode() {
         int result;
         result = dataBinding != null ? dataBinding.hashCode() : 0;
@@ -149,7 +156,12 @@ public class DataType<L> extends ModelObject {
             return false;
         }
         return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
-
     }
-
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(physical).append(" ").append(dataBinding).append(" ").append(logical);
+        return sb.toString();
+    }
+    
 }
