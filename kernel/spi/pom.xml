@@ -57,16 +57,4 @@
             <artifactId>easymock</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clover-plugin</artifactId>
-                <configuration>
-                    <jdk>1.5</jdk>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
