@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -50,8 +51,15 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @goal tuscany-war
  * @phase package
  * @version
+ *
+ * TODO Check timestamp for copying resources from the repo
  */
 public class TuscanyWarMojo extends AbstractMojo {
+
+    /**
+     * WEB-INF lib.
+     */
+    private static final String WEB_INF_LIB = "WEB-INF/lib";
 
     /**
      * Tuscany boot path.
@@ -137,6 +145,11 @@ public class TuscanyWarMojo extends AbstractMojo {
     private String warName;
 
     /**
+     * WEB-INF jar files.
+     */
+    private Set<String> packagedLibs = new HashSet<String>();
+
+    /**
      * Executes the task.
      *
      * The plugin executes the following tasks.
@@ -171,7 +184,7 @@ public class TuscanyWarMojo extends AbstractMojo {
                 addTuscanyDependency(newWar, dependency, BOOT_PATH);
             }
 
-            if(extensions != null) {
+            if (extensions != null) {
                 for (Dependency dependency : extensions) {
                     addTuscanyDependency(newWar, dependency, EXTENSION_PATH);
                 }
@@ -262,6 +275,9 @@ public class TuscanyWarMojo extends AbstractMojo {
 
             File artifactFile = artifact.getFile();
             artifactStream = new FileInputStream(artifactFile);
+            if (packagedLibs.contains(artifactFile.getName())) {
+                return;
+            }
 
             newWar.putNextEntry(new JarEntry(path + artifactFile.getName()));
 
@@ -297,6 +313,7 @@ public class TuscanyWarMojo extends AbstractMojo {
     private void copyOriginal(JarFile originalWar, JarOutputStream newWar) throws IOException {
 
         Enumeration entries = originalWar.entries();
+        packagedLibs.clear();
 
         while (entries.hasMoreElements()) {
 
@@ -307,6 +324,11 @@ public class TuscanyWarMojo extends AbstractMojo {
                 jarEntryStream = originalWar.getInputStream(entry);
                 newWar.putNextEntry(entry);
                 IOUtils.copy(jarEntryStream, newWar);
+                String name = entry.getName();
+
+                if (name.endsWith(".jar") && (name.startsWith(WEB_INF_LIB) || name.startsWith(BOOT_PATH) || name.startsWith(EXTENSION_PATH))) {
+                    packagedLibs.add(name.substring(name.lastIndexOf("/") + 1));
+                }
             } finally {
                 IOUtils.closeQuietly(jarEntryStream);
             }
