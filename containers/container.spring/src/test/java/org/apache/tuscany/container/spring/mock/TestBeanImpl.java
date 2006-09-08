@@ -26,7 +26,6 @@ public class TestBeanImpl implements TestBean {
     private TestBean bean;
 
     public TestBeanImpl() {
-        System.out.println("");
     }
 
     public String echo(String msg) {

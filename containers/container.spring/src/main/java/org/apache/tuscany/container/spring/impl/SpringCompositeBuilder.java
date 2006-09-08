@@ -67,6 +67,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
             InboundWire<?> wire = service.getInboundWire();
             QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
             for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
+                // FIXME this should go to the connector and get policy and be invoked from SpringComposite.prepare()
+                chain.addInterceptor(new SpringInterceptor());
                 chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(), chain.getOperation()));
             }
             component.register(service);
