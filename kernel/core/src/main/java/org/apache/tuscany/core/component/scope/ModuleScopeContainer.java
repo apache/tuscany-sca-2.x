@@ -19,10 +19,11 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.component.event.CompositeStart;
@@ -37,13 +38,15 @@ import org.apache.tuscany.spi.model.Scope;
 
 /**
  * A scope context which manages atomic component instances keyed by module
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ModuleScopeContainer extends AbstractScopeContainer {
 
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
+
     private final Map<AtomicComponent, InstanceWrapper> instanceWrappers;
+
     // the queue of instanceWrappers to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
 
@@ -60,7 +63,6 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     public Scope getScope() {
         return Scope.MODULE;
     }
-
 
     public void onEvent(Event event) {
         checkInit();
@@ -88,7 +90,6 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         lifecycleState = STOPPED;
     }
 
-
     /**
      * Notifies instanceWrappers of a shutdown in reverse order to which they were started
      */
@@ -111,7 +112,6 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         instanceWrappers.put(component, EMPTY);
     }
 
-
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         checkInit();
         InstanceWrapper ctx = instanceWrappers.get(component);
@@ -127,34 +127,39 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
-    private void eagerInitComponents() throws CoreRuntimeException {
-        Map<Integer, List<AtomicComponent>> eagerInit = new TreeMap<Integer, List<AtomicComponent>>();
+    private static class ComponentInitComparator implements Comparator<AtomicComponent> {
+        final static ComponentInitComparator INSTANCE = new ComponentInitComparator();
 
-        // find all eager init components and group them by init level
-        for (Map.Entry<AtomicComponent, InstanceWrapper> entry : instanceWrappers.entrySet()) {
-            AtomicComponent component = entry.getKey();
-            int initLevel = component.getInitLevel();
-            if (initLevel > 0) {
-                List<AtomicComponent> list = eagerInit.get(initLevel);
-                if (list == null) {
-                    list = new ArrayList<AtomicComponent>();
-                    eagerInit.put(initLevel, list);
-                }
-                list.add(component);
+        public int compare(AtomicComponent o1, AtomicComponent o2) {
+            if (o1.getInitLevel() > o2.getInitLevel()) {
+                return -1; // The lower level starts first (except nagative)
+            } else if (o1.getInitLevel() < o2.getInitLevel()) {
+                return 1;
+            } else {
+                return 0;
             }
         }
 
+    }
+
+    private void eagerInitComponents() throws CoreRuntimeException {
+
+        List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
+        Collections.sort(componentList, ComponentInitComparator.INSTANCE);
+
         // start each group
-        for (List<AtomicComponent> list : eagerInit.values()) {
-            for (AtomicComponent component : list) {
-                // the instance could have been created from a depth-first traversal
-                InstanceWrapper ctx = instanceWrappers.get(component);
-                if (ctx == EMPTY) {
-                    ctx = new InstanceWrapperImpl(component, component.createInstance());
-                    ctx.start();
-                    instanceWrappers.put(component, ctx);
-                    destroyQueue.add(ctx);
-                }
+        for (AtomicComponent component : componentList) {
+            if (component.getInitLevel() <= 0) {
+                // Don't eagerly init
+                continue;
+            }
+            // the instance could have been created from a depth-first traversal
+            InstanceWrapper ctx = instanceWrappers.get(component);
+            if (ctx == EMPTY) {
+                ctx = new InstanceWrapperImpl(component, component.createInstance());
+                ctx.start();
+                instanceWrappers.put(component, ctx);
+                destroyQueue.add(ctx);
             }
         }
     }
@@ -164,5 +169,4 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
             return null;
         }
     }
-
 }
