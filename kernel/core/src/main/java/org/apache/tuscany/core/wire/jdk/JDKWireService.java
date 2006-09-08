@@ -231,7 +231,7 @@ public class JDKWireService implements WireService {
         Class<?> callbackInterface = contract.getCallbackClass();
         if (callbackInterface != null) {
             wire.setCallbackInterface(callbackInterface);
-            for (Operation<?> operation : contract.getCallbacksOperations().values()) {
+            for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 // TODO handle policy
                 //TODO statement below could be cleaner
@@ -278,5 +278,58 @@ public class JDKWireService implements WireService {
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
     }
+
+    public boolean isWireable(ServiceContract<?> source, ServiceContract<?> target) {
+        if (source == target) {
+            // Shortcut for performance
+            return true;
+        }
+        if (source.isRemotable() != target.isRemotable()) {
+            return false;
+        }
+        if (source.getInteractionScope() != target.getInteractionScope()) {
+            return false;
+        }
+
+        for (Operation<?> operation : source.getOperations().values()) {
+            Operation<?> targetOperation = target.getOperations().get(operation.getName());
+            if (targetOperation == null) {
+                return false;
+            }
+            if (!isCompatibleWith(operation, targetOperation)) {
+                return false;
+            }
+        }
+
+        for (Operation<?> operation : source.getCallbackOperations().values()) {
+            Operation<?> targetOperation = target.getCallbackOperations().get(operation.getName());
+            if (targetOperation == null) {
+                return false;
+            }
+            if (!isCompatibleWith(operation, targetOperation)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * The following algorithm is defined the SCA spec:
+     * <ol>
+     * <li>compatibility for the individual method is defined as compatibility of the signature, that is method name,
+     * input types, and output types MUST BE the same.
+     * <li>the order of the input and output types also MUST BE the same.
+     * <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those specified
+     * by the service.
+     * </ol>
+     * 
+     * @param operation
+     * @return
+     */
+    public boolean isCompatibleWith(Operation<?> source, Operation<?> target) {
+        // FIXME:
+        return source.equals(target);
+    }
+    
 
 }

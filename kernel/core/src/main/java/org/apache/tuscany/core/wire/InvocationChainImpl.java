@@ -28,26 +28,34 @@ import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-
 /**
  * Contains functionality common to source- and target- side invocation chains
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class InvocationChainImpl implements InvocationChain {
     protected Operation operation;
+
     protected TargetInvoker targetInvoker;
+
     protected Interceptor interceptorChainHead;
+
     protected Interceptor interceptorChainTail;
+
     protected List<MessageHandler> requestHandlers;
+
     protected List<MessageHandler> responseHandlers;
+
     protected MessageChannel requestChannel;
+
     protected MessageChannel responseChannel;
 
     // the pointer to a bridged target request channel, or null if the target has an interceptor
     protected MessageChannel targetRequestChannel;
+
     // the pointer to a bridged target response channel, or null if the target has an interceptor
     protected MessageChannel targetResponseChannel;
+
     // the pointer to a bridged target head interceptor or null if the target has no interceptors
     protected Interceptor targetInterceptorChainHead;
 
@@ -83,6 +91,30 @@ public abstract class InvocationChainImpl implements InvocationChain {
             interceptorChainTail.setNext(interceptor);
         }
         interceptorChainTail = interceptor;
+    }
+
+    public void addInterceptor(int index, Interceptor interceptor) {
+        int i = 0;
+        Interceptor next = interceptorChainHead;
+        Interceptor prev = null;
+        while (next != null && i < index) {
+            prev = next;
+            next = next.getNext();
+            i++;
+        }
+        if (i == index) {
+            if (prev != null) {
+                prev.setNext(interceptor);
+            } else {
+                interceptorChainHead = interceptor;
+            }
+            interceptor.setNext(next);
+            if (next == null) {
+                interceptorChainTail = interceptor;
+            }
+        } else {
+            throw new ArrayIndexOutOfBoundsException(index);
+        }
     }
 
     public Interceptor getHeadInterceptor() {
@@ -140,6 +172,5 @@ public abstract class InvocationChainImpl implements InvocationChain {
     public Interceptor getTargetInterceptor() {
         return targetInterceptorChainHead;
     }
-
 
 }

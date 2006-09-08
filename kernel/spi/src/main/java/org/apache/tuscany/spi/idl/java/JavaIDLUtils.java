@@ -73,14 +73,16 @@ public final class JavaIDLUtils {
      *
      * @return true if the operation matches, false if does not
      */
+    @SuppressWarnings("unchecked")
     private static boolean match(Operation<?> operation, Method method) {
         Class<?>[] params = method.getParameterTypes();
-        List<? extends DataType<?>> types = operation.getParameterTypes();
+        DataType inputType = operation.getInputType();
+        List<DataType<?>> types = (List<DataType<?>>) inputType.getLogical();
         boolean found = true;
         if (types.size() == params.length && method.getName().equals(operation.getName())) {
             for (int i = 0; i < params.length; i++) {
                 Class<?> clazz = params[i];
-                if (!clazz.equals(operation.getParameterTypes().get(i).getPhysical())) {
+                if (!clazz.equals(operation.getInputType().getLogical().get(i).getPhysical())) {
                     found = false;
                 }
             }

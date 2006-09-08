@@ -22,8 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Constructor;
-
+import org.apache.tuscany.core.wire.BridgingInterceptor;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.MessageDispatcher;
+import org.apache.tuscany.core.wire.OutboundAutowire;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -46,13 +50,8 @@ import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-
-import org.apache.tuscany.core.wire.BridgingInterceptor;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.MessageDispatcher;
-import org.apache.tuscany.core.wire.OutboundAutowire;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.spi.wire.WireService;
+import org.osoa.sca.annotations.Constructor;
 
 /**
  * The default connector implmentation
@@ -62,13 +61,16 @@ import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 public class ConnectorImpl implements Connector {
 
     private WirePostProcessorRegistry postProcessorRegistry;
+    private WireService wireService;
 
     public ConnectorImpl() {
     }
 
-    @Constructor
-    public ConnectorImpl(@Autowire WirePostProcessorRegistry postProcessorRegistry) {
+    @Constructor({"wireService", "postProcessorRegistry"})
+    public ConnectorImpl(@Autowire WireService wireService, 
+            @Autowire WirePostProcessorRegistry postProcessorRegistry) {
         this.postProcessorRegistry = postProcessorRegistry;
+        this.wireService = wireService;
     }
 
     public <T> void connect(SCAObject<T> source) {
@@ -352,9 +354,14 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
-            Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-            Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
-            if (!sourceInterface.isAssignableFrom(targetInterface)) {
+            if (wireService == null) {
+                // FIXME: [rfeng] wireService won't be injected for the system connector?
+                Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                if (!sourceInterface.isAssignableFrom(targetInterface)) {
+                    throw new BuilderConfigException("Incompatible source and target interfaces");
+                }
+            } else if (!wireService.isWireable(sourceWire.getServiceContract(), targetWire.getServiceContract())) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());

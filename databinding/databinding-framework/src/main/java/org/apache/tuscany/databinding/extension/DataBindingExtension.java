@@ -22,11 +22,14 @@ import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Base Implementation of DataBinding
  */
-@org.osoa.sca.annotations.Scope("MODULE")
+@Scope("MODULE")
+@Service(DataBinding.class)
 public abstract class DataBindingExtension implements DataBinding {
     protected DataBindingRegistry registry;
 
@@ -35,22 +38,19 @@ public abstract class DataBindingExtension implements DataBinding {
     protected String name = null;
 
     /**
-     * Create a databinding with the base java type whose name will be used as the name of 
-     * the databinding
+     * Create a databinding with the base java type whose name will be used as the name of the databinding
      * 
-     * @param baseType The base java class or interface representing the databinding, 
-     * for example, org.w3c.dom.Node
+     * @param baseType The base java class or interface representing the databinding, for example, org.w3c.dom.Node
      */
     protected DataBindingExtension(Class<?> baseType) {
         this(baseType.getName(), baseType);
     }
 
     /**
-     * Create a databinding with the name and base java type 
-     *
+     * Create a databinding with the name and base java type
+     * 
      * @param name The name of the databinding
-     * @param baseType The base java class or interface representing the databinding, 
-     * for example, org.w3c.dom.Node
+     * @param baseType The base java class or interface representing the databinding, for example, org.w3c.dom.Node
      */
     protected DataBindingExtension(String name, Class<?> baseType) {
         this.name = name;
@@ -73,6 +73,14 @@ public abstract class DataBindingExtension implements DataBinding {
             return dataType;
         } else {
             return null;
+        }
+    }
+
+    public DataType introspect(Object value) {
+        if (value == null) {
+            return null;
+        } else {
+            return introspect(value.getClass());
         }
     }
 

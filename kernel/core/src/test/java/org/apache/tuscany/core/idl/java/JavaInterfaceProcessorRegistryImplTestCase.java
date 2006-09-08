@@ -53,11 +53,11 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
         Operation<Type> baseInt = operations.get("baseInt");
         assertNotNull(baseInt);
 
-        DataType<Type> returnType = baseInt.getReturnType();
+        DataType<Type> returnType = baseInt.getOutputType();
         assertEquals(Integer.TYPE, returnType.getPhysical());
         assertEquals(Integer.TYPE, returnType.getLogical());
 
-        List<DataType<Type>> parameterTypes = baseInt.getParameterTypes();
+        List<DataType<Type>> parameterTypes = baseInt.getInputType().getLogical();
         assertEquals(1, parameterTypes.size());
         DataType<Type> arg0 = parameterTypes.get(0);
         assertEquals(Integer.TYPE, arg0.getPhysical());

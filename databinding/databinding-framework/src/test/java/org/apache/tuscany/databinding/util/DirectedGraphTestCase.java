@@ -41,6 +41,7 @@ public class DirectedGraphTestCase extends TestCase {
         graph.addEdge("c", "d", null, 2);
         graph.addEdge("d", "b", null, 1);
         graph.addEdge("a", "e", null, 8);
+        graph.addEdge("c", "c", null, 2);
     }
 
     public void testGraph() {
@@ -67,13 +68,16 @@ public class DirectedGraphTestCase extends TestCase {
         Assert.assertEquals(edges.get(1), graph.getEdge("b", "c"));
 
         Assert.assertEquals(path.getWeight(), 4);
-        
+
         DirectedGraph<String, Object>.Path path2 = graph.getShortestPath("b", "e");
         Assert.assertNull(path2);
 
         DirectedGraph<String, Object>.Path path3 = graph.getShortestPath("a", "a");
-        Assert.assertTrue(path3.getWeight()==0 && path3.getEdges().isEmpty());
-        
+        Assert.assertTrue(path3.getWeight() == 0 && path3.getEdges().isEmpty());
+
+        DirectedGraph<String, Object>.Path path4 = graph.getShortestPath("c", "c");
+        Assert.assertTrue(path4.getWeight() == 2 && path4.getEdges().size() == 1);
+
         // System.out.println(path);
 
     }

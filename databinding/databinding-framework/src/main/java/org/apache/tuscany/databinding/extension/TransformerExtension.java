@@ -21,11 +21,13 @@ import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Base Implementation of Transformer which provides the registration to the transformer registry
  */
 @org.osoa.sca.annotations.Scope("MODULE")
+@Service(Transformer.class)
 public abstract class TransformerExtension<S, T> implements Transformer {
 
     protected TransformerRegistry registry;
@@ -55,5 +57,9 @@ public abstract class TransformerExtension<S, T> implements Transformer {
         return getTargetType().getName();
     }
 
+    public int getWeight() {
+        // default to 50
+        return 50;
+    }    
     
 }

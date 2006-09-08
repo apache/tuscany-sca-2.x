@@ -22,20 +22,33 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ModelObject;
+
 /**
  * Base class representing service contract information
- *
+ * 
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract<T> extends ModelObject {
     protected InteractionScope interactionScope;
+
+    protected boolean remotable;
+
     protected Class<?> interfaceClass;
+
     protected String interfaceName;
+
     protected String callbackName;
+
     protected Class<?> callbackClass;
+
     protected Map<String, Operation<T>> operations;
-    protected Map<String, Operation<T>> callbacksOperations;
+
+    protected Map<String, Operation<T>> callbackOperations;
+
     protected String dataBinding;
+
     protected Map<String, Object> metaData;
 
     protected ServiceContract() {
@@ -51,7 +64,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     /**
      * Returns the interface name for the contract
-     *
+     * 
      * @return the interface name for the contract
      */
     public String getInterfaceName() {
@@ -132,19 +145,19 @@ public abstract class ServiceContract<T> extends ModelObject {
         this.operations = operations;
     }
 
-    public Map<String, Operation<T>> getCallbacksOperations() {
-        if (callbacksOperations == null) {
+    public Map<String, Operation<T>> getCallbackOperations() {
+        if (callbackOperations == null) {
             return Collections.emptyMap();
         }
-        return Collections.unmodifiableMap(callbacksOperations);
+        return Collections.unmodifiableMap(callbackOperations);
     }
 
-    public void setCallbacksOperations(Map<String, Operation<T>> callbacksOperations) {
+    public void setCallbackOperations(Map<String, Operation<T>> callbacksOperations) {
         for (Operation<T> operation : callbacksOperations.values()) {
             operation.setServiceContract(this);
             operation.setCallback(true);
         }
-        this.callbacksOperations = callbacksOperations;
+        this.callbackOperations = callbacksOperations;
     }
 
     public String getDataBinding() {
@@ -157,7 +170,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     /**
      * Returns a map of metadata key to value mappings for the operation.
-     *
+     * 
      * @return a map of metadata key to value mappings for the operation.
      */
     public Map<String, Object> getMetaData() {
@@ -169,7 +182,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     /**
      * Adds metadata associated with the operation.
-     *
+     * 
      * @param key the metadata key
      * @param val the metadata value
      */
@@ -193,8 +206,8 @@ public abstract class ServiceContract<T> extends ModelObject {
         if (callbackName != null ? !callbackName.equals(that.callbackName) : that.callbackName != null) {
             return false;
         }
-        if (callbacksOperations != null ? !callbacksOperations.equals(that.callbacksOperations)
-            : that.callbacksOperations != null) {
+        if (callbackOperations != null ? !callbackOperations.equals(that.callbackOperations)
+                : that.callbackOperations != null) {
             return false;
         }
         if (interfaceClass != null ? !interfaceClass.equals(that.interfaceClass) : that.interfaceClass != null) {
@@ -213,7 +226,21 @@ public abstract class ServiceContract<T> extends ModelObject {
         result = 29 * result + (interfaceName != null ? interfaceName.hashCode() : 0);
         result = 29 * result + (callbackName != null ? callbackName.hashCode() : 0);
         result = 29 * result + (operations != null ? operations.hashCode() : 0);
-        result = 29 * result + (callbacksOperations != null ? callbacksOperations.hashCode() : 0);
+        result = 29 * result + (callbackOperations != null ? callbackOperations.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * @return the remotable
+     */
+    public boolean isRemotable() {
+        return remotable;
+    }
+
+    /**
+     * @param remotable the remotable to set
+     */
+    public void setRemotable(boolean remotable) {
+        this.remotable = remotable;
     }
 }

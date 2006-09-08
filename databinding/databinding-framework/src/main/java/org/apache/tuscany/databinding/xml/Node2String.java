@@ -21,7 +21,9 @@ package org.apache.tuscany.databinding.xml;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -30,6 +32,7 @@ import org.w3c.dom.ls.LSSerializer;
  * Transform DOM Node to XML String
  *
  */
+@Service(Transformer.class)
 public class Node2String extends TransformerExtension<Node, String> implements PullTransformer<Node, String> {
 
     public String transform(Node source, TransformationContext context) {

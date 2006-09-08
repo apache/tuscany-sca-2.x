@@ -24,6 +24,7 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformerRegistry;
 import org.apache.tuscany.databinding.trax.Node2String;
@@ -63,6 +64,9 @@ public class MediatorImplTestCase extends TestCase {
 
         mediator = new MediatorImpl();
         mediator.setTransformerRegistry(registry);
+        
+        DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
+        mediator.setDataBindingRegistry(dataBindingRegistry);
     }
 
     @SuppressWarnings("unchecked")

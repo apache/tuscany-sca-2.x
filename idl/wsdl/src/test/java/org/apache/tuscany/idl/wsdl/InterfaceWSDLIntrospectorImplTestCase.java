@@ -65,9 +65,9 @@ public class InterfaceWSDLIntrospectorImplTestCase extends TestCase {
         Assert.assertEquals(1, operations.size());
         Operation<QName> operation = operations.get("getLastTradePrice");
         Assert.assertNotNull(operation);
-        List<DataType<QName>> inputTypes = operation.getParameterTypes();
-        Assert.assertEquals(1, inputTypes.size());
-        DataType<QName> returnType = operation.getReturnType();
+        DataType<List<DataType<QName>>> inputType = operation.getInputType();
+        Assert.assertEquals(1, inputType.getLogical().size());
+        DataType<QName> returnType = operation.getOutputType();
         Assert.assertNotNull(returnType);
         Assert.assertEquals(0, operation.getFaultTypes().size());
     }
