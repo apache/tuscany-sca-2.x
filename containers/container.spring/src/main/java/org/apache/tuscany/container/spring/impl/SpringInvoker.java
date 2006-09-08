@@ -59,7 +59,11 @@ public class SpringInvoker implements TargetInvoker {
             }
         }
         try {
-            return method.invoke(bean, (Object[]) object);
+            if (object != null && !object.getClass().isArray()) {
+                return method.invoke(bean, object);
+            } else {
+                return method.invoke(bean, (Object[]) object);
+            }
         } catch (IllegalAccessException e) {
             throw new InvocationTargetException(e);
         }

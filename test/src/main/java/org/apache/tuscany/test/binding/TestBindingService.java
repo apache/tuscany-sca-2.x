@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
+ * 
  * @version $Rev$ $Date$
  */
 public class TestBindingService<T> extends ServiceExtension<T> {

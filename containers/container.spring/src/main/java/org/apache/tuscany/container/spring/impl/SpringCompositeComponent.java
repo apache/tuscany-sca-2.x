@@ -104,6 +104,9 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
 
     public void start() {
         super.start();
+        for (SCAObject child : children.values()) {
+            child.start();
+        }
         springContext.start();
     }
 

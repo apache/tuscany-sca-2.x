@@ -33,4 +33,12 @@
         <system:implementation.system class="org.apache.tuscany.test.binding.TestBindingBuilder"/>
     </component>
 
+    <component name="SocketBindingLoader">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestSocketBindingLoader"/>
+    </component>
+
+    <component name="SocketBindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestSocketBindingBuilder"/>
+    </component>
+
 </composite>
