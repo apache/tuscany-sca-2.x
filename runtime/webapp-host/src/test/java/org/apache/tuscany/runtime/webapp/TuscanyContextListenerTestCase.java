@@ -68,16 +68,15 @@ public class TuscanyContextListenerTestCase extends TestCase {
             return destroyed;
         }
 
-        public void contextInitialized(ServletContextEvent servletContextEvent) {
+        public void initialize(ServletContext context) {
             ++initialized;
         }
 
-        public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        public void destroy() {
             ++destroyed;
         }
 
         public void sessionCreated(HttpSessionEvent httpSessionEvent) {
-
         }
 
         public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
