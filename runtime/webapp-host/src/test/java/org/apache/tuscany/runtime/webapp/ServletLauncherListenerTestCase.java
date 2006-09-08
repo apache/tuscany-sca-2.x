@@ -21,16 +21,16 @@ package org.apache.tuscany.runtime.webapp;
 import java.net.URL;
 import java.util.Collections;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
+import static org.easymock.EasyMock.expect;
+import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
+
 import org.apache.tuscany.api.TuscanyException;
 import static org.apache.tuscany.runtime.webapp.Constants.DEFAULT_EXTENSION_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM;
-import static org.easymock.EasyMock.expect;
-import org.easymock.IAnswer;
-import org.easymock.classextension.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -59,11 +59,9 @@ public class ServletLauncherListenerTestCase extends TestCase {
         expect(context.getResource("/WEB-INF/default.scdl")).andReturn(resource);
         context.setAttribute(EasyMock.eq(RUNTIME_ATTRIBUTE), EasyMock.isA(TuscanyWebappRuntime.class));
         EasyMock.replay(context);
-        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-        EasyMock.expect(event.getServletContext()).andReturn(context).anyTimes();
-        EasyMock.replay(event);
-        listener.contextInitialized(event);
-        listener.contextDestroyed(event);
+
+        listener.initialize(context);
+        listener.destroy();
         EasyMock.verify(context);
     }
 
@@ -77,11 +75,9 @@ public class ServletLauncherListenerTestCase extends TestCase {
         expect(context.getServletContextName()).andReturn("foo").anyTimes();
         expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
         EasyMock.replay(context);
-        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-        expect(event.getServletContext()).andReturn(context);
-        EasyMock.replay(event);
+
         try {
-            listener.contextInitialized(event);
+            listener.initialize(context);
             fail();
         } catch (ServletLauncherInitException e) {
             assertTrue(e.getCause() instanceof TuscanyException);
@@ -100,11 +96,9 @@ public class ServletLauncherListenerTestCase extends TestCase {
         expect(context.getInitParameter(SYSTEM_SCDL_PATH_PARAM)).andReturn("notthere");
         expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
         EasyMock.replay(context);
-        ServletContextEvent event = EasyMock.createMock(ServletContextEvent.class);
-        expect(event.getServletContext()).andReturn(context);
-        EasyMock.replay(event);
+
         try {
-            listener.contextInitialized(event);
+            listener.initialize(context);
             fail();
         } catch (ServletLauncherInitException e) {
             assertTrue(e.getCause() instanceof TuscanyException);

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import javax.servlet.ServletContextListener;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionListener;
 
 import org.osoa.sca.SCA;
@@ -34,7 +34,19 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  * @see TuscanyFilter
  * @see TuscanySessionListener
  */
-public interface TuscanyWebappRuntime extends ServletContextListener, HttpSessionListener {
+public interface TuscanyWebappRuntime extends HttpSessionListener {
+    /**
+     * Initialize a runtime for the supplied servlet context.
+     *
+     * @param context the servlet context the runtime should run in
+     */
+    void initialize(ServletContext context);
+
+    /**
+     * Destroy the runtime.
+     * Any further invocations should result in an error.
+     */
+    void destroy();
 
     /**
      * Returns the current SCA context

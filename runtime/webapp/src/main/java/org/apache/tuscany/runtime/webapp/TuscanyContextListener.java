@@ -59,7 +59,7 @@ public class TuscanyContextListener implements ServletContextListener {
         try {
             ClassLoader bootClassLoader = getBootClassLoader(servletContext);
             runtime = getRuntime(servletContext, bootClassLoader);
-            runtime.contextInitialized(event);
+            runtime.initialize(servletContext);
         } catch (IOException e) {
             servletContext.log("Error instantiating Tuscany bootstrap", e);
         } catch (ClassNotFoundException e) {
@@ -71,7 +71,7 @@ public class TuscanyContextListener implements ServletContextListener {
 
     public void contextDestroyed(ServletContextEvent event) {
         if (runtime != null) {
-            runtime.contextDestroyed(event);
+            runtime.destroy();
         }
     }
 

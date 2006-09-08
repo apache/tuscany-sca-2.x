@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.osoa.sca.SCA;
@@ -85,17 +84,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
     private CompositeContextImpl context;
     private ServletRequestInjector requestInjector;
 
-    public SCA getContext() {
-        return context;
-    }
-
-    public ServletRequestInjector getRequestInjector() {
-        return requestInjector;
-    }
-
-    public void contextInitialized(ServletContextEvent event) {
-        ServletContext servletContext = event.getServletContext();
-
+    public void initialize(ServletContext servletContext) {
         // Read optional path to system SCDL from context-param
         String systemScdlPath = servletContext.getInitParameter(SYSTEM_SCDL_PATH_PARAM);
         if (systemScdlPath == null) {
@@ -167,10 +156,18 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
         }
     }
 
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+    public void destroy() {
         if (launcher != null) {
             launcher.shutdownRuntime();
         }
+    }
+
+    public SCA getContext() {
+        return context;
+    }
+
+    public ServletRequestInjector getRequestInjector() {
+        return requestInjector;
     }
 
     public void sessionCreated(HttpSessionEvent event) {
