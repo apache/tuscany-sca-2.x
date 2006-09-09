@@ -23,6 +23,11 @@ public final class Constants {
     static final String SYSTEM_SCDL_PATH_PARAM = "systemScdlPath";
 
     /**
+     * Default webapp system SCDL path.
+     */
+    static final String WEBAPP_SYSTEM_SCDL_PATH = "META-INF/tuscany/webapp.scdl";
+
+    /**
      * Servlet context-param name for user-specified system SCDL path.
      */
     static final String EXTENSION_SCDL_PATH_PARAM = "extensionScdlPath";

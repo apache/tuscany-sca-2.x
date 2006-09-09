@@ -46,7 +46,6 @@ import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.launcher.LauncherImpl;
-import static org.apache.tuscany.core.launcher.LauncherImpl.METAINF_SYSTEM_SCDL_PATH;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
@@ -88,7 +87,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
         // Read optional path to system SCDL from context-param
         String systemScdlPath = servletContext.getInitParameter(SYSTEM_SCDL_PATH_PARAM);
         if (systemScdlPath == null) {
-            systemScdlPath = "/" + METAINF_SYSTEM_SCDL_PATH;
+            systemScdlPath = Constants.WEBAPP_SYSTEM_SCDL_PATH;
         }
 
         // Read optional path to application SCDL from context-param
@@ -120,9 +119,11 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
 
             // load extensions
             Set<String> paths = servletContext.getResourcePaths(extensionScdlPath);
-            for (String path : paths) {
-                monitor.deployExtension(path);
-                deployExtension(rt, path, servletContext.getResource(path));
+            if (paths != null) {
+                for (String path : paths) {
+                    monitor.deployExtension(path);
+                    deployExtension(rt, path, servletContext.getResource(path));
+                }
             }
 
             // FIXME this is too coupled to the configuration
@@ -310,7 +311,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
         if (testSystemScdl != null) {
             systemScdl = testSystemScdl;
         } else {
-            systemScdl = getClass().getResource(path);
+            systemScdl = getClass().getClassLoader().getResource(path);
             if (systemScdl == null) {
                 MissingResourceException e = new MissingResourceException("System SCDL not found");
                 e.setIdentifier(path);
