@@ -36,14 +36,14 @@ public interface TransformationContext {
     public DataType getTargetDataType();
 
     /**
-     * @param sourceNode
+     * @param sourceDataType
      */
-    public void setSourceDataType(DataType sourceNode);
+    public void setSourceDataType(DataType sourceDataType);
 
     /**
-     * @param targetNode
+     * @param targetDataType
      */
-    public void setTargetDataType(DataType targetNode);
+    public void setTargetDataType(DataType targetDataType);
 
     /**
      * @return

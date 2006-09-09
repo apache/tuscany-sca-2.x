@@ -48,6 +48,8 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
  */
 public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcessorRegistry {
 
+    public static final String IDL_INPUT = "idl:input";
+    
     private List<JavaInterfaceProcessor> processors = new ArrayList<JavaInterfaceProcessor>();
 
     public JavaInterfaceProcessorRegistryImpl() {
@@ -132,7 +134,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
 
             String dataBinding = "java.lang.Object";
             DataType<List<DataType<Type>>> inputType =
-                new DataType<List<DataType<Type>>>("java:parameters", Object[].class, paramDataTypes);
+                new DataType<List<DataType<Type>>>(IDL_INPUT, Object[].class, paramDataTypes);
             Operation<Type> operation =
                 new Operation<Type>(name, inputType, returnDataType, faultDataTypes, nonBlocking, dataBinding);
             operations.put(name, operation);

@@ -23,6 +23,7 @@ import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 
@@ -67,7 +68,11 @@ public class DataBindingInteceptor implements Interceptor {
         msg.setBody(input);
         Message resultMsg = next.invoke(msg);
         Object result = resultMsg.getBody();
-        if (result != null) {
+        // FIXME: How to deal with faults?
+        if(result instanceof Throwable) {
+            // We need to figure out what fault type it is and then transform it back the source fault type
+            throw new InvocationRuntimeException((Throwable) result);
+        } else if (result != null) {
             result = transform(result, targetOperation.getOutputType(), sourceOperation.getOutputType());
             resultMsg.setBody(result);
         }

@@ -37,15 +37,25 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
+import org.osoa.sca.annotations.Property;
 
 /**
  * Introspector for creating WSDLServiceContract definitions from WSDL PortTypes.
  */
 public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector {
+    public static final String INPUT_PARTS = "idl:input";
+    public static final String IDL_WSDL_DOCUMENT_LITERAL_WRPPED = "idl.wsdl.documentLiteralWrpped";
+    private String defaultDataBinding = "org.w3c.dom.Node"; // Default to DOM binding?
+
+    @Property(name="defaultDataBinding")
+    public void setDefaultDataBinding(String defaultDataBinding) {
+        this.defaultDataBinding = defaultDataBinding;
+    }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
     protected Map<String, org.apache.tuscany.spi.model.Operation<QName>> introspectOperations(PortType portType)
         throws NotSupportedWSDLException {
+        boolean oneway = false;
         Map<String, org.apache.tuscany.spi.model.Operation<QName>> operations =
             new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
         for (Object op : portType.getOperations()) {
@@ -58,6 +68,10 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
 
             Message outputMsg;
             Output output = wsdlOp.getOutput();
+            if (output == null) {
+                // TODO: [rfeng] Is this the correct way to determine if it's non-blocking?
+                oneway = true;
+            }
             outputMsg = (output == null) ? null : output.getMessage();
 
             List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
@@ -88,7 +102,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
 
             // FIXME: [rfeng] How to figure the nonBlocking and dataBinding?
             org.apache.tuscany.spi.model.Operation<QName> operation =
-                new org.apache.tuscany.spi.model.Operation<QName>(name, inputType, outputType, faultTypes);
+                new org.apache.tuscany.spi.model.Operation<QName>(name, inputType, outputType, faultTypes, oneway, defaultDataBinding);
             operations.put(name, operation);
         }
         return operations;
@@ -104,7 +118,8 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
                 dataTypes.add(dataType);
             }
         }
-        DataType<List<DataType<QName>>> msgType = new DataType<List<DataType<QName>>>("wsdl:parts", Object.class, dataTypes);
+        DataType<List<DataType<QName>>> msgType = new DataType<List<DataType<QName>>>(INPUT_PARTS, Object.class, dataTypes);
+        msgType.setMetadata(IDL_WSDL_DOCUMENT_LITERAL_WRPPED, Boolean.FALSE);
         return msgType;
     }
 
@@ -115,7 +130,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
             partTypeName = part.getTypeName();
         }
         // FIXME: What java class is it? Should we try to see if there's a generated one?
-        return new DataType<QName>("org.w3c.dom.Node", Object.class, partTypeName);
+        return new DataType<QName>(defaultDataBinding, Object.class, partTypeName);
     }
 
     /**
@@ -150,5 +165,6 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         }
         return contract;
     }
+
 
 }
