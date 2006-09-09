@@ -57,7 +57,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class TuscanyWarMojo extends AbstractMojo {
 
     /**
-     * WEB-INF lib.
+     * WEB-INF lib jars.
      */
     private static final String WEB_INF_LIB = "WEB-INF/lib";
 
