@@ -255,7 +255,11 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     }
 
     protected void registerAutowireInternal(Class<?> interfaze, SCAObject context) {
-        assert interfaze != null : "Interface was null";
+        // assert interfaze != null : "Interface was null";
+        if (interfaze == null) {
+            // The ServiceContract is not from Java
+            return;
+        }
         if (autowireInternal.containsKey(interfaze)) {
             return;
         }
