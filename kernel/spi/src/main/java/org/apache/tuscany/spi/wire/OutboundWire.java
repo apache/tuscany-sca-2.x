@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.model.Operation;
 
 /**
  * Implementations are responsible for managing the reference side of a wire, including the invocation chains associated
- * with each service operation.  A <code>OutboundWire</code> is connected to a {@link InboundWire} through their
+ * with each service operation.  An <code>OutboundWire</code> is connected to an {@link InboundWire} through their
  * invocation chains.
  *
  * @version $$Rev$$ $$Date$$

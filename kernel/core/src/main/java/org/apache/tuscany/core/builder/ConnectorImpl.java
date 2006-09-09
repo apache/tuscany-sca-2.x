@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +40,6 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.MessageChannel;
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -52,8 +49,6 @@ import org.apache.tuscany.core.implementation.composite.CompositeReference;
 import org.apache.tuscany.core.implementation.composite.CompositeService;
 import org.apache.tuscany.core.wire.BridgingInterceptor;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.MessageDispatcher;
 import org.apache.tuscany.core.wire.OutboundAutowire;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 
@@ -132,24 +127,9 @@ public class ConnectorImpl implements Connector {
             if (!(source instanceof CompositeService)) {
                 connect(inboundWire, outboundWire, true);
             }
-            /*
-        } else {
-            BuilderConfigException e = new BuilderConfigException("Invalid source context type");
-            e.setIdentifier(source.getName());
-            e.addContextName(parent.getName());
-            throw e;
-            */
         }
     }
 
-    /**
-     * Connects an inbound wire to a specific outbound wire
-     *
-     * @param sourceWire  the inbound wire to connect
-     * @param targetWire  the outbound wire to connect to
-     * @param optimizable true if the connection can be ooptimized
-     * @throws BuilderConfigException
-     */
     public <T> void connect(InboundWire<T> sourceWire,
                             OutboundWire<T> targetWire,
                             boolean optimizable) throws BuilderConfigException {
@@ -199,14 +179,13 @@ public class ConnectorImpl implements Connector {
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
                 BuilderConfigException e =
-                    new BuilderConfigException("Incompatible source and target chain interfaces for reference");
+                    new BuilderConfigException("Incompatible source and target interfaces for reference");
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
             TargetInvoker invoker = null;
             if (target instanceof Component) {
                 Component component = (Component) target;
-
                 boolean isOneWayOperation = operation.isNonBlocking();
                 boolean operationHasCallback = contract.getCallbackName() != null;
                 if (isOneWayOperation && operationHasCallback) {
@@ -253,8 +232,7 @@ public class ConnectorImpl implements Connector {
             targetWire.addSourceCallbackInvocationChain(source.getName(), operation, outboundChain);
             if (source instanceof Component) {
                 Component<?> component = (Component<?>) source;
-                TargetInvoker invoker;
-                invoker = component.createTargetInvoker(null, operation);
+                TargetInvoker invoker = component.createTargetInvoker(null, operation);
                 connect(outboundChain, inboundChain, invoker);
             } else if (source instanceof CompositeReference) {
                 CompositeReference compRef = (CompositeReference) source;
@@ -262,48 +240,27 @@ public class ConnectorImpl implements Connector {
                 connect(outboundChain, inboundChain, invoker);
             } else if (source instanceof CompositeService) {
                 CompositeService compServ = (CompositeService) source;
-                TargetInvoker invoker =
-                    compServ.createCallbackTargetInvoker(sourceWire.getServiceContract(), operation);
+                ServiceContract sourceContract = sourceWire.getServiceContract();
+                TargetInvoker invoker = compServ.createCallbackTargetInvoker(sourceContract, operation);
                 connect(outboundChain, inboundChain, invoker);
             } else if (target instanceof Service) {
                 throw new UnsupportedOperationException();
             }
         }
-   }
+    }
 
     public void connect(OutboundInvocationChain sourceChain,
                         InboundInvocationChain targetChain,
                         TargetInvoker invoker) {
-        // if handlers are configured, add them
-        if (targetChain.getRequestHandlers() != null || targetChain.getResponseHandlers() != null) {
-            if (targetChain.getRequestHandlers() == null) {
-                // the target may not have request handlers, so bridge it on the source
-                if (targetChain.getHeadInterceptor() != null) {
-                    List<MessageHandler> handlers = new ArrayList<MessageHandler>();
-                    handlers.add(new MessageDispatcher(targetChain.getHeadInterceptor()));
-                    MessageChannel channel = new MessageChannelImpl(handlers);
-                    sourceChain.setTargetRequestChannel(channel);
-                } else {
-                    BuilderConfigException e = new BuilderConfigException("Service chain must have an interceptor");
-                    e.setIdentifier(targetChain.getOperation().getName());
-                    throw e;
-                }
-            } else {
-                sourceChain.setTargetRequestChannel(new MessageChannelImpl(targetChain.getRequestHandlers()));
-            }
-            sourceChain.setTargetResponseChannel(new MessageChannelImpl(targetChain.getResponseHandlers()));
-        } else {
-            // no handlers, just connect interceptors
-            if (targetChain.getHeadInterceptor() == null) {
-                BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
-                e.setIdentifier(targetChain.getOperation().getName());
-                throw e;
-            }
-            if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor && targetChain
-                .getHeadInterceptor() instanceof InvokerInterceptor)) {
-                // check that we do not have the case where the only interceptors are invokers since we just need one
-                sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
-            }
+        if (targetChain.getHeadInterceptor() == null) {
+            BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
+            e.setIdentifier(targetChain.getOperation().getName());
+            throw e;
+        }
+        if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor
+            && targetChain.getHeadInterceptor() instanceof InvokerInterceptor)) {
+            // check that we do not have the case where the only interceptors are invokers since we just need one
+            sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
         }
         sourceChain.prepare(); //FIXME prepare should be moved out
         sourceChain.setTargetInvoker(invoker);

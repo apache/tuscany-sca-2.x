@@ -37,7 +37,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -52,7 +51,6 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
@@ -145,9 +143,17 @@ public final class MockFactory {
                                                                      Class<?> targetService,
                                                                      Class<?> targetClass,
                                                                      ScopeContainer targetScope) throws Exception {
-        return createWiredComponents(sourceName, sourceClass, sourceReferenceClass, sourceScope, null, null, null,
-            members, targetName, targetService,
-            targetClass, targetScope, null, null, null);
+        return createWiredComponents(sourceName,
+            sourceClass,
+            sourceReferenceClass,
+            sourceScope,
+            null,
+            members,
+            targetName,
+            targetService,
+            targetClass,
+            targetScope,
+            null);
     }
 
     @SuppressWarnings("unchecked")
@@ -155,21 +161,17 @@ public final class MockFactory {
                                                                      Class<?> sourceReferenceClass,
                                                                      ScopeContainer sourceScope,
                                                                      Interceptor sourceHeadInterceptor,
-                                                                     MessageHandler sourceHeadRequestHandler,
-                                                                     MessageHandler sourceHeadResponseHandler,
                                                                      Map<String, Member> members,
                                                                      String targetName, Class<?> targetService,
                                                                      Class<?> targetClass,
                                                                      ScopeContainer targetScope,
-                                                                     Interceptor targetHeadInterceptor,
-                                                                     MessageHandler targetRequestHeadHandler,
-                                                                     MessageHandler targetResponseHeadHandler)
+                                                                     Interceptor targetHeadInterceptor)
         throws Exception {
+
         JavaAtomicComponent targetContext =
             createJavaComponent(targetName, targetScope, targetClass);
-        InboundWire inboundWire = createServiceWire(targetService.getName().substring(
-            targetService.getName().lastIndexOf('.') + 1), targetService, targetHeadInterceptor,
-            targetRequestHeadHandler, targetResponseHeadHandler);
+        String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
+        InboundWire inboundWire = createServiceWire(serviceName, targetService, targetHeadInterceptor);
         targetContext.addInboundWire(inboundWire);
 
         PojoConfiguration configuration = new PojoConfiguration();
@@ -181,8 +183,7 @@ public final class MockFactory {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null);
-        OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor,
-            sourceHeadRequestHandler, sourceHeadResponseHandler);
+        OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
         sourceContext.addOutboundWire(outboundWire);
         targetScope.register(targetContext);
         sourceScope.register(sourceContext);
@@ -219,8 +220,8 @@ public final class MockFactory {
                                                                        ScopeContainer targetScope) throws Exception {
         JavaAtomicComponent targetContext =
             createJavaComponent(targetName, targetScope, targetClass);
-        InboundWire inboundWire = createServiceWire(targetService.getName().substring(
-            targetService.getName().lastIndexOf('.') + 1), targetService, null, null, null);
+        String serviceName = targetService.getName().substring(targetService.getName().lastIndexOf('.') + 1);
+        InboundWire inboundWire = createServiceWire(serviceName, targetService, null);
         targetContext.addInboundWire(inboundWire);
 
         PojoConfiguration configuration = new PojoConfiguration();
@@ -232,7 +233,7 @@ public final class MockFactory {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration, null);
-        OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null, null, null);
+        OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null);
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);
         sourceContext.addOutboundWires(sourceReferenceClass, factories);
@@ -247,34 +248,27 @@ public final class MockFactory {
 
     public static <T> InboundWire<T> createTargetWire(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        return createServiceWire(serviceName, interfaze, null, null, null);
+        return createServiceWire(serviceName, interfaze, null);
     }
 
 
-    public static <T> InboundWire<T> createServiceWire(String serviceName, Class<T> interfaze,
-                                                       Interceptor headInterceptor,
-                                                       MessageHandler headRequestHandler,
-                                                       MessageHandler headResponseHandler)
+    public static <T> InboundWire<T> createServiceWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
         throws InvalidServiceContractException {
         InboundWire<T> wire = new InboundWireImpl<T>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         wire.setServiceName(serviceName);
         wire.addInvocationChains(
-            createInboundChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler));
+            createInboundChains(interfaze, interceptor));
         return wire;
     }
 
-    public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze,
-                                                          Interceptor headInterceptor,
-                                                          MessageHandler headRequestHandler,
-                                                          MessageHandler headResponseHandler)
+    public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze, Interceptor interceptor)
         throws InvalidServiceContractException {
 
         OutboundWire<T> wire = new OutboundWireImpl<T>();
         wire.setReferenceName(refName);
-        Map<Operation<?>, OutboundInvocationChain> outboundChains =
-            createOutboundChains(interfaze, headInterceptor, headRequestHandler, headResponseHandler);
+        Map<Operation<?>, OutboundInvocationChain> outboundChains = createOutboundChains(interfaze, interceptor);
         wire.addInvocationChains(outboundChains);
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
@@ -316,26 +310,17 @@ public final class MockFactory {
                     e.setIdentifier(outboundWire.getReferenceName());
                     throw e;
                 }
-                // if handler is configured, add that
-                if (inboundInvocationConfig.getRequestHandlers() != null) {
-                    outboundInvocationConfig.setTargetRequestChannel(new MessageChannelImpl(inboundInvocationConfig
-                        .getRequestHandlers()));
-                    outboundInvocationConfig.setTargetResponseChannel(new MessageChannelImpl(inboundInvocationConfig
-                        .getResponseHandlers()));
-                } else {
-                    // no handlers, just connect interceptors
-                    if (inboundInvocationConfig.getHeadInterceptor() == null) {
-                        BuilderConfigException e =
-                            new BuilderConfigException("No target handler or interceptor for operation");
-                        e.setIdentifier(inboundInvocationConfig.getOperation().getName());
-                        throw e;
-                    }
-                    if (!(outboundInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor
-                        && inboundInvocationConfig.getHeadInterceptor() instanceof InvokerInterceptor)) {
-                        // check that we do not have the case where the only interceptors are invokers since we just
-                        // need one
-                        outboundInvocationConfig.setTargetInterceptor(inboundInvocationConfig.getHeadInterceptor());
-                    }
+                if (inboundInvocationConfig.getHeadInterceptor() == null) {
+                    BuilderConfigException e =
+                        new BuilderConfigException("No target handler or interceptor for operation");
+                    e.setIdentifier(inboundInvocationConfig.getOperation().getName());
+                    throw e;
+                }
+                if (!(outboundInvocationConfig.getTailInterceptor() instanceof InvokerInterceptor
+                    && inboundInvocationConfig.getHeadInterceptor() instanceof InvokerInterceptor)) {
+                    // check that we do not have the case where the only interceptors are invokers since we just
+                    // need one
+                    outboundInvocationConfig.setTargetInterceptor(inboundInvocationConfig.getHeadInterceptor());
                 }
             }
 
@@ -352,26 +337,18 @@ public final class MockFactory {
 
     private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze)
         throws InvalidServiceContractException {
-        return createOutboundChains(interfaze, null, null, null);
+        return createOutboundChains(interfaze, null);
     }
 
     private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze,
-                                                                                   Interceptor headInterceptor,
-                                                                                   MessageHandler headRequestHandler,
-                                                                                   MessageHandler headResponseHandler)
+                                                                                   Interceptor interceptor)
         throws InvalidServiceContractException {
         Map<Operation<?>, OutboundInvocationChain> invocations = new HashMap<Operation<?>, OutboundInvocationChain>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-            if (headInterceptor != null) {
-                chain.addInterceptor(headInterceptor);
-            }
-            if (headRequestHandler != null) {
-                chain.addRequestHandler(headRequestHandler);
-            }
-            if (headResponseHandler != null) {
-                chain.addRequestHandler(headResponseHandler);
+            if (interceptor != null) {
+                chain.addInterceptor(interceptor);
             }
             invocations.put(operation, chain);
         }
@@ -379,23 +356,15 @@ public final class MockFactory {
     }
 
     private static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze,
-                                                                              Interceptor headInterceptor,
-                                                                              MessageHandler headRequestHandler,
-                                                                              MessageHandler headResponseHandler)
+                                                                                 Interceptor interceptor)
         throws InvalidServiceContractException {
 
         Map<Operation<?>, InboundInvocationChain> invocations = new HashMap<Operation<?>, InboundInvocationChain>();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         for (Operation<?> method : contract.getOperations().values()) {
             InboundInvocationChain chain = new InboundInvocationChainImpl(method);
-            if (headInterceptor != null) {
-                chain.addInterceptor(headInterceptor);
-            }
-            if (headRequestHandler != null) {
-                chain.addRequestHandler(headRequestHandler);
-            }
-            if (headResponseHandler != null) {
-                chain.addRequestHandler(headResponseHandler);
+            if (interceptor != null) {
+                chain.addInterceptor(interceptor);
             }
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());

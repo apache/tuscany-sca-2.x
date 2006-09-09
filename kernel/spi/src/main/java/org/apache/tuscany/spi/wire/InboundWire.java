@@ -23,10 +23,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.model.Operation;
 
 /**
- * Implementations are responsible for managing the service side of a wire, including the invocation chains associated
- * with each service operation. A <Code>InboundWire</code> can be connected to another <code>InboundWire</code> when
- * connecting a {@link org.apache.tuscany.spi.component.Service} to an
- * {@link org.apache.tuscany.spi.component.AtomicComponent}.
+ * Implementations are responsible for managing the inbound side of a wire, including the invocation chains associated
+ * with each service operation.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -43,7 +41,7 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     void setServiceName(String name);
 
     /**
-     * Returns the invocation configuration for each operation on a service specified by a reference or a target
+     * Returns the invocation chain for each operation on a service specified by a reference or a target
      * service.
      */
     Map<Operation<?>, InboundInvocationChain> getInvocationChains();
@@ -90,19 +88,19 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     void setTargetWire(OutboundWire<T> wire);
 
     /**
-     * Creates an association between a message id and the address of the SCAObject that the corresponding
-     * message originates from
+     * Creates an association between a message id and the address of the SCAObject that the corresponding message
+     * originates from
      */
     void addMapping(Object messageId, Object fromAddress);
-    
+
     /**
      * Retrieves the SCAObject address that is associated with a message id
      */
     Object retrieveMapping(Object messageId);
 
     /**
-     * Removes an association between a message id and the address of the SCAObject that the corresponding
-     * message originates from
+     * Removes an association between a message id and the address of the SCAObject that the corresponding message
+     * originates from
      */
     void removeMapping(Object messageId);
 }

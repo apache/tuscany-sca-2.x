@@ -132,7 +132,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     private void eagerInitComponents() throws CoreRuntimeException {
         List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
         Collections.sort(componentList, COMPARATOR);
-       // start each group
+        // start each group
         for (AtomicComponent component : componentList) {
             if (component.getInitLevel() <= 0) {
                 // Don't eagerly init
@@ -149,7 +149,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    static private class ComponentInitComparator implements Comparator<AtomicComponent> {
+    private static class ComponentInitComparator implements Comparator<AtomicComponent> {
         public int compare(AtomicComponent o1, AtomicComponent o2) {
             if (o1.getInitLevel() > o2.getInitLevel()) {
                 return -1; // The lower level starts first (except nagative)

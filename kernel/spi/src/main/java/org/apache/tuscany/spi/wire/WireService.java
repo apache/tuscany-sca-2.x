@@ -158,7 +158,7 @@ public interface WireService {
      * 
      * @param source The source service contract
      * @param target The target service contract
-     * @return
+     * @return true if the contracts are wireable
      */
     boolean isWireable(ServiceContract<?> source, ServiceContract<?> target); 
 

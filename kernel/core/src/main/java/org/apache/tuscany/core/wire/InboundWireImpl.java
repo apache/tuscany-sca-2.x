@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -132,20 +131,6 @@ public class InboundWireImpl<T> implements InboundWire<T> {
                         return false;
                     }
                     current = current.getNext();
-                }
-            }
-            if (chain.getRequestHandlers() != null && !chain.getRequestHandlers().isEmpty()) {
-                for (MessageHandler handler : chain.getRequestHandlers()) {
-                    if (!handler.isOptimizable()) {
-                        return false;
-                    }
-                }
-            }
-            if (chain.getResponseHandlers() != null && !chain.getResponseHandlers().isEmpty()) {
-                for (MessageHandler handler : chain.getResponseHandlers()) {
-                    if (!handler.isOptimizable()) {
-                        return false;
-                    }
                 }
             }
         }

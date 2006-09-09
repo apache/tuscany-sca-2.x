@@ -20,24 +20,17 @@ package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
 
 /**
- * Bridges interceptors between a {@link org.apache.tuscany.spi.wire.InboundInvocationChain} and a
- * {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}.
+ * Bridges interceptors between an {@link org.apache.tuscany.spi.wire.InboundInvocationChain} and an {@link
+ * org.apache.tuscany.spi.wire.OutboundInvocationChain}.
  *
  * @version $$Rev$$ $$Date$$
  */
 public class BridgingInterceptor implements Interceptor {
     private Interceptor next;
-    private MessageChannel responseChannel;
 
     public BridgingInterceptor() {
-    }
-
-    public BridgingInterceptor(Interceptor next, MessageChannel responseChannel) {
-        this.next = next;
-        this.responseChannel = responseChannel;
     }
 
     public BridgingInterceptor(Interceptor next) {
@@ -45,11 +38,7 @@ public class BridgingInterceptor implements Interceptor {
     }
 
     public Message invoke(Message msg) {
-        Message response = next.invoke(msg);
-        if (responseChannel != null) {
-            responseChannel.send(response);
-        }
-        return response;
+        return next.invoke(msg);
     }
 
     public Interceptor getNext() {

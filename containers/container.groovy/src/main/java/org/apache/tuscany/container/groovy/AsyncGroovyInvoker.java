@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -178,14 +177,6 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
         }
 
         public TargetInvoker getTargetInvoker() {
-            return null;
-        }
-
-        public MessageChannel getCallbackChannel() {
-            return null;
-        }
-
-        public Message getRelatedCallbackMessage() {
             return null;
         }
 

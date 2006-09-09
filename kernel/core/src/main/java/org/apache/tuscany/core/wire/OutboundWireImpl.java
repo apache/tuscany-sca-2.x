@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -132,28 +131,13 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
 
     public boolean isOptimizable() {
         for (OutboundInvocationChain chain : chains.values()) {
-            if (chain.getHeadInterceptor() != null || !chain.getRequestHandlers().isEmpty()
-                || !chain.getResponseHandlers().isEmpty()) {
+            if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
                 while (current != null && current != chain.getTargetInterceptor()) {
                     if (!current.isOptimizable()) {
                         return false;
                     }
                     current = current.getNext();
-                }
-                if (chain.getRequestHandlers() != null) {
-                    for (MessageHandler handler : chain.getRequestHandlers()) {
-                        if (!handler.isOptimizable()) {
-                            return false;
-                        }
-                    }
-                }
-                if (chain.getResponseHandlers() != null) {
-                    for (MessageHandler handler : chain.getResponseHandlers()) {
-                        if (!handler.isOptimizable()) {
-                            return false;
-                        }
-                    }
                 }
             }
         }
@@ -171,20 +155,6 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
                     current = current.getNext();
                 }
             }
-            if (chain.getRequestHandlers() != null && !chain.getRequestHandlers().isEmpty()) {
-                for (MessageHandler handler : chain.getRequestHandlers()) {
-                    if (!handler.isOptimizable()) {
-                        return false;
-                    }
-                }
-            }
-            if (chain.getResponseHandlers() != null && !chain.getResponseHandlers().isEmpty()) {
-                for (MessageHandler handler : chain.getResponseHandlers()) {
-                    if (!handler.isOptimizable()) {
-                        return false;
-                    }
-                }
-            }
         }
 
         return true;
@@ -193,7 +163,7 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
     public String getContainerName() {
         return containerName;
     }
-    
+
     public void setContainerName(String name) {
         this.containerName = name;
     }

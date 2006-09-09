@@ -114,12 +114,10 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-
         messageId = context.getCurrentMessageId();
         context.setCurrentMessageId(null);
         correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-
         return invoke(chain, invoker, args);
     }
 

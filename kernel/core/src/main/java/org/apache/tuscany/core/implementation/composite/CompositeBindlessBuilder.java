@@ -15,6 +15,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -26,10 +28,10 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
-@Scope("MODULE")
+/**
+ * The default implementation f a {@link BindlessBuilder} for a composite
+ */
 public class CompositeBindlessBuilder implements BindlessBuilder {
 
     protected BuilderRegistry builderRegistry;
@@ -57,8 +59,8 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     }
 
     public Service<?> build(CompositeComponent parent,
-                           BindlessServiceDefinition definition,
-                           DeploymentContext deploymentContext) {
+                            BindlessServiceDefinition definition,
+                            DeploymentContext deploymentContext) {
         return new CompositeService(definition.getName(),
             definition.getServiceContract().getInterfaceClass(),
             parent,
@@ -67,12 +69,12 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     }
 
     public Reference<?> build(CompositeComponent parent,
-                           ReferenceDefinition definition,
-                           DeploymentContext deploymentContext) {
+                              ReferenceDefinition definition,
+                              DeploymentContext deploymentContext) {
         return new CompositeReference(definition.getName(),
-                parent,
-                wireService,
-                definition.getServiceContract(),
-                workContext);
+            parent,
+            wireService,
+            definition.getServiceContract(),
+            workContext);
     }
 }

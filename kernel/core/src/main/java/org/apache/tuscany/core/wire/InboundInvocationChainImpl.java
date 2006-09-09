@@ -20,7 +20,6 @@ package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.MessageHandler;
 
 /**
  * Contains a target-side invocation chain
@@ -37,12 +36,6 @@ public class InboundInvocationChainImpl extends InvocationChainImpl implements I
     }
 
     public void prepare() {
-        if (requestHandlers != null && interceptorChainHead != null) {
-            // on target-side, connect existing handlers and interceptors
-            MessageHandler messageDispatcher = new MessageDispatcher(interceptorChainHead);
-            requestHandlers.add(messageDispatcher);
-        }
     }
-
 
 }
