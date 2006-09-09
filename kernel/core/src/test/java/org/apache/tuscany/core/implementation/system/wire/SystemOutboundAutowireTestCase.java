@@ -38,21 +38,19 @@ public class SystemOutboundAutowireTestCase extends TestCase {
         verify(component);
     }
 
-    
+
     public void testNonExistentAutowireNotRequired() {
         AutowireComponent<?> component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(null);
         replay(component);
         SystemOutboundAutowire<Object> wire = new SystemOutboundAutowire<Object>("foo", Object.class, component, false);
         try {
-            
             assertNull(wire.getTargetService());
-           
         } catch (TargetNotFoundException e) {
             fail();
         }
         verify(component);
     }
 
-    
+
 }

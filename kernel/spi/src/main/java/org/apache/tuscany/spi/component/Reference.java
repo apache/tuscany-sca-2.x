@@ -57,12 +57,12 @@ public interface Reference<T> extends SCAObject<T> {
     /**
      * Returns the outbound wire used by the reference to connect to a target
      */
-    OutboundWire<T> getOutboundWire();
+    OutboundWire<?> getOutboundWire();
 
     /**
      * Sets the outbound wire used by the reference to connect to a target
      */
-    void setOutboundWire(OutboundWire<T> wire);
+    void setOutboundWire(OutboundWire<?> wire);
 
     /**
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target service of

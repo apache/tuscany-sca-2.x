@@ -171,7 +171,7 @@ public final class JavaIntrospectionHelper {
         Method candidate = null;
         for (Method method : methods) {
             if (method.getName().equals(name) && method.getParameterTypes().length == types.length) {
-                Class[] params = method.getParameterTypes();
+                Class<?>[] params = method.getParameterTypes();
                 boolean disqualify = false;
                 boolean exactMatch = true;
                 for (int i = 0; i < params.length; i++) {

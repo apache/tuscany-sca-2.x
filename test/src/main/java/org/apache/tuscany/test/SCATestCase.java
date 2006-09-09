@@ -82,7 +82,6 @@ public class SCATestCase extends TestCase {
         extensions.put(extensionName, extentionSCDL);
     }
 
-    @SuppressWarnings("unchecked")
     protected void deployExtension(CompositeComponent<?> composite, String extensionName, URL scdlURL)
         throws LoaderException {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();

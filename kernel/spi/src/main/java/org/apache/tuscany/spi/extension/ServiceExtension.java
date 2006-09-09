@@ -41,7 +41,7 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
 
     protected Class<T> interfaze;
     protected InboundWire<T> inboundWire;
-    protected OutboundWire<T> outboundWire;
+    protected OutboundWire<?> outboundWire;
     protected WireService wireService;
 
     public ServiceExtension(String name, Class<T> interfaze, CompositeComponent parent, WireService wireService)
@@ -63,11 +63,11 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
         inboundWire = wire;
     }
 
-    public OutboundWire<T> getOutboundWire() {
+    public OutboundWire<?> getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire<T> outboundWire) {
+    public void setOutboundWire(OutboundWire<?> outboundWire) {
         this.outboundWire = outboundWire;
     }
 

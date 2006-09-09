@@ -63,6 +63,6 @@ public class CompositeService<T> extends ServiceExtension<T> {
     }
     
     public T getServiceInstance() throws TargetException {
-        return wireService.createProxy(outboundWire);
+        return interfaze.cast(wireService.createProxy(outboundWire));
     }
 }

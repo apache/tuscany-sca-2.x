@@ -39,8 +39,9 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
     private String serviceName;
     private ServiceContract serviceContract;
     private Component<?> component;
-    private SystemOutboundWire<T> wire;
+    private SystemOutboundWire<?> wire;
     private String containerName;
+    private Class<T> interfaze;
 
     /**
      * Constructs a new inbound wire
@@ -53,6 +54,7 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         this.serviceName = serviceName;
         this.component = target;
         serviceContract = new JavaServiceContract(interfaze);
+        this.interfaze = interfaze;
     }
 
     public SystemInboundWireImpl(String serviceName, Class<T> interfaze) {
@@ -75,12 +77,11 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
         if (wire != null) {
-            return wire.getTargetService();
+            return interfaze.cast(wire.getTargetService());
         }
-        return (T) component.getServiceInstance(serviceName);
+        return interfaze.cast(component.getServiceInstance(serviceName));
     }
 
     public Class[] getImplementedInterfaces() {
@@ -130,9 +131,9 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(OutboundWire<T> wire) {
+    public void setTargetWire(OutboundWire<?> wire) {
         assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWireImpl.class.getName();
-        this.wire = (SystemOutboundWire<T>) wire;
+        this.wire = (SystemOutboundWire<?>) wire;
     }
 
     public String getContainerName() {

@@ -53,6 +53,7 @@ public class ReferenceTestCase extends TestCase {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void testPrepare() throws Exception {
         InboundInvocationChain chain = createMock(InboundInvocationChain.class);
         Operation<Type> operation = new Operation<Type>("test", null, null, null, false, null);
@@ -62,7 +63,7 @@ public class ReferenceTestCase extends TestCase {
         expectLastCall().andReturn(operation);
         chain.prepare();
         expectLastCall();
-        InboundWire wire = createMock(InboundWire.class);
+        InboundWire<Object> wire = createMock(InboundWire.class);
         wire.getInvocationChains();
         Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
         chains.put(operation, chain);
@@ -73,7 +74,7 @@ public class ReferenceTestCase extends TestCase {
         replay(chain);
         replay(wire);
         replay(outboundWire);
-        TestReference<?> ref = new TestReference<Object>(Object.class);
+        TestReference<Object> ref = new TestReference<Object>(Object.class);
         ref.setInboundWire(wire);
         ref.setOutboundWire(outboundWire);
         ref.prepare();

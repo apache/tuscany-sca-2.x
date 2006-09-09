@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.wire.WireService;
 public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> implements Reference<T> {
 
     protected InboundWire<T> inboundWire;
-    protected OutboundWire<T> outboundWire;
+    protected OutboundWire<?> outboundWire;
     protected Class<T> referenceInterface;
     protected WireService wireService;
 
@@ -64,11 +64,11 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
         return inboundWire;
     }
 
-    public OutboundWire<T> getOutboundWire() {
+    public OutboundWire<?> getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire<T> outboundWire) {
+    public void setOutboundWire(OutboundWire<?> outboundWire) {
         this.outboundWire = outboundWire;
     }
 

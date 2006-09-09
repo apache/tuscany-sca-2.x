@@ -20,19 +20,22 @@ package org.apache.tuscany.core.implementation.system.loader;
 
 import java.net.URL;
 
-import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
-import org.apache.tuscany.spi.implementation.java.Introspector;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
+import org.apache.tuscany.spi.implementation.java.Introspector;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * Loads a system component type
@@ -80,7 +83,8 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
     protected PojoComponentType loadByIntrospection(CompositeComponent<?> parent,
                                                     SystemImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
-        PojoComponentType componentType = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Class<?> implClass = implementation.getImplementationClass();
         introspector.introspect(parent, implClass, componentType, deploymentContext);
         return componentType;

@@ -66,7 +66,6 @@ public class CompositeReferenceTargetInvoker extends PojoTargetInvoker {
     }
 
     protected Object getInstance() throws TargetException {
-        Object instance = wireFactory.getInstance();
-        return instance;
+        return wireFactory.getInstance();
     }
 }

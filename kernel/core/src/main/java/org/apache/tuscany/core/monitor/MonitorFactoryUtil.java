@@ -41,6 +41,7 @@ public final class MonitorFactoryUtil {
      * @param props collection of initialization properties
      * @return a configured MonitorFactory instance, or null if the factory could not be instantiated.
      */
+    @SuppressWarnings("unchecked")
     public static MonitorFactory createMonitorFactory(String name, Map<String, Object> props) {
         Class<? extends MonitorFactory> clazz;
         try {

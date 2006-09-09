@@ -122,6 +122,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return component;
     }
 
+    @SuppressWarnings("unchecked")
     public <B extends Binding> void register(BindingBuilder<B> builder) {
         Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {
@@ -180,7 +181,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                            DeploymentContext deploymentContext) {
         SCAObject object = bindlessBuilder.build(parent, serviceDefinition, deploymentContext);
         if (wireService != null) {
-            wireService.createWires((Service)object, serviceDefinition);
+            wireService.createWires((Service) object, serviceDefinition);
         }
         return object;
     }
@@ -191,7 +192,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                            DeploymentContext deploymentContext) {
         SCAObject object = bindlessBuilder.build(parent, referenceDefinition, deploymentContext);
         if (wireService != null) {
-            wireService.createWires((Reference)object, referenceDefinition.getServiceContract());
+            wireService.createWires((Reference) object, referenceDefinition.getServiceContract());
         }
         return object;
     }

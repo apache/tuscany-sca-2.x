@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.component.AutowireComponent;
@@ -48,36 +49,41 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl
  */
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
+    @SuppressWarnings("unchecked")
     public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
-        Class interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
+        Class<Object> interfaze = (Class<Object>) boundServiceDefinition.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
-        Component target = (Component) parent.getChild(targetName.getPartName());
+        Component<?> target = (Component) parent.getChild(targetName.getPartName());
         if (target == null) {
             throw new BuilderConfigException("Target not found: [" + targetName + ']');
         }
-        SystemInboundWire<Object> inboundWire =
-            new SystemInboundWireImpl<Object>(boundServiceDefinition.getName(), interfaze, target);
+        String name = boundServiceDefinition.getName();
+        InboundWire<Object> inboundWire =
+            new SystemInboundWireImpl<Object>(name, interfaze, target);
         SystemOutboundWire<Object> outboundWire =
-            new SystemOutboundWireImpl<Object>(boundServiceDefinition.getName(), targetName, interfaze);
+            new SystemOutboundWireImpl<Object>(name, targetName, interfaze);
         SystemService<Object> service = new SystemServiceImpl<Object>(boundServiceDefinition.getName(), parent);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         return service;
     }
 
+    @SuppressWarnings("unchecked")
     public SystemReference build(CompositeComponent parent,
                                  BoundReferenceDefinition<SystemBinding> boundReferenceDefinition,
                                  DeploymentContext deploymentContext) {
         assert parent.getParent() instanceof AutowireComponent
             : "Grandparent not an instance of " + AutowireComponent.class.getName();
         AutowireComponent autowireComponent = (AutowireComponent) parent.getParent();
-        Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
-        SystemReferenceImpl reference = new SystemReferenceImpl(boundReferenceDefinition.getName(), interfaze, parent);
-        SystemInboundWire<?> inboundWire = new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
+        Class<Object> interfaze = (Class<Object>) boundReferenceDefinition.getServiceContract().getInterfaceClass();
+        SystemReferenceImpl<Object> reference =
+            new SystemReferenceImpl(boundReferenceDefinition.getName(), interfaze, parent);
+        SystemInboundWire<Object> inboundWire =
+            new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
         String refName = boundReferenceDefinition.getName();
-        OutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze,
+        OutboundWire<Object> outboundWire = new SystemOutboundAutowire<Object>(refName, interfaze,
             autowireComponent, boundReferenceDefinition.isRequired());
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);

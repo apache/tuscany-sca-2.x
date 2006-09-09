@@ -78,8 +78,9 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     public void setTargetName(QualifiedName targetName) {
     }
 
+    @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
-        Class interfaze = serviceContract.getInterfaceClass();
+        Class<?> interfaze = serviceContract.getInterfaceClass();
         T service = (T) component.resolveInstance(interfaze);
         if (service == null && required) {
             TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
@@ -106,7 +107,7 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(InboundWire<T> wire) {
+    public void setTargetWire(InboundWire<?> wire) {
         throw new UnsupportedOperationException();
     }
 

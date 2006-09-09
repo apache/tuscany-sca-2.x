@@ -97,6 +97,6 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
-    void setTargetWire(InboundWire<T> wire);
+    void setTargetWire(InboundWire<?> wire);
 
 }

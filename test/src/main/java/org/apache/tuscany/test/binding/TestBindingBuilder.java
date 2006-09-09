@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.test.binding;
 
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -39,7 +41,6 @@ public class TestBindingBuilder extends BindingBuilderExtension<TestBinding> {
         return new TestBindingService(definition.getName(), interfaze, parent, wireService);
     }
 
-    @SuppressWarnings("unchecked")
     public Reference<?> build(CompositeComponent parent,
                                BoundReferenceDefinition<TestBinding> definition,
                                DeploymentContext context) {
