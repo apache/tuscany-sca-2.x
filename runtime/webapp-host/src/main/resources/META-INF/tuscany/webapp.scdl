@@ -24,7 +24,7 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-           name="org.apache.tuscany.test.System">
+           name="org.apache.tuscany.runtime.webapp.System">
 
     <!-- Component that provides the Deployer service -->
     <component name="deployer">
@@ -79,22 +79,22 @@
     </component>
 
     <!-- include loader configuration -->
-    <include name="org.apache.tuscany.test.Loader" scdlLocation="loader.scdl"/>
+    <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
 
     <!-- include implementation processor configuration -->
-    <include name="org.apache.tuscany.test.Implementation" scdlLocation="implementation.scdl"/>
+    <include name="org.apache.tuscany.launcher.Implementation" scdlResource="org/apache/tuscany/core/implementation.scdl"/>
 
     <!-- Java interface definition language -->
-    <include name="org.apache.tuscany.launcher.InterfaceJava" scdlLocation="interfaceJava.scdl"/>
+    <include name="org.apache.tuscany.launcher.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl"/>
 
     <!-- include omposite implementation type -->
-    <include name="org.apache.tuscany.test.Composite" scdlLocation="composite.scdl"/>
+    <include name="org.apache.tuscany.launcher.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
 
     <!-- System implementation type -->
-    <include name="org.apache.tuscany.test.SystemImplementation" scdlLocation="systemImplementation.scdl"/>
+    <include name="org.apache.tuscany.launcher.SystemImplementation" scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
 
     <!-- Java implementation type -->
-    <include name="org.apache.tuscany.test.JavaImplementation" scdlLocation="javaImplementation.scdl"/>
+    <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
     <!-- component that scans the extension directory -->
     <component name="directoryScanExtender">

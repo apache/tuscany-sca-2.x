@@ -36,14 +36,15 @@ import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM
  * @version $Rev$ $Date$
  */
 public class ServletLauncherListenerTestCase extends TestCase {
+    private URL systemScdl;
+    private ServletLauncherListener listener;
 
     /**
      * Verifies the web app host is configured properly to perform a basic boot
      */
     public void testBoot() throws Exception {
         final TuscanyWebappRuntime[] runtime = new TuscanyWebappRuntime[1];
-        ServletLauncherListener listener = new ServletLauncherListener();
-        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
+        listener.setTestSystemScdl(systemScdl);
         ServletContext context = EasyMock.createNiceMock(ServletContext.class);
         expect(context.getServletContextName()).andReturn("foo").anyTimes();
         expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
@@ -69,8 +70,7 @@ public class ServletLauncherListenerTestCase extends TestCase {
      * Verifies a an is thrown when the application SCDL is not found
      */
     public void testApplicationSCDLNotFound() throws Exception {
-        ServletLauncherListener listener = new ServletLauncherListener();
-        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
+        listener.setTestSystemScdl(systemScdl);
         ServletContext context = EasyMock.createNiceMock(ServletContext.class);
         expect(context.getServletContextName()).andReturn("foo").anyTimes();
         expect(context.getResourcePaths(DEFAULT_EXTENSION_PATH_PARAM)).andReturn(Collections.emptySet());
@@ -89,8 +89,7 @@ public class ServletLauncherListenerTestCase extends TestCase {
      * Verifies an exception is thrown if the system SCDL is not found
      */
     public void testSystemSCDLNotFound() throws Exception {
-        ServletLauncherListener listener = new ServletLauncherListener();
-        listener.setTestSystemScdl(getClass().getClassLoader().getResource("META-INF/sca/webapp.system.scdl"));
+        listener.setTestSystemScdl(systemScdl);
         ServletContext context = EasyMock.createNiceMock(ServletContext.class);
         expect(context.getServletContextName()).andReturn("foo").anyTimes();
         expect(context.getInitParameter(SYSTEM_SCDL_PATH_PARAM)).andReturn("notthere");
@@ -106,5 +105,9 @@ public class ServletLauncherListenerTestCase extends TestCase {
         EasyMock.verify(context);
     }
 
-
+    protected void setUp() throws Exception {
+        super.setUp();
+        listener = new ServletLauncherListener();
+        systemScdl = getClass().getResource("/META-INF/tuscany/webapp.scdl");
+    }
 }
