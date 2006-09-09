@@ -18,19 +18,32 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.DataObject;
+import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLHelper;
 
-public class DataObject2String extends TransformerExtension<DataObject, String> implements PullTransformer<DataObject, String> {
+public class DataObject2String extends TransformerExtension<DataObject, String> implements
+        PullTransformer<DataObject, String> {
 
     public String transform(DataObject source, TransformationContext context) {
         try {
-            return XMLHelper.INSTANCE.save(source, "", "");
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, true);
+            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            Object logicalType = context.getSourceDataType().getLogical();
+            if (logicalType instanceof QName) {
+                QName elementName = (QName) logicalType;
+                return xmlHelper.save(source, elementName.getNamespaceURI(), elementName.getLocalPart());
+            } else {
+                return xmlHelper.save(source, "commonj.sdo", "dataObject");
+            }
         } catch (Exception e) {
             throw new TransformationException(e);
         }
