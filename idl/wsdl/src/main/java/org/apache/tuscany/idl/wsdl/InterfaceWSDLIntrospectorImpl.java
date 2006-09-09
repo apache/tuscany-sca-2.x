@@ -36,6 +36,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.InteractionScope;
 
 /**
  * Introspector for creating WSDLServiceContract definitions from WSDL PortTypes.
@@ -103,7 +104,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
                 dataTypes.add(dataType);
             }
         }
-        DataType<List<DataType<QName>>> msgType = new DataType<List<DataType<QName>>>(Object.class, dataTypes);
+        DataType<List<DataType<QName>>> msgType = new DataType<List<DataType<QName>>>("wsdl:parts", Object.class, dataTypes);
         return msgType;
     }
 
@@ -114,7 +115,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
             partTypeName = part.getTypeName();
         }
         // FIXME: What java class is it? Should we try to see if there's a generated one?
-        return new DataType<QName>(Object.class, partTypeName);
+        return new DataType<QName>("org.w3c.dom.Node", Object.class, partTypeName);
     }
 
     /**
@@ -125,6 +126,8 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         contract.setPortType(portType);
         contract.setInterfaceName(portType.getQName().getLocalPart());
         contract.setOperations(introspectOperations(portType));
+        // FIXME: set to Non-conversational for now
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         return contract;
     }
 
@@ -133,13 +136,18 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
      */
     public WSDLServiceContract introspect(PortType portType, PortType callbackPortType)
         throws InvalidServiceContractException {
+        assert portType!=null: "PortType cannot be null";
         WSDLServiceContract contract = new WSDLServiceContract();
+        // FIXME: set to Non-conversational for now
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         contract.setPortType(portType);
         contract.setInterfaceName(portType.getQName().getLocalPart());
         contract.setOperations(introspectOperations(portType));
-        contract.setCallbackPortType(callbackPortType);
-        contract.setCallbackName(callbackPortType.getQName().getLocalPart());
-        contract.setCallbackOperations(introspectOperations(callbackPortType));
+        if (callbackPortType != null) {
+            contract.setCallbackPortType(callbackPortType);
+            contract.setCallbackName(callbackPortType.getQName().getLocalPart());
+            contract.setCallbackOperations(introspectOperations(callbackPortType));
+        }
         return contract;
     }
 
