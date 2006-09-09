@@ -37,14 +37,16 @@ import org.osoa.sca.annotations.Service;
 public class JavaParametersTransformer extends TransformerExtension<Object[], Object[]> implements
         PullTransformer<Object[], Object[]> {
 
+    private static final String IDL_INPUT = "idl:input";
+
     @Override
     public String getSourceBinding() {
-        return "java:parameters";
+        return IDL_INPUT;
     }
 
     @Override
     public String getTargetBinding() {
-        return "java:parameters";
+        return IDL_INPUT;
     }
 
     private Mediator mediator;
@@ -83,6 +85,7 @@ public class JavaParametersTransformer extends TransformerExtension<Object[], Ob
         List sourceParameterTypes = (List) context.getSourceDataType().getLogical();
         List targetParameterTypes = (List) context.getTargetDataType().getLogical();
         Object[] args = source;
+        // TODO: How to handle document-literal wrapped style?
         if (args != null) {
             Object[] newArgs = new Object[args.length];
             for (int i = 0; i < sourceParameterTypes.size(); i++) {

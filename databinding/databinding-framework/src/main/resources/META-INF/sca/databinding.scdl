@@ -59,8 +59,16 @@
         <system:implementation.system class="org.apache.tuscany.databinding.xml.String2Node" />
     </component>
 
-    <component name="transformer.ObjectArray2ObjectArray">
+    <component name="transformer.JavaParametersTransformer">
         <system:implementation.system class="org.apache.tuscany.databinding.impl.JavaParametersTransformer" />
     </component>
 
+    <component name="transformer.WSDL2JavaTransformer">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.WSDL2JavaTransformer" />
+    </component>
+
+    <component name="transformer.Java2WSDLTransformer">
+        <system:implementation.system class="org.apache.tuscany.databinding.impl.Java2WSDLTransformer" />
+    </component>
+    
 </composite>
