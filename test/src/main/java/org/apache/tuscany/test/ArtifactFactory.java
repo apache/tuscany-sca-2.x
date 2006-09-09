@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
@@ -57,7 +58,7 @@ public final class ArtifactFactory {
     }
 
     public static WireService createWireService() {
-        return new JDKWireService();
+        return new JDKWireService(new WorkContextImpl(), null);
     }
 
     /**

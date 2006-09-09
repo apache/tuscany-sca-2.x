@@ -22,9 +22,12 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
@@ -80,4 +83,8 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
         return inboundWire.getTargetService();
     }
 
+
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+        throw new UnsupportedOperationException();
+    }
 }

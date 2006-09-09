@@ -93,6 +93,10 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         throw new UnsupportedOperationException();
     }
 
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+        throw new UnsupportedOperationException();
+    }
+
     public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }

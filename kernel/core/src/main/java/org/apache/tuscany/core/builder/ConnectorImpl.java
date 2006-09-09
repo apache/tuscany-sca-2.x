@@ -22,12 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.core.wire.BridgingInterceptor;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.MessageChannelImpl;
-import org.apache.tuscany.core.wire.MessageDispatcher;
-import org.apache.tuscany.core.wire.OutboundAutowire;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -51,7 +47,15 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Constructor;
+
+import org.apache.tuscany.core.implementation.composite.CompositeReference;
+import org.apache.tuscany.core.implementation.composite.CompositeService;
+import org.apache.tuscany.core.wire.BridgingInterceptor;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.MessageChannelImpl;
+import org.apache.tuscany.core.wire.MessageDispatcher;
+import org.apache.tuscany.core.wire.OutboundAutowire;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 
 /**
  * The default connector implmentation
@@ -67,8 +71,8 @@ public class ConnectorImpl implements Connector {
     }
 
     @Constructor({"wireService", "postProcessorRegistry"})
-    public ConnectorImpl(@Autowire WireService wireService, 
-            @Autowire WirePostProcessorRegistry postProcessorRegistry) {
+    public ConnectorImpl(@Autowire WireService wireService,
+                         @Autowire WirePostProcessorRegistry postProcessorRegistry) {
         this.postProcessorRegistry = postProcessorRegistry;
         this.wireService = wireService;
     }
@@ -111,6 +115,12 @@ public class ConnectorImpl implements Connector {
                 chain.setTargetInvoker(invoker);
                 chain.prepare();
             }
+
+            // Now connect the Reference's outbound wire if it is a composite reference
+            if (source instanceof CompositeReference) {
+                CompositeReference compRef = (CompositeReference) source;
+                connect(compRef, compRef.getOutboundWire());
+            }
         } else if (source instanceof Service) {
             Service<T> service = (Service<T>) source;
             InboundWire<T> inboundWire = service.getInboundWire();
@@ -119,7 +129,16 @@ public class ConnectorImpl implements Connector {
             connect(service, outboundWire);
             // services have inbound and outbound wires
             // NB: this connect must be done after the outbound service chain is connected to its target above
-            connect(inboundWire, outboundWire, true);
+            if (!(source instanceof CompositeService)) {
+                connect(inboundWire, outboundWire, true);
+            }
+            /*
+        } else {
+            BuilderConfigException e = new BuilderConfigException("Invalid source context type");
+            e.setIdentifier(source.getName());
+            e.addContextName(parent.getName());
+            throw e;
+            */
         }
     }
 
@@ -188,7 +207,6 @@ public class ConnectorImpl implements Connector {
             if (target instanceof Component) {
                 Component component = (Component) target;
 
-                // FIXME should not relay on annotations
                 boolean isOneWayOperation = operation.isNonBlocking();
                 boolean operationHasCallback = contract.getCallbackName() != null;
                 if (isOneWayOperation && operationHasCallback) {
@@ -203,8 +221,12 @@ public class ConnectorImpl implements Connector {
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
                 invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
+            } else if (target instanceof CompositeService) {
+                CompositeService compServ = (CompositeService) target;
+                invoker = compServ.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
             }
-            if (source instanceof Service) {
+
+            if (source instanceof Service && !(source instanceof CompositeService)) {
                 // services are a special case: invoker must go on the inbound chain
                 connect(outboundChain, inboundChain, null);
                 Service<?> service = (Service) source;
@@ -234,45 +256,20 @@ public class ConnectorImpl implements Connector {
                 TargetInvoker invoker;
                 invoker = component.createTargetInvoker(null, operation);
                 connect(outboundChain, inboundChain, invoker);
-            } else if (target instanceof Service) {
-                throw new UnsupportedOperationException();
-            }
-        }
-
-        /*
-        // connect callback wires if they exist
-        for (OutboundInvocationChain outboundChain : sourceWire.getSourceCallbackInvocationChains().values()) {
-            // match wire chains
-            Map<Operation<?>, InboundInvocationChain> chains = sourceWire.getTargetCallbackInvocationChains();
-            InboundInvocationChain inboundChain = chains.get(outboundChain.getOperation());
-            if (inboundChain == null) {
-                BuilderConfigException e =
-                    new BuilderConfigException("Incompatible source and target interfaces for reference");
-                e.setIdentifier(sourceWire.getReferenceName());
-                throw e;
-            }
-            if (source instanceof Component) {
-                Component component = (Component) source;
-                Operation<?> operation = outboundChain.getOperation();
-                boolean isOneWayOperation = operation.isNonBlocking();
-                boolean operationHasCallback = contract.getCallbackName() != null;
-                if (isOneWayOperation && operationHasCallback) {
-                    throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
-                }
-                TargetInvoker invoker;
-                if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(operation);
-                } else {
-                    Operation<?> inboundOperation = inboundChain.getOperation();
-                    invoker = component.createTargetInvoker(null, inboundOperation);
-                }
+            } else if (source instanceof CompositeReference) {
+                CompositeReference compRef = (CompositeReference) source;
+                TargetInvoker invoker = compRef.createCallbackTargetInvoker(sourceWire.getServiceContract(), operation);
+                connect(outboundChain, inboundChain, invoker);
+            } else if (source instanceof CompositeService) {
+                CompositeService compServ = (CompositeService) source;
+                TargetInvoker invoker =
+                    compServ.createCallbackTargetInvoker(sourceWire.getServiceContract(), operation);
                 connect(outboundChain, inboundChain, invoker);
             } else if (target instanceof Service) {
                 throw new UnsupportedOperationException();
             }
         }
-        */
-    }
+   }
 
     public void connect(OutboundInvocationChain sourceChain,
                         InboundInvocationChain targetChain,
@@ -337,6 +334,13 @@ public class ConnectorImpl implements Connector {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
         CompositeComponent<?> parent = source.getParent();
+        assert parent != null : "Parent was null";
+        // For a composite reference only, since its outbound wire comes from its parent composite,
+        // the corresponding target would not lie in its parent but rather in its parent's parent
+        if (source instanceof CompositeReference) {
+            parent = parent.getParent();
+            assert parent != null : "Parent of parent was null";
+        }
         SCAObject<?> target = parent.getChild(targetName.getPartName());
         if (target == null) {
             String refName = sourceWire.getReferenceName();
@@ -363,10 +367,34 @@ public class ConnectorImpl implements Connector {
             checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(source, target, sourceWire, targetWire, optimizable);
+        } else if (target instanceof CompositeComponent) {
+            CompositeComponent composite = (CompositeComponent) target;
+            InboundWire<T> targetWire = null;
+            for (Object child : composite.getChildren()) {
+                if (child instanceof CompositeService) {
+                    CompositeService compServ = (CompositeService) child;
+                    targetWire = compServ.getInboundWire();
+                    assert targetWire != null;
+                    Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                    Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                    if (sourceInterface.isAssignableFrom(targetInterface)) {
+                        target = compServ;
+                        break;
+                    } else {
+                        targetWire = null;
+                    }
+                }
+            }
+            if (targetWire == null) {
+                throw new BuilderConfigException("No target composite service in composite");
+            }
+            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+            connect(source, target, sourceWire, targetWire, optimizable);
         } else {
             String name = sourceWire.getReferenceName();
             BuilderConfigException e = new BuilderConfigException("Invalid target type for reference " + name);
             e.setIdentifier(targetName.getQualifiedName());
+            throw e;
         }
     }
 

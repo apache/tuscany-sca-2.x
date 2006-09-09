@@ -68,7 +68,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  */
 public class OutboundWireToJavaTestCase extends TestCase {
     private WorkContext workContext = new WorkContextImpl();
-    private WireService wireService = new JDKWireService();
+    private WireService wireService = new JDKWireService(new WorkContextImpl(), null);
 
     public void testToStatelessScope() throws Exception {
         StatelessScopeContainer scope = new StatelessScopeContainer(workContext);

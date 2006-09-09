@@ -33,4 +33,8 @@ public class MessageId {
     public long getTimestamp() {
         return timestamp;
     }
+    
+    public String toString() {
+        return "MsgId[" + timestamp + "]";
+    }
 }

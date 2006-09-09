@@ -34,6 +34,7 @@ public class WorkContextImpl implements WorkContext {
 
     private static final Object REMOTE_CONTEXT = new Object();
     private static final Object MESSAGE_ID = new Object();
+    private static final Object CORRELATION_ID = new Object();
 
     // TODO implement propagation strategy for creating new threads
 
@@ -60,6 +61,23 @@ public class WorkContextImpl implements WorkContext {
             workContext.set(map);
         }
         map.put(MESSAGE_ID, messageId);
+    }
+
+    public Object getCurrentCorrelationId() {
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            return null;
+        }
+        return map.get(CORRELATION_ID);
+    }
+
+    public void setCurrentCorrelationId(Object correlationId) {
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            map = new HashMap<Object, Object>();
+            workContext.set(map);
+        }
+        map.put(CORRELATION_ID, correlationId);
     }
 
     public CompositeComponent getRemoteComponent() {

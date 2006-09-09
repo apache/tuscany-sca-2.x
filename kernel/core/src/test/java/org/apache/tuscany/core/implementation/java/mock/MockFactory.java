@@ -43,6 +43,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
@@ -65,7 +66,7 @@ import static org.easymock.EasyMock.replay;
  */
 public final class MockFactory {
 
-    private static final WireService WIRE_SERVICE = new JDKWireService();
+    private static final WireService WIRE_SERVICE = new JDKWireService(new WorkContextImpl(), null);
     private static final JavaInterfaceProcessorRegistry REGISTRY = new JavaInterfaceProcessorRegistryImpl();
 
     private MockFactory() {
