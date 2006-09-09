@@ -32,10 +32,12 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 
 /**
  * Loads a WSDL interface definition from an XML-based assembly file
@@ -48,12 +50,15 @@ public class InterfaceWSDLLoader extends LoaderExtension {
     private static final String WSDLI_LOCATION = "wsdlLocation";
 
     private WSDLDefinitionRegistry wsdlRegistry;
+    private InterfaceWSDLIntrospector introspector;
 
-    @Constructor({"registry","wsdlRegistry"})
-    public InterfaceWSDLLoader(@Autowire LoaderRegistry registry,
-                               @Autowire WSDLDefinitionRegistry wsdlRegistry) {
+    @Constructor( { "registry", "wsdlRegistry", "introspector" })
+    public InterfaceWSDLLoader(@Autowire LoaderRegistry registry, 
+                               @Autowire WSDLDefinitionRegistry wsdlRegistry, 
+                               @Autowire InterfaceWSDLIntrospector introspector) {
         super(registry);
         this.wsdlRegistry = wsdlRegistry;
+        this.introspector = introspector;
     }
 
     public QName getXMLType() {
@@ -91,19 +96,29 @@ public class InterfaceWSDLLoader extends LoaderExtension {
             }
         }
 
-        WSDLServiceContract serviceContract = new WSDLServiceContract();
-        serviceContract.setPortType(getPortType(interfaceURI));
-        if (callbackURI != null) {
-            serviceContract.setCallbackPortType(getPortType(callbackURI));
+        PortType portType = getPortType(interfaceURI);
+        if (portType == null) {
+            throw new MissingResourceException(interfaceURI);
         }
-        return serviceContract;
+        PortType callback = null;
+        if (callbackURI != null) {
+            callback = getPortType(callbackURI);
+        }
+        try {
+            return introspector.introspect(portType, callback);
+        } catch (InvalidServiceContractException e) {
+            LoaderException le = new LoaderException(e);
+            le.setIdentifier(wsdlLocation);
+            throw le;
+        }
     }
 
     protected PortType getPortType(String uri) {
-        // fixme support WSDL 2.0 XPointer references and possible XML Schema QNames
+        // Syntax: <WSDL-namespace-URI>#wsdl.interface(<portTypeOrInterface-name>)
         int index = uri.indexOf('#');
         String namespace = uri.substring(0, index);
         String name = uri.substring(index + 1);
+        name = name.substring("wsdl.interface(".length(), name.length()-1);
         QName qname = new QName(namespace, name);
         return wsdlRegistry.getPortType(qname);
     }
