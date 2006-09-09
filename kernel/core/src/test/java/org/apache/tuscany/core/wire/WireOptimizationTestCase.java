@@ -26,7 +26,6 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -54,15 +53,6 @@ public class WireOptimizationTestCase extends TestCase {
         assertTrue(wire.isOptimizable());
     }
 
-    public void testSourceWireHandlerOptimization() throws Exception {
-        OutboundWire<?> wire = new OutboundWireImpl();
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-        chain.addRequestHandler(new OptimizableHandler());
-        chain.addResponseHandler(new OptimizableHandler());
-        wire.addInvocationChain(operation, chain);
-        assertTrue(wire.isOptimizable());
-    }
-
     public void testSourceWireNonInterceptorOptimization() throws Exception {
         OutboundWire<?> wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
@@ -70,25 +60,6 @@ public class WireOptimizationTestCase extends TestCase {
         wire.addInvocationChain(operation, chain);
         assertFalse(wire.isOptimizable());
     }
-
-    public void testSourceWireNonRequestHandlerOptimization() throws Exception {
-        OutboundWire<?> wire = new OutboundWireImpl();
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-        chain.addInterceptor(new OptimizableInterceptor());
-        chain.addRequestHandler(new NonOptimizableHandler());
-        wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
-    }
-
-    public void testSourceWireNonResponseHandlerOptimization() throws Exception {
-        OutboundWire<?> wire = new OutboundWireImpl();
-        OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
-        chain.addInterceptor(new OptimizableInterceptor());
-        chain.addResponseHandler(new NonOptimizableHandler());
-        wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
-    }
-
 
     public void testTargetWireInterceptorOptimization() throws Exception {
         InboundWire<?> wire = new InboundWireImpl();
@@ -98,37 +69,10 @@ public class WireOptimizationTestCase extends TestCase {
         assertTrue(wire.isOptimizable());
     }
 
-    public void testTargetWireHandlerOptimization() throws Exception {
-        InboundWire<?> wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addRequestHandler(new OptimizableHandler());
-        chain.addResponseHandler(new OptimizableHandler());
-        wire.addInvocationChain(operation, chain);
-        assertTrue(wire.isOptimizable());
-    }
-
     public void testTargetWireNonInterceptorOptimization() throws Exception {
         InboundWire<?> wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
-        wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
-    }
-
-    public void testTargetWireNonRequestHandlerOptimization() throws Exception {
-        InboundWire<?> wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addInterceptor(new OptimizableInterceptor());
-        chain.addRequestHandler(new NonOptimizableHandler());
-        wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
-    }
-
-    public void testTargetWireNonResponseHandlerOptimization() throws Exception {
-        InboundWire<?> wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addInterceptor(new OptimizableInterceptor());
-        chain.addResponseHandler(new NonOptimizableHandler());
         wire.addInvocationChain(operation, chain);
         assertFalse(wire.isOptimizable());
     }
@@ -192,25 +136,4 @@ public class WireOptimizationTestCase extends TestCase {
         }
     }
 
-    private class OptimizableHandler implements MessageHandler {
-
-        public boolean processMessage(Message message) {
-            return false;
-        }
-
-        public boolean isOptimizable() {
-            return true;
-        }
-    }
-
-    private class NonOptimizableHandler implements MessageHandler {
-
-        public boolean processMessage(Message message) {
-            return false;
-        }
-
-        public boolean isOptimizable() {
-            return false;
-        }
-    }
 }

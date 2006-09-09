@@ -30,7 +30,6 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
-import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
@@ -43,7 +42,7 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
 
     private Method echo;
 
-    public void testHandlersInterceptorInvoke() throws Throwable {
+    public void testInterceptorInvoke() throws Throwable {
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(SimpleTarget.class);
         Operation<?> operation = contract.getOperations().get("echo");
@@ -52,10 +51,6 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
         chain.addInterceptor(interceptor);
         chain.setTargetInterceptor(new InvokerInterceptor());
-        MockHandler requestHandler = new MockHandler();
-        chain.addRequestHandler(requestHandler);
-        MockHandler responseHandler = new MockHandler();
-        chain.addResponseHandler(responseHandler);
         chain.setTargetInvoker(invoker);
         chain.prepare();
         //chains.put(echo, chain);
@@ -65,8 +60,6 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, new WorkContextImpl());
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
-        assertEquals(1, requestHandler.getCount());
-        assertEquals(1, responseHandler.getCount());
     }
 
     public void setUp() throws Exception {

@@ -37,8 +37,7 @@ public abstract class AbstractOutboundInvocationHandler {
 
     protected Object invoke(OutboundInvocationChain chain, TargetInvoker invoker, Object[] args) throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        if (chain.getTargetRequestChannel() == null && chain.getTargetResponseChannel() == null
-            && headInterceptor == null) {
+        if (headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
                 if (chain.getTargetInvoker() == null) {
@@ -63,36 +62,18 @@ public abstract class AbstractOutboundInvocationHandler {
             msg.setCorrelationId(corrId);
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
-            if (chain.getTargetRequestChannel() != null) {
-                chain.getTargetRequestChannel().send(msg);
-                Object body = msg.getRelatedCallbackMessage().getBody();
-                if (body instanceof Throwable) {
-                    throw (Throwable) body;
-                }
-                return body;
-
-            } else if (headInterceptor == null) {
-                String name = chain.getOperation().getName();
-                throw new AssertionError("No target interceptor configured [" + name + "]");
-
-            } else {
-                Message resp = headInterceptor.invoke(msg);
-                if (chain.getTargetResponseChannel() != null) {
-                    chain.getTargetResponseChannel().send(resp);
-                    resp = resp.getRelatedCallbackMessage();
-                }
-                Object body = resp.getBody();
-                if (body instanceof Throwable) {
-                    throw (Throwable) body;
-                }
-                return body;
+            Message resp = headInterceptor.invoke(msg);
+            Object body = resp.getBody();
+            if (body instanceof Throwable) {
+                throw (Throwable) body;
             }
+            return body;
         }
     }
 
     protected abstract Object getFromAddress();
-    
+
     protected abstract Object getMessageId();
-    
+
     protected abstract Object getCorrelationId();
 }

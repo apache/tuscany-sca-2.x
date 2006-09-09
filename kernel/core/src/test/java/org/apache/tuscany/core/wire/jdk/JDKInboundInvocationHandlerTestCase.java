@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
-import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
@@ -48,27 +47,6 @@ public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
 
     private Method echo;
     private Operation operation;
-
-    public void testHandlersInterceptorInvoke() throws Throwable {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        MockSyncInterceptor interceptor = new MockSyncInterceptor();
-        chain.addInterceptor(interceptor);
-        chain.addInterceptor(new InvokerInterceptor());
-        MockHandler requestHandler = new MockHandler();
-        chain.addRequestHandler(requestHandler);
-        MockHandler responseHandler = new MockHandler();
-        chain.addResponseHandler(responseHandler);
-        chain.setTargetInvoker(invoker);
-        chain.prepare();
-        chains.put(echo, chain);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
-        assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
-        assertEquals(1, interceptor.getCount());
-        assertEquals(1, requestHandler.getCount());
-        assertEquals(1, responseHandler.getCount());
-    }
 
     public void testInterceptorInvoke() throws Throwable {
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();

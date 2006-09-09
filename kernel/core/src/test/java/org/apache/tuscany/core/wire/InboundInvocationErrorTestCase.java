@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
@@ -110,7 +109,6 @@ public class InboundInvocationErrorTestCase extends TestCase {
         MockStaticInvoker invoker = new MockStaticInvoker(m, new InboundInvocationErrorTestCase.TestBeanImpl());
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new MockSyncInterceptor());
-        chain.addRequestHandler(new MockHandler());
         chain.setTargetInvoker(invoker);
         chain.addInterceptor(new InvokerInterceptor());
         chain.prepare();

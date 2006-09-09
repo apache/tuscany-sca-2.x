@@ -18,28 +18,21 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.util.List;
-
 import org.apache.tuscany.spi.model.Operation;
 
 /**
- * A source- or target-side invocation pipeline for a service operation. Invocation chains are associated with the
- * source or target side of a wire and are bridged when an assembly is processed.
+ * An inbound or outbound invocation pipeline for a service operation. Wires consist of 1..n invocation chains
+ * associated with the operations of the service contract the wire represents. Invocation chains are associated with the
+ * outbound or inbound side of a wire are bridged or "connected" when an assembly is processed. Outbound chains are only
+ * connected to inbound chains and vice versa.
  * <p/>
- * Invocation configurations contain at least one {@link Interceptor} and may have 0 to N {@link MessageHandler}s.
- * <code>Interceptors>/code> process invocations in a synchronous, around style manner while
- * <code>MessageHandler</code>s do so in a one-way manner.
- * <p/>
- * Source-side chains may only connect to target-side chains. Target-side chains may connect to other target-side
- * chains, for example, when invoking from a {@link org.apache.tuscany.spi.component.Service} to an {@link
- * org.apache.tuscany.spi.component.AtomicComponent}.
- * <p/>
- * In some scenarios, a service proxy may only contain target-side invocaton chains, for example, when a service is
- * resolved through a locate operation by a non-component client. In this case, there will be no source-side wire chains
- * and the target invoker will be held by the target-side and passed down the pipeline.
+ * Invocation chains contain at least one {@link Interceptor} that process invocations in an around-style manner. In
+ * some scenarios, a service proxy may only contain inbound invocation chains, for example, when a service is resolved
+ * through a locate operation by a non-component client. In this case, there will be no outbound invocation chains and
+ * the target invoker will be held by the target-side and passed down the pipeline.
  * <p/>
  * A {@link Message} is used to pass data associated with an invocation through the chain. <code>Message</code>s contain
- * a {@link TargetInvoker} responsible for dispatching to a target instance and may be cached on the client-side.
+ * a {@link TargetInvoker} responsible for dispatching to a target instance and may be cached on the source-side.
  * Caching allows various optimizations such as avoiding target instance resolution when the client-side lifecycle scope
  * is a shorter duration than the target.
  *
@@ -50,36 +43,6 @@ public interface InvocationChain {
      * Returns the target operation for this invocation chain
      */
     Operation getOperation();
-
-    /**
-     * Adds a request handler to the invocation chain
-     */
-    void addRequestHandler(MessageHandler handler);
-
-    /**
-     * Adds a response handler to the invocation chain
-     */
-    void addResponseHandler(MessageHandler handler);
-
-    /**
-     * Returns the request handler chain
-     */
-    List<MessageHandler> getRequestHandlers();
-
-    /**
-     * Returns the response handler chain
-     */
-    List<MessageHandler> getResponseHandlers();
-
-    /**
-     * Returns the request channel for the chain
-     */
-    MessageChannel getRequestChannel();
-
-    /**
-     * Returns the response channel for the chain
-     */
-    MessageChannel getResponseChannel();
 
     /**
      * Sets the target invoker to pass down the chain
@@ -95,6 +58,13 @@ public interface InvocationChain {
      * Adds an interceptor to the chain
      */
     void addInterceptor(Interceptor interceptor);
+
+    /**
+     * Adds an interceptor at the given position in the interceptor stack
+     *
+     * @param index       the position in the interceptor stack to add the interceptor
+     * @param interceptor the interceptor to add
+     */
     void addInterceptor(int index, Interceptor interceptor);
 
     /**
@@ -116,26 +86,6 @@ public interface InvocationChain {
      * Returns the head interceptor of the birdged target-side chain
      */
     Interceptor getTargetInterceptor();
-
-    /**
-     * Sets the target-side request channel when two chains are bidged
-     */
-    void setTargetRequestChannel(MessageChannel channel);
-
-    /**
-     * Sets the target-side response channel when two chains are bridged
-     */
-    void setTargetResponseChannel(MessageChannel channel);
-
-    /**
-     * Returns the target-side request channel when two chains are bridged
-     */
-    MessageChannel getTargetRequestChannel();
-
-    /**
-     * Returns the target-side response channel when two chains are bridged
-     */
-    MessageChannel getTargetResponseChannel();
 
     /**
      * Signals to the chain that its configuration is complete. Implementations may use this callback to prepare their

@@ -23,10 +23,9 @@ package org.apache.tuscany.spi.wire;
  *
  * @version $Rev $Date
  */
-public class MessageImpl implements Message, MessageChannel {
+public class MessageImpl implements Message {
 
     private Object body;
-    private Message relatedCallbackMessage;
     private TargetInvoker invoker;
     private Object fromAddress;
     private Object messageId;
@@ -43,18 +42,6 @@ public class MessageImpl implements Message, MessageChannel {
         this.body = body;
     }
 
-    public MessageChannel getCallbackChannel() {
-        return this;
-    }
-
-    public void send(Message message) {
-        relatedCallbackMessage = message;
-    }
-
-    public Message getRelatedCallbackMessage() {
-        return relatedCallbackMessage;
-    }
-
     public void setTargetInvoker(TargetInvoker invoker) {
         this.invoker = invoker;
     }
@@ -62,27 +49,27 @@ public class MessageImpl implements Message, MessageChannel {
     public TargetInvoker getTargetInvoker() {
         return invoker;
     }
-    
+
     public Object getFromAddress() {
         return fromAddress;
     }
-    
+
     public void setFromAddress(Object fromAddress) {
         this.fromAddress = fromAddress;
     }
-    
+
     public Object getMessageId() {
         return messageId;
     }
-    
+
     public void setMessageId(Object messageId) {
         this.messageId = messageId;
     }
-    
+
     public Object getCorrelationId() {
         return correlationId;
     }
-    
+
     public void setCorrelationId(Object correlationId) {
         this.correlationId = correlationId;
     }

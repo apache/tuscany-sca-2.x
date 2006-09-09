@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageHandler;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -58,8 +57,8 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testNoInterceptorsNoHandlers() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
-        InboundInvocationChain inboundChain = setupInbound(null, null, null);
-        OutboundInvocationChain outboundChain = setupOutbound(null, null, null);
+        InboundInvocationChain inboundChain = setupInbound(null);
+        OutboundInvocationChain outboundChain = setupOutbound(null);
         String[] val = new String[]{"foo"};
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
         expect(invoker.invokeTarget(EasyMock.eq(val))).andReturn(val);
@@ -82,8 +81,8 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(interceptor);
 
-        InboundInvocationChain inboundChain = setupInbound(interceptors, null, null);
-        OutboundInvocationChain outboundChain = setupOutbound(null, null, null);
+        InboundInvocationChain inboundChain = setupInbound(interceptors);
+        OutboundInvocationChain outboundChain = setupOutbound(null);
         Message msg = new MessageImpl();
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
         expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
@@ -108,8 +107,8 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         List<Interceptor> interceptors = new ArrayList<Interceptor>();
         interceptors.add(interceptor);
 
-        InboundInvocationChain inboundChain = setupInbound(interceptors, null, null);
-        OutboundInvocationChain outboundChain = setupOutbound(null, null, null);
+        InboundInvocationChain inboundChain = setupInbound(interceptors);
+        OutboundInvocationChain outboundChain = setupOutbound(null);
         Message msg = new MessageImpl();
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
         expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
@@ -137,8 +136,8 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         List<Interceptor> targetInterceptors = new ArrayList<Interceptor>();
         targetInterceptors.add(targetInterceptor);
 
-        OutboundInvocationChain outboundChain = setupOutbound(sourceInterceptors, null, null);
-        InboundInvocationChain inboundChain = setupInbound(targetInterceptors, null, null);
+        OutboundInvocationChain outboundChain = setupOutbound(sourceInterceptors);
+        InboundInvocationChain inboundChain = setupInbound(targetInterceptors);
         Message msg = new MessageImpl();
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
         expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
@@ -155,9 +154,7 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         verify(invoker);
     }
 
-    public InboundInvocationChain setupInbound(List<Interceptor> interceptors,
-                                               List<MessageHandler> requestHandlers,
-                                               List<MessageHandler> responseHandlers) {
+    public InboundInvocationChain setupInbound(List<Interceptor> interceptors) {
 
         InboundInvocationChainImpl chain = new InboundInvocationChainImpl(operation);
         if (interceptors != null) {
@@ -165,37 +162,15 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
                 chain.addInterceptor(interceptor);
             }
         }
-        if (requestHandlers != null) {
-            for (MessageHandler handler : requestHandlers) {
-                chain.addRequestHandler(handler);
-            }
-        }
-        if (responseHandlers != null) {
-            for (MessageHandler handler : responseHandlers) {
-                chain.addResponseHandler(handler);
-            }
-        }
         return chain;
     }
 
-    public OutboundInvocationChain setupOutbound(List<Interceptor> interceptors,
-                                                 List<MessageHandler> requestHandlers,
-                                                 List<MessageHandler> responseHandlers) {
+    public OutboundInvocationChain setupOutbound(List<Interceptor> interceptors) {
 
         OutboundInvocationChainImpl chain = new OutboundInvocationChainImpl(operation);
         if (interceptors != null) {
             for (Interceptor interceptor : interceptors) {
                 chain.addInterceptor(interceptor);
-            }
-        }
-        if (requestHandlers != null) {
-            for (MessageHandler handler : requestHandlers) {
-                chain.addRequestHandler(handler);
-            }
-        }
-        if (responseHandlers != null) {
-            for (MessageHandler handler : responseHandlers) {
-                chain.addResponseHandler(handler);
             }
         }
         chain.addInterceptor(new InvokerInterceptor()); // add tail interceptor

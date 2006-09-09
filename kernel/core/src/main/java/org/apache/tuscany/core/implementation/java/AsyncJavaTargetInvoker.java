@@ -26,14 +26,13 @@ import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.TargetException;
 
 import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
@@ -89,6 +88,7 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
         try {
             workScheduler.scheduleWork(new Runnable() {
                 private Object currentMessageId = messageId;
+
                 public void run() {
                     workContext.setCurrentMessageId(null);
                     workContext.setCurrentCorrelationId(currentMessageId);
@@ -186,34 +186,30 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
             return null;
         }
 
-        public MessageChannel getCallbackChannel() {
-            return null;
-        }
-
         public Message getRelatedCallbackMessage() {
             return null;
         }
-        
+
         public Object getFromAddress() {
             return null;
         }
-        
+
         public void setFromAddress(Object fromAddress) {
             throw new UnsupportedOperationException();
         }
-        
+
         public Object getMessageId() {
             return null;
         }
-        
+
         public void setMessageId(Object messageId) {
             throw new UnsupportedOperationException();
         }
-        
+
         public Object getCorrelationId() {
             return null;
         }
-        
+
         public void setCorrelationId(Object correlationId) {
             throw new UnsupportedOperationException();
         }

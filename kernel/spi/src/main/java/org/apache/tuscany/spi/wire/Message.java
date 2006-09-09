@@ -46,40 +46,30 @@ public interface Message {
     TargetInvoker getTargetInvoker();
 
     /**
-     * Returns the callback channel
-     */
-    MessageChannel getCallbackChannel();
-
-    /**
-     * 
-     */
-    Message getRelatedCallbackMessage();
-    
-    /**
      * Returns the 'address' of the SCAObject where this message originates
      */
     Object getFromAddress();
-    
+
     /**
      * Sets the 'address' of the SCAObject where this message originates
      */
     void setFromAddress(Object fromAddress);
-    
+
     /**
      * Returns the id of the message
      */
     Object getMessageId();
-    
+
     /**
      * Sets the id of the message
      */
     void setMessageId(Object messageId);
-    
+
     /**
      * Returns the correlation id of the message
      */
     Object getCorrelationId();
-    
+
     /**
      * Sets the correlation id of the message
      */

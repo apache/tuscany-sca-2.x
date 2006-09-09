@@ -20,23 +20,22 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
-import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 public class OutboundInvocationHandlerTestCase extends TestCase {
 
@@ -114,25 +113,16 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
 
     private OutboundInvocationChain createChain(Operation operation) {
         OutboundInvocationChain source = new OutboundInvocationChainImpl(operation);
-        MockHandler sourceRequestHandler = new MockHandler();
-        MockHandler sourceResponseHandler = new MockHandler();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
-        source.addRequestHandler(sourceRequestHandler);
-        source.addResponseHandler(sourceResponseHandler);
         source.addInterceptor(sourceInterceptor);
 
         InboundInvocationChain target = new InboundInvocationChainImpl(operation);
-        MockHandler targetRequestHandler = new MockHandler();
-        MockHandler targetResponseHandler = new MockHandler();
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
-        target.addRequestHandler(targetRequestHandler);
-        target.addResponseHandler(targetResponseHandler);
         target.addInterceptor(targetInterceptor);
         target.addInterceptor(new InvokerInterceptor());
 
         // connect the source to the target
-        source.setTargetRequestChannel(new MessageChannelImpl(target.getRequestHandlers()));
-        source.setTargetResponseChannel(new MessageChannelImpl(target.getResponseHandlers()));
+        source.setTargetInterceptor(targetInterceptor);
         source.prepare();
         target.prepare();
         Method method = JavaIDLUtils.findMethod(operation, SimpleTarget.class.getMethods());

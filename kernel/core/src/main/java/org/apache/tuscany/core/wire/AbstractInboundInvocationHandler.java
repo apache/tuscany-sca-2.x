@@ -20,11 +20,9 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageChannel;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -35,15 +33,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public abstract class AbstractInboundInvocationHandler {
 
-
     /**
      * Dispatches a client request made on a proxy
      */
     public Object invoke(InboundInvocationChain chain, TargetInvoker invoker, Object[] args) throws Throwable {
-        MessageChannel requestChannel = chain.getRequestChannel();
-        MessageChannel responseChannel = chain.getResponseChannel();
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        if (requestChannel == null && headInterceptor == null && responseChannel == null) {
+        if (headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
                 if (chain.getTargetInvoker() == null) {
@@ -59,22 +54,8 @@ public abstract class AbstractInboundInvocationHandler {
             msg.setTargetInvoker(invoker);
             msg.setBody(args);
             Message resp;
-            if (requestChannel != null) {
-                requestChannel.send(msg);
-                resp = msg.getRelatedCallbackMessage();
-                if (responseChannel != null) {
-                    responseChannel.send(resp);
-                }
-            } else {
-                if (headInterceptor == null) {
-                    throw new TargetException("Expected interceptor on target chain");
-                }
-                // dispatch the wire down the chain and get the response
-                resp = headInterceptor.invoke(msg);
-                if (responseChannel != null) {
-                    responseChannel.send(resp);
-                }
-            }
+            // dispatch the wire down the chain and get the response
+            resp = headInterceptor.invoke(msg);
             Object body = resp.getBody();
             if (body instanceof Throwable) {
                 throw (Throwable) body;
