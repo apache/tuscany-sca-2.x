@@ -35,13 +35,13 @@ public class WirePostProcessorRegistryImpl implements WirePostProcessorRegistry 
 
     private final List<WirePostProcessor> processors = new ArrayList<WirePostProcessor>();
 
-    public <T> void process(OutboundWire<T> source, InboundWire<T> target) {
+    public void process(OutboundWire<?> source, InboundWire<?> target) {
         for (WirePostProcessor processor : processors) {
             processor.process(source, target);
         }
     }
 
-    public <T> void process(InboundWire<T> source, OutboundWire<T> target) {
+    public void process(InboundWire<?> source, OutboundWire<?> target) {
         for (WirePostProcessor processor : processors) {
             processor.process(source, target);
         }

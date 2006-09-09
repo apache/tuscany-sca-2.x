@@ -90,7 +90,6 @@ public class CompositeReferenceCallbackTargetInvoker extends PojoTargetInvoker {
     */
 
     protected Object getInstance() throws TargetException {
-        Object instance = wireService.createCallbackProxy(contract, inboundWire);
-        return instance;
+        return wireService.createCallbackProxy(contract, inboundWire);
     }
 }

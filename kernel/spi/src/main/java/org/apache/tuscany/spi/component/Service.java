@@ -44,13 +44,39 @@ public interface Service<T> extends SCAObject<T> {
      */
     Class<T> getInterface();
 
+    /**
+     * Returns the inbound wire for flowing a request through the service
+     *
+     * @return the inbound wire for flowing a request through the service
+     */
     InboundWire<T> getInboundWire();
 
+    /**
+     * Sets the inbound wire for flowing a request through the service
+     *
+     * @param wire the inbound wire for flowing a request through the service
+     */
     void setInboundWire(InboundWire<T> wire);
 
-    OutboundWire<T> getOutboundWire();
+    /**
+     * Returns the outbound wire for flowing a request out of the service
+     *
+     * @return the outbound wire for flowing a request out of the service
+     */
+    OutboundWire<?> getOutboundWire();
 
-    void setOutboundWire(OutboundWire<T> wire);
+    /**
+     * Sets the outbound wire for flowing a request out of the service
+     *
+     * @param wire the outbound wire for flowing a request out of the service
+     */
+    void setOutboundWire(OutboundWire<?> wire);
 
+    /**
+     * Returns the target invoker for dispatching callback invocations
+     *
+     * @param contract  the callback contract
+     * @param operation the callback operation the target invoker dispatches to
+     */
     TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation);
 }

@@ -41,7 +41,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements SystemReference<T> {
 
     protected SystemInboundWire<T> inboundWire;
-    protected SystemOutboundWire<T> outboundWire;
+    protected SystemOutboundWire<?> outboundWire;
     protected Class<T> referenceInterface;
 
 
@@ -64,13 +64,13 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         return inboundWire;
     }
 
-    public OutboundWire<T> getOutboundWire() {
+    public OutboundWire<?> getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire<T> wire) {
+    public void setOutboundWire(OutboundWire<?> wire) {
         assert wire instanceof SystemOutboundWire : "Wire must be a " + SystemOutboundWire.class.getName();
-        this.outboundWire = (SystemOutboundWire<T>) wire;
+        this.outboundWire = (SystemOutboundWire) wire;
     }
 
     public Class<T> getInterface() {

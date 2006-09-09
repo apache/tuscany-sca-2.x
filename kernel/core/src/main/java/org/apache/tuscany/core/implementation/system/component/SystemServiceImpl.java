@@ -42,7 +42,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements SystemService<T> {
 
     protected SystemInboundWire<T> inboundWire;
-    protected SystemOutboundWire<T> outboundWire;
+    protected SystemOutboundWire<?> outboundWire;
 
     public SystemServiceImpl(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
@@ -61,15 +61,16 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
         this.inboundWire = (SystemInboundWire<T>) wire;
     }
 
-    public OutboundWire<T> getOutboundWire() {
+    public OutboundWire<?> getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire<T> wire) {
+    public void setOutboundWire(OutboundWire<?> wire) {
         assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
-        this.outboundWire = (SystemOutboundWire<T>) wire;
+        this.outboundWire = (SystemOutboundWire<?>) wire;
     }
 
+    @SuppressWarnings("unchecked")
     public Class<T> getInterface() {
         return (Class<T>)inboundWire.getServiceContract().getInterfaceClass();
     }

@@ -81,7 +81,7 @@ public class LauncherImpl implements Launcher {
         runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
 
         // initialize the runtime info
-        SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
+        SystemCompositeComponent<?> parent = (SystemCompositeComponent) runtime.getSystemComponent();
         RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 

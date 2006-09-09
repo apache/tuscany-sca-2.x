@@ -39,13 +39,15 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
     private String referenceName;
     private QualifiedName targetName;
     private ServiceContract serviceContract;
-    private SystemInboundWire<T> targetWire;
+    private SystemInboundWire<?> targetWire;
     private String containerName;
+    private Class<T> interfaze;
 
-    public SystemOutboundWireImpl(String referenceName, QualifiedName targetName, Class<T> businessInterface) {
+    public SystemOutboundWireImpl(String referenceName, QualifiedName targetName, Class<T> interfaze) {
         this.referenceName = referenceName;
         this.targetName = targetName;
-        serviceContract = new JavaServiceContract(businessInterface);
+        serviceContract = new JavaServiceContract(interfaze);
+        this.interfaze = interfaze;
     }
 
     public ServiceContract getServiceContract() {
@@ -76,7 +78,7 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         if (targetWire == null) {
             throw new TargetException("No target wire connected to source wire");
         }
-        return targetWire.getTargetService();
+        return interfaze.cast(targetWire.getTargetService());
     }
 
     @SuppressWarnings("unchecked")
@@ -124,9 +126,9 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(InboundWire<T> wire) {
+    public void setTargetWire(InboundWire<?> wire) {
         assert wire instanceof SystemInboundWire : "wire must be a " + SystemInboundWire.class.getName();
-        this.targetWire = (SystemInboundWire<T>) wire;
+        this.targetWire = (SystemInboundWire<?>) wire;
     }
 
     public boolean isOptimizable() {

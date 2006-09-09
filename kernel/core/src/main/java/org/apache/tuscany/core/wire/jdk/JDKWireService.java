@@ -267,8 +267,8 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
-    public InboundWire createWire(ServiceDefinition service) {
-        InboundWire wire = new InboundWireImpl();
+    public InboundWire<?> createWire(ServiceDefinition service) {
+        InboundWire<Object> wire = new InboundWireImpl<Object>();
         ServiceContract<?> contract = service.getServiceContract();
         wire.setServiceContract(contract);
         wire.setServiceName(service.getName());
@@ -286,6 +286,7 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void createWires(Service<T> service, String targetName, ServiceContract<?> contract) {
         InboundWire<T> inboundWire = new InboundWireImpl<T>();
         OutboundWire<T> outboundWire = new OutboundWireImpl<T>();

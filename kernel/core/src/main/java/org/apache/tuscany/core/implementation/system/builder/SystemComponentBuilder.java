@@ -64,6 +64,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         return SystemImplementation.class;
     }
 
+    @SuppressWarnings("unchecked")
     public AtomicComponent<?> build(CompositeComponent<?> parent,
                                     ComponentDefinition<SystemImplementation> definition,
                                     DeploymentContext deploymentContext) throws BuilderConfigException {
@@ -134,6 +135,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         return component;
     }
 
+    @SuppressWarnings("unchecked")
     private void processReferences(ComponentDefinition<SystemImplementation> definition,
                                    Map<String, JavaMappedReference> references,
                                    AutowireComponent autowireContext,

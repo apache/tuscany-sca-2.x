@@ -19,6 +19,9 @@
 package org.apache.tuscany.core.implementation;
 
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl.Monitor;
@@ -58,7 +61,8 @@ public class IntrospectionRegistryTestCase extends MockObjectTestCase {
         mock.expects(once()).method("visitEnd");
         ImplementationProcessor processor = (ImplementationProcessor) mock.proxy();
         registry.registerProcessor(processor);
-        registry.introspect(null, Bar.class, new PojoComponentType(), null);
+        registry.introspect(null, Bar.class,
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(), null);
     }
 
 

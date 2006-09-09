@@ -47,7 +47,7 @@ public class JcaWorkScheduler implements WorkScheduler {
     /**
      * Initializes the JCA work manager.
      *
-     * @param workManager JCA work manager.
+     * @param jcaWorkManager JCA work manager.
      */
     public JcaWorkScheduler(WorkManager jcaWorkManager) {
 
@@ -158,6 +158,7 @@ public class JcaWorkScheduler implements WorkScheduler {
         /*
         * Gets the underlying work from the work event.
         */
+        @SuppressWarnings("unchecked")
         private T getWork(WorkEvent workEvent) {
             JcaWork<T> jcaWork = (JcaWork<T>) workEvent.getWork();
             return jcaWork.getWork();

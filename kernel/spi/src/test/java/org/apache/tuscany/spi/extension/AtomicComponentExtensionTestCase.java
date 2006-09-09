@@ -57,12 +57,12 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         ext.getInboundWire(null);
     }
 
-    private class TestExtension extends AtomicComponentExtension {
+    private class TestExtension<T> extends AtomicComponentExtension<T> {
         public TestExtension() {
             super(null, null, null, null, null, null, 0);
         }
 
-        public Object getServiceInstance() throws TargetException {
+        public T getServiceInstance() throws TargetException {
             return null;
         }
 
@@ -74,7 +74,7 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             return null;
         }
 
-        public List getServiceInterfaces() {
+        public List<Class<?>> getServiceInterfaces() {
             return null;
         }
 

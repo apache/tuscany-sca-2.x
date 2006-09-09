@@ -53,7 +53,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testInvalidType() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         try {
             composite.register(getAtomic("foo"));
             fail();
@@ -63,7 +63,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testDuplicateName() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(new ServiceExtension<Object>("foo", null, null, null));
         try {
             composite.register(new ServiceExtension<Object>("foo", null, null, null));
@@ -74,27 +74,27 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testGetChildren() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(new ServiceExtension<Object>("foo", null, null, null));
         assertEquals(1, composite.getChildren().size());
     }
 
     public void testGetServices() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.register(getReference("bar"));
         assertEquals(1, composite.getServices().size());
     }
 
     public void testGetService() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.start();
         assertNotNull(composite.getService("foo"));
     }
 
     public void testServiceNotFound() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.start();
         try {
@@ -106,7 +106,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testNotService() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(getReference("foo"));
         composite.start();
         try {
@@ -118,7 +118,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testReferencesServices() {
-        Composite composite = new Composite();
+        Composite<?> composite = new Composite();
         composite.register(new ServiceExtension<Object>("foo", null, null, null));
         composite.register(getReference("bar"));
         assertEquals(1, composite.getReferences().size());
@@ -225,8 +225,8 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         }
     }
 
-    private AtomicComponent getAtomic(String name) {
-        AtomicComponent component = createMock(AtomicComponent.class);
+    private AtomicComponent<?> getAtomic(String name) {
+        AtomicComponent<?> component = createMock(AtomicComponent.class);
         component.getName();
         expectLastCall().andReturn(name).anyTimes();
         replay(component);
@@ -234,7 +234,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     private Reference getReference(String name) {
-        Reference reference = createMock(Reference.class);
+        Reference<?> reference = createMock(Reference.class);
         reference.getName();
         expectLastCall().andReturn(name).anyTimes();
         replay(reference);
@@ -242,7 +242,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     private Service getService(String name, Class<?> interfaze) {
-        Service service = createMock(Service.class);
+        Service<?> service = createMock(Service.class);
         service.getName();
         expectLastCall().andReturn(name).anyTimes();
         service.getInterface();

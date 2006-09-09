@@ -75,8 +75,8 @@ public class CallbackInvocationTestCase extends TestCase {
      */
     public void testComponentToComponentCallback() throws Exception {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
-        JavaAtomicComponent<Foo> fooComponent =
-            (JavaAtomicComponent<Foo>) builder.build(null, targetDefinition, context);
+        JavaAtomicComponent<?> fooComponent =
+            (JavaAtomicComponent<?>) builder.build(null, targetDefinition, context);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
 
@@ -86,14 +86,14 @@ public class CallbackInvocationTestCase extends TestCase {
         replay(parent);
 
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource("fooClient");
-        JavaAtomicComponent<FooClient> clientComponent =
-            (JavaAtomicComponent<FooClient>) builder.build(parent, sourceDefinition, context);
+        JavaAtomicComponent<?> clientComponent =
+            (JavaAtomicComponent<?>) builder.build(parent, sourceDefinition, context);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
         Connector connector = new ConnectorImpl();
         connector.connect(clientComponent);
-        FooClient client = clientComponent.getServiceInstance();
+        FooClient client = (FooClient) clientComponent.getServiceInstance();
         client.invoke();
         assertTrue(client.invoked);
     }
@@ -104,8 +104,8 @@ public class CallbackInvocationTestCase extends TestCase {
      */
     public void testTwoSourceComponentToComponentCallback() throws Exception {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
-        JavaAtomicComponent<Foo> fooComponent =
-            (JavaAtomicComponent<Foo>) builder.build(null, targetDefinition, context);
+        JavaAtomicComponent<?> fooComponent =
+            (JavaAtomicComponent<?>) builder.build(null, targetDefinition, context);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
 
@@ -116,22 +116,22 @@ public class CallbackInvocationTestCase extends TestCase {
 
         ComponentDefinition<JavaImplementation> sourceDefinition1 = createSource("fooCleint1");
         ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource("fooCleint2");
-        JavaAtomicComponent<FooClient> clientComponent1 =
-            (JavaAtomicComponent<FooClient>) builder.build(parent, sourceDefinition1, context);
+        JavaAtomicComponent<?> clientComponent1 =
+            (JavaAtomicComponent<?>) builder.build(parent, sourceDefinition1, context);
         wireService.createWires(clientComponent1, sourceDefinition1);
         container.register(clientComponent1);
-        JavaAtomicComponent<FooClient> clientComponent2 =
-            (JavaAtomicComponent<FooClient>) builder.build(parent, sourceDefinition2, context);
+        JavaAtomicComponent<?> clientComponent2 =
+            (JavaAtomicComponent<?>) builder.build(parent, sourceDefinition2, context);
         wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
 
         Connector connector = new ConnectorImpl();
         connector.connect(clientComponent1);
         connector.connect(clientComponent2);
-        FooClient client1 = clientComponent1.getServiceInstance();
+        FooClient client1 = (FooClient) clientComponent1.getServiceInstance();
         client1.invoke();
         assertTrue(client1.invoked);
-        FooClient client2 = clientComponent2.getServiceInstance();
+        FooClient client2 = (FooClient) clientComponent2.getServiceInstance();
         client2.invoke();
         assertTrue(client2.invoked);
     }

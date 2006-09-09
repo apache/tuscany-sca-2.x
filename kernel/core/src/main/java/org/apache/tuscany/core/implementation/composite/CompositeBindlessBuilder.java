@@ -58,6 +58,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
         builderRegistry.register(this);
     }
 
+    @SuppressWarnings("unchecked")
     public Service<?> build(CompositeComponent parent,
                             BindlessServiceDefinition definition,
                             DeploymentContext deploymentContext) {

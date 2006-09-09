@@ -85,7 +85,7 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
-    void setTargetWire(OutboundWire<T> wire);
+    void setTargetWire(OutboundWire<?> wire);
 
     /**
      * Creates an association between a message id and the address of the SCAObject that the corresponding message

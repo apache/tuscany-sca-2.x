@@ -138,7 +138,6 @@ public class SystemBuilderWireTestCase extends TestCase {
     /**
      * Validates building a wire from a service context to an atomic context
      */
-    @SuppressWarnings("unchecked")
     public void testServiceToAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
         ScopeContainer scope = new ModuleScopeContainer(work);

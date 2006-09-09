@@ -246,13 +246,14 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
             child.prepare();
         }
     }
-    
+
+    @SuppressWarnings("unchecked")
     public T getServiceInstance() throws TargetException {
-        Service<T> service = services.get(0);
+        Service<?> service = services.get(0);
         if (service == null) {
             throw new TargetException("Component has no services");
         }
-        return (T)service.getServiceInstance();
+        return (T) service.getServiceInstance();
     }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemService context) {

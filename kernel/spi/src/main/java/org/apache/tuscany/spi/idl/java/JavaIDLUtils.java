@@ -73,7 +73,6 @@ public final class JavaIDLUtils {
      *
      * @return true if the operation matches, false if does not
      */
-    @SuppressWarnings("unchecked")
     private static boolean match(Operation<?> operation, Method method) {
         Class<?>[] params = method.getParameterTypes();
         DataType inputType = operation.getInputType();

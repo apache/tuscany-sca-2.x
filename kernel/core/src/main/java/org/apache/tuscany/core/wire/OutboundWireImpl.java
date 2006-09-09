@@ -45,13 +45,14 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         new HashMap<Operation<?>, InboundInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
-    private InboundWire<T> targetWire;
+    private InboundWire<?> targetWire;
     private String containerName;
 
+    @SuppressWarnings("unchecked")
     public T getTargetService() throws TargetException {
         if (targetWire != null) {
             // optimized, no interceptors or handlers on either end
-            return targetWire.getTargetService();
+            return (T)targetWire.getTargetService();
         }
         throw new TargetException("Target wire not optimized");
     }
@@ -85,7 +86,7 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         return callbackInterfaces;
     }
 
-    public void setTargetWire(InboundWire<T> wire) {
+    public void setTargetWire(InboundWire<?> wire) {
         this.targetWire = wire;
     }
 

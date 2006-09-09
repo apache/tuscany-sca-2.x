@@ -22,7 +22,8 @@ package org.apache.tuscany.databinding.impl;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tuscany.databinding.Mediator;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.WirePostProcessorExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -31,16 +32,17 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.osoa.sca.annotations.Constructor;
+
+import org.apache.tuscany.databinding.Mediator;
 
 /**
- * This processor is responsible to add an interceptor to invocation chain if the
- * source and target operations have different databinding requirements 
+ * This processor is responsible to add an interceptor to invocation chain if the source and target operations have
+ * different databinding requirements
  */
 public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     private Mediator mediator;
 
-    @Constructor( {"mediator" })
+    @Constructor({"mediator"})
     public DataBindingWirePostProcessor(@Autowire Mediator mediator) {
         super();
         this.mediator = mediator;
@@ -50,19 +52,19 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
      * @see org.apache.tuscany.spi.builder.WirePostProcessor#process(org.apache.tuscany.spi.wire.OutboundWire,
      *      org.apache.tuscany.spi.wire.InboundWire)
      */
-    public <T> void process(OutboundWire<T> source, InboundWire<T> target) {
+    public void process(OutboundWire<?> source, InboundWire<?> target) {
         Map<Operation<?>, OutboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                    getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = getDataBinding(sourceOperation);
             String targetDataBinding = getDataBinding(targetOperation);
             if (!sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side because multiple references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
@@ -73,7 +75,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
      * @see org.apache.tuscany.spi.builder.WirePostProcessor#process(org.apache.tuscany.spi.wire.InboundWire,
      *      org.apache.tuscany.spi.wire.OutboundWire)
      */
-    public <T> void process(InboundWire<T> source, OutboundWire<T> target) {
+    public void process(InboundWire<?> source, OutboundWire<?> target) {
         Map<Operation<?>, InboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
@@ -84,7 +86,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
             if (!sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side
                 DataBindingInteceptor interceptor =
-                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }

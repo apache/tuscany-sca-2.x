@@ -39,11 +39,11 @@ public class ServiceExtensionTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testSetGetInterface() throws Exception {
-        InboundWire wire = createMock(InboundWire.class);
+        InboundWire<Object> wire = createMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(getClass());
         expect(wire.getServiceContract()).andReturn(contract);
         replay(wire);
-        ServiceExtension<?> service = new ServiceExtension(null, null, null, null);
+        ServiceExtension<Object> service = new ServiceExtension<Object>(null, null, null, null);
         service.setInboundWire(wire);
         service.getInterface();
     }
