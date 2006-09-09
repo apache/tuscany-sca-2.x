@@ -31,10 +31,11 @@ import commonj.sdo.DataObject;
 import commonj.sdo.helper.TypeHelper;
 
 public class XMLStreamReader2DataObject extends TransformerExtension<XMLStreamReader, DataObject> implements PullTransformer<XMLStreamReader, DataObject> {
-    private XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(TypeHelper.INSTANCE);
 
     public DataObject transform(XMLStreamReader source, TransformationContext context) {
         try {
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, false);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
             return streamHelper.loadObject(source);
         } catch (Exception e) {
             throw new TransformationException(e);

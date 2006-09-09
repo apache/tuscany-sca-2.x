@@ -22,15 +22,19 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.DataObject;
+import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLHelper;
 
 public class String2DataObject extends TransformerExtension<String, DataObject> implements PullTransformer<String, DataObject> {
 
     public DataObject transform(String source, TransformationContext context) {
         try {
-            return XMLHelper.INSTANCE.load(source).getRootObject();
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, false);
+            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            return xmlHelper.load(source).getRootObject();
         } catch (Exception e) {
             throw new TransformationException(e);
         }

@@ -32,8 +32,6 @@ import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
 
 public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocument, XMLStreamReader> implements PullTransformer<XMLDocument, XMLStreamReader> {
-    private XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(TypeHelper.INSTANCE);
-
     /**
      * @param source
      * @param context
@@ -41,6 +39,8 @@ public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocumen
      */
     public XMLStreamReader transform(XMLDocument source, TransformationContext context) {
         try {
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, true);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
             return streamHelper.createXMLStreamReader(source);
         } catch (XMLStreamException e) {
             throw new TransformationException(e);

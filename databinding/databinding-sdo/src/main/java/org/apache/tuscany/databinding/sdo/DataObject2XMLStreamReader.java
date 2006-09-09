@@ -18,22 +18,42 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XMLDocument;
+import commonj.sdo.helper.XMLHelper;
 
-public class DataObject2XMLStreamReader extends TransformerExtension<DataObject, XMLStreamReader> implements PullTransformer<DataObject, XMLStreamReader> {
-    private XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(TypeHelper.INSTANCE);
+public class DataObject2XMLStreamReader extends TransformerExtension<DataObject, XMLStreamReader> implements
+        PullTransformer<DataObject, XMLStreamReader> {
 
     public XMLStreamReader transform(DataObject source, TransformationContext context) {
-        return streamHelper.createXMLStreamReader(source);
+        try {
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, true);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
+            Object logicalType = context.getSourceDataType().getLogical();
+            if (logicalType instanceof QName) {
+                QName elementName = (QName) logicalType;
+                XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+                XMLDocument document = xmlHelper.createDocument(source, elementName.getNamespaceURI(), elementName.getLocalPart());
+                return streamHelper.createXMLStreamReader(document);
+            } else {
+                return streamHelper.createXMLStreamReader(source);
+            }
+        } catch (XMLStreamException e) {
+            // TODO: Add context to the exception
+            throw new TransformationException(e);
+        }
     }
 
     public Class getSourceType() {
