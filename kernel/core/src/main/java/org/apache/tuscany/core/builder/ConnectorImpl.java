@@ -354,32 +354,32 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(targetName.getPortName());
                 throw e;
             }
-            if (wireService == null) {
-                // FIXME: [rfeng] wireService won't be injected for the system connector?
-                Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
-                if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                    throw new BuilderConfigException("Incompatible source and target interfaces");
-                }
-            } else if (!wireService.isWireable(sourceWire.getServiceContract(), targetWire.getServiceContract())) {
-                throw new BuilderConfigException("Incompatible source and target interfaces");
-            }
+            checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(source, target, sourceWire, targetWire, optimizable);
         } else if (target instanceof Reference) {
             InboundWire<T> targetWire = ((Reference) target).getInboundWire();
             assert targetWire != null;
-            Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-            Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
-            if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                throw new BuilderConfigException("Incompatible source and target interfaces");
-            }
+            checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(source, target, sourceWire, targetWire, optimizable);
         } else {
             String name = sourceWire.getReferenceName();
             BuilderConfigException e = new BuilderConfigException("Invalid target type for reference " + name);
             e.setIdentifier(targetName.getQualifiedName());
+        }
+    }
+
+    private <T> void checkIfWireable(OutboundWire<T> sourceWire, InboundWire<T> targetWire) {
+        if (wireService == null) {
+            // FIXME: [rfeng] wireService won't be injected for the system connector?
+            Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+            Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
+            if (!sourceInterface.isAssignableFrom(targetInterface)) {
+                throw new BuilderConfigException("Incompatible source and target interfaces");
+            }
+        } else if (!wireService.isWireable(sourceWire.getServiceContract(), targetWire.getServiceContract())) {
+            throw new BuilderConfigException("Incompatible source and target interfaces");
         }
     }
 
