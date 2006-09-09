@@ -18,8 +18,11 @@
  */
 package org.apache.tuscany.spi.component;
 
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
@@ -49,5 +52,5 @@ public interface Service<T> extends SCAObject<T> {
 
     void setOutboundWire(OutboundWire<T> wire);
 
-
+    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation);
 }

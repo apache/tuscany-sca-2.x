@@ -56,6 +56,8 @@ import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.implementation.composite.CompositeReference;
+import org.apache.tuscany.core.implementation.composite.CompositeService;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -114,7 +116,7 @@ public class JDKWireService implements WireService {
             return (T) Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
         } else if (wire instanceof OutboundWire) {
             OutboundWire<T> outbound = (OutboundWire<T>) wire;
-            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound);
+            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound, context);
             Class<?> interfaze = outbound.getServiceContract().getInterfaceClass();
             ClassLoader cl = interfaze.getClassLoader();
             return (T) Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
@@ -142,7 +144,7 @@ public class JDKWireService implements WireService {
             return new JDKInboundInvocationHandler(chains);
         } else if (wire instanceof OutboundWire) {
             OutboundWire<T> outbound = (OutboundWire<T>) wire;
-            return new JDKOutboundInvocationHandler(outbound);
+            return new JDKOutboundInvocationHandler(outbound, context);
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
             e.setIdentifier(wire.getClass().getName());
@@ -169,13 +171,26 @@ public class JDKWireService implements WireService {
         for (ServiceDefinition service : componentType.getServices().values()) {
             InboundWire inboundWire = createWire(service);
             inboundWire.setContainerName(component.getName());
+            if (componentType instanceof CompositeComponentType<?, ?, ?>) {
+                // If this is the case, then it means that component has already been returned
+                // by CompositeBuilder and thus its children, in particular composite services,
+                // have been registered
+                CompositeComponent compositeComponent = (CompositeComponent) component;
+                Service<?> serviceChild = (Service) compositeComponent.getChild(service.getName());
+                assert serviceChild != null;
+                if (serviceChild instanceof CompositeService) {
+                    serviceChild.setInboundWire(inboundWire);
+                    // Notice that now the more immediate container of the wire is the composite service
+                    inboundWire.setContainerName(serviceChild.getName());
+                }
+            }
             component.addInboundWire(inboundWire);
         }
 
-        for (ReferenceTarget reference : definition.getReferenceTargets().values()) {
+        for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
             Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
-            ReferenceDefinition mappedReference = references.get(reference.getReferenceName());
-            OutboundWire wire = createWire(reference, mappedReference);
+            ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName());
+            OutboundWire wire = createWire(referenceTarget, mappedReference);
             wire.setContainerName(component.getName());
             component.addOutboundWire(wire);
             if (componentType instanceof CompositeComponentType<?, ?, ?>) {
@@ -183,9 +198,13 @@ public class JDKWireService implements WireService {
                 // by CompositeBuilder and thus its children, in particular composite references,
                 // have been registered
                 CompositeComponent compositeComponent = (CompositeComponent) component;
-                Reference<?> bindlessReference = (Reference) compositeComponent.getChild(reference.getReferenceName());
-                assert bindlessReference != null;
-                bindlessReference.setOutboundWire(wire);
+                Reference<?> reference = (Reference) compositeComponent.getChild(referenceTarget.getReferenceName());
+                assert reference != null;
+                if (reference instanceof CompositeReference) {
+                    reference.setOutboundWire(wire);
+                    // Notice that now the more immediate container of the wire is the composite reference
+                    wire.setContainerName(reference.getName());
+                }
             }
         }
     }
@@ -199,6 +218,12 @@ public class JDKWireService implements WireService {
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
         }
+        // Notice that we skip wire.setCallbackReferenceName
+        // First, an inbound wire's callbackReferenceName is only retrieved by JavaAtomicComponent
+        // to create a callback injector based on the callback reference member; a composite reference
+        // should not need to do that
+        // Second, a reference definition does not have a callback reference name like a service
+        // definition does
         reference.setInboundWire(wire);
     }
 
@@ -275,7 +300,25 @@ public class JDKWireService implements WireService {
             OutboundInvocationChain outboundChain = createOutboundChain(operation);
             outboundWire.addInvocationChain(operation, outboundChain);
         }
-        service.setInboundWire(inboundWire);
+
+        // Add target callback chain to outbound wire, applicable to both bound and bindless services
+        Class<T> callbackInterface = (Class<T>) contract.getCallbackClass();
+        if (callbackInterface != null) {
+            outboundWire.setCallbackInterface(callbackInterface);
+            for (Operation<?> operation : contract.getCallbackOperations().values()) {
+                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
+// TODO handle policy
+//TODO statement below could be cleaner
+                callbackTargetChain.addInterceptor(new InvokerInterceptor());
+                outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
+            }
+        }
+
+        // Not clear in any case why this is done here and at the parent composite level as well
+        // But for a composite service, make sure that the inbound wire comes from the parent
+        if (!(service instanceof CompositeService)) {
+            service.setInboundWire(inboundWire);
+        }
         service.setOutboundWire(outboundWire);
     }
 
@@ -314,22 +357,20 @@ public class JDKWireService implements WireService {
     }
 
     /**
-     * The following algorithm is defined the SCA spec:
-     * <ol>
+     * Compares two operations for wiring compatibility as defined by the SCA assembly specification, namely: <ol>
      * <li>compatibility for the individual method is defined as compatibility of the signature, that is method name,
-     * input types, and output types MUST BE the same.
-     * <li>the order of the input and output types also MUST BE the same.
-     * <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those specified
-     * by the service.
-     * </ol>
-     * 
-     * @param operation
-     * @return
+     * input types, and output types MUST BE the same. <li>the order of the input and output types also MUST BE the
+     * same. <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those
+     * specified by the service. </ol>
+     *
+     * @param source the source operation to compare
+     * @param target the target operation to compare
+     * @return true if the two operations are compatibile
      */
     public boolean isCompatibleWith(Operation<?> source, Operation<?> target) {
         // FIXME:
         return source.equals(target);
     }
-    
+
 
 }

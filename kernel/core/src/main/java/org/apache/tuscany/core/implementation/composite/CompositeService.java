@@ -18,17 +18,26 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 public class CompositeService<T> extends ServiceExtension<T> {
+    
+    private WorkContext workContext;
 
     public CompositeService(String name,
                        Class<T> interfaze,
                        CompositeComponent parent,
-                       WireService wireService) throws CoreRuntimeException {
+                       WireService wireService,
+                       WorkContext workContext) throws CoreRuntimeException {
         super(name, interfaze, parent, wireService);
+        this.workContext = workContext;
     }
     
     /**
@@ -38,9 +47,22 @@ public class CompositeService<T> extends ServiceExtension<T> {
      * We just reuse CompositeReferenceTargetInvoker for now since it seems the target
      * invoker we need does the same thing, if this is confirmed we should give it
      * a common name
+     * FIXME !!! Notice that this method is not defined in the SPI !!!
      */
-    public TargetInvoker createTargetInvoker(Method operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         WireObjectFactory wireFactory = new WireObjectFactory(outboundWire, wireService);
-        return new CompositeReferenceTargetInvoker(operation, wireFactory);
+        Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
+        return new CompositeReferenceTargetInvoker(method, inboundWire, wireFactory, workContext);
+    }
+    
+    /**
+     */
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+        Method method = JavaIDLUtils.findMethod(operation, contract.getCallbackClass().getMethods());
+        return new CompositeReferenceCallbackTargetInvoker(method, contract, inboundWire, wireService, workContext);
+    }
+    
+    public T getServiceInstance() throws TargetException {
+        return wireService.createProxy(outboundWire);
     }
 }

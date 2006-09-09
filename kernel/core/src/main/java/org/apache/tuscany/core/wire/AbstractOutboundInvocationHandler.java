@@ -54,9 +54,13 @@ public abstract class AbstractOutboundInvocationHandler {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
             msg.setFromAddress(getFromAddress());
-            if (msg.getMessageId() == null) {
-                msg.setMessageId(new MessageId());
+            Object messageId = getMessageId();
+            if (messageId == null) {
+                messageId = new MessageId();
             }
+            msg.setMessageId(messageId);
+            Object corrId = getCorrelationId();
+            msg.setCorrelationId(corrId);
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
             if (chain.getTargetRequestChannel() != null) {
@@ -87,4 +91,8 @@ public abstract class AbstractOutboundInvocationHandler {
     }
 
     protected abstract Object getFromAddress();
+    
+    protected abstract Object getMessageId();
+    
+    protected abstract Object getCorrelationId();
 }

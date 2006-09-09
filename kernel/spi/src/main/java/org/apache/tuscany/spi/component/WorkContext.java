@@ -29,6 +29,10 @@ public interface WorkContext {
 
     void setCurrentMessageId(Object messageId);
 
+    Object getCurrentCorrelationId();
+
+    void setCurrentCorrelationId(Object correlationId);
+
     /**
      * Returns the composite where a remote request came in
      */

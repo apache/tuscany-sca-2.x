@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -244,6 +245,14 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
             connector.connect(child);
             child.prepare();
         }
+    }
+    
+    public T getServiceInstance() throws TargetException {
+        Service<T> service = services.get(0);
+        if (service == null) {
+            throw new TargetException("Component has no services");
+        }
+        return (T)service.getServiceInstance();
     }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemService context) {

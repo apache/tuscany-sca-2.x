@@ -22,33 +22,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.ModelObject;
-
 /**
  * Base class representing service contract information
- * 
+ *
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract<T> extends ModelObject {
     protected InteractionScope interactionScope;
-
     protected boolean remotable;
-
     protected Class<?> interfaceClass;
-
     protected String interfaceName;
-
     protected String callbackName;
-
     protected Class<?> callbackClass;
-
     protected Map<String, Operation<T>> operations;
-
     protected Map<String, Operation<T>> callbackOperations;
-
     protected String dataBinding;
-
     protected Map<String, Object> metaData;
 
     protected ServiceContract() {
@@ -64,7 +52,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     /**
      * Returns the interface name for the contract
-     * 
+     *
      * @return the interface name for the contract
      */
     public String getInterfaceName() {
@@ -104,6 +92,20 @@ public abstract class ServiceContract<T> extends ModelObject {
      */
     public void setInteractionScope(InteractionScope interactionScope) {
         this.interactionScope = interactionScope;
+    }
+
+    /**
+     * @return the remotable
+     */
+    public boolean isRemotable() {
+        return remotable;
+    }
+
+    /**
+     * @param remotable the remotable to set
+     */
+    public void setRemotable(boolean remotable) {
+        this.remotable = remotable;
     }
 
     /**
@@ -170,7 +172,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     /**
      * Returns a map of metadata key to value mappings for the operation.
-     * 
+     *
      * @return a map of metadata key to value mappings for the operation.
      */
     public Map<String, Object> getMetaData() {
@@ -182,7 +184,7 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     /**
      * Adds metadata associated with the operation.
-     * 
+     *
      * @param key the metadata key
      * @param val the metadata value
      */
@@ -207,7 +209,7 @@ public abstract class ServiceContract<T> extends ModelObject {
             return false;
         }
         if (callbackOperations != null ? !callbackOperations.equals(that.callbackOperations)
-                : that.callbackOperations != null) {
+            : that.callbackOperations != null) {
             return false;
         }
         if (interfaceClass != null ? !interfaceClass.equals(that.interfaceClass) : that.interfaceClass != null) {
@@ -228,19 +230,5 @@ public abstract class ServiceContract<T> extends ModelObject {
         result = 29 * result + (operations != null ? operations.hashCode() : 0);
         result = 29 * result + (callbackOperations != null ? callbackOperations.hashCode() : 0);
         return result;
-    }
-
-    /**
-     * @return the remotable
-     */
-    public boolean isRemotable() {
-        return remotable;
-    }
-
-    /**
-     * @param remotable the remotable to set
-     */
-    public void setRemotable(boolean remotable) {
-        this.remotable = remotable;
     }
 }

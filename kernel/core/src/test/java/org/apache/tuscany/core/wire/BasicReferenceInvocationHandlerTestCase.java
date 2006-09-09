@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
@@ -61,7 +62,7 @@ public class BasicReferenceInvocationHandlerTestCase extends MockObjectTestCase 
         OutboundWire wire = new OutboundWireImpl();
         wire.addInvocationChain(operation, chain);
         wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, new WorkContextImpl());
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
         assertEquals(1, requestHandler.getCount());

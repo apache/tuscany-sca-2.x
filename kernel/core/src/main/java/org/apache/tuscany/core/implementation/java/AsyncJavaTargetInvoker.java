@@ -90,7 +90,8 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
             workScheduler.scheduleWork(new Runnable() {
                 private Object currentMessageId = messageId;
                 public void run() {
-                    workContext.setCurrentMessageId(currentMessageId);
+                    workContext.setCurrentMessageId(null);
+                    workContext.setCurrentCorrelationId(currentMessageId);
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
                         BINDER.setContext(currentContext);

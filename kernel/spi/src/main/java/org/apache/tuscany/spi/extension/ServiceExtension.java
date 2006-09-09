@@ -23,9 +23,12 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -68,6 +71,10 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
         this.outboundWire = outboundWire;
     }
 
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+        throw new UnsupportedOperationException();        
+    }
+    
     public T getServiceInstance() throws TargetException {
         return wireService.createProxy(inboundWire);
     }

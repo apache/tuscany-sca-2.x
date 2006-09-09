@@ -26,8 +26,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -36,14 +34,18 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.CompositeStop;
+
 /**
  * A scope context which manages atomic component instances keyed by module
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ModuleScopeContainer extends AbstractScopeContainer {
 
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
+    private static final ComponentInitComparator COMPARATOR = new ComponentInitComparator();
 
     private final Map<AtomicComponent, InstanceWrapper> instanceWrappers;
 
@@ -127,27 +129,10 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
-    private static class ComponentInitComparator implements Comparator<AtomicComponent> {
-        final static ComponentInitComparator INSTANCE = new ComponentInitComparator();
-
-        public int compare(AtomicComponent o1, AtomicComponent o2) {
-            if (o1.getInitLevel() > o2.getInitLevel()) {
-                return -1; // The lower level starts first (except nagative)
-            } else if (o1.getInitLevel() < o2.getInitLevel()) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-    }
-
     private void eagerInitComponents() throws CoreRuntimeException {
-
         List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
-        Collections.sort(componentList, ComponentInitComparator.INSTANCE);
-
-        // start each group
+        Collections.sort(componentList, COMPARATOR);
+       // start each group
         for (AtomicComponent component : componentList) {
             if (component.getInitLevel() <= 0) {
                 // Don't eagerly init
@@ -160,6 +145,18 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
                 ctx.start();
                 instanceWrappers.put(component, ctx);
                 destroyQueue.add(ctx);
+            }
+        }
+    }
+
+    static private class ComponentInitComparator implements Comparator<AtomicComponent> {
+        public int compare(AtomicComponent o1, AtomicComponent o2) {
+            if (o1.getInitLevel() > o2.getInitLevel()) {
+                return -1; // The lower level starts first (except nagative)
+            } else if (o1.getInitLevel() < o2.getInitLevel()) {
+                return 1;
+            } else {
+                return 0;
             }
         }
     }

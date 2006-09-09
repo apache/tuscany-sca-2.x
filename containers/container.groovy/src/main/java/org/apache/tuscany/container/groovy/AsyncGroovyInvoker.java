@@ -86,7 +86,8 @@ public class AsyncGroovyInvoker extends GroovyInvoker {
                 private Object currentMessageId = messageId;
 
                 public void run() {
-                    workContext.setCurrentMessageId(currentMessageId);
+                    workContext.setCurrentMessageId(null);
+                    workContext.setCurrentCorrelationId(currentMessageId);
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
                         BINDER.setContext(currentContext);

@@ -45,6 +45,8 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
 
     private WorkContext context;
     private InboundWire<?> inboundWire;
+    private Object messageId;
+    private Object correlationId;
 
     public JDKCallbackInvocationHandler(WorkContext context, InboundWire inboundWire) {
         this.context = context;
@@ -52,8 +54,10 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object correlationId = context.getCurrentMessageId();
+        messageId = context.getCurrentMessageId();
         context.setCurrentMessageId(null);
+        correlationId = context.getCurrentCorrelationId();
+        context.setCurrentCorrelationId(null);
         Object targetAddress = inboundWire.retrieveMapping(correlationId);
         if (targetAddress == null) {
             throw new AssertionError("No from address associated with message id [" + correlationId + "]");
@@ -74,5 +78,13 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
 
     protected Object getFromAddress() {
         return inboundWire.getContainerName();
+    }
+    
+    protected Object getMessageId() {
+        return messageId;
+    }
+    
+    protected Object getCorrelationId() {
+        return correlationId;
     }
 }

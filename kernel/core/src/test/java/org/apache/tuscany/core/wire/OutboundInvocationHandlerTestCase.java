@@ -35,6 +35,7 @@ import org.apache.tuscany.core.mock.wire.MockHandler;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 public class OutboundInvocationHandlerTestCase extends TestCase {
@@ -62,7 +63,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, new WorkContextImpl());
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 
@@ -71,7 +72,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, new WorkContextImpl());
         try {
             handler.invoke(hello, new Object[]{});
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -89,7 +90,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, source);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, new WorkContextImpl());
         try {
             assertEquals("foo", handler.invoke(hello, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -107,7 +108,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, source);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, new WorkContextImpl());
         assertEquals("foo", handler.invoke(hello, new Object[]{"foo"}));
     }
 

@@ -131,7 +131,8 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             }
 
             String dataBinding = "java.lang.Object";
-            DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>("java:parameters", Object[].class, paramDataTypes);
+            DataType<List<DataType<Type>>> inputType =
+                new DataType<List<DataType<Type>>>("java:parameters", Object[].class, paramDataTypes);
             Operation<Type> operation =
                 new Operation<Type>(name, inputType, returnDataType, faultDataTypes, nonBlocking, dataBinding);
             operations.put(name, operation);
