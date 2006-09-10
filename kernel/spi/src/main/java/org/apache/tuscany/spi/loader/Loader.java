@@ -75,7 +75,7 @@ public interface Loader {
      * @param deploymentContext the current deployment context
      * @throws LoaderException if there was a problem loading the component type definition
      */
-    <I extends Implementation<?>> void loadComponentType(CompositeComponent<?> parent, I implementation,
+    <I extends Implementation<?>> void loadComponentType(CompositeComponent parent, I implementation,
                                                          DeploymentContext deploymentContext)
         throws LoaderException;
 }

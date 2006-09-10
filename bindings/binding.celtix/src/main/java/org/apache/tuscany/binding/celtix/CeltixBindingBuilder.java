@@ -43,7 +43,7 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
 
     private Bus bus;
 
-    public Service<?> build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                            BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
@@ -64,7 +64,7 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             typeHelper);
     }
 
-    public Reference<?> build(CompositeComponent parent,
+    public Reference build(CompositeComponent parent,
                            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();

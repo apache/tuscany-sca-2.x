@@ -27,12 +27,12 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
-public class CompositeService<T> extends ServiceExtension<T> {
+public class CompositeService extends ServiceExtension {
     
     private WorkContext workContext;
 
     public CompositeService(String name,
-                       Class<T> interfaze,
+                       Class<?> interfaze,
                        CompositeComponent parent,
                        WireService wireService,
                        WorkContext workContext) throws CoreRuntimeException {
@@ -62,7 +62,7 @@ public class CompositeService<T> extends ServiceExtension<T> {
         return new CompositeReferenceCallbackTargetInvoker(method, contract, inboundWire, wireService, workContext);
     }
     
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         return interfaze.cast(wireService.createProxy(outboundWire));
     }
 }

@@ -37,14 +37,14 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $Rev$ $Date$
  */
-public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service<T> {
+public class ServiceExtension extends AbstractSCAObject implements Service {
 
-    protected Class<T> interfaze;
+    protected Class<?> interfaze;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
     protected WireService wireService;
 
-    public ServiceExtension(String name, Class<T> interfaze, CompositeComponent parent, WireService wireService)
+    public ServiceExtension(String name, Class<?> interfaze, CompositeComponent parent, WireService wireService)
         throws CoreRuntimeException {
         super(name, parent);
         this.interfaze = interfaze;
@@ -75,15 +75,15 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
         throw new UnsupportedOperationException();
     }
 
-    public T getServiceInstance() throws TargetException {
-        return (T) wireService.createProxy(inboundWire);
+    public Object getServiceInstance() throws TargetException {
+        return wireService.createProxy(inboundWire);
     }
 
     public WireInvocationHandler getHandler() {
         return wireService.createHandler(inboundWire);
     }
 
-    public Class<T> getInterface() {
+    public Class<?> getInterface() {
         return interfaze;
     }
 

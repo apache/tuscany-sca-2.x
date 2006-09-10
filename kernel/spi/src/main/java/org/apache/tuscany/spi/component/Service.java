@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public interface Service<T> extends SCAObject<T> {
+public interface Service extends SCAObject {
 
     /**
      * Returns the handler responsible for flowing a request through the service
@@ -42,7 +42,7 @@ public interface Service<T> extends SCAObject<T> {
     /**
      * Returns the service interface configured for the service
      */
-    Class<T> getInterface();
+    Class<?> getInterface();
 
     /**
      * Returns the inbound wire for flowing a request through the service

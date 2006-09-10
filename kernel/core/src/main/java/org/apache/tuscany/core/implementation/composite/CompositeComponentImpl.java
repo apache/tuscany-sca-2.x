@@ -32,7 +32,7 @@ import org.apache.tuscany.core.component.AutowireComponent;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeComponentImpl<T> extends AbstractCompositeComponent<T> {
+public class CompositeComponentImpl extends AbstractCompositeComponent {
     private String uri;
 
     public CompositeComponentImpl(String name,

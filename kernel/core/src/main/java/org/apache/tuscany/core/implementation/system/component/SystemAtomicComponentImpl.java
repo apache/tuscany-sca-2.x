@@ -34,7 +34,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> implements SystemAtomicComponent<T> {
+public class SystemAtomicComponentImpl extends PojoAtomicComponent implements SystemAtomicComponent {
 
     public SystemAtomicComponentImpl(String name, PojoConfiguration configuration) {
         super(name, configuration);
@@ -45,7 +45,7 @@ public class SystemAtomicComponentImpl<T> extends PojoAtomicComponent<T> impleme
         return getTargetInstance();
     }
 
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         return getTargetInstance();
     }
 

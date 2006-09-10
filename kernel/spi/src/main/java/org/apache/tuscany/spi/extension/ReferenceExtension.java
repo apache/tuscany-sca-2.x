@@ -36,16 +36,16 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $Rev$ $Date$
  */
-public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> implements Reference<T> {
+public abstract class ReferenceExtension extends AbstractSCAObject implements Reference {
 
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected Class<T> referenceInterface;
+    protected Class<?> referenceInterface;
     protected WireService wireService;
 
     protected ReferenceExtension(String name,
-                                 Class<T> referenceInterface,
-                                 CompositeComponent<?> parent,
+                                 Class<?> referenceInterface,
+                                 CompositeComponent parent,
                                  WireService wireService) {
         super(name, parent);
         this.referenceInterface = referenceInterface;
@@ -72,12 +72,12 @@ public abstract class ReferenceExtension<T> extends AbstractSCAObject<T> impleme
         this.outboundWire = outboundWire;
     }
 
-    public Class<T> getInterface() {
+    public Class<?> getInterface() {
         return referenceInterface;
     }
 
-    public T getServiceInstance() throws TargetException {
-        return (T) wireService.createProxy(inboundWire);
+    public Object getServiceInstance() throws TargetException {
+        return wireService.createProxy(inboundWire);
     }
 
     public WireInvocationHandler getHandler() throws TargetException {

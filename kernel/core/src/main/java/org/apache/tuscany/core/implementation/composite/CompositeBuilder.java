@@ -45,7 +45,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
-    public Component<?> build(CompositeComponent<?> parent,
+    public Component build(CompositeComponent parent,
                               ComponentDefinition<CompositeImplementation> componentDefinition,
                               DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
@@ -97,8 +97,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         }
 
         String name = componentDefinition.getName();
-        CompositeComponentImpl<Object> component =
-            new CompositeComponentImpl<Object>(name, parent, null, connector, null);
+        CompositeComponentImpl component = new CompositeComponentImpl(name, parent, null, connector, null);
         for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
             component.register(builderRegistry.build(component, referenceDefinition, deploymentContext));
         }

@@ -27,9 +27,9 @@ import org.apache.tuscany.spi.wire.WireService;
  * 
  * @version $Rev$ $Date$
  */
-public class TestBindingService<T> extends ServiceExtension<T> {
+public class TestBindingService extends ServiceExtension {
     public TestBindingService(String name,
-                              Class<T> interfaze,
+                              Class<?> interfaze,
                               CompositeComponent parent,
                               WireService wireService) throws CoreRuntimeException {
         super(name, interfaze, parent, wireService);

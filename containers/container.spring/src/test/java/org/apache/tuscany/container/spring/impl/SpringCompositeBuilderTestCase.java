@@ -89,8 +89,8 @@ public class SpringCompositeBuilderTestCase extends TestCase {
 
         // Create a service instance that the mock builder registry will return
         WireService wireService = ArtifactFactory.createWireService();
-        ServiceExtension<TestBean> serviceContext =
-            new ServiceExtension<TestBean>("fooService", TestBean.class, null, wireService);
+        ServiceExtension serviceContext =
+            new ServiceExtension("fooService", TestBean.class, null, wireService);
         InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);

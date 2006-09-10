@@ -45,7 +45,7 @@ public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindin
     }
 
     @SuppressWarnings("unchecked")
-    public Service<?>  build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                              BoundServiceDefinition<JSONRPCBinding> serviceDefinition,
                              DeploymentContext deploymentContext) {
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();

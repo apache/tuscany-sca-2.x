@@ -55,12 +55,8 @@ import org.apache.tuscany.core.implementation.system.component.SystemService;
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings({
-    "FieldAccessedSynchronizedAndUnsynchronized",
-    "RawUseOfParameterizedType",
-    "NonPrivateFieldAccessedInSynchronizedContext"})
-public abstract class AbstractCompositeComponent<T> extends CompositeComponentExtension<T>
-    implements AutowireComponent<T> {
+@SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"})
+public abstract class AbstractCompositeComponent extends CompositeComponentExtension implements AutowireComponent {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
@@ -76,7 +72,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     protected final Map<Class, SCAObject> autowireInternal = new ConcurrentHashMap<Class, SCAObject>();
     protected final Map<Class, SystemService> autowireExternal = new ConcurrentHashMap<Class, SystemService>();
 
-    protected AutowireComponent<?> autowireContext;
+    protected AutowireComponent autowireContext;
 
     protected ScopeContainer scopeContainer;
 
@@ -143,7 +139,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         lifecycleState = STOPPED;
     }
 
-    public void register(SCAObject<?> child) {
+    public void register(SCAObject child) {
         if (children.get(child.getName()) != null) {
             DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
             e.setIdentifier(child.getName());
@@ -239,7 +235,7 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
     }
 
     public void prepare() {
-        for (SCAObject<?> child : children.values()) {
+        for (SCAObject child : children.values()) {
             // connect all children
             // TODO for composite wires, should delegate down
             connector.connect(child);
@@ -247,13 +243,12 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public T getServiceInstance() throws TargetException {
-        Service<?> service = services.get(0);
+    public Object getServiceInstance() throws TargetException {
+        Service service = services.get(0);
         if (service == null) {
             throw new TargetException("Component has no services");
         }
-        return (T) service.getServiceInstance();
+        return service.getServiceInstance();
     }
 
     protected void registerAutowireExternal(Class<?> interfaze, SystemService context) {
@@ -276,14 +271,14 @@ public abstract class AbstractCompositeComponent<T> extends CompositeComponentEx
         autowireInternal.put(interfaze, context);
     }
 
-    protected void registerAutowire(CompositeComponent<?> component) {
+    protected void registerAutowire(CompositeComponent component) {
         List<Service> services = component.getServices();
         for (Service service : services) {
             registerAutowireInternal(service.getInterface(), service);
         }
     }
 
-    protected void registerAutowire(AtomicComponent<?> component) {
+    protected void registerAutowire(AtomicComponent component) {
         List<Class<?>> services = component.getServiceInterfaces();
         for (Class<?> service : services) {
             registerAutowireInternal(service, component);

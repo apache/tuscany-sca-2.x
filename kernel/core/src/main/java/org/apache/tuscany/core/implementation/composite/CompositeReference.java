@@ -20,24 +20,24 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 
 import org.apache.tuscany.core.injection.WireObjectFactory;
 
-public class CompositeReference<T> extends ReferenceExtension<T> {
+public class CompositeReference extends ReferenceExtension {
 
     private WorkContext workContext;
 
     public CompositeReference(String name,
-                              CompositeComponent<?> parent,
+                              CompositeComponent parent,
                               WireService wireService,
                               ServiceContract contract,
                               WorkContext workContext) {
-        super(name, (Class<T>) contract.getInterfaceClass(), parent, wireService);
+        super(name, contract.getInterfaceClass(), parent, wireService);
         this.workContext = workContext;
     }
 
@@ -46,7 +46,7 @@ public class CompositeReference<T> extends ReferenceExtension<T> {
         Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
         return new CompositeReferenceTargetInvoker(method, inboundWire, wireFactory, workContext);
     }
-    
+
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
         Method method = JavaIDLUtils.findMethod(operation, contract.getCallbackClass().getMethods());
         return new CompositeReferenceCallbackTargetInvoker(method, contract, inboundWire, wireService, workContext);

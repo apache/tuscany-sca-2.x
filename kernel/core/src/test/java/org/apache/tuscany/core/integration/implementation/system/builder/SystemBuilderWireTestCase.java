@@ -71,8 +71,8 @@ public class SystemBuilderWireTestCase extends TestCase {
         ComponentDefinition<SystemImplementation> sourceComponentDefinition =
             MockComponentFactory.createSourceWithTargetReference();
 
-        AtomicComponent<?> sourceComponent = builder.build(parent, sourceComponentDefinition, deploymentContext);
-        AtomicComponent<?> targetComponent = builder.build(parent, targetComponentDefinition, deploymentContext);
+        AtomicComponent sourceComponent = builder.build(parent, sourceComponentDefinition, deploymentContext);
+        AtomicComponent targetComponent = builder.build(parent, targetComponentDefinition, deploymentContext);
 
         parent.register(sourceComponent);
         parent.register(targetComponent);
@@ -114,7 +114,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         ComponentDefinition<SystemImplementation> sourceComponentDefinition =
             MockComponentFactory.createSourceWithTargetReference();
 
-        AtomicComponent<?> sourceComponent = builder.build(parent, sourceComponentDefinition, deploymentContext);
+        AtomicComponent sourceComponent = builder.build(parent, sourceComponentDefinition, deploymentContext);
         Reference reference = bindingBuilder.build(parent, targetReferenceDefinition, deploymentContext);
 
         parent.register(sourceComponent);

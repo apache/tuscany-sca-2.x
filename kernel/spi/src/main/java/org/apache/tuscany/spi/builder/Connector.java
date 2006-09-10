@@ -35,7 +35,7 @@ public interface Connector {
      * @param source the source artifact to context, i.e. a <code>Service</code>, <code>Component</code>, or
      *               <code>Reference</code>
      */
-    void connect(SCAObject<?> source);
+    void connect(SCAObject source);
 
     /**
      * Bridges the invocation chains associated with an inbound and outbound wire.

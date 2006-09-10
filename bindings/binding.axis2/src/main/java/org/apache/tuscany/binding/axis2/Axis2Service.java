@@ -51,7 +51,7 @@ import commonj.sdo.helper.TypeHelper;
  * 
  * @version $Rev$ $Date$
  */
-public class Axis2Service<T> extends ServiceExtension<T> {
+public class Axis2Service extends ServiceExtension {
 
     private ServletHost servletHost;
 
@@ -61,7 +61,7 @@ public class Axis2Service<T> extends ServiceExtension<T> {
     
     private TypeHelper typeHelper;
 
-    public Axis2Service(String theName, Class<T> interfaze, CompositeComponent parent, WireService wireService, WebServiceBinding binding,
+    public Axis2Service(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, WebServiceBinding binding,
             ServletHost servletHost, ConfigurationContext configContext, TypeHelper typeHelper) {
 
         super(theName, interfaze, parent, wireService);

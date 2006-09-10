@@ -53,7 +53,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         this.regsitry = registry;
     }
 
-    public void visitMethod(CompositeComponent<?> parent, Method method,
+    public void visitMethod(CompositeComponent parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
@@ -117,7 +117,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
 //        }
     }
 
-    public void visitField(CompositeComponent<?> parent, Field field,
+    public void visitField(CompositeComponent parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         Reference annotation = field.getAnnotation(Reference.class);
@@ -166,7 +166,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
 
     }
 
-    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
 

@@ -49,7 +49,7 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
         return JavaScriptImplementation.class;
     }
 
-    protected JavaScriptComponentType loadByIntrospection(CompositeComponent<?> parent,
+    protected JavaScriptComponentType loadByIntrospection(CompositeComponent parent,
                                                           JavaScriptImplementation implementation,
                                                           DeploymentContext deploymentContext) throws
                                                                                                MissingResourceException,
@@ -75,7 +75,7 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
 
     // TODO: must be possible to move all the following up in to ComponentTypeLoaderExtension 
 
-    public void load(CompositeComponent<?> parent, JavaScriptImplementation implementation,
+    public void load(CompositeComponent parent, JavaScriptImplementation implementation,
                      DeploymentContext deploymentContext)
         throws LoaderException {
 

@@ -43,7 +43,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public class ContextProcessor extends ImplementationProcessorExtension {
 
-    public void visitMethod(CompositeComponent<?> parent, Method method,
+    public void visitMethod(CompositeComponent parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
@@ -87,7 +87,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
 
     }
 
-    public void visitField(CompositeComponent<?> parent, Field field,
+    public void visitField(CompositeComponent parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         super.visitField(parent, field, type, context);

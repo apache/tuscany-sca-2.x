@@ -149,7 +149,7 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         target.setReferenceName("ref");
         target.addTarget(new URI("foo"));
         definition.add(target);
-        AtomicComponent<?> component = builder.build(parent, definition, deploymentContext);
+        AtomicComponent component = builder.build(parent, definition, deploymentContext);
         OutboundWire wire = component.getOutboundWires().get("ref").get(0);
         Mock mock = mock(SystemInboundWire.class);
         FooImpl targetFoo = new FooImpl();
@@ -188,7 +188,7 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         AutowireComponent autowireParent = (AutowireComponent) mock.proxy();
         FooImpl targetFoo = new FooImpl();
         mock.expects(once()).method("resolveInstance").will(returnValue(targetFoo));
-        AtomicComponent<?> component = builder.build(autowireParent, definition, deploymentContext);
+        AtomicComponent component = builder.build(autowireParent, definition, deploymentContext);
         component.start();
         FooImpl foo = (FooImpl) component.getServiceInstance();
         assertNotNull(foo.ref);

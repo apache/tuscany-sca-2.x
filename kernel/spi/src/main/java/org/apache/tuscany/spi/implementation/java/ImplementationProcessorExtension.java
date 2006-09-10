@@ -52,36 +52,36 @@ public abstract class ImplementationProcessorExtension implements Implementation
         registry.unregisterProcessor(this);
     }
 
-    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
+    public void visitClass(CompositeComponent parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitSuperClass(CompositeComponent<?> parent, Class<?> clazz,
+    public void visitSuperClass(CompositeComponent parent, Class<?> clazz,
                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                 DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitMethod(CompositeComponent<?> parent, Method method,
+    public void visitMethod(CompositeComponent parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitField(CompositeComponent<?> parent, Field field,
+    public void visitField(CompositeComponent parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
     }
 
-    public void visitEnd(CompositeComponent<?> parent, Class<?> clazz,
+    public void visitEnd(CompositeComponent parent, Class<?> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException {
 

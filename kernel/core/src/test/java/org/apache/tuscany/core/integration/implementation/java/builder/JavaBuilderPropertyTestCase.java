@@ -49,7 +49,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
 
     private DeploymentContext deploymentContext;
-    private CompositeComponent<?> parent;
+    private CompositeComponent parent;
     private ScopeRegistry registry;
 
     public void testPropertyHandling() throws Exception {
@@ -68,7 +68,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(Foo.class);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
-        AtomicComponent<?> component = builder.build(parent, definition, deploymentContext);
+        AtomicComponent component = builder.build(parent, definition, deploymentContext);
         JavaBuilderPropertyTestCase.Foo foo = (JavaBuilderPropertyTestCase.Foo) component.createInstance();
         assertEquals("foo", foo.getTest());
     }
@@ -77,7 +77,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
         super.setUp();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
         Mock mock = mock(AutowireComponent.class);
-        parent = (CompositeComponent<?>) mock.proxy();
+        parent = (CompositeComponent) mock.proxy();
         registry = new ScopeRegistryImpl(new WorkContextImpl());
         new StatelessScopeObjectFactory(registry);
     }

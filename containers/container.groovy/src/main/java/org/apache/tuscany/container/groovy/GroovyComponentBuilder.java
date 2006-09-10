@@ -48,7 +48,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         return GroovyImplementation.class;
     }
 
-    public Component<?> build(CompositeComponent<?> parent,
+    public Component build(CompositeComponent parent,
                               ComponentDefinition<GroovyImplementation> componentDefinition,
                               DeploymentContext deploymentContext)
         throws BuilderConfigException {

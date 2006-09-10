@@ -47,7 +47,7 @@ public class MonitorProcessor extends AbstractPropertyProcessor<Monitor> {
 
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     Monitor annotation,
-                                    CompositeComponent<?> parent,
+                                    CompositeComponent parent,
                                     DeploymentContext context) {
         Class<T> javaType = property.getJavaType();
         property.setDefaultValueFactory(new SingletonObjectFactory<T>(monitorFactory.getMonitor(javaType)));

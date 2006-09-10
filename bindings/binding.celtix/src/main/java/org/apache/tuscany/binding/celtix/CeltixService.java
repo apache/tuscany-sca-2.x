@@ -68,7 +68,7 @@ import org.xmlsoap.schemas.wsdl.http.AddressType;
  *
  * @version $Rev$ $Date$
  */
-public class CeltixService<T> extends ServiceExtension<T> implements ServerBindingEndpointCallback {
+public class CeltixService extends ServiceExtension implements ServerBindingEndpointCallback {
 
     private Bus bus;
     private Port port;
@@ -82,7 +82,7 @@ public class CeltixService<T> extends ServiceExtension<T> implements ServerBindi
 
 
     public CeltixService(String theName,
-                         Class<T> interfaze,
+                         Class<?> interfaze,
                          CompositeComponent parent,
                          WireService wireService,
                          WebServiceBinding binding,

@@ -59,7 +59,7 @@ public class LauncherActivator implements BundleActivator {
         try {
             System.out.println(":::" + new File(".").toURL().toString());
             // URL systemScdl = getSystemSCDL(systemScdlPath);
-            CompositeComponent<?> rt =
+            CompositeComponent rt =
                 launcher.bootRuntime(new File("./sca/system.scdl").toURI().toURL(), new NullMonitorFactory());
         } catch (Exception e) {
             throw new OSGILauncherInitException(e);
@@ -67,12 +67,12 @@ public class LauncherActivator implements BundleActivator {
     }
 
     private void bootApplication(String name, URL scdl) throws TuscanyException {
-        CompositeComponent<?> root = launcher.bootApplication(name, scdl);
+        CompositeComponent root = launcher.bootApplication(name, scdl);
         root.start();
     }
 
     private void loadExtension(String name, URL scdl) throws TuscanyException {
-        CompositeComponent<?> root = launcher.bootApplication(name, scdl);
+        CompositeComponent root = launcher.bootApplication(name, scdl);
         root.start();
     }
 

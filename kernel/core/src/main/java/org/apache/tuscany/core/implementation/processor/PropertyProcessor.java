@@ -50,12 +50,12 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
 
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     Property annotation,
-                                    CompositeComponent<?> parent,
+                                    CompositeComponent parent,
                                     DeploymentContext context) {
         property.setRequired(annotation.required());
     }
 
-    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
         // override since heuristic pojo processor evalautes properties

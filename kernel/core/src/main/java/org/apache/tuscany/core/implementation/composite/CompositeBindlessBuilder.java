@@ -59,7 +59,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    public Service<?> build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                             BindlessServiceDefinition definition,
                             DeploymentContext deploymentContext) {
         return new CompositeService(definition.getName(),
@@ -69,7 +69,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
             workContext);
     }
 
-    public Reference<?> build(CompositeComponent parent,
+    public Reference build(CompositeComponent parent,
                               ReferenceDefinition definition,
                               DeploymentContext deploymentContext) {
         return new CompositeReference(definition.getName(),

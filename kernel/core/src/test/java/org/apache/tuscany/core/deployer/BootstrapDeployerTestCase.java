@@ -106,12 +106,12 @@ public class BootstrapDeployerTestCase extends TestCase {
     public void testBoot1Deployment() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
-        CompositeComponent<?> parent = createNiceMock(CompositeComponent.class);
+        CompositeComponent parent = createNiceMock(CompositeComponent.class);
         parent.register(isA(SCAObject.class));
         replay(parent);
         // load the boot1 file using the bootstrap deployer
         componentDefinition.setName("simple");
-        Component<?> component = deployer.deploy(parent, componentDefinition);
+        Component component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
     }
@@ -119,13 +119,13 @@ public class BootstrapDeployerTestCase extends TestCase {
     public void testBoot2Deployment() throws LoaderException {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
-        CompositeComponent<?> parent = createNiceMock(CompositeComponent.class);
+        CompositeComponent parent = createNiceMock(CompositeComponent.class);
         parent.register(isA(SCAObject.class));
         replay(parent);
 
         // load the boot2 file using the bootstrap deployer
         componentDefinition.setName("newDeployer");
-        Component<?> component = deployer.deploy(parent, componentDefinition);
+        Component component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
         component.start();
@@ -137,7 +137,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         parent.reset();
         parent.expects(once()).method("register").withAnyArguments();
         componentDefinition.setName("newDeployer2");
-        component = newDeployer.deploy((CompositeComponent<?>) parent.proxy(), componentDefinition);
+        component = newDeployer.deploy((CompositeComponent) parent.proxy(), componentDefinition);
         assertNotNull(component);
         parent.verify();
         component.start();

@@ -72,10 +72,10 @@ public class ConnectorImpl implements Connector {
         this.wireService = wireService;
     }
 
-    public void connect(SCAObject<?> source) {
+    public void connect(SCAObject source) {
         CompositeComponent parent = source.getParent();
         if (source instanceof AtomicComponent) {
-            AtomicComponent<?> sourceComponent = (AtomicComponent<?>) source;
+            AtomicComponent sourceComponent = (AtomicComponent) source;
             for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
                 for (OutboundWire outboundWire : referenceWires) {
                     if (outboundWire instanceof OutboundAutowire) {
@@ -100,7 +100,7 @@ public class ConnectorImpl implements Connector {
                 }
             }
         } else if (source instanceof Reference) {
-            Reference<?> reference = (Reference) source;
+            Reference reference = (Reference) source;
             InboundWire wire = reference.getInboundWire();
             Map<Operation<?>, InboundInvocationChain> chains = wire.getInvocationChains();
             // for references, no need to have an outbound wire
@@ -117,7 +117,7 @@ public class ConnectorImpl implements Connector {
                 connect(compRef, compRef.getOutboundWire());
             }
         } else if (source instanceof Service) {
-            Service<?> service = (Service<?>) source;
+            Service service = (Service) source;
             InboundWire inboundWire = service.getInboundWire();
             OutboundWire outboundWire = service.getOutboundWire();
             // connect the outbound service wire to the target
@@ -155,8 +155,8 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public void connect(SCAObject<?> source,
-                            SCAObject<?> target,
+    public void connect(SCAObject source,
+                            SCAObject target,
                             OutboundWire sourceWire,
                             InboundWire targetWire,
                             boolean optimizable) {
@@ -208,7 +208,7 @@ public class ConnectorImpl implements Connector {
             if (source instanceof Service && !(source instanceof CompositeService)) {
                 // services are a special case: invoker must go on the inbound chain
                 connect(outboundChain, inboundChain, null);
-                Service<?> service = (Service) source;
+                Service service = (Service) source;
                 InboundInvocationChain chain = service.getInboundWire().getInvocationChains().get(operation);
                 chain.setTargetInvoker(invoker);
             } else {
@@ -231,7 +231,7 @@ public class ConnectorImpl implements Connector {
             OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
             targetWire.addSourceCallbackInvocationChain(source.getName(), operation, outboundChain);
             if (source instanceof Component) {
-                Component<?> component = (Component<?>) source;
+                Component component = (Component) source;
                 TargetInvoker invoker = component.createTargetInvoker(null, operation);
                 connect(outboundChain, inboundChain, invoker);
             } else if (source instanceof CompositeReference) {
@@ -286,11 +286,11 @@ public class ConnectorImpl implements Connector {
      * @throws BuilderConfigException
      */
     @SuppressWarnings("unchecked")
-    private void connect(SCAObject<?> source,
+    private void connect(SCAObject source,
                              OutboundWire sourceWire) throws BuilderConfigException {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
-        CompositeComponent<?> parent = source.getParent();
+        CompositeComponent parent = source.getParent();
         assert parent != null : "Parent was null";
         // For a composite reference only, since its outbound wire comes from its parent composite,
         // the corresponding target would not lie in its parent but rather in its parent's parent
@@ -298,7 +298,7 @@ public class ConnectorImpl implements Connector {
             parent = parent.getParent();
             assert parent != null : "Parent of parent was null";
         }
-        SCAObject<?> target = parent.getChild(targetName.getPartName());
+        SCAObject target = parent.getChild(targetName.getPartName());
         if (target == null) {
             String refName = sourceWire.getReferenceName();
             BuilderConfigException e = new BuilderConfigException("Target not found for reference " + refName);
@@ -307,7 +307,7 @@ public class ConnectorImpl implements Connector {
         }
 
         if (target instanceof AtomicComponent) {
-            AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
+            AtomicComponent targetComponent = (AtomicComponent) target;
             InboundWire targetWire = targetComponent.getInboundWire(targetName.getPortName());
             if (targetWire == null) {
                 String refName = sourceWire.getReferenceName();

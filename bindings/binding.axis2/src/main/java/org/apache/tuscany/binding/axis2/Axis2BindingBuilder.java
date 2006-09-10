@@ -55,7 +55,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @SuppressWarnings("unchecked")
-    public Service<?> build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
+    public Service build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
 
         WebServiceBinding wsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
@@ -66,7 +66,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @SuppressWarnings("unchecked")
-    public Reference<?> build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
+    public Reference build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
             DeploymentContext deploymentContext) {
         
         WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();

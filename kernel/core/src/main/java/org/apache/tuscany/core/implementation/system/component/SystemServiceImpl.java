@@ -39,7 +39,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements SystemService<T> {
+public class SystemServiceImpl extends AbstractSCAObject implements SystemService {
 
     protected SystemInboundWire inboundWire;
     protected SystemOutboundWire outboundWire;
@@ -70,9 +70,8 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
         this.outboundWire = (SystemOutboundWire) wire;
     }
 
-    @SuppressWarnings("unchecked")
-    public Class<T> getInterface() {
-        return (Class<T>) inboundWire.getServiceContract().getInterfaceClass();
+    public Class<?> getInterface() {
+        return inboundWire.getServiceContract().getInterfaceClass();
     }
 
     public WireInvocationHandler getHandler() {
@@ -80,8 +79,8 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
         throw new UnsupportedOperationException();
     }
 
-    public T getServiceInstance() throws TargetException {
-        return (T) inboundWire.getTargetService();
+    public Object getServiceInstance() throws TargetException {
+        return inboundWire.getTargetService();
     }
 
 

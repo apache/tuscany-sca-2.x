@@ -46,7 +46,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
 
     DeploymentContext deploymentContext;
-    CompositeComponent<?> parent;
+    CompositeComponent parent;
 
     @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
@@ -63,7 +63,7 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(Foo.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        AtomicComponent<?> component = builder.build(parent, definition, deploymentContext);
+        AtomicComponent component = builder.build(parent, definition, deploymentContext);
         Foo foo = (Foo) component.createInstance();
         assertEquals("foo", foo.getTest());
     }
@@ -72,7 +72,7 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
         super.setUp();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
         Mock mock = mock(AutowireComponent.class);
-        parent = (CompositeComponent<?>) mock.proxy();
+        parent = (CompositeComponent) mock.proxy();
     }
 
     private static class Foo {

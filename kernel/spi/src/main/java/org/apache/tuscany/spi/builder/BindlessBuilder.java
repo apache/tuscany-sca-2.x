@@ -34,11 +34,11 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
  */
 public interface BindlessBuilder {
 
-    Service<?> build(CompositeComponent parent,
+    Service build(CompositeComponent parent,
                     BindlessServiceDefinition serviceDefinition,
                     DeploymentContext deploymentContext);
 
-    Reference<?> build(CompositeComponent parent,
+    Reference build(CompositeComponent parent,
                     ReferenceDefinition referenceDefinition,
                     DeploymentContext deploymentContext);
 }

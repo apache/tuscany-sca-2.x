@@ -39,7 +39,7 @@ public class SystemServiceComponentWireTestCase extends MockObjectTestCase {
         SystemOutboundWire outboundWire = (SystemOutboundWire) mockWire.proxy();
 
         SystemInboundWire wire = new SystemInboundWireImpl("Target", Target.class);
-        SystemService<Target> serviceContext = new SystemServiceImpl<Target>("service", null);
+        SystemService serviceContext = new SystemServiceImpl("service", null);
         serviceContext.setInboundWire(wire);
         serviceContext.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);

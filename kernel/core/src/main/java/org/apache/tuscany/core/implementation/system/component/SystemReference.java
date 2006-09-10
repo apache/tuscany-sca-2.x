@@ -26,5 +26,5 @@ import org.apache.tuscany.spi.component.Reference;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface SystemReference<T> extends Reference<T> {
+public interface SystemReference extends Reference {
 }

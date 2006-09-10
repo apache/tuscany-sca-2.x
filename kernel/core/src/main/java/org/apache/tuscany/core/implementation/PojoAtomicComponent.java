@@ -49,7 +49,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T> {
+public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
@@ -112,9 +112,8 @@ public abstract class PojoAtomicComponent<T> extends AtomicComponentExtension<T>
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public T getTargetInstance() throws TargetException {
-        return (T) scopeContainer.getInstance(this);
+    public Object getTargetInstance() throws TargetException {
+        return scopeContainer.getInstance(this);
     }
 
     public Object createInstance() throws ObjectCreationException {

@@ -23,13 +23,14 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.jar.JarFile;
-import java.net.URL;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.core.util.ClassLoaderHelper;
+
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.util.ClassLoaderHelper;
 
 
 /**
@@ -42,9 +43,8 @@ public class MainLauncherImpl extends LauncherImpl {
     private String[] args;
 
     /**
-     * Set the application classpath from a string delimited by path separators.
-     * If the application classname is not defined, any jars on the path are examined
-     * and if the Main-Class manifest entry is set then it will be used.
+     * Set the application classpath from a string delimited by path separators. If the application classname is not
+     * defined, any jars on the path are examined and if the Main-Class manifest entry is set then it will be used.
      *
      * @param path the path to parse
      */
@@ -82,16 +82,15 @@ public class MainLauncherImpl extends LauncherImpl {
     }
 
     /**
-     * Calls the application's main class as defined by the MainClassName property.
-     * The Thread's context ClassLoader is set to the application classloader before
-     * the application class is loaded or the main method invoked.
+     * Calls the application's main class as defined by the MainClassName property. The Thread's context ClassLoader is
+     * set to the application classloader before the application class is loaded or the main method invoked.
      *
      * @throws InvalidMainException
      * @throws ClassNotFoundException    if the specified class could not be loaded using the application classloader
      * @throws InvalidMainException      if the main method does not exist or is invalid
      * @throws InvocationTargetException if the main method throws an exception
      */
-    public void callApplication(CompositeComponent<?> application)
+    public void callApplication(CompositeComponent application)
         throws InvalidMainException, ClassNotFoundException, InvocationTargetException {
 
         final ClassLoader cl = Thread.currentThread().getContextClassLoader();

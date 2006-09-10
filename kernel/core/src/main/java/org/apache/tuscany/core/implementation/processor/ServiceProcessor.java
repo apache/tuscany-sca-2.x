@@ -54,7 +54,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         this.implService = implService;
     }
 
-    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
+    public void visitClass(CompositeComponent parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
@@ -101,7 +101,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
     }
 
 
-    public void visitMethod(CompositeComponent<?> parent,
+    public void visitMethod(CompositeComponent parent,
                             Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context) throws ProcessingException {
@@ -132,7 +132,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         callbackService.setCallbackMember(method);
     }
 
-    public void visitField(CompositeComponent<?> parent, Field field,
+    public void visitField(CompositeComponent parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
 

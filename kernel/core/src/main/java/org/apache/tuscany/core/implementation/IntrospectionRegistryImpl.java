@@ -69,7 +69,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         cache.remove(processor);
     }
 
-    public PojoComponentType introspect(CompositeComponent<?> parent, Class<?> clazz,
+    public PojoComponentType introspect(CompositeComponent parent, Class<?> clazz,
                                         PojoComponentType<JavaMappedService, JavaMappedReference,
                                             JavaMappedProperty<?>> type,
                                         DeploymentContext context)
@@ -109,7 +109,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
         return type;
     }
 
-    private void visitSuperClass(CompositeComponent<?> parent,
+    private void visitSuperClass(CompositeComponent parent,
                                  Class<?> clazz,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type)
         throws ProcessingException {

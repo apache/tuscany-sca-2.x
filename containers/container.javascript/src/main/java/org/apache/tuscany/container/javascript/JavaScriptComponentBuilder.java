@@ -64,7 +64,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
     }
 
     @SuppressWarnings("unchecked")
-    public Component<?> build(CompositeComponent<?> parent, ComponentDefinition<JavaScriptImplementation> componentDefinition,
+    public Component build(CompositeComponent parent, ComponentDefinition<JavaScriptImplementation> componentDefinition,
             DeploymentContext deploymentContext) throws BuilderConfigException {
 
         String name = componentDefinition.getName();

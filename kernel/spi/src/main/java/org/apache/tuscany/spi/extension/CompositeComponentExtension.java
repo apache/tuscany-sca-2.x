@@ -51,16 +51,16 @@ import org.apache.tuscany.spi.builder.Connector;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T> implements CompositeComponent<T> {
+public abstract class CompositeComponentExtension extends AbstractSCAObject implements CompositeComponent {
 
-    protected final Map<String, SCAObject<?>> children = new ConcurrentHashMap<String, SCAObject<?>>();
+    protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
     protected final Map<String, Document> propertyValues;
     protected final Connector connector;
 
     protected CompositeComponentExtension(String name,
-                                          CompositeComponent<?> parent,
+                                          CompositeComponent parent,
                                           Connector connector,
                                           Map<String, Document> propertyValues) {
         super(name, parent);
@@ -76,7 +76,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         publish(event);
     }
 
-    public void register(SCAObject<?> child) {
+    public void register(SCAObject child) {
         assert child != null : "child was null";
         if (children.get(child.getName()) != null) {
             DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
@@ -144,7 +144,7 @@ public abstract class CompositeComponentExtension<T> extends AbstractSCAObject<T
         return Collections.unmodifiableList(references);
     }
 
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         //TODO implement
         return null;
     }

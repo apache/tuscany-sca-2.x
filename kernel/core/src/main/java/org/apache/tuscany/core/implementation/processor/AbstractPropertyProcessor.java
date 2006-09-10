@@ -54,7 +54,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         this.service = service;
     }
 
-    public void visitMethod(CompositeComponent<?> parent,
+    public void visitMethod(CompositeComponent parent,
                             Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context) throws ProcessingException {
@@ -94,7 +94,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         properties.put(name, property);
     }
 
-    public void visitField(CompositeComponent<?> parent,
+    public void visitField(CompositeComponent parent,
                            Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
@@ -120,7 +120,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         properties.put(name, property);
     }
 
-    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
 
@@ -155,7 +155,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
 
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     A annotation,
-                                    CompositeComponent<?> parent,
+                                    CompositeComponent parent,
                                     DeploymentContext context) {
     }
 

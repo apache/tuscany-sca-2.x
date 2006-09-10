@@ -38,7 +38,7 @@ import groovy.lang.GroovyObject;
  */
 public class GroovyConfiguration {
 
-    private CompositeComponent<?> parent;
+    private CompositeComponent parent;
     private ScopeContainer scopeContainer;
     private int initLevel;
     private Map<String, Member> referenceSites = new HashMap<String, Member>();
@@ -67,11 +67,11 @@ public class GroovyConfiguration {
         this.groovyClass = groovyClass;
     }
 
-    public CompositeComponent<?> getParent() {
+    public CompositeComponent getParent() {
         return parent;
     }
 
-    public void setParent(CompositeComponent<?> parent) {
+    public void setParent(CompositeComponent parent) {
         this.parent = parent;
     }
 

@@ -80,7 +80,7 @@ public class ReferenceTestCase extends TestCase {
         ref.prepare();
     }
 
-    private class TestReference<T> extends ReferenceExtension<T> {
+    private class TestReference<T> extends ReferenceExtension {
         public TestReference(Class<T> clazz) {
             super(null, clazz, null, null);
         }

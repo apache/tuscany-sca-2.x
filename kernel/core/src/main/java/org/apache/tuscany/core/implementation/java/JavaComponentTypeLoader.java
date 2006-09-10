@@ -59,7 +59,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         return JavaImplementation.class;
     }
 
-    public void load(CompositeComponent<?> parent,
+    public void load(CompositeComponent parent,
                      JavaImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
@@ -73,7 +73,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         implementation.setComponentType(componentType);
     }
 
-    protected PojoComponentType loadByIntrospection(CompositeComponent<?> parent,
+    protected PojoComponentType loadByIntrospection(CompositeComponent parent,
                                                     JavaImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =

@@ -26,7 +26,7 @@ import org.apache.tuscany.core.component.AutowireComponent;
  *
  * @version $Rev$ $Date$
  */
-public interface SystemCompositeComponent<T> extends AutowireComponent<T> {
+public interface SystemCompositeComponent extends AutowireComponent {
 
     /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to

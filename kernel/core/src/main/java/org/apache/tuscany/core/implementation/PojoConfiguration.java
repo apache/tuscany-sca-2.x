@@ -41,7 +41,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public class PojoConfiguration {
 
-    private CompositeComponent<?> parent;
+    private CompositeComponent parent;
     private ScopeContainer scopeContainer;
     private PojoObjectFactory<?> instanceFactory;
     private List<String> constructorParamNames = new ArrayList<String>();
@@ -57,11 +57,11 @@ public class PojoConfiguration {
     private WorkContext workContext;
     private WorkScheduler scheduler;
 
-    public CompositeComponent<?> getParent() {
+    public CompositeComponent getParent() {
         return parent;
     }
 
-    public void setParent(CompositeComponent<?> parent) {
+    public void setParent(CompositeComponent parent) {
         this.parent = parent;
     }
 

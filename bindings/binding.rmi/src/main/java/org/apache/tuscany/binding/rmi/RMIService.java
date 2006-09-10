@@ -34,7 +34,7 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * @version $Rev$ $Date$
  */
-public class RMIService<T extends Remote> extends ServiceExtension<T> {
+public class RMIService<T extends Remote> extends ServiceExtension {
 
     public static final String URI_PREFIX = "//localhost";
     public static final String SLASH = "/";

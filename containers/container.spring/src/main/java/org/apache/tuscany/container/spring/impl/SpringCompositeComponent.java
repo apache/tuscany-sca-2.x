@@ -55,7 +55,7 @@ import org.springframework.core.io.Resource;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> {
+public class SpringCompositeComponent extends CompositeComponentExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private AbstractApplicationContext springContext;
 
@@ -132,7 +132,7 @@ public class SpringCompositeComponent<T> extends CompositeComponentExtension<T> 
 
         @SuppressWarnings("unchecked")
         public Object getBean(String name, Class requiredType) throws BeansException {
-            SCAObject object = (SCAObject) children.get(name);   // keep cast due to compiler error
+            SCAObject object = children.get(name);   // keep cast due to compiler error
             if (object == null) {
                 return null;
             }

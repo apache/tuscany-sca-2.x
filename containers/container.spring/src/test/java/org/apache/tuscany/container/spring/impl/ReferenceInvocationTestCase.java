@@ -41,12 +41,12 @@ public class ReferenceInvocationTestCase extends TestCase {
 
     public void testInvocation() throws Exception {
         AbstractApplicationContext ctx = createSpringContext();
-        SpringCompositeComponent<?> parent = new SpringCompositeComponent("spring", ctx, null, null, null);
+        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null, null, null);
         parent.start();
         TestBean referenceTarget = new TestBeanImpl();
         Reference reference = createMock(Reference.class);
         expect(reference.getName()).andReturn("bar").anyTimes();
-        expect(reference.getInterface()).andReturn(TestBean.class);
+        expect(reference.getInterface()).andStubReturn(TestBean.class);
         expect(reference.getServiceInstance()).andStubReturn(referenceTarget);
         replay(reference);
         parent.register(reference);

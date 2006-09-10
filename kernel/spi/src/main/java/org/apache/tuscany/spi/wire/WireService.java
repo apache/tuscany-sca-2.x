@@ -119,7 +119,7 @@ public interface WireService {
      * @param reference the reference
      * @param contract  the model artifact representing the service contract for the reference
      */
-    <T> void createWires(Reference<T> reference, ServiceContract<?> contract);
+    <T> void createWires(Reference reference, ServiceContract<?> contract);
 
     /**
      * Creates wires for a service and injects them on the service
@@ -127,7 +127,7 @@ public interface WireService {
      * @param service the service
      * @param def     the model artifact representing the service
      */
-    void createWires(Service<?> service, BoundServiceDefinition<?> def);
+    void createWires(Service service, BoundServiceDefinition<?> def);
 
     /**
      * Creates wires for a composite service and injects them on the service
@@ -135,7 +135,7 @@ public interface WireService {
      * @param service the service
      * @param def     the model artifact representing the service
      */
-    void createWires(Service<?> service, BindlessServiceDefinition def);
+    void createWires(Service service, BindlessServiceDefinition def);
 
     /**
      * Check the compatiblity of the source and the target service contracts.<p>

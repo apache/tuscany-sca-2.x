@@ -32,11 +32,6 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
@@ -48,6 +43,11 @@ import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
+import org.apache.tuscany.core.implementation.java.mock.MockFactory;
+import org.apache.tuscany.core.implementation.java.mock.components.Source;
+import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
+import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
@@ -62,7 +62,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a module-to-module scoped wire
      */
-    @SuppressWarnings("unchecked")
     public void testModuleToModule() throws Exception {
         ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
@@ -70,10 +69,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             scope, members, "target", Target.class, TargetImpl.class, scope);
         scope.onEvent(new CompositeStart(this, null));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -86,7 +85,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a module-to-session scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testModuleToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
@@ -100,10 +98,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -117,7 +115,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
 
         assertFalse("foo".equals(source.getTarget().getString()));
@@ -135,7 +133,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a module-to-request scoped wire
      */
-    @SuppressWarnings("unchecked")
     public void testModuleToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
@@ -148,10 +145,10 @@ public class ScopeReferenceTestCase extends TestCase {
         moduleScope.onEvent(new CompositeStart(this, null));
         requestScope.onEvent(new RequestStart(this));
 
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        final Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        final AtomicComponent targetComponent = contexts.get("target");
+        final Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -163,7 +160,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetComponent.getServiceInstance();
+                Target target2 = (Target) targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -184,7 +181,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a module-to-stateless scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testModuleToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
@@ -196,16 +192,16 @@ public class ScopeReferenceTestCase extends TestCase {
             moduleScope, members, "target", Target.class, TargetImpl.class, statelessScope);
         moduleScope.onEvent(new CompositeStart(this, null));
 
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -218,7 +214,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a session-to-session scoped wire
      */
-    @SuppressWarnings("unchecked")
     public void testSessionToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
@@ -230,10 +225,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         source.getTarget().setString("foo");
         source.getTarget().setString("foo");
         assertEquals("foo", target.getString());
@@ -246,9 +241,9 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Source source2 = sourceComponent.getServiceInstance();
+        Source source2 = (Source) sourceComponent.getServiceInstance();
         assertNotNull(source2);
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
 
         assertNotNull(target2);
         assertNull(target2.getString());
@@ -265,7 +260,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a session-to-module scoped wire
      */
-    @SuppressWarnings("unchecked")
     public void testSessionToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
@@ -279,10 +273,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -296,8 +290,8 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getServiceInstance();
-        Source source2 = sourceComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
+        Source source2 = (Source) sourceComponent.getServiceInstance();
         assertEquals("foo", target2.getString());
         assertEquals("foo", source2.getTarget().getString());
         source2.getTarget().setString("baz");
@@ -313,7 +307,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a session-to-request scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testSessionToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx);
@@ -327,10 +320,10 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         requestScope.onEvent(new RequestStart(this));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        final Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        final AtomicComponent targetComponent = contexts.get("target");
+        final Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -342,7 +335,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetComponent.getServiceInstance();
+                Target target2 = (Target) targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -365,7 +358,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a session-to-stateless scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testSessionToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
@@ -380,16 +372,16 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
 
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -403,7 +395,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a request-to-request scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testRequestToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx);
@@ -413,10 +404,10 @@ public class ScopeReferenceTestCase extends TestCase {
             requestScope, members, "target", Target.class, TargetImpl.class, requestScope);
         requestScope.onEvent(new RequestStart(this));
 
-        final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        final AtomicComponent sourceComponent = contexts.get("source");
+        final AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -428,8 +419,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceComponent.getServiceInstance();
-                Target target2 = targetComponent.getServiceInstance();
+                Source source2 = (Source) sourceComponent.getServiceInstance();
+                Target target2 = (Target) targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source2.getTarget().getString()));
                 source2.getTarget().setString("bar");
@@ -447,7 +438,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a request-to-module scoped wire
      */
-    @SuppressWarnings("unchecked")
     public void testRequestToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx);
@@ -460,10 +450,10 @@ public class ScopeReferenceTestCase extends TestCase {
             requestScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         requestScope.onEvent(new RequestStart(this));
 
-        final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        final AtomicComponent sourceComponent = contexts.get("source");
+        final AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -475,8 +465,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceComponent.getServiceInstance();
-                Target target2 = targetComponent.getServiceInstance();
+                Source source2 = (Source) sourceComponent.getServiceInstance();
+                Target target2 = (Target) targetComponent.getServiceInstance();
                 assertEquals("foo", target2.getString());
                 assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -498,7 +488,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a request-to-session scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testRequestToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx);
@@ -512,11 +501,11 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             requestScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
-        final AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        final AtomicComponent sourceComponent = contexts.get("source");
+        final AtomicComponent targetComponent = contexts.get("target");
         requestScope.onEvent(new RequestStart(this));
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -528,8 +517,8 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = sourceComponent.getServiceInstance();
-                Target target2 = targetComponent.getServiceInstance();
+                Source source2 = (Source) sourceComponent.getServiceInstance();
+                Target target2 = (Target) targetComponent.getServiceInstance();
                 assertEquals("foo", target2.getString());
                 assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -553,7 +542,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a request-to-stateless scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testRequestToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer requestScope = new RequestScopeContainer(ctx);
@@ -564,17 +552,17 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             requestScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
         requestScope.onEvent(new RequestStart(this));
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -587,7 +575,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a stateless-to-stateless scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testStatelessToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
@@ -596,16 +583,16 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             statelessScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
         assertFalse("foo".equals(source.getTarget().getString()));
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
@@ -615,7 +602,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a stateless-to-request scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testStatelessToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx);
@@ -626,10 +612,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             statelessScope, members, "target", Target.class, TargetImpl.class, requestScope);
         requestScope.onEvent(new RequestStart(this));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        final AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        final Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        final AtomicComponent targetComponent = contexts.get("target");
+        final Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -641,7 +627,7 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = targetComponent.getServiceInstance();
+                Target target2 = (Target) targetComponent.getServiceInstance();
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -659,7 +645,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a stateless-to-session scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testStatelessToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
@@ -672,10 +657,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Object session1 = new Object();
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -689,7 +674,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertFalse("foo".equals(target2.getString()));
 
         assertFalse("foo".equals(source.getTarget().getString()));
@@ -707,7 +692,6 @@ public class ScopeReferenceTestCase extends TestCase {
     /**
      * Tests a stateless-to-module scoped wire is setup properly by the runtime
      */
-    @SuppressWarnings("unchecked")
     public void testStatelessToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
@@ -718,10 +702,10 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             statelessScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new CompositeStart(this, null));
-        AtomicComponent<Source> sourceComponent = (AtomicComponent<Source>) contexts.get("source");
-        AtomicComponent<Target> targetComponent = (AtomicComponent<Target>) contexts.get("target");
-        Source source = sourceComponent.getServiceInstance();
-        Target target = targetComponent.getServiceInstance();
+        AtomicComponent sourceComponent = contexts.get("source");
+        AtomicComponent targetComponent = contexts.get("target");
+        Source source = (Source) sourceComponent.getServiceInstance();
+        Target target = (Target) targetComponent.getServiceInstance();
         assertNull(source.getTarget().getString());
         assertNull(target.getString());
         target.setString("foo");
@@ -733,7 +717,7 @@ public class ScopeReferenceTestCase extends TestCase {
         ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
-        Target target2 = targetComponent.getServiceInstance();
+        Target target2 = (Target) targetComponent.getServiceInstance();
         assertEquals("foo", target2.getString());
 
         assertEquals("foo", source.getTarget().getString());

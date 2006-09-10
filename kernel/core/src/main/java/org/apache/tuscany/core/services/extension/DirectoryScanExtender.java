@@ -121,7 +121,7 @@ public class DirectoryScanExtender implements VoidService {
             new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
 
         try {
-            Component<?> component = deployer.deploy(parent, definition);
+            Component component = deployer.deploy(parent, definition);
             component.start();
         } catch (LoaderException e) {
             // FIXME handle the exception

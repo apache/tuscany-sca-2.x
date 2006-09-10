@@ -48,7 +48,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         this.service = service;
     }
 
-    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
+    public void visitClass(CompositeComponent parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         Constructor[] ctors = clazz.getConstructors();
@@ -66,7 +66,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         }
     }
 
-    public void visitConstructor(CompositeComponent<?> parent, Constructor<?> constructor,
+    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Constructor annotation =

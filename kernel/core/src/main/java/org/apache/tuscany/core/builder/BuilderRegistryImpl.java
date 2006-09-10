@@ -100,10 +100,10 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent,
-                                                            ComponentDefinition<I> componentDefinition,
-                                                            DeploymentContext deploymentContext) {
-        Class<I> implClass = (Class<I>) componentDefinition.getImplementation().getClass();
+    public <I extends Implementation<?>> Component build(CompositeComponent parent,
+                                                         ComponentDefinition<I> componentDefinition,
+                                                         DeploymentContext deploymentContext) {
+        Class<?> implClass = componentDefinition.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         if (componentBuilder == null) {
             BuilderConfigException e = new BuilderConfigException("No builder registered for implementation");
@@ -112,7 +112,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw e;
         }
 
-        Component<?> component = componentBuilder.build(parent, componentDefinition, deploymentContext);
+        Component component = componentBuilder.build(parent, componentDefinition, deploymentContext);
         ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
         assert componentType != null : "Component type must be set";
         // create wires for the component
@@ -122,7 +122,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return component;
     }
 
-    @SuppressWarnings("unchecked")
     public <B extends Binding> void register(BindingBuilder<B> builder) {
         Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {
@@ -148,7 +147,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public <B extends Binding> SCAObject build(CompositeComponent parent,
                                                BoundServiceDefinition<B> boundServiceDefinition,
                                                DeploymentContext deploymentContext) {
-        Class<B> bindingClass = (Class<B>) boundServiceDefinition.getBinding().getClass();
+        Class<?> bindingClass = boundServiceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
         SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
         if (wireService != null) {
@@ -175,7 +174,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         bindlessBuilder = builder;
     }
 
-    @SuppressWarnings("unchecked")
     public SCAObject build(CompositeComponent parent,
                            BindlessServiceDefinition serviceDefinition,
                            DeploymentContext deploymentContext) {
@@ -186,7 +184,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return object;
     }
 
-    @SuppressWarnings("unchecked")
     public SCAObject build(CompositeComponent parent,
                            ReferenceDefinition referenceDefinition,
                            DeploymentContext deploymentContext) {

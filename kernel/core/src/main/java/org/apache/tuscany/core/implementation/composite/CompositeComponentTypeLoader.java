@@ -47,7 +47,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         return CompositeImplementation.class;
     }
 
-    public void load(CompositeComponent<?> parent, CompositeImplementation implementation,
+    public void load(CompositeComponent parent, CompositeImplementation implementation,
                      DeploymentContext deploymentContext)
         throws LoaderException {
         URL scdlLocation = implementation.getScdlLocation();
@@ -57,7 +57,7 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
         implementation.setComponentType(componentType);
     }
 
-    protected CompositeComponentType loadFromSidefile(CompositeComponent<?> parent,
+    protected CompositeComponentType loadFromSidefile(CompositeComponent parent,
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {

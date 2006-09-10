@@ -74,7 +74,7 @@ public final class MockFactory {
      * Creates a JavaAtomicComponent which returns the given instance
      */
     @SuppressWarnings("unchecked")
-    public static <T> JavaAtomicComponent<T> createJavaComponent(T instance) {
+    public static <T> JavaAtomicComponent createJavaComponent(T instance) {
         ScopeContainer scope = createMock(ScopeContainer.class);
         scope.getScope();
         expectLastCall().andReturn(Scope.MODULE);
@@ -94,7 +94,7 @@ public final class MockFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> JavaAtomicComponent<T> createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
+    public static <T> JavaAtomicComponent createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
         throws NoSuchMethodException {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);

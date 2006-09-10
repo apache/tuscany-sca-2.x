@@ -44,7 +44,7 @@ public interface Builder {
      * @param deploymentContext   the current deployment context
      * @return a newly created component
      */
-    <I extends Implementation<?>> Component<?> build(CompositeComponent<?> parent,
+    <I extends Implementation<?>> Component build(CompositeComponent parent,
                                                      ComponentDefinition<I> componentDefinition,
                                                      DeploymentContext deploymentContext);
 
