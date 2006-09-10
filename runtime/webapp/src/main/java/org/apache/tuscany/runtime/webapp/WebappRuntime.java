@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
+import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionListener;
 
@@ -34,13 +35,68 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  * @see TuscanyFilter
  * @see TuscanySessionListener
  */
-public interface TuscanyWebappRuntime extends HttpSessionListener {
+public interface WebappRuntime extends HttpSessionListener {
+    /**
+     * Returns the ServletContext associated with this runtime.
+     *
+     * @return the ServletContext associated with this runtime
+     */
+    ServletContext getServletContext();
+
+    /**
+     * Sets the ServletContext associated with this runtime.
+     *
+     * @param servletContext the ServletContext associated with this runtime
+     */
+    void setServletContext(ServletContext servletContext);
+
+    /**
+     * Returns the location of the SCDL used to boot this runtime.
+     *
+     * @return the location of the SCDL used to boot this runtime
+     */
+    URL getSystemScdl();
+
+    /**
+     * Sets the location of the SCDL used to boot this runtime.
+     *
+     * @param systemScdl the location of the SCDL used to boot this runtime
+     */
+    void setSystemScdl(URL systemScdl);
+
+    /**
+     * Returns the location of the default application's SCDL.
+     *
+     * @return the location of the default application's SCDL
+     */
+    URL getApplicationScdl();
+
+    /**
+     * Sets the location of the default application's SCDL
+     *
+     * @param applicationScdl the location of the default application's SCDL
+     */
+    void setApplicationScdl(URL applicationScdl);
+
+    /**
+     * Returns the web application's ClassLoader.
+     *
+     * @return the web application's ClassLoader
+     */
+    ClassLoader getWebappClassLoader();
+
+    /**
+     * Sets the web application's ClassLoader.
+     *
+     * @param webappClassLoader the web application's ClassLoader
+     */
+    void setWebappClassLoader(ClassLoader webappClassLoader);
+
     /**
      * Initialize a runtime for the supplied servlet context.
      *
-     * @param context the servlet context the runtime should run in
      */
-    void initialize(ServletContext context);
+    void initialize();
 
     /**
      * Destroy the runtime.

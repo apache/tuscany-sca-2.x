@@ -17,7 +17,7 @@ import org.easymock.EasyMock;
 public class TuscanySessionListenerTestCase extends TestCase {
 
     public void testSessionPropagated() throws Exception {
-        TuscanyWebappRuntime runtime = EasyMock.createNiceMock(TuscanyWebappRuntime.class);
+        WebappRuntime runtime = EasyMock.createNiceMock(WebappRuntime.class);
         runtime.sessionCreated(EasyMock.isA(HttpSessionEvent.class));
         runtime.sessionDestroyed(EasyMock.isA(HttpSessionEvent.class));
         EasyMock.replay(runtime);

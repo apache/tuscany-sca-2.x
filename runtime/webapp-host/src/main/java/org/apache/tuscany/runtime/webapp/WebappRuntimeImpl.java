@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -31,14 +30,6 @@ import javax.servlet.http.HttpSessionEvent;
 
 import org.osoa.sca.SCA;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
@@ -49,13 +40,18 @@ import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.CURRENT_COMPOSITE_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.DEFAULT_EXTENSION_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.EXTENSION_SCDL_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_MONITORING_PARAM;
-import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -63,7 +59,7 @@ import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM
  * <p/>
  * The bootstrapper launches the runtime, booting system extensions and applications, according to the servlet
  * parameters defined in {@link Constants}. When the runtime is instantiated, it is placed in the servlet context with
- * the attribute {@link Constants.RUNTIME_ATTRIBUTE}. The runtime implements {@link TuscanyWebappRuntime} so that
+ * the attribute {@link Constants.RUNTIME_ATTRIBUTE}. The runtime implements {@link WebappRuntime} so that
  * filters and servlets loaded in the parent web app classloader may pass events and requests to it.
  * <p/>
  * By default, the top-most application composite component will be returned when "non-managed" web application code
@@ -74,41 +70,60 @@ import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM
  * @version $$Rev$$ $$Date$$
  */
 
-public class ServletLauncherListener implements TuscanyWebappRuntime {
+public class WebappRuntimeImpl implements WebappRuntime {
+    private ServletContext servletContext;
+    private URL systemScdl;
+    private URL applicationScdl;
+    private ClassLoader webappClassLoader;
 
-    private URL testSystemScdl;
     private CompositeComponent component;
     private ServletLauncherMonitor monitor;
     private LauncherImpl launcher;
     private CompositeContextImpl context;
     private ServletRequestInjector requestInjector;
 
-    public void initialize(ServletContext servletContext) {
-        // Read optional path to system SCDL from context-param
-        String systemScdlPath = servletContext.getInitParameter(SYSTEM_SCDL_PATH_PARAM);
-        if (systemScdlPath == null) {
-            systemScdlPath = Constants.WEBAPP_SYSTEM_SCDL_PATH;
-        }
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
 
-        // Read optional path to application SCDL from context-param
-        String applicationScdlPath = servletContext.getInitParameter(APPLICATION_SCDL_PATH_PARAM);
-        if (applicationScdlPath == null) {
-            applicationScdlPath = Constants.DEFAULT_APPLICATION_SCDL_PATH_PARAM;
-        }
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 
+    public URL getSystemScdl() {
+        return systemScdl;
+    }
+
+    public void setSystemScdl(URL systemScdl) {
+        this.systemScdl = systemScdl;
+    }
+
+    public URL getApplicationScdl() {
+        return applicationScdl;
+    }
+
+    public void setApplicationScdl(URL applicationScdl) {
+        this.applicationScdl = applicationScdl;
+    }
+
+    public ClassLoader getWebappClassLoader() {
+        return webappClassLoader;
+    }
+
+    public void setWebappClassLoader(ClassLoader webappClassLoader) {
+        this.webappClassLoader = webappClassLoader;
+    }
+
+    public void initialize() {
         // Read optional system monitor factory classname
         String systemLogging = servletContext.getInitParameter(SYSTEM_MONITORING_PARAM);
         MonitorFactory mf = getMonitorFactory(systemLogging);
         monitor = mf.getMonitor(ServletLauncherMonitor.class);
 
         launcher = new LauncherImpl();
-
-        // Current thread context classloader should be the webapp classloader
-        ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
         launcher.setApplicationLoader(webappClassLoader);
 
         try {
-            URL systemScdl = getSystemSCDL(systemScdlPath);
             CompositeComponent rt = launcher.bootRuntime(systemScdl, mf);
 
             // Read optional path to extension SCDLs from context-param
@@ -136,14 +151,12 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
             // fixme this case is problematic
             requestInjector = (ServletRequestInjector) host.getServiceInstance();
 
-            URL appScdl = getApplicationSCDL(applicationScdlPath, servletContext);
-
             String name = servletContext.getServletContextName();
             if (name == null) {
                 name = "application";
             }
 
-            CompositeComponent root = launcher.bootApplication(name, appScdl);
+            CompositeComponent root = launcher.bootApplication(name, applicationScdl);
             String compositePath = servletContext.getInitParameter(CURRENT_COMPOSITE_PATH_PARAM);
             root.start();
             // set the current composite
@@ -189,13 +202,6 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
 
 
     /**
-     * Sets the system SCDL url for testing
-     */
-    void setTestSystemScdl(URL testSystemScdl) {
-        this.testSystemScdl = testSystemScdl;
-    }
-
-    /**
      * Deploys an system extension
      *
      * @param composite     the composite to deploy to
@@ -212,7 +218,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
 
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(extensionName,
-                implementation);
+                                                                   implementation);
 
         Deployer deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
         Component component = deployer.deploy(composite, definition);
@@ -272,54 +278,4 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
             component = root;
         }
     }
-
-    /**
-     * Returns a url to the application SCDL based on the given path
-     *
-     * @throws MissingResourceException
-     */
-    private URL getApplicationSCDL(String path, ServletContext context) throws MissingResourceException {
-        URL appScdl;
-        if (path.startsWith("/")) {
-            // Paths begining w/ "/" are treated as webapp resources
-            try {
-                appScdl = context.getResource(path);
-            } catch (MalformedURLException mue) {
-                MissingResourceException e = new MissingResourceException("Unable to find application SCDL");
-                e.setIdentifier(path);
-                throw e;
-            }
-        } else {
-            // Other paths are searched using the application classloader
-            appScdl = launcher.getApplicationLoader().getResource(path);
-            if (appScdl == null) {
-                MissingResourceException e = new MissingResourceException("Unable to find application SCDL");
-                e.setIdentifier(path);
-                throw e;
-            }
-        }
-        return appScdl;
-    }
-
-    /**
-     * Returns the system SCDL based on the given path
-     *
-     * @throws MissingResourceException
-     */
-    private URL getSystemSCDL(String path) throws MissingResourceException {
-        URL systemScdl;
-        if (testSystemScdl != null) {
-            systemScdl = testSystemScdl;
-        } else {
-            systemScdl = getClass().getClassLoader().getResource(path);
-            if (systemScdl == null) {
-                MissingResourceException e = new MissingResourceException("System SCDL not found");
-                e.setIdentifier(path);
-                throw e;
-            }
-        }
-        return systemScdl;
-    }
-
-
 }
