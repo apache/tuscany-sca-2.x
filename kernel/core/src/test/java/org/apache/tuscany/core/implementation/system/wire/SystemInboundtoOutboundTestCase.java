@@ -34,8 +34,8 @@ public class SystemInboundtoOutboundTestCase extends MockObjectTestCase {
         Target target = new TargetImpl();
         Mock mockWire = mock(SystemOutboundWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        SystemOutboundWire<Target> outboundWire = (SystemOutboundWire<Target>) mockWire.proxy();
-        SystemInboundWire<Target> inboundWire = new SystemInboundWireImpl<Target>("service", Target.class);
+        SystemOutboundWire outboundWire = (SystemOutboundWire) mockWire.proxy();
+        SystemInboundWire inboundWire = new SystemInboundWireImpl("service", Target.class);
         inboundWire.setTargetWire(outboundWire);
         assertSame(inboundWire.getTargetService(), target);
     }

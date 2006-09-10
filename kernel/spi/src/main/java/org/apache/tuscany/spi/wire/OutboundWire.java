@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.Operation;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface OutboundWire<T> extends RuntimeWire<T> {
+public interface OutboundWire extends RuntimeWire {
 
     /**
      * Returns the name of the source reference
@@ -55,12 +55,12 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     /**
      * Sets the callback interface type generated proxies implement
      */
-    void setCallbackInterface(Class<T> interfaze);
+    void setCallbackInterface(Class<?> interfaze);
 
     /**
      * Returns the callback interface type implemented by generated proxies
      */
-    Class<T> getCallbackInterface();
+    Class<?> getCallbackInterface();
 
     /**
      * Returns the invocation configuration for each operation on a service specified by a reference or a target
@@ -97,6 +97,6 @@ public interface OutboundWire<T> extends RuntimeWire<T> {
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
-    void setTargetWire(InboundWire<?> wire);
+    void setTargetWire(InboundWire wire);
 
 }

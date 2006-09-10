@@ -35,6 +35,6 @@ public interface SourcePolicyBuilder {
      * @param wire
      * @throws BuilderException
      */
-    void build(ReferenceDefinition referenceDefinition, OutboundWire<?> wire) throws BuilderException;
+    void build(ReferenceDefinition referenceDefinition, OutboundWire wire) throws BuilderException;
 
 }

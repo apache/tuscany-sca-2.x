@@ -86,7 +86,7 @@ public class JDKWireService implements WireService {
     public void init() {
     }
 
-    private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire<?> wire, Method[] methods)
+    private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
         throws NoMethodForOperationException {
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
@@ -102,24 +102,23 @@ public class JDKWireService implements WireService {
         return chains;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T createProxy(RuntimeWire<T> wire) throws ProxyCreationException {
+    public Object createProxy(RuntimeWire wire) throws ProxyCreationException {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
-            InboundWire<T> inbound = (InboundWire<T>) wire;
+            InboundWire inbound = (InboundWire) wire;
             Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
             Method[] methods = interfaze.getMethods();
             Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
             JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
             ClassLoader cl = interfaze.getClassLoader();
             //FIXME
-            return (T) Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
+            return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
         } else if (wire instanceof OutboundWire) {
-            OutboundWire<T> outbound = (OutboundWire<T>) wire;
+            OutboundWire outbound = (OutboundWire) wire;
             JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound, context);
             Class<?> interfaze = outbound.getServiceContract().getInterfaceClass();
             ClassLoader cl = interfaze.getClassLoader();
-            return (T) Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
+            return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
             e.setIdentifier(wire.getClass().getName());
@@ -127,23 +126,22 @@ public class JDKWireService implements WireService {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T> T createCallbackProxy(ServiceContract<?> contract, InboundWire<?> wire) throws ProxyCreationException {
-        Class<T> interfaze = (Class<T>) contract.getCallbackClass();
+    public Object createCallbackProxy(ServiceContract<?> contract, InboundWire wire) throws ProxyCreationException {
+        Class<?> interfaze = contract.getCallbackClass();
         ClassLoader cl = interfaze.getClassLoader();
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(context, wire);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public <T> WireInvocationHandler createHandler(RuntimeWire<T> wire) {
+    public WireInvocationHandler createHandler(RuntimeWire wire) {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
-            InboundWire<T> inbound = (InboundWire<T>) wire;
+            InboundWire inbound = (InboundWire) wire;
             Method[] methods = inbound.getServiceContract().getInterfaceClass().getMethods();
             Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
             return new JDKInboundInvocationHandler(chains);
         } else if (wire instanceof OutboundWire) {
-            OutboundWire<T> outbound = (OutboundWire<T>) wire;
+            OutboundWire outbound = (OutboundWire) wire;
             return new JDKOutboundInvocationHandler(outbound, context);
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
@@ -152,7 +150,7 @@ public class JDKWireService implements WireService {
         }
     }
 
-    public WireInvocationHandler createCallbackHandler(InboundWire<?> wire) {
+    public WireInvocationHandler createCallbackHandler(InboundWire wire) {
         return new JDKCallbackInvocationHandler(context, wire);
     }
 
@@ -210,7 +208,7 @@ public class JDKWireService implements WireService {
     }
 
     public <T> void createWires(Reference<T> reference, ServiceContract<?> contract) {
-        InboundWire<T> wire = new InboundWireImpl<T>();
+        InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
         wire.setContainerName(reference.getName());
         for (Operation<?> operation : contract.getOperations().values()) {
@@ -235,7 +233,6 @@ public class JDKWireService implements WireService {
         createWires(service, def.getTarget().getPath(), def.getServiceContract());
     }
 
-    @SuppressWarnings("unchecked")
     public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
         //TODO multiplicity
         if (reference.getTargets().size() != 1) {
@@ -267,8 +264,8 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
-    public InboundWire<?> createWire(ServiceDefinition service) {
-        InboundWire<Object> wire = new InboundWireImpl<Object>();
+    public InboundWire createWire(ServiceDefinition service) {
+        InboundWire wire = new InboundWireImpl();
         ServiceContract<?> contract = service.getServiceContract();
         wire.setServiceContract(contract);
         wire.setServiceName(service.getName());
@@ -286,10 +283,9 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
-    @SuppressWarnings("unchecked")
     private <T> void createWires(Service<T> service, String targetName, ServiceContract<?> contract) {
-        InboundWire<T> inboundWire = new InboundWireImpl<T>();
-        OutboundWire<T> outboundWire = new OutboundWireImpl<T>();
+        InboundWire inboundWire = new InboundWireImpl();
+        OutboundWire outboundWire = new OutboundWireImpl();
         inboundWire.setServiceContract(contract);
         inboundWire.setContainerName(service.getName());
         outboundWire.setServiceContract(contract);
@@ -303,7 +299,7 @@ public class JDKWireService implements WireService {
         }
 
         // Add target callback chain to outbound wire, applicable to both bound and bindless services
-        Class<T> callbackInterface = (Class<T>) contract.getCallbackClass();
+        Class<?> callbackInterface = contract.getCallbackClass();
         if (callbackInterface != null) {
             outboundWire.setCallbackInterface(callbackInterface);
             for (Operation<?> operation : contract.getCallbackOperations().values()) {

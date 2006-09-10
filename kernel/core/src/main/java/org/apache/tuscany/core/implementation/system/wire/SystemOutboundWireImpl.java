@@ -35,15 +35,15 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
+public class SystemOutboundWireImpl implements SystemOutboundWire {
     private String referenceName;
     private QualifiedName targetName;
     private ServiceContract serviceContract;
-    private SystemInboundWire<?> targetWire;
+    private SystemInboundWire targetWire;
     private String containerName;
-    private Class<T> interfaze;
+    private Class<?> interfaze;
 
-    public SystemOutboundWireImpl(String referenceName, QualifiedName targetName, Class<T> interfaze) {
+    public SystemOutboundWireImpl(String referenceName, QualifiedName targetName, Class<?> interfaze) {
         this.referenceName = referenceName;
         this.targetName = targetName;
         serviceContract = new JavaServiceContract(interfaze);
@@ -74,19 +74,18 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         this.targetName = targetName;
     }
 
-    public T getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetException {
         if (targetWire == null) {
             throw new TargetException("No target wire connected to source wire");
         }
         return interfaze.cast(targetWire.getTargetService());
     }
 
-    @SuppressWarnings("unchecked")
-    public void setCallbackInterface(Class<T> interfaze) {
+    public void setCallbackInterface(Class<?> interfaze) {
         throw new UnsupportedOperationException();
     }
 
-    public Class<T> getCallbackInterface() {
+    public Class<?> getCallbackInterface() {
         throw new UnsupportedOperationException();
     }
 
@@ -126,9 +125,9 @@ public class SystemOutboundWireImpl<T> implements SystemOutboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(InboundWire<?> wire) {
+    public void setTargetWire(InboundWire wire) {
         assert wire instanceof SystemInboundWire : "wire must be a " + SystemInboundWire.class.getName();
-        this.targetWire = (SystemInboundWire<?>) wire;
+        this.targetWire = (SystemInboundWire) wire;
     }
 
     public boolean isOptimizable() {

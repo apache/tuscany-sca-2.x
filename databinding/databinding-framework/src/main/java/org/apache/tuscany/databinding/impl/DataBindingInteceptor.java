@@ -33,9 +33,9 @@ import org.apache.tuscany.spi.wire.RuntimeWire;
 public class DataBindingInteceptor implements Interceptor {
     private Interceptor next;
 
-    private RuntimeWire<?> sourceWire; // NOPMD by rfeng on 8/29/06 10:15 AM
+    private RuntimeWire sourceWire; // NOPMD by rfeng on 8/29/06 10:15 AM
 
-    private RuntimeWire<?> targetWire; // NOPMD by rfeng on 8/29/06 10:15 AM
+    private RuntimeWire targetWire; // NOPMD by rfeng on 8/29/06 10:15 AM
 
     private Operation<?> sourceOperation;
 
@@ -43,7 +43,7 @@ public class DataBindingInteceptor implements Interceptor {
 
     private Mediator mediator;
 
-    public DataBindingInteceptor(RuntimeWire<?> sourceWire, Operation<?> sourceOperation, RuntimeWire<?> targetWire,
+    public DataBindingInteceptor(RuntimeWire sourceWire, Operation<?> sourceOperation, RuntimeWire targetWire,
             Operation<?> targetOperation) {
         super();
         this.sourceWire = sourceWire;

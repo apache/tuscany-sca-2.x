@@ -45,7 +45,7 @@ public interface WireService {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createProxy(RuntimeWire<T> wire) throws ProxyCreationException;
+    Object createProxy(RuntimeWire wire) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the service contract callback
@@ -54,7 +54,7 @@ public interface WireService {
      * @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createCallbackProxy(ServiceContract<?> contract, InboundWire<?> wire) throws ProxyCreationException;
+    Object createCallbackProxy(ServiceContract<?> contract, InboundWire wire) throws ProxyCreationException;
 
 
     /**
@@ -63,14 +63,14 @@ public interface WireService {
      * @param wire the wire to create the invocation handler for
      * @return the invocation handler
      */
-    <T> WireInvocationHandler createHandler(RuntimeWire<T> wire);
+    WireInvocationHandler createHandler(RuntimeWire wire);
 
     /**
      * Creates a wire invocation handler for flowing invocations through a callback
      *
      * @return the invocation handler for flowing invocations through a callback
      */
-    WireInvocationHandler createCallbackHandler(InboundWire<?> wire);
+    WireInvocationHandler createCallbackHandler(InboundWire wire);
 
     /**
      * Creates an outbound invocation chain for a given operation
@@ -136,7 +136,7 @@ public interface WireService {
      * @param def     the model artifact representing the service
      */
     void createWires(Service<?> service, BindlessServiceDefinition def);
-    
+
     /**
      * Check the compatiblity of the source and the target service contracts.<p>
      * A wire may only connect a source to a target if the target implements an interface that is compatible with the
@@ -153,13 +153,13 @@ public interface WireService {
      * by the service.
      * <li>other specified attributes of the two interfaces MUST match, including Scope and Callback interface
      * </ol>
-     * 
+     *
      * <p>Please note this test is not symetric: isWireable(A, B) does NOT imply that isWireable(B, A)
-     * 
+     *
      * @param source The source service contract
      * @param target The target service contract
      * @return true if the contracts are wireable
      */
-    boolean isWireable(ServiceContract<?> source, ServiceContract<?> target); 
+    boolean isWireable(ServiceContract<?> source, ServiceContract<?> target);
 
 }

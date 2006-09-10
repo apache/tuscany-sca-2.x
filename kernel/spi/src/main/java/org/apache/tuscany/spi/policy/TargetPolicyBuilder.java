@@ -35,6 +35,6 @@ public interface TargetPolicyBuilder {
      * @param wire
      * @throws BuilderException
      */
-    void build(ServiceDefinition serviceDefinition, InboundWire<?> wire) throws BuilderException;
+    void build(ServiceDefinition serviceDefinition, InboundWire wire) throws BuilderException;
 
 }

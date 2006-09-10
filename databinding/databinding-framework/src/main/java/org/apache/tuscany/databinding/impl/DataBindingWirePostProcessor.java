@@ -52,7 +52,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
      * @see org.apache.tuscany.spi.builder.WirePostProcessor#process(org.apache.tuscany.spi.wire.OutboundWire,
      *      org.apache.tuscany.spi.wire.InboundWire)
      */
-    public void process(OutboundWire<?> source, InboundWire<?> target) {
+    public void process(OutboundWire source, InboundWire target) {
         Map<Operation<?>, OutboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
@@ -75,7 +75,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
      * @see org.apache.tuscany.spi.builder.WirePostProcessor#process(org.apache.tuscany.spi.wire.InboundWire,
      *      org.apache.tuscany.spi.wire.OutboundWire)
      */
-    public void process(InboundWire<?> source, OutboundWire<?> target) {
+    public void process(InboundWire source, OutboundWire target) {
         Map<Operation<?>, InboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();

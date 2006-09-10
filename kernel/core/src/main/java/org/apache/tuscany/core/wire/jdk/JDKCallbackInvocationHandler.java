@@ -44,7 +44,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     implements WireInvocationHandler, InvocationHandler {
 
     private WorkContext context;
-    private InboundWire<?> inboundWire;
+    private InboundWire inboundWire;
     private Object messageId;
     private Object correlationId;
 

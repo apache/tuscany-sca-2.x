@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemReference;
@@ -60,31 +59,29 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
             throw new BuilderConfigException("Target not found: [" + targetName + ']');
         }
         String name = boundServiceDefinition.getName();
-        InboundWire<Object> inboundWire =
-            new SystemInboundWireImpl<Object>(name, interfaze, target);
-        SystemOutboundWire<Object> outboundWire =
-            new SystemOutboundWireImpl<Object>(name, targetName, interfaze);
+        InboundWire inboundWire =
+            new SystemInboundWireImpl(name, interfaze, target);
+        SystemOutboundWire outboundWire =
+            new SystemOutboundWireImpl(name, targetName, interfaze);
         SystemService<Object> service = new SystemServiceImpl<Object>(boundServiceDefinition.getName(), parent);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         return service;
     }
 
-    @SuppressWarnings("unchecked")
     public SystemReference build(CompositeComponent parent,
                                  BoundReferenceDefinition<SystemBinding> boundReferenceDefinition,
                                  DeploymentContext deploymentContext) {
         assert parent.getParent() instanceof AutowireComponent
             : "Grandparent not an instance of " + AutowireComponent.class.getName();
         AutowireComponent autowireComponent = (AutowireComponent) parent.getParent();
-        Class<Object> interfaze = (Class<Object>) boundReferenceDefinition.getServiceContract().getInterfaceClass();
-        SystemReferenceImpl<Object> reference =
-            new SystemReferenceImpl(boundReferenceDefinition.getName(), interfaze, parent);
-        SystemInboundWire<Object> inboundWire =
-            new SystemInboundWireImpl(boundReferenceDefinition.getName(), interfaze);
+        Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
+        String name = boundReferenceDefinition.getName();
+        SystemReferenceImpl<?> reference = new SystemReferenceImpl(name, interfaze, parent);
+        SystemInboundWire inboundWire = new SystemInboundWireImpl(name, interfaze);
         String refName = boundReferenceDefinition.getName();
-        OutboundWire<Object> outboundWire = new SystemOutboundAutowire<Object>(refName, interfaze,
-            autowireComponent, boundReferenceDefinition.isRequired());
+        boolean required = boundReferenceDefinition.isRequired();
+        SystemOutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze, autowireComponent, required);
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);
         return reference;

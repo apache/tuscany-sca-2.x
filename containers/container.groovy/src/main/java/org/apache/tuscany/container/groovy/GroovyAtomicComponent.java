@@ -88,7 +88,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
 
         // inject references
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
-            for (OutboundWire<?> wire : referenceWires) {
+            for (OutboundWire wire : referenceWires) {
                 instance.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
             }
         }
@@ -106,7 +106,7 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
     }
 
     public Object getServiceInstance(String service) throws TargetException {
-        InboundWire<?> wire = getInboundWire(service);
+        InboundWire wire = getInboundWire(service);
         if (wire == null) {
             TargetException e = new TargetException("ServiceDefinition not found"); // TODO better error message
             e.setIdentifier(service);

@@ -18,11 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
@@ -58,7 +61,8 @@ public class GetServiceByNameTestCase extends TestCase {
         JavaServiceContract contract = new JavaServiceContract(Target.class);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).anyTimes();
         expect(wire.getServiceName()).andReturn("Target");
-        expect(wire.getInvocationChains()).andReturn(Collections.emptyMap());
+        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+        expect(wire.getInvocationChains()).andReturn(chains);
         expect(wire.getCallbackReferenceName()).andReturn(null);
         replay(wire);
         component.addInboundWire(wire);

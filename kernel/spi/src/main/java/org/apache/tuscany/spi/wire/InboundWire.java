@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.Operation;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface InboundWire<T> extends RuntimeWire<T> {
+public interface InboundWire extends RuntimeWire {
 
     /**
      * Returns the name of the target service of the wire
@@ -85,7 +85,7 @@ public interface InboundWire<T> extends RuntimeWire<T> {
     /**
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
-    void setTargetWire(OutboundWire<?> wire);
+    void setTargetWire(OutboundWire wire);
 
     /**
      * Creates an association between a message id and the address of the SCAObject that the corresponding message

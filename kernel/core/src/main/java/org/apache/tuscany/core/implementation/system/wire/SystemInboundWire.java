@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface SystemInboundWire<T> extends InboundWire<T> {
+public interface SystemInboundWire extends InboundWire {
 
 
 }

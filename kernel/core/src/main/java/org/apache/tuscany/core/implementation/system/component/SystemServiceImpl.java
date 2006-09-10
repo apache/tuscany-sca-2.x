@@ -41,8 +41,8 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  */
 public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements SystemService<T> {
 
-    protected SystemInboundWire<T> inboundWire;
-    protected SystemOutboundWire<?> outboundWire;
+    protected SystemInboundWire inboundWire;
+    protected SystemOutboundWire outboundWire;
 
     public SystemServiceImpl(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
@@ -52,27 +52,27 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
         return Scope.COMPOSITE;
     }
 
-    public InboundWire<T> getInboundWire() {
+    public InboundWire getInboundWire() {
         return inboundWire;
     }
 
-    public void setInboundWire(InboundWire<T> wire) {
+    public void setInboundWire(InboundWire wire) {
         assert wire instanceof SystemInboundWire : "wire must be a " + SystemInboundWire.class.getName();
-        this.inboundWire = (SystemInboundWire<T>) wire;
+        this.inboundWire = (SystemInboundWire) wire;
     }
 
-    public OutboundWire<?> getOutboundWire() {
+    public OutboundWire getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire<?> wire) {
+    public void setOutboundWire(OutboundWire wire) {
         assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
-        this.outboundWire = (SystemOutboundWire<?>) wire;
+        this.outboundWire = (SystemOutboundWire) wire;
     }
 
     @SuppressWarnings("unchecked")
     public Class<T> getInterface() {
-        return (Class<T>)inboundWire.getServiceContract().getInterfaceClass();
+        return (Class<T>) inboundWire.getServiceContract().getInterfaceClass();
     }
 
     public WireInvocationHandler getHandler() {
@@ -81,7 +81,7 @@ public class SystemServiceImpl<T> extends AbstractSCAObject<T> implements System
     }
 
     public T getServiceInstance() throws TargetException {
-        return inboundWire.getTargetService();
+        return (T) inboundWire.getTargetService();
     }
 
 

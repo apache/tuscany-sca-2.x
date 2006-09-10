@@ -59,7 +59,7 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
         Mock mock = mock(OutboundWire.class);
         mock.expects(atLeastOnce()).method("getInvocationChains");
         mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("target"));
-        OutboundWire<Target> wire = (OutboundWire<Target>) mock.proxy();
+        OutboundWire wire = (OutboundWire) mock.proxy();
 
         Mock mockService = mock(WireService.class);
         mockService.expects(atLeastOnce()).method("createProxy").with(eq(wire)).will(new Stub() {

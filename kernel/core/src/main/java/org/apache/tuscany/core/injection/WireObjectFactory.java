@@ -30,10 +30,10 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class WireObjectFactory implements ObjectFactory {
 
-    private RuntimeWire<?> wire;
+    private RuntimeWire wire;
     private WireService wireService;
 
-    public WireObjectFactory(RuntimeWire<?> wire, WireService wireService) {
+    public WireObjectFactory(RuntimeWire wire, WireService wireService) {
         this.wire = wire;
         this.wireService = wireService;
     }

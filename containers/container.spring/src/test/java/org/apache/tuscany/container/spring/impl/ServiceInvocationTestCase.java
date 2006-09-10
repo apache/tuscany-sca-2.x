@@ -45,8 +45,8 @@ public class ServiceInvocationTestCase extends TestCase {
     public void testInvocation() throws InvalidServiceContractException {
         AbstractApplicationContext springContext = createSpringContext();
         SpringCompositeComponent<?> context = new SpringCompositeComponent("parent", springContext, null, null, null);
-        InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
-        OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
+        InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
+        OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
         Service<TestBean> service =
             new ServiceExtension<TestBean>("fooService", TestBean.class, context, createWireService());

@@ -24,28 +24,26 @@ import java.net.URI;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -152,11 +150,11 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         target.addTarget(new URI("foo"));
         definition.add(target);
         AtomicComponent<?> component = builder.build(parent, definition, deploymentContext);
-        OutboundWire<Foo> wire = component.getOutboundWires().get("ref").get(0);
+        OutboundWire wire = component.getOutboundWires().get("ref").get(0);
         Mock mock = mock(SystemInboundWire.class);
         FooImpl targetFoo = new FooImpl();
         mock.expects(once()).method("getTargetService").will(returnValue(targetFoo));
-        wire.setTargetWire((SystemInboundWire<Foo>) mock.proxy());
+        wire.setTargetWire((SystemInboundWire) mock.proxy());
         component.start();
         FooImpl foo = (FooImpl) component.getServiceInstance();
         assertNotNull(foo.ref);

@@ -19,17 +19,17 @@
 package org.apache.tuscany.core.implementation.system.wire;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
+import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
+import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.jmock.Mock;
 import org.jmock.MockObjectTestCase;
 
@@ -46,7 +46,7 @@ public class AtomicComponentWireInvocationTestCase extends MockObjectTestCase {
         Target target = new TargetImpl();
         Mock mockWire = mock(SystemInboundWire.class);
         mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        SystemInboundWire<Target> inboundWire = (SystemInboundWire<Target>) mockWire.proxy();
+        SystemInboundWire inboundWire = (SystemInboundWire) mockWire.proxy();
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
@@ -54,12 +54,12 @@ public class AtomicComponentWireInvocationTestCase extends MockObjectTestCase {
         configuration.addServiceInterface(Source.class);
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
         SystemAtomicComponent sourceContext = new SystemAtomicComponentImpl("source", configuration);
-        OutboundWire<Target> outboundWire =
-            new SystemOutboundWireImpl<Target>("setTarget", new QualifiedName("service"), Target.class);
+        QualifiedName qName = new QualifiedName("service");
+        OutboundWire outboundWire = new SystemOutboundWireImpl("setTarget", qName, Target.class);
         outboundWire.setTargetWire(inboundWire);
         sourceContext.addOutboundWire(outboundWire);
         sourceContext.start();
-        assertSame(((Source) sourceContext.getServiceInstance()).getTarget(),
-            target); // wires should pass back direct ref
+        assertSame(((Source) sourceContext.getServiceInstance()).getTarget(), target);
+        // wires should pass back direct ref
     }
 }

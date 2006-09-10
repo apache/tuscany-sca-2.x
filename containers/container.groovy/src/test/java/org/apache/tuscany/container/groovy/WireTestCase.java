@@ -93,7 +93,7 @@ public class WireTestCase extends TestCase {
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent<Greeting> component = new GroovyAtomicComponent<Greeting>(configuration, null);
-        OutboundWire<?> wire = createOutboundWire("wire", Greeting.class);
+        OutboundWire wire = createOutboundWire("wire", Greeting.class);
         terminateWire(wire);
 
         TargetInvoker invoker = createMock(TargetInvoker.class);
@@ -163,7 +163,7 @@ public class WireTestCase extends TestCase {
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent<Greeting> component = new GroovyAtomicComponent<Greeting>(configuration, null);
-        InboundWire<?> wire = createInboundWire("Greeting", Greeting.class);
+        InboundWire wire = createInboundWire("Greeting", Greeting.class);
         terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(component.createTargetInvoker(null, chain.getOperation()));

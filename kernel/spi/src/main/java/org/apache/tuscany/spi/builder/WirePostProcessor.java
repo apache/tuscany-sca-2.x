@@ -32,12 +32,12 @@ public interface WirePostProcessor {
      * @param source
      * @param target
      */
-    void process(OutboundWire<?> source, InboundWire<?> target);
+    void process(OutboundWire source, InboundWire target);
 
     /**
      * @param source
      * @param target
      */
-    void process(InboundWire<?> source, OutboundWire<?> target);
+    void process(InboundWire source, OutboundWire target);
 
 }
