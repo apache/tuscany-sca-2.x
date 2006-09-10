@@ -23,15 +23,15 @@ import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
+public class SystemCompositeLifecycleTestCase extends TestCase {
 
     public void testLifecycle() throws Exception {
         SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null, null);
@@ -47,28 +47,29 @@ public class SystemCompositeLifecycleTestCase extends MockObjectTestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         Source originalSource = new SourceImpl();
-        Mock mock = mock(SystemAtomicComponent.class);
-        mock.expects(atLeastOnce()).method("start");
-        mock.expects(atLeastOnce()).method("stop");
-        mock.stubs().method("getName").will(returnValue("source"));
-        mock.stubs().method("getServiceInstance").will(returnValue(originalSource));
-        mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicComponent context = (SystemAtomicComponent) mock.proxy();
+        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        component.start();
+        component.stop();
+        EasyMock.expectLastCall().times(2);
+        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(component.getServiceInstance()).andReturn(originalSource).atLeastOnce();
+        EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
+        EasyMock.replay(component);
 
         SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null, null);
         composite.start();
-        composite.register(context);
+        composite.register(component);
 
-        AtomicComponent ctx = (AtomicComponent) composite.getChild("source");
-        Source source = (Source) ctx.getServiceInstance();
+        AtomicComponent atomicComponent = (AtomicComponent) composite.getChild("source");
+        Source source = (Source) atomicComponent.getServiceInstance();
         assertNotNull(source);
         composite.stop();
         composite.start();
-        ctx = (AtomicComponent) composite.getChild("source");
-        Source source2 = (Source) ctx.getServiceInstance();
+        atomicComponent = (AtomicComponent) composite.getChild("source");
+        Source source2 = (Source) atomicComponent.getServiceInstance();
         assertNotNull(source2);
         composite.stop();
-
+        EasyMock.verify(component);
     }
 
     protected void setUp() throws Exception {

@@ -25,25 +25,25 @@ import java.rmi.Remote;
  */
 
 public interface RMIHost {
-    final int RMI_DEFAULT_PORT = 1099;
+    int RMI_DEFAULT_PORT = 1099;
 
     // registers an RMI service with the given name and port
     void registerService(String serviceName, int port, Remote serviceObject) throws RMIHostException,
-                                                                                   RMIHostRuntimeException;
+                                                                                    RMIHostRuntimeException;
 
     // registers an RMI service with the given name and default port (1099)
     void registerService(String serviceName, Remote serviceObject) throws RMIHostException,
-                                                                         RMIHostRuntimeException;
+                                                                          RMIHostRuntimeException;
 
     // unregister a service registered under the given service name and port number
     void unregisterService(String serviceName, int port) throws RMIHostException,
-                                                               RMIHostRuntimeException;
+                                                                RMIHostRuntimeException;
 
     // unregister a service registered under the given service name and defalut port number (1099)
     void unregisterService(String serviceName) throws RMIHostException,
-                                                     RMIHostRuntimeException;
+                                                      RMIHostRuntimeException;
 
     //find a remote service hosted on the given host, port and service name
     Remote findService(String host, String port, String svcName) throws RMIHostException,
-                                                                       RMIHostRuntimeException;
+                                                                        RMIHostRuntimeException;
 }

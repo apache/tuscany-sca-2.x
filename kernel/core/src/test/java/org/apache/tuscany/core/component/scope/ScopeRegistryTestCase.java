@@ -24,15 +24,15 @@ import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies retrieval of standard scope contexts from the default scope registry
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ScopeRegistryTestCase extends MockObjectTestCase {
+public class ScopeRegistryTestCase extends TestCase {
     public void testScopeContextCreation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);

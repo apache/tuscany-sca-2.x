@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
@@ -44,13 +45,12 @@ import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemComponentBuilderTestCase extends MockObjectTestCase {
+public class SystemComponentBuilderTestCase extends TestCase {
 
     AutowireComponent parent;
     DeploymentContext deploymentContext;
@@ -150,14 +150,16 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         definition.add(target);
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
         OutboundWire wire = component.getOutboundWires().get("ref").get(0);
-        Mock mock = mock(SystemInboundWire.class);
+        SystemInboundWire inbound = EasyMock.createMock(SystemInboundWire.class);
         FooImpl targetFoo = new FooImpl();
-        mock.expects(once()).method("getTargetService").will(returnValue(targetFoo));
-        wire.setTargetWire((SystemInboundWire) mock.proxy());
+        EasyMock.expect(inbound.getTargetService()).andReturn(targetFoo);
+        EasyMock.replay(inbound);
+        wire.setTargetWire(inbound);
         component.start();
         FooImpl foo = (FooImpl) component.getServiceInstance();
         assertNotNull(foo.ref);
         container.onEvent(new CompositeStop(this, null));
+        EasyMock.verify(inbound);
     }
 
     /**
@@ -182,15 +184,16 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        Mock mock = mock(AutowireComponent.class);
-        AutowireComponent autowireParent = (AutowireComponent) mock.proxy();
+        AutowireComponent autowireParent = EasyMock.createNiceMock(AutowireComponent.class);
         FooImpl targetFoo = new FooImpl();
-        mock.expects(once()).method("resolveInstance").will(returnValue(targetFoo));
+        EasyMock.expect(autowireParent.resolveInstance(EasyMock.eq(Foo.class))).andReturn(targetFoo);
+        EasyMock.replay(autowireParent);
         AtomicComponent component = builder.build(autowireParent, definition, deploymentContext);
         component.start();
         FooImpl foo = (FooImpl) component.getServiceInstance();
         assertNotNull(foo.ref);
         container.onEvent(new CompositeStop(this, null));
+        EasyMock.verify(autowireParent);
     }
 
     /**
@@ -214,27 +217,27 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
         mappedReference.setServiceContract(contract);
         type.add(mappedReference);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        Mock mock = mock(AutowireComponent.class);
+        AutowireComponent autowireParent = EasyMock.createNiceMock(AutowireComponent.class);
         FooImpl targetFoo = new FooImpl();
-        mock.expects(atLeastOnce()).method("resolveInstance").will(returnValue(targetFoo));
-        AutowireComponent autowireParent = (AutowireComponent) mock.proxy();
+        EasyMock.expect(autowireParent.resolveInstance(EasyMock.eq(Foo.class))).andReturn(targetFoo);
+        EasyMock.replay(autowireParent);
         AtomicComponent component = builder.build(autowireParent, definition, deploymentContext);
         component.start();
         container.onEvent(new CompositeStart(this, null));
         FooImpl2 foo = (FooImpl2) component.getServiceInstance();
         assertNotNull(foo.getRef());
         container.onEvent(new CompositeStop(this, null));
+        EasyMock.verify(autowireParent);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        Mock mock = mock(AutowireComponent.class);
-        parent = (AutowireComponent) mock.proxy();
+        parent = EasyMock.createNiceMock(AutowireComponent.class);
         container = new ModuleScopeContainer();
         container.start();
-        Mock mock2 = mock(DeploymentContext.class);
-        mock2.expects(atLeastOnce()).method("getModuleScope").will(returnValue(container));
-        deploymentContext = (DeploymentContext) mock2.proxy();
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(deploymentContext.getModuleScope()).andReturn(container).atLeastOnce();
+        EasyMock.replay(deploymentContext);
     }
 
     private static interface Foo {

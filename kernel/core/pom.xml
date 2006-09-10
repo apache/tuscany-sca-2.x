@@ -63,10 +63,6 @@
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
             <version>2.2</version>

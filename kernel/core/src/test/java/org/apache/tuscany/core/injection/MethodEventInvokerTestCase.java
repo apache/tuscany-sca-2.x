@@ -20,12 +20,12 @@ package org.apache.tuscany.core.injection;
 
 import java.lang.reflect.Method;
 
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MethodEventInvokerTestCase extends MockObjectTestCase {
+public class MethodEventInvokerTestCase extends TestCase {
     private Method privateMethod;
     private Method exceptionMethod;
 

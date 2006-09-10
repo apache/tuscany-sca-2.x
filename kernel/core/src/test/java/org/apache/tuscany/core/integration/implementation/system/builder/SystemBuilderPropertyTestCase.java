@@ -18,32 +18,30 @@
  */
 package org.apache.tuscany.core.integration.implementation.system.builder;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.component.AutowireComponent;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.easymock.EasyMock;
 
 /**
  * Verifies that the system builder handles configured properties correctly
  *
  * @version $Rev$ $Date$
  */
-public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
+public class SystemBuilderPropertyTestCase extends TestCase {
 
     DeploymentContext deploymentContext;
     CompositeComponent parent;
@@ -53,7 +51,7 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
-        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[])null)));
+        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[]) null)));
         JavaMappedProperty<String> property = new JavaMappedProperty<String>();
         property.setName("test");
         property.setDefaultValueFactory(new SingletonObjectFactory<String>("foo"));
@@ -71,8 +69,7 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
-        Mock mock = mock(AutowireComponent.class);
-        parent = (CompositeComponent) mock.proxy();
+        parent = EasyMock.createNiceMock(AutowireComponent.class);
     }
 
     private static class Foo {

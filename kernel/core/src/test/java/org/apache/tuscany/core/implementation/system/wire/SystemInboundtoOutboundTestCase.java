@@ -18,26 +18,27 @@
  */
 package org.apache.tuscany.core.implementation.system.wire;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * Tests connecting an inbound system wire to an outbound system wire
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemInboundtoOutboundTestCase extends MockObjectTestCase {
+public class SystemInboundtoOutboundTestCase extends TestCase {
 
     public void testWire() throws NoSuchMethodException {
         Target target = new TargetImpl();
-        Mock mockWire = mock(SystemOutboundWire.class);
-        mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        SystemOutboundWire outboundWire = (SystemOutboundWire) mockWire.proxy();
+        SystemOutboundWire outboundWire = EasyMock.createMock(SystemOutboundWire.class);
+        EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
+        EasyMock.replay(outboundWire);
         SystemInboundWire inboundWire = new SystemInboundWireImpl("service", Target.class);
         inboundWire.setTargetWire(outboundWire);
         assertSame(inboundWire.getTargetService(), target);
+        EasyMock.verify(outboundWire);
     }
 
 }

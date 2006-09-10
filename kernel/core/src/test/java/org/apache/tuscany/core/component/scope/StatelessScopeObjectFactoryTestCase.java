@@ -18,19 +18,20 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.model.Scope;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class StatelessScopeObjectFactoryTestCase extends MockObjectTestCase {
+public class StatelessScopeObjectFactoryTestCase extends TestCase {
 
     public void testCreation() {
-        Mock registry = mock(ScopeRegistry.class);
-        registry.expects(once()).method("registerFactory").withAnyArguments();
-
-        assertNotNull(new StatelessScopeObjectFactory((ScopeRegistry)registry.proxy()).getInstance());
+        ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
+        registry.registerFactory(EasyMock.isA(Scope.class), EasyMock.isA(StatelessScopeObjectFactory.class));
+        assertNotNull(new StatelessScopeObjectFactory(registry).getInstance());
     }
 }

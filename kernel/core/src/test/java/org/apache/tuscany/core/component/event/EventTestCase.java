@@ -20,13 +20,13 @@ package org.apache.tuscany.core.component.event;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class EventTestCase extends MockObjectTestCase {
+public class EventTestCase extends TestCase {
 
     private CompositeComponent component;
 
@@ -67,7 +67,6 @@ public class EventTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        Mock mock = mock(CompositeComponent.class);
-        component = (CompositeComponent) mock.proxy();
+        component = EasyMock.createNiceMock(CompositeComponent.class);
     }
 }

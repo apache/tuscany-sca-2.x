@@ -47,10 +47,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>jmock</groupId>
-            <artifactId>jmock</artifactId>
+		  <dependency>
+				<groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>

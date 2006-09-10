@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
@@ -36,14 +37,13 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.jmock.MockObjectTestCase;
 
 /**
  * Verifies invocations on inbound wires
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JDKInboundInvocationHandlerTestCase extends MockObjectTestCase {
+public class JDKInboundInvocationHandlerTestCase extends TestCase {
 
     private Method echo;
     private Operation operation;

@@ -18,35 +18,35 @@
  */
 package org.apache.tuscany.core.integration.implementation.java.builder;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.easymock.EasyMock;
 
 /**
  * Verifies that the system builder handles configured properties correctly
  *
  * @version $Rev$ $Date$
  */
-public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
+public class JavaBuilderPropertyTestCase extends TestCase {
 
     private DeploymentContext deploymentContext;
     private CompositeComponent parent;
@@ -62,7 +62,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
         property.setDefaultValueFactory(new SingletonObjectFactory<String>("foo"));
         property.setMember(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class));
         type.add(property);
-        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[])null)));
+        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[]) null)));
         type.setImplementationScope(Scope.STATELESS);
         JavaImplementation impl = new JavaImplementation();
         impl.setComponentType(type);
@@ -76,8 +76,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
-        Mock mock = mock(AutowireComponent.class);
-        parent = (CompositeComponent) mock.proxy();
+        parent = EasyMock.createNiceMock(AutowireComponent.class);
         registry = new ScopeRegistryImpl(new WorkContextImpl());
         new StatelessScopeObjectFactory(registry);
     }

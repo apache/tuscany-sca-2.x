@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -36,21 +36,20 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class JavaComponentBuilderTestCase extends MockObjectTestCase {
+public class JavaComponentBuilderTestCase extends TestCase {
     private DeploymentContext deploymentContext;
 
     public void testBuild() throws Exception {
@@ -95,15 +94,18 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
     }
 
     private ScopeContainer createMock() {
-        Mock mock = mock(ScopeContainer.class);
-        mock.expects(once()).method("start");
-        mock.expects(atLeastOnce()).method("register");
-        mock.expects(atLeastOnce()).method("getScope").will(returnValue(Scope.MODULE));
-        mock.expects(atLeastOnce()).method("getInstance").will(new Stub() {
+        ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
+        scope.start();
+        scope.stop();
+        scope.register(EasyMock.isA(AtomicComponent.class));
+        EasyMock.expectLastCall().atLeastOnce();
+        EasyMock.expect(scope.getScope()).andReturn(Scope.MODULE).atLeastOnce();
+        scope.getInstance(EasyMock.isA(AtomicComponent.class));
+        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
 
-            public Object invoke(Invocation invocation) throws Throwable {
-                AtomicComponent component = (AtomicComponent) invocation.parameterValues.get(0);
+            public Object answer() throws Throwable {
+                AtomicComponent component = (AtomicComponent) EasyMock.getCurrentArguments()[0];
                 Object instance = cache.get(component);
                 if (instance == null) {
                     instance = component.createInstance();
@@ -111,12 +113,9 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
                 }
                 return instance;
             }
-
-            public StringBuffer describeTo(StringBuffer stringBuffer) {
-                return null;
-            }
-        });
-        return (ScopeContainer) mock.proxy();
+        }).anyTimes();
+        EasyMock.replay(scope);
+        return scope;
     }
 
 }

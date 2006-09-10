@@ -24,27 +24,28 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Target;
 import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 
 /**
  * Validates wiring from a Java atomic context
  *
  * @version $$Rev$$ $$Date$$
  */
-public class JavaReferenceWireTestCase extends MockObjectTestCase {
+public class JavaReferenceWireTestCase extends TestCase {
 
     public void testReferenceSet() throws Exception {
         ScopeContainer scope = createMock();
@@ -56,43 +57,46 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
         configuration.setScopeContainer(scope);
-        Mock mock = mock(OutboundWire.class);
-        mock.expects(atLeastOnce()).method("getInvocationChains");
-        mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("target"));
-        OutboundWire wire = (OutboundWire) mock.proxy();
-
-        Mock mockService = mock(WireService.class);
-        mockService.expects(atLeastOnce()).method("createProxy").with(eq(wire)).will(new Stub() {
-            public Object invoke(Invocation invocation) throws Throwable {
-                OutboundWire wire = (OutboundWire) invocation.parameterValues.get(0);
+        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        wire.getInvocationChains();
+        EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>());
+        EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
+        EasyMock.replay(wire);
+        WireService service = EasyMock.createMock(WireService.class);
+        EasyMock.expect(service.createProxy(EasyMock.eq(wire))).andAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                OutboundWire wire = (OutboundWire) EasyMock.getCurrentArguments()[0];
                 wire.getInvocationChains();
                 return target;
             }
 
-            public StringBuffer describeTo(StringBuffer stringBuffer) {
-                return null;
-            }
-        });
-        configuration.setWireService((WireService) mockService.proxy());
+        }).atLeastOnce();
+        EasyMock.replay(service);
+        configuration.setWireService(service);
         JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration, null);
         sourceContext.addOutboundWire(wire);
         sourceContext.start();
         Source source = (Source) sourceContext.getServiceInstance();
         assertSame(target, source.getTarget());
         scope.stop();
+        EasyMock.verify(wire);
+        EasyMock.verify(scope);
+        EasyMock.verify(service);
     }
 
     private ScopeContainer createMock() {
-        Mock mock = mock(ScopeContainer.class);
-        mock.expects(once()).method("start");
-        mock.expects(once()).method("stop");
-        mock.expects(atLeastOnce()).method("register");
-        mock.expects(atLeastOnce()).method("getScope").will(returnValue(Scope.MODULE));
-        mock.expects(atLeastOnce()).method("getInstance").will(new Stub() {
+        ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
+        scope.start();
+        scope.stop();
+        scope.register(EasyMock.isA(AtomicComponent.class));
+        EasyMock.expectLastCall().atLeastOnce();
+        EasyMock.expect(scope.getScope()).andReturn(Scope.MODULE).atLeastOnce();
+        scope.getInstance(EasyMock.isA(AtomicComponent.class));
+        EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
 
-            public Object invoke(Invocation invocation) throws Throwable {
-                AtomicComponent component = (AtomicComponent) invocation.parameterValues.get(0);
+            public Object answer() throws Throwable {
+                AtomicComponent component = (AtomicComponent) EasyMock.getCurrentArguments()[0];
                 Object instance = cache.get(component);
                 if (instance == null) {
                     instance = component.createInstance();
@@ -100,11 +104,8 @@ public class JavaReferenceWireTestCase extends MockObjectTestCase {
                 }
                 return instance;
             }
-
-            public StringBuffer describeTo(StringBuffer stringBuffer) {
-                return null;
-            }
-        });
-        return (ScopeContainer) mock.proxy();
+        }).anyTimes();
+        EasyMock.replay(scope);
+        return scope;
     }
 }
