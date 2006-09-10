@@ -42,7 +42,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testProperty() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = Foo.class.getConstructor(String.class);
+        Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         processor.visitConstructor(null, ctor, type, null);
         JavaMappedProperty<?> property = type.getProperties().get("myProp");
         assertTrue(property.isRequired());
@@ -52,7 +52,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testTwoPropertiesSameType() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = Foo.class.getConstructor(String.class, String.class);
+        Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
         processor.visitConstructor(null, ctor, type, null);
         assertNotNull(type.getProperties().get("myProp1"));
         assertNotNull(type.getProperties().get("myProp2"));
@@ -61,7 +61,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testDuplicateProperty() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = BadFoo.class.getConstructor(String.class, String.class);
+        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class, String.class);
         try {
             processor.visitConstructor(null, ctor, type, null);
             fail();
@@ -73,7 +73,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testNoName() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = BadFoo.class.getConstructor(String.class);
+        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(String.class);
         try {
             processor.visitConstructor(null, ctor, type, null);
             fail();
@@ -85,7 +85,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testNamesOnConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = Foo.class.getConstructor(Integer.class);
+        Constructor<Foo> ctor = Foo.class.getConstructor(Integer.class);
         processor.visitConstructor(null, ctor, type, null);
         assertNotNull(type.getProperties().get("myProp"));
     }
@@ -93,7 +93,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testInvalidNumberOfNames() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
+        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(Integer.class, Integer.class);
         try {
             processor.visitConstructor(null, ctor, type, null);
             fail();
@@ -105,7 +105,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     public void testNoMatchingNames() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = BadFoo.class.getConstructor(List.class, List.class);
+        Constructor<BadFoo> ctor = BadFoo.class.getConstructor(List.class, List.class);
         try {
             processor.visitConstructor(null, ctor, type, null);
             fail();

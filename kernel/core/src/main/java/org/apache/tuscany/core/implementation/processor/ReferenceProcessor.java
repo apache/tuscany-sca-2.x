@@ -103,18 +103,8 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }
-//        ServiceContract contract = new JavaServiceContract();
-//        Class<?> interfaceType = method.getParameterTypes()[0];
-//        String interfaceName = getBaseName(interfaceType);
-//        contract.setInterfaceName(interfaceName);
-//        contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
-//        try {
-//            implService.processCallback(interfaceType, contract);
-//        } catch (IllegalCallbackException e) {
-//            throw new ProcessingException(e);
-//        }
     }
 
     public void visitField(CompositeComponent parent, Field field,
@@ -150,25 +140,14 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }
-
-//        ServiceContract contract = new JavaServiceContract();
-//        Class<?> interfaceType = field.getType();
-//        String interfaceName = getBaseName(interfaceType);
-//        contract.setInterfaceName(interfaceName);
-//        contract.setInterfaceClass(interfaceType);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
-//        try {
-//            implService.processCallback(interfaceType, contract);
-//        } catch (IllegalCallbackException e) {
-//            throw new ProcessingException(e);
-//        }
-
     }
 
-    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 DeploymentContext context) throws ProcessingException {
+    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference,
+                                         JavaMappedProperty<?>> type,
+                                     DeploymentContext context) throws ProcessingException {
 
     }
 

@@ -53,7 +53,7 @@ public class SystemBuilderPropertyTestCase extends MockObjectTestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
-        type.setConstructorDefinition(new ConstructorDefinition(Foo.class.getConstructor((Class[])null)));
+        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[])null)));
         JavaMappedProperty<String> property = new JavaMappedProperty<String>();
         property.setName("test");
         property.setDefaultValueFactory(new SingletonObjectFactory<String>("foo"));

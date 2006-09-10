@@ -52,15 +52,15 @@ public abstract class ImplementationProcessorExtension implements Implementation
         registry.unregisterProcessor(this);
     }
 
-    public void visitClass(CompositeComponent parent, Class<?> clazz,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context)
+    public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
+                               PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                               DeploymentContext context)
         throws ProcessingException {
     }
 
-    public void visitSuperClass(CompositeComponent parent, Class<?> clazz,
-                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                DeploymentContext context)
+    public <T>  void visitSuperClass(CompositeComponent parent, Class<T> clazz,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                     DeploymentContext context)
         throws ProcessingException {
     }
 
@@ -70,9 +70,9 @@ public abstract class ImplementationProcessorExtension implements Implementation
         throws ProcessingException {
     }
 
-    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 DeploymentContext context)
+    public <T>  void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+                                      PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                      DeploymentContext context)
         throws ProcessingException {
     }
 
@@ -81,9 +81,9 @@ public abstract class ImplementationProcessorExtension implements Implementation
                            DeploymentContext context) throws ProcessingException {
     }
 
-    public void visitEnd(CompositeComponent parent, Class<?> clazz,
-                         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                         DeploymentContext context) throws ProcessingException {
+    public <T>  void visitEnd(CompositeComponent parent, Class<T> clazz,
+                              PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                              DeploymentContext context) throws ProcessingException {
 
     }
 }

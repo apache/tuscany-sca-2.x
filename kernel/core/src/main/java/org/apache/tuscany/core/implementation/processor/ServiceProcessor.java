@@ -54,9 +54,9 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         this.implService = implService;
     }
 
-    public void visitClass(CompositeComponent parent, Class<?> clazz,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
+    public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
+                               PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                               DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Service annotation = clazz.getAnnotation(org.osoa.sca.annotations.Service.class);
         if (annotation == null) {
             // scan intefaces for remotable

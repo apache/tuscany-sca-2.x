@@ -22,74 +22,90 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.easymock.classextension.EasyMock;
+
 /**
  * Verifies the default loader registry
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings({"CastToIncompatibleInterface"})
-public class StAXLoaderRegistryImplTestCase extends MockObjectTestCase {
+public class StAXLoaderRegistryImplTestCase extends TestCase {
     private LoaderRegistryImpl registry;
     private QName name;
-    private Mock mockMonitor;
-    private Mock mockLoader;
-    private Mock mockReader;
+    private LoaderRegistryImpl.Monitor mockMonitor;
+    private StAXElementLoader<ModelObject> mockLoader;
+    private XMLStreamReader mockReader;
     private DeploymentContext deploymentContext;
     private ModelObject modelObject;
 
     public void testLoaderRegistration() {
-        mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
-        registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
+        mockMonitor.registeringLoader(EasyMock.eq(name));
+        EasyMock.replay(mockMonitor);
+        registry.registerLoader(name, mockLoader);
+        EasyMock.verify(mockMonitor);
     }
 
     public void testLoaderUnregistration() {
-        mockMonitor.expects(once()).method("unregisteringLoader").with(eq(name));
-        registry.unregisterLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
+        mockMonitor.unregisteringLoader(EasyMock.eq(name));
+        EasyMock.replay(mockMonitor);
+        registry.unregisterLoader(name, (StAXElementLoader<ModelObject>) mockLoader);
+        EasyMock.verify(mockMonitor);
     }
 
     public void testSuccessfulDispatch() throws LoaderException, XMLStreamException {
-        mockReader.expects(once()).method("getName").will(returnValue(name));
-        mockMonitor.expects(once()).method("registeringLoader").with(eq(name));
-        mockMonitor.expects(once()).method("elementLoad").with(eq(name));
-        mockLoader.expects(once()).method("load").with(eq(null), eq(mockReader.proxy()), eq(deploymentContext))
-            .will(returnValue(modelObject));
+        EasyMock.expect(mockReader.getName()).andReturn(name);
+        EasyMock.replay(mockReader);
+        mockMonitor.registeringLoader(EasyMock.eq(name));
+        mockMonitor.elementLoad(EasyMock.eq(name));
+        EasyMock.replay(mockMonitor);
+        EasyMock.expect(mockLoader.load(EasyMock.isA(CompositeComponent.class),
+            EasyMock.eq(mockReader),
+            EasyMock.eq(deploymentContext))).andReturn(modelObject);
+        EasyMock.replay(mockLoader);
+        registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader);
+        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
+        assertSame(modelObject, registry.load(parent, mockReader, deploymentContext));
+        EasyMock.verify(mockLoader);
+        EasyMock.verify(mockMonitor);
+        EasyMock.verify(mockReader);
 
-        registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader.proxy());
-        assertSame(modelObject, registry.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext));
     }
 
     public void testUnsuccessfulDispatch() throws LoaderException, XMLStreamException {
-        mockReader.expects(once()).method("getName").will(returnValue(name));
-        mockMonitor.expects(once()).method("elementLoad").with(eq(name));
-
+        EasyMock.expect(mockReader.getName()).andReturn(name);
+        EasyMock.replay(mockReader);
+        mockMonitor.elementLoad(EasyMock.eq(name));
+        EasyMock.replay(mockMonitor);
         try {
-            registry.load(null, (XMLStreamReader) mockReader.proxy(), deploymentContext);
+            registry.load(null, mockReader, deploymentContext);
             fail();
         } catch (UnrecognizedElementException e) {
             assertSame(name, e.getElement());
         }
+        EasyMock.verify(mockReader);
+        EasyMock.verify(mockMonitor);
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         name = new QName("http://mock", "test");
         deploymentContext = new RootDeploymentContext(null, null, null, null);
         registry = new LoaderRegistryImpl();
-        mockMonitor = mock(LoaderRegistryImpl.Monitor.class);
-        registry.setMonitor((LoaderRegistryImpl.Monitor) mockMonitor.proxy());
+        mockMonitor = EasyMock.createMock(LoaderRegistryImpl.Monitor.class);
+        registry.setMonitor(mockMonitor);
 
-        mockLoader = mock(StAXElementLoader.class);
-        mockReader = mock(XMLStreamReader.class);
+        mockLoader = EasyMock.createMock(StAXElementLoader.class);
+        mockReader = EasyMock.createMock(XMLStreamReader.class);
         modelObject = new ModelObject() {
         };
     }

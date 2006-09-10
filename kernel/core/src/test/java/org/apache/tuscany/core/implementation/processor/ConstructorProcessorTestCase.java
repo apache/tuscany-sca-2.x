@@ -49,7 +49,7 @@ public class ConstructorProcessorTestCase extends TestCase {
     public void testConstructorAnnotation() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor1 = Foo.class.getConstructor(String.class);
+        Constructor<Foo> ctor1 = Foo.class.getConstructor(String.class);
         processor.visitConstructor(null, ctor1, type, null);
         assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(0));
     }
@@ -57,7 +57,7 @@ public class ConstructorProcessorTestCase extends TestCase {
     public void testNoAnnotation() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor1 = NoAnnotation.class.getConstructor();
+        Constructor<NoAnnotation> ctor1 = NoAnnotation.class.getConstructor();
         processor.visitConstructor(null, ctor1, type, null);
         assertNull(type.getConstructorDefinition());
     }
@@ -65,7 +65,7 @@ public class ConstructorProcessorTestCase extends TestCase {
     public void testBadAnnotation() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor1 = BadAnnotation.class.getConstructor(String.class, Foo.class);
+        Constructor<BadAnnotation> ctor1 = BadAnnotation.class.getConstructor(String.class, Foo.class);
         try {
             processor.visitConstructor(null, ctor1, type, null);
             fail();

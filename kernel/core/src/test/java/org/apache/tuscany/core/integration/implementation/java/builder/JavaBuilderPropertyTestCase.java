@@ -62,7 +62,7 @@ public class JavaBuilderPropertyTestCase extends MockObjectTestCase {
         property.setDefaultValueFactory(new SingletonObjectFactory<String>("foo"));
         property.setMember(JavaBuilderPropertyTestCase.Foo.class.getMethod("setTest", String.class));
         type.add(property);
-        type.setConstructorDefinition(new ConstructorDefinition(Foo.class.getConstructor((Class[])null)));
+        type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[])null)));
         type.setImplementationScope(Scope.STATELESS);
         JavaImplementation impl = new JavaImplementation();
         impl.setComponentType(type);

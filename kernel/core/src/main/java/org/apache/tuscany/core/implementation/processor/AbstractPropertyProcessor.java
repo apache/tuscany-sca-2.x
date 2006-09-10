@@ -120,7 +120,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         properties.put(name, property);
     }
 
-    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
+    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                  DeploymentContext context) throws ProcessingException {
 
@@ -134,7 +134,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
             for (Annotation annotation : paramAnnotations) {
                 if (annotation.annotationType().equals(annotationClass)) {
                     if (definition == null) {
-                        definition = new ConstructorDefinition(constructor);
+                        definition = new ConstructorDefinition<T>(constructor);
                         type.setConstructorDefinition(definition);
                     }
                     A monitorAnnot = annotationClass.cast(annotation);

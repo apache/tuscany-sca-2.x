@@ -43,7 +43,7 @@ public class ConstructorProcessorExtensibilityTestCase extends TestCase {
     public void testProcessFirst() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor1 = Foo.class.getConstructor(String.class, String.class);
+        Constructor<Foo> ctor1 = Foo.class.getConstructor(String.class, String.class);
         processor.visitConstructor(null, ctor1, type, null);
         assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(0));
     }
