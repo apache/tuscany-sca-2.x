@@ -48,7 +48,6 @@ public class OutboundWireImpl implements OutboundWire {
     private InboundWire targetWire;
     private String containerName;
 
-    @SuppressWarnings("unchecked")
     public Object getTargetService() throws TargetException {
         if (targetWire != null) {
             // optimized, no interceptors or handlers on either end

@@ -69,7 +69,6 @@ public class MediatorImplTestCase extends TestCase {
         mediator.setDataBindingRegistry(dataBindingRegistry);
     }
 
-    @SuppressWarnings("unchecked")
     private TransformationContext createTransformationContext(Class sourceType, Class targetType) {
         TransformationContext context = new TransformationContextImpl();
         DataType sourceDataType = new DataType<Class>(sourceType, sourceType);

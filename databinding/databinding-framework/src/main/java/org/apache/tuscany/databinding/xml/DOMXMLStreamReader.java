@@ -104,7 +104,6 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     }
 
-    @SuppressWarnings("unchecked")
     public void populateProperties() {
         if (properties != null)
             return;
@@ -113,8 +112,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         else
             elementQName = namespaceContext.createQName(elementQName.getNamespaceURI(), elementQName.getLocalPart());
 
-        List elementList = new ArrayList();
-        List attributeList = new ArrayList();
+        List<Object> elementList = new ArrayList<Object>();
+        List<Object> attributeList = new ArrayList<Object>();
         NamedNodeMap nodeMap = rootElement.getAttributes();
         for (int i = 0; i < nodeMap.getLength(); i++) {
             Attr attr = (Attr) nodeMap.item(i);
@@ -140,8 +139,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
                 break;
             }
         }
-        properties = (Map.Entry[]) elementList.toArray(new Map.Entry[0]);
-        attributes = (Map.Entry[]) attributeList.toArray(new Map.Entry[0]);
+        properties = elementList.toArray(new Map.Entry[0]);
+        attributes = attributeList.toArray(new Map.Entry[0]);
     }
 
     /**
@@ -1321,8 +1320,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         public String getPrefix(String nsURI) {
             if (nsURI == null)
                 throw new IllegalArgumentException("Namespace is null");
-            for (Iterator i = prefixToNamespaceMapping.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
+            for (Map.Entry<String, String> entry1 : prefixToNamespaceMapping.entrySet()) {
+                Map.Entry entry = entry1;
                 if (entry.getValue().equals(nsURI)) {
                     return (String) entry.getKey();
                 }
@@ -1335,8 +1334,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
         public Iterator getPrefixes(String nsURI) {
             List<String> prefixList = new ArrayList<String>();
-            for (Iterator<Map.Entry<String, String>> i = prefixToNamespaceMapping.entrySet().iterator(); i.hasNext();) {
-                Map.Entry<String, String> entry = i.next();
+            for (Map.Entry<String, String> entry : prefixToNamespaceMapping.entrySet()) {
                 if (entry.getValue().equals(nsURI)) {
                     prefixList.add(entry.getKey());
                 }

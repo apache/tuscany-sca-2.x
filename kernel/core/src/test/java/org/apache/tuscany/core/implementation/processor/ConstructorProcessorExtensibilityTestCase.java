@@ -57,7 +57,7 @@ public class ConstructorProcessorExtensibilityTestCase extends TestCase {
     public void testProcessLast() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor1 = Foo.class.getConstructor(String.class, String.class);
+        Constructor<Foo> ctor1 = Foo.class.getConstructor(String.class, String.class);
         ConstructorDefinition<Foo> definition = new ConstructorDefinition<Foo>(ctor1);
         definition.getInjectionNames().add("");
         definition.getInjectionNames().add("mybar");

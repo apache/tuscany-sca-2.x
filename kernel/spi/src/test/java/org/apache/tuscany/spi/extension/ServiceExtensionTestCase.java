@@ -37,7 +37,6 @@ public class ServiceExtensionTestCase extends TestCase {
         assertEquals(Scope.COMPOSITE, service.getScope());
     }
 
-    @SuppressWarnings("unchecked")
     public void testSetGetInterface() throws Exception {
         InboundWire wire = createMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(getClass());

@@ -122,6 +122,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return component;
     }
 
+    @SuppressWarnings("unchecked")
     public <B extends Binding> void register(BindingBuilder<B> builder) {
         Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {

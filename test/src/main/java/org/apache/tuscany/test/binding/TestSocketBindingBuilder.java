@@ -13,7 +13,6 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocketBinding> {
 
-    @SuppressWarnings("unchecked")
     public Service build(CompositeComponent parent,
                             BoundServiceDefinition<TestSocketBinding> definition,
                             DeploymentContext context) {
@@ -22,7 +21,6 @@ public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocket
         return new TestSocketBindingService(definition.getName(), port, interfaze, parent, wireService);
     }
 
-    @SuppressWarnings("unchecked")
     public Reference build(CompositeComponent parent,
                               BoundReferenceDefinition<TestSocketBinding> definition,
                               DeploymentContext context) {

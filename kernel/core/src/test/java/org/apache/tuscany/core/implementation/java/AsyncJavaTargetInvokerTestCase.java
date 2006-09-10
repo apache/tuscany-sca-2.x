@@ -53,7 +53,7 @@ public class AsyncJavaTargetInvokerTestCase extends TestCase {
 
         WorkScheduler scheduler = createMock(WorkScheduler.class);
         scheduler.scheduleWork(isA(Runnable.class));
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 Runnable runnable = (Runnable) getCurrentArguments()[0];
                 runnable.run();
@@ -82,7 +82,7 @@ public class AsyncJavaTargetInvokerTestCase extends TestCase {
         replay(monitor);
         WorkScheduler scheduler = createMock(WorkScheduler.class);
         scheduler.scheduleWork(isA(Runnable.class));
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 Runnable runnable = (Runnable) getCurrentArguments()[0];
                 runnable.run();

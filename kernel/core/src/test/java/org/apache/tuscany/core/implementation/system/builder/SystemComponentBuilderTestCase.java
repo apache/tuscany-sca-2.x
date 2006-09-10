@@ -126,7 +126,6 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
     /**
      * Verifies references are built properly
      */
-    @SuppressWarnings("unchecked")
     public void testRefBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
@@ -164,7 +163,6 @@ public class SystemComponentBuilderTestCase extends MockObjectTestCase {
     /**
      * Verifies autowires are built properly
      */
-    @SuppressWarnings("unchecked")
     public void testAutowireBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
