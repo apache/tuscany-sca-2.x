@@ -8,6 +8,50 @@ package org.apache.tuscany.runtime.webapp;
 public final class Constants {
 
     /**
+     * Name of the parameter that defines the name of webapp resource containing bootstrap jars.
+     */
+    static final String BOOTDIR_PARAM = "tuscany.bootDir";
+
+    /**
+     * Default value for BOOTDIR_PARAM.
+     */
+    static final String BOOTDIR_DEFAULT = "/WEB-INF/tuscany/boot";
+
+    /**
+     * Name of the parameter that defines the class to load to launch the runtime.
+     */
+    static final String RUNTIME_PARAM = "tuscany.runtimeImpl";
+
+    /**
+     * Name of the default webapp runtime implementation.
+     */
+    static final String RUNTIME_DEFAULT = "org.apache.tuscany.runtime.webapp.WebappRuntimeImpl";
+
+    /**
+     * Servlet context-param name for user-specified system SCDL path.
+     */
+    static final String SYSTEM_SCDL_PATH_PARAM = "tuscany.systemScdlPath";
+
+    /**
+     * Default webapp system SCDL path.
+     */
+    static final String SYSTEM_SCDL_PATH_DEFAULT = "META-INF/tuscany/webapp.scdl";
+
+    /**
+     * Servlet context-param name for user-specified application SCDL path.
+     */
+    static final String APPLICATION_SCDL_PATH_PARAM = "tuscany.applicationScdlPath";
+
+    /**
+     * Default application SCDL path.
+     */
+    static final String APPLICATION_SCDL_PATH_DEFAULT = "/WEB-INF/default.scdl";
+
+
+
+
+
+    /**
      * Context attribute to which the Tuscany runtime for this servlet context is stored.
      */
     static final String RUNTIME_ATTRIBUTE = "Tuscany.Runtime";
@@ -20,27 +64,7 @@ public final class Constants {
     /**
      * Servlet context-param name for user-specified system SCDL path.
      */
-    static final String SYSTEM_SCDL_PATH_PARAM = "systemScdlPath";
-
-    /**
-     * Default webapp system SCDL path.
-     */
-    static final String WEBAPP_SYSTEM_SCDL_PATH = "META-INF/tuscany/webapp.scdl";
-
-    /**
-     * Servlet context-param name for user-specified system SCDL path.
-     */
     static final String EXTENSION_SCDL_PATH_PARAM = "extensionScdlPath";
-
-    /**
-     * Servlet context-param name for user-specified application SCDL path.
-     */
-    static final String APPLICATION_SCDL_PATH_PARAM = "applicationScdlPath";
-
-    /**
-     * Default application SCDL path used if no "applicationScdlPath" param is specified
-     */
-    static final String DEFAULT_APPLICATION_SCDL_PATH_PARAM = "/WEB-INF/default.scdl";
 
     /**
      * Default path for extensions if no "extensionScdlPath param is specified
@@ -52,16 +76,6 @@ public final class Constants {
      * java.util.logging.Level. If absent, no monitoring will take place.
      */
     static final String SYSTEM_MONITORING_PARAM = "tuscanyMonitoringLevel";
-
-    /**
-     * Name of the context parameter that defines the directory containing bootstrap jars.
-     */
-    static final String BOOTDIR_PARAM = "tuscany.bootDir";
-
-    /**
-     * Name of the class to load to launch the runtime.
-     */
-    static final String LAUNCHER_PARAM = "tuscany.launcherClass";
 
     private Constants() {
     }

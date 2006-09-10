@@ -47,7 +47,7 @@ public class TuscanyFilterTestCase extends TestCase {
         sca.start();
         sca.stop();
         EasyMock.replay(sca);
-        TuscanyWebappRuntime runtime = createMock(TuscanyWebappRuntime.class);
+        WebappRuntime runtime = createMock(WebappRuntime.class);
         expect(runtime.getContext()).andReturn(sca);
         runtime.startRequest();
         runtime.stopRequest();
@@ -73,7 +73,7 @@ public class TuscanyFilterTestCase extends TestCase {
         sca.start();
         sca.stop();
         EasyMock.replay(sca);
-        TuscanyWebappRuntime runtime = createMock(TuscanyWebappRuntime.class);
+        WebappRuntime runtime = createMock(WebappRuntime.class);
         runtime.startRequest();
         runtime.stopRequest();
         expect(runtime.getContext()).andReturn(sca);

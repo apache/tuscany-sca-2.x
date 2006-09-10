@@ -31,12 +31,12 @@ import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
  * @version $Rev$ $Date$
  */
 public class TuscanySessionListener implements HttpSessionListener {
-    private TuscanyWebappRuntime runtime;
+    private WebappRuntime runtime;
 
     public void sessionCreated(HttpSessionEvent event) {
         if (runtime == null) {
             ServletContext context = event.getSession().getServletContext();
-            runtime = (TuscanyWebappRuntime) context.getAttribute(RUNTIME_ATTRIBUTE);
+            runtime = (WebappRuntime) context.getAttribute(RUNTIME_ATTRIBUTE);
             if (runtime == null) {
                 context.log("Error on session creation", new ServletException("Tuscany runtime not configured"));
                 return;

@@ -44,7 +44,7 @@ public class TuscanyServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         ServletContext servletContext = config.getServletContext();
-        TuscanyWebappRuntime runtime = (TuscanyWebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
+        WebappRuntime runtime = (WebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
         if (runtime == null) {
             throw new ServletException("Tuscany runtime not configured for web application");
         }

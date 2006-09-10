@@ -48,7 +48,7 @@ public class TuscanyServletTestCase extends TestCase {
         ServletRequestInjector injector = createMock(ServletRequestInjector.class);
         injector.service(eq(req), eq(resp));
         EasyMock.replay(injector);
-        TuscanyWebappRuntime runtime = createMock(TuscanyWebappRuntime.class);
+        WebappRuntime runtime = createMock(WebappRuntime.class);
         expect(runtime.getRequestInjector()).andReturn(injector);
         replay(runtime);
         ServletContext context = createNiceMock(ServletContext.class);

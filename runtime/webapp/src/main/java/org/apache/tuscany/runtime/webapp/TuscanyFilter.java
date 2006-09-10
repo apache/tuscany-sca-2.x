@@ -40,10 +40,10 @@ import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 public class TuscanyFilter implements Filter {
 
     private SCA context;
-    private TuscanyWebappRuntime runtime;
+    private WebappRuntime runtime;
 
     public void init(FilterConfig config) throws ServletException {
-        runtime = (TuscanyWebappRuntime) config.getServletContext().getAttribute(RUNTIME_ATTRIBUTE);
+        runtime = (WebappRuntime) config.getServletContext().getAttribute(RUNTIME_ATTRIBUTE);
         if (runtime == null) {
             throw new ServletException("Tuscany is not configured for the web application");
         }
