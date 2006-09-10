@@ -41,7 +41,7 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         final CountDownLatch latch = new CountDownLatch(1);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 latch.countDown();
                 return null;
@@ -64,7 +64,7 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         replay(listener);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 latch.countDown();
                 return null;
@@ -84,7 +84,7 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         listener.workAccepted(isA(WorkEvent.class));
         listener.workStarted(isA(WorkEvent.class));
         listener.workCompleted(isA(WorkEvent.class));
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 latch2.countDown();
                 return null;
@@ -93,7 +93,7 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         replay(listener);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 latch.await();
                 return null;
@@ -115,7 +115,7 @@ public class ThreadPoolWorkManagerTestCase extends TestCase {
         replay(listener);
         Work work = createMock(Work.class);
         work.run();
-        expectLastCall().andStubAnswer(new IAnswer() {
+        expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 latch.countDown();
                 throw new RuntimeException();

@@ -78,7 +78,7 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
             processor.visitClass(parent, clazz, type, null);
         }
 
-        for (Constructor constructor : clazz.getConstructors()) {
+        for (Constructor<?> constructor : clazz.getConstructors()) {
             for (ImplementationProcessor processor : cache) {
                 processor.visitConstructor(parent, constructor, type, null);
             }

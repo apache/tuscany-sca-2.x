@@ -46,8 +46,8 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitClass(CompositeComponent parent,
-                    Class<?> clazz,
+    <T> void visitClass(CompositeComponent parent,
+                    Class<T> clazz,
                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                     DeploymentContext context) throws ProcessingException;
 
@@ -60,8 +60,8 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitSuperClass(CompositeComponent parent,
-                         Class<?> clazz,
+    <T> void visitSuperClass(CompositeComponent parent,
+                         Class<T> clazz,
                          PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                          DeploymentContext context) throws ProcessingException;
 
@@ -90,8 +90,8 @@ public interface ImplementationProcessor {
      * @param context     the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitConstructor(CompositeComponent parent,
-                          Constructor<?> constructor,
+    <T> void visitConstructor(CompositeComponent parent,
+                          Constructor<T> constructor,
                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                           DeploymentContext context)
         throws ProcessingException;
@@ -120,8 +120,8 @@ public interface ImplementationProcessor {
      * @param context the current deployment context
      * @throws ProcessingException if an error is encountered while processing metadata
      */
-    void visitEnd(CompositeComponent parent,
-                  Class<?> clazz,
+    <T> void visitEnd(CompositeComponent parent,
+                  Class<T> clazz,
                   PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                   DeploymentContext context) throws ProcessingException;
 

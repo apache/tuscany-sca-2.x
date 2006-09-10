@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Constructor;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -69,7 +70,8 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
         sourceServiceDefinition.setServiceContract(sourceContract);
 
         sourceType.add(sourceServiceDefinition);
-        sourceType.setConstructorDefinition(new ConstructorDefinition(SourceImpl.class.getConstructor((Class[]) null)));
+        Constructor<SourceImpl> constructor = SourceImpl.class.getConstructor((Class[]) null);
+        sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
         JavaImplementation sourceImpl = new JavaImplementation();
         sourceImpl.setComponentType(sourceType);
         sourceImpl.setImplementationClass(SourceImpl.class);

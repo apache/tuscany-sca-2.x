@@ -44,12 +44,11 @@ public class HeutisticExtensibleConstructorTestCase extends TestCase {
     /**
      * Verifies heuristic processing can be called priot to an extension annotation processors being called.
      */
-    @SuppressWarnings("unchecked")
     public void testBarAnnotationProcessedFirst() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = Foo.class.getConstructor(String.class, String.class);
-        ConstructorDefinition definition = new ConstructorDefinition(ctor);
+        Constructor<Foo> ctor = Foo.class.getConstructor(String.class, String.class);
+        ConstructorDefinition<Foo> definition = new ConstructorDefinition<Foo>(ctor);
         type.setConstructorDefinition(definition);
         JavaMappedProperty property = new JavaMappedProperty();
         property.setName("myBar");
@@ -90,12 +89,11 @@ public class HeutisticExtensibleConstructorTestCase extends TestCase {
      * extension parameter in a middle position. Specifically, verifies that the heuristic processor updates injection
      * names and preserves their ordering.
      */
-    @SuppressWarnings("unchecked")
     public void testBarAnnotationProcessedFirstInMiddle() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        Constructor ctor = Foo2.class.getConstructor(String.class, String.class, String.class);
-        ConstructorDefinition definition = new ConstructorDefinition(ctor);
+        Constructor<Foo2> ctor = Foo2.class.getConstructor(String.class, String.class, String.class);
+        ConstructorDefinition<Foo2> definition = new ConstructorDefinition<Foo2>(ctor);
         type.setConstructorDefinition(definition);
         // insert placeholder for first param, which would be done by a processor
         definition.getInjectionNames().add("");

@@ -22,16 +22,14 @@ import java.lang.reflect.Constructor;
 
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * Processes an {@link @Property} annotation, updating the component type with corresponding {@link JavaMappedProperty}
@@ -55,9 +53,10 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
         property.setRequired(annotation.required());
     }
 
-    public void visitConstructor(CompositeComponent parent, Constructor<?> constructor,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 DeploymentContext context) throws ProcessingException {
+    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference,
+                                         JavaMappedProperty<?>> type,
+                                     DeploymentContext context) throws ProcessingException {
         // override since heuristic pojo processor evalautes properties
     }
 }
