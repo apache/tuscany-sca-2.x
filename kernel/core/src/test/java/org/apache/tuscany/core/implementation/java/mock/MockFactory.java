@@ -246,15 +246,15 @@ public final class MockFactory {
         return contexts;
     }
 
-    public static <T> InboundWire<T> createTargetWire(String serviceName, Class<T> interfaze)
+    public static <T> InboundWire createTargetWire(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
         return createServiceWire(serviceName, interfaze, null);
     }
 
 
-    public static <T> InboundWire<T> createServiceWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
+    public static <T> InboundWire createServiceWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
         throws InvalidServiceContractException {
-        InboundWire<T> wire = new InboundWireImpl<T>();
+        InboundWire wire = new InboundWireImpl();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
         wire.setServiceName(serviceName);
@@ -263,10 +263,10 @@ public final class MockFactory {
         return wire;
     }
 
-    public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze, Interceptor interceptor)
+    public static <T> OutboundWire createReferenceWire(String refName, Class<T> interfaze, Interceptor interceptor)
         throws InvalidServiceContractException {
 
-        OutboundWire<T> wire = new OutboundWireImpl<T>();
+        OutboundWire wire = new OutboundWireImpl();
         wire.setReferenceName(refName);
         Map<Operation<?>, OutboundInvocationChain> outboundChains = createOutboundChains(interfaze, interceptor);
         wire.addInvocationChains(outboundChains);
@@ -275,9 +275,9 @@ public final class MockFactory {
         return wire;
     }
 
-    public static <T> OutboundWire<T> createReferenceWire(String refName, Class<T> interfaze)
+    public static <T> OutboundWire createReferenceWire(String refName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        OutboundWire<T> wire = new OutboundWireImpl<T>();
+        OutboundWire wire = new OutboundWireImpl();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createOutboundChains(interfaze));
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
@@ -293,8 +293,8 @@ public final class MockFactory {
      * @param cacheable
      * @throws Exception
      */
-    public static void connect(OutboundWire<?> outboundWire,
-                               InboundWire<?> inboundWire,
+    public static void connect(OutboundWire outboundWire,
+                               InboundWire inboundWire,
                                JavaAtomicComponent targetContext,
                                boolean cacheable) throws Exception {
         if (inboundWire != null) {

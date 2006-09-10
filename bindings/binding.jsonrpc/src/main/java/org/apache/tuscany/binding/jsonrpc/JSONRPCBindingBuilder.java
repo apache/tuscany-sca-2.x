@@ -20,7 +20,7 @@ package org.apache.tuscany.binding.jsonrpc;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
  * Builds a Service for JSON-RPC binding.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBinding> {
@@ -45,7 +45,9 @@ public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindin
     }
 
     @SuppressWarnings("unchecked")
-    public SCAObject build(CompositeComponent parent, BoundServiceDefinition<JSONRPCBinding> serviceDefinition, DeploymentContext deploymentContext) {
+    public Service<?>  build(CompositeComponent parent,
+                             BoundServiceDefinition<JSONRPCBinding> serviceDefinition,
+                             DeploymentContext deploymentContext) {
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
 
         return new JSONRPCService(serviceDefinition.getName(), interfaze, parent, wireService, servletHost);

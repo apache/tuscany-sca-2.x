@@ -35,13 +35,13 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
+public class SystemInboundWireImpl implements SystemInboundWire {
     private String serviceName;
     private ServiceContract serviceContract;
     private Component<?> component;
-    private SystemOutboundWire<?> wire;
+    private SystemOutboundWire wire;
     private String containerName;
-    private Class<T> interfaze;
+    private Class<?> interfaze;
 
     /**
      * Constructs a new inbound wire
@@ -50,14 +50,14 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
      * @param interfaze   the service interface
      * @param target      the target context the wire is connected to
      */
-    public SystemInboundWireImpl(String serviceName, Class<T> interfaze, Component<?> target) {
+    public SystemInboundWireImpl(String serviceName, Class<?> interfaze, Component<?> target) {
         this.serviceName = serviceName;
         this.component = target;
         serviceContract = new JavaServiceContract(interfaze);
         this.interfaze = interfaze;
     }
 
-    public SystemInboundWireImpl(String serviceName, Class<T> interfaze) {
+    public SystemInboundWireImpl(String serviceName, Class<?> interfaze) {
         this(serviceName, interfaze, null);
     }
 
@@ -77,7 +77,7 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         throw new UnsupportedOperationException();
     }
 
-    public T getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetException {
         if (wire != null) {
             return interfaze.cast(wire.getTargetService());
         }
@@ -131,9 +131,9 @@ public class SystemInboundWireImpl<T> implements SystemInboundWire<T> {
         return true;  // system wires are always optimizable
     }
 
-    public void setTargetWire(OutboundWire<?> wire) {
+    public void setTargetWire(OutboundWire wire) {
         assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWireImpl.class.getName();
-        this.wire = (SystemOutboundWire<?>) wire;
+        this.wire = (SystemOutboundWire) wire;
     }
 
     public String getContainerName() {

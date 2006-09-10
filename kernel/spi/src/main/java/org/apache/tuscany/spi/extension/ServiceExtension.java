@@ -40,8 +40,8 @@ import org.apache.tuscany.spi.wire.WireService;
 public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service<T> {
 
     protected Class<T> interfaze;
-    protected InboundWire<T> inboundWire;
-    protected OutboundWire<?> outboundWire;
+    protected InboundWire inboundWire;
+    protected OutboundWire outboundWire;
     protected WireService wireService;
 
     public ServiceExtension(String name, Class<T> interfaze, CompositeComponent parent, WireService wireService)
@@ -55,28 +55,28 @@ public class ServiceExtension<T> extends AbstractSCAObject<T> implements Service
         return Scope.COMPOSITE;
     }
 
-    public InboundWire<T> getInboundWire() {
+    public InboundWire getInboundWire() {
         return inboundWire;
     }
 
-    public void setInboundWire(InboundWire<T> wire) {
+    public void setInboundWire(InboundWire wire) {
         inboundWire = wire;
     }
 
-    public OutboundWire<?> getOutboundWire() {
+    public OutboundWire getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire<?> outboundWire) {
+    public void setOutboundWire(OutboundWire outboundWire) {
         this.outboundWire = outboundWire;
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        throw new UnsupportedOperationException();        
+        throw new UnsupportedOperationException();
     }
-    
+
     public T getServiceInstance() throws TargetException {
-        return wireService.createProxy(inboundWire);
+        return (T) wireService.createProxy(inboundWire);
     }
 
     public WireInvocationHandler getHandler() {

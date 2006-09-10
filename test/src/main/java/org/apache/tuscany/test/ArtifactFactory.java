@@ -63,15 +63,15 @@ public final class ArtifactFactory {
 
     /**
      * Creates an inbound wire. After a wire is returned, client code must call {@link
-     * #terminateWire(org.apache.tuscany.spi.wire.InboundWire<T>)}. These two methods have been separated to allow wires
+     * #terminateWire(org.apache.tuscany.spi.wire.InboundWire)}. These two methods have been separated to allow wires
      * to be decorated with interceptors or handlers prior to their completion
      *
      * @param serviceName the service name associated with the wire
      * @param interfaze   the interface associated with the wire
      */
-    public static <T> InboundWire<T> createInboundWire(String serviceName, Class<T> interfaze)
+    public static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        InboundWire<T> wire = new InboundWireImpl<T>();
+        InboundWire wire = new InboundWireImpl();
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(interfaze);
         wire.setServiceContract(contract);
@@ -82,15 +82,15 @@ public final class ArtifactFactory {
 
     /**
      * Creates an outbound wire. After a wire is returned, client code must call {@link
-     * #terminateWire(org.apache.tuscany.spi.wire.OutboundWire<T>)}. These two methods have been separated to allow
+     * #terminateWire(org.apache.tuscany.spi.wire.OutboundWire)}. These two methods have been separated to allow
      * wires to be decorated with interceptors or handlers prior to their completion
      *
      * @param refName   the reference name the wire is associated with on the client
      * @param interfaze the interface associated with the wire
      */
-    public static <T> OutboundWire<T> createOutboundWire(String refName, Class<T> interfaze)
+    public static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        OutboundWire<T> wire = new OutboundWireImpl<T>();
+        OutboundWire wire = new OutboundWireImpl();
         wire.setReferenceName(refName);
         wire.addInvocationChains(createOutboundChains(interfaze));
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
@@ -103,14 +103,14 @@ public final class ArtifactFactory {
     /**
      * Finalizes the target wire
      */
-    public static <T> void terminateWire(InboundWire<T> wire) {
+    public static <T> void terminateWire(InboundWire wire) {
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());
         }
     }
 
-    public static <T> void terminateWire(OutboundWire<T> wire) {
+    public static <T> void terminateWire(OutboundWire wire) {
         for (OutboundInvocationChain chain : wire.getInvocationChains().values()) {
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());

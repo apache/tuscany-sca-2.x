@@ -63,7 +63,7 @@ public class ReferenceTestCase extends TestCase {
         expectLastCall().andReturn(operation);
         chain.prepare();
         expectLastCall();
-        InboundWire<Object> wire = createMock(InboundWire.class);
+        InboundWire wire = createMock(InboundWire.class);
         wire.getInvocationChains();
         Map<Operation, InvocationChain> chains = new HashMap<Operation, InvocationChain>();
         chains.put(operation, chain);

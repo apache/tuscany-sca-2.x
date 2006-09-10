@@ -56,7 +56,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
     private Object messageId;
     private Object correlationId;
 
-    public JDKOutboundInvocationHandler(OutboundWire<?> wire, WorkContext context)
+    public JDKOutboundInvocationHandler(OutboundWire wire, WorkContext context)
         throws NoMethodForOperationException {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());

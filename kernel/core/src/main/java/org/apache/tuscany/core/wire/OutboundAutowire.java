@@ -25,5 +25,5 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface OutboundAutowire<T> extends OutboundWire<T> {
+public interface OutboundAutowire extends OutboundWire {
 }

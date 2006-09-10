@@ -26,12 +26,12 @@ import org.apache.tuscany.spi.model.ServiceContract;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface RuntimeWire<T> {
+public interface RuntimeWire {
 
     /**
      * Returns the non-proxied target instance for this wire
      */
-    T getTargetService() throws TargetException;
+    Object getTargetService() throws TargetException;
 
     /**
      * Returns the service contract associated with the wire

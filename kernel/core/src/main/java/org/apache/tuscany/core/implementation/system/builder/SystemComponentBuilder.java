@@ -118,7 +118,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
             String name = serviceDefinition.getName();
-            SystemInboundWire<Object> wire = new SystemInboundWireImpl(name, interfaze, component);
+            SystemInboundWire wire = new SystemInboundWireImpl(name, interfaze, component);
             component.addInboundWire(wire);
         }
         // handle references
@@ -127,7 +127,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         for (ReferenceDefinition reference : componentType.getReferences().values()) {
             if (reference.isAutowire()) {
                 Class interfaze = reference.getServiceContract().getInterfaceClass();
-                OutboundWire<?> wire =
+                OutboundWire wire =
                     new SystemOutboundAutowire(reference.getName(), interfaze, autowireContext, reference.isRequired());
                 component.addOutboundWire(wire);
             }
@@ -145,7 +145,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
             String referenceName = target.getReferenceName();
             JavaMappedReference referenceDefiniton = references.get(referenceName);
             Class interfaze = referenceDefiniton.getServiceContract().getInterfaceClass();
-            OutboundWire<?> wire;
+            OutboundWire wire;
             if (referenceDefiniton.isAutowire()) {
                 boolean required = referenceDefiniton.isRequired();
                 wire = new SystemOutboundAutowire(referenceName, interfaze, autowireContext, required);

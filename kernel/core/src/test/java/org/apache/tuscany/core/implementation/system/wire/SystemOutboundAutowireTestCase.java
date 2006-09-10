@@ -18,7 +18,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
         AutowireComponent<?> component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(new Object());
         replay(component);
-        SystemOutboundAutowire<Object> wire = new SystemOutboundAutowire<Object>("foo", Object.class, component, false);
+        SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, false);
         assertNotNull(wire.getTargetService());
         verify(component);
     }
@@ -28,7 +28,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
         AutowireComponent<?> component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(null);
         replay(component);
-        SystemOutboundAutowire<Object> wire = new SystemOutboundAutowire<Object>("foo", Object.class, component, true);
+        SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, true);
         try {
             wire.getTargetService();
             fail();
@@ -43,7 +43,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
         AutowireComponent<?> component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(null);
         replay(component);
-        SystemOutboundAutowire<Object> wire = new SystemOutboundAutowire<Object>("foo", Object.class, component, false);
+        SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, false);
         try {
             assertNull(wire.getTargetService());
         } catch (TargetNotFoundException e) {

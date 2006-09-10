@@ -39,19 +39,19 @@ import org.apache.tuscany.core.wire.OutboundAutowire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOutboundWire<T> {
+public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundWire {
     private String referenceName;
     private ServiceContract serviceContract;
     private AutowireComponent<?> component;
     private final boolean required;
     private String containerName;
 
-    public SystemOutboundAutowire(String referenceName, Class<T> businessInterface, AutowireComponent<?> component,
+    public SystemOutboundAutowire(String referenceName, Class<?> interfaze, AutowireComponent<?> component,
                                   boolean required) {
 
         this.referenceName = referenceName;
         this.component = component;
-        serviceContract = new JavaServiceContract(businessInterface);
+        serviceContract = new JavaServiceContract(interfaze);
         this.required = required;
     }
 
@@ -79,9 +79,9 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
     }
 
     @SuppressWarnings("unchecked")
-    public T getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetException {
         Class<?> interfaze = serviceContract.getInterfaceClass();
-        T service = (T) component.resolveInstance(interfaze);
+        Object service = component.resolveInstance(interfaze);
         if (service == null && required) {
             TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
             e.setIdentifier(interfaze.getName());
@@ -90,12 +90,11 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
         return service;
     }
 
-    @SuppressWarnings("unchecked")
-    public void setCallbackInterface(Class<T> interfaze) {
+    public void setCallbackInterface(Class<?> interfaze) {
         throw new UnsupportedOperationException();
     }
 
-    public Class<T> getCallbackInterface() {
+    public Class<?> getCallbackInterface() {
         throw new UnsupportedOperationException();
     }
 
@@ -107,7 +106,7 @@ public class SystemOutboundAutowire<T> implements OutboundAutowire<T>, SystemOut
         throw new UnsupportedOperationException();
     }
 
-    public void setTargetWire(InboundWire<?> wire) {
+    public void setTargetWire(InboundWire wire) {
         throw new UnsupportedOperationException();
     }
 

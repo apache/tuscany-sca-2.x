@@ -36,23 +36,23 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $Rev$ $Date$
  */
-public class OutboundWireImpl<T> implements OutboundWire<T> {
+public class OutboundWireImpl implements OutboundWire {
 
     private ServiceContract serviceContract;
-    private Class<T>[] callbackInterfaces;
+    private Class<?>[] callbackInterfaces;
     private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
     private Map<Operation<?>, InboundInvocationChain> callbackTargetChains =
         new HashMap<Operation<?>, InboundInvocationChain>();
     private String referenceName;
     private QualifiedName targetName;
-    private InboundWire<?> targetWire;
+    private InboundWire targetWire;
     private String containerName;
 
     @SuppressWarnings("unchecked")
-    public T getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetException {
         if (targetWire != null) {
             // optimized, no interceptors or handlers on either end
-            return (T)targetWire.getTargetService();
+            return targetWire.getTargetService();
         }
         throw new TargetException("Target wire not optimized");
     }
@@ -69,12 +69,11 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
     }
 
-    @SuppressWarnings("unchecked")
-    public void setCallbackInterface(Class<T> interfaze) {
+    public void setCallbackInterface(Class<?> interfaze) {
         callbackInterfaces = new Class[]{interfaze};
     }
 
-    public Class<T> getCallbackInterface() {
+    public Class<?> getCallbackInterface() {
         return callbackInterfaces[0];
     }
 
@@ -86,7 +85,7 @@ public class OutboundWireImpl<T> implements OutboundWire<T> {
         return callbackInterfaces;
     }
 
-    public void setTargetWire(InboundWire<?> wire) {
+    public void setTargetWire(InboundWire wire) {
         this.targetWire = wire;
     }
 

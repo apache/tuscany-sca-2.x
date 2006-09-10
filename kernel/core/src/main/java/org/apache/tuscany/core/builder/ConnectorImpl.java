@@ -77,7 +77,7 @@ public class ConnectorImpl implements Connector {
         if (source instanceof AtomicComponent) {
             AtomicComponent<?> sourceComponent = (AtomicComponent<?>) source;
             for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
-                for (OutboundWire<?> outboundWire : referenceWires) {
+                for (OutboundWire outboundWire : referenceWires) {
                     if (outboundWire instanceof OutboundAutowire) {
                         continue;
                     }
@@ -91,7 +91,7 @@ public class ConnectorImpl implements Connector {
                 }
             }
             // connect inbound wires
-            for (InboundWire<?> inboundWire : sourceComponent.getInboundWires().values()) {
+            for (InboundWire inboundWire : sourceComponent.getInboundWires().values()) {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                     Operation<?> operation = chain.getOperation();
                     TargetInvoker invoker = sourceComponent.createTargetInvoker(null, operation);
@@ -101,7 +101,7 @@ public class ConnectorImpl implements Connector {
             }
         } else if (source instanceof Reference) {
             Reference<?> reference = (Reference) source;
-            InboundWire<?> wire = reference.getInboundWire();
+            InboundWire wire = reference.getInboundWire();
             Map<Operation<?>, InboundInvocationChain> chains = wire.getInvocationChains();
             // for references, no need to have an outbound wire
             for (InboundInvocationChain chain : chains.values()) {
@@ -118,8 +118,8 @@ public class ConnectorImpl implements Connector {
             }
         } else if (source instanceof Service) {
             Service<?> service = (Service<?>) source;
-            InboundWire<?> inboundWire = service.getInboundWire();
-            OutboundWire<?> outboundWire = service.getOutboundWire();
+            InboundWire inboundWire = service.getInboundWire();
+            OutboundWire outboundWire = service.getOutboundWire();
             // connect the outbound service wire to the target
             connect(service, outboundWire);
             // services have inbound and outbound wires
@@ -130,8 +130,8 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    public void connect(InboundWire<?> sourceWire,
-                            OutboundWire<?> targetWire,
+    public void connect(InboundWire sourceWire,
+                            OutboundWire targetWire,
                             boolean optimizable) throws BuilderConfigException {
         if (postProcessorRegistry != null) {
             // run wire post-processors
@@ -157,8 +157,8 @@ public class ConnectorImpl implements Connector {
 
     public void connect(SCAObject<?> source,
                             SCAObject<?> target,
-                            OutboundWire<?> sourceWire,
-                            InboundWire<?> targetWire,
+                            OutboundWire sourceWire,
+                            InboundWire targetWire,
                             boolean optimizable) {
         if (postProcessorRegistry != null) {
             // run wire post-processors
@@ -287,7 +287,7 @@ public class ConnectorImpl implements Connector {
      */
     @SuppressWarnings("unchecked")
     private void connect(SCAObject<?> source,
-                             OutboundWire<?> sourceWire) throws BuilderConfigException {
+                             OutboundWire sourceWire) throws BuilderConfigException {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
         CompositeComponent<?> parent = source.getParent();
@@ -308,7 +308,7 @@ public class ConnectorImpl implements Connector {
 
         if (target instanceof AtomicComponent) {
             AtomicComponent<?> targetComponent = (AtomicComponent<?>) target;
-            InboundWire<?> targetWire = targetComponent.getInboundWire(targetName.getPortName());
+            InboundWire targetWire = targetComponent.getInboundWire(targetName.getPortName());
             if (targetWire == null) {
                 String refName = sourceWire.getReferenceName();
                 BuilderConfigException e = new BuilderConfigException("No target service for reference " + refName);
@@ -319,14 +319,14 @@ public class ConnectorImpl implements Connector {
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(source, target, sourceWire, targetWire, optimizable);
         } else if (target instanceof Reference) {
-            InboundWire<?> targetWire = ((Reference) target).getInboundWire();
+            InboundWire targetWire = ((Reference) target).getInboundWire();
             assert targetWire != null;
             checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(source, target, sourceWire, targetWire, optimizable);
         } else if (target instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) target;
-            InboundWire<?> targetWire = null;
+            InboundWire targetWire = null;
             for (Object child : composite.getChildren()) {
                 if (child instanceof CompositeService) {
                     CompositeService compServ = (CompositeService) child;
@@ -355,7 +355,7 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    private void checkIfWireable(OutboundWire<?> sourceWire, InboundWire<?> targetWire) {
+    private void checkIfWireable(OutboundWire sourceWire, InboundWire targetWire) {
         if (wireService == null) {
             // FIXME: [rfeng] wireService won't be injected for the system connector?
             Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();

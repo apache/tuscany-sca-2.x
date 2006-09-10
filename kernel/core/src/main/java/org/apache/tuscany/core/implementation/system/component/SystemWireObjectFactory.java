@@ -30,9 +30,9 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  */
 public class SystemWireObjectFactory implements ObjectFactory {
 
-    private SystemOutboundWire<?> wire;
+    private SystemOutboundWire wire;
 
-    public SystemWireObjectFactory(SystemOutboundWire<?> factory) {
+    public SystemWireObjectFactory(SystemOutboundWire factory) {
         this.wire = factory;
     }
 

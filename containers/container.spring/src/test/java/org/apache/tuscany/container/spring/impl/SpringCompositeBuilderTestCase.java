@@ -91,8 +91,8 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         WireService wireService = ArtifactFactory.createWireService();
         ServiceExtension<TestBean> serviceContext =
             new ServiceExtension<TestBean>("fooService", TestBean.class, null, wireService);
-        InboundWire<TestBean> inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
-        OutboundWire<TestBean> outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
+        InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
+        OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
         serviceContext.setInboundWire(inboundWire);
         serviceContext.setOutboundWire(outboundWire);

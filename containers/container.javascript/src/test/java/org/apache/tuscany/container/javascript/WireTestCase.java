@@ -69,7 +69,7 @@ public class WireTestCase extends TestCase {
 //        services.add(Greeting.class);
 //        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass1, services, properties, null, scope,
 //                ArtifactFactory.createWireService(), null);
-//        OutboundWire<?> wire = ArtifactFactory.createOutboundWire("wire", Greeting.class);
+//        OutboundWire wire = ArtifactFactory.createOutboundWire("wire", Greeting.class);
 //        ArtifactFactory.terminateWire(wire);
 //
 //        TargetInvoker invoker = createMock(TargetInvoker.class);
@@ -140,7 +140,7 @@ public class WireTestCase extends TestCase {
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
 
-        InboundWire<?> wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);
+        InboundWire wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);
         ArtifactFactory.terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker(null, chain.getOperation()));

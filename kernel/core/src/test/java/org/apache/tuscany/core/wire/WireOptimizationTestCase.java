@@ -46,7 +46,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireInterceptorOptimization() throws Exception {
-        OutboundWire<?> wire = new OutboundWireImpl();
+        OutboundWire wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -54,7 +54,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireNonInterceptorOptimization() throws Exception {
-        OutboundWire<?> wire = new OutboundWireImpl();
+        OutboundWire wire = new OutboundWireImpl();
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -62,7 +62,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireInterceptorOptimization() throws Exception {
-        InboundWire<?> wire = new InboundWireImpl();
+        InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -70,7 +70,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireNonInterceptorOptimization() throws Exception {
-        InboundWire<?> wire = new InboundWireImpl();
+        InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -78,7 +78,7 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireNonTargetInvokerOptimization() throws Exception {
-        InboundWire<?> wire = new InboundWireImpl();
+        InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         TargetInvoker invoker = new StaticPojoTargetInvoker(m, new Object());
         invoker.setCacheable(false);

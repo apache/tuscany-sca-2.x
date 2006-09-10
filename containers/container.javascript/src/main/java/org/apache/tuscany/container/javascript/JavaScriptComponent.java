@@ -64,7 +64,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
         Map<String, Object> context = new HashMap<String, Object>(getProperties());
 
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
-            for (OutboundWire<?> wire : referenceWires) {
+            for (OutboundWire wire : referenceWires) {
                 Object wireProxy = wireService.createProxy(wire);
                 //since all types that may be used in the reference interface may not be known to Rhino
                 //using the wireProxy as is will fail result in type conversion exceptions in cases where
@@ -111,7 +111,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
 
     @SuppressWarnings("unchecked")
     public T getServiceInstance(String service) throws TargetException {
-        InboundWire<?> wire = getInboundWire(service);
+        InboundWire wire = getInboundWire(service);
         if (wire == null) {
             TargetException e = new TargetException("ServiceDefinition not found"); // TODO better error message
             e.setIdentifier(service);

@@ -59,7 +59,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
     }
 
     public Object getServiceInstance(String name) throws TargetException {
-        InboundWire<?> wire = serviceWires.get(name);
+        InboundWire wire = serviceWires.get(name);
         if (wire == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
             e.addContextName(getName());

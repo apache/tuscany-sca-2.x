@@ -35,11 +35,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $Rev$ $Date$
  */
-public class InboundWireImpl<T> implements InboundWire<T> {
+public class InboundWireImpl implements InboundWire {
 
     private String serviceName;
     private ServiceContract serviceContract;
-    private OutboundWire<?> targetWire;
+    private OutboundWire targetWire;
     private String callbackReferenceName;
     private Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
     private Map<Object, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
@@ -47,11 +47,10 @@ public class InboundWireImpl<T> implements InboundWire<T> {
     private String containerName;
     private Map<Object, Object> msgIdsToAddrs = new HashMap<Object, Object>();
 
-    @SuppressWarnings("unchecked")
-    public T getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetException {
         if (targetWire != null) {
             // optimized, no interceptors or handlers on either end
-            return (T) targetWire.getTargetService();
+            return targetWire.getTargetService();
         }
         throw new TargetException("Target wire not optimized");
     }
@@ -107,7 +106,7 @@ public class InboundWireImpl<T> implements InboundWire<T> {
         chains.put(operation, chain);
     }
 
-    public void setTargetWire(OutboundWire<?> wire) {
+    public void setTargetWire(OutboundWire wire) {
         targetWire = wire;
     }
 

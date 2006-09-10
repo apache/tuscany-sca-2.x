@@ -64,7 +64,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
             // call back into builder registry to handle building of services
             Service<?> service = (Service) builderRegistry.build(parent, serviceDefinition, deploymentContext);
             // wire serviceDefinition to bean invokers
-            InboundWire<?> wire = service.getInboundWire();
+            InboundWire wire = service.getInboundWire();
             QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
             for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
                 // FIXME this should go to the connector and get policy and be invoked from SpringComposite.prepare()

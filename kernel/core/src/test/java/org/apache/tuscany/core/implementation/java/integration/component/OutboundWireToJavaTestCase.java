@@ -73,8 +73,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
     public void testToStatelessScope() throws Exception {
         StatelessScopeContainer scope = new StatelessScopeContainer(workContext);
         scope.start();
-        final OutboundWire<Target> wire = getWire(scope);
-        Target service = wireService.createProxy(wire);
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals(null, service.getString());
@@ -87,8 +87,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
         scope.onEvent(new RequestStart(this));
 
-        final OutboundWire<Target> wire = getWire(scope);
-        Target service = wireService.createProxy(wire);
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
 
@@ -97,8 +97,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 scope.onEvent(new RequestStart(this));
-                Target service2 = wireService.createProxy(wire);
-                Target target2 = wireService.createProxy(wire);
+                Target service2 = (Target) wireService.createProxy(wire);
+                Target target2 = (Target) wireService.createProxy(wire);
                 assertEquals(null, service2.getString());
                 service2.setString("bar");
                 assertEquals("bar", service2.getString());
@@ -121,9 +121,9 @@ public class OutboundWireToJavaTestCase extends TestCase {
         workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
-        final OutboundWire<Target> wire = getWire(scope);
-        Target service = wireService.createProxy(wire);
-        Target target = wireService.createProxy(wire);
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wireService.createProxy(wire);
+        Target target = (Target) wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());
@@ -136,10 +136,10 @@ public class OutboundWireToJavaTestCase extends TestCase {
         workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
-        Target service2 = wireService.createProxy(wire);
+        Target service2 = (Target) wireService.createProxy(wire);
         assertNotNull(service2);
         assertNull(service2.getString());
-        Target target2 = wireService.createProxy(wire);
+        Target target2 = (Target) wireService.createProxy(wire);
         service2.setString("bar");
         assertEquals("bar", service2.getString());
         assertEquals("bar", target2.getString());
@@ -160,9 +160,9 @@ public class OutboundWireToJavaTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(workContext);
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
-        final OutboundWire<Target> wire = getWire(scope);
-        Target service = wireService.createProxy(wire);
-        Target target = wireService.createProxy(wire);
+        final OutboundWire wire = getWire(scope);
+        Target service = (Target) wireService.createProxy(wire);
+        Target target = (Target) wireService.createProxy(wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());
@@ -172,10 +172,10 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private OutboundWire<Target> getWire(ScopeContainer scope) throws NoSuchMethodException,
-                                                                      InvalidServiceContractException {
+    private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
+                                                              InvalidServiceContractException {
         ConnectorImpl connector = new ConnectorImpl();
-        OutboundWire<Target> wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
+        OutboundWire wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
@@ -189,9 +189,9 @@ public class OutboundWireToJavaTestCase extends TestCase {
         return wire;
     }
 
-    public static <T> OutboundWire<T> createOutboundWire(QualifiedName targetName, Class<T> interfaze)
+    public static <T> OutboundWire createOutboundWire(QualifiedName targetName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        OutboundWire<T> wire = new OutboundWireImpl<T>();
+        OutboundWire wire = new OutboundWireImpl();
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         wire.setServiceContract(contract);
         wire.setTargetName(targetName);

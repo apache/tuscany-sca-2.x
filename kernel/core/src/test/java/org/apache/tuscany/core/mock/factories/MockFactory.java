@@ -156,9 +156,9 @@ public final class MockFactory {
         return new SystemAtomicComponentImpl(name, configuration);
     }
 
-    public static <T> InboundWire<T> createTargetWireFactory(String serviceName, Class<T> interfaze)
+    public static <T> InboundWire createTargetWireFactory(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
-        InboundWire<T> wire = new InboundWireImpl<T>();
+        InboundWire wire = new InboundWireImpl();
         wire.setServiceName(serviceName);
         JavaServiceContract contract = new JavaServiceContract(interfaze);
         wire.setServiceContract(contract);
