@@ -18,31 +18,31 @@
  */
 package org.apache.tuscany.core.implementation.system.wire;
 
-import org.apache.tuscany.core.mock.component.Target;
-import org.apache.tuscany.core.mock.component.TargetImpl;
+import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.apache.tuscany.core.implementation.system.component.SystemServiceImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.easymock.EasyMock;
 
 /**
  * Verifies that a system context interacts correctly with configured, connected inbound and outbound system wires
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemServiceComponentWireTestCase extends MockObjectTestCase {
+public class SystemServiceComponentWireTestCase extends TestCase {
 
     public void testServiceContext() throws NoSuchMethodException {
         Target target = new TargetImpl();
-        Mock mockWire = mock(SystemOutboundWire.class);
-        mockWire.expects(atLeastOnce()).method("getTargetService").will(returnValue(target));
-        SystemOutboundWire outboundWire = (SystemOutboundWire) mockWire.proxy();
-
+        SystemOutboundWire outboundWire = EasyMock.createMock(SystemOutboundWire.class);
+        EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
+        EasyMock.replay(outboundWire);
         SystemInboundWire wire = new SystemInboundWireImpl("Target", Target.class);
         SystemService serviceContext = new SystemServiceImpl("service", null);
         serviceContext.setInboundWire(wire);
         serviceContext.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);
         assertSame(target, serviceContext.getServiceInstance());
+        EasyMock.verify(outboundWire);
     }
 }

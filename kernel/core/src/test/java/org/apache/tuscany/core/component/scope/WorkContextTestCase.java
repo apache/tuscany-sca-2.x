@@ -21,21 +21,19 @@ package org.apache.tuscany.core.component.scope;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class WorkContextTestCase extends MockObjectTestCase {
+public class WorkContextTestCase extends TestCase {
 
     public void testRemoteComponent() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        Mock mock = mock(CompositeComponent.class);
-        CompositeComponent component = (CompositeComponent) mock.proxy();
-        Mock mock2 = mock(CompositeComponent.class);
-        CompositeComponent component2 = (CompositeComponent) mock2.proxy();
+        CompositeComponent component = EasyMock.createNiceMock(CompositeComponent.class);
+        CompositeComponent component2 = EasyMock.createNiceMock(CompositeComponent.class);
         ctx.setRemoteComponent(component);
         assertEquals(component, ctx.getRemoteComponent());
         ctx.setRemoteComponent(component2);

@@ -26,14 +26,14 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.model.Scope;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractScopeContainerTestCase extends MockObjectTestCase {
+public class AbstractScopeContainerTestCase extends TestCase {
 
     public void testSetWorkContext() {
         TestContainer container = new TestContainer("foo");
@@ -45,43 +45,45 @@ public class AbstractScopeContainerTestCase extends MockObjectTestCase {
 
     public void testFireListener() {
         TestContainer container = new TestContainer("foo");
-        Mock mock = mock(RuntimeEventListener.class);
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(once()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        listener.onEvent(EasyMock.eq(event));
+        EasyMock.replay(listener);
         container.addListener(listener);
         container.publish(event);
+        EasyMock.verify(listener);
     }
 
     public void testRemoveListener() {
         TestContainer container = new TestContainer("foo");
-        Mock mock = mock(RuntimeEventListener.class);
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        EasyMock.replay(listener);
         Event event = new TestEvent();
-        mock.expects(never()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
         container.addListener(listener);
         container.removeListener(listener);
         container.publish(event);
+        EasyMock.verify(listener);
     }
 
     public void testFalseFilterListener() {
         TestContainer container = new TestContainer("foo");
-        Mock mock = mock(RuntimeEventListener.class);
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(never()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        EasyMock.replay(listener);
         container.addListener(new FalseFilter(), listener);
         container.publish(event);
+        EasyMock.verify(listener);
     }
 
     public void testTrueFilterListener() {
         TestContainer container = new TestContainer("foo");
-        Mock mock = mock(RuntimeEventListener.class);
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         Event event = new TestEvent();
-        mock.expects(once()).method("onEvent").with(eq(event));
-        RuntimeEventListener listener = (RuntimeEventListener) mock.proxy();
+        listener.onEvent(EasyMock.eq(event));
+        EasyMock.replay(listener);
         container.addListener(new TrueFilter(), listener);
         container.publish(event);
+        EasyMock.verify(listener);
     }
 
     public void testToString() {

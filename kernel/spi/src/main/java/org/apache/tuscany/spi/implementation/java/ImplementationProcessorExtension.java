@@ -59,7 +59,8 @@ public abstract class ImplementationProcessorExtension implements Implementation
     }
 
     public <T>  void visitSuperClass(CompositeComponent parent, Class<T> clazz,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                     PojoComponentType<JavaMappedService,
+                                         JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context)
         throws ProcessingException {
     }
@@ -71,7 +72,8 @@ public abstract class ImplementationProcessorExtension implements Implementation
     }
 
     public <T>  void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
-                                      PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                      PojoComponentType<JavaMappedService,
+                                          JavaMappedReference, JavaMappedProperty<?>> type,
                                       DeploymentContext context)
         throws ProcessingException {
     }

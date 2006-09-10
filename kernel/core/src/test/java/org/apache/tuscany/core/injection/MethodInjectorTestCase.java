@@ -23,12 +23,12 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class MethodInjectorTestCase extends MockObjectTestCase {
+public class MethodInjectorTestCase extends TestCase {
     private Method fooMethod;
     private Method privateMethod;
     private Method exceptionMethod;

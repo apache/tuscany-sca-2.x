@@ -25,6 +25,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXPropertyFactory;
@@ -33,53 +36,73 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentLoaderTestCase extends MockObjectTestCase {
+public class ComponentLoaderTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
     private static final String NAME = "testComponent";
     private static final Implementation IMPL = new JavaImplementation();
 
-    private Mock mockReader;
-    private Mock mockRegistry;
-    private Mock mockPropertyFactory;
+    private XMLStreamReader mockReader;
+    private LoaderRegistry mockRegistry;
+    private StAXPropertyFactory mockPropertyFactory;
     private ComponentLoader loader;
 
     public void testEmptyComponent() throws LoaderException, XMLStreamException {
-        mockReader.expects(atLeastOnce()).method("getName").will(returnValue(COMPONENT));
-        mockReader.expects(atLeastOnce()).method("getAttributeValue")
-            .with(ANYTHING, ANYTHING)
-            .will(onConsecutiveCalls(returnValue(NAME), returnValue(null)));
-        mockReader.expects(once()).method("nextTag").will(returnValue(0));
-        mockReader.expects(once()).method("next").will(returnValue(XMLStreamConstants.END_ELEMENT));
-        mockRegistry.expects(once()).method("loadComponentType");
-        mockRegistry.expects(once()).method("load").will(returnValue(IMPL));
-        ComponentDefinition component = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
+        EasyMock.expect(mockReader.getName()).andReturn(COMPONENT).atLeastOnce();
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
+            .andReturn(NAME);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
+            .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
+            .andReturn(null);
+        EasyMock.expect(mockReader.nextTag()).andReturn(0);
+        EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
+        EasyMock.replay(mockReader);
+        mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Implementation.class),
+            EasyMock.isA(DeploymentContext.class));
+
+        EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
+            EasyMock.eq(mockReader),
+            EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
+        EasyMock.replay(mockRegistry);
+        ComponentDefinition component = loader.load(EasyMock.createNiceMock(CompositeComponent.class),
+            mockReader,
+            EasyMock.createNiceMock(DeploymentContext.class));
         assertEquals(NAME, component.getName());
         assertNull(component.getInitLevel());
     }
 
     public void testInitValue20() throws LoaderException, XMLStreamException {
-        mockReader.expects(atLeastOnce()).method("getName").will(returnValue(COMPONENT));
-        mockReader.expects(atLeastOnce()).method("getAttributeValue")
-            .with(ANYTHING, ANYTHING)
-            .will(onConsecutiveCalls(returnValue(NAME), returnValue("20")));
-        mockReader.expects(once()).method("nextTag").will(returnValue(0));
-        mockReader.expects(once()).method("next").will(returnValue(XMLStreamConstants.END_ELEMENT));
-        mockRegistry.expects(once()).method("loadComponentType");
-        mockRegistry.expects(once()).method("load").will(returnValue(IMPL));
-        ComponentDefinition component = loader.load(null, (XMLStreamReader) mockReader.proxy(), null);
+        EasyMock.expect(mockReader.getName()).andReturn(COMPONENT).atLeastOnce();
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
+            .andReturn(NAME);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
+            .andReturn("20");
+        EasyMock.expect(mockReader.nextTag()).andReturn(0);
+        EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
+        EasyMock.replay(mockReader);
+
+        mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Implementation.class),
+            EasyMock.isA(DeploymentContext.class));
+        EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
+            EasyMock.eq(mockReader),
+            EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
+        EasyMock.replay(mockRegistry);
+        ComponentDefinition component = loader.load(EasyMock.createNiceMock(CompositeComponent.class),
+            mockReader,
+            EasyMock.createNiceMock(DeploymentContext.class));
         assertEquals(NAME, component.getName());
         assertEquals(Integer.valueOf(20), component.getInitLevel());
     }
@@ -104,10 +127,9 @@ public class ComponentLoaderTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        mockReader = mock(XMLStreamReader.class);
-        mockRegistry = mock(LoaderRegistry.class);
-        mockPropertyFactory = mock(StAXPropertyFactory.class);
-        loader = new ComponentLoader((LoaderRegistry) mockRegistry.proxy(),
-            (StAXPropertyFactory) mockPropertyFactory.proxy());
+        mockReader = EasyMock.createMock(XMLStreamReader.class);
+        mockRegistry = EasyMock.createMock(LoaderRegistry.class);
+        mockPropertyFactory = EasyMock.createMock(StAXPropertyFactory.class);
+        loader = new ComponentLoader(mockRegistry, mockPropertyFactory);
     }
 }

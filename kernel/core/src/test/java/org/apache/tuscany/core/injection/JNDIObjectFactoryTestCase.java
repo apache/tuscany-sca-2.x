@@ -23,26 +23,27 @@ import javax.naming.NamingException;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JNDIObjectFactoryTestCase extends MockObjectTestCase {
+public class JNDIObjectFactoryTestCase extends TestCase {
 
     public void testGetInstance() throws Exception {
-        Mock mock = mock(Context.class);
-        mock.expects(once()).method("lookup").with(eq("foo")).will(returnValue(new Foo()));
-        Context ctx = (Context) mock.proxy();
+        Context ctx = EasyMock.createMock(Context.class);
+        EasyMock.expect(ctx.lookup(EasyMock.eq("foo"))).andReturn(new Foo());
+        EasyMock.replay(ctx);
         JNDIObjectFactory<Foo> factory = new JNDIObjectFactory<Foo>(ctx, "foo");
         assertTrue(factory.getInstance() instanceof Foo); // must do an instanceof b/c of type erasure
+        EasyMock.verify(ctx);
     }
 
     public void testGetInstanceError() throws Exception {
-        Mock mock = mock(Context.class);
-        mock.expects(once()).method("lookup").with(eq("foo")).will(throwException(new NamingException()));
-        Context ctx = (Context) mock.proxy();
+        Context ctx = EasyMock.createMock(Context.class);
+        EasyMock.expect(ctx.lookup(EasyMock.eq("foo"))).andThrow(new NamingException());
+        EasyMock.replay(ctx);
         JNDIObjectFactory<Foo> factory = new JNDIObjectFactory<Foo>(ctx, "foo");
         try {
             factory.getInstance();
@@ -50,6 +51,7 @@ public class JNDIObjectFactoryTestCase extends MockObjectTestCase {
         } catch (ObjectCreationException e) {
             //expected
         }
+        EasyMock.verify(ctx);
     }
 
 

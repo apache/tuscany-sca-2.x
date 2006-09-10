@@ -213,10 +213,10 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     }
 
     public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
-        SystemService context = autowireExternal.get(instanceInterface);
-        if (context != null) {
+        SystemService service = autowireExternal.get(instanceInterface);
+        if (service != null) {
             try {
-                return instanceInterface.cast(context.getServiceInstance());
+                return instanceInterface.cast(service.getServiceInstance());
             } catch (CoreRuntimeException e) {
                 e.addContextName(getName());
                 throw e;

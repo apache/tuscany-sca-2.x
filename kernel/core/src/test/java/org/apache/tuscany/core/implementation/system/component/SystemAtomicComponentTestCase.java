@@ -18,21 +18,21 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * Verifies a system atomic component can be started and initialized
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemAtomicComponentTestCase extends MockObjectTestCase {
+public class SystemAtomicComponentTestCase extends TestCase {
 
     private EventInvoker<Object> initInvoker;
 
@@ -59,14 +59,15 @@ public class SystemAtomicComponentTestCase extends MockObjectTestCase {
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl("foo", configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));
         Foo target = new Foo();
-        Mock mock = mock(SystemOutboundWire.class);
-        mock.expects(once()).method("getTargetService").will(returnValue(target));
-        mock.expects(atLeastOnce()).method("getReferenceName").will(returnValue("ref"));
-        SystemOutboundWire wire = (SystemOutboundWire) mock.proxy();
+        SystemOutboundWire wire = EasyMock.createMock(SystemOutboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn(target);
+        EasyMock.expect(wire.getReferenceName()).andReturn("ref").anyTimes();
+        EasyMock.replay(wire);
         component.addOutboundWire(wire);
         Bar bar = (Bar) component.createInstance();
         assertEquals("baz", bar.foo);
         assertEquals(target, bar.ref);
+        EasyMock.verify(wire);
     }
 
     protected void setUp() throws Exception {

@@ -23,16 +23,16 @@ import java.util.List;
 
 import org.apache.tuscany.spi.component.DuplicateNameException;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * Verfies children with the same name cannot be registered in the same composite
  *
  * @version $Rev$ $Date$
  */
-public class DuplicateRegistrationTestCase extends MockObjectTestCase {
+public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateRegistration() throws Exception {
         SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
@@ -40,15 +40,21 @@ public class DuplicateRegistrationTestCase extends MockObjectTestCase {
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        Mock mock = mock(SystemAtomicComponent.class);
-        mock.stubs().method("getName").will(returnValue("source"));
-        mock.expects(once()).method("stop");
-        mock.stubs().method("getServiceInterfaces").will(returnValue(interfaces));
-        SystemAtomicComponent context1 = (SystemAtomicComponent) mock.proxy();
-        SystemAtomicComponent context2 = (SystemAtomicComponent) mock.proxy();
-        parent.register(context1);
+        SystemAtomicComponent component1 = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(component1.getName()).andReturn("source").atLeastOnce();
+        component1.stop();
+        EasyMock.expect(component1.getServiceInterfaces()).andReturn(interfaces);
+        EasyMock.replay(component1);
+
+        SystemAtomicComponent component2 = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
+        component2.stop();
+        EasyMock.expect(component2.getServiceInterfaces()).andReturn(interfaces);
+        EasyMock.replay(component2);
+
+        parent.register(component1);
         try {
-            parent.register(context2);
+            parent.register(component2);
             fail();
         } catch (DuplicateNameException e) {
             // ok

@@ -18,51 +18,85 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+import java.lang.reflect.Constructor;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 
+import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl.Monitor;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class IntrospectionRegistryTestCase extends MockObjectTestCase {
+public class IntrospectionRegistryTestCase extends TestCase {
 
     private Monitor monitor;
 
     public void testRegister() throws Exception {
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl(monitor);
-        Mock mock = mock(ImplementationProcessor.class);
-        registry.registerProcessor((ImplementationProcessor) mock.proxy());
+        ImplementationProcessor processor = EasyMock.createNiceMock(ImplementationProcessor.class);
+        registry.registerProcessor(processor);
     }
 
     public void testUnegister() throws Exception {
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl(monitor);
-        Mock mock = mock(ImplementationProcessor.class);
-        ImplementationProcessor processor = (ImplementationProcessor) mock.proxy();
+        ImplementationProcessor processor = EasyMock.createNiceMock(ImplementationProcessor.class);
         registry.registerProcessor(processor);
         registry.unregisterProcessor(processor);
     }
 
+    @SuppressWarnings("unchecked")
     public void testWalk() throws Exception {
         IntrospectionRegistryImpl registry = new IntrospectionRegistryImpl(monitor);
-        Mock mock = mock(ImplementationProcessor.class);
-        mock.expects(once()).method("visitClass");
-        mock.expects(once()).method("visitMethod");
-        mock.expects(once()).method("visitField");
-        mock.expects(once()).method("visitConstructor");
-        mock.expects(once()).method("visitSuperClass");
-        mock.expects(once()).method("visitEnd");
-        ImplementationProcessor processor = (ImplementationProcessor) mock.proxy();
+        ImplementationProcessor processor = EasyMock.createMock(ImplementationProcessor.class);
+        processor.visitClass(EasyMock.isA(CompositeComponent.class),
+            EasyMock.eq(Bar.class),
+            EasyMock.isA(PojoComponentType.class),
+            EasyMock.isA(DeploymentContext.class));
+        processor.visitConstructor(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Constructor.class),
+            EasyMock.isA(PojoComponentType.class),
+            EasyMock.isA(DeploymentContext.class));
+        processor.visitMethod(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Method.class),
+            EasyMock.isA(PojoComponentType.class),
+            EasyMock.isA(DeploymentContext.class));
+        processor.visitField(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Field.class),
+            EasyMock.isA(PojoComponentType.class),
+            EasyMock.isA(DeploymentContext.class));
+        processor.visitSuperClass(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Class.class),
+            EasyMock.isA(PojoComponentType.class),
+            EasyMock.isA(DeploymentContext.class));
+        processor.visitEnd(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Class.class),
+            EasyMock.isA(PojoComponentType.class),
+            EasyMock.isA(DeploymentContext.class));
+
+     //   mock.expects(once()).method("visitClass");
+//        mock.expects(once()).method("visitMethod");
+//        mock.expects(once()).method("visitField");
+//        mock.expects(once()).method("visitConstructor");
+//        mock.expects(once()).method("visitSuperClass");
+//        mock.expects(once()).method("visitEnd");
+        EasyMock.replay(processor);
         registry.registerProcessor(processor);
-        registry.introspect(null, Bar.class,
-            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(), null);
+        registry.introspect(EasyMock.createNiceMock(CompositeComponent.class),
+            Bar.class,
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>(),
+            EasyMock.createNiceMock(DeploymentContext.class));
+        EasyMock.verify(processor);
     }
 
 

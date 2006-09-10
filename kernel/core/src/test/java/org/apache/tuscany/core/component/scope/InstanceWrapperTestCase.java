@@ -21,15 +21,13 @@ package org.apache.tuscany.core.component.scope;
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
-import org.jmock.core.Invocation;
-import org.jmock.core.Stub;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class InstanceWrapperTestCase extends MockObjectTestCase {
+public class InstanceWrapperTestCase extends TestCase {
 
 
     public void testExceptionInit() throws Exception {
@@ -42,11 +40,11 @@ public class InstanceWrapperTestCase extends MockObjectTestCase {
             // expected
         }
         assertEquals(Lifecycle.ERROR, wrapper.getLifecycleState());
+        EasyMock.verify(component);
     }
 
     public void testNonStart() throws Exception {
-        Mock mock = mock(AtomicComponent.class);
-        AtomicComponent comp = (AtomicComponent) mock.proxy();  // class-level one has an expects
+        AtomicComponent comp = EasyMock.createNiceMock(AtomicComponent.class);  // class-level one has an expects
         InstanceWrapper wrapper = new InstanceWrapperImpl(comp, new Object());
         try {
             wrapper.getInstance();
@@ -58,17 +56,11 @@ public class InstanceWrapperTestCase extends MockObjectTestCase {
 
     private AtomicComponent getComponent() throws Exception {
         // do not use setUp() since we do not need this in all testcases
-        Mock mock = mock(AtomicComponent.class);
-        mock.expects(once()).method("init").will(new Stub() {
-            public Object invoke(Invocation invocation) throws Throwable {
-                throw new SomeException();
-            }
-
-            public StringBuffer describeTo(StringBuffer stringBuffer) {
-                return stringBuffer.append("bad init");
-            }
-        });
-        return (AtomicComponent) mock.proxy();
+        AtomicComponent comp = EasyMock.createMock(AtomicComponent.class);
+        comp.init(EasyMock.isA(Object.class));
+        EasyMock.expectLastCall().andThrow(new SomeException());
+        EasyMock.replay(comp);
+        return comp;
     }
 
     private class SomeException extends RuntimeException {

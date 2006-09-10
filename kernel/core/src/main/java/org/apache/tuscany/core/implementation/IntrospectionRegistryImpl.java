@@ -27,13 +27,13 @@ import java.util.Set;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessor;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -75,51 +75,52 @@ public class IntrospectionRegistryImpl implements IntrospectionRegistry {
                                         DeploymentContext context)
         throws ProcessingException {
         for (ImplementationProcessor processor : cache) {
-            processor.visitClass(parent, clazz, type, null);
+            processor.visitClass(parent, clazz, type, context);
         }
 
         for (Constructor<?> constructor : clazz.getConstructors()) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitConstructor(parent, constructor, type, null);
+                processor.visitConstructor(parent, constructor, type, context);
             }
         }
 
         Set<Method> methods = JavaIntrospectionHelper.getAllUniquePublicProtectedMethods(clazz);
         for (Method method : methods) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitMethod(parent, method, type, null);
+                processor.visitMethod(parent, method, type, context);
             }
         }
 
         Set<Field> fields = JavaIntrospectionHelper.getAllPublicAndProtectedFields(clazz);
         for (Field field : fields) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitField(parent, field, type, null);
+                processor.visitField(parent, field, type, context);
             }
         }
 
         Class superClass = clazz.getSuperclass();
         if (superClass != null) {
-            visitSuperClass(parent, superClass, type);
+            visitSuperClass(parent, superClass, type, context);
         }
 
         for (ImplementationProcessor processor : cache) {
-            processor.visitEnd(parent, clazz, type, null);
+            processor.visitEnd(parent, clazz, type, context);
         }
         return type;
     }
 
     private void visitSuperClass(CompositeComponent parent,
                                  Class<?> clazz,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type)
+                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                 DeploymentContext context)
         throws ProcessingException {
         if (!Object.class.equals(clazz)) {
             for (ImplementationProcessor processor : cache) {
-                processor.visitSuperClass(parent, clazz, type, null);
+                processor.visitSuperClass(parent, clazz, type, context);
             }
             clazz = clazz.getSuperclass();
             if (clazz != null) {
-                visitSuperClass(parent, clazz, type);
+                visitSuperClass(parent, clazz, type, context);
             }
         }
     }

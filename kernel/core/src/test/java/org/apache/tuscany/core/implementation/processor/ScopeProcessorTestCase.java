@@ -26,13 +26,13 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Scope;
 
-import org.jmock.Mock;
-import org.jmock.MockObjectTestCase;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ScopeProcessorTestCase extends MockObjectTestCase {
+public class ScopeProcessorTestCase extends TestCase {
 
     CompositeComponent parent;
 
@@ -40,6 +40,7 @@ public class ScopeProcessorTestCase extends MockObjectTestCase {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+
         processor.visitClass(parent, Module.class, type, null);
         assertEquals(Scope.MODULE, type.getImplementationScope());
     }
@@ -86,8 +87,7 @@ public class ScopeProcessorTestCase extends MockObjectTestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        Mock mock = mock(CompositeComponent.class);
-        parent = (CompositeComponent) mock.proxy();
+        parent = EasyMock.createNiceMock(CompositeComponent.class);
     }
 
     @org.osoa.sca.annotations.Scope("MODULE")
