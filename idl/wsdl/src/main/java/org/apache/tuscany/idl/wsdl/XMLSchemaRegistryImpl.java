@@ -87,8 +87,11 @@ public class XMLSchemaRegistryImpl implements XMLSchemaRegistry {
     }
 
     public XmlSchema loadSchema(String namespace, URL location) throws IOException, XmlSchemaException {
-        XmlSchema schema = collection.getXmlSchema(location.toExternalForm());
-        if (schema == null) {
+        XmlSchema schema;
+        XmlSchema[] schemaList = collection.getXmlSchema(location.toExternalForm());
+        if (schemaList != null && schemaList.length > 0) {
+            schema = schemaList[0];
+        } else {
             InputStream is = location.openStream();
             schema = collection.read(new InputStreamReader(is), null);
             is.close();

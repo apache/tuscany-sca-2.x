@@ -141,6 +141,14 @@
             <name>ibiblio</name>
             <url>http://www.ibiblio.org/maven2</url>
         </repository>
+
+        <!-- needed for Apache webServices artifacts -->
+        <repository>
+            <id>apache.m1</id>
+            <name>Apache Maven 1 Repository</name>
+            <url>http://people.apache.org/repository</url>
+            <layout>legacy</layout>
+        </repository>
     </repositories>
 
     <pluginRepositories>
