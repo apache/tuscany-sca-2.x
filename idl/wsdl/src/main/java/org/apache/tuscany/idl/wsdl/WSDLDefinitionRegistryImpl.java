@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.wsdl.Definition;
+import javax.wsdl.Import;
 import javax.wsdl.PortType;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
@@ -35,23 +36,34 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.annotation.Autowire;
+
 /**
  * The default implementation of the runtime WSDL registry
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
     private final WSDLFactory wsdlFactory;
+
     private final ExtensionRegistry registry;
 
     private final Map<URL, Definition> definitionsByLocation = new HashMap<URL, Definition>();
+
     private final Map<String, List<Definition>> definitionsByNamespace = new HashMap<String, List<Definition>>();
 
     private Monitor monitor;
 
+    private XMLSchemaRegistry schemaRegistry;
+
     public WSDLDefinitionRegistryImpl() throws WSDLException {
         wsdlFactory = WSDLFactory.newInstance();
         registry = wsdlFactory.newPopulatedExtensionRegistry();
+    }
+
+    @Autowire
+    public void setSchemaRegistry(XMLSchemaRegistry schemaRegistry) {
+        this.schemaRegistry = schemaRegistry;
     }
 
     @org.apache.tuscany.api.annotation.Monitor
@@ -94,7 +106,9 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
             return definition;
         }
 
-        monitor.readingWSDL(namespace, location);
+        if (monitor != null) {
+            monitor.readingWSDL(namespace, location);
+        }
         WSDLReader reader = wsdlFactory.newWSDLReader();
         reader.setFeature("javax.wsdl.verbose", false);
         reader.setExtensionRegistry(registry);
@@ -102,11 +116,23 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         definition = reader.readWSDL(location.toString());
         String definitionNamespace = definition.getTargetNamespace();
         if (namespace != null && !namespace.equals(definitionNamespace)) {
-            throw new WSDLException(WSDLException.CONFIGURATION_ERROR,
-                                    namespace + " != " + definition.getTargetNamespace());
+            throw new WSDLException(WSDLException.CONFIGURATION_ERROR, namespace + " != "
+                    + definition.getTargetNamespace());
         }
 
-        monitor.cachingDefinition(definitionNamespace, location);
+        // Load inline schemas
+        getSchemaRegistry().loadSchemas(definition);
+        for (Object i : definition.getImports().values()) {
+            Import imp = (Import) i;
+            Definition imported = imp.getDefinition();
+            if (imported != null) {
+                getSchemaRegistry().loadSchemas(imported);
+            }
+        }
+
+        if (monitor != null) {
+            monitor.cachingDefinition(definitionNamespace, location);
+        }
         definitionsByLocation.put(location, definition);
         List<Definition> definitions = definitionsByNamespace.get(definitionNamespace);
         if (definitions == null) {
@@ -152,19 +178,27 @@ public class WSDLDefinitionRegistryImpl implements WSDLDefinitionRegistry {
         /**
          * Monitor event emitted immediately before an attempt is made to read WSDL for the supplied namespace from the
          * supplied location.
-         *
+         * 
          * @param namespace the target namespace expected in the WSDL; may be null
-         * @param location  the location where we will attempt to read the WSDL definition from
+         * @param location the location where we will attempt to read the WSDL definition from
          */
         void readingWSDL(String namespace, URL location);
 
         /**
          * Monitor event emitted immediately before registering a WSDL definition in the cache.
-         *
+         * 
          * @param namespace the target namespace for the WSDL
-         * @param location  the location where the WSDL definition was read from
+         * @param location the location where the WSDL definition was read from
          */
         void cachingDefinition(String namespace, URL location);
+    }
+
+    public XMLSchemaRegistry getSchemaRegistry() {
+        if (schemaRegistry == null) {
+            // Default
+            schemaRegistry = new XMLSchemaRegistryImpl();
+        }
+        return schemaRegistry;
     }
 
 }

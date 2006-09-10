@@ -33,6 +33,10 @@
         <system:implementation.system class="org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl" initLevel="40" />
     </component>
 
+    <component name="xmlSchema.registry">
+        <system:implementation.system class="org.apache.tuscany.idl.wsdl.XMLSchemaRegistryImpl" initLevel="35" />
+    </component>
+    
     <component name="interface.wsdl.Introspector">
         <system:implementation.system class="org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospectorImpl" initLevel="40" />
     </component>

@@ -79,4 +79,11 @@ public interface WSDLDefinitionRegistry {
      * @return the ExtensionRegistry that is used when parsing WSDL documents.
      */
     ExtensionRegistry getExtensionRegistry();
+    
+    /**
+     * Get the XMLSchemaRegistry
+     * 
+     * @return
+     */
+    XMLSchemaRegistry getSchemaRegistry();
 }

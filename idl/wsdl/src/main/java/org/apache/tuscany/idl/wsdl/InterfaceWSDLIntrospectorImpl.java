@@ -34,6 +34,7 @@ import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
@@ -44,10 +45,22 @@ import org.osoa.sca.annotations.Property;
  */
 public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector {
     public static final String INPUT_PARTS = "idl:input";
+
     public static final String IDL_WSDL_DOCUMENT_LITERAL_WRPPED = "idl.wsdl.documentLiteralWrpped";
+
+    private WSDLDefinitionRegistry wsdlDefinitionRegistry;
+
     private String defaultDataBinding = "org.w3c.dom.Node"; // Default to DOM binding?
 
-    @Property(name="defaultDataBinding")
+    /**
+     * @param wsdlDefinitionRegistry
+     */
+    public InterfaceWSDLIntrospectorImpl(@Autowire WSDLDefinitionRegistry wsdlDefinitionRegistry) {
+        super();
+        this.wsdlDefinitionRegistry = wsdlDefinitionRegistry;
+    }
+
+    @Property(name = "defaultDataBinding")
     public void setDefaultDataBinding(String defaultDataBinding) {
         this.defaultDataBinding = defaultDataBinding;
     }
@@ -55,57 +68,68 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
     protected Map<String, org.apache.tuscany.spi.model.Operation<QName>> introspectOperations(PortType portType)
         throws NotSupportedWSDLException {
-        boolean oneway = false;
         Map<String, org.apache.tuscany.spi.model.Operation<QName>> operations =
-            new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
+                new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
         for (Object op : portType.getOperations()) {
             Operation wsdlOp = (Operation) op;
-            String name = wsdlOp.getName();
-
-            Input input = wsdlOp.getInput();
-            Message inputMsg = (input == null) ? null : input.getMessage();
-            DataType<List<DataType<QName>>> inputType = introspectType(inputMsg);
-
-            Message outputMsg;
-            Output output = wsdlOp.getOutput();
-            if (output == null) {
-                // TODO: [rfeng] Is this the correct way to determine if it's non-blocking?
-                oneway = true;
-            }
-            outputMsg = (output == null) ? null : output.getMessage();
-
-            List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
-            DataType<QName> outputType = null;
-            if (outputParts != null || outputParts.size() > 0) {
-                if (outputParts.size() > 1) {
-                    // We don't support output with multiple parts
-                    throw new NotSupportedWSDLException("Multi-part output is not supported");
-                }
-                Part part = (Part) outputParts.get(0);
-                outputType = introspectType(part);
-            }
-
-            Collection faults = wsdlOp.getFaults().values();
-            List<DataType<QName>> faultTypes = new ArrayList<DataType<QName>>();
-            for (Object f : faults) {
-                Fault fault = (Fault) f;
-                Message faultMsg = fault.getMessage();
-                List faultParts = faultMsg.getOrderedParts(null);
-                if (faultParts.size() != 1) {
-                    throw new NotSupportedWSDLException("The fault message MUST have a single part");
-                }
-                Part part = (Part) faultParts.get(0);
-                // A fault is typed by a message
-                DataType<QName> dataType = introspectType(part);
-                faultTypes.add(dataType);
-            }
-
-            // FIXME: [rfeng] How to figure the nonBlocking and dataBinding?
-            org.apache.tuscany.spi.model.Operation<QName> operation =
-                new org.apache.tuscany.spi.model.Operation<QName>(name, inputType, outputType, faultTypes, oneway, defaultDataBinding);
-            operations.put(name, operation);
+            operations.put(wsdlOp.getName(), introspectOperation(wsdlOp));
         }
         return operations;
+    }
+
+    protected org.apache.tuscany.spi.model.Operation<QName> introspectOperation(Operation wsdlOp)
+        throws NotSupportedWSDLException {
+
+        Input input = wsdlOp.getInput();
+        Message inputMsg = (input == null) ? null : input.getMessage();
+        DataType<List<DataType<QName>>> inputType = introspectType(inputMsg);
+
+        Message outputMsg;
+        Output output = wsdlOp.getOutput();
+        boolean oneway = false;
+        if (output == null) {
+            // TODO: [rfeng] Is this the correct way to determine if it's non-blocking?
+            oneway = true;
+        }
+        outputMsg = (output == null) ? null : output.getMessage();
+
+        List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
+        DataType<QName> outputType = null;
+        if (outputParts != null || outputParts.size() > 0) {
+            if (outputParts.size() > 1) {
+                // We don't support output with multiple parts
+                throw new NotSupportedWSDLException("Multi-part output is not supported");
+            }
+            Part part = (Part) outputParts.get(0);
+            outputType = introspectType(part);
+        }
+
+        Collection faults = wsdlOp.getFaults().values();
+        List<DataType<QName>> faultTypes = new ArrayList<DataType<QName>>();
+        for (Object f : faults) {
+            Fault fault = (Fault) f;
+            Message faultMsg = fault.getMessage();
+            List faultParts = faultMsg.getOrderedParts(null);
+            if (faultParts.size() != 1) {
+                throw new NotSupportedWSDLException("The fault message MUST have a single part");
+            }
+            Part part = (Part) faultParts.get(0);
+            // A fault is typed by a message
+            DataType<QName> dataType = introspectType(part);
+            faultTypes.add(dataType);
+        }
+
+        org.apache.tuscany.spi.model.Operation<QName> operation =
+                new org.apache.tuscany.spi.model.Operation<QName>(wsdlOp.getName(), inputType, outputType, faultTypes,
+                        oneway, defaultDataBinding);
+
+        WrapperStyleOperation wrapperStyleOperation =
+                new WrapperStyleOperation(wsdlOp, wsdlDefinitionRegistry.getSchemaRegistry());
+        if (wrapperStyleOperation.isWrapperStyle()) {
+            operation.addMetaData(WrapperStyleOperation.class.getName(), wrapperStyleOperation);
+        }
+        return operation;
+
     }
 
     protected DataType<List<DataType<QName>>> introspectType(Message message) {
@@ -118,7 +142,8 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
                 dataTypes.add(dataType);
             }
         }
-        DataType<List<DataType<QName>>> msgType = new DataType<List<DataType<QName>>>(INPUT_PARTS, Object.class, dataTypes);
+        DataType<List<DataType<QName>>> msgType =
+                new DataType<List<DataType<QName>>>(INPUT_PARTS, Object.class, dataTypes);
         msgType.setMetadata(IDL_WSDL_DOCUMENT_LITERAL_WRPPED, Boolean.FALSE);
         return msgType;
     }
@@ -151,7 +176,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
      */
     public WSDLServiceContract introspect(PortType portType, PortType callbackPortType)
         throws InvalidServiceContractException {
-        assert portType!=null: "PortType cannot be null";
+        assert portType != null : "PortType cannot be null";
         WSDLServiceContract contract = new WSDLServiceContract();
         // FIXME: set to Non-conversational for now
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
@@ -165,6 +190,5 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
         }
         return contract;
     }
-
 
 }

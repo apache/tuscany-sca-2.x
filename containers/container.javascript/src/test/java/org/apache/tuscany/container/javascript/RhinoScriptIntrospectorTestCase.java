@@ -38,6 +38,7 @@ import org.apache.tuscany.container.javascript.rhino.RhinoScript;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+import org.apache.tuscany.idl.wsdl.XMLSchemaRegistryImpl;
 
 public class RhinoScriptIntrospectorTestCase extends TestCase {
 
@@ -92,6 +93,7 @@ public class RhinoScriptIntrospectorTestCase extends TestCase {
         RhinoSCAConfig scaConfig = new RhinoSCAConfig(rs.getScriptScope());
 
         WSDLDefinitionRegistryImpl wsdlReg = new WSDLDefinitionRegistryImpl();
+        wsdlReg.setSchemaRegistry(new XMLSchemaRegistryImpl());
         wsdlReg.setMonitor(NULL_MONITOR);
         URL wsdlURL =
             getClass().getClassLoader().getResource("org/apache/tuscany/container/javascript/rhino/helloworld.wsdl");
