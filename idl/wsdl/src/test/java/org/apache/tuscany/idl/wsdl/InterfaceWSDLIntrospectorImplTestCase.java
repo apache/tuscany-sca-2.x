@@ -25,23 +25,22 @@ import java.util.Map;
 
 import javax.wsdl.Definition;
 import javax.wsdl.PortType;
-import javax.wsdl.factory.WSDLFactory;
-import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 /**
- * 
+ * Test case for InterfaceWSDLIntrospectorImpl
  */
 public class InterfaceWSDLIntrospectorImplTestCase extends TestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
+    private WSDLDefinitionRegistryImpl registry;
     private PortType portType;
 
     /**
@@ -49,16 +48,15 @@ public class InterfaceWSDLIntrospectorImplTestCase extends TestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        WSDLFactory factory = WSDLFactory.newInstance();
+        registry = new WSDLDefinitionRegistryImpl();
+        registry.setSchemaRegistry(new XMLSchemaRegistryImpl());
         URL url = getClass().getResource("stockquote.wsdl");
-        WSDLReader reader = factory.newWSDLReader();
-        reader.setFeature("javax.wsdl.verbose", false);
-        Definition definition = reader.readWSDL(url.toExternalForm());
+        Definition definition = registry.loadDefinition(null, url);
         portType = definition.getPortType(PORTTYPE_NAME);
     }
 
     public final void testIntrospectPortType() throws InvalidServiceContractException {
-        InterfaceWSDLIntrospector introspector = new InterfaceWSDLIntrospectorImpl();
+        InterfaceWSDLIntrospector introspector = new InterfaceWSDLIntrospectorImpl(registry);
         WSDLServiceContract contract = introspector.introspect(portType);
         Assert.assertEquals(contract.getInterfaceName(), "StockQuotePortType");
         Map<String, Operation<QName>> operations = contract.getOperations();
@@ -70,10 +68,15 @@ public class InterfaceWSDLIntrospectorImplTestCase extends TestCase {
         DataType<QName> returnType = operation.getOutputType();
         Assert.assertNotNull(returnType);
         Assert.assertEquals(0, operation.getFaultTypes().size());
+        WrapperStyleOperation op = 
+            (WrapperStyleOperation) operation.getMetaData().get(WrapperStyleOperation.class.getName());
+        Assert.assertNotNull(op);
+        Assert.assertEquals(1, op.getInputChildElements().size());
+        Assert.assertEquals(1, op.getOutputChildElements().size());
     }
 
     public final void testIntrospectPortTypePortType() throws InvalidServiceContractException {
-        InterfaceWSDLIntrospector introspector = new InterfaceWSDLIntrospectorImpl();
+        InterfaceWSDLIntrospector introspector = new InterfaceWSDLIntrospectorImpl(registry);
         WSDLServiceContract contract = introspector.introspect(portType, portType);
         Assert.assertEquals("StockQuotePortType", contract.getInterfaceName());
         Assert.assertEquals("StockQuotePortType", contract.getCallbackName());

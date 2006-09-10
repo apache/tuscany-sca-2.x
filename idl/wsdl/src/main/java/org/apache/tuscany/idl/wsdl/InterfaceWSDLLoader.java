@@ -41,21 +41,24 @@ import org.apache.tuscany.spi.loader.MissingResourceException;
 
 /**
  * Loads a WSDL interface definition from an XML-based assembly file
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class InterfaceWSDLLoader extends LoaderExtension {
     public static final QName INTERFACE_WSDL = new QName(XML_NAMESPACE_1_0, "interface.wsdl");
+
     private static final String WSDLI = "http://www.w3.org/2006/01/wsdl-instance";
+
     private static final String WSDLI_LOCATION = "wsdlLocation";
 
     private WSDLDefinitionRegistry wsdlRegistry;
+
     private InterfaceWSDLIntrospector introspector;
 
-    @Constructor( { "registry", "wsdlRegistry", "introspector" })
+    @Constructor ({ "registry", "wsdlRegistry", "introspector" })
     public InterfaceWSDLLoader(@Autowire LoaderRegistry registry, 
-                               @Autowire WSDLDefinitionRegistry wsdlRegistry, 
-                               @Autowire InterfaceWSDLIntrospector introspector) {
+            @Autowire WSDLDefinitionRegistry wsdlRegistry, 
+            @Autowire InterfaceWSDLIntrospector introspector) {
         super(registry);
         this.wsdlRegistry = wsdlRegistry;
         this.introspector = introspector;
@@ -65,10 +68,10 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         return INTERFACE_WSDL;
     }
 
-    public WSDLServiceContract load(CompositeComponent parent,
-                                    XMLStreamReader reader,
-                                    DeploymentContext deploymentContext)
-        throws XMLStreamException, LoaderException {
+    public WSDLServiceContract load(
+            CompositeComponent parent,
+            XMLStreamReader reader,
+            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert INTERFACE_WSDL.equals(reader.getName());
 
         String interfaceURI = reader.getAttributeValue(null, "interface");
@@ -79,7 +82,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         String callbackURI = reader.getAttributeValue(null, "callbackInterface");
         String wsdlLocation = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
         // FIXME set the interaction scope
-//        serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
+        // serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
         LoaderUtil.skipToEndElement(reader);
 
         if (wsdlLocation != null) {
@@ -118,7 +121,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
         int index = uri.indexOf('#');
         String namespace = uri.substring(0, index);
         String name = uri.substring(index + 1);
-        name = name.substring("wsdl.interface(".length(), name.length()-1);
+        name = name.substring("wsdl.interface(".length(), name.length() - 1);
         QName qname = new QName(namespace, name);
         return wsdlRegistry.getPortType(qname);
     }

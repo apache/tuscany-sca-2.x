@@ -71,6 +71,7 @@ public class WSDLDefinitionRegistryTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         wsdlRegistry = new WSDLDefinitionRegistryImpl();
+        wsdlRegistry.setSchemaRegistry(new XMLSchemaRegistryImpl());
         wsdlRegistry.setMonitor(NULL_MONITOR);
         exampleWsdl = getClass().getResource("example.wsdl");
         cl = getClass().getClassLoader();
