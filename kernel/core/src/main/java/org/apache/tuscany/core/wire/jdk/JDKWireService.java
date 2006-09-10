@@ -174,7 +174,7 @@ public class JDKWireService implements WireService {
                 // by CompositeBuilder and thus its children, in particular composite services,
                 // have been registered
                 CompositeComponent compositeComponent = (CompositeComponent) component;
-                Service<?> serviceChild = (Service) compositeComponent.getChild(service.getName());
+                Service serviceChild = (Service) compositeComponent.getChild(service.getName());
                 assert serviceChild != null;
                 if (serviceChild instanceof CompositeService) {
                     serviceChild.setInboundWire(inboundWire);
@@ -196,7 +196,7 @@ public class JDKWireService implements WireService {
                 // by CompositeBuilder and thus its children, in particular composite references,
                 // have been registered
                 CompositeComponent compositeComponent = (CompositeComponent) component;
-                Reference<?> reference = (Reference) compositeComponent.getChild(referenceTarget.getReferenceName());
+                Reference reference = (Reference) compositeComponent.getChild(referenceTarget.getReferenceName());
                 assert reference != null;
                 if (reference instanceof CompositeReference) {
                     reference.setOutboundWire(wire);
@@ -207,7 +207,7 @@ public class JDKWireService implements WireService {
         }
     }
 
-    public <T> void createWires(Reference<T> reference, ServiceContract<?> contract) {
+    public <T> void createWires(Reference reference, ServiceContract<?> contract) {
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
         wire.setContainerName(reference.getName());
@@ -225,11 +225,11 @@ public class JDKWireService implements WireService {
         reference.setInboundWire(wire);
     }
 
-    public void createWires(Service<?> service, BoundServiceDefinition<?> def) {
+    public void createWires(Service service, BoundServiceDefinition<?> def) {
         createWires(service, def.getTarget().getPath(), def.getServiceContract());
     }
 
-    public void createWires(Service<?> service, BindlessServiceDefinition def) {
+    public void createWires(Service service, BindlessServiceDefinition def) {
         createWires(service, def.getTarget().getPath(), def.getServiceContract());
     }
 
@@ -283,7 +283,7 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
-    private <T> void createWires(Service<T> service, String targetName, ServiceContract<?> contract) {
+    private <T> void createWires(Service service, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
         OutboundWire outboundWire = new OutboundWireImpl();
         inboundWire.setServiceContract(contract);

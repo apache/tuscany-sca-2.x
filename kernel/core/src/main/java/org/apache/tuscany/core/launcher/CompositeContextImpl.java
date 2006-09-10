@@ -27,9 +27,9 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 
 
 public class CompositeContextImpl extends SCA implements CompositeContext {
-    protected final CompositeComponent<?> composite;
+    protected final CompositeComponent composite;
 
-    public CompositeContextImpl(final CompositeComponent<?> composite) {
+    public CompositeContextImpl(final CompositeComponent composite) {
         this.composite = composite;
     }
 

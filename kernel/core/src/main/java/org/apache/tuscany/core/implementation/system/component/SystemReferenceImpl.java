@@ -38,14 +38,14 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  *
  * @version $Rev$ $Date$
  */
-public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements SystemReference<T> {
+public class SystemReferenceImpl extends AbstractSCAObject implements SystemReference {
 
     protected SystemInboundWire inboundWire;
     protected SystemOutboundWire outboundWire;
-    protected Class<T> referenceInterface;
+    protected Class<?> referenceInterface;
 
 
-    public SystemReferenceImpl(String name, Class<T> referenceInterface, CompositeComponent parent) {
+    public SystemReferenceImpl(String name, Class<?> referenceInterface, CompositeComponent parent) {
         super(name, parent);
         assert referenceInterface != null : "Reference interface was null";
         this.referenceInterface = referenceInterface;
@@ -73,15 +73,15 @@ public class SystemReferenceImpl<T> extends AbstractSCAObject<T> implements Syst
         this.outboundWire = (SystemOutboundWire) wire;
     }
 
-    public Class<T> getInterface() {
+    public Class<?> getInterface() {
         return referenceInterface;
     }
 
-    public void setInterface(Class<T> referenceInterface) {
+    public void setInterface(Class<?> referenceInterface) {
         this.referenceInterface = referenceInterface;
     }
 
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         return referenceInterface.cast(inboundWire.getTargetService());
     }
 

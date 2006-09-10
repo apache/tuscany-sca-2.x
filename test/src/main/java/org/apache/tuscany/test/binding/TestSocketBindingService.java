@@ -24,15 +24,15 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $Rev$ $Date$
  */
-public class TestSocketBindingService<T> extends ServiceExtension<T> {
+public class TestSocketBindingService extends ServiceExtension {
     private int port;
     private ServerSocket socket;
     private ExecutorService executor;
-    private TestSocketBindingService<T>.ServerRunnable runnable;
+    private TestSocketBindingService.ServerRunnable runnable;
 
     public TestSocketBindingService(String name,
                                     int port,
-                                    Class<T> interfaze,
+                                    Class<?> interfaze,
                                     CompositeComponent parent,
                                     WireService wireService) throws CoreRuntimeException {
         super(name, interfaze, parent, wireService);

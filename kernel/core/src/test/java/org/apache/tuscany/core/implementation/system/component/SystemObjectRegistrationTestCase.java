@@ -30,7 +30,7 @@ import org.apache.tuscany.core.component.event.CompositeStop;
  * @version $Rev$ $Date$
  */
 public class SystemObjectRegistrationTestCase extends TestCase {
-    private SystemCompositeComponent<?> systemContext;
+    private SystemCompositeComponent systemContext;
 
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();

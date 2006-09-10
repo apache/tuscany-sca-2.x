@@ -42,11 +42,11 @@ public final class SpringTestUtils {
     private SpringTestUtils() {
     }
 
-    public static <T> Service<T> createService(String name,
+    public static <T> Service createService(String name,
                                                Class<T> serviceInterface,
                                                CompositeComponent parent,
                                                WireService wireService) throws InvalidServiceContractException {
-        Service<T> service = new ServiceExtension<T>(name, serviceInterface, parent, wireService);
+        Service service = new ServiceExtension(name, serviceInterface, parent, wireService);
         InboundWire inboundWire = ArtifactFactory.createInboundWire(name, serviceInterface);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire(name, serviceInterface);
         ArtifactFactory.terminateWire(outboundWire);

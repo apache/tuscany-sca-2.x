@@ -58,8 +58,8 @@ public class ScriptInvokeTestCase extends TestCase {
         configuration.setServices(services);
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
-        GroovyAtomicComponent<GroovyObject> context = new GroovyAtomicComponent<GroovyObject>(configuration, null);
-        GroovyObject object = context.getServiceInstance();
+        GroovyAtomicComponent context = new GroovyAtomicComponent(configuration, null);
+        GroovyObject object = (GroovyObject) context.getServiceInstance();
         assertEquals("foo", object.invokeMethod("greet", "foo"));
     }
 

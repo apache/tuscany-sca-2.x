@@ -67,7 +67,7 @@ public class DeployerImpl implements Deployer {
         this.builder = builder;
     }
 
-    public <I extends Implementation<?>> Component<?> deploy(CompositeComponent<?> parent,
+    public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                              ComponentDefinition<I> componentDefinition)
         throws LoaderException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
@@ -78,7 +78,7 @@ public class DeployerImpl implements Deployer {
             e.addContextName(componentDefinition.getName());
             throw e;
         }
-        Component<?> component = (Component<?>) build(parent, componentDefinition, deploymentContext);
+        Component component = (Component) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) component;
             composite.setScopeContainer(moduleScope);
@@ -95,7 +95,7 @@ public class DeployerImpl implements Deployer {
      * @param componentDefinition the componentDefinition being deployed
      * @param deploymentContext   the current deployment context
      */
-    protected <I extends Implementation<?>> void load(CompositeComponent<?> parent,
+    protected <I extends Implementation<?>> void load(CompositeComponent parent,
                                                       ComponentDefinition<I> componentDefinition,
                                                       DeploymentContext deploymentContext) throws LoaderException {
         loader.loadComponentType(parent, componentDefinition.getImplementation(), deploymentContext);
@@ -109,7 +109,7 @@ public class DeployerImpl implements Deployer {
      * @param deploymentContext   the current deployment context
      * @return the new runtime context
      */
-    protected <I extends Implementation<?>> SCAObject<?> build(CompositeComponent<?> parent,
+    protected <I extends Implementation<?>> SCAObject build(CompositeComponent parent,
                                                                ComponentDefinition<I> componentDefinition,
                                                                DeploymentContext deploymentContext) {
         return builder.build(parent, componentDefinition, deploymentContext);

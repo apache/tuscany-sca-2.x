@@ -10,7 +10,7 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * @version $Rev$ $Date$
  */
-public class TestSocketBindingReference<T> extends ReferenceExtension<T> {
+public class TestSocketBindingReference<T> extends ReferenceExtension {
 
     private String host;
     private int port;

@@ -15,7 +15,7 @@ import static org.easymock.EasyMock.verify;
 public class SystemOutboundAutowireTestCase extends TestCase {
 
     public void testAutowire() {
-        AutowireComponent<?> component = createMock(AutowireComponent.class);
+        AutowireComponent component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(new Object());
         replay(component);
         SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, false);
@@ -25,7 +25,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
 
 
     public void testNonExistentAutowire() {
-        AutowireComponent<?> component = createMock(AutowireComponent.class);
+        AutowireComponent component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(null);
         replay(component);
         SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, true);
@@ -40,7 +40,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
 
 
     public void testNonExistentAutowireNotRequired() {
-        AutowireComponent<?> component = createMock(AutowireComponent.class);
+        AutowireComponent component = createMock(AutowireComponent.class);
         expect(component.resolveInstance(Object.class)).andReturn(null);
         replay(component);
         SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, false);

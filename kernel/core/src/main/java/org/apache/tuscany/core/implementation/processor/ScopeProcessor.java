@@ -37,7 +37,7 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
  */
 public class ScopeProcessor extends ImplementationProcessorExtension {
 
-    public void visitClass(CompositeComponent<?> parent, Class<?> clazz,
+    public void visitClass(CompositeComponent parent, Class<?> clazz,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context)
         throws ProcessingException {

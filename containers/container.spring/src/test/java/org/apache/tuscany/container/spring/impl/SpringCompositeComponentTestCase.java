@@ -20,7 +20,7 @@ public class SpringCompositeComponentTestCase extends TestCase {
         appContext.setParent(EasyMock.isA(ApplicationContext.class));
         appContext.start();
         replay(appContext);
-        SpringCompositeComponent<?> component = new SpringCompositeComponent("spring", appContext, null, null, null);
+        SpringCompositeComponent component = new SpringCompositeComponent("spring", appContext, null, null, null);
         component.start();
         verify(appContext);
     }
@@ -32,7 +32,7 @@ public class SpringCompositeComponentTestCase extends TestCase {
         EasyMock.expect(service.getName()).andReturn("foo").anyTimes();
         service.start();
         replay(service);
-        SpringCompositeComponent<?> component = new SpringCompositeComponent("spring", appContext, null, null, null);
+        SpringCompositeComponent component = new SpringCompositeComponent("spring", appContext, null, null, null);
         component.register(service);
         component.start();
         verify(service);

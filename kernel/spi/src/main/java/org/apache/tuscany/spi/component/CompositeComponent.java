@@ -30,14 +30,14 @@ import org.apache.tuscany.spi.event.RuntimeEventListener;
  *
  * @version $Rev$ $Date$
  */
-public interface CompositeComponent<T> extends Component<T>, RuntimeEventListener {
+public interface CompositeComponent extends Component, RuntimeEventListener {
     /**
      * Registers a child of this composite.
      *
      * @param context the context to add as a child
      * @throws InvalidComponentTypeException
      */
-    void register(SCAObject<?> context) throws InvalidComponentTypeException;
+    void register(SCAObject context) throws InvalidComponentTypeException;
 
     /**
      * Returns the child associated with a given name

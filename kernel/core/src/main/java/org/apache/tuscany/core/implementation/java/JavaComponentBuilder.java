@@ -58,7 +58,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     }
 
     @SuppressWarnings("unchecked")
-    public AtomicComponent<?> build(CompositeComponent<?> parent,
+    public AtomicComponent build(CompositeComponent parent,
                                     ComponentDefinition<JavaImplementation> definition,
                                     DeploymentContext deployment)
         throws BuilderConfigException {

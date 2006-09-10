@@ -38,13 +38,13 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject<S>
-    implements SystemAtomicComponent<S> {
+public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject
+    implements SystemAtomicComponent {
 
     private T instance;
     private List<Class<?>> serviceInterfaces;
 
-    public SystemSingletonAtomicComponent(String name, CompositeComponent<?> parent, Class<S> interfaze, T instance) {
+    public SystemSingletonAtomicComponent(String name, CompositeComponent parent, Class<S> interfaze, T instance) {
         super(name, parent);
         this.instance = instance;
         serviceInterfaces = new ArrayList<Class<?>>(1);
@@ -75,7 +75,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return getTargetInstance();
     }
 
-    public S getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         return getTargetInstance();
     }
 

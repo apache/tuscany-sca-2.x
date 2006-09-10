@@ -45,13 +45,13 @@ import org.springframework.context.support.AbstractApplicationContext;
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
-    public Component build(CompositeComponent<?> parent,
+    public Component build(CompositeComponent parent,
                            ComponentDefinition<SpringImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
         AbstractApplicationContext applicationContext = implementation.getComponentType().getApplicationContext();
-        SpringCompositeComponent<?> component =
+        SpringCompositeComponent component =
             new SpringCompositeComponent(name, applicationContext, parent, connector, null);
         CompositeComponentType<BoundServiceDefinition<? extends Binding>,
             BoundReferenceDefinition<? extends Binding>,
@@ -62,7 +62,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         // its beans as SCA components to the connector to wire the services to
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
             // call back into builder registry to handle building of services
-            Service<?> service = (Service) builderRegistry.build(parent, serviceDefinition, deploymentContext);
+            Service service = (Service) builderRegistry.build(parent, serviceDefinition, deploymentContext);
             // wire serviceDefinition to bean invokers
             InboundWire wire = service.getInboundWire();
             QualifiedName targetName = new QualifiedName(serviceDefinition.getTarget().getPath());
@@ -75,7 +75,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         }
         for (BoundReferenceDefinition<?> referenceDefinition : componentType.getReferences().values()) {
             // call back into builder registry to handle building of references
-            Reference<?> reference = (Reference) builderRegistry.build(parent, referenceDefinition, deploymentContext);
+            Reference reference = (Reference) builderRegistry.build(parent, referenceDefinition, deploymentContext);
             connector.connect(reference);
             component.register(reference);
         }

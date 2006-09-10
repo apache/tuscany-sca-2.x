@@ -65,7 +65,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
     }
 
     @SuppressWarnings("unchecked")
-    public AtomicComponent<?> build(CompositeComponent<?> parent,
+    public AtomicComponent build(CompositeComponent parent,
                                     ComponentDefinition<SystemImplementation> definition,
                                     DeploymentContext deploymentContext) throws BuilderConfigException {
         assert parent instanceof AutowireComponent : "Parent must implement " + AutowireComponent.class.getName();

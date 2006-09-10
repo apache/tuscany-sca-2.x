@@ -27,10 +27,10 @@ import org.osoa.sca.annotations.Destroy;
 /**
  * @version $Rev$ $Date$
  */
-public class JSONRPCService<T> extends ServiceExtension<T> {
+public class JSONRPCService extends ServiceExtension {
     private ServletHost servletHost;
 
-    public JSONRPCService(String theName, Class<T> interfaze, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
+    public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
 
         super(theName, interfaze, parent, wireService);
 

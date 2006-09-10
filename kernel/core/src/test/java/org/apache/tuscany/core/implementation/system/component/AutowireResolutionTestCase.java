@@ -36,11 +36,11 @@ import static org.easymock.EasyMock.verify;
 public class AutowireResolutionTestCase extends TestCase {
 
     public void testConstruction() {
-        CompositeComponent<?> parent = createMock(CompositeComponent.class);
-        AutowireComponent<?> autowire = createMock(AutowireComponent.class);
+        CompositeComponent parent = createMock(CompositeComponent.class);
+        AutowireComponent autowire = createMock(AutowireComponent.class);
         replay(parent);
         replay(autowire);
-        SystemCompositeComponent<?> component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
+        SystemCompositeComponent component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
         assertEquals("test", component.getName());
         assertSame(parent, component.getParent());
         verify(parent);
@@ -48,11 +48,11 @@ public class AutowireResolutionTestCase extends TestCase {
     }
 
     public void testResolveToSelf() {
-        CompositeComponent<?> parent = createMock(CompositeComponent.class);
-        AutowireComponent<?> autowire = createMock(AutowireComponent.class);
+        CompositeComponent parent = createMock(CompositeComponent.class);
+        AutowireComponent autowire = createMock(AutowireComponent.class);
         replay(parent);
         replay(autowire);
-        SystemCompositeComponent<?> component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
+        SystemCompositeComponent component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
         assertSame(component, component.resolveInstance(CompositeComponent.class));
         assertSame(component, component.resolveInstance(SystemCompositeComponent.class));
         verify(parent);
@@ -62,12 +62,12 @@ public class AutowireResolutionTestCase extends TestCase {
     public void testResolvedByAutowire() {
         Foo foo = new Foo() {
         };
-        CompositeComponent<?> parent = createMock(CompositeComponent.class);
-        AutowireComponent<?> autowire = createMock(AutowireComponent.class);
+        CompositeComponent parent = createMock(CompositeComponent.class);
+        AutowireComponent autowire = createMock(AutowireComponent.class);
         EasyMock.expect(autowire.resolveInstance(eq(Foo.class))).andReturn(foo);
         replay(parent);
         replay(autowire);
-        SystemCompositeComponent<?> component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
+        SystemCompositeComponent component = new SystemCompositeComponentImpl("test", parent, autowire, null, null);
         assertSame(foo, component.resolveInstance(Foo.class));
         verify(parent);
         verify(autowire);

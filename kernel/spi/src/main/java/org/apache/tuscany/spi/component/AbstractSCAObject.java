@@ -34,14 +34,14 @@ import org.apache.tuscany.spi.event.TrueFilter;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractSCAObject<T> extends AbstractLifecycle implements SCAObject<T> {
+public abstract class AbstractSCAObject extends AbstractLifecycle implements SCAObject {
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     private final String name;
     private final CompositeComponent parent;
 
-    public AbstractSCAObject(String name, CompositeComponent<?> parent) {
+    public AbstractSCAObject(String name, CompositeComponent parent) {
         this.name = name;
         this.parent = parent;
     }

@@ -44,7 +44,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> implements AtomicComponent<T> {
+public abstract class AtomicComponentExtension extends AbstractSCAObject implements AtomicComponent {
 
     protected ScopeContainer scopeContainer;
     protected Scope scope;
@@ -56,7 +56,7 @@ public abstract class AtomicComponentExtension<T> extends AbstractSCAObject<T> i
     private final int initLevel;
 
     protected AtomicComponentExtension(String name,
-                                       CompositeComponent<?> parent,
+                                       CompositeComponent parent,
                                        ScopeContainer scopeContainer,
                                        WireService wireService,
                                        WorkContext workContext,

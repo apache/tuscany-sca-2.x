@@ -31,7 +31,7 @@ import org.osgi.framework.ServiceFactory;
 /**
  * @version $Rev$ $Date$
  */
-public class OSGiService<T> extends ServiceExtension<T> {
+public class OSGiService extends ServiceExtension {
     private final String osgiServiceName;
     //private final Class<? extends Object> service;
     private OSGiHost host;
@@ -50,7 +50,7 @@ public class OSGiService<T> extends ServiceExtension<T> {
                        CompositeComponent parent,
                        WireService wireService,
                        String osgiServiceName,
-                       Class<T> service,
+                       Class<?> service,
                        OSGiHost host) {
         super(name, service, parent, wireService);
         this.osgiServiceName = osgiServiceName;

@@ -30,12 +30,12 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public interface Reference<T> extends SCAObject<T> {
+public interface Reference extends SCAObject {
 
     /**
      * Returns the service interface configured for the reference
      */
-    Class<T> getInterface();
+    Class<?> getInterface();
 
     /**
      * Returns the handler responsible for flowing a request through the reference

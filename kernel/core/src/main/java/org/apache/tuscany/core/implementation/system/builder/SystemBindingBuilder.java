@@ -54,7 +54,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
                                DeploymentContext deploymentContext) {
         Class<Object> interfaze = (Class<Object>) boundServiceDefinition.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
-        Component<?> target = (Component) parent.getChild(targetName.getPartName());
+        Component target = (Component) parent.getChild(targetName.getPartName());
         if (target == null) {
             throw new BuilderConfigException("Target not found: [" + targetName + ']');
         }
@@ -63,7 +63,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
             new SystemInboundWireImpl(name, interfaze, target);
         SystemOutboundWire outboundWire =
             new SystemOutboundWireImpl(name, targetName, interfaze);
-        SystemService<Object> service = new SystemServiceImpl<Object>(boundServiceDefinition.getName(), parent);
+        SystemService service = new SystemServiceImpl(boundServiceDefinition.getName(), parent);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         return service;
@@ -77,7 +77,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         AutowireComponent autowireComponent = (AutowireComponent) parent.getParent();
         Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
         String name = boundReferenceDefinition.getName();
-        SystemReferenceImpl<?> reference = new SystemReferenceImpl(name, interfaze, parent);
+        SystemReferenceImpl reference = new SystemReferenceImpl(name, interfaze, parent);
         SystemInboundWire inboundWire = new SystemInboundWireImpl(name, interfaze);
         String refName = boundReferenceDefinition.getName();
         boolean required = boundReferenceDefinition.isRequired();

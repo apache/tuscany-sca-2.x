@@ -42,11 +42,11 @@ import org.apache.tuscany.core.wire.OutboundAutowire;
 public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundWire {
     private String referenceName;
     private ServiceContract serviceContract;
-    private AutowireComponent<?> component;
+    private AutowireComponent component;
     private final boolean required;
     private String containerName;
 
-    public SystemOutboundAutowire(String referenceName, Class<?> interfaze, AutowireComponent<?> component,
+    public SystemOutboundAutowire(String referenceName, Class<?> interfaze, AutowireComponent component,
                                   boolean required) {
 
         this.referenceName = referenceName;

@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
  *
  * @version $Rev$ $Date$
  */
-public interface AtomicComponent<T> extends Component<T> {
+public interface AtomicComponent extends Component {
 
     /**
      * Returns whether component instances should be eagerly initialized

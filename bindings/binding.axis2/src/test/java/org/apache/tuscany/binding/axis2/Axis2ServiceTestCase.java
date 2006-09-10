@@ -86,8 +86,8 @@ public class Axis2ServiceTestCase extends TestCase {
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 
-        Axis2Service<Greeter> axis2Service =
-            new Axis2Service<Greeter>(serviceName,
+        Axis2Service axis2Service =
+            new Axis2Service(serviceName,
                 Greeter.class,
                 null,
                 wireService,

@@ -117,8 +117,8 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        JavaScriptComponent<Greeting> context =
-            new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
+        JavaScriptComponent context =
+            new JavaScriptComponent("source", implClass2, services, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
         Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null);
@@ -135,8 +135,8 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        JavaScriptComponent<Greeting> context =
-            new JavaScriptComponent<Greeting>("source", implClass2, services, null, scope,
+        JavaScriptComponent context =
+            new JavaScriptComponent("source", implClass2, services, null, scope,
                 ArtifactFactory.createWireService(), null);
         scope.register(context);
 

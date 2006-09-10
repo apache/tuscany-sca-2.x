@@ -34,11 +34,11 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends Binding> {
-    Service<?> build(CompositeComponent parent,
+    Service build(CompositeComponent parent,
                     BoundServiceDefinition<B> boundServiceDefinition,
                     DeploymentContext deploymentContext);
 
-    Reference<?> build(CompositeComponent parent,
+    Reference build(CompositeComponent parent,
                     BoundReferenceDefinition<B> boundReferenceDefinition,
                     DeploymentContext deploymentContext);
 }

@@ -41,7 +41,7 @@ import org.apache.tuscany.core.monitor.NullMonitorFactory;
  * @version $Rev$ $Date$
  */
 public class SCATestCase extends TestCase {
-    protected CompositeComponent<?> component;
+    protected CompositeComponent component;
     private CompositeContextImpl context;
     private Map<String, URL> extensions = new HashMap<String, URL>();
     private String applicationSCDL = LauncherImpl.METAINF_APPLICATION_SCDL_PATH;
@@ -51,7 +51,7 @@ public class SCATestCase extends TestCase {
         ClassLoader cl = getClass().getClassLoader();
         LauncherImpl launcher = new LauncherImpl();
         launcher.setApplicationLoader(cl);
-        CompositeComponent<?> composite = launcher.bootRuntime(cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH),
+        CompositeComponent composite = launcher.bootRuntime(cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH),
             new NullMonitorFactory());
 
         for (String extensionName : extensions.keySet()) {
@@ -82,7 +82,7 @@ public class SCATestCase extends TestCase {
         extensions.put(extensionName, extentionSCDL);
     }
 
-    protected void deployExtension(CompositeComponent<?> composite, String extensionName, URL scdlURL)
+    protected void deployExtension(CompositeComponent composite, String extensionName, URL scdlURL)
         throws LoaderException {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
         implementation.setScdlLocation(scdlURL);
@@ -93,7 +93,7 @@ public class SCATestCase extends TestCase {
                 implementation);
 
         Deployer deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
-        Component<?> component = deployer.deploy(composite, definition);
+        Component component = deployer.deploy(composite, definition);
 
         component.start();
     }

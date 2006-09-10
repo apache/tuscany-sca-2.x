@@ -25,6 +25,9 @@ package org.apache.tuscany.spi.event;
  */
 public interface EventPublisher {
 
+    /**
+     * Publish an event
+     */
     void publish(Event object);
 
     /**

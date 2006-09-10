@@ -36,10 +36,10 @@ import org.apache.tuscany.spi.deployer.Deployer;
  * @version $Rev$ $Date$
  */
 public class DefaultRuntime
-        extends SystemCompositeComponentImpl<Void>
-        implements RuntimeComponent<SystemCompositeComponent<?>> {
+        extends SystemCompositeComponentImpl
+        implements RuntimeComponent<SystemCompositeComponent> {
     private CompositeComponent rootComponent;
-    private SystemCompositeComponent<?> systemComponent;
+    private SystemCompositeComponent systemComponent;
 
     /**
      * Initialize a default runtime with an empty set of Property values.
@@ -60,7 +60,7 @@ public class DefaultRuntime
         this.rootComponent = rootComponent;
     }
 
-    protected void setSystemComponent(SystemCompositeComponent<?> systemComponent) {
+    protected void setSystemComponent(SystemCompositeComponent systemComponent) {
         this.systemComponent = systemComponent;
     }
 

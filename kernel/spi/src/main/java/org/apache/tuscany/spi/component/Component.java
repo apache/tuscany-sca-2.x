@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface Component<T> extends SCAObject<T> {
+public interface Component extends SCAObject {
 
     /**
      * Returns a service associated with the given name

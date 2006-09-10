@@ -21,7 +21,6 @@ import org.osoa.sca.annotations.Constructor;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -49,7 +48,7 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
     }
 
     @SuppressWarnings("unchecked")
-    public Service<?> build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                            BoundServiceDefinition<OSGiBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
         String name = boundServiceDefinition.getName();

@@ -36,8 +36,8 @@ import org.apache.tuscany.core.implementation.composite.AbstractCompositeCompone
  *
  * @version $Rev$ $Date$
  */
-public class SystemCompositeComponentImpl<S> extends AbstractCompositeComponent<S>
-    implements SystemCompositeComponent<S> {
+public class SystemCompositeComponentImpl extends AbstractCompositeComponent
+    implements SystemCompositeComponent {
 
     public SystemCompositeComponentImpl(String name,
                                         CompositeComponent parent,

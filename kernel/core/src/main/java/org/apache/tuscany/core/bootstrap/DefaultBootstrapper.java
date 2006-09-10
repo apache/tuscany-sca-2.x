@@ -85,7 +85,7 @@ import org.apache.tuscany.host.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponent<?>> {
+public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponent> {
     private final MonitorFactory monitorFactory;
     private final XMLInputFactory xmlFactory;
 
@@ -115,12 +115,12 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
      *
      * @return a newly created root for the component tree
      */
-    public RuntimeComponent<SystemCompositeComponent<?>> createRuntime() {
+    public RuntimeComponent<SystemCompositeComponent> createRuntime() {
         DefaultRuntime runtime = new DefaultRuntime();
         SystemCompositeComponentImpl systemComponent =
             new SystemCompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM, runtime, runtime, null, null);
         runtime.setSystemComponent(systemComponent);
-        CompositeComponent<?> rootComponent =
+        CompositeComponent rootComponent =
             new CompositeComponentImpl(ComponentNames.TUSCANY_ROOT, runtime, runtime, null, null);
         runtime.setRootComponent(rootComponent);
         return runtime;

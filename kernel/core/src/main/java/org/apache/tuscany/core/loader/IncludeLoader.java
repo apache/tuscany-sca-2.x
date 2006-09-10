@@ -99,7 +99,7 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return include;
     }
 
-    protected CompositeComponentType loadFromSidefile(CompositeComponent<?> parent,
+    protected CompositeComponentType loadFromSidefile(CompositeComponent parent,
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {

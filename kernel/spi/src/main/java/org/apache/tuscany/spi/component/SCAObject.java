@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.model.Scope;
  *
  * @version $Rev$ $Date$
  */
-public interface SCAObject<T> extends EventPublisher, Lifecycle {
+public interface SCAObject extends EventPublisher, Lifecycle {
 
     /**
      * Returns the artifact name
@@ -49,7 +49,7 @@ public interface SCAObject<T> extends EventPublisher, Lifecycle {
      *
      * @throws TargetException if an error occurs retrieving the instance
      */
-    T getServiceInstance() throws TargetException;
+    Object getServiceInstance() throws TargetException;
 
     /**
      * Called to signal that the composite should perform and required steps prior to registration with its parent such

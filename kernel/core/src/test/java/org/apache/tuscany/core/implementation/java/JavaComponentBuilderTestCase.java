@@ -25,18 +25,17 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.java.mock.components.Source;
 import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
@@ -53,19 +52,19 @@ import org.jmock.core.Stub;
 public class JavaComponentBuilderTestCase extends MockObjectTestCase {
     private DeploymentContext deploymentContext;
 
-    @SuppressWarnings("unchecked")
     public void testBuild() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(null, null, null, null, null);
 
-        PojoComponentType sourceType = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> sourceType =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         sourceType.setImplementationScope(Scope.MODULE);
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName("target");
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
         sourceType.add(reference);
 
-        ServiceContract sourceContract = new JavaServiceContract(Source.class);
-        ServiceDefinition sourceServiceDefinition = new JavaMappedService();
+        ServiceContract<?> sourceContract = new JavaServiceContract(Source.class);
+        JavaMappedService sourceServiceDefinition = new JavaMappedService();
         sourceServiceDefinition.setName("Source");
         sourceServiceDefinition.setServiceContract(sourceContract);
 
@@ -79,11 +78,11 @@ public class JavaComponentBuilderTestCase extends MockObjectTestCase {
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setWireService(new JDKWireService());
-        JavaAtomicComponent<Source> component =
-            (JavaAtomicComponent<Source>) builder.build(parent, sourceComponentDefinition, deploymentContext);
+        JavaAtomicComponent component =
+            (JavaAtomicComponent) builder.build(parent, sourceComponentDefinition, deploymentContext);
         deploymentContext.getModuleScope().start();
         component.start();
-        Source source = component.getServiceInstance();
+        Source source = (Source) component.getServiceInstance();
         assertNotNull(source);
         component.stop();
     }

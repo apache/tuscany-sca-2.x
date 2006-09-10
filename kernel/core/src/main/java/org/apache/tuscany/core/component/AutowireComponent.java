@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
  *
  * @version $Rev$ $Date$
  */
-public interface AutowireComponent<S> extends CompositeComponent<S> {
+public interface AutowireComponent extends CompositeComponent {
 
     /**
      * Invoked by child components to return an an autowire target. Resolved targets may be services or components in

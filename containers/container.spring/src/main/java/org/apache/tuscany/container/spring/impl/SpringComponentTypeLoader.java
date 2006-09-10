@@ -60,7 +60,7 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
      * composite use) one application context instance will be created per Spring composite instance.
      */
     @SuppressWarnings("unchecked")
-    public void load(CompositeComponent<?> parent,
+    public void load(CompositeComponent parent,
                      SpringImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         if (implementation.getComponentType() != null) {

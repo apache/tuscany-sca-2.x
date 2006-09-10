@@ -42,8 +42,9 @@ public class BuilderRegistryTestCase extends TestCase {
     public void testRegistrationWithoutGenerics() {
         RawBuilder builder = new RawBuilder();
         registry.register(CompositeImplementation.class, builder);
-        ComponentDefinition<CompositeImplementation> componentDefinition
-            = new ComponentDefinition(new CompositeImplementation());
+        CompositeImplementation implementation = new CompositeImplementation();
+        ComponentDefinition<CompositeImplementation> componentDefinition =
+            new ComponentDefinition<CompositeImplementation>(implementation);
         componentDefinition.getImplementation().setComponentType(new CompositeComponentType());
         registry.build(null, componentDefinition, deploymentContext);
     }
@@ -57,14 +58,13 @@ public class BuilderRegistryTestCase extends TestCase {
     }
 
     public static class GenerifiedBuilder implements ComponentBuilder<CompositeImplementation> {
-        public Component<?> build(CompositeComponent<?> parent,
-                                  ComponentDefinition<CompositeImplementation> componentDefinition,
-                                  DeploymentContext deploymentContext) {
+        public Component build(CompositeComponent parent,
+                               ComponentDefinition<CompositeImplementation> componentDefinition,
+                               DeploymentContext deploymentContext) {
             return null;
         }
     }
 
-    @SuppressWarnings({"RawUseOfParameterizedType"})
     public static class RawBuilder implements ComponentBuilder {
         public Component build(CompositeComponent parent,
                                ComponentDefinition componentDefinition,

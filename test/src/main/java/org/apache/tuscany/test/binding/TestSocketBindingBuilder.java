@@ -14,7 +14,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocketBinding> {
 
     @SuppressWarnings("unchecked")
-    public Service<?> build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                             BoundServiceDefinition<TestSocketBinding> definition,
                             DeploymentContext context) {
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
@@ -23,7 +23,7 @@ public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocket
     }
 
     @SuppressWarnings("unchecked")
-    public Reference<?> build(CompositeComponent parent,
+    public Reference build(CompositeComponent parent,
                               BoundReferenceDefinition<TestSocketBinding> definition,
                               DeploymentContext context) {
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();

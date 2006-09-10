@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
-import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -33,7 +32,7 @@ import org.apache.tuscany.host.rmi.RMIHost;
 /**
  * @version $Rev$ $Date$
  */
-public class RMIReference<T> extends ReferenceExtension<T> {
+public class RMIReference<T> extends ReferenceExtension {
     private final String host;
 
     private final String port;
@@ -43,7 +42,7 @@ public class RMIReference<T> extends ReferenceExtension<T> {
     private RMIHost rmiHost;
 
     public RMIReference(String name,
-                        CompositeComponent<?> parent,
+                        CompositeComponent parent,
                         WireService wireService,
                         RMIHost rmiHost,
                         String host,

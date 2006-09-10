@@ -73,7 +73,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
     }
 
     public void visitEnd(
-            CompositeComponent<?> parent,
+            CompositeComponent parent,
             Class<?> clazz,
             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
             DeploymentContext context) throws ProcessingException {

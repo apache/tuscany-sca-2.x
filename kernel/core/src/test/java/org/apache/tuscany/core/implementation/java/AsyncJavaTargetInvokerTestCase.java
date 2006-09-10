@@ -47,7 +47,7 @@ public class AsyncJavaTargetInvokerTestCase extends TestCase {
         target.invoke();
         expectLastCall().once();
         replay(target);
-        JavaAtomicComponent<AsyncTarget> component = createJavaComponent(target);
+        JavaAtomicComponent component = createJavaComponent(target);
         AsyncMonitor monitor = createMock(AsyncMonitor.class);
         replay(monitor);
 

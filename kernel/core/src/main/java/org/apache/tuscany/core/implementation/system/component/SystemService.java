@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.component.Service;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface SystemService<T> extends Service<T> {
+public interface SystemService extends Service {
 
 
 }

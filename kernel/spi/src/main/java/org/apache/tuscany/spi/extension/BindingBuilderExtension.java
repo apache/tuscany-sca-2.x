@@ -60,13 +60,13 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
         builderRegistry.register(getBindingType(), this);
     }
 
-    public Service<?> build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                            BoundServiceDefinition<B> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
         return null;
     }
 
-    public Reference<?> build(CompositeComponent parent,
+    public Reference build(CompositeComponent parent,
                            BoundReferenceDefinition<B> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
         return null;

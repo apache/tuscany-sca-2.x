@@ -40,7 +40,7 @@ import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
 /**
  * The JavaScript component implementation.
  */
-public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
+public class JavaScriptComponent extends AtomicComponentExtension {
 
     private final List<Class<?>> services;
 
@@ -82,9 +82,7 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
             }
         }
 
-        Object instance = rhinoScript.createRhinoScriptInstance(context);
-
-        return instance;
+        return rhinoScript.createRhinoScriptInstance(context);
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
@@ -105,19 +103,18 @@ public class JavaScriptComponent<T> extends AtomicComponentExtension<T> {
         return (RhinoScriptInstance) scopeContainer.getInstance(this);
     }
 
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         return getServiceInstance(null);
     }
 
-    @SuppressWarnings("unchecked")
-    public T getServiceInstance(String service) throws TargetException {
+    public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
             TargetException e = new TargetException("ServiceDefinition not found"); // TODO better error message
             e.setIdentifier(service);
             throw e;
         }
-        return (T) wireService.createProxy(wire);
+        return wireService.createProxy(wire);
     }
 
 }

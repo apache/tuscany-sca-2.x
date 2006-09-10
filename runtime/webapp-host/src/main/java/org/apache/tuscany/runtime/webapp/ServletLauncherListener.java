@@ -77,7 +77,7 @@ import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM
 public class ServletLauncherListener implements TuscanyWebappRuntime {
 
     private URL testSystemScdl;
-    private CompositeComponent<?> component;
+    private CompositeComponent component;
     private ServletLauncherMonitor monitor;
     private LauncherImpl launcher;
     private CompositeContextImpl context;
@@ -109,7 +109,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
 
         try {
             URL systemScdl = getSystemSCDL(systemScdlPath);
-            CompositeComponent<?> rt = launcher.bootRuntime(systemScdl, mf);
+            CompositeComponent rt = launcher.bootRuntime(systemScdl, mf);
 
             // Read optional path to extension SCDLs from context-param
             String extensionScdlPath = servletContext.getInitParameter(EXTENSION_SCDL_PATH_PARAM);
@@ -143,7 +143,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
                 name = "application";
             }
 
-            CompositeComponent<?> root = launcher.bootApplication(name, appScdl);
+            CompositeComponent root = launcher.bootApplication(name, appScdl);
             String compositePath = servletContext.getInitParameter(CURRENT_COMPOSITE_PATH_PARAM);
             root.start();
             // set the current composite
@@ -203,7 +203,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
      * @param scdlURL       the location of the system SCDL
      * @throws LoaderException
      */
-    private void deployExtension(CompositeComponent<?> composite, String extensionName, URL scdlURL)
+    private void deployExtension(CompositeComponent composite, String extensionName, URL scdlURL)
         throws LoaderException {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
         implementation.setScdlLocation(scdlURL);
@@ -215,7 +215,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
                 implementation);
 
         Deployer deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
-        Component<?> component = deployer.deploy(composite, definition);
+        Component component = deployer.deploy(composite, definition);
 
         component.start();
     }
@@ -249,13 +249,13 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
      *
      * @throws InvalidCompositePath
      */
-    private void setCurrentComposite(String compositePath, CompositeComponent<?> root) throws InvalidCompositePath {
+    private void setCurrentComposite(String compositePath, CompositeComponent root) throws InvalidCompositePath {
         if (compositePath != null) {
             StringTokenizer tokens = new StringTokenizer(compositePath, "/");
-            CompositeComponent<?> current = root;
+            CompositeComponent current = root;
             while (tokens.hasMoreTokens()) {
                 String token = tokens.nextToken();
-                SCAObject<?> child = current.getChild(token);
+                SCAObject child = current.getChild(token);
                 if (child == null) {
                     InvalidCompositePath e = new InvalidCompositePath("Composite not found");
                     e.setIdentifier(token);
@@ -265,7 +265,7 @@ public class ServletLauncherListener implements TuscanyWebappRuntime {
                     e.setIdentifier(child.getName());
                     throw e;
                 }
-                current = (CompositeComponent<?>) child;
+                current = (CompositeComponent) child;
             }
             component = current;
         } else {

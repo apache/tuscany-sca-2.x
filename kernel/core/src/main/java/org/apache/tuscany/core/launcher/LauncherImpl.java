@@ -64,7 +64,7 @@ public class LauncherImpl implements Launcher {
 
     private Deployer deployer;
 
-    private CompositeComponent<?> composite;
+    private CompositeComponent composite;
 
     public void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitor)
         throws TuscanyException {
@@ -81,7 +81,7 @@ public class LauncherImpl implements Launcher {
         runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
 
         // initialize the runtime info
-        SystemCompositeComponent<?> parent = (SystemCompositeComponent) runtime.getSystemComponent();
+        SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
         RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
@@ -97,7 +97,7 @@ public class LauncherImpl implements Launcher {
                 ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
 
         // deploy the component into the runtime under the system parent
-        composite = (CompositeComponent<?>) bootDeployer.deploy(parent, definition);
+        composite = (CompositeComponent) bootDeployer.deploy(parent, definition);
 
         // start the system
         composite.start();
@@ -152,7 +152,7 @@ public class LauncherImpl implements Launcher {
      * @throws LoaderException
      */
     @Deprecated
-    public CompositeComponent<?> bootRuntime(URL systemScdl, MonitorFactory monitor) throws TuscanyException {
+    public CompositeComponent bootRuntime(URL systemScdl, MonitorFactory monitor) throws TuscanyException {
         ClassLoader systemClassLoader = getClass().getClassLoader();
         bootRuntime(systemScdl, systemClassLoader, monitor);
         return composite;
@@ -168,7 +168,7 @@ public class LauncherImpl implements Launcher {
      * @see METAINF_APPLICATION_SCDL_PATH
      */
     @Deprecated
-    public CompositeComponent<?> bootApplication(String name, URL appScdl) throws TuscanyException {
+    public CompositeComponent bootApplication(String name, URL appScdl) throws TuscanyException {
         ClassLoader applicationLoader = getApplicationLoader();
 
         if (appScdl == null) {
@@ -190,7 +190,7 @@ public class LauncherImpl implements Launcher {
 
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-            return (CompositeComponent<?>) deployer.deploy(parent, moduleDefinition);
+            return (CompositeComponent) deployer.deploy(parent, moduleDefinition);
         } finally {
             Thread.currentThread().setContextClassLoader(ccl);
         }

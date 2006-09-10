@@ -37,7 +37,7 @@ import org.objectweb.celtix.Bus;
  *
  * @version $Rev$ $Date$
  */
-public class CeltixReference<T> extends ReferenceExtension<T> {
+public class CeltixReference<T> extends ReferenceExtension {
 
     private Bus bus;
     private Port port;
@@ -47,7 +47,7 @@ public class CeltixReference<T> extends ReferenceExtension<T> {
 
     public CeltixReference(String name,
                            Class<T> interfaze,
-                           CompositeComponent<?> parent,
+                           CompositeComponent parent,
                            WireService wireService,
                            WebServiceBinding binding,
                            Bus theBus,

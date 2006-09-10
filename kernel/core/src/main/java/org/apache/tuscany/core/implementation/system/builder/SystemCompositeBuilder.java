@@ -59,7 +59,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         return SystemCompositeImplementation.class;
     }
 
-    public Component<?> build(CompositeComponent<?> parent,
+    public Component build(CompositeComponent parent,
                               ComponentDefinition<SystemCompositeImplementation> componentDefinition,
                               DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
@@ -96,7 +96,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         // create the composite component
         String name = componentDefinition.getName();
         AutowireComponent autowireContext = getAutowireComponent(parent);
-        SystemCompositeComponent<?> component =
+        SystemCompositeComponent component =
             new SystemCompositeComponentImpl(name, parent, autowireContext, connector, null);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
             component.register(builderRegistry.build(component, childComponentDefinition, deploymentContext));
@@ -114,7 +114,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
      * @param parent the parent for a new context
      * @return the autowire context for the parent or null if it does not support autowire
      */
-    protected AutowireComponent getAutowireComponent(CompositeComponent<?> parent) {
+    protected AutowireComponent getAutowireComponent(CompositeComponent parent) {
         if (parent instanceof AutowireComponent) {
             return (AutowireComponent) parent;
         } else {

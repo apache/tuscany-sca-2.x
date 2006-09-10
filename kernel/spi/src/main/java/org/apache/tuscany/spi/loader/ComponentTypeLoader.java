@@ -40,6 +40,6 @@ public interface ComponentTypeLoader<I extends Implementation> {
      * @param deploymentContext the current deployment context
      * @throws LoaderException if there was a problem loading the configuration type
      */
-    void load(CompositeComponent<?> parent, I implementation, DeploymentContext deploymentContext)
+    void load(CompositeComponent parent, I implementation, DeploymentContext deploymentContext)
         throws LoaderException;
 }

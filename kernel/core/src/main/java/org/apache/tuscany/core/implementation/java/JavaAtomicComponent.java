@@ -46,7 +46,7 @@ import org.apache.tuscany.core.injection.WireObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
+public class JavaAtomicComponent extends PojoAtomicComponent {
 
     private AsyncMonitor monitor;
 
@@ -68,7 +68,7 @@ public class JavaAtomicComponent<T> extends PojoAtomicComponent<T> {
         return wireService.createProxy(wire);
     }
 
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         if (serviceInterfaces.size() == 0) {
             return getTargetInstance();
         } else if (serviceInterfaces.size() == 1) {

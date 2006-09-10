@@ -90,7 +90,7 @@ public class AbstractSCAObjectTestCase extends TestCase {
     }
 
 
-    private class TestSCAObject<T> extends AbstractSCAObject<T> {
+    private class TestSCAObject extends AbstractSCAObject {
         public TestSCAObject(String name, CompositeComponent parent) {
             super(name, parent);
         }
@@ -99,7 +99,7 @@ public class AbstractSCAObjectTestCase extends TestCase {
             return null;
         }
 
-        public T getServiceInstance() throws TargetException {
+        public Object getServiceInstance() throws TargetException {
             return null;
         }
     }

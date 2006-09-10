@@ -49,7 +49,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
     }
 
     @SuppressWarnings({"unchecked"})
-    public Service<?> build(CompositeComponent parent,
+    public Service build(CompositeComponent parent,
                            BoundServiceDefinition<RMIBinding> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
 
@@ -61,7 +61,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
     }
 
     @SuppressWarnings({"unchecked"})
-    public Reference<?> build(CompositeComponent parent,
+    public Reference build(CompositeComponent parent,
                               BoundReferenceDefinition<RMIBinding> boundReferenceDefinition,
                               DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();

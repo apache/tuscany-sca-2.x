@@ -49,7 +49,7 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service
  */
-public class Axis2Reference<T> extends ReferenceExtension<T> {
+public class Axis2Reference<T> extends ReferenceExtension {
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
@@ -57,7 +57,7 @@ public class Axis2Reference<T> extends ReferenceExtension<T> {
 
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
-                          CompositeComponent<?> parent,
+                          CompositeComponent parent,
                           WireService wireService,
                           WebServiceBinding wsBinding,
                           ServiceContract contract,

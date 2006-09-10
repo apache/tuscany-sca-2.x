@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public class InitProcessor extends ImplementationProcessorExtension {
 
-    public void visitMethod(CompositeComponent<?> parent, Method method,
+    public void visitMethod(CompositeComponent parent, Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {

@@ -63,7 +63,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         this.introspector = introspector;
     }
 
-    public void load(CompositeComponent<?> parent, SystemImplementation implementation,
+    public void load(CompositeComponent parent, SystemImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
         Class<?> implClass = implementation.getImplementationClass();
         URL sidefile = implClass.getResource(JavaIntrospectionHelper.getBaseName(implClass) + ".componentType");
@@ -80,7 +80,7 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         return SystemImplementation.class;
     }
 
-    protected PojoComponentType loadByIntrospection(CompositeComponent<?> parent,
+    protected PojoComponentType loadByIntrospection(CompositeComponent parent,
                                                     SystemImplementation implementation,
                                                     DeploymentContext deploymentContext) throws ProcessingException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =

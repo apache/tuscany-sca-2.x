@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 public class SystemInboundWireImpl implements SystemInboundWire {
     private String serviceName;
     private ServiceContract serviceContract;
-    private Component<?> component;
+    private Component component;
     private SystemOutboundWire wire;
     private String containerName;
     private Class<?> interfaze;
@@ -50,7 +50,7 @@ public class SystemInboundWireImpl implements SystemInboundWire {
      * @param interfaze   the service interface
      * @param target      the target context the wire is connected to
      */
-    public SystemInboundWireImpl(String serviceName, Class<?> interfaze, Component<?> target) {
+    public SystemInboundWireImpl(String serviceName, Class<?> interfaze, Component target) {
         this.serviceName = serviceName;
         this.component = target;
         serviceContract = new JavaServiceContract(interfaze);

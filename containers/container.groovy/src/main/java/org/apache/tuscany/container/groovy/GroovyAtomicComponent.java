@@ -37,7 +37,7 @@ import groovy.lang.GroovyObject;
 /**
  * The Groovy atomic component implementation. Groovy implementations may be "scripts" or classes.
  */
-public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
+public class GroovyAtomicComponent extends AtomicComponentExtension {
     private final Class<? extends GroovyObject> groovyClass;
     private final List<Class<?>> services;
     //FIXME properties should move up to AtomicComponentExtension
@@ -99,10 +99,9 @@ public class GroovyAtomicComponent<T> extends AtomicComponentExtension<T> {
         return (GroovyObject) scopeContainer.getInstance(this);
     }
 
-    @SuppressWarnings("unchecked")
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         //TODO this should return a default service from a wire
-        return (T) scopeContainer.getInstance(this);
+        return scopeContainer.getInstance(this);
     }
 
     public Object getServiceInstance(String service) throws TargetException {
