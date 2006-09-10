@@ -65,7 +65,7 @@ public class BuilderRegistryTestCase extends TestCase {
         }
     }
 
-    public static class RawBuilder implements ComponentBuilder {
+    public static class RawBuilder implements ComponentBuilder<CompositeImplementation> {
         public Component build(CompositeComponent parent,
                                ComponentDefinition componentDefinition,
                                DeploymentContext deploymentContext) throws BuilderConfigException {

@@ -135,7 +135,6 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         return component;
     }
 
-    @SuppressWarnings("unchecked")
     private void processReferences(ComponentDefinition<SystemImplementation> definition,
                                    Map<String, JavaMappedReference> references,
                                    AutowireComponent autowireContext,

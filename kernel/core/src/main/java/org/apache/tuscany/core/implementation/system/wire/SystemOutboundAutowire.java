@@ -78,7 +78,6 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
     public void setTargetName(QualifiedName targetName) {
     }
 
-    @SuppressWarnings("unchecked")
     public Object getTargetService() throws TargetException {
         Class<?> interfaze = serviceContract.getInterfaceClass();
         Object service = component.resolveInstance(interfaze);

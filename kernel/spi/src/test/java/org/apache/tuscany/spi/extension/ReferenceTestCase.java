@@ -53,7 +53,6 @@ public class ReferenceTestCase extends TestCase {
 
     }
 
-    @SuppressWarnings("unchecked")
     public void testPrepare() throws Exception {
         InboundInvocationChain chain = createMock(InboundInvocationChain.class);
         Operation<Type> operation = new Operation<Type>("test", null, null, null, false, null);

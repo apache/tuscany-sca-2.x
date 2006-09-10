@@ -285,7 +285,6 @@ public class ConnectorImpl implements Connector {
      * @param sourceWire
      * @throws BuilderConfigException
      */
-    @SuppressWarnings("unchecked")
     private void connect(SCAObject source,
                              OutboundWire sourceWire) throws BuilderConfigException {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
@@ -332,8 +331,8 @@ public class ConnectorImpl implements Connector {
                     CompositeService compServ = (CompositeService) child;
                     targetWire = compServ.getInboundWire();
                     assert targetWire != null;
-                    Class sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                    Class targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                    Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                    Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
                     if (sourceInterface.isAssignableFrom(targetInterface)) {
                         target = compServ;
                         break;

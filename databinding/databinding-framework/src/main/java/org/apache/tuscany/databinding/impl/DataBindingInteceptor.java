@@ -62,7 +62,6 @@ public class DataBindingInteceptor implements Interceptor {
     /**
      * @see org.apache.tuscany.spi.wire.Interceptor#invoke(org.apache.tuscany.spi.wire.Message)
      */
-    @SuppressWarnings("unchecked")
     public Message invoke(Message msg) {
         Object input = transform(msg.getBody(), sourceOperation.getInputType(), targetOperation.getInputType());
         msg.setBody(input);

@@ -48,11 +48,10 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl
  */
 public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
 
-    @SuppressWarnings("unchecked")
     public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
-        Class<Object> interfaze = (Class<Object>) boundServiceDefinition.getServiceContract().getInterfaceClass();
+        Class<?> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
         Component target = (Component) parent.getChild(targetName.getPartName());
         if (target == null) {

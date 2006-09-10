@@ -44,7 +44,6 @@ import static org.easymock.EasyMock.verify;
  */
 public class ConnectorPostProcessTestCase extends TestCase {
 
-    @SuppressWarnings("unchecked")
     public void testInboundToOutboundPostProcessCalled() throws Exception {
         OutboundWire owire = createNiceMock(OutboundWire.class);
         replay(owire);
@@ -64,7 +63,6 @@ public class ConnectorPostProcessTestCase extends TestCase {
         verify(registry);
     }
 
-    @SuppressWarnings("unchecked")
     public void testOutboundToInboundPostProcessCalled() throws Exception {
         OutboundWire owire = createNiceMock(OutboundWire.class);
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();

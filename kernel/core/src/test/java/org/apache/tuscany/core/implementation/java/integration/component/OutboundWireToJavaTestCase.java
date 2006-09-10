@@ -171,7 +171,6 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.stop();
     }
 
-    @SuppressWarnings("unchecked")
     private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
                                                               InvalidServiceContractException {
         ConnectorImpl connector = new ConnectorImpl();

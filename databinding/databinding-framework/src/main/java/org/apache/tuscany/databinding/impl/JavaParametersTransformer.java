@@ -80,7 +80,6 @@ public class JavaParametersTransformer extends TransformerExtension<Object[], Ob
         return 10;
     }
 
-    @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
         List sourceParameterTypes = (List) context.getSourceDataType().getLogical();
         List targetParameterTypes = (List) context.getTargetDataType().getLogical();

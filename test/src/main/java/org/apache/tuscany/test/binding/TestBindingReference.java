@@ -10,9 +10,9 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * @version $Rev$ $Date$
  */
-public class TestBindingReference<T> extends ReferenceExtension {
+public class TestBindingReference extends ReferenceExtension {
 
-    public TestBindingReference(String name, Class<T> interfaze, CompositeComponent parent, WireService wireService) {
+    public TestBindingReference(String name, Class<?> interfaze, CompositeComponent parent, WireService wireService) {
         super(name, interfaze, parent, wireService);
     }
 

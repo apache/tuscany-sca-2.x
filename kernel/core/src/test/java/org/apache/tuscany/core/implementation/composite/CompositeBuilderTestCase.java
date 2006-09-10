@@ -216,7 +216,7 @@ public class CompositeBuilderTestCase extends TestCase {
         container.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().anyTimes();
         EasyMock.expect(container.getScope()).andReturn(Scope.MODULE).anyTimes();
-        EasyMock.expect(container.getInstance(EasyMock.isA(AtomicComponent.class))).andAnswer(new IAnswer() {
+        EasyMock.expect(container.getInstance(EasyMock.isA(AtomicComponent.class))).andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
 
             public Object answer() throws Throwable {

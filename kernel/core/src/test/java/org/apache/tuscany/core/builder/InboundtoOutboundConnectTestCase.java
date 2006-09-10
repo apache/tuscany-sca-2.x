@@ -54,7 +54,6 @@ import static org.easymock.EasyMock.verify;
 public class InboundtoOutboundConnectTestCase extends TestCase {
     private Operation operation;
 
-    @SuppressWarnings("unchecked")
     public void testNoInterceptorsNoHandlers() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
         InboundInvocationChain inboundChain = setupInbound(null);
@@ -74,7 +73,6 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
     /**
      * Verifies an invocation with a single source interceptor
      */
-    @SuppressWarnings("unchecked")
     public void testSourceInterceptor() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -100,7 +98,6 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
     /**
      * Verifies an invocation with a single target interceptor
      */
-    @SuppressWarnings("unchecked")
     public void testTargetInterceptor() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -126,7 +123,6 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
     /**
      * Verifies an invocation with a source and target interceptor
      */
-    @SuppressWarnings("unchecked")
     public void testSourceTargetInterceptor() throws Exception {
         ConnectorImpl connector = new ConnectorImpl();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();

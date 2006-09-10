@@ -18,7 +18,6 @@ package org.apache.tuscany.osgi.binding;
 
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
@@ -47,21 +46,15 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
         return OSGiBinding.class;
     }
 
-    @SuppressWarnings("unchecked")
     public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<OSGiBinding> boundServiceDefinition,
-                           DeploymentContext deploymentContext) {
+                         BoundServiceDefinition<OSGiBinding> boundServiceDefinition,
+                         DeploymentContext deploymentContext) {
         String name = boundServiceDefinition.getName();
         Class<? extends Object> service = getServiceInterface(boundServiceDefinition);
-        String uri = boundServiceDefinition.getBinding().getURI();
         String osgiServiceName = boundServiceDefinition.getBinding().getService();
-        Class<?> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
-        QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
-
         return new OSGiService(name, parent, wireService, osgiServiceName, service, host);
     }
 
-    @SuppressWarnings("unchecked")
     public OSGiReference build(CompositeComponent parent,
                                BoundReferenceDefinition<OSGiBinding> boundReferenceDefinition,
                                DeploymentContext deploymentContext) {
@@ -71,9 +64,8 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
         return new OSGiReference(name, interfaze, parent, wireService, uri);
     }
 
-    @SuppressWarnings({"unchecked"})
     protected Class<? extends Object> getServiceInterface(BoundServiceDefinition<OSGiBinding> boundServiceDefinition) {
-        return (Class<?>) boundServiceDefinition.getServiceContract().getInterfaceClass();
+        return boundServiceDefinition.getServiceContract().getInterfaceClass();
     }
 
 }

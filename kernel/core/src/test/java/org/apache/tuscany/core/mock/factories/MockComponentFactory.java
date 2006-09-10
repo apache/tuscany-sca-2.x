@@ -21,19 +21,18 @@ package org.apache.tuscany.core.mock.factories;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -65,7 +64,7 @@ public final class MockComponentFactory {
             reference = new JavaMappedReference();
             reference.setName("target");
             reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
-            ServiceContract contract = new JavaServiceContract();
+            JavaServiceContract contract = new JavaServiceContract();
             contract.setInterfaceClass(Target.class);
             reference.setServiceContract(contract);
             componentType.add(reference);
@@ -102,7 +101,7 @@ public final class MockComponentFactory {
             reference.setName("target");
             reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
             reference.setAutowire(true);
-            ServiceContract contract = new JavaServiceContract();
+            ServiceContract<?> contract = new JavaServiceContract();
             contract.setInterfaceClass(Target.class);
             reference.setServiceContract(contract);
             componentType.add(reference);
@@ -126,14 +125,15 @@ public final class MockComponentFactory {
      */
     public static ComponentDefinition<SystemImplementation> createTarget() throws NoSuchMethodException {
         SystemImplementation impl = new SystemImplementation();
-        PojoComponentType componentType = new PojoComponentType();
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         componentType.setImplementationScope(Scope.MODULE);
         componentType
             .setConstructorDefinition(
                 new ConstructorDefinition<TargetImpl>(TargetImpl.class.getConstructor((Class[]) null)));
-        ServiceDefinition targetServiceDefinition = new ServiceDefinition();
+        JavaMappedService targetServiceDefinition = new JavaMappedService();
         targetServiceDefinition.setName("Target");
-        ServiceContract contract = new JavaServiceContract();
+        ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(Target.class);
         targetServiceDefinition.setServiceContract(contract);
         componentType.add(targetServiceDefinition);
@@ -151,7 +151,7 @@ public final class MockComponentFactory {
         BoundReferenceDefinition<SystemBinding> referenceDefinition = new BoundReferenceDefinition<SystemBinding>();
         referenceDefinition.setBinding(binding);
         referenceDefinition.setName("target");
-        ServiceContract contract = new JavaServiceContract();
+        ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(Target.class);
         referenceDefinition.setServiceContract(contract);
         return referenceDefinition;
@@ -165,7 +165,7 @@ public final class MockComponentFactory {
         BoundServiceDefinition<SystemBinding> serviceDefinition = new BoundServiceDefinition<SystemBinding>();
         serviceDefinition.setBinding(binding);
         serviceDefinition.setName("serviceDefinition");
-        ServiceContract contract = new JavaServiceContract();
+        ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(Target.class);
         serviceDefinition.setServiceContract(contract);
         try {

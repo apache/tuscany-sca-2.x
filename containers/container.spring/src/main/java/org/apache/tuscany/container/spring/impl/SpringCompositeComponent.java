@@ -130,7 +130,6 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             return getBean(name, null);
         }
 
-        @SuppressWarnings("unchecked")
         public Object getBean(String name, Class requiredType) throws BeansException {
             SCAObject object = children.get(name);   // keep cast due to compiler error
             if (object == null) {

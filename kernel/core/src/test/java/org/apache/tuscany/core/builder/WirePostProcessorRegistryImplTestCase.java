@@ -15,7 +15,6 @@ import static org.easymock.EasyMock.verify;
  */
 public class WirePostProcessorRegistryImplTestCase extends TestCase {
 
-    @SuppressWarnings("unchecked")
     public void testRegisterUnregister() throws Exception {
         WirePostProcessorRegistry registry = new WirePostProcessorRegistryImpl();
         OutboundWire owire = EasyMock.createMock(OutboundWire.class);
@@ -30,7 +29,6 @@ public class WirePostProcessorRegistryImplTestCase extends TestCase {
         verify(processor);
     }
 
-    @SuppressWarnings("unchecked")
     public void testProcessInboundToOutbound() throws Exception {
         WirePostProcessorRegistry registry = new WirePostProcessorRegistryImpl();
         OutboundWire owire = EasyMock.createMock(OutboundWire.class);

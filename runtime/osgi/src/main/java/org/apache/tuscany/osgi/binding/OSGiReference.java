@@ -30,10 +30,10 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * @version $Rev$ $Date$
  */
-public class OSGiReference<T> extends ReferenceExtension {
+public class OSGiReference extends ReferenceExtension {
     //private final String uri;
 
-    public OSGiReference(String name, Class<T> interfaze, CompositeComponent parent, WireService service, String uri) {
+    public OSGiReference(String name, Class<?> interfaze, CompositeComponent parent, WireService service, String uri) {
         super(name, interfaze, parent, service);
         //this.uri = uri;
     }
