@@ -39,8 +39,11 @@
         <module>runtime/webapp</module>
         <module>runtime/webapp-host</module>
         <module>commands/launcher</module>
+<!--
         <module>tools</module>
         <module>plugins</module>
+-->
+        <module>plugins/plugin.war</module>
     </modules>
 
     <dependencyManagement>
