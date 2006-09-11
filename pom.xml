@@ -148,6 +148,9 @@
             <name>Apache Maven 1 Repository</name>
             <url>http://people.apache.org/repository</url>
             <layout>legacy</layout>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
