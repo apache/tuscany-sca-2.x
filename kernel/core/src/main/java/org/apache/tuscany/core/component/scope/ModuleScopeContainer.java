@@ -151,13 +151,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
 
     private static class ComponentInitComparator implements Comparator<AtomicComponent> {
         public int compare(AtomicComponent o1, AtomicComponent o2) {
-            if (o1.getInitLevel() > o2.getInitLevel()) {
-                return -1; // The lower level starts first (except nagative)
-            } else if (o1.getInitLevel() < o2.getInitLevel()) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return o1.getInitLevel() - o2.getInitLevel();
         }
     }
 
