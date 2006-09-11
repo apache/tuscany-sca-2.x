@@ -1,0 +1,110 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ */
+package org.apache.tuscany.core.services.extension;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public class AbstractExtensionDeployer {
+    protected Deployer deployer;
+    protected CompositeComponent parent;
+
+    @Autowire
+    public void setDeployer(Deployer deployer) {
+        this.deployer = deployer;
+    }
+
+    @Autowire
+    public void setParent(CompositeComponent parent) {
+        this.parent = parent;
+    }
+
+    protected void deployExtension(File file) {
+        // extension name is file name less any extension
+        String name = file.getName();
+        int dot = name.lastIndexOf('.');
+        if (dot > 0) {
+            name = name.substring(0, dot);
+        }
+        URL url;
+        try {
+            url = file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            // toURI should have encoded the URL
+            throw new AssertionError();
+        }
+
+        deployExtension(name, url);
+    }
+
+    protected void deployExtension(String name, URL url) {
+        // todo do we want to support unpacked directories or bare XML files as extensions?
+        // get the URL of the JAR file and the SCDL inside
+        URL extensionURL;
+        URL scdl;
+        try {
+            extensionURL = new URL("jar:" + url + "!/");
+            scdl = new URL(extensionURL, "META-INF/sca/default.scdl");
+            //test if the scdl file exists
+            scdl.openStream();
+        } catch (MalformedURLException e) {
+            // file may not be a JAR file
+            return;
+        } catch (java.io.IOException e) {
+            //The jar file is ignored as it does not contain a valid scdl
+            return;
+        }
+
+        // FIXME for now, assume this class's ClassLoader is the Tuscany system classloader
+        // FIXME we should really use the one associated with the parent composite
+        ClassLoader extensionCL = new CompositeClassLoader(new URL[]{url}, getClass().getClassLoader());
+
+        // create a ComponentDefinition to represent the component we are going to deploy
+        SystemCompositeImplementation implementation = new SystemCompositeImplementation();
+        implementation.setScdlLocation(scdl);
+        implementation.setClassLoader(extensionCL);
+        ComponentDefinition<SystemCompositeImplementation> definition =
+            new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
+
+        try {
+            Component component = deployer.deploy(parent, definition);
+            component.start();
+        } catch (LoaderException e) {
+            // FIXME handle the exception
+            e.printStackTrace();
+        } catch (TuscanyException e) {
+            // FIXME handle the exception
+            e.printStackTrace();
+        }
+    }
+}

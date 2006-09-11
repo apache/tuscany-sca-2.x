@@ -19,35 +19,22 @@
 package org.apache.tuscany.core.services.extension;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.CompositeClassLoader;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.VoidService;
 import org.apache.tuscany.spi.services.info.RuntimeInfo;
-
-import org.apache.tuscany.api.TuscanyException;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * Service that extends the runtime by loading composites located in a directory.
  *
  * @version $Rev$ $Date$
  */
-public class DirectoryScanExtender implements VoidService {
+public class DirectoryScanExtender extends AbstractExtensionDeployer implements VoidService {
     private String path;
     private RuntimeInfo runtimeInfo;
-    private Deployer deployer;
-    private CompositeComponent parent;
 
     @Property
     public void setPath(String path) {
@@ -57,16 +44,6 @@ public class DirectoryScanExtender implements VoidService {
     @Autowire
     public void setRuntimeInfo(RuntimeInfo runtimeInfo) {
         this.runtimeInfo = runtimeInfo;
-    }
-
-    @Autowire
-    public void setDeployer(Deployer deployer) {
-        this.deployer = deployer;
-    }
-
-    @Autowire
-    public void setParent(CompositeComponent parent) {
-        this.parent = parent;
     }
 
     @Init(eager = true)
@@ -81,54 +58,6 @@ public class DirectoryScanExtender implements VoidService {
         File[] files = extensionDir.listFiles();
         for (File file : files) {
             deployExtension(file);
-        }
-    }
-
-    private void deployExtension(File file) {
-        // extension name is file name less any extension
-        String name = file.getName();
-        int dot = name.lastIndexOf('.');
-        if (dot > 0) {
-            name = name.substring(0, dot);
-        }
-
-        // todo do we want to support unpacked directories as extensions?
-        // get the URL of the JAR file and the SCDL inside
-        URL extensionURL;
-        URL scdl;
-        try {
-            extensionURL = new URL("jar:" + file.toURI().toURL() + "!/");
-            scdl = new URL(extensionURL, "META-INF/sca/default.scdl");
-            //test if the scdl file exists
-            scdl.openStream();
-        } catch (MalformedURLException e) {
-            // file may not be a JAR file
-            return;
-        } catch (java.io.IOException e) {
-            //The jar file is ignored as it does not contain a valid scdl
-            return;
-        }
-
-        // assume this class's ClassLoader is the Tuscany system classloader
-        // and use it as the extension's parent ClassLoader
-        ClassLoader extensionCL = new CompositeClassLoader(new URL[]{extensionURL}, getClass().getClassLoader());
-
-        // create a ComponentDefinition to represent the component we are going to deploy
-        SystemCompositeImplementation implementation = new SystemCompositeImplementation();
-        implementation.setScdlLocation(scdl);
-        implementation.setClassLoader(extensionCL);
-        ComponentDefinition<SystemCompositeImplementation> definition =
-            new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
-
-        try {
-            Component component = deployer.deploy(parent, definition);
-            component.start();
-        } catch (LoaderException e) {
-            // FIXME handle the exception
-            e.printStackTrace();
-        } catch (TuscanyException e) {
-            // FIXME handle the exception
-            e.printStackTrace();
         }
     }
 }
