@@ -29,16 +29,20 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class PushTransformationTestCase extends TestCase {
-    private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "  xmlns:ipo=\"http://www.example.com/IPO\""
-            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
-            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>" + "    <street>47 Eden Street</street>"
-            + "    <city>Cambridge</city>" + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
-            + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>" + "    <city>Old Town</city>" + "    <state>PA</state>"
-            + "    <zip>95819</zip>" + "  </billTo>" + "  <items>" + "    <item partNum=\"833-AA\">"
-            + "      <productName>Lapis necklace</productName>" + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
-            + "      <ipo:comment>Want this for the holidays</ipo:comment>" + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>"
-            + "</ipo:purchaseOrder>";
+    private static final String IPO_XML =
+            "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
+                    + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                    + "  xmlns:ipo=\"http://www.example.com/IPO\""
+                    + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
+                    + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>"
+                    + "    <street>47 Eden Street</street>" + "    <city>Cambridge</city>"
+                    + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
+                    + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>"
+                    + "    <city>Old Town</city>" + "    <state>PA</state>" + "    <zip>95819</zip>" + "  </billTo>"
+                    + "  <items>" + "    <item partNum=\"833-AA\">" + "      <productName>Lapis necklace</productName>"
+                    + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
+                    + "      <ipo:comment>Want this for the holidays</ipo:comment>"
+                    + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>" + "</ipo:purchaseOrder>";
 
     /**
      * @see junit.framework.TestCase#setUp()
@@ -51,13 +55,13 @@ public class PushTransformationTestCase extends TestCase {
         String2XMLStreamReader t1 = new String2XMLStreamReader();
         XMLStreamReader reader = t1.transform(IPO_XML, null);
         XMLStreamReader2SAX t2 = new XMLStreamReader2SAX();
-        PipedTransformer<XMLStreamReader, ContentHandler, Node> t3 = new PipedTransformer<XMLStreamReader, ContentHandler, Node>(t2,
-                new SAX2DOMPipe());
+        PipedTransformer<XMLStreamReader, ContentHandler, Node> t3 =
+                new PipedTransformer<XMLStreamReader, ContentHandler, Node>(t2, new SAX2DOMPipe());
         Node node = t3.transform(reader, null);
         Assert.assertNotNull(node);
-        Node2String t4= new Node2String();
+        Node2String t4 = new Node2String();
         String xml = t4.transform(node, null);
-        Assert.assertTrue(xml!=null && xml.indexOf("<shipDate>1999-12-05</shipDate>")!=-1);
+        Assert.assertTrue(xml != null && xml.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }
 
 }

@@ -26,7 +26,8 @@ import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 
-public class String2XMLStreamReader extends TransformerExtension<String, XMLStreamReader> implements PullTransformer<String, XMLStreamReader> {
+public class String2XMLStreamReader extends TransformerExtension<String, XMLStreamReader> implements
+        PullTransformer<String, XMLStreamReader> {
 
     public XMLStreamReader transform(String source, TransformationContext context) {
         try {

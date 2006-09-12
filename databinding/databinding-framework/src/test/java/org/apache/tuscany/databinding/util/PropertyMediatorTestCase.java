@@ -36,11 +36,12 @@ import org.w3c.dom.Node;
  * 
  */
 public class PropertyMediatorTestCase extends TestCase {
-    private static final String xml = "<?xml version=\"1.0\" encoding=\"ASCII\"?>" +
-
-    "<composite  xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:foo=\"http://foo.com\" name=\"AccountServices\">"
-            + "<property name=\"complexFoo\" type=\"foo:MyComplexType\"><foo:a>AValue</foo:a><foo:b>InterestingURI</foo:b>"
-            + "</property></composite>";
+    private static final String XML_STR =
+            "<?xml version=\"1.0\" encoding=\"ASCII\"?>"
+                    + "<composite xmlns=\"http://www.osoa.org/xmlns/sca/1.0\" xmlns:foo=\"http://foo.com\" "
+                    + "name=\"AccountServices\">"
+                    + "<property name=\"complexFoo\" type=\"foo:MyComplexType\"><foo:a>AValue</foo:a>"
+                    + "<foo:b>InterestingURI</foo:b>" + "</property></composite>";
 
     private QName name = new QName("http://www.osoa.org/xmlns/sca/1.0", "property");
 
@@ -53,20 +54,22 @@ public class PropertyMediatorTestCase extends TestCase {
 
     public void testProperty() throws FactoryConfigurationError, XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
-        
+        XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(XML_STR));
+
         boolean fragmentOnly = false;
-        
+
         while (fragmentOnly) {
             int event = reader.getEventType();
             if (event == XMLStreamConstants.START_ELEMENT) {
-                if (reader.getName().equals(name))
+                if (reader.getName().equals(name)) {
                     break;
+                }
             }
-            if (reader.hasNext())
+            if (reader.hasNext()) {
                 reader.next();
-            else
+            } else {
                 return;
+            }
         }
 
         XMLStreamReader2Node t1 = new XMLStreamReader2Node();
