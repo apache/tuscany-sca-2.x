@@ -17,39 +17,41 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.impl;
+package org.apache.tuscany.idl.wsdl;
 
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.idl.Input2InputTransformer;
-import org.osoa.sca.annotations.Service;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
 /**
- * This is a special transformer to convert java parameters by the inputType
+ * An exception to indicate the WSDL definition is invalid
  */
-@Service(Transformer.class)
-public class JavaParametersTransformer extends Input2InputTransformer<Object> {
+public class InvalidWSDLException extends InvalidServiceContractException {
 
-    private static final String IDL_INPUT = "idl:input";
-
-    public JavaParametersTransformer() {
-        super(null);
-    }
-
-    @Override
-    public String getSourceBinding() {
-        return IDL_INPUT;
-    }
-
-    @Override
-    public String getTargetBinding() {
-        return IDL_INPUT;
+    /**
+     * 
+     */
+    public InvalidWSDLException() {
     }
 
     /**
-     * @see org.apache.tuscany.databinding.Transformer#getWeight()
+     * @param message
      */
-    public int getWeight() {
-        return 10;
+    public InvalidWSDLException(String message) {
+        super(message);
+    }
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public InvalidWSDLException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * @param cause
+     */
+    public InvalidWSDLException(Throwable cause) {
+        super(cause);
     }
 
 }

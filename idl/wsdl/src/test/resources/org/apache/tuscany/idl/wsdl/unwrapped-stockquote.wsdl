@@ -33,20 +33,12 @@
 
     <message name="GetLastTradePriceInput2">
         <part name="body" element="xsd1:getLastTradePrice" />
-        <part name="other" element="xsd:string"/>
+        <part name="other" type="xsd:string"/>
     </message>
 
     <message name="GetLastTradePriceOutput2">
         <part name="body" element="xsd1:getLastTradePriceResponse" />
     </message>
-    
-    <message name="GetLastTradePriceInput3">
-        <part name="body" element="xsd1:getLastTradePrice" />
-    </message>
-
-    <message name="GetLastTradePriceOutput3">
-        <part name="body" element="xsd1:getLastTradePriceResponse" />
-    </message>    
     
     <portType name="StockQuotePortType">
         <operation name="getLastTradePrice">
@@ -60,10 +52,6 @@
         <operation name="getLastTradePrice2">
             <input message="tns:GetLastTradePriceInput2" />
             <output message="tns:GetLastTradePriceOutput2" />
-        </operation>
-        <operation name="getLastTradePrice3">
-            <input message="tns:GetLastTradePriceInput3" />
-            <output message="tns:GetLastTradePriceOutput3" />
         </operation>
     </portType>
 

@@ -23,7 +23,7 @@
 
     <!-- Transformers -->
     <component name="transformer.ObjectArray2OM">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.ObjectArray2OM" />
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElementInputTransformer" />
     </component>
     
     <component name="transformer.XMLStreamReader2OMElement">

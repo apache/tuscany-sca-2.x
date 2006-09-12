@@ -50,7 +50,7 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>ws-commons</groupId>
+			<groupId>org.apache.ws.commons</groupId>
 			<artifactId>axiom-api</artifactId>
 			<version>SNAPSHOT</version>
 			<scope>compile</scope>
@@ -70,7 +70,7 @@
             <artifactId>junit</artifactId>
         </dependency>
 		<dependency>
-			<groupId>ws-commons</groupId>
+			<groupId>org.apache.ws.commons</groupId>
 			<artifactId>axiom-impl</artifactId>
 			<version>SNAPSHOT</version>
 			<scope>test</scope>

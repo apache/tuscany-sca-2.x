@@ -52,8 +52,16 @@
             <artifactId>easymock</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
+            <groupId>org.apache.tuscany.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons</groupId>
+            <artifactId>XmlSchema</artifactId>
+            <version>SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 	</dependencies>
 

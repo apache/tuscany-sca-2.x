@@ -19,25 +19,17 @@
 
 package org.apache.tuscany.idl.wsdl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.wsdl.Fault;
-import javax.wsdl.Input;
-import javax.wsdl.Message;
 import javax.wsdl.Operation;
-import javax.wsdl.Output;
-import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Property;
 
 /**
@@ -55,6 +47,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     /**
      * @param wsdlDefinitionRegistry
      */
+    @Constructor("wsdlDefinitionRegistry")
     public InterfaceWSDLIntrospectorImpl(@Autowire WSDLDefinitionRegistry wsdlDefinitionRegistry) {
         super();
         this.wsdlDefinitionRegistry = wsdlDefinitionRegistry;
@@ -67,7 +60,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
     protected Map<String, org.apache.tuscany.spi.model.Operation<QName>> introspectOperations(PortType portType)
-        throws NotSupportedWSDLException {
+        throws InvalidServiceContractException {
         Map<String, org.apache.tuscany.spi.model.Operation<QName>> operations =
                 new HashMap<String, org.apache.tuscany.spi.model.Operation<QName>>();
         for (Object op : portType.getOperations()) {
@@ -78,84 +71,10 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     }
 
     protected org.apache.tuscany.spi.model.Operation<QName> introspectOperation(Operation wsdlOp)
-        throws NotSupportedWSDLException {
+        throws InvalidServiceContractException {
 
-        Input input = wsdlOp.getInput();
-        Message inputMsg = (input == null) ? null : input.getMessage();
-        DataType<List<DataType<QName>>> inputType = introspectType(inputMsg);
-
-        Message outputMsg;
-        Output output = wsdlOp.getOutput();
-        boolean oneway = false;
-        if (output == null) {
-            // TODO: [rfeng] Is this the correct way to determine if it's non-blocking?
-            oneway = true;
-        }
-        outputMsg = (output == null) ? null : output.getMessage();
-
-        List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
-        DataType<QName> outputType = null;
-        if (outputParts != null || outputParts.size() > 0) {
-            if (outputParts.size() > 1) {
-                // We don't support output with multiple parts
-                throw new NotSupportedWSDLException("Multi-part output is not supported");
-            }
-            Part part = (Part) outputParts.get(0);
-            outputType = introspectType(part);
-        }
-
-        Collection faults = wsdlOp.getFaults().values();
-        List<DataType<QName>> faultTypes = new ArrayList<DataType<QName>>();
-        for (Object f : faults) {
-            Fault fault = (Fault) f;
-            Message faultMsg = fault.getMessage();
-            List faultParts = faultMsg.getOrderedParts(null);
-            if (faultParts.size() != 1) {
-                throw new NotSupportedWSDLException("The fault message MUST have a single part");
-            }
-            Part part = (Part) faultParts.get(0);
-            // A fault is typed by a message
-            DataType<QName> dataType = introspectType(part);
-            faultTypes.add(dataType);
-        }
-
-        org.apache.tuscany.spi.model.Operation<QName> operation =
-                new org.apache.tuscany.spi.model.Operation<QName>(wsdlOp.getName(), inputType, outputType, faultTypes,
-                        oneway, defaultDataBinding);
-
-        WrapperStyleOperation wrapperStyleOperation =
-                new WrapperStyleOperation(wsdlOp, wsdlDefinitionRegistry.getSchemaRegistry());
-        if (wrapperStyleOperation.isWrapperStyle()) {
-            operation.addMetaData(WrapperStyleOperation.class.getName(), wrapperStyleOperation);
-        }
-        return operation;
-
-    }
-
-    protected DataType<List<DataType<QName>>> introspectType(Message message) {
-        List<DataType<QName>> dataTypes = new ArrayList<DataType<QName>>();
-        if (message != null) {
-            List parts = message.getOrderedParts(null);
-            for (Object p : parts) {
-                Part part = (Part) p;
-                DataType<QName> dataType = introspectType(part);
-                dataTypes.add(dataType);
-            }
-        }
-        DataType<List<DataType<QName>>> msgType =
-                new DataType<List<DataType<QName>>>(INPUT_PARTS, Object.class, dataTypes);
-        msgType.setMetadata(IDL_WSDL_DOCUMENT_LITERAL_WRPPED, Boolean.FALSE);
-        return msgType;
-    }
-
-    protected DataType<QName> introspectType(Part part) {
-        QName partTypeName = part.getElementName();
-        // FIXME: How can we get the corresponing type name for the element? We need the XSD model
-        if (partTypeName == null) {
-            partTypeName = part.getTypeName();
-        }
-        // FIXME: What java class is it? Should we try to see if there's a generated one?
-        return new DataType<QName>(defaultDataBinding, Object.class, partTypeName);
+        WSDLOperation op = new WSDLOperation(wsdlOp, defaultDataBinding, wsdlDefinitionRegistry.getSchemaRegistry());
+        return op.getOperation();
     }
 
     /**

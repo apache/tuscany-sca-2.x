@@ -79,7 +79,7 @@ public class XMLSchemaRegistryImpl implements XMLSchemaRegistry {
         for (Object ext : types.getExtensibilityElements()) {
             if (ext instanceof Schema) {
                 Element element = ((Schema) ext).getElement();
-                XmlSchema s = collection.read(element);
+                XmlSchema s = collection.read(element, element.getBaseURI());
                 schemas.add(s);
             }
         }

@@ -20,11 +20,15 @@
 package org.apache.tuscany.idl.wsdl;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.spi.model.DataType;
+import org.apache.ws.commons.schema.XmlSchemaElement;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -32,7 +36,7 @@ import junit.framework.TestCase;
 /**
  * Test case for WSDLOperation
  */
-public class WrapperStyleOperationTestCase extends TestCase {
+public class WSDLOperationTestCase extends TestCase {
     private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
     private WSDLDefinitionRegistryImpl registry;
@@ -51,22 +55,48 @@ public class WrapperStyleOperationTestCase extends TestCase {
         Definition definition = registry.loadDefinition(null, url);
         PortType portType = definition.getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
+        
         WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
+        
+        DataType<List<DataType<QName>>> inputType = op.getInputType();
+        Assert.assertSame(op, inputType.getMetadata(WSDLOperation.class.getName()));
+        Assert.assertEquals(1, inputType.getLogical().size());
+        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), inputType.getLogical()
+                .get(0).getLogical());
+        
+        DataType<QName> outputType = op.getOutputType();
+        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"), outputType
+                .getLogical());
         Assert.assertTrue(op.isWrapperStyle());
-        Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
-        Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
+        
+        DataType<List<DataType<QName>>> unwrappedInputType = op.getWrapper().getUnwrappedInputType();
+        List<DataType<QName>> childTypes = unwrappedInputType.getLogical();
+        Assert.assertEquals(1, childTypes.size());
+        DataType<QName> childType = childTypes.get(0);
+        Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical());
+        XmlSchemaElement element = (XmlSchemaElement) childType.getMetadata(XmlSchemaElement.class.getName());
+        Assert.assertNotNull(element);
+        
+        childType = op.getWrapper().getUnwrappedOutputType();
+        Assert.assertEquals(new QName(null, "price"), childType.getLogical());
+        element = (XmlSchemaElement) childType.getMetadata(XmlSchemaElement.class.getName());
+        Assert.assertNotNull(element);
     }
 
     public final void testUnwrappedOperation() throws Exception {
         URL url = getClass().getResource("unwrapped-stockquote.wsdl");
         Definition definition = registry.loadDefinition(null, url);
         PortType portType = definition.getPortType(PORTTYPE_NAME);
+        
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
         WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
         Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertEquals(1, op.getInputType().getLogical().size());
+        
         operation = portType.getOperation("getLastTradePrice2", null, null);
         op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
         Assert.assertFalse(op.isWrapperStyle());
+        Assert.assertEquals(2, op.getInputType().getLogical().size());
     }
 
 }

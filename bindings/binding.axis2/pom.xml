@@ -82,13 +82,13 @@
         </dependency>
 
         <dependency>
-            <groupId>ws-commons</groupId>
+            <groupId>org.apache.ws.commons</groupId>
             <artifactId>axiom-api</artifactId>
             <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>ws-commons</groupId>
+            <groupId>org.apache.ws.commons</groupId>
             <artifactId>axiom-impl</artifactId>
             <version>SNAPSHOT</version>
         </dependency>
@@ -128,7 +128,7 @@
         </dependency>
 
         <dependency>
-            <groupId>ws-commons</groupId>
+            <groupId>org.apache.ws.commons</groupId>
             <artifactId>neethi</artifactId>
             <version>SNAPSHOT</version>
             <scope>runtime</scope>
