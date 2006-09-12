@@ -19,6 +19,7 @@ import org.apache.ws.commons.schema.XmlSchemaForm;
 import org.apache.ws.commons.schema.XmlSchemaImport;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
+import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.apache.ws.java2wsdl.Java2WSDLConstants;
 import org.apache.ws.java2wsdl.SchemaGenerator;
 import org.apache.ws.java2wsdl.bytecode.MethodTable;
@@ -292,10 +293,10 @@ public class TuscanySchemaGenerator implements TuscanyJava2WSDLConstants
         schemaMap.put(targetNamespace, xmlSchema);
         
                 
-        Hashtable prefixmap = new Hashtable();
+        NamespaceMap prefixmap = new NamespaceMap();
         prefixmap.put(TuscanyTypeTable.XS_URI_PREFIX, TuscanyTypeTable.XML_SCHEMA_URI);
         prefixmap.put(targetNamespacePrefix, targetNamespace);
-        xmlSchema.setPrefixToNamespaceMap(prefixmap);
+        xmlSchema.setNamespaceContext(prefixmap);
     }
     
     private void setFormDefaults()
@@ -337,13 +338,13 @@ public class TuscanySchemaGenerator implements TuscanyJava2WSDLConstants
         }
         else
         {
-            if (!xmlSchema.getPrefixToNamespaceMap().values().
+            if (!((NamespaceMap)xmlSchema.getNamespaceContext()).values().
                     contains(schemaTypeName.getNamespaceURI())) 
             {
                 XmlSchemaImport importElement = new XmlSchemaImport();
                 importElement.setNamespace(schemaTypeName.getNamespaceURI());
                 xmlSchema.getItems().add(importElement);
-                xmlSchema.getPrefixToNamespaceMap().
+                ((NamespaceMap)xmlSchema.getNamespaceContext()).
                         put(generatePrefix(), schemaTypeName.getNamespaceURI());
             }
         }
