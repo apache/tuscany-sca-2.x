@@ -17,39 +17,20 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.impl;
+package org.apache.tuscany.databinding.axiom;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.idl.Input2InputTransformer;
+import org.apache.tuscany.databinding.idl.Output2OutputTransformer;
 import org.osoa.sca.annotations.Service;
 
 /**
- * This is a special transformer to convert java parameters by the inputType
+ * Object <--> OMElement Transformer
  */
 @Service(Transformer.class)
-public class JavaParametersTransformer extends Input2InputTransformer<Object> {
+public class OMElementOutputTransformer extends Output2OutputTransformer<OMElement> {
 
-    private static final String IDL_INPUT = "idl:input";
-
-    public JavaParametersTransformer() {
-        super(null);
+    public OMElementOutputTransformer() {
+        super(new OMElementWrapperHandler());
     }
-
-    @Override
-    public String getSourceBinding() {
-        return IDL_INPUT;
-    }
-
-    @Override
-    public String getTargetBinding() {
-        return IDL_INPUT;
-    }
-
-    /**
-     * @see org.apache.tuscany.databinding.Transformer#getWeight()
-     */
-    public int getWeight() {
-        return 10;
-    }
-
 }

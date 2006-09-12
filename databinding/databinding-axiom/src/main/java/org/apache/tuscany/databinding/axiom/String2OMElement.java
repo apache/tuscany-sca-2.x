@@ -20,22 +20,43 @@ package org.apache.tuscany.databinding.axiom;
 
 import java.io.ByteArrayInputStream;
 
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Service;
 
 @Service(Transformer.class)
-public class String2OMElement extends TransformerExtension<String, OMElement> implements PullTransformer<String, OMElement> {
+public class String2OMElement extends TransformerExtension<String, OMElement> implements
+        PullTransformer<String, OMElement> {
 
+    @SuppressWarnings("unchecked")
     public OMElement transform(String source, TransformationContext context) {
         try {
             StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(source.getBytes()));
-            return builder.getDocumentElement();
+            OMElement element = builder.getDocumentElement();
+            if (context != null) {
+                DataType<QName> dataType = context.getTargetDataType();
+                QName targetQName = dataType == null ? null : dataType.getLogical();
+                if (targetQName != null && !element.getQName().equals(targetQName)) {
+                    // TODO: Throw expection or switch to the new Element
+                    OMFactory factory = OMAbstractFactory.getOMFactory();
+                    OMNamespace namespace =
+                            factory.createOMNamespace(targetQName.getNamespaceURI(), targetQName.getPrefix());
+                    element.setNamespace(namespace);
+                    element.setLocalName(targetQName.getLocalPart());
+                }
+            }
+            return element;
         } catch (Exception e) {
             throw new TransformationException(e);
         }
