@@ -20,12 +20,16 @@ package org.apache.tuscany.container.ruby;
 
 import java.net.URL;
 
+import org.apache.tuscany.container.ruby.rubyscript.RubySCAConfig;
+import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ComponentType;
 
 /**
@@ -44,6 +48,26 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
     protected Class<RubyImplementation> getImplementationClass() {
         return RubyImplementation.class;
     }
+    
+    protected RubyComponentType loadByIntrospection(CompositeComponent parent,
+                                                          RubyImplementation implementation,
+                                                          DeploymentContext deploymentContext) throws
+                                                                                               MissingResourceException,
+                                                                                               InvalidServiceContractException {
+
+        RubyScript rubyScript = implementation.getRubyScript();
+        RubySCAConfig scaConfig = rubyScript.getSCAConfig();
+        if (!scaConfig.hasSCAConfig()) {
+            throw new IllegalArgumentException(
+                "must use either .componentType side file or Ruby Global variable $SCA definition");
+        }
+
+        // FIXME this should be a system service, not instantiated here
+        RubyComponentType componentType = new RubyIntrospector(null, processorRegistry)
+            .introspectScript(scaConfig, rubyScript.getClassLoader());
+
+        return componentType;
+    }
 
     protected String getResourceName(RubyImplementation implementation) {
         return implementation.getRubyScript().getScriptName();
@@ -51,16 +75,25 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
 
     // TODO: must be possible to move all the following up in to ComponentTypeLoaderExtension
 
-    public void load(CompositeComponent<?> parent,
+    public void load(CompositeComponent parent,
                      RubyImplementation implementation,
                      DeploymentContext deploymentContext) throws LoaderException {
 
-        URL resource = implementation.getRubyScript().getClassLoader()
-                .getResource(getSideFileName(implementation));
+        URL resource = implementation.getRubyScript().getClassLoader().getResource(getSideFileName(implementation));
         RubyComponentType componentType;
-        componentType = loadFromSidefile(resource,
-                                         deploymentContext);
+        if (resource == null) {
+            try {
+                componentType = loadByIntrospection(parent, implementation, deploymentContext);
+            } catch (InvalidServiceContractException e) {
+                throw new LoaderException("Invalid service contract", e);
+            }
+        } else {
+            componentType = loadFromSidefile(resource, deploymentContext);
+        }
+
         implementation.setComponentType(componentType);
+        
+      
     }
 
     protected RubyComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {

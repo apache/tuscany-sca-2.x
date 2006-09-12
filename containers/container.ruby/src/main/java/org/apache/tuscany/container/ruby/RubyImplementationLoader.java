@@ -62,7 +62,9 @@ public class RubyImplementationLoader extends LoaderExtension<RubyImplementation
 
         String script = reader.getAttributeValue(null,
                                                  "script");
-        if (script == null) {
+        String rubyClassName  = reader.getAttributeValue(null,"class");
+        
+        if ( script == null  ) {
             throw new MissingResourceException("No script supplied");
         }
 
@@ -75,6 +77,7 @@ public class RubyImplementationLoader extends LoaderExtension<RubyImplementation
         RubyImplementation implementation = new RubyImplementation();
         RubyScript rubyScript = new RubyScript(script, source, null, cl);
         implementation.setRubyScript(rubyScript);
+        implementation.setRubyClassName(rubyClassName);
         registry.loadComponentType(parent,
                                    implementation,
                                    deploymentContext);

@@ -23,6 +23,6 @@
            name="HelloWorldComposite">
 
     <component name="HelloWorldComponent">
-		<rb:implementation.rb script="org/apache/tuscany/container/ruby/function/HelloWorld.rb"/>
+		<rb:implementation.rb script="org/apache/tuscany/container/ruby/function/HelloWorld.rb"  class="HelloWorldServiceRubyImpl"/>
     </component>
 </composite>

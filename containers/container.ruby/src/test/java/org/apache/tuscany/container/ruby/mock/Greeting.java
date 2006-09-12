@@ -16,33 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.ruby;
+package org.apache.tuscany.container.ruby.mock;
 
-import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
-import org.apache.tuscany.spi.model.AtomicImplementation;
+public interface Greeting {
 
-/**
- * Model object for a JavaScript implementation.
- */
-public class RubyImplementation extends AtomicImplementation<RubyComponentType> {
+    String setWire(Greeting ref);
 
-    private RubyScript rubyScript;
-    
-    private String rubyClassName;
-
-    public String getRubyClassName() {
-        return rubyClassName;
-    }
-
-    public void setRubyClassName(String rubyClassName) {
-        this.rubyClassName = rubyClassName;
-    }
-
-    public RubyScript getRubyScript() {
-        return rubyScript;
-    }
-
-    public void setRubyScript(RubyScript rubyScript) {
-        this.rubyScript = rubyScript;
-    }
+    String greet(String name);
 }
