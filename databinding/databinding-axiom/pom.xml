@@ -55,15 +55,6 @@
 			<version>SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
-        
-        <!-- 
-		<dependency>
-			<groupId>ws-commons</groupId>
-			<artifactId>axiom-dom</artifactId>
-			<version>SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-         -->
 
         <dependency>
             <groupId>junit</groupId>
