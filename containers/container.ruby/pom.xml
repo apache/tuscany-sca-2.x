@@ -52,6 +52,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>

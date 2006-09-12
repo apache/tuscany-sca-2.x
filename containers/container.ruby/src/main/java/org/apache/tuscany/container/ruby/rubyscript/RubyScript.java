@@ -23,12 +23,15 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.jruby.IRuby;
+import org.jruby.RubyString;
 import org.jruby.javasupport.JavaEmbedUtils;
+import org.jruby.javasupport.JavaUtil;
 
 /**
  * A RhinoScript represents a compiled JavaScript script
  */
 public class RubyScript {
+    protected final String NEW = ".new";
 
     protected String scriptName;
 
@@ -38,7 +41,7 @@ public class RubyScript {
 
     protected ClassLoader classLoader;
 
-    private static IRuby rubyEngine = JavaEmbedUtils.initialize(new Vector());
+    private  IRuby rubyEngine = JavaEmbedUtils.initialize(new Vector());
 
     /**
      * Create a new RubyScript.
@@ -70,6 +73,13 @@ public class RubyScript {
         this.script = script;
         this.responseClasses = new HashMap<String, Class>();
         this.classLoader = classLoader;
+        rubyEngine.loadScript((RubyString) JavaUtil.convertJavaToRuby(rubyEngine,
+                                                                      "MyScript.rb",
+                                                                      String.class),
+                              (RubyString) JavaUtil.convertJavaToRuby(rubyEngine,
+                                                                      this.script,
+                                                                      String.class),
+                              false);
     }
 
     /**
@@ -77,8 +87,13 @@ public class RubyScript {
      * 
      * @return a IRubyObject
      */
-    public RubyScriptInstance createScriptInstance() {
-        return new RubyScriptInstance(rubyEngine.evalScript(getScript()), responseClasses);
+    public RubyScriptInstance createScriptInstance(String rubyClassName) {
+        if ( rubyClassName == null ) {
+            return new RubyScriptInstance(rubyEngine.evalScript(script), responseClasses);
+        }
+        else {
+            return new RubyScriptInstance(rubyEngine.evalScript(rubyClassName + NEW), responseClasses);
+        }
     }
 
     public String getScript() {
@@ -106,9 +121,21 @@ public class RubyScript {
         this.responseClasses.put(functionName,
                                  responseClasses);
     }
+    
+    public RubySCAConfig getSCAConfig() {
+        return new RubySCAConfig(rubyEngine.getGlobalVariables());
+    }
 
     public void setScript(String script) {
         this.script = script;
+    }
+
+    public IRuby getRubyEngine() {
+        return rubyEngine;
+    }
+
+    public void setRubyEngine(IRuby rubyEngine) {
+        this.rubyEngine = rubyEngine;
     }
 
 }

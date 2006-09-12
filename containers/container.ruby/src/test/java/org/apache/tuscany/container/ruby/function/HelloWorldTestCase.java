@@ -44,8 +44,13 @@ public class HelloWorldTestCase extends SCATestCase {
         helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponent");
     }
 
-    public void testHelloWorld() throws Exception {
+    public void testHelloWorldWithClass() throws Exception {
         assertEquals(helloWorldService.sayHello("petra"), "Hello to petra from the Ruby World!");
-        System.out.println(helloWorldService.sayHello("petra"));
+        //System.out.println(helloWorldService.sayHello("petra"));
+    }
+    
+    public void testHelloWorldGlobal() throws Exception {
+        assertEquals(helloWorldService.sayHello("artep"), "Hello to artep from the Ruby World!");
+        //System.out.println(helloWorldService.sayHello("artep"));
     }
 }

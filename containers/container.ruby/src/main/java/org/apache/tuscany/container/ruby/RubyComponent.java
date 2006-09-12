@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.container.ruby;
 
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,16 +39,19 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * The Ruby component implementation.
  */
-public class RubyComponent<T> extends AtomicComponentExtension<T> {
+public class RubyComponent extends AtomicComponentExtension {
 
     private final List<Class<?>> services;
 
     private final Map<String, Object> properties;
 
     private RubyScript rubyScript;
+    
+    private String rubyClassName;
 
     public RubyComponent(String name,
                          RubyScript rubyScript,
+                         String rubyClassName,
                          List<Class<?>> services,
                          CompositeComponent parent,
                          ScopeContainer scopeContainer,
@@ -60,6 +60,7 @@ public class RubyComponent<T> extends AtomicComponentExtension<T> {
         super(name, parent, scopeContainer, wireService, workContext, null, 0);
 
         this.rubyScript = rubyScript;
+        this.rubyClassName = rubyClassName;
         this.services = services;
         this.scope = scopeContainer.getScope();
         this.properties = new HashMap<String, Object>();
@@ -70,7 +71,7 @@ public class RubyComponent<T> extends AtomicComponentExtension<T> {
         Map<String, Object> context = new HashMap<String, Object>(getProperties());
 
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
-            for (OutboundWire<?> wire : referenceWires) {
+            for (OutboundWire wire : referenceWires) {
                 Object wireProxy = wireService.createProxy(wire);
                 // since all types that may be used in the reference interface may not be known to Rhino
                 // using the wireProxy as is will fail result in type conversion exceptions in cases where
@@ -88,16 +89,16 @@ public class RubyComponent<T> extends AtomicComponentExtension<T> {
             }
         }
 
-        Object instance = rubyScript.createScriptInstance();
+        Object instance = rubyScript.createScriptInstance(rubyClassName);
 
         return instance;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
-        Method[] methods = operation.getServiceContract().getInterfaceClass().getMethods();
+        /*Method[] methods = operation.getServiceContract().getInterfaceClass().getMethods();
         Method method = findMethod(operation,
-                                   methods);
-        return new RubyInvoker(method.getName(), this, method.getReturnType());
+                                   methods);*/
+        return new RubyInvoker(operation.getName(), this, operation.getOutputType().getPhysical().getClass());
     }
 
     // TODO: move all the following up to AtomicComponentExtension?
@@ -114,19 +115,19 @@ public class RubyComponent<T> extends AtomicComponentExtension<T> {
         return (RubyScriptInstance) scopeContainer.getInstance(this);
     }
 
-    public T getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetException {
         return getServiceInstance(null);
     }
 
     @SuppressWarnings("unchecked")
-    public T getServiceInstance(String service) throws TargetException {
-        InboundWire<?> wire = getInboundWire(service);
+    public Object getServiceInstance(String service) throws TargetException {
+        InboundWire wire = getInboundWire(service);
         if (wire == null) {
             TargetException e = new TargetException("ServiceDefinition not found"); // TODO better error message
             e.setIdentifier(service);
             throw e;
         }
-        return (T) wireService.createProxy(wire);
+        return wireService.createProxy(wire);
     }
 
 }

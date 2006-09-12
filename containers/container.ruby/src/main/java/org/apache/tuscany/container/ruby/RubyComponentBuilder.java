@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -33,7 +32,6 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.osoa.sca.annotations.Constructor;
 
 /**
  * Extension point for creating {@link RubyComponent}s from an assembly configuration
@@ -51,20 +49,16 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
     private static String getXmlObjectFunction = "function getXmlObject(xmlElementNamespace, xmlElementName){\n"
             + "return xmlInstanceMap[xmlElementNamespace + \"#\" + xmlElementName];\n}";
 
-    /*XmlInstanceRegistry xmlInstRegistry;
-
-    @Constructor({"xmlInstRegistry"})
-    public RubyComponentBuilder(@Autowire
-    XmlInstanceRegistry reg) {
-        this.xmlInstRegistry = reg;
-    }
-*/
+    /*
+     * XmlInstanceRegistry xmlInstRegistry; @Constructor({"xmlInstRegistry"}) public RubyComponentBuilder(@Autowire XmlInstanceRegistry reg) {
+     * this.xmlInstRegistry = reg; }
+     */
     protected Class<RubyImplementation> getImplementationType() {
         return RubyImplementation.class;
     }
 
     @SuppressWarnings("unchecked")
-    public Component<?> build(CompositeComponent<?> parent,
+    public Component build(CompositeComponent parent,
                               ComponentDefinition<RubyImplementation> componentDefinition,
                               DeploymentContext deploymentContext) throws BuilderConfigException {
 
@@ -90,7 +84,13 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
             scopeContainer = scopeRegistry.getScopeContainer(scope);
         }
 
-        return new RubyComponent(name, rubyScript, services, parent, scopeContainer, wireService,
-                workContext);
+        return new RubyComponent(name,
+                                 rubyScript,
+                                 implementation.getRubyClassName(),
+                                 services,
+                                 parent,
+                                 scopeContainer,
+                                 wireService,
+                                 workContext);
     }
 }
