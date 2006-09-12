@@ -100,7 +100,9 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         context.setTargetDataType(op.getInputType());
         Object[] results = t.transform(source, context);
         Assert.assertEquals(1, results.length);
-        System.out.println(results[0]);
+        Assert.assertTrue(results[0] instanceof OMElement);
+        OMElement element = (OMElement) results[0];
+        Assert.assertEquals(new QName("http://example.com/order.xsd", "checkOrderStatus"), element.getQName());
 
         TransformationContext context1 = new TransformationContextImpl();
         context1.setSourceDataType(op.getOutputType());
