@@ -104,7 +104,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     }
 
-    public void populateProperties() {
+    public final void populateProperties() {
         if (properties != null)
             return;
         if (elementQName == null)

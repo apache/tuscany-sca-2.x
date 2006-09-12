@@ -61,12 +61,12 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         contract.setOperations(operations);
         processor.visitInterface(MockInterface.class, contract);
         Assert.assertEquals("org.w3c.dom.Node", contract.getDataBinding());
-        Assert.assertEquals("element", (String) contract.getMetaData().get("nodeType")); 
+        Assert.assertEquals("element", (String) contract.getMetaData().get("nodeType"));
         Assert.assertEquals("org.w3c.dom.Node", contract.getOperations().get("call").getDataBinding());
         Assert.assertEquals("xml:string", contract.getOperations().get("call1").getDataBinding());
     }
 
-    @DataType(name = "org.w3c.dom.Node", context={@DataContext(key="nodeType", value="element")})
+    @DataType(name = "org.w3c.dom.Node", context = { @DataContext(key = "nodeType", value = "element") })
     @Remotable
     public static interface MockInterface {
         Node call(Node msg);

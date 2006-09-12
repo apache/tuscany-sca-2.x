@@ -45,10 +45,6 @@ public class TransformerRegistryImplTestCase extends TestCase {
         registry = new TransformerRegistryImpl();
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.tuscany.databinding.impl.TransformerRegistryImpl#registerTransformer(java.lang.String, java.lang.String, int, org.apache.tuscany.databinding.Transformer)}.
-     */
     public void testRegisterTransformer1() {
         Transformer transformer = createMock(Transformer.class);
         registry.registerTransformer("a", "b", 10, transformer);
@@ -56,10 +52,6 @@ public class TransformerRegistryImplTestCase extends TestCase {
         Assert.assertSame(t, transformer);
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.tuscany.databinding.impl.TransformerRegistryImpl#registerTransformer(org.apache.tuscany.databinding.Transformer)}.
-     */
     public void testRegisterTransformerTransformer() {
         Transformer transformer = createMock(Transformer.class);
         expect(transformer.getSourceBinding()).andReturn("a");
@@ -71,9 +63,6 @@ public class TransformerRegistryImplTestCase extends TestCase {
         Assert.assertSame(t, transformer);
     }
 
-    /**
-     * Test method for {@link org.apache.tuscany.databinding.impl.TransformerRegistryImpl#unregisterTransformer(java.lang.String, java.lang.String)}.
-     */
     public void testUnregisterTransformer() {
         Transformer transformer = createMock(Transformer.class);
         registry.registerTransformer("a", "b", 10, transformer);
@@ -83,9 +72,6 @@ public class TransformerRegistryImplTestCase extends TestCase {
         Assert.assertNull(t);
     }
 
-    /**
-     * Test method for {@link org.apache.tuscany.databinding.impl.TransformerRegistryImpl#getTransformerChain(java.lang.String, java.lang.String)}.
-     */
     public void testGetTransformerChain() {
         Transformer t1 = createMock(Transformer.class);
         expect(t1.getSourceBinding()).andReturn("a");

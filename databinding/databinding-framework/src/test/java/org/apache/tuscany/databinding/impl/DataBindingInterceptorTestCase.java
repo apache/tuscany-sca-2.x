@@ -64,7 +64,8 @@ public class DataBindingInterceptorTestCase extends TestCase {
         DataType<Class> type2 = new DataType<Class>("foo", Foo.class, Foo.class);
         List<DataType<Class>> types2 = new ArrayList<DataType<Class>>();
         types2.add(type2);
-        DataType<List<DataType<Class>>> inputType2 = new DataType<List<DataType<Class>>>("foo", Object[].class, types2);
+        DataType<List<DataType<Class>>> inputType2 
+            = new DataType<List<DataType<Class>>>("foo", Object[].class, types2);
 
         Operation<Class> operation1 = new Operation<Class>("call", inputType1, type1, null, false, "xml:string");
         Operation<Class> operation2 = new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node");
