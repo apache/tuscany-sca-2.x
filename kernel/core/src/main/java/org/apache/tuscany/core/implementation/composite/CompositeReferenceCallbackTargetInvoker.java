@@ -70,25 +70,6 @@ public class CompositeReferenceCallbackTargetInvoker extends PojoTargetInvoker {
         return msg;
     }
 
-    /*
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            workContext.setCurrentMessageId(msg.getMessageId());
-            workContext.setCurrentCorrelationId(msg.getCorrelationId());
-            Object resp = invokeTarget(msg.getBody());
-            return (Message) resp;
-        } catch (InvocationTargetException e) {
-            // FIXME need to log exceptions
-            e.printStackTrace();
-            return null;
-        } catch (Throwable e) {
-            // FIXME need to log exceptions
-            e.printStackTrace();
-            return null;
-        }
-    }
-    */
-
     protected Object getInstance() throws TargetException {
         return wireService.createCallbackProxy(contract, inboundWire);
     }
