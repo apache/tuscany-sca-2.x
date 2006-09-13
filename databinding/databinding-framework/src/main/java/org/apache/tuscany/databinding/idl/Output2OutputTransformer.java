@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
@@ -31,6 +33,7 @@ import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
@@ -41,18 +44,17 @@ import org.osoa.sca.annotations.Service;
  * This is a special transformer to transform the output from one IDL to the other one
  */
 @Service(Transformer.class)
-public abstract class Output2OutputTransformer<T> extends TransformerExtension<Object, Object> implements
+public class Output2OutputTransformer extends TransformerExtension<Object, Object> implements
         PullTransformer<Object, Object> {
-
-    protected WrapperHandler<T> wrapperHandler;
+    private static final String IDL_OUTPUT = "idl:output";
+    protected DataBindingRegistry dataBindingRegistry;
     protected Mediator mediator;
 
     /**
      * @param wrapperHandler
      */
-    protected Output2OutputTransformer(WrapperHandler<T> wrapperHandler) {
+    public Output2OutputTransformer() {
         super();
-        this.wrapperHandler = wrapperHandler;
     }
 
     /**
@@ -63,6 +65,24 @@ public abstract class Output2OutputTransformer<T> extends TransformerExtension<O
         this.mediator = mediator;
     }
 
+    /**
+     * @param dataBindingRegistry the dataBindingRegistry to set
+     */
+    @Autowire
+    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
+    }  
+    
+    @Override
+    public String getSourceBinding() {
+        return IDL_OUTPUT;
+    }
+
+    @Override
+    public String getTargetBinding() {
+        return IDL_OUTPUT;
+    }
+    
     /**
      * @see org.apache.tuscany.databinding.extension.TransformerExtension#getSourceType()
      */
@@ -85,22 +105,46 @@ public abstract class Output2OutputTransformer<T> extends TransformerExtension<O
     public int getWeight() {
         return 10;
     }
+    
+    private WrapperHandler getWapperHandler(WSDLOperation sourceOp) {
+        String dataBindingId;
+        try {
+            dataBindingId = sourceOp.getOperation().getDataBinding();
+        } catch (InvalidServiceContractException e) {
+            throw new TransformationException(e);
+        }
+        DataBinding dataBinding = dataBindingRegistry.getDataBinding(dataBindingId);
+        WrapperHandler wrapperHandler = dataBinding==null? null : dataBinding.getWrapperHandler();
+        if (wrapperHandler == null) {
+            throw new TransformationException("No wrapper handler is provided for databinding: "+dataBindingId);
+        }
+        return wrapperHandler;
+    }
+    
 
     @SuppressWarnings("unchecked")
     public Object transform(Object response, TransformationContext context) {
         try {
-            DataType<?> sourceType = context.getSourceDataType();
+            DataType<DataType> sourceType = context.getSourceDataType();
             WSDLOperation sourceOp = (WSDLOperation) sourceType.getMetadata(WSDLOperation.class.getName());
             boolean sourceWrapped = (sourceOp != null && sourceOp.isWrapperStyle());
+            WrapperHandler sourceWrapperHandler = null;
+            if(sourceWrapped) {
+                sourceWrapperHandler = getWapperHandler(sourceOp);
+            }
 
-            DataType<?> targetType = context.getTargetDataType();
+            DataType<DataType> targetType = context.getTargetDataType();
             WSDLOperation targetOp = (WSDLOperation) targetType.getMetadata(WSDLOperation.class.getName());
             boolean targetWrapped = (targetOp != null && targetOp.isWrapperStyle());
+            WrapperHandler targetWrapperHandler = null;
+            if(targetWrapped) {
+                targetWrapperHandler = getWapperHandler(targetOp);
+            }
 
             if ((!sourceWrapped) && targetWrapped) {
                 // Unwrapped --> Wrapped
                 WSDLOperation.Wrapper wrapper = targetOp.getWrapper();
-                T targetWrapper = wrapperHandler.create(wrapper.getOutputWrapperElement());
+                Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
                 if (response == null) {
                     return targetWrapper;
                 }
@@ -111,26 +155,27 @@ public abstract class Output2OutputTransformer<T> extends TransformerExtension<O
                 boolean isSimpleType = (argXSDType instanceof XmlSchemaSimpleType);
                 Object child = response;
                 if (!isSimpleType) {
-                    child = mediator.mediate(response, sourceType, argType);
-                    wrapperHandler.setChild(targetWrapper, 0, argElement, child);
+                    child = mediator.mediate(response, sourceType.getLogical(), argType);
+                    targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
                 } else {
-                    wrapperHandler.setChild(targetWrapper, 0, argElement, child);
+                    targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
                 }
                 return targetWrapper;
             } else if (sourceWrapped && (!targetWrapped)) {
                 // Wrapped to Unwrapped
-                T sourceWrapper = (T) response;
+                Object sourceWrapper = response;
                 List<XmlSchemaElement> childElements = sourceOp.getWrapper().getOutputChildElements();
                 XmlSchemaElement childElement = childElements.get(0);
                 if (childElement.getSchemaType() instanceof XmlSchemaSimpleType) {
-                    return wrapperHandler.getChild(sourceWrapper, 0, childElement);
+                    return sourceWrapperHandler.getChild(sourceWrapper, 0, childElement);
                 } else {
-                    Object child = wrapperHandler.getChild(sourceWrapper, 0, childElement);
+                    Object child = sourceWrapperHandler.getChild(sourceWrapper, 0, childElement);
                     DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
-                    return mediator.mediate(child, childType, targetType);
+                    return mediator.mediate(child, childType, targetType.getLogical());
                 }
             } else {
-                return mediator.mediate(response, sourceType, targetType);
+                // FIXME: Do we want to handle wrapped to wrapped?
+                return mediator.mediate(response, sourceType.getLogical(), targetType.getLogical());
             }
         } catch (Exception e) {
             throw new TransformationException(e);

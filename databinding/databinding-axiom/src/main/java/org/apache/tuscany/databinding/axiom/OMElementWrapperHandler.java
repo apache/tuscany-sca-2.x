@@ -41,6 +41,7 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.WrapperHandler;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
@@ -58,7 +59,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         this.factory = OMAbstractFactory.getOMFactory();
     }
 
-    public OMElement create(XmlSchemaElement element) {
+    public OMElement create(XmlSchemaElement element, TransformationContext context) {
         OMElement wrapper = factory.createOMElement(element.getQName(), null);
         return wrapper;
     }

@@ -19,9 +19,10 @@
 
 package org.apache.tuscany.databinding.axiom;
 
-import org.apache.axiom.om.OMNode;
+import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.extension.DataBindingExtension;
+import org.apache.tuscany.databinding.idl.WrapperHandler;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -31,7 +32,15 @@ import org.osoa.sca.annotations.Service;
 public class AxiomDataBinding extends DataBindingExtension {
 
     public AxiomDataBinding() {
-        super(OMNode.class);
+        super(OMElement.class);
+    }
+
+    /**
+     * @see org.apache.tuscany.databinding.extension.DataBindingExtension#getWrapperHandler()
+     */
+    @Override
+    public WrapperHandler getWrapperHandler() {
+        return new OMElementWrapperHandler();
     }
 
 }

@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.databinding;
 
+import org.apache.tuscany.databinding.idl.WrapperHandler;
 import org.apache.tuscany.spi.model.DataType;
 
 /**
@@ -47,4 +48,10 @@ public interface DataBinding {
      * @return The DataType or null if the java type is not supported by this databinding
      */
     DataType introspect(Object value);
+    
+    /**
+     * Provide a WrapperHandler for this databinding
+     * @return A wrapper handler which can handle wrapping/wrapping for this databinding
+     */
+    WrapperHandler getWrapperHandler();
 }
