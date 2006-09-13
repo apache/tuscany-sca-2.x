@@ -22,16 +22,13 @@
     <parent>
         <groupId>org.apache.tuscany</groupId>
         <artifactId>parent</artifactId>
-        <version>1-SNAPSHOT</version>
+        <version>1-incubator-SNAPSHOT</version>
     </parent>
     <groupId>org.apache.tuscany.sca.kernel</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <name>Apache Tuscany SCA Kernel Sub-Project</name>
-    <version>1.0-SNAPSHOT</version>
-    <properties>
-        <sca.version>1.0-SNAPSHOT</sca.version>
-    </properties>
+    <version>1.0-incubator-M2-SNAPSHOT</version>
 
     <modules>
         <module>api</module>
@@ -46,7 +43,7 @@
             <dependency>
                 <groupId>org.osoa</groupId>
                 <artifactId>sca-api-r0.95</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0-incubator-M2-SNAPSHOT</version>
                 <scope>compile</scope>
             </dependency>
             <!-- javax.servlet API -->
@@ -69,6 +66,20 @@
                 <artifactId>geronimo-jta_1.0.1B_spec</artifactId>
                 <version>1.0</version>
                 <scope>provided</scope>
+            </dependency>
+            <!-- CommonJ Timer/Work API -->
+            <dependency>
+                <groupId>org.apache.tuscany</groupId>
+                <artifactId>commonj-api_r1.1</artifactId>
+                <version>1.0-incubator-M2-SNAPSHOT</version>
+                <scope>compile</scope>
+            </dependency>
+            <!-- java.xml.stream API -->
+            <dependency>
+                <groupId>stax</groupId>
+                <artifactId>stax-api</artifactId>
+                <version>1.0.1</version>
+                <scope>compile</scope>
             </dependency>
             <!-- StAX implementation -->
             <dependency>
@@ -111,7 +122,7 @@
                         <dependency>
                             <groupId>org.apache.tuscany</groupId>
                             <artifactId>buildtools</artifactId>
-                            <version>${pom.version}</version>
+                            <version>1.0-incubator-M2-SNAPSHOT</version>
                         </dependency>
                     </dependencies>
                     <executions>

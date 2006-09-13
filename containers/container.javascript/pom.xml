@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.containers</groupId>
         <artifactId>containers</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -33,10 +33,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -52,13 +50,6 @@
             <version>1.6R2</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- dependency>
-            <groupId>org.apache.tuscany.databinding</groupId>
-            <artifactId>tuscany-databinding-sdo</artifactId> 
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency -->
 
         <dependency>
             <groupId>xmlbeans</groupId>
@@ -83,21 +74,17 @@
             <artifactId>easymockclassextension</artifactId>
         </dependency>
         <dependency>
-			<groupId>ws-commons</groupId>
-			<artifactId>axiom-api</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>ws-commons</groupId>
-			<artifactId>axiom-impl</artifactId>
-			<version>1.0</version>
-			<scope>test</scope>
-		</dependency>
+            <groupId>org.apache.ws.commons</groupId>
+            <artifactId>axiom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons</groupId>
+            <artifactId>axiom-impl</artifactId>
+        </dependency>
 		<dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
