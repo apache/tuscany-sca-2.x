@@ -23,14 +23,16 @@
     <artifactId>sca</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Implementation Project</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-incubator-M2-SNAPSHOT</version>
     <properties>
-        <sca.version>1.0-SNAPSHOT</sca.version>
+        <sca.version>1.0-incubator-M2-SNAPSHOT</sca.version>
+        <scaKernelVersion>1.0-incubator-M2-SNAPSHOT</scaKernelVersion>
         <notice.dir>.</notice.dir>
+        <axis2Version>SNAPSHOT</axis2Version>
+        <axiomVersion>SNAPSHOT</axiomVersion>
     </properties>
 
     <modules>
-        <module>kernel</module>
         <module>test</module>
         <module>containers</module>
         <module>idl/wsdl</module>
@@ -45,11 +47,19 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Tuscany Kernel Modules -->
+            <dependency>
+                <groupId>org.apache.tuscany.sca.kernel</groupId>
+                <artifactId>core</artifactId>
+                <version>${scaKernelVersion}</version>
+                <scope>compile</scope>
+            </dependency>
+
             <!-- org.osoa.sca API -->
             <dependency>
                 <groupId>org.osoa</groupId>
                 <artifactId>sca-api-r0.95</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0-incubator-M2-SNAPSHOT</version>
                 <scope>compile</scope>
             </dependency>
             <!-- javax.servlet API -->
@@ -87,6 +97,51 @@
                 <artifactId>wstx-asl</artifactId>
                 <version>2.9.3</version>
                 <scope>runtime</scope>
+            </dependency>
+
+            <!-- Axis2 Implementation -->
+            <dependency>
+                <groupId>axis2</groupId>
+                <artifactId>axis2-kernel</artifactId>
+                <version>${axis2Version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- AXIOM Implementation -->
+            <dependency>
+                <groupId>org.apache.ws.commons</groupId>
+                <artifactId>axiom-api</artifactId>
+                <version>${axiomVersion}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons</groupId>
+                <artifactId>axiom-impl</artifactId>
+                <version>${axiomVersion}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- Woden implementation -->
+            <dependency>
+                <groupId>incubator-woden</groupId>
+                <artifactId>woden</artifactId>
+                <version>SNAPSHOT</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- wsdl4j implementation -->
+            <dependency>
+                <groupId>wsdl4j</groupId>
+                <artifactId>wsdl4j</artifactId>
+                <version>1.5.2</version>
+            </dependency>
+
+            <!-- XmlSchema implementation -->
+            <dependency>
+                <groupId>org.apache.ws.commons</groupId>
+                <artifactId>XmlSchema</artifactId>
+                <version>SNAPSHOT</version>
+                <scope>compile</scope>
             </dependency>
 
             <dependency>
@@ -136,12 +191,6 @@
     </licenses>
 
     <repositories>
-        <repository>
-            <id>ibiblio</id>
-            <name>ibiblio</name>
-            <url>http://www.ibiblio.org/maven2</url>
-        </repository>
-
         <!-- needed for Apache webServices artifacts -->
         <repository>
             <id>apache.m1</id>

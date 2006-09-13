@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.bindings</groupId>
         <artifactId>bindings</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -46,15 +46,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-impl</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -73,51 +66,36 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+
         <!-- axis 2.0 SNAPSHOT      -->
 
         <dependency>
             <groupId>axis2</groupId>
             <artifactId>axis2-kernel</artifactId>
-            <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>axiom-api</artifactId>
-            <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>incubator-woden</groupId>
             <artifactId>woden</artifactId>
-            <version>SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <version>2.3</version>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- runtime -->
 
         <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
-            <version>2.9.3</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -137,8 +115,6 @@
         <dependency>
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>XmlSchema</artifactId>
-            <version>SNAPSHOT</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -161,8 +137,6 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -172,32 +146,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <!-- The assembly plugin cannot understand maven1 pom -->
-    <!--
-    <build>
-        <defaultGoal>install</defaultGoal>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/axis2.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-        -->
-
 </project>

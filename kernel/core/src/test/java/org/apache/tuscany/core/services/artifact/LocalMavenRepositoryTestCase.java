@@ -33,23 +33,23 @@ import org.apache.tuscany.spi.services.artifact.Artifact;
  * @version $Rev$ $Date$
  */
 public class LocalMavenRepositoryTestCase extends TestCase {
+    private static final String VERSION = "3.8.1";
     private LocalMavenRepository repo;
     private Artifact artifact;
+    private String path;
 
     public void testPathWithNoClassifier() {
-        String path = "org/apache/tuscany/sca/kernel/tuscany-spi/1.0-SNAPSHOT/tuscany-spi-1.0-SNAPSHOT.jar";
         assertEquals(path, repo.getPath(artifact));
     }
 
     public void testPathWithClassifier() {
         artifact.setClassifier("x86");
-        String path = "org/apache/tuscany/sca/kernel/tuscany-spi/1.0-SNAPSHOT/tuscany-spi-1.0-SNAPSHOT-x86.jar";
+        path = "junit/junit/" + VERSION + "/junit-" + VERSION + "-x86.jar";
         assertEquals(path, repo.getPath(artifact));
     }
 
     public void testArtifactFoundInRepo() throws MalformedURLException, UnsupportedEncodingException {
         String home = System.getProperty("user.home");
-        String path = "org/apache/tuscany/sca/kernel/tuscany-spi/1.0-SNAPSHOT/tuscany-spi-1.0-SNAPSHOT.jar";
         File file = new File(home + "/.m2/repository", path);
         repo.resolve(artifact);
         assertEquals(file.toURI().toURL(), artifact.getUrl());
@@ -73,9 +73,10 @@ public class LocalMavenRepositoryTestCase extends TestCase {
         repo = new LocalMavenRepository(".m2/repository");
 
         artifact = new Artifact();
-        artifact.setGroup("org.apache.tuscany.sca.kernel");
-        artifact.setName("tuscany-spi");
-        artifact.setVersion("1.0-SNAPSHOT");
+        artifact.setGroup("junit");
+        artifact.setName("junit");
+        artifact.setVersion(VERSION);
         artifact.setType("jar");
+        path = "junit/junit/" + VERSION + "/junit-" + VERSION + ".jar";
     }
 }
