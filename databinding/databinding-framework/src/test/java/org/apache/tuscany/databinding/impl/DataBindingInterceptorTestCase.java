@@ -69,6 +69,10 @@ public class DataBindingInterceptorTestCase extends TestCase {
 
         Operation<Class> operation1 = new Operation<Class>("call", inputType1, type1, null, false, "xml:string");
         Operation<Class> operation2 = new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node");
+        
+        DataType<DataType> outputType1 = new DataType<DataType>("idl:output", Object.class, operation1.getOutputType());
+        DataType<DataType> outputType2 = new DataType<DataType>("idl:output", Object.class, operation2.getOutputType());
+                
         interceptor = new DataBindingInteceptor(null, operation1, null, operation2);
         Mediator mediator = createMock(Mediator.class);
         Object[] source = new Object[] { "<foo>bar</foo>" };
@@ -76,7 +80,8 @@ public class DataBindingInterceptorTestCase extends TestCase {
         foo.bar = "bar";
         Object[] target = new Object[] { foo };
         expect(mediator.mediate(source, inputType1, inputType2)).andReturn(target);
-        expect(mediator.mediate(target[0], type2, type1)).andReturn(source[0]);
+        // expect(mediator.mediate(target[0], type2, type1)).andReturn(source[0]);
+        expect(mediator.mediate(EasyMock.same(target[0]), EasyMock.eq(outputType2), EasyMock.eq(outputType1))).andReturn(source[0]);
         replay(mediator);
         interceptor.setMediator(mediator);
         Message msg = createMock(Message.class);

@@ -19,6 +19,7 @@ package org.apache.tuscany.databinding.extension;
 
 import org.apache.tuscany.databinding.DataBinding;
 import org.apache.tuscany.databinding.DataBindingRegistry;
+import org.apache.tuscany.databinding.idl.WrapperHandler;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Init;
@@ -86,5 +87,12 @@ public abstract class DataBindingExtension implements DataBinding {
 
     public final String getName() {
         return name;
+    }
+
+    /**
+     * @see org.apache.tuscany.databinding.DataBinding#getWrapperHandler()
+     */
+    public WrapperHandler getWrapperHandler() {
+        return null;
     }
 }

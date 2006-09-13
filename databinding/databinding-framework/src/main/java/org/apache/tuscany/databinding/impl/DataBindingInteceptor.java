@@ -20,6 +20,7 @@
 package org.apache.tuscany.databinding.impl;
 
 import org.apache.tuscany.databinding.Mediator;
+import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -72,7 +73,13 @@ public class DataBindingInteceptor implements Interceptor {
             // We need to figure out what fault type it is and then transform it back the source fault type
             throw new InvocationRuntimeException((Throwable) result);
         } else if (result != null) {
-            result = transform(result, targetOperation.getOutputType(), sourceOperation.getOutputType());
+            // FIXME: Should we fix the Operation model so that getOutputType returns DataType<DataType<T>>?
+            DataType<DataType> targetType = new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
+            targetType.setMetadata(WSDLOperation.class.getName(), targetOperation.getOutputType().getMetadata(WSDLOperation.class.getName()));
+            DataType<DataType> sourceType = new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
+            sourceType.setMetadata(WSDLOperation.class.getName(), sourceOperation.getOutputType().getMetadata(WSDLOperation.class.getName()));
+
+            result = transform(result, targetType, sourceType);
             resultMsg.setBody(result);
         }
         return resultMsg;

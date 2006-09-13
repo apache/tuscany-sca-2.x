@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.databinding.idl;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 
 /**
@@ -29,9 +30,10 @@ public interface WrapperHandler<T> {
      * Create a wrapper element
      * 
      * @param element The XSD element
-     * @return
+     * @param context The transformation context
+     * @return An object representing the wrapper element
      */
-    T create(XmlSchemaElement element);
+    T create(XmlSchemaElement element, TransformationContext context);
 
     /**
      * Set child element for the wrapper

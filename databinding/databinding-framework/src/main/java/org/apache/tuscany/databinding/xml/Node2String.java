@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding.xml;
 
+import java.io.StringWriter;
+
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
@@ -26,6 +28,7 @@ import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 
 /**
@@ -39,7 +42,12 @@ public class Node2String extends TransformerExtension<Node, String> implements P
         try {
             DOMImplementationLS impl = (DOMImplementationLS) DOMHelper.newDocumentBuilder().getDOMImplementation();
             LSSerializer serializer = impl.createLSSerializer();
-            return serializer.writeToString(source);
+            LSOutput output = impl.createLSOutput();
+            output.setEncoding("UTF-8");
+            StringWriter writer = new StringWriter();
+            output.setCharacterStream(writer);
+            serializer.write(source, output);
+            return writer.toString();
         } catch (Exception e) {
             throw new TransformationException(e);
         }

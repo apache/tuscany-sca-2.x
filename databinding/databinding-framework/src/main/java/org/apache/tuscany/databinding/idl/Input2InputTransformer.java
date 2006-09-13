@@ -23,13 +23,17 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.DataBinding;
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
@@ -40,21 +44,27 @@ import org.osoa.sca.annotations.Service;
  * This is a special transformer to transform the input from one IDL to the other one
  */
 @Service(Transformer.class)
-public abstract class Input2InputTransformer<T> extends TransformerExtension<Object[], Object[]> implements
+public class Input2InputTransformer extends TransformerExtension<Object[], Object[]> implements
         PullTransformer<Object[], Object[]> {
 
-    protected WrapperHandler<T> wrapperHandler;
-
+    private static final String IDL_INPUT = "idl:input";
+    protected DataBindingRegistry dataBindingRegistry;         
     protected Mediator mediator;
 
-    /**
-     * @param wrapperHandler
-     */
-    protected Input2InputTransformer(WrapperHandler<T> wrapperHandler) {
+    public Input2InputTransformer() {
         super();
-        this.wrapperHandler = wrapperHandler;
     }
 
+    @Override
+    public String getSourceBinding() {
+        return IDL_INPUT;
+    }
+
+    @Override
+    public String getTargetBinding() {
+        return IDL_INPUT;
+    }
+    
     /**
      * @param mediator the mediator to set
      */
@@ -62,6 +72,15 @@ public abstract class Input2InputTransformer<T> extends TransformerExtension<Obj
     public void setMediator(Mediator mediator) {
         this.mediator = mediator;
     }
+
+    /**
+     * @param dataBindingRegistry the dataBindingRegistry to set
+     */
+    @Autowire
+    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
+    }
+
 
     /**
      * @see org.apache.tuscany.databinding.extension.TransformerExtension#getSourceType()
@@ -91,15 +110,24 @@ public abstract class Input2InputTransformer<T> extends TransformerExtension<Obj
         DataType<List<DataType<?>>> sourceType = context.getSourceDataType();
         WSDLOperation sourceOp = (WSDLOperation) sourceType.getMetadata(WSDLOperation.class.getName());
         boolean sourceWrapped = (sourceOp != null && sourceOp.isWrapperStyle());
+        
+        WrapperHandler sourceWrapperHandler = null;
+        if(sourceWrapped) {
+            sourceWrapperHandler = getWapperHandler(sourceOp);
+        }
 
         DataType<List<DataType<QName>>> targetType = context.getTargetDataType();
         WSDLOperation targetOp = (WSDLOperation) targetType.getMetadata(WSDLOperation.class.getName());
         boolean targetWrapped = (targetOp != null && targetOp.isWrapperStyle());
+        WrapperHandler targetWrapperHandler = null;
+        if(targetWrapped) {
+            targetWrapperHandler = getWapperHandler(targetOp);
+        }
 
         if ((!sourceWrapped) && targetWrapped) {
             // Unwrapped --> Wrapped
             WSDLOperation.Wrapper wrapper = targetOp.getWrapper();
-            T targetWrapper = wrapperHandler.create(wrapper.getInputWrapperElement());
+            Object targetWrapper = targetWrapperHandler.create(wrapper.getInputWrapperElement(), context);
             if (source == null) {
                 return new Object[] { targetWrapper };
             }
@@ -113,30 +141,30 @@ public abstract class Input2InputTransformer<T> extends TransformerExtension<Obj
                 Object child = source[i];
                 if (!isSimpleType) {
                     child = mediator.mediate(source[i], sourceType.getLogical().get(i), argType);
-                    wrapperHandler.setChild(targetWrapper, i, argElement, child);
+                    targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
                 } else {
-                    wrapperHandler.setChild(targetWrapper, i, argElement, child);
+                    targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
                 }
             }
             return new Object[] { targetWrapper };
         } else if (sourceWrapped && (!targetWrapped)) {
             // Wrapped to Unwrapped
-            T sourceWrapper = (T) source[0];
+            Object sourceWrapper = source[0];
             List<XmlSchemaElement> childElements = sourceOp.getWrapper().getInputChildElements();
             Object[] newArgs = new Object[childElements.size()];
             for (int i = 0; i < childElements.size(); i++) {
                 XmlSchemaElement childElement = childElements.get(i);
                 if (childElement.getSchemaType() instanceof XmlSchemaSimpleType) {
-                    Object child = wrapperHandler.getChild(sourceWrapper, i, childElement);
-                    newArgs[i] = child;
+                    newArgs[i] = sourceWrapperHandler.getChild(sourceWrapper, i, childElement);
                 } else {
-                    Object child = wrapperHandler.getChild(sourceWrapper, i, childElement);
+                    Object child = sourceWrapperHandler.getChild(sourceWrapper, i, childElement);
                     DataType<QName> childType = sourceOp.getWrapper().getUnwrappedInputType().getLogical().get(i);
                     newArgs[i] = mediator.mediate(child, childType, targetType.getLogical().get(i));
                 }
             }
             return newArgs;
         } else {
+            // Assuming wrapper to wrapper conversion can be handled here as well
             Object[] newArgs = new Object[source.length];
             for (int i = 0; i < source.length; i++) {
                 Object child =
@@ -145,6 +173,21 @@ public abstract class Input2InputTransformer<T> extends TransformerExtension<Obj
             }
             return newArgs;
         }
+    }
+
+    private WrapperHandler getWapperHandler(WSDLOperation sourceOp) {
+        String dataBindingId;
+        try {
+            dataBindingId = sourceOp.getOperation().getDataBinding();
+        } catch (InvalidServiceContractException e) {
+            throw new TransformationException(e);
+        }
+        DataBinding dataBinding = dataBindingRegistry.getDataBinding(dataBindingId);
+        WrapperHandler wrapperHandler = dataBinding==null? null : dataBinding.getWrapperHandler();
+        if (wrapperHandler == null) {
+            throw new TransformationException("No wrapper handler is provided for databinding: "+dataBindingId);
+        }
+        return wrapperHandler;
     }
 
 }

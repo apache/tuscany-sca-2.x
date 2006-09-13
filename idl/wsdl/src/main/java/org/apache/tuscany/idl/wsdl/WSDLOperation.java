@@ -50,7 +50,7 @@ public class WSDLOperation {
 
     protected Operation operation;
 
-    private String defaultDataBinding;
+    private String dataBinding;
 
     protected org.apache.tuscany.spi.model.Operation<QName> operationModel;
 
@@ -60,15 +60,18 @@ public class WSDLOperation {
 
     protected List<DataType<QName>> faultTypes;
 
+    // Keep a list of types so that the databindings can be reset
+    private List<DataType<?>> types = new ArrayList<DataType<?>>();
+
     /**
      * @param operation The WSDL4J operation
-     * @param defaultDataBinding The default databinding
+     * @param dataBinding The default databinding
      * @param schemaRegistry The XML Schema registry
      */
-    public WSDLOperation(Operation operation, String defaultDataBinding, XMLSchemaRegistry schemaRegistry) {
+    public WSDLOperation(Operation operation, String dataBinding, XMLSchemaRegistry schemaRegistry) {
         super();
         this.operation = operation;
-        this.defaultDataBinding = defaultDataBinding;
+        this.dataBinding = dataBinding;
         this.schemaRegistry = schemaRegistry;
         this.wrapper = new Wrapper();
     }
@@ -101,7 +104,7 @@ public class WSDLOperation {
 
     /**
      * @return
-     * @throws InvalidServiceContractException 
+     * @throws InvalidServiceContractException
      */
     public DataType<List<DataType<QName>>> getInputType() throws InvalidServiceContractException {
         if (inputType == null) {
@@ -109,6 +112,7 @@ public class WSDLOperation {
             Message message = (input == null) ? null : input.getMessage();
             inputType = getMessageType(message);
             inputType.setMetadata(WSDLOperation.class.getName(), this);
+            inputType.setDataBinding("idl:input");
         }
         return inputType;
     }
@@ -165,10 +169,12 @@ public class WSDLOperation {
             Collection parts = message.getOrderedParts(null);
             for (Object p : parts) {
                 WSDLPart part = new WSDLPart((Part) p);
-                partTypes.add(part.getDataType());
+                DataType<QName> partType = part.getDataType();
+                partTypes.add(partType);
+                types.add(partType);
             }
         }
-        return new DataType<List<DataType<QName>>>(defaultDataBinding, Object[].class, partTypes);
+        return new DataType<List<DataType<QName>>>(dataBinding, Object[].class, partTypes);
     }
 
     /**
@@ -180,7 +186,7 @@ public class WSDLOperation {
             boolean oneway = (operation.getOutput() == null);
             operationModel =
                     new org.apache.tuscany.spi.model.Operation<QName>(operation.getName(), getInputType(),
-                            getOutputType(), getFaultTypes(), oneway, defaultDataBinding);
+                            getOutputType(), getFaultTypes(), oneway, dataBinding);
             operationModel.addMetaData(WSDLOperation.class.getName(), this);
         }
         return operationModel;
@@ -219,7 +225,7 @@ public class WSDLOperation {
                     element.setSchemaTypeName(type.getQName());
                 }
             }
-            dataType = new DataType<QName>(defaultDataBinding, Object.class, element.getQName());
+            dataType = new DataType<QName>(dataBinding, Object.class, element.getQName());
             dataType.setMetadata(WSDLPart.class.getName(), this);
         }
 
@@ -402,13 +408,15 @@ public class WSDLOperation {
 
         public DataType<List<DataType<QName>>> getUnwrappedInputType() {
             if (unwrappedInputType == null) {
-                List<DataType<QName>> types = new ArrayList<DataType<QName>>();
+                List<DataType<QName>> childTypes = new ArrayList<DataType<QName>>();
                 for (XmlSchemaElement element : getInputChildElements()) {
-                    DataType<QName> type = new DataType<QName>(defaultDataBinding, Object.class, element.getQName());
+                    DataType<QName> type = new DataType<QName>(dataBinding, Object.class, element.getQName());
                     type.setMetadata(XmlSchemaElement.class.getName(), element);
+                    childTypes.add(type);
                     types.add(type);
                 }
-                unwrappedInputType = new DataType<List<DataType<QName>>>("idl:unwrapped.input", Object[].class, types);
+                unwrappedInputType =
+                        new DataType<List<DataType<QName>>>("idl:unwrapped.input", Object[].class, childTypes);
             }
             return unwrappedInputType;
         }
@@ -422,11 +430,32 @@ public class WSDLOperation {
                         throw new NotSupportedWSDLException("Multi-part output is not supported");
                     }
                     XmlSchemaElement element = elements.get(0);
-                    unwrappedOutputType = new DataType<QName>(defaultDataBinding, Object.class, element.getQName());
+                    unwrappedOutputType = new DataType<QName>(dataBinding, Object.class, element.getQName());
                     unwrappedOutputType.setMetadata(XmlSchemaElement.class.getName(), element);
+                    types.add(unwrappedOutputType);
                 }
             }
             return unwrappedOutputType;
+        }
+    }
+
+    /**
+     * @return the dataBinding
+     */
+    public String getDataBinding() {
+        return dataBinding;
+    }
+
+    /**
+     * @param dataBinding the dataBinding to set
+     */
+    public void setDataBinding(String dataBinding) {
+        String oldDataBinding = this.dataBinding;
+        this.dataBinding = dataBinding;
+        if (!dataBinding.equals(oldDataBinding)) {
+            for (DataType<?> d : types) {
+                d.setDataBinding(this.dataBinding);
+            }
         }
     }
 

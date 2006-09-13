@@ -27,10 +27,16 @@ import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.idl.Input2InputTransformer;
+import org.apache.tuscany.databinding.idl.Output2OutputTransformer;
 import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.databinding.impl.MediatorImpl;
 import org.apache.tuscany.databinding.impl.TransformationContextImpl;
@@ -39,9 +45,6 @@ import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.idl.wsdl.XMLSchemaRegistryImpl;
 import org.apache.tuscany.spi.model.DataType;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class OMElementWrapperTransformerTestCase extends TestCase {
     private static final String IPO_XML =
@@ -79,14 +82,18 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         WSDLOperation op = new WSDLOperation(operation, OMElement.class.getName(), registry.getSchemaRegistry());
         Assert.assertTrue(op.isWrapperStyle());
 
-        Object[] source = new Object[] { "cust001", IPO_XML, Integer.valueOf(1) };
-        OMElementInputTransformer t = new OMElementInputTransformer();
         MediatorImpl m = new MediatorImpl();
         TransformerRegistryImpl tr = new TransformerRegistryImpl();
         tr.registerTransformer(new String2OMElement());
         tr.registerTransformer(new OMElement2String());
         m.setTransformerRegistry(tr);
-        m.setDataBindingRegistry(new DataBindingRegistryImpl());
+        DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
+        dataBindingRegistry.register(new AxiomDataBinding());
+        m.setDataBindingRegistry(dataBindingRegistry);
+        
+        Object[] source = new Object[] { "cust001", IPO_XML, Integer.valueOf(1) };
+        Input2InputTransformer t = new Input2InputTransformer();
+        t.setDataBindingRegistry(dataBindingRegistry);
         t.setMediator(m);
 
         TransformationContext context = new TransformationContextImpl();
@@ -112,7 +119,8 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
                 factory.createOMElement(new QName("http://example.com/order.wsdl", "checkOrderStatusResponse"), null);
         OMElement status = factory.createOMElement(new QName(null, "status"), responseElement);
         factory.createOMText(status, "shipped");
-        OMElementOutputTransformer t2 = new OMElementOutputTransformer();
+        Output2OutputTransformer t2 = new Output2OutputTransformer();
+        t2.setDataBindingRegistry(dataBindingRegistry);
         Object st = t2.transform(responseElement, context1);
         Assert.assertEquals("shipped", st);
 

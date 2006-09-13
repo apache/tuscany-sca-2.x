@@ -21,11 +21,6 @@
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.AxiomDataBinding" />
     </component>
 
-    <!-- Transformers -->
-    <component name="transformer.ObjectArray2OM">
-        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElementInputTransformer" />
-    </component>
-    
     <component name="transformer.XMLStreamReader2OMElement">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement" />
     </component>
