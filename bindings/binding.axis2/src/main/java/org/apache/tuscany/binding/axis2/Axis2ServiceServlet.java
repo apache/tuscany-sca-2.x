@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -30,6 +31,8 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.transport.http.AxisServlet;
@@ -45,6 +48,8 @@ public class Axis2ServiceServlet extends AxisServlet {
     private static final long serialVersionUID = 1L;
 
     private static final ServletConfig DUMMY_CONFIG = createDummyServletConfig();
+    
+    private boolean inited;
 
     public void init(ConfigurationContext configContext) {
         this.configContext = configContext;
@@ -179,6 +184,19 @@ public class Axis2ServiceServlet extends AxisServlet {
             }
         };
         return sc;
+    }
+
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        // HACK: Get the correct context root which is not available during init() call
+        if (!inited) {
+            synchronized (configContext) {
+                configContext.setContextRoot(request.getContextPath());
+                inited = true;
+            }
+        }
+        super.service(request, response);
     }
 
 }
