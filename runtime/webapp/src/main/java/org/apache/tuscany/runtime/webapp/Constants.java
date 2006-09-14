@@ -54,17 +54,17 @@ public final class Constants {
     /**
      * Context attribute to which the Tuscany runtime for this servlet context is stored.
      */
-    static final String RUNTIME_ATTRIBUTE = "Tuscany.Runtime";
+    static final String RUNTIME_ATTRIBUTE = "tuscany.runtime";
 
     /**
      * Servlet context-param name for the path to the composite to set as the webb app composite
      */
-    static final String CURRENT_COMPOSITE_PATH_PARAM = "currentCompositePath";
+    static final String CURRENT_COMPOSITE_PATH_PARAM = "tuscany.currentCompositePath";
 
     /**
      * Servlet context-param name for user-specified system SCDL path.
      */
-    static final String EXTENSION_SCDL_PATH_PARAM = "extensionScdlPath";
+    static final String EXTENSION_SCDL_PATH_PARAM = "tuscany.extensionScdlPath";
 
     /**
      * Default path for extensions if no "extensionScdlPath param is specified
@@ -75,7 +75,7 @@ public final class Constants {
      * Servlet context-param name for system monitoring level. Supported values are the names of statics defined in
      * java.util.logging.Level. If absent, no monitoring will take place.
      */
-    static final String SYSTEM_MONITORING_PARAM = "tuscanyMonitoringLevel";
+    static final String SYSTEM_MONITORING_PARAM = "tuscany.monitoringLevel";
 
     private Constants() {
     }

@@ -42,12 +42,12 @@ public class WebappRuntimeImplTestCase extends TestCase {
      * Verifies the web app host is configured properly to perform a basic boot
      */
     public void testBootWithDefaults() throws Exception {
-        expect(context.getInitParameter("tuscanyMonitoringLevel")).andReturn(null);
-        expect(context.getInitParameter("extensionScdlPath")).andReturn(null);
+        expect(context.getInitParameter(Constants.SYSTEM_MONITORING_PARAM)).andReturn(null);
+        expect(context.getInitParameter(Constants.EXTENSION_SCDL_PATH_PARAM)).andReturn(null);
         expect(context.getResourcePaths("/META-INF/tuscany.extensions")).andReturn(null);
         expect(context.getServletContextName()).andReturn("foo");
-        expect(context.getInitParameter("currentCompositePath")).andReturn(null);
-        context.setAttribute(eq("Tuscany.Runtime"), isA(WebappRuntime.class));
+        expect(context.getInitParameter(Constants.CURRENT_COMPOSITE_PATH_PARAM)).andReturn(null);
+        context.setAttribute(eq(Constants.RUNTIME_ATTRIBUTE), isA(WebappRuntime.class));
         replay(context);
         runtime.initialize();
         verify(context);
