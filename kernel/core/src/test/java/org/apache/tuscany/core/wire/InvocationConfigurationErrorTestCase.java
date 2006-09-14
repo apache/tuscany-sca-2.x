@@ -84,6 +84,7 @@ public class InvocationConfigurationErrorTestCase extends TestCase {
         Message msg = new MessageImpl();
         msg.setTargetInvoker(invoker);
         Message response = source.getHeadInterceptor().invoke(msg);
+        assertTrue(response.isFault());
         assertTrue(response.getBody() instanceof IllegalArgumentException);
         assertEquals(1, sourceInterceptor.getCount());
         assertEquals(1, targetInterceptor.getCount());

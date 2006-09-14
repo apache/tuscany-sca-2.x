@@ -72,9 +72,9 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBody(e.getCause());
+            msg.setBodyWithFault(e.getCause());
         } catch (Throwable e) {
-            msg.setBody(e);
+            msg.setBodyWithFault(e);
         }
         return msg;
     }

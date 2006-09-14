@@ -64,7 +64,7 @@ public abstract class AbstractOutboundInvocationHandler {
             // dispatch the wire down the chain and get the response
             Message resp = headInterceptor.invoke(msg);
             Object body = resp.getBody();
-            if (body instanceof Throwable) {
+            if (resp.isFault()) {
                 throw (Throwable) body;
             }
             return body;

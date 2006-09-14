@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
@@ -50,11 +51,14 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
-            OperationClient operationClient = createOperationClientWithMessageContext(payload);
+            Object[] args = (Object[]) payload;
+            boolean pureOMelement = (args != null && args.length > 0 && (args[0] instanceof OMElement));
+            OperationClient operationClient = createOperationClient(args);
             callbackInvoker.setCorrelationId(messageId);
-            Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker, getDataBinding(), isPureOMelement());
+            Axis2ReferenceCallback callback =
+                    new Axis2ReferenceCallback(callbackInvoker, getDataBinding(), pureOMelement);
             operationClient.setCallback(callback);
-            
+
             operationClient.execute(false);
 
             return RESPONSE;
@@ -70,7 +74,7 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (Throwable e) {
-            msg.setBody(e);
+            msg.setBodyWithFault(e);
         }
         return msg;
     }
@@ -127,5 +131,14 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         public void setCorrelationId(Object correlationId) {
             throw new UnsupportedOperationException();
         }
+        
+        public boolean isFault() {
+            return false;
+        }
+
+        public void setBodyWithFault(Object fault) {
+            throw new UnsupportedOperationException();
+        }
+        
     }
 }

@@ -34,7 +34,6 @@ public interface Message {
      * Sets the body of the message.
      */
     void setBody(Object body);
-
     /**
      * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
      */
@@ -74,4 +73,16 @@ public interface Message {
      * Sets the correlation id of the message
      */
     void setCorrelationId(Object correlationId);
+    
+    /**
+     * Test if the message represents a fault/exception
+     * @return true if the message body is a fault object, false is the body is a normal payload
+     */
+    boolean isFault();
+
+    /**
+     * Set the message body with a fault object. After this method is called, isFault() returns true.
+     * @param fault The fault object represents an exception
+     */
+    void setBodyWithFault(Object fault);
 }

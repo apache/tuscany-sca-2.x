@@ -39,7 +39,7 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            msg.setBody(e.getCause());
+            msg.setBodyWithFault(e.getCause());
         }
         return msg;
     }

@@ -213,5 +213,14 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
         public void setCorrelationId(Object correlationId) {
             throw new UnsupportedOperationException();
         }
+        
+        public boolean isFault() {
+            return false;
+        }
+
+        public void setBodyWithFault(Object fault) {
+            throw new UnsupportedOperationException();
+        }
+        
     }
 }

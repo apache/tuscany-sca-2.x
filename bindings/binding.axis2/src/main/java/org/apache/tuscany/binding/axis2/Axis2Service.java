@@ -93,11 +93,12 @@ public class Axis2Service extends ServiceExtension {
         try {
             configContext.getAxisConfiguration().addService(createAxisService(binding));
         } catch (AxisFault e) {
-            throw new RuntimeException(e);
+            throw new Axis2BindingRunTimeException(e);
         }
 
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
+        configContext.setContextRoot(getName());
         servletHost.registerMapping("/" + getName(), servlet);
     }
 
@@ -107,7 +108,7 @@ public class Axis2Service extends ServiceExtension {
         try {
             configContext.getAxisConfiguration().removeService(getName());
         } catch (AxisFault e) {
-            throw new RuntimeException(e);
+            throw new Axis2BindingRunTimeException(e);
         }
         super.stop();
     }

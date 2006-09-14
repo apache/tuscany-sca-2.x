@@ -69,7 +69,7 @@ public class DataBindingInteceptor implements Interceptor {
         Message resultMsg = next.invoke(msg);
         Object result = resultMsg.getBody();
         // FIXME: How to deal with faults?
-        if(result instanceof Throwable) {
+        if(resultMsg.isFault()) {
             // We need to figure out what fault type it is and then transform it back the source fault type
             throw new InvocationRuntimeException((Throwable) result);
         } else if (result != null) {
