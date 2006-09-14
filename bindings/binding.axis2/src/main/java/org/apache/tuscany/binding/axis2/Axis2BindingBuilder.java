@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -44,6 +45,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     private ServletHost servletHost;
 
     private ConfigurationContext configContext;
+    
+    private WorkContext workContext;
 
     public Axis2BindingBuilder() {
         initAxis();
@@ -54,6 +57,11 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         this.servletHost = servletHost;
     }
 
+    @Autowire
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
+    }
+
     @SuppressWarnings("unchecked")
     public Service build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
 
@@ -62,7 +70,15 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if(typeHelper==null) typeHelper = TypeHelper.INSTANCE;
 
-        return new Axis2Service(serviceDefinition.getName(), interfaze, parent, wireService, wsBinding, servletHost, configContext, typeHelper);
+        return new Axis2Service(serviceDefinition.getName(),
+                interfaze,
+                parent,
+                wireService,
+                wsBinding,
+                servletHost,
+                configContext,
+                typeHelper,
+                workContext);
     }
 
     @SuppressWarnings("unchecked")
@@ -73,7 +89,13 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if(typeHelper==null) typeHelper = TypeHelper.INSTANCE;
 
-        return new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding, boundReferenceDefinition.getServiceContract(), typeHelper);
+        return new Axis2Reference(boundReferenceDefinition.getName(),
+                parent,
+                wireService,
+                wsBinding,
+                boundReferenceDefinition.getServiceContract(),
+                typeHelper,
+                workContext);
     }
 
     protected Class<WebServiceBinding> getBindingType() {

@@ -30,13 +30,17 @@ import javax.xml.namespace.QName;
 import org.xml.sax.InputSource;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 import commonj.sdo.helper.TypeHelper;
 import junit.framework.TestCase;
+
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.easymock.classextension.EasyMock;
 
@@ -47,6 +51,21 @@ public class Axis2ReferenceTestCase extends TestCase {
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
         TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(null, operation);
         assertNotNull(targetInvoker);
+    }
+
+    public void testAsyncTargetInvoker() throws Exception {
+        Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
+        //Create a mocked InboundWire, make the call of ServiceExtension.getInterface() returns a Class
+        InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
+        JavaServiceContract contract = new JavaServiceContract(Greeter.class);
+        contract.setCallbackClass(GreetingCallback.class);
+        EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
+        EasyMock.replay(inboundWire);
+
+        axis2Reference.setInboundWire(inboundWire);
+        Operation operation = new Operation<Type>("sayHi", null, null, null, true, null);
+        TargetInvoker asyncTargetInvoker = axis2Reference.createAsyncTargetInvoker(null, operation);
+        assertNotNull(asyncTargetInvoker);
     }
 
     private Axis2Reference createAxis2Reference(String webAppName, String serviceName) throws Exception {
@@ -72,6 +91,14 @@ public class Axis2ReferenceTestCase extends TestCase {
         // TODO figure out what to do with the service contract
         ServiceContract contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
-        return new Axis2Reference(serviceName, parent, wireService, wsBinding, contract, TypeHelper.INSTANCE);
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
+        return new Axis2Reference(serviceName,
+                parent,
+                wireService,
+                wsBinding,
+                contract,
+                TypeHelper.INSTANCE,
+                workContext);
     }
 }

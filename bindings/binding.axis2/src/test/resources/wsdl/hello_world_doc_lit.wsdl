@@ -95,6 +95,11 @@
             <wsdl:input message="tns:greetMeOneWayRequest" name="greetMeOneWayRequest"/>
         </wsdl:operation>
 
+        <wsdl:operation name="greetMeWithCallback">
+            <wsdl:input message="tns:greetMeRequest" name="greetMeRequest"/>
+            <wsdl:output message="tns:greetMeResponse" name="greetMeResponse"/>
+        </wsdl:operation>
+        
     </wsdl:portType>
     <wsdl:binding name="Greeter_SOAPBinding" type="tns:Greeter">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -126,6 +131,16 @@
             </wsdl:input>
         </wsdl:operation>
        
+        <wsdl:operation name="greetMeWithCallback">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="greetMeRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="greetMeResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
     </wsdl:binding>
     <wsdl:service name="SOAPService">
         <wsdl:port binding="tns:Greeter_SOAPBinding" name="SoapPort">

@@ -18,14 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-public interface Greeter {
+public interface GreetingCallback {
 
-    String sayHi();
-
-    String greetMe(String requestType);
-
-    void greetMeOneWay(String requestType);
-
-    void greetMeWithCallback(String requestType);
-
+    void greetMeCallback(String greetMeResponse);
 }

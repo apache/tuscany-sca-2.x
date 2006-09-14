@@ -50,6 +50,8 @@ public class Axis2TargetInvoker implements TargetInvoker {
     private SOAPFactory soapFactory;
 
     private ServiceClient serviceClient;
+    
+    private boolean pureOMelement;
 
     public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options, SDODataBinding dataBinding, SOAPFactory soapFactory) {
         this.wsdlOperationName = wsdlOperationName;
@@ -68,37 +70,10 @@ public class Axis2TargetInvoker implements TargetInvoker {
      */
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
-            // Axis2 operationClients can not be shared so create a new one for each request
-            OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
-            operationClient.setOptions(options);
-            boolean pureOMelement = false;
+            pureOMelement = false;
+            
+            OperationClient operationClient = createOperationClientWithMessageContext(payload);
 
-            SOAPEnvelope env = soapFactory.getDefaultEnvelope();
-
-            if (payload != null && payload.getClass().isArray() && ((Object[]) payload).length > 0) {
-                // OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
-                // env.getBody().addChild(requestOM);
-                // TODO HACK
-                if (((Object[]) payload)[0] instanceof OMElement) {
-                    SOAPBody body = env.getBody();
-                    for (Object bc : ((Object[]) payload)) {
-                        if (bc instanceof OMElement) {
-                            body.addChild((OMElement) bc);
-                        } else {
-                            throw new IllegalArgumentException("Can't handle mixed payloads betweem OMElements and other types.");
-                        }
-                    }
-                } else {
-                    OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
-                    env.getBody().addChild(requestOM);
-                }
-
-            }
-
-            MessageContext requestMC = new MessageContext();
-            requestMC.setEnvelope(env);
-
-            operationClient.addMessageContext(requestMC);
             // Class loader switching is taken out 8/15/06 .. we shouldn't require this any more
             // ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             // ClassLoader scl = this.getClass().getClassLoader();
@@ -173,4 +148,47 @@ public class Axis2TargetInvoker implements TargetInvoker {
         return false;
     }
 
+    protected OperationClient createOperationClientWithMessageContext(final Object payload) throws AxisFault {
+        
+        // Axis2 operationClients can not be shared so create a new one for each request
+        OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
+        operationClient.setOptions(options);
+
+        SOAPEnvelope env = soapFactory.getDefaultEnvelope();
+
+        if (payload != null && payload.getClass().isArray() && ((Object[]) payload).length > 0) {
+            // OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
+            // env.getBody().addChild(requestOM);
+            // TODO HACK
+            if (((Object[]) payload)[0] instanceof OMElement) {
+                SOAPBody body = env.getBody();
+                for (Object bc : ((Object[]) payload)) {
+                    if (bc instanceof OMElement) {
+                        body.addChild((OMElement) bc);
+                    } else {
+                        throw new IllegalArgumentException("Can't handle mixed payloads betweem OMElements and other types.");
+                    }
+                }
+            } else {
+                OMElement requestOM = dataBinding.toOMElement((Object[]) payload);
+                env.getBody().addChild(requestOM);
+            }
+
+        }
+
+        MessageContext requestMC = new MessageContext();
+        requestMC.setEnvelope(env);
+
+        operationClient.addMessageContext(requestMC);
+        
+        return operationClient;
+    }
+    
+    protected SDODataBinding getDataBinding() {
+        return dataBinding;
+    }
+    
+    protected boolean isPureOMelement() {
+        return pureOMelement;
+    }
 }
