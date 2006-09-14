@@ -35,6 +35,7 @@ import org.apache.tuscany.spi.wire.WireService;
 
 import commonj.sdo.helper.TypeHelper;
 import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -47,12 +48,14 @@ import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
+import org.apache.tuscany.idl.wsdl.WSDLOperation;
 
 
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service
  */
 public class Axis2Reference<T> extends ReferenceExtension {
+    private static final String OM_DATA_BINDING = OMElement.class.getName();
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
@@ -86,6 +89,12 @@ public class Axis2Reference<T> extends ReferenceExtension {
         try {
             //FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
             invoker = createOperationInvoker(serviceClient, operation, typeHelper, wsPortMetaData, false);
+            // HACK to set the databinding
+            operation.setDataBinding(OM_DATA_BINDING);
+            WSDLOperation op = (WSDLOperation) operation.getMetaData().get(WSDLOperation.class.getName());
+            if (op != null) {
+                op.setDataBinding(OM_DATA_BINDING);
+            }
         } catch (AxisFault e) {
             e.printStackTrace();
             throw new RuntimeException(e);
