@@ -184,13 +184,14 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             TargetInvoker invoker = null;
+            boolean isOneWayOperation = operation.isNonBlocking();
+            boolean operationHasCallback = contract.getCallbackName() != null;
+            if (isOneWayOperation && operationHasCallback) {
+                throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
+            }
+
             if (target instanceof Component) {
                 Component component = (Component) target;
-                boolean isOneWayOperation = operation.isNonBlocking();
-                boolean operationHasCallback = contract.getCallbackName() != null;
-                if (isOneWayOperation && operationHasCallback) {
-                    throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
-                }
                 if (isOneWayOperation || operationHasCallback) {
                     invoker = component.createAsyncTargetInvoker(targetWire, operation);
                 } else {
@@ -199,7 +200,12 @@ public class ConnectorImpl implements Connector {
                 }
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
-                invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
+                if (!(reference instanceof CompositeReference) && operationHasCallback) {
+                    // Notice that for bound references we only use async target invokers for callback operations
+                    invoker = reference.createAsyncTargetInvoker(sourceWire, operation);
+                } else {
+                    invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
+                }
             } else if (target instanceof CompositeService) {
                 CompositeService compServ = (CompositeService) target;
                 invoker = compServ.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
@@ -238,10 +244,10 @@ public class ConnectorImpl implements Connector {
                 CompositeReference compRef = (CompositeReference) source;
                 TargetInvoker invoker = compRef.createCallbackTargetInvoker(sourceWire.getServiceContract(), operation);
                 connect(outboundChain, inboundChain, invoker);
-            } else if (source instanceof CompositeService) {
-                CompositeService compServ = (CompositeService) source;
+            } else if (source instanceof Service) {
+                Service service = (Service) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
-                TargetInvoker invoker = compServ.createCallbackTargetInvoker(sourceContract, operation);
+                TargetInvoker invoker = service.createCallbackTargetInvoker(sourceContract, operation);
                 connect(outboundChain, inboundChain, invoker);
             } else if (target instanceof Service) {
                 throw new UnsupportedOperationException();

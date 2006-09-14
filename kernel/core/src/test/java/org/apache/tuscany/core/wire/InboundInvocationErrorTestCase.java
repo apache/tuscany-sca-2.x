@@ -23,6 +23,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
@@ -30,10 +31,12 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.jdk.JDKInboundInvocationHandler;
+import org.easymock.classextension.EasyMock;
 
 /**
  * Tests handling of exceptions thrown during an inbound wire invocation
@@ -78,7 +81,9 @@ public class InboundInvocationErrorTestCase extends TestCase {
     public void testCheckedException() throws Exception {
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         chains.put(checkedMethod, createChain(checkedMethod, checkedOperation));
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
                 .newProxyInstance(Thread.currentThread().getContextClassLoader(),
@@ -93,7 +98,9 @@ public class InboundInvocationErrorTestCase extends TestCase {
     public void testRuntimeException() throws Exception {
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         chains.put(runtimeMethod, createChain(runtimeMethod, runtimeOperation));
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
                 .newProxyInstance(Thread.currentThread().getContextClassLoader(),

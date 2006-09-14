@@ -23,6 +23,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
@@ -30,6 +31,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 
 import junit.framework.TestCase;
+
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
@@ -37,6 +39,7 @@ import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.easymock.classextension.EasyMock;
 
 /**
  * Verifies invocations on inbound wires
@@ -58,7 +61,9 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         chain.setTargetInvoker(invoker);
         chain.prepare();
         chains.put(echo, chain);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
         assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
     }
@@ -71,7 +76,9 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
 
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         chains.put(echo, source);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
         try {
             assertEquals("foo", handler.invoke(echo, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -87,20 +94,26 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
 
         Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         chains.put(echo, source);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
         assertEquals("foo", handler.invoke(echo, new Object[]{"foo"}));
     }
 
     public void testToString() {
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
         JDKInboundInvocationHandler handler =
-            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>());
+            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>(), workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
 
     public void testHashCode() {
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        EasyMock.replay(workContext);
         JDKInboundInvocationHandler handler =
-            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>());
+            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>(), workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }

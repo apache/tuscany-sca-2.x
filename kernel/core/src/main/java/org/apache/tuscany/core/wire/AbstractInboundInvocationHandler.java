@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -52,6 +53,13 @@ public abstract class AbstractInboundInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
+            Object messageId = getMessageId();
+            if (messageId == null) {
+                messageId = new MessageId();
+            }
+            msg.setMessageId(messageId);
+            Object corrId = getCorrelationId();
+            msg.setCorrelationId(corrId);
             msg.setBody(args);
             Message resp;
             // dispatch the wire down the chain and get the response
@@ -64,5 +72,7 @@ public abstract class AbstractInboundInvocationHandler {
         }
     }
 
+    protected abstract Object getMessageId();
 
+    protected abstract Object getCorrelationId();
 }

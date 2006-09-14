@@ -109,7 +109,7 @@ public class JDKWireService implements WireService {
             Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
             Method[] methods = interfaze.getMethods();
             Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
-            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains);
+            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, context);
             ClassLoader cl = interfaze.getClassLoader();
             //FIXME
             return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
@@ -139,7 +139,7 @@ public class JDKWireService implements WireService {
             InboundWire inbound = (InboundWire) wire;
             Method[] methods = inbound.getServiceContract().getInterfaceClass().getMethods();
             Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
-            return new JDKInboundInvocationHandler(chains);
+            return new JDKInboundInvocationHandler(chains, context);
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
             return new JDKOutboundInvocationHandler(outbound, context);

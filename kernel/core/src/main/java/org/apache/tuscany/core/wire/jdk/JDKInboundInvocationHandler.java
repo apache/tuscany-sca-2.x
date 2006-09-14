@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
@@ -47,12 +48,16 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
      * is not cacheable, the master associated with the wire chains will be used.
      */
     private Map<Method, ChainHolder> chains;
+    private WorkContext context;
+    private Object messageId;
+    private Object correlationId;
 
-    public JDKInboundInvocationHandler(Map<Method, InboundInvocationChain> invocationChains) {
+    public JDKInboundInvocationHandler(Map<Method, InboundInvocationChain> invocationChains, WorkContext context) {
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         for (Map.Entry<Method, InboundInvocationChain> entry : invocationChains.entrySet()) {
             this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
         }
+        this.context = context;
     }
 
     /**
@@ -96,6 +101,10 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
+        messageId = context.getCurrentMessageId();
+        context.setCurrentMessageId(null);
+        correlationId = context.getCurrentCorrelationId();
+        context.setCurrentCorrelationId(null);
         return invoke(chain, invoker, args);
     }
 
@@ -117,6 +126,14 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
             this.chain = config;
         }
 
+    }
+
+    protected Object getMessageId() {
+        return messageId;
+    }
+
+    protected Object getCorrelationId() {
+        return correlationId;
     }
 
 }
