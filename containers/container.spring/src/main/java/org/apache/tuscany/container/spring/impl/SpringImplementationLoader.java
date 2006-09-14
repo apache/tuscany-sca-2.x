@@ -121,11 +121,11 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                                 throw e;
                             }
                         }
-                        implementation.getComponentType().getServices().put(service.getName(), service);
+                        type.getDeclaredServices().put(service.getName(), service);
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
                         BoundReferenceDefinition reference =
                             (BoundReferenceDefinition) registry.load(parent, reader, deploymentContext);
-                        implementation.getComponentType().getReferences().put(reference.getName(), reference);
+                        type.getDeclaredReferences().put(reference.getName(), reference);
                     }
                     break;
                 case END_ELEMENT:
