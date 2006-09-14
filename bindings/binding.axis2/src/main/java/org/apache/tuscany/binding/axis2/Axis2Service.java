@@ -19,19 +19,25 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
+import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
+import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.description.AxisOperation;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.WSDL11ToAxisServiceBuilder;
 import org.apache.axis2.description.WSDLToAxisServiceBuilder;
+import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.SDODataBinding;
@@ -39,8 +45,12 @@ import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.MessageId;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Destroy;
 
@@ -61,8 +71,12 @@ public class Axis2Service extends ServiceExtension {
     
     private TypeHelper typeHelper;
 
+    private WorkContext workContext;
+    
+    private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
+
     public Axis2Service(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, WebServiceBinding binding,
-            ServletHost servletHost, ConfigurationContext configContext, TypeHelper typeHelper) {
+            ServletHost servletHost, ConfigurationContext configContext, TypeHelper typeHelper, WorkContext workContext) {
 
         super(theName, interfaze, parent, wireService);
 
@@ -70,6 +84,7 @@ public class Axis2Service extends ServiceExtension {
         this.servletHost = servletHost;
         this.configContext = configContext;
         this.typeHelper = typeHelper;
+        this.workContext = workContext;
     }
 
     public void start() {
@@ -126,14 +141,22 @@ public class Axis2Service extends ServiceExtension {
             Object entryPointProxy = this.getServiceInstance();
 
             WebServiceOperationMetaData omd = wsdlPortInfo.getOperationMetaData(operationName);
-            QName responseQN = omd.getOutputPart(0).getElementName();
+            QName responseQN = null;
+            Part outputPart = omd.getOutputPart(0);
+            if (outputPart != null) {
+                responseQN = outputPart.getElementName();
+            }
 
             Method operationMethod = getMethod(serviceInterface, operationName);
             // outElementQName is not needed when calling fromOMElement method, and we can not get elementQName for
             // oneway operation.
             SDODataBinding dataBinding = new SDODataBinding(typeHelper, omd.isDocLitWrapped(), responseQN);
-            Axis2ServiceInOutSyncMessageReceiver msgrec = new Axis2ServiceInOutSyncMessageReceiver(entryPointProxy, operationMethod,
-                    dataBinding);
+            MessageReceiver msgrec = null;
+            if (inboundWire.getCallbackReferenceName() != null) {
+                msgrec = new Axis2ServiceInOutAsyncMessageReceiver(entryPointProxy, operationMethod, dataBinding, this, workContext);
+            } else {
+                msgrec = new Axis2ServiceInOutSyncMessageReceiver(entryPointProxy, operationMethod, dataBinding);
+            }
 
             AxisOperation axisOp = axisService.getOperation(operationQN);
             axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
@@ -167,4 +190,34 @@ public class Axis2Service extends ServiceExtension {
         return typeHelper;
     }
 
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, org.apache.tuscany.spi.model.Operation operation) {
+
+        return new Axis2ServiceCallbackTargetInvoker(workContext, this);
+    }
+    
+    public void addMapping(MessageId msgId, InvocationContext invCtx) {
+        this.invCtxMap.put(msgId, invCtx);
+    }
+    
+    public InvocationContext retrieveMapping(MessageId msgId) {
+        return this.invCtxMap.get(msgId);
+    }
+    
+    public void removeMapping(MessageId msgId) {
+        this.invCtxMap.remove(msgId);
+    }
+    
+    protected class InvocationContext {
+        public MessageContext inMessageContext;
+        public Method operationMethod;
+        public SDODataBinding dataBinding;
+        public SOAPFactory soapFactory;
+        
+        public InvocationContext(MessageContext messageCtx, Method operationMethod, SDODataBinding dataBinding, SOAPFactory soapFactory) {
+            this.inMessageContext = messageCtx;
+            this.operationMethod = operationMethod;
+            this.dataBinding = dataBinding;
+            this.soapFactory = soapFactory;
+        }
+    }
 }
