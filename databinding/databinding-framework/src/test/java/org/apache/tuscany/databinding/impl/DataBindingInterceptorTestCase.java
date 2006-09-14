@@ -88,6 +88,7 @@ public class DataBindingInterceptorTestCase extends TestCase {
         msg.setBody(EasyMock.anyObject());
         expectLastCall().anyTimes();
         expect(msg.getBody()).andReturn(source).once().andReturn(target[0]).once().andReturn(source[0]);
+        expect(msg.isFault()).andReturn(false).once();
         replay(msg);
         Interceptor next = createMock(Interceptor.class);
         expect(next.invoke(msg)).andReturn(msg);

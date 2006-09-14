@@ -30,6 +30,7 @@ public class MessageImpl implements Message {
     private Object fromAddress;
     private Object messageId;
     private Object correlationId;
+    private boolean isFault;
 
     public MessageImpl() {
     }
@@ -39,6 +40,7 @@ public class MessageImpl implements Message {
     }
 
     public void setBody(Object body) {
+        this.isFault = false;
         this.body = body;
     }
 
@@ -72,5 +74,14 @@ public class MessageImpl implements Message {
 
     public void setCorrelationId(Object correlationId) {
         this.correlationId = correlationId;
+    }
+
+    public boolean isFault() {
+        return isFault;
+    }
+
+    public void setBodyWithFault(Object fault) {
+        this.isFault = true;
+        this.body = fault;
     }
 }
