@@ -80,6 +80,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
             }
         }
 
+        /*
         // add in components and services from included composites
         for (Include include : componentType.getIncludes().values()) {
             CompositeComponentType<?, ?, ?> included = include.getIncluded();
@@ -92,6 +93,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
                 }
             }
         }
+        */
 
         // create the composite component
         String name = componentDefinition.getName();

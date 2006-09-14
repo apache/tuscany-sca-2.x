@@ -25,4 +25,10 @@
         <system:implementation.system class="org.apache.tuscany.core.mock.component.BasicInterfaceImpl"/>
     </component>
 
+    <service name="service2" >
+        <interface.java interface="org.apache.tuscany.core.mock.component.BasicInterface"/>
+        <system:binding.system/>
+        <reference>component2</reference>
+    </service>
+    
 </composite>

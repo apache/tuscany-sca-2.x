@@ -82,6 +82,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
             }
         }
 
+        /*
         // add in components and services from included composites
         for (Include include : componentType.getIncludes().values()) {
             CompositeComponentType<?, ?, ?> included = include.getIncluded();
@@ -95,6 +96,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
             }
             // TODO how to include references
         }
+        */
 
         String name = componentDefinition.getName();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, null, connector, null);

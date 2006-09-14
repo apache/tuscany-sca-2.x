@@ -73,8 +73,10 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals("boot1", composite.getName());
 
         // check parse of <service>
-        Map<String, ServiceDefinition> services = composite.getServices();
-        assertEquals(1, services.size());
+        Map<String, ServiceDefinition> services = composite.getDeclaredServices();
+        assertEquals(1, services.size()); // included doesn't count
+        services = composite.getServices();
+        assertEquals(2, services.size()); // included counts
         BoundServiceDefinition serviceDefinition = (BoundServiceDefinition) services.get("service");
         assertNotNull(serviceDefinition);
         assertEquals("service", serviceDefinition.getName());
@@ -82,8 +84,10 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertTrue(serviceDefinition.getBinding() instanceof SystemBinding);
 
         // check parse of <component>
-        Map<String, ComponentDefinition<? extends Implementation<?>>> components = composite.getComponents();
-        assertEquals(1, components.size());
+        Map<String, ComponentDefinition<? extends Implementation<?>>> components = composite.getDeclaredComponents();
+        assertEquals(1, components.size()); // included doesn't count
+        components = composite.getComponents();
+        assertEquals(2, components.size()); // included counts        
         ComponentDefinition<? extends Implementation<?>> component = components.get("component");
         assertNotNull(component);
         PropertyValue<?> propVal = component.getPropertyValues().get("publicProperty");
