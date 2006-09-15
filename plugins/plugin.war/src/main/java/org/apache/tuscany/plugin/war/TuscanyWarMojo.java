@@ -289,6 +289,9 @@ public class TuscanyWarMojo extends AbstractMojo {
             fileOutputStream = new FileOutputStream(file);
 
             IOUtils.copy(artifactStream, fileOutputStream);
+            IOUtils.closeQuietly(artifactStream);
+
+            artifactStream = new FileInputStream(artifactFile);
             IOUtils.copy(artifactStream, newWar);
 
             getLog().info("Processed " + path + artifactFile.getName());
