@@ -19,12 +19,11 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.runtime</groupId>
     <artifactId>equinox</artifactId>
     <packaging>jar</packaging>
     <name>Tuscany Equinox Runtime</name>
@@ -44,7 +43,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>
             <scope>test</scope>
@@ -52,14 +51,10 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

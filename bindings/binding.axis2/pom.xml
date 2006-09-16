@@ -18,31 +18,27 @@
     * under the License.    
 -->
 <project>
-
     <parent>
-        <groupId>org.apache.tuscany.bindings</groupId>
-        <artifactId>bindings</artifactId>
+        <groupId>org.apache.tuscany.sca.services.bindings</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
     <artifactId>axis2</artifactId>
     <name>Apache Tuscany Binding for Axis2</name>
     <description>Implementation of the SCA Web Services binding using Axis2.</description>
 
-
     <repositories>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>apache-nightly-repository</id>
-            <name>Apache Nightly Repository</name>
-            <url>http://people.apache.org/repository/</url>
-            <layout>legacy</layout>
-        </repository>
+      <repository>
+        <id>apache.m1.snapshots</id>
+        <name>Apache M1 Snapshot Repository</name>
+        <url>http://people.apache.org/repo/m1-snapshot-repository</url>
+        <layout>legacy</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+      </repository>
     </repositories>
-
 
     <dependencies>
         <dependency>
@@ -53,14 +49,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.idl</groupId>
+            <groupId>org.apache.tuscany.sca.services.idl</groupId>
             <artifactId>wsdl</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
             <artifactId>databinding-sdo</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
@@ -140,7 +136,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>
             <scope>test</scope>

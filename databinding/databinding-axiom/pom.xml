@@ -18,13 +18,11 @@
  * under the License.    
 -->
 <project>
-
 	<parent>
-		<groupId>org.apache.tuscany.databinding</groupId>
-		<artifactId>databinding</artifactId>
+		<groupId>org.apache.tuscany.sca.services.databinding</groupId>
+		<artifactId>parent</artifactId>
 		<version>1.0-incubator-M2-SNAPSHOT</version>
 	</parent>
-
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>databinding-axiom</artifactId>
 	<name>Apache Tuscany Data Binding for Axiom</name>
@@ -32,23 +30,23 @@
 
     <repositories>
       <repository>
-        <snapshots>
-          <enabled>true</enabled>
-        </snapshots>
-        <id>apache-nightly-repository</id>
-        <name>Apache Nightly Repository</name>
-        <url>http://people.apache.org/repository/</url>
+        <id>apache.m1.snapshots</id>
+        <name>Apache M1 Snapshot Repository</name>
+        <url>http://people.apache.org/repo/m1-snapshot-repository</url>
         <layout>legacy</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
       </repository>
     </repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
-			<artifactId>databinding-framework</artifactId>
-			<version>${pom.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+            <artifactId>databinding-framework</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.apache.ws.commons</groupId>
 			<artifactId>axiom-api</artifactId>

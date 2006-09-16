@@ -19,12 +19,11 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.runtime</groupId>
     <artifactId>webapp-host</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany Web Application Host</name>
@@ -42,7 +41,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.runtime</groupId>
+            <groupId>org.apache.tuscany.sca.runtime</groupId>
             <artifactId>webapp</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
@@ -55,7 +54,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>
             <scope>test</scope>

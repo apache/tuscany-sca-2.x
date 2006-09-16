@@ -20,14 +20,14 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
+        <groupId>org.apache.tuscany.sca.services</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.bindings</groupId>
-    <artifactId>bindings</artifactId>
+    <groupId>org.apache.tuscany.sca.services.bindings</groupId>
+    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Bindings</name>
 
@@ -39,9 +39,6 @@
         <module>binding.celtix</module>
         <module>binding.axis2</module>
         <module>binding.rmi</module>
-        <!--
-        <module>binding.jaxws</module>
-        -->
     </modules>
 
 </project>

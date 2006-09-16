@@ -20,24 +20,24 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
+        <groupId>org.apache.tuscany.sca.services</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.databinding</groupId>
-    <artifactId>databinding</artifactId>
+    <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Data Bindings</name>
 
     <modules>
+        <module>databinding-framework</module>
         <module>databinding-axiom</module>
         <module>databinding-castor</module>
-        <module>databinding-framework</module>
         <module>databinding-jaxb</module>
         <module>databinding-sdo</module>
-        <module>databinding-test</module>
         <module>databinding-xmlbeans</module>
+        <module>databinding-test</module>
     </modules>
 </project>

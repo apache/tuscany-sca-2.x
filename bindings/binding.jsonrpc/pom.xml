@@ -22,8 +22,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.apache.tuscany.bindings</groupId>
-        <artifactId>bindings</artifactId>
+        <groupId>org.apache.tuscany.sca.services.bindings</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
@@ -41,18 +41,11 @@
             </snapshots>
         </repository>
     </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>ibiblio</id>
-            <name>ibiblio</name>
-            <url>http://www.ibiblio.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencies>
     
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>core</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>

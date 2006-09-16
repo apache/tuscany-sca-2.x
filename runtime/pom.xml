@@ -18,40 +18,22 @@
  * under the License.    
 -->
 <project>
+
     <parent>
-        <groupId>org.apache.tuscany.sca.services.idl</groupId>
+        <groupId>org.apache.tuscany.sca</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>wsdl</artifactId>
-    <packaging>jar</packaging>
-    <name>Apache Tuscany WSDL</name>
-    <description>Tuscany WSDL Support.</description>
+    <groupId>org.apache.tuscany.sca.runtime</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <name>Tuscany SCA Runtime Hosts</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.commons</groupId>
-            <artifactId>XmlSchema</artifactId>
-        </dependency>
+    <modules>
+        <module>webapp</module>
+        <module>webapp-host</module>
+    </modules>
 
-        <dependency>
-            <groupId>wsdl4j</groupId>
-            <artifactId>wsdl4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-    </dependencies>
 </project>

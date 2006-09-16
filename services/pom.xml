@@ -19,17 +19,49 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany</groupId>
-        <artifactId>sca</artifactId>
+        <groupId>org.apache.tuscany.sca</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.services</groupId>
-    <artifactId>services</artifactId>
+    <groupId>org.apache.tuscany.sca.services</groupId>
+    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <name>Tuscany SCA Services</name>
 
+    <!-- definition of repositories where the parent pom can be found -->
+    <repositories>
+        <repository>
+            <id>apache.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>apache.incubator</id>
+            <name>Apache Incubator Repository</name>
+            <url>http://people.apache.org/repo/m2-incubating-repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <modules>
+        <module>../idl</module>
+        <module>../containers</module>
+        <module>../databinding</module>
+        <module>../bindings</module>
+<!--
         <module>transports/http.jetty</module>
+-->
     </modules>
 </project>

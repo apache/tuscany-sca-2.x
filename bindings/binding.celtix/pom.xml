@@ -22,8 +22,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.apache.tuscany.bindings</groupId>
-        <artifactId>bindings</artifactId>
+        <groupId>org.apache.tuscany.sca.services.bindings</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
@@ -60,14 +60,14 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.idl</groupId>
+            <groupId>org.apache.tuscany.sca.services.idl</groupId>
             <artifactId>wsdl</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
             <artifactId>databinding-sdo</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
@@ -93,29 +93,4 @@
             <artifactId>wstx-asl</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <defaultGoal>install</defaultGoal>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <descriptors>
-                        <descriptor>src/main/assembly/standalone.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
