@@ -98,6 +98,16 @@ public class Dependency {
     }
 
     /**
+     * Checks whether the specified artifact has the same artifact id.
+     * @param artifact Artifact to be matched.
+     * @return True if the sepcified artifact has the same id.
+     */
+    public boolean match(Artifact artifact) {
+        // TODO Auto-generated method stub
+        return artifact.getArtifactId().equals(artifactId);
+    }
+
+    /**
      * Webapp host depndency.
      */
     private static class WebappHostDependency extends Dependency {
