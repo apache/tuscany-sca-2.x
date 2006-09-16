@@ -24,10 +24,10 @@
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.services.containers</groupId>
+    <groupId>org.apache.tuscany.sca.services.idl</groupId>
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <name>Tuscany SCA Containers</name>
+    <name>Tuscany SCA Interface Definition Languages</name>
 
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
@@ -56,9 +56,6 @@
     </repositories>
 
     <modules>
-        <module>container.groovy</module>
-        <module>container.javascript</module>
-        <module>container.spring</module>
+        <module>wsdl</module>
     </modules>
-
 </project>

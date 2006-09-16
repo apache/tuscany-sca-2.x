@@ -20,8 +20,8 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.containers</groupId>
-        <artifactId>containers</artifactId>
+        <groupId>org.apache.tuscany.sca.services.containers</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
@@ -53,7 +53,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>
             <scope>test</scope>
@@ -61,8 +61,6 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>

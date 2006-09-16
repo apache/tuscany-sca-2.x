@@ -18,10 +18,9 @@
  * under the License.    
 -->
 <project>
-
 	<parent>
-		<groupId>org.apache.tuscany.databinding</groupId>
-		<artifactId>databinding</artifactId>
+        <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+		<artifactId>parent</artifactId>
 		<version>1.0-incubator-M2-SNAPSHOT</version>
 	</parent>
 
@@ -31,33 +30,45 @@
     <name>Apache Tuscany Data Binding Integration Test</name>
 	<description>Apache Tuscany Data Binding Integration Test</description>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>java.net</id>
+            <name>java.net Maven 1.x Repository</name>
+            <url>https://maven-repository.dev.java.net/nonav/repository</url>
+            <layout>legacy</layout>
+        </repository>
+    </repositories>
+
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
 			<artifactId>databinding-framework</artifactId>
 			<version>${pom.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
 			<artifactId>databinding-jaxb</artifactId>
 			<version>${pom.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
 			<artifactId>databinding-xmlbeans</artifactId>
 			<version>${pom.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
 			<artifactId>databinding-axiom</artifactId>
 			<version>${pom.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tuscany.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
 			<artifactId>databinding-sdo</artifactId>
 			<version>${pom.version}</version>
 			<scope>compile</scope>
@@ -80,25 +91,13 @@
         </dependency>
         
         <dependency>
-            <groupId>org.apache.tuscany</groupId>
+            <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>
             <scope>test</scope>
         </dependency>    
 	</dependencies>
     
-	<repositories>
-		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>java.net</id>
-			<name>java.net Maven 1.x Repository</name>
-			<url>https://maven-repository.dev.java.net/nonav/repository</url>
-			<layout>legacy</layout>
-		</repository>
-	</repositories>
-
 	<build>
         <testResources>
 			<testResource>

@@ -22,8 +22,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.apache.tuscany.bindings</groupId>
-        <artifactId>bindings</artifactId>
+        <groupId>org.apache.tuscany.sca.services.bindings</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
 
@@ -31,18 +31,6 @@
     <artifactId>binding-servicemix</artifactId>
     <name>Apache Tuscany Binding for ServiceMix</name>
     <description>Implementation of the SCA JBI Binding</description>
-
-    <repositories>
-      <repository>
-        <snapshots>
-          <enabled>true</enabled>
-        </snapshots>
-        <id>apache-nightly-repository</id>
-        <name>Apache Nightly Repository</name>
-        <url>http://people.apache.org/repository/</url>
-        <layout>legacy</layout>
-      </repository>
-    </repositories>
 
     <dependencies>
 

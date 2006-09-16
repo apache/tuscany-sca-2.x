@@ -18,13 +18,11 @@
  * under the License.    
 -->
 <project>
-
-	<parent>
-		<groupId>org.apache.tuscany.databinding</groupId>
-		<artifactId>databinding</artifactId>
-		<version>1.0-incubator-M2-SNAPSHOT</version>
-	</parent>
-
+    <parent>
+        <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
+    </parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>databinding-framework</artifactId>
 	<name>Apache Tuscany Data Binding Framework</name>
@@ -38,6 +36,19 @@
 			<scope>compile</scope>
 		</dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sca.services.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons</groupId>
+            <artifactId>XmlSchema</artifactId>
+            <version>SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>
             <scope>test</scope>
@@ -50,18 +61,6 @@
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.idl</groupId>
-            <artifactId>wsdl</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.commons</groupId>
-            <artifactId>XmlSchema</artifactId>
-            <version>SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 	</dependencies>
 
