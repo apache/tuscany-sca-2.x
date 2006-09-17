@@ -24,7 +24,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 /**
  * Represents a configured tuscany dependency for boot and extension libraries.
  * 
- * @version
+ * @version $Rev Date$
  */
 public class Dependency {
 
