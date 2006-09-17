@@ -117,7 +117,7 @@
                 <version>1.0-incubator-M2-SNAPSHOT</version>
                 <scope>compile</scope>
             </dependency>
-             <!-- java.xml.stream API -->
+            <!-- java.xml.stream API -->
             <dependency>
                 <groupId>stax</groupId>
                 <artifactId>stax-api</artifactId>
@@ -237,7 +237,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
-						  <configuration>
+                    <configuration>
                         <rulesets>
                             <ruleset>${basedir}/.ruleset</ruleset>
                         </rulesets>
@@ -290,6 +290,14 @@
                             <bundleVendor>${pom.organization.name}</bundleVendor>
                             <bundleLocalization>plugin</bundleLocalization>
                         </osgiManifest>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clover-plugin</artifactId>
+                    <configuration>
+                        <jdk>1.5</jdk>
                     </configuration>
                 </plugin>
             </plugins>
