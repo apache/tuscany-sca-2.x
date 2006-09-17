@@ -60,7 +60,8 @@ import org.apache.maven.plugin.MojoExecutionException;
  * </ul>
  * @goal tuscany-war
  * @phase package
- * @version
+ * 
+ * @version $Rev$ $Date$
  * 
  */
 public class TuscanyWarMojo extends AbstractMojo {
