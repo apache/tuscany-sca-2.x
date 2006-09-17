@@ -21,7 +21,7 @@ package org.apache.tuscany.services.maven;
 import junit.framework.TestCase;
 
 /**
- * @version
+ * @version $Rev$ $Date$
  *
  */
 public class MavenArtifactRepositoryTest extends TestCase {

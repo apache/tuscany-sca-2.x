@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
  * expects the artifacts to be stored in a structure similar to the Maven repository layout. The repository first looks within the deployed unit (WAR
  * for example), before resorting to a local and set of remote Maven repositories.
  * 
- * @version
+ * @version $Rev$ $Date$
  */
 public class MavenArtifactRepository implements ArtifactRepository {
 
