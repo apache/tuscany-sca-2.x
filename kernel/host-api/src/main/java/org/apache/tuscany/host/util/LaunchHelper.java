@@ -29,9 +29,6 @@ import java.io.FilenameFilter;
  * @version $Rev$ $Date$
  */
 public final class LaunchHelper {
-    private LaunchHelper() {
-    }
-
     /**
      * Scan a directory for jar files to be added to the classpath.
      *
@@ -99,5 +96,9 @@ public final class LaunchHelper {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    ///CLOVER:OFF
+    private LaunchHelper() {
     }
 }
