@@ -97,16 +97,16 @@ public class MavenArtifactRepository implements ArtifactRepository {
     public void resolve(Artifact rootArtifact) {
 
         try {
-            
+
             org.apache.maven.artifact.Artifact mavenRootArtifact = artifactFactory.createArtifact(rootArtifact.getGroup(), rootArtifact.getName(),
-                rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
-        
+                    rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
+
             artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
             rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
 
             ResolutionGroup resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
-            ArtifactResolutionResult result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact, remoteRepositories,
-                    localRepository, metadataSource);
+            ArtifactResolutionResult result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact,
+                    remoteRepositories, localRepository, metadataSource);
 
             // Add the artifacts to the deployment unit
             for (Object depArtifact : result.getArtifacts()) {
@@ -118,7 +118,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
                 artifact.setClassifier(transitiveDependency.getClassifier());
                 artifact.setUrl(transitiveDependency.getFile().toURL());
             }
-            
+
         } catch (ArtifactResolutionException ex) {
             // TODO Clarify the exception strategy with Jeremy
             throw new RuntimeException(ex);
@@ -132,7 +132,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
             // TODO Clarify the exception strategy with Jeremy
             throw new RuntimeException(ex);
         }
-        
+
     }
 
     /**
