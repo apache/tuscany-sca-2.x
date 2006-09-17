@@ -106,11 +106,11 @@ public class WebappRuntimeImpl implements WebappRuntime {
         this.applicationScdl = applicationScdl;
     }
 
-    public ClassLoader getWebappClassLoader() {
+    public ClassLoader getHostClassLoader() {
         return webappClassLoader;
     }
 
-    public void setWebappClassLoader(ClassLoader webappClassLoader) {
+    public void setHostClassLoader(ClassLoader webappClassLoader) {
         this.webappClassLoader = webappClassLoader;
     }
 

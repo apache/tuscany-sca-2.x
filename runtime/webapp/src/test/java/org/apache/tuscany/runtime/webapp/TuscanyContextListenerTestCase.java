@@ -58,7 +58,7 @@ public class TuscanyContextListenerTestCase extends TestCase {
             expect(listener.getRuntime(context, cl)).andReturn(runtime);
             replay(listener);
             runtime.setServletContext(context);
-            runtime.setWebappClassLoader(cl);
+            runtime.setHostClassLoader(cl);
             runtime.setSystemScdl(systemUrl);
             runtime.setApplicationScdl(applicationUrl);
             runtime.initialize();
