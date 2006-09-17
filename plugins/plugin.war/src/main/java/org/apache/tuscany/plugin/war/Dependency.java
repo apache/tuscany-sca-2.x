@@ -23,7 +23,7 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 
 /**
  * Represents a configured tuscany dependency for boot and extension libraries.
- *
+ * 
  * @version
  */
 public class Dependency {
@@ -34,8 +34,7 @@ public class Dependency {
     private static final String TYPE_JAR = "jar";
 
     /**
-     * Default boot libraries.
-     * TODO Decide on whether to get snapshot version rather than hardcoded version..
+     * Default boot libraries. TODO Decide on whether to get snapshot version rather than hardcoded version..
      */
     private static final Dependency[] DEFAULT_BOOT_LIBS = new Dependency[] { new WebappHostDependency() };
 
@@ -56,14 +55,14 @@ public class Dependency {
 
     /**
      * Default constructor.
-     *
+     * 
      */
     public Dependency() {
     }
 
     /**
      * Initializes the field.
-     *
+     * 
      * @param groupId
      *            Group id.
      * @param artifactId
@@ -80,7 +79,7 @@ public class Dependency {
 
     /**
      * Gets the artifact using the specified artifact factory.
-     *
+     * 
      * @param artifactFactory
      *            Artifact factory to use.
      * @return Artifact identified by the dependency.
@@ -91,6 +90,7 @@ public class Dependency {
 
     /**
      * Returns the default boot libraries.
+     * 
      * @return Default boot libraries.
      */
     public static Dependency[] getDefaultBootLibs() {
@@ -99,7 +99,9 @@ public class Dependency {
 
     /**
      * Checks whether the specified artifact has the same artifact id.
-     * @param artifact Artifact to be matched.
+     * 
+     * @param artifact
+     *            Artifact to be matched.
      * @return True if the sepcified artifact has the same id.
      */
     public boolean match(Artifact artifact) {
