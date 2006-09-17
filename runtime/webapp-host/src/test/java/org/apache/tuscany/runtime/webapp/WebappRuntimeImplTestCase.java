@@ -60,7 +60,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
         context = createMock(ServletContext.class);
 
         runtime = new WebappRuntimeImpl();
-        runtime.setWebappClassLoader(getClass().getClassLoader());
+        runtime.setHostClassLoader(getClass().getClassLoader());
         runtime.setServletContext(context);
         runtime.setSystemScdl(systemScdl);
         runtime.setApplicationScdl(applicationScdl);

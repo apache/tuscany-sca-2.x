@@ -69,7 +69,7 @@ public class TuscanyContextListener implements ServletContextListener {
             URL applicationScdl = getApplicationScdl(servletContext, webappClassLoader);
 
             runtime.setServletContext(servletContext);
-            runtime.setWebappClassLoader(webappClassLoader);
+            runtime.setHostClassLoader(webappClassLoader);
             runtime.setSystemScdl(systemScdl);
             runtime.setApplicationScdl(applicationScdl);
             runtime.initialize();

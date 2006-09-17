@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionListener;
 
 import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import org.apache.tuscany.host.runtime.TuscanyRuntime;
 
 /**
  * The contract for artifacts loaded in the web application classloader to comminicate with the Tuscany runtime loaded
@@ -35,7 +35,7 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  * @see TuscanyFilter
  * @see TuscanySessionListener
  */
-public interface WebappRuntime extends HttpSessionListener {
+public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
     /**
      * Returns the ServletContext associated with this runtime.
      *
@@ -49,60 +49,6 @@ public interface WebappRuntime extends HttpSessionListener {
      * @param servletContext the ServletContext associated with this runtime
      */
     void setServletContext(ServletContext servletContext);
-
-    /**
-     * Returns the location of the SCDL used to boot this runtime.
-     *
-     * @return the location of the SCDL used to boot this runtime
-     */
-    URL getSystemScdl();
-
-    /**
-     * Sets the location of the SCDL used to boot this runtime.
-     *
-     * @param systemScdl the location of the SCDL used to boot this runtime
-     */
-    void setSystemScdl(URL systemScdl);
-
-    /**
-     * Returns the location of the default application's SCDL.
-     *
-     * @return the location of the default application's SCDL
-     */
-    URL getApplicationScdl();
-
-    /**
-     * Sets the location of the default application's SCDL
-     *
-     * @param applicationScdl the location of the default application's SCDL
-     */
-    void setApplicationScdl(URL applicationScdl);
-
-    /**
-     * Returns the web application's ClassLoader.
-     *
-     * @return the web application's ClassLoader
-     */
-    ClassLoader getWebappClassLoader();
-
-    /**
-     * Sets the web application's ClassLoader.
-     *
-     * @param webappClassLoader the web application's ClassLoader
-     */
-    void setWebappClassLoader(ClassLoader webappClassLoader);
-
-    /**
-     * Initialize a runtime for the supplied servlet context.
-     *
-     */
-    void initialize();
-
-    /**
-     * Destroy the runtime.
-     * Any further invocations should result in an error.
-     */
-    void destroy();
 
     /**
      * Returns the current SCA context
