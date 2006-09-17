@@ -28,12 +28,19 @@ import org.apache.tuscany.api.TuscanyException;
 public class RMIHostException extends TuscanyException {
     
     private static final long serialVersionUID = -1L;
-    
+
+    public RMIHostException() {
+    }
+
     public RMIHostException(String message) {
         super(message);
     }
     
     public RMIHostException(Throwable e) {
         super(e);
+    }
+
+    public RMIHostException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

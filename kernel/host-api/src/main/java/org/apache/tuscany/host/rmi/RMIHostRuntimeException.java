@@ -27,6 +27,10 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
  */
 public class RMIHostRuntimeException extends TuscanyRuntimeException {
     private static final long serialVersionUID = -1L;
+
+    public RMIHostRuntimeException() {
+    }
+
     public RMIHostRuntimeException(String message) {
         super(message);
     }
@@ -35,4 +39,7 @@ public class RMIHostRuntimeException extends TuscanyRuntimeException {
         super(e);
     }
 
+    public RMIHostRuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
