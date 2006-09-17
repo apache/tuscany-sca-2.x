@@ -170,6 +170,12 @@ public class TuscanyWarMojo extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException {
 
+        System.err.println(this.artifactFactory);
+        System.err.println(this.metadataSource);
+        System.err.println(this.resolver);
+        System.err.println(this.localRepository);
+        System.err.println(this.remoteRepositories);
+
         JarFile originalWar = null;
         JarOutputStream newWar = null;
         File originalWarFile = null;
@@ -236,7 +242,8 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @throws ArtifactNotFoundException If the artifact is not found.
      * @throws ArtifactMetadataRetrievalException In case of error in retrieving metadata.
      */
-    private Set<Artifact> resolveDependency(Dependency dependency, boolean transitive) throws IOException, ArtifactResolutionException, ArtifactNotFoundException, ArtifactMetadataRetrievalException {
+    private Set<Artifact> resolveDependency(Dependency dependency, boolean transitive) throws IOException, ArtifactResolutionException,
+            ArtifactNotFoundException, ArtifactMetadataRetrievalException {
 
         Set<Artifact> resolvedArtifacts = new HashSet<Artifact>();
 
@@ -276,13 +283,12 @@ public class TuscanyWarMojo extends AbstractMojo {
         FileOutputStream fileOutputStream = null;
 
         try {
-            
+
             File artifactFile = artifact.getFile();
             if (packagedLibs.contains(artifactFile.getName())) {
                 return;
             }
             artifactStream = new FileInputStream(artifactFile);
-            
 
             newWar.putNextEntry(new JarEntry(path + artifactFile.getName()));
 
@@ -298,7 +304,7 @@ public class TuscanyWarMojo extends AbstractMojo {
 
             artifactStream = new FileInputStream(artifactFile);
             IOUtils.copy(artifactStream, newWar);
-            
+
             packagedLibs.add(artifactFile.getName());
 
             getLog().info("Processed " + path + artifactFile.getName());
