@@ -171,12 +171,6 @@ public class TuscanyWarMojo extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException {
 
-        System.err.println(this.artifactFactory);
-        System.err.println(this.metadataSource);
-        System.err.println(this.resolver);
-        System.err.println(this.localRepository);
-        System.err.println(this.remoteRepositories);
-
         JarFile originalWar = null;
         JarOutputStream newWar = null;
         File originalWarFile = null;
