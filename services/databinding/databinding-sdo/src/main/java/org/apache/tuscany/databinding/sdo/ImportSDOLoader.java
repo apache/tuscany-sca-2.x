@@ -36,7 +36,6 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.osoa.sca.Version;
 import org.osoa.sca.annotations.Constructor;
 
 import commonj.sdo.helper.TypeHelper;
@@ -48,7 +47,8 @@ import commonj.sdo.helper.XSDHelper;
  * @version $Rev$ $Date$
  */
 public class ImportSDOLoader extends LoaderExtension {
-    public static final QName IMPORT_SDO = new QName(Version.XML_NAMESPACE_1_0, "import.sdo");
+    public static final QName IMPORT_SDO =
+            new QName("http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0", "import.sdo");
 
     @Constructor( { "registry" })
     public ImportSDOLoader(@Autowire LoaderRegistry registry) {
