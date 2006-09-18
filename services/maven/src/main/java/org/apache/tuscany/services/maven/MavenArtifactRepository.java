@@ -19,20 +19,26 @@
 package org.apache.tuscany.services.maven;
 
 import java.net.MalformedURLException;
+import java.rmi.server.UID;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.metadata.ResolutionGroup;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.DuplicateRealmException;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.embed.Embedder;
+import org.osoa.sca.annotations.Destroy;
 
 /**
  * Artifact repository used for resolving artifacts.
@@ -49,42 +55,37 @@ public class MavenArtifactRepository implements ArtifactRepository {
     private org.apache.maven.artifact.repository.ArtifactRepository localRepository;
 
     /** Remote repositories for resolving artifacts */
-    private List remoteRepositories;
+    private List<org.apache.maven.artifact.repository.ArtifactRepository> remoteRepositories = new LinkedList<org.apache.maven.artifact.repository.ArtifactRepository>();
 
-    /** Artifact metadata source */
+    /** Maven embedder */
+    private MavenEmbedder mavenEmbedder;
+
+    /** Maven metadata source */
     private ArtifactMetadataSource metadataSource;
-
-    /** Artifact resolver */
-    private ArtifactResolver artifactResolver;
-
-    /** Artifact factory */
-    private ArtifactFactory artifactFactory;
 
     /**
      * Conctructs a new artifact repository.
-     * 
-     * @param localRepository
-     *            Local Maven repository.
-     * @param remoteRepositories
-     *            Remote maven repositories.
-     * @param metadataSource
-     *            Artifact metadata source.
-     * @param artifactResolver
-     *            Artifact resolver.
-     * @param artifactFactory
-     *            Artifact factory.
      */
-    public MavenArtifactRepository(@Autowire
-    org.apache.maven.artifact.repository.ArtifactRepository localRepository, @Autowire
-    List remoteRepositories, @Autowire
-    ArtifactMetadataSource metadataSource, @Autowire
-    ArtifactResolver artifactResolver, @Autowire
-    ArtifactFactory artifactFactory) {
-        this.localRepository = localRepository;
-        this.remoteRepositories = remoteRepositories;
-        this.metadataSource = metadataSource;
-        this.artifactResolver = artifactResolver;
-        this.artifactFactory = artifactFactory;
+    public MavenArtifactRepository(String[] remoteRepoUrls) {
+
+        try {
+
+            getMetadataSource();
+
+            mavenEmbedder = new MavenEmbedder();
+            mavenEmbedder.setClassLoader(getClass().getClassLoader());
+            mavenEmbedder.start();
+
+            localRepository = mavenEmbedder.getLocalRepository();
+            for (String remoteRepoUrl : remoteRepoUrls) {
+                remoteRepositories.add(mavenEmbedder.createRepository(new UID().toString(), remoteRepoUrl));
+            }
+        } catch (MavenEmbedderException ex) {
+            throw new MavenArtifactException(ex);
+        } catch (ComponentLookupException ex) {
+            throw new MavenArtifactException(ex);
+        }
+
     }
 
     /**
@@ -98,39 +99,46 @@ public class MavenArtifactRepository implements ArtifactRepository {
 
         try {
 
-            org.apache.maven.artifact.Artifact mavenRootArtifact = artifactFactory.createArtifact(rootArtifact.getGroup(), rootArtifact.getName(),
+            org.apache.maven.artifact.Artifact mavenRootArtifact = mavenEmbedder.createArtifact(rootArtifact.getGroup(), rootArtifact.getName(),
                     rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
 
-            artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
-            rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
-
-            ResolutionGroup resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
-            ArtifactResolutionResult result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact,
-                    remoteRepositories, localRepository, metadataSource);
-
-            // Add the artifacts to the deployment unit
-            for (Object depArtifact : result.getArtifacts()) {
-                org.apache.maven.artifact.Artifact transitiveDependency = (org.apache.maven.artifact.Artifact) depArtifact;
-                Artifact artifact = new Artifact();
-                artifact.setName(transitiveDependency.getArtifactId());
-                artifact.setGroup(transitiveDependency.getGroupId());
-                artifact.setType(transitiveDependency.getType());
-                artifact.setClassifier(transitiveDependency.getClassifier());
-                artifact.setUrl(transitiveDependency.getFile().toURL());
-            }
+            resolveTransitively(mavenRootArtifact, mavenEmbedder, rootArtifact);
 
         } catch (ArtifactResolutionException ex) {
-            // TODO Clarify the exception strategy with Jeremy
-            throw new RuntimeException(ex);
+            throw new MavenArtifactException(ex);
         } catch (ArtifactNotFoundException ex) {
-            // TODO Clarify the exception strategy with Jeremy
-            throw new RuntimeException(ex);
+            throw new MavenArtifactException(ex);
         } catch (MalformedURLException ex) {
-            // TODO Clarify the exception strategy with Jeremy
-            throw new RuntimeException(ex);
+            throw new MavenArtifactException(ex);
         } catch (ArtifactMetadataRetrievalException ex) {
-            // TODO Clarify the exception strategy with Jeremy
-            throw new RuntimeException(ex);
+            throw new MavenArtifactException(ex);
+        }
+
+    }
+
+    /*
+     * Resolve the dependency transitively.
+     */
+    private void resolveTransitively(org.apache.maven.artifact.Artifact mavenRootArtifact, MavenEmbedder mavenEmbedder, Artifact rootArtifact)
+            throws ArtifactMetadataRetrievalException, ArtifactResolutionException, ArtifactNotFoundException, MalformedURLException {
+
+        mavenEmbedder.resolve(mavenRootArtifact, remoteRepositories, localRepository);
+
+        if (rootArtifact.getUrl() == null) {
+            rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
+        } else {
+            Artifact artifact = new Artifact();
+            artifact.setName(mavenRootArtifact.getArtifactId());
+            artifact.setGroup(mavenRootArtifact.getGroupId());
+            artifact.setType(mavenRootArtifact.getType());
+            artifact.setClassifier(mavenRootArtifact.getClassifier());
+            artifact.setUrl(mavenRootArtifact.getFile().toURL());
+            rootArtifact.addDependency(artifact);
+        }
+        ResolutionGroup resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
+
+        for (Object dependency : resolutionGroup.getArtifacts()) {
+            resolveTransitively((org.apache.maven.artifact.Artifact) dependency, mavenEmbedder, rootArtifact);
         }
 
     }
@@ -145,6 +153,42 @@ public class MavenArtifactRepository implements ArtifactRepository {
         for (Artifact artifact : artifacts) {
             resolve(artifact);
         }
+    }
+    
+    /**
+     * Destroy method.
+     *
+     */
+    @Destroy
+    public void destroy() {
+        try {
+            mavenEmbedder.stop();
+        } catch (MavenEmbedderException ex) {
+            throw new MavenArtifactException(ex);
+        }
+    }
+
+    /*
+     * Looks up the metadata source.
+     */
+    private void getMetadataSource() {
+
+        try {
+            ClassWorld classWorld = new ClassWorld();
+            classWorld.newRealm("test", getClass().getClassLoader());
+            Embedder embedder = new Embedder();
+            embedder.setClassWorld(classWorld);
+            embedder.start();
+            metadataSource = (ArtifactMetadataSource) embedder.lookup(ArtifactMetadataSource.ROLE);
+            embedder.stop();
+        } catch (DuplicateRealmException ex) {
+            throw new MavenArtifactException(ex);
+        } catch (PlexusContainerException ex) {
+            throw new MavenArtifactException(ex);
+        } catch (ComponentLookupException ex) {
+            throw new MavenArtifactException(ex);
+        }
+
     }
 
 }
