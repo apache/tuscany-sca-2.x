@@ -77,7 +77,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     protected Object getFromAddress() {
-        return inboundWire.getContainerName();
+        return (inboundWire.getContainer() == null) ? null : inboundWire.getContainer().getName();
     }
     
     protected Object getMessageId() {

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -46,7 +47,7 @@ public class OutboundWireImpl implements OutboundWire {
     private String referenceName;
     private QualifiedName targetName;
     private InboundWire targetWire;
-    private String containerName;
+    private SCAObject container;
 
     public Object getTargetService() throws TargetException {
         if (targetWire != null) {
@@ -159,11 +160,11 @@ public class OutboundWireImpl implements OutboundWire {
         return true;
     }
 
-    public String getContainerName() {
-        return containerName;
+    public SCAObject getContainer() {
+        return container;
     }
 
-    public void setContainerName(String name) {
-        this.containerName = name;
+    public void setContainer(SCAObject container) {
+        this.container = container;
     }
 }

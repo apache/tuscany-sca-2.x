@@ -168,7 +168,7 @@ public class JDKWireService implements WireService {
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
         for (ServiceDefinition service : componentType.getServices().values()) {
             InboundWire inboundWire = createWire(service);
-            inboundWire.setContainerName(component.getName());
+            inboundWire.setContainer(component);
             if (componentType instanceof CompositeComponentType<?, ?, ?>) {
                 // If this is the case, then it means that component has already been returned
                 // by CompositeBuilder and thus its children, in particular composite services,
@@ -179,7 +179,7 @@ public class JDKWireService implements WireService {
                 if (serviceChild instanceof CompositeService) {
                     serviceChild.setInboundWire(inboundWire);
                     // Notice that now the more immediate container of the wire is the composite service
-                    inboundWire.setContainerName(serviceChild.getName());
+                    inboundWire.setContainer(serviceChild);
                 }
             }
             component.addInboundWire(inboundWire);
@@ -189,7 +189,7 @@ public class JDKWireService implements WireService {
             Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
             ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName());
             OutboundWire wire = createWire(referenceTarget, mappedReference);
-            wire.setContainerName(component.getName());
+            wire.setContainer(component);
             component.addOutboundWire(wire);
             if (componentType instanceof CompositeComponentType<?, ?, ?>) {
                 // If this is the case, then it means that component has already been returned
@@ -201,7 +201,7 @@ public class JDKWireService implements WireService {
                 if (reference instanceof CompositeReference) {
                     reference.setOutboundWire(wire);
                     // Notice that now the more immediate container of the wire is the composite reference
-                    wire.setContainerName(reference.getName());
+                    wire.setContainer(reference);
                 }
             }
         }
@@ -210,7 +210,7 @@ public class JDKWireService implements WireService {
     public <T> void createWires(Reference reference, ServiceContract<?> contract) {
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
-        wire.setContainerName(reference.getName());
+        wire.setContainer(reference);
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             chain.addInterceptor(new InvokerInterceptor());
@@ -287,10 +287,10 @@ public class JDKWireService implements WireService {
         InboundWire inboundWire = new InboundWireImpl();
         OutboundWire outboundWire = new OutboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.setContainerName(service.getName());
+        inboundWire.setContainer(service);
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetName(new QualifiedName(targetName));
-        outboundWire.setContainerName(service.getName());
+        outboundWire.setContainer(service);
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
             inboundWire.addInvocationChain(operation, inboundChain);
