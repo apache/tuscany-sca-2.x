@@ -56,10 +56,10 @@
     </repositories>
 
     <modules>
-        <module>../idl</module>
-        <module>../containers</module>
-        <module>../databinding</module>
-        <module>../bindings</module>
+        <module>idl</module>
+        <module>containers</module>
+        <module>databinding</module>
+        <module>bindings</module>
 <!--
         <module>transports/http.jetty</module>
 -->
