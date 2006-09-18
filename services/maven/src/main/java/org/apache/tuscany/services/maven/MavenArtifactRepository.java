@@ -18,26 +18,10 @@
  */
 package org.apache.tuscany.services.maven;
 
-import java.net.MalformedURLException;
-import java.rmi.server.UID;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
-import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.artifact.metadata.ResolutionGroup;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.DuplicateRealmException;
-import org.codehaus.plexus.PlexusContainerException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.embed.Embedder;
 import org.osoa.sca.annotations.Destroy;
 
 /**
@@ -50,42 +34,16 @@ import org.osoa.sca.annotations.Destroy;
  * @version $Rev$ $Date$
  */
 public class MavenArtifactRepository implements ArtifactRepository {
-
-    /** Local repository for resolving artifacts */
-    private org.apache.maven.artifact.repository.ArtifactRepository localRepository;
-
-    /** Remote repositories for resolving artifacts */
-    private List<org.apache.maven.artifact.repository.ArtifactRepository> remoteRepositories = new LinkedList<org.apache.maven.artifact.repository.ArtifactRepository>();
-
-    /** Maven embedder */
-    private MavenEmbedder mavenEmbedder;
-
-    /** Maven metadata source */
-    private ArtifactMetadataSource metadataSource;
+    
+    /** Maven helper */
+    private MavenHelper mavenHelper;
 
     /**
      * Conctructs a new artifact repository.
      */
     public MavenArtifactRepository(String[] remoteRepoUrls) {
-
-        try {
-
-            getMetadataSource();
-
-            mavenEmbedder = new MavenEmbedder();
-            mavenEmbedder.setClassLoader(getClass().getClassLoader());
-            mavenEmbedder.start();
-
-            localRepository = mavenEmbedder.getLocalRepository();
-            for (String remoteRepoUrl : remoteRepoUrls) {
-                remoteRepositories.add(mavenEmbedder.createRepository(new UID().toString(), remoteRepoUrl));
-            }
-        } catch (MavenEmbedderException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (ComponentLookupException ex) {
-            throw new TuscanyMavenException(ex);
-        }
-
+        mavenHelper = new MavenHelper(remoteRepoUrls);
+        mavenHelper.start();
     }
 
     /**
@@ -96,51 +54,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
      * @param artifact the artifact to be resolved
      */
     public void resolve(Artifact rootArtifact) {
-
-        try {
-
-            org.apache.maven.artifact.Artifact mavenRootArtifact = mavenEmbedder.createArtifact(rootArtifact.getGroup(), rootArtifact.getName(),
-                    rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
-
-            resolveTransitively(mavenRootArtifact, mavenEmbedder, rootArtifact);
-
-        } catch (ArtifactResolutionException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (ArtifactNotFoundException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (MalformedURLException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (ArtifactMetadataRetrievalException ex) {
-            throw new TuscanyMavenException(ex);
-        }
-
-    }
-
-    /*
-     * Resolve the dependency transitively.
-     */
-    private void resolveTransitively(org.apache.maven.artifact.Artifact mavenRootArtifact, MavenEmbedder mavenEmbedder, Artifact rootArtifact)
-            throws ArtifactMetadataRetrievalException, ArtifactResolutionException, ArtifactNotFoundException, MalformedURLException {
-
-        mavenEmbedder.resolve(mavenRootArtifact, remoteRepositories, localRepository);
-
-        if (rootArtifact.getUrl() == null) {
-            rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
-        } else {
-            Artifact artifact = new Artifact();
-            artifact.setName(mavenRootArtifact.getArtifactId());
-            artifact.setGroup(mavenRootArtifact.getGroupId());
-            artifact.setType(mavenRootArtifact.getType());
-            artifact.setClassifier(mavenRootArtifact.getClassifier());
-            artifact.setUrl(mavenRootArtifact.getFile().toURL());
-            rootArtifact.addDependency(artifact);
-        }
-        ResolutionGroup resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
-
-        for (Object dependency : resolutionGroup.getArtifacts()) {
-            resolveTransitively((org.apache.maven.artifact.Artifact) dependency, mavenEmbedder, rootArtifact);
-        }
-
+        mavenHelper.resolveTransitively(rootArtifact);
     }
 
     /**
@@ -161,34 +75,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
      */
     @Destroy
     public void destroy() {
-        try {
-            mavenEmbedder.stop();
-        } catch (MavenEmbedderException ex) {
-            throw new TuscanyMavenException(ex);
-        }
-    }
-
-    /*
-     * Looks up the metadata source.
-     */
-    private void getMetadataSource() {
-
-        try {
-            ClassWorld classWorld = new ClassWorld();
-            classWorld.newRealm("test", getClass().getClassLoader());
-            Embedder embedder = new Embedder();
-            embedder.setClassWorld(classWorld);
-            embedder.start();
-            metadataSource = (ArtifactMetadataSource) embedder.lookup(ArtifactMetadataSource.ROLE);
-            embedder.stop();
-        } catch (DuplicateRealmException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (PlexusContainerException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (ComponentLookupException ex) {
-            throw new TuscanyMavenException(ex);
-        }
-
+        mavenHelper.stop();
     }
 
 }
