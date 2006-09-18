@@ -81,9 +81,9 @@ public class MavenArtifactRepository implements ArtifactRepository {
                 remoteRepositories.add(mavenEmbedder.createRepository(new UID().toString(), remoteRepoUrl));
             }
         } catch (MavenEmbedderException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         } catch (ComponentLookupException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         }
 
     }
@@ -105,13 +105,13 @@ public class MavenArtifactRepository implements ArtifactRepository {
             resolveTransitively(mavenRootArtifact, mavenEmbedder, rootArtifact);
 
         } catch (ArtifactResolutionException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         } catch (ArtifactNotFoundException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         } catch (MalformedURLException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         } catch (ArtifactMetadataRetrievalException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         }
 
     }
@@ -164,7 +164,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
         try {
             mavenEmbedder.stop();
         } catch (MavenEmbedderException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         }
     }
 
@@ -182,11 +182,11 @@ public class MavenArtifactRepository implements ArtifactRepository {
             metadataSource = (ArtifactMetadataSource) embedder.lookup(ArtifactMetadataSource.ROLE);
             embedder.stop();
         } catch (DuplicateRealmException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         } catch (PlexusContainerException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         } catch (ComponentLookupException ex) {
-            throw new MavenArtifactException(ex);
+            throw new TuscanyMavenException(ex);
         }
 
     }
