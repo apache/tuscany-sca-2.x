@@ -32,7 +32,6 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -43,18 +42,17 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class Axis2TargetInvoker implements TargetInvoker {
 
     private QName wsdlOperationName;
-    private Options options;
 
-    private SDODataBinding dataBinding;
+    private Options options;
 
     private SOAPFactory soapFactory;
 
     private ServiceClient serviceClient;
-    
-    public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options, SDODataBinding dataBinding, SOAPFactory soapFactory) {
+
+    public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options,
+            SOAPFactory soapFactory) {
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
-        this.dataBinding = dataBinding;
         this.soapFactory = soapFactory;
         this.serviceClient = serviceClient;
     }
@@ -69,23 +67,12 @@ public class Axis2TargetInvoker implements TargetInvoker {
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
-            boolean pureOMelement = (args != null && args.length > 0 && (args[0] instanceof OMElement));
             OperationClient operationClient = createOperationClient(args);
 
             operationClient.execute(true);
 
             MessageContext responseMC = operationClient.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
-            OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
-
-            if (pureOMelement) {
-                return responseOM;
-            } else {
-                Object[] os = null;
-                if (responseOM != null) {
-                    os = dataBinding.fromOMElement(responseOM);
-                }
-                return (os!=null && os.length>=1)? os[0]: null;
-            }
+            return responseMC.getEnvelope().getBody().getFirstElement();
 
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
@@ -96,20 +83,14 @@ public class Axis2TargetInvoker implements TargetInvoker {
     protected OperationClient createOperationClient(Object[] args) throws AxisFault {
         SOAPEnvelope env = soapFactory.getDefaultEnvelope();
         if (args != null && args.length > 0) {
-            // TODO HACK
-            if (args[0] instanceof OMElement) {
-                SOAPBody body = env.getBody();
-                for (Object bc : args) {
-                    if (bc instanceof OMElement) {
-                        body.addChild((OMElement) bc);
-                    } else {
-                        throw new IllegalArgumentException(
-                                "Can't handle mixed payloads betweem OMElements and other types.");
-                    }
+            SOAPBody body = env.getBody();
+            for (Object bc : args) {
+                if (bc instanceof OMElement) {
+                    body.addChild((OMElement) bc);
+                } else {
+                    throw new IllegalArgumentException(
+                            "Can't handle mixed payloads betweem OMElements and other types.");
                 }
-            } else {
-                OMElement requestOM = dataBinding.toOMElement(args);
-                env.getBody().addChild(requestOM);
             }
         }
         MessageContext requestMC = new MessageContext();
@@ -151,8 +132,5 @@ public class Axis2TargetInvoker implements TargetInvoker {
     public boolean isOptimizable() {
         return false;
     }
-    
-    protected SDODataBinding getDataBinding() {
-        return dataBinding;
-    }
+
 }

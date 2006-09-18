@@ -60,9 +60,6 @@ public class WSDLOperation {
 
     protected List<DataType<QName>> faultTypes;
 
-    // Keep a list of types so that the databindings can be reset
-    private List<DataType<?>> types = new ArrayList<DataType<?>>();
-
     /**
      * @param operation The WSDL4J operation
      * @param dataBinding The default databinding
@@ -171,7 +168,6 @@ public class WSDLOperation {
                 WSDLPart part = new WSDLPart((Part) p);
                 DataType<QName> partType = part.getDataType();
                 partTypes.add(partType);
-                types.add(partType);
             }
         }
         return new DataType<List<DataType<QName>>>(dataBinding, Object[].class, partTypes);
@@ -187,7 +183,15 @@ public class WSDLOperation {
             operationModel =
                     new org.apache.tuscany.spi.model.Operation<QName>(operation.getName(), getInputType(),
                             getOutputType(), getFaultTypes(), oneway, dataBinding);
-            operationModel.addMetaData(WSDLOperation.class.getName(), this);
+            operationModel.setMetaData(WSDLOperation.class.getName(), this);
+            if (isWrapperStyle()) {
+                // Register the operation with the types
+                for (DataType<?> d : wrapper.getUnwrappedInputType().getLogical()) {
+                    d.setMetadata(org.apache.tuscany.spi.model.Operation.class.getName(), operationModel);
+                }
+                wrapper.getUnwrappedOutputType().setMetadata(org.apache.tuscany.spi.model.Operation.class.getName(),
+                        operationModel);
+            }
         }
         return operationModel;
     }
@@ -413,7 +417,6 @@ public class WSDLOperation {
                     DataType<QName> type = new DataType<QName>(dataBinding, Object.class, element.getQName());
                     type.setMetadata(XmlSchemaElement.class.getName(), element);
                     childTypes.add(type);
-                    types.add(type);
                 }
                 unwrappedInputType =
                         new DataType<List<DataType<QName>>>("idl:unwrapped.input", Object[].class, childTypes);
@@ -432,31 +435,9 @@ public class WSDLOperation {
                     XmlSchemaElement element = elements.get(0);
                     unwrappedOutputType = new DataType<QName>(dataBinding, Object.class, element.getQName());
                     unwrappedOutputType.setMetadata(XmlSchemaElement.class.getName(), element);
-                    types.add(unwrappedOutputType);
                 }
             }
             return unwrappedOutputType;
         }
     }
-
-    /**
-     * @return the dataBinding
-     */
-    public String getDataBinding() {
-        return dataBinding;
-    }
-
-    /**
-     * @param dataBinding the dataBinding to set
-     */
-    public void setDataBinding(String dataBinding) {
-        String oldDataBinding = this.dataBinding;
-        this.dataBinding = dataBinding;
-        if (!dataBinding.equals(oldDataBinding)) {
-            for (DataType<?> d : types) {
-                d.setDataBinding(this.dataBinding);
-            }
-        }
-    }
-
 }

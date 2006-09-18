@@ -18,55 +18,46 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import java.io.StringWriter;
 
-import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
-import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.osoa.sca.annotations.Service;
 
-import commonj.sdo.DataObject;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 
 @Service(Transformer.class)
-public class DataObject2XMLStreamReader extends TransformerExtension<DataObject, XMLStreamReader> implements
-        PullTransformer<DataObject, XMLStreamReader> {
+public class XMLDocument2String extends TransformerExtension<XMLDocument, String> implements
+        PullTransformer<XMLDocument, String> {
 
-    public XMLStreamReader transform(DataObject source, TransformationContext context) {
+    public String transform(XMLDocument source, TransformationContext context) {
         try {
             TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
-            Object logicalType = context.getSourceDataType().getLogical();
-            QName elementName =
-                    (logicalType instanceof QName) ? (QName) logicalType : new QName("commonj.sdo", "dataObject");
             XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
-            XMLDocument document =
-                    xmlHelper.createDocument(source, elementName.getNamespaceURI(), elementName.getLocalPart());
-            return streamHelper.createXMLStreamReader(document);
-        } catch (XMLStreamException e) {
-            // TODO: Add context to the exception
+            StringWriter writer = new StringWriter();
+            xmlHelper.save(source, writer, null);
+            return writer.toString();
+        } catch (Exception e) {
             throw new TransformationException(e);
         }
     }
 
     public Class getSourceType() {
-        return DataObject.class;
+        return XMLDocument.class;
     }
 
     public Class getTargetType() {
-        return XMLStreamReader.class;
+        return String.class;
     }
 
     public int getWeight() {
-        return 10;
+        return 40;
     }
 
 }

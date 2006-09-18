@@ -19,6 +19,7 @@
 package org.apache.tuscany.databinding.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.databinding.DataBindingRegistry;
 import org.apache.tuscany.databinding.DataPipe;
@@ -58,10 +59,14 @@ public class MediatorImpl implements Mediator {
 
     /**
      * @see org.apache.tuscany.databinding.Mediator#mediate(java.lang.Object, org.apache.tuscany.spi.model.DataType,
-     *      org.apache.tuscany.spi.model.DataType)
+     *      org.apache.tuscany.spi.model.DataType, Map)
      */
     @SuppressWarnings("unchecked")
-    public Object mediate(Object source, DataType sourceDataType, DataType targetDataType) {
+    public Object mediate(
+            Object source,
+            DataType sourceDataType,
+            DataType targetDataType,
+            Map<Class<?>, Object> metadata) {
         if (source == null) {
             // Shortcut for null value
             return null;
@@ -82,7 +87,7 @@ public class MediatorImpl implements Mediator {
         for (int i = 0; i < size; i++) {
             Transformer transformer = path.get(i);
             TransformationContext context =
-                    createTransformationContext(sourceDataType, targetDataType, size, i, transformer);
+                    createTransformationContext(sourceDataType, targetDataType, size, i, transformer, metadata);
             // the source and target type
             if (transformer instanceof PullTransformer) {
                 // For intermediate node, set data type to null
@@ -102,7 +107,8 @@ public class MediatorImpl implements Mediator {
             DataType targetDataType,
             int size,
             int index,
-            Transformer transformer) {
+            Transformer transformer,
+            Map<Class<?>, Object> metadata) {
         DataType sourceType =
                 (index == 0) ? sourceDataType
                         : new DataType<Object>(transformer.getSourceBinding(), Object.class, null);
@@ -110,12 +116,17 @@ public class MediatorImpl implements Mediator {
                 (index == size - 1) ? targetDataType : new DataType<Object>(transformer.getTargetBinding(),
                         Object.class, null);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader);
+        TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, metadata);
         return context;
     }
 
     @SuppressWarnings("unchecked")
-    public void mediate(Object source, Object target, DataType sourceDataType, DataType targetDataType) {
+    public void mediate(
+            Object source,
+            Object target,
+            DataType sourceDataType,
+            DataType targetDataType,
+            Map<Class<?>, Object> metadata) {
         if (source == null) {
             // Shortcut for null value
             return;
@@ -135,7 +146,7 @@ public class MediatorImpl implements Mediator {
         for (int i = 0; i < size; i++) {
             Transformer transformer = path.get(i);
             TransformationContext context =
-                    createTransformationContext(sourceDataType, targetDataType, size, i, transformer);
+                    createTransformationContext(sourceDataType, targetDataType, size, i, transformer, metadata);
 
             if (transformer instanceof PullTransformer) {
                 result = ((PullTransformer) transformer).transform(result, context);

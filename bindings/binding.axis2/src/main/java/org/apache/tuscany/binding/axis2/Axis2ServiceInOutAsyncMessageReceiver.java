@@ -18,44 +18,36 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
-//import org.apache.axis2.receivers.AbstractInOutAsyncMessageReceiver;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
 import org.apache.tuscany.binding.axis2.Axis2Service.InvocationContext;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.MessageId;
 
 public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiver {
-    // private static final Log log = LogFactory.getLog(AbstractInOutAsyncMessageReceiver.class);
 
-    protected Method operationMethod;
-    protected SDODataBinding dataBinding;
-    private Object entryPointProxy;
+    private Operation<?> operation;
+
     private WorkContext workContext;
+
     private Axis2Service service;
 
-    public Axis2ServiceInOutAsyncMessageReceiver(Object entryPointProxy,
-                                                        Method operationMethod,
-                                                        SDODataBinding dataBinding,
-                                                        Axis2Service service,
-                                                        WorkContext workContext) {
-        this.entryPointProxy = entryPointProxy;
-        this.operationMethod = operationMethod;
-        this.dataBinding = dataBinding;
+    public Axis2ServiceInOutAsyncMessageReceiver(Axis2Service service, Operation operation,
+
+    WorkContext workContext) {
+        this.operation = operation;
         this.workContext = workContext;
         this.service = service;
     }
 
     public final void receive(final MessageContext messageCtx) {
-        
+
         Runnable theadedTask = new Runnable() {
             public void run() {
                 try {
@@ -65,9 +57,9 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
                     workContext.setCurrentMessageId(messageId);
                     // Now use message id as index to context to be used by callback target invoker
                     InvocationContext invCtx =
-                        service.new InvocationContext(messageCtx, operationMethod, dataBinding, getSOAPFactory(messageCtx));
+                            service.new InvocationContext(messageCtx, operation, getSOAPFactory(messageCtx));
                     service.addMapping(messageId, invCtx);
-                    
+
                     invokeBusinessLogic(messageCtx);
                 } catch (AxisFault e) {
                     // log.error(e);
@@ -78,25 +70,17 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
     }
 
     public void invokeBusinessLogic(MessageContext inMC) throws AxisFault {
-        
-        try {
 
+        try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-            Class<?>[] parameterTypes = operationMethod.getParameterTypes();
-            // Try to guess if it's passing OMElements
-            if(parameterTypes.length>0 && OMElement.class.isAssignableFrom(parameterTypes[0])) {    
-                operationMethod.invoke(entryPointProxy, requestOM);
-            } else {
-                // Assumming it's SDO then
-                Object[] args = dataBinding.fromOMElement(requestOM);
-                operationMethod.invoke(entryPointProxy, args);
-            }
-        } catch (InvocationRuntimeException e) {
+            Object[] args = new Object[] { requestOM };
+            service.invokeTarget(operation, args);
+        } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof Exception) {
                 throw AxisFault.makeFault((Exception) t);
             }
-            throw e;
+            throw new InvocationRuntimeException(e);
         } catch (Exception e) {
             throw AxisFault.makeFault(e);
         }

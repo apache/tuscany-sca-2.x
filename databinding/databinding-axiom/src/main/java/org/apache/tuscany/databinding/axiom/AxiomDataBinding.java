@@ -30,6 +30,8 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(DataBinding.class)
 public class AxiomDataBinding extends DataBindingExtension {
+    
+    public static final String NAME = OMElement.class.getName();
 
     public AxiomDataBinding() {
         super(OMElement.class);

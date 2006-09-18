@@ -43,7 +43,7 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
             contract.setDataBinding(interfaceDataType.name());
             // FIXME: [rfeng] Keep data context as metadata?
             for (DataContext c : interfaceDataType.context()) {
-                contract.addMetaData(c.key(), c.value());
+                contract.setMetaData(c.key(), c.value());
             }
         }
         for (Method method : clazz.getMethods()) {
@@ -57,7 +57,7 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
                 operation.setDataBinding(dataBinding);
                 // FIXME: [rfeng] Keep data context as metadata?
                 for (DataContext c : operationDataType.context()) {
-                    operation.addMetaData(c.key(), c.value());
+                    operation.setMetaData(c.key(), c.value());
                 }
                 for (org.apache.tuscany.spi.model.DataType<?> d : operation.getInputType().getLogical()) {
                     d.setDataBinding(dataBinding);

@@ -79,7 +79,7 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         Definition definition = registry.loadDefinition(null, url);
         PortType portType = definition.getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("checkOrderStatus", null, null);
-        WSDLOperation op = new WSDLOperation(operation, OMElement.class.getName(), registry.getSchemaRegistry());
+        WSDLOperation op = new WSDLOperation(operation, AxiomDataBinding.NAME, registry.getSchemaRegistry());
         Assert.assertTrue(op.isWrapperStyle());
 
         MediatorImpl m = new MediatorImpl();
@@ -90,7 +90,7 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
         dataBindingRegistry.register(new AxiomDataBinding());
         m.setDataBindingRegistry(dataBindingRegistry);
-        
+
         Object[] source = new Object[] { "cust001", IPO_XML, Integer.valueOf(1) };
         Input2InputTransformer t = new Input2InputTransformer();
         t.setDataBindingRegistry(dataBindingRegistry);
@@ -112,14 +112,23 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         Assert.assertEquals(new QName("http://example.com/order.xsd", "checkOrderStatus"), element.getQName());
 
         TransformationContext context1 = new TransformationContextImpl();
-        context1.setSourceDataType(op.getOutputType());
-        context1.setTargetDataType(new DataType<Class>("java.lang.String", String.class, String.class));
+        DataType<DataType> sourceType = new DataType<DataType>("idl:output", Object.class, op.getOutputType());
+        sourceType.setMetadata(WSDLOperation.class.getName(), op.getOutputType().getMetadata(
+                WSDLOperation.class.getName()));
+        
+        context1.setSourceDataType(sourceType);
+        DataType<DataType> targetType =
+                new DataType<DataType>("idl:output", Object.class, new DataType<Class>("java.lang.String",
+                        String.class, String.class));
+        context1.setTargetDataType(targetType);
+
         OMFactory factory = OMAbstractFactory.getOMFactory();
         OMElement responseElement =
                 factory.createOMElement(new QName("http://example.com/order.wsdl", "checkOrderStatusResponse"), null);
         OMElement status = factory.createOMElement(new QName(null, "status"), responseElement);
         factory.createOMText(status, "shipped");
         Output2OutputTransformer t2 = new Output2OutputTransformer();
+        t2.setMediator(m);
         t2.setDataBindingRegistry(dataBindingRegistry);
         Object st = t2.transform(responseElement, context1);
         Assert.assertEquals("shipped", st);

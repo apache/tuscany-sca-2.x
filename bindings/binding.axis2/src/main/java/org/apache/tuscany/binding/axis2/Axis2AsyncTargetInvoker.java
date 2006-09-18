@@ -19,13 +19,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.namespace.QName;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -42,21 +40,19 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
     public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
             QName wsdlOperationName,
             Options options,
-            SDODataBinding dataBinding,
             SOAPFactory soapFactory,
             InboundWire wire) {
-        super(serviceClient, wsdlOperationName, options, dataBinding, soapFactory);
+        super(serviceClient, wsdlOperationName, options, soapFactory);
         this.wire = wire;
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
-            boolean pureOMelement = (args != null && args.length > 0 && (args[0] instanceof OMElement));
             OperationClient operationClient = createOperationClient(args);
             callbackInvoker.setCorrelationId(messageId);
             Axis2ReferenceCallback callback =
-                    new Axis2ReferenceCallback(callbackInvoker, getDataBinding(), pureOMelement);
+                    new Axis2ReferenceCallback(callbackInvoker);
             operationClient.setCallback(callback);
 
             operationClient.execute(false);

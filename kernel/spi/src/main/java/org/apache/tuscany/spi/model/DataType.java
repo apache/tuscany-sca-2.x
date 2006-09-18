@@ -120,6 +120,13 @@ public class DataType<L> extends ModelObject {
     }
 
     public String getDataBinding() {
+        if (dataBinding == null) {
+            // databinding is not set at the DataType level, check the operation
+            Operation<?> operation = (Operation<?>) getMetadata(Operation.class.getName());
+            if (operation != null) {
+                return operation.getDataBinding();
+            }
+        }
         return dataBinding;
     }
 
@@ -135,7 +142,9 @@ public class DataType<L> extends ModelObject {
         result = dataBinding != null ? dataBinding.hashCode() : 0;
         result = 29 * result + (physical != null ? physical.hashCode() : 0);
         result = 29 * result + (logical != null ? logical.hashCode() : 0);
-        result = 29 * result + (metadata != null ? metadata.hashCode() : 0);
+        // Commented the following line out since it causes infinite loop from Operation.hashCode() 
+        // if the metadata map contains the Operation
+        // result = 29 * result + (metadata != null ? metadata.hashCode() : 0);
         return result;
     }
 

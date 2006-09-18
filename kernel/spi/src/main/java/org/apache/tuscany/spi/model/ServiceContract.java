@@ -188,7 +188,7 @@ public abstract class ServiceContract<T> extends ModelObject {
      * @param key the metadata key
      * @param val the metadata value
      */
-    public void addMetaData(String key, Object val) {
+    public void setMetaData(String key, Object val) {
         if (metaData == null) {
             metaData = new HashMap<String, Object>();
         }

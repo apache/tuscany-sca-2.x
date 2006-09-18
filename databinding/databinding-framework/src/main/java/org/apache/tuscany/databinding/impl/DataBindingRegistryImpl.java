@@ -35,6 +35,9 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
      * @see org.apache.tuscany.databinding.DataBindingRegistry#getDataBinding(java.lang.String)
      */
     public DataBinding getDataBinding(String id) {
+        if (id == null) {
+            return null;
+        }
         return bindings.get(id.toLowerCase());
     }
 
@@ -49,6 +52,9 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
      * @see org.apache.tuscany.databinding.DataBindingRegistry#unregister(java.lang.String)
      */
     public DataBinding unregister(String id) {
+        if (id == null) {
+            return null;
+        }
         return bindings.remove(id.toLowerCase());
     }
 

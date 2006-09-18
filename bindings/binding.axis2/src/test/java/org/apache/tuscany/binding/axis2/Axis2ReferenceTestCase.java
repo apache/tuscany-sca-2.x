@@ -20,6 +20,7 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.Type;
 import java.net.URL;
+
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -27,8 +28,9 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import org.xml.sax.InputSource;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -37,12 +39,8 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-
-import commonj.sdo.helper.TypeHelper;
-import junit.framework.TestCase;
-
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
+import org.xml.sax.InputSource;
 
 public class Axis2ReferenceTestCase extends TestCase {
 
@@ -83,13 +81,12 @@ public class Axis2ReferenceTestCase extends TestCase {
             "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
         WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
-        wsBinding.setWebAppName(webAppName);
         //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
         EasyMock.replay(wireService);
         CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         // TODO figure out what to do with the service contract
-        ServiceContract contract = new WSDLServiceContract();
+        ServiceContract<?> contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
@@ -98,7 +95,6 @@ public class Axis2ReferenceTestCase extends TestCase {
                 wireService,
                 wsBinding,
                 contract,
-                TypeHelper.INSTANCE,
                 workContext);
     }
 }

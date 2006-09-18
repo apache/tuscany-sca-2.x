@@ -83,7 +83,7 @@ public class MediatorImplTestCase extends TestCase {
 
     public void testTransform1() {
         TransformationContext context = createTransformationContext(String.class, Node.class);
-        Object node = mediator.mediate(IPO_XML, context.getSourceDataType(), context.getTargetDataType());
+        Object node = mediator.mediate(IPO_XML, context.getSourceDataType(), context.getTargetDataType(), null);
         Assert.assertTrue(node instanceof Document);
         Element root = ((Document) node).getDocumentElement();
         Assert.assertEquals(root.getNamespaceURI(), "http://www.example.com/IPO");
@@ -93,7 +93,7 @@ public class MediatorImplTestCase extends TestCase {
     public void testTransform2() {
         TransformationContext context = createTransformationContext(String.class, Writer.class);
         Writer writer = new StringWriter();
-        mediator.mediate(IPO_XML, writer, context.getSourceDataType(), context.getTargetDataType());
+        mediator.mediate(IPO_XML, writer, context.getSourceDataType(), context.getTargetDataType(), null);
         String str = writer.toString();
         Assert.assertTrue(str != null && str.indexOf("<shipDate>1999-12-05</shipDate>") != -1);
     }

@@ -31,4 +31,30 @@
         <system:implementation.system class="org.apache.tuscany.databinding.sdo.ImportSDOLoader"/>
     </component>
     
+    <component name="databinding.sdo">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.SDODataBinding" />
+    </component>    
+
+    <component name="transformer.DataObject2String">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.DataObject2String"/>
+    </component>
+    <component name="transformer.DataObject2XMLStreamReader">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader"/>
+    </component>
+    <component name="transformer.XMLDocument2String">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.XMLDocument2String"/>
+    </component>
+    <component name="transformer.String2DataObject">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.String2DataObject"/>
+    </component>
+    <component name="transformer.XMLDocument2XMLStreamReader">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader"/>
+    </component>
+    <component name="transformer.XMLStreamReader2DataObject">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.XMLStreamReader2DataObject"/>
+    </component>
+    <component name="transformer.XMLStreamReader2XMLDocument">
+        <system:implementation.system class="org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument"/>
+    </component>
+    
 </composite>

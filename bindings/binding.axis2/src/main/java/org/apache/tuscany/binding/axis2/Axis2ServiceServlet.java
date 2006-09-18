@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.Vector;
@@ -82,7 +83,7 @@ public class Axis2ServiceServlet extends AxisServlet {
             public ServletContext getServletContext() {
                 return new ServletContext() {
 
-                    public ServletContext getContext(String arg0) {
+                    public ServletContext getContext(String uripath) {
                         return null;
                     }
 
@@ -94,23 +95,23 @@ public class Axis2ServiceServlet extends AxisServlet {
                         return 0;
                     }
 
-                    public String getMimeType(String arg0) {
+                    public String getMimeType(String file) {
                         return null;
                     }
 
-                    public Set getResourcePaths(String arg0) {
+                    public Set getResourcePaths(String path) {
+                        return Collections.emptySet();
+                    }
+
+                    public URL getResource(String path) throws MalformedURLException {
                         return null;
                     }
 
-                    public URL getResource(String arg0) throws MalformedURLException {
+                    public InputStream getResourceAsStream(String path) {
                         return null;
                     }
 
-                    public InputStream getResourceAsStream(String arg0) {
-                        return null;
-                    }
-
-                    public RequestDispatcher getRequestDispatcher(String arg0) {
+                    public RequestDispatcher getRequestDispatcher(String path) {
                         return null;
                     }
 

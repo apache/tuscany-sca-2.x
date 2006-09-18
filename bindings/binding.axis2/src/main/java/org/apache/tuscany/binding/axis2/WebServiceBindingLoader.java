@@ -21,21 +21,17 @@ package org.apache.tuscany.binding.axis2;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.wsdl.WSDLException;
-import javax.wsdl.factory.WSDLFactory;
-import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -43,8 +39,8 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Scope;
-import org.xml.sax.InputSource;
 
 /**
  * Parses a <code>WebServiceBinding</code> entry in an assembly XML file
@@ -52,52 +48,48 @@ import org.xml.sax.InputSource;
  * @version $Rev$ $Date$
  */
 @Scope("MODULE")
+@SuppressWarnings("deprecation")
 public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
     public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
-    private String wsdlLocation;
+    private WSDLDefinitionRegistry wsdlDefinitionRegistry;
 
-    private String endpointAttribute;
-
- 
-    public WebServiceBindingLoader(@Autowire
-    LoaderRegistry registry) {
-        super(registry);
+    @Constructor( { "loaderRegistry", "wsdlDefinitionRegistry" })
+    public WebServiceBindingLoader(@Autowire LoaderRegistry loaderRegistry, 
+            @Autowire WSDLDefinitionRegistry wsdlDefinitionRegistry) {
+        super(loaderRegistry);
+        this.wsdlDefinitionRegistry = wsdlDefinitionRegistry;
     }
 
     public QName getXMLType() {
         return BINDING_WS;
     }
 
-    public WebServiceBinding load(CompositeComponent parent, XMLStreamReader reader,
-            DeploymentContext deploymentContext) throws XMLStreamException,
-            LoaderException {
+    public WebServiceBinding load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         // not sure what uri was here ? String uri = reader.getAttributeValue(null, "uri");
         String uri = null;
-        endpointAttribute = reader.getAttributeValue(null, "endpoint");
-        wsdlLocation = reader.getAttributeValue(null, "location");
+        String endpoint = reader.getAttributeValue(null, "endpoint");
+        String wsdlLocation = reader.getAttributeValue(null, "location");
         LoaderUtil.skipToEndElement(reader);
         try {
-            return createBinding(uri, endpointAttribute, deploymentContext);
+            return createBinding(uri, endpoint, wsdlLocation, deploymentContext);
         } catch (Exception e) {
-
             throw new LoaderException(e);
         }
-        
+
     }
 
     @SuppressWarnings("unchecked")
-    private WebServiceBinding createBinding(String port, String portURI, DeploymentContext deploymentContext) throws WSDLException, IOException {
-        List<Definition> definitions = null;
-        // FIXME wsdlRegistry.getDefinitionsForNamespace(portNamespace,
-        // resourceLoader);
+    private WebServiceBinding createBinding(String port, String portURI, String wsdlLocation, DeploymentContext deploymentContext)
+        throws WSDLException, IOException {
         // Get the WSDL port namespace and name
         if (port == null && portURI != null) {
             int h = portURI.indexOf('#');
- //           String portNamespace = portURI.substring(0, h);
             String serviceName;
             String portName;
 
+            String namespace = portURI.substring(0, h);
             String fragment = portURI.substring(h + 1);
             if (fragment.startsWith("wsdl.endpoint(") && fragment.endsWith(")")) {
                 fragment = fragment.substring(14, fragment.length() - 1);
@@ -114,42 +106,27 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 portName = fragment;
             }
             // FIXME need to find out how to get wsdl and what context to use --- terrible hack attack!
-            // URL wsdlurl = Thread.currentThread().getContextClassLoader().getResource(wsdlLocation);
-            if(null == wsdlLocation) throw new RuntimeException("Failed to determin wsdl location on binding. Try specifying 'location' attribute on  binding.");
-            URL wsdlurl = deploymentContext.getClassLoader().getResource(wsdlLocation);
-            if(wsdlurl == null){
-                Axis2BindingBuilderRuntimeException   axis2BindingLoaderException = new Axis2BindingBuilderRuntimeException("Failed to load wsdl");
-                axis2BindingLoaderException.setResourceURI(wsdlLocation); 
-                throw axis2BindingLoaderException;
-            }
-            WSDLFactory factory = WSDLFactory.newInstance();
-            WSDLReader reader = factory.newWSDLReader();
-            reader.setFeature("javax.wsdl.verbose", false);
-            InputSource input = new InputSource(wsdlurl.openStream());
-            Definition wsdlDef = reader.readWSDL(wsdlurl.toString(), input);
-            definitions = new LinkedList<Definition>();
-            definitions.add(wsdlDef);
-            // FIXME all the above needs to better addressed.
+            if (null == wsdlLocation) {
+                throw new Axis2BindingRunTimeException(
+                        "Failed to determin wsdl location on binding. Try specifying 'location' attribute on  binding.");
+            }    
+            Definition definition =
+                    wsdlDefinitionRegistry.loadDefinition(namespace+" "+wsdlLocation, deploymentContext.getClassLoader());
 
-            Definition definition = null;
             Port thePort = null;
             Service service = null;
-            for (Definition def : definitions) {
+            // Find the port with the given name
+            for (Service serv : (Collection<Service>) definition.getServices().values()) {
+                QName sqn = serv.getQName();
+                if (serviceName != null && !serviceName.equals(sqn.getLocalPart())) {
+                    continue;
+                }
 
-                // Find the port with the given name
-                for (Service serv : (Collection<Service>) def.getServices().values()) {
-                    QName sqn = serv.getQName();
-                    if (serviceName != null && !serviceName.equals(sqn.getLocalPart())) {
-                        continue;
-                    }
-
-                    Port p = serv.getPort(portName);
-                    if (p != null) {
-                        service = serv;
-                        definition = def;
-                        thePort = p;
-                        break;
-                    }
+                Port p = serv.getPort(portName);
+                if (p != null) {
+                    service = serv;
+                    thePort = p;
+                    break;
                 }
             }
             if (thePort == null) {
@@ -158,7 +135,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
             }
             return new WebServiceBinding(definition, thePort, port, portURI, service);
         }
-        // FIXME
+        // FIXME: Find the first port?
         return null;
 
     }
