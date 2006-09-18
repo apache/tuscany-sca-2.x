@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Property;
 
 /**
  * Introspector for creating WSDLServiceContract definitions from WSDL PortTypes.
@@ -38,11 +37,7 @@ import org.osoa.sca.annotations.Property;
 public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector {
     public static final String INPUT_PARTS = "idl:input";
 
-    public static final String IDL_WSDL_DOCUMENT_LITERAL_WRPPED = "idl.wsdl.documentLiteralWrpped";
-
     private WSDLDefinitionRegistry wsdlDefinitionRegistry;
-
-    private String defaultDataBinding = "org.w3c.dom.Node"; // Default to DOM binding?
 
     /**
      * @param wsdlDefinitionRegistry
@@ -51,11 +46,6 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     public InterfaceWSDLIntrospectorImpl(@Autowire WSDLDefinitionRegistry wsdlDefinitionRegistry) {
         super();
         this.wsdlDefinitionRegistry = wsdlDefinitionRegistry;
-    }
-
-    @Property(name = "defaultDataBinding")
-    public void setDefaultDataBinding(String defaultDataBinding) {
-        this.defaultDataBinding = defaultDataBinding;
     }
 
     // FIXME: Do we want to deal with document-literal wrapped style based on the JAX-WS spec?
@@ -73,7 +63,7 @@ public class InterfaceWSDLIntrospectorImpl implements InterfaceWSDLIntrospector 
     protected org.apache.tuscany.spi.model.Operation<QName> introspectOperation(Operation wsdlOp)
         throws InvalidServiceContractException {
 
-        WSDLOperation op = new WSDLOperation(wsdlOp, defaultDataBinding, wsdlDefinitionRegistry.getSchemaRegistry());
+        WSDLOperation op = new WSDLOperation(wsdlOp, null, wsdlDefinitionRegistry.getSchemaRegistry());
         return op.getOperation();
     }
 

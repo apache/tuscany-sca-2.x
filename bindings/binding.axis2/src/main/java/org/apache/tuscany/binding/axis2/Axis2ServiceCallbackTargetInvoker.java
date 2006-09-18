@@ -51,16 +51,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             MessageContext outMC = Utils.createOutMessageContext(invCtx.inMessageContext);
             outMC.getOperationContext().addMessageContext(invCtx.inMessageContext);  // REVIEW was adding newmsgCtx !
 
-            OMElement responseOM = null;
-            Class<?>[] parameterTypes = invCtx.operationMethod.getParameterTypes();
-            // Try to guess if it's passing OMElements
-            if(parameterTypes.length>0 && OMElement.class.isAssignableFrom(parameterTypes[0])) {    
-                responseOM = (OMElement) payload;
-            } else {
-                // Assumming it's SDO then
-                responseOM = invCtx.dataBinding.toOMElement(new Object[] {payload} );
-            }
-
+            OMElement responseOM = (OMElement) payload;
             SOAPEnvelope soapEnvelope = invCtx.soapFactory.getDefaultEnvelope();
             soapEnvelope.getBody().addChild(responseOM);
             outMC.setEnvelope(soapEnvelope);

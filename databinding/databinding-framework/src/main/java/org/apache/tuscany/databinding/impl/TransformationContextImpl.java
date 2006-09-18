@@ -19,6 +19,8 @@
 package org.apache.tuscany.databinding.impl;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
@@ -28,6 +30,8 @@ public class TransformationContextImpl implements TransformationContext {
 
     private DataType targetDataType;
 
+    private final Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
+
     private WeakReference<ClassLoader> classLoaderRef;
 
     public TransformationContextImpl() {
@@ -35,11 +39,15 @@ public class TransformationContextImpl implements TransformationContext {
         setClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
-    public TransformationContextImpl(DataType sourceDataType, DataType targetDataType, ClassLoader classLoader) {
+    public TransformationContextImpl(DataType sourceDataType, DataType targetDataType, ClassLoader classLoader,
+            Map<Class<?>, Object> metadata) {
         super();
         this.sourceDataType = sourceDataType;
         this.targetDataType = targetDataType;
         setClassLoader(classLoader);
+        if (metadata != null) {
+            this.metadata.putAll(metadata);
+        }
     }
 
     public DataType getSourceDataType() {
@@ -64,6 +72,10 @@ public class TransformationContextImpl implements TransformationContext {
 
     public ClassLoader getClassLoader() {
         return classLoaderRef.get();
+    }
+
+    public Map<Class<?>, Object> getMetadata() {
+        return metadata;
     }
 
 }

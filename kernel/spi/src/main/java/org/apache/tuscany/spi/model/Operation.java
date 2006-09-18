@@ -84,9 +84,17 @@ public class Operation<T> {
         List<DataType<T>> types = Collections.emptyList();
         this.inputType = (inputType != null) ? inputType : new DataType<List<DataType<T>>>(Object[].class, types);
         this.outputType = (outputType != null) ? outputType : new DataType<T>(void.class, null);
-        this.faultTypes = faultTypes;
+        this.faultTypes = (faultTypes == null) ? types : faultTypes;
         this.nonBlocking = nonBlocking;
         this.dataBinding = dataBinding;
+        // Register the operation with the types
+        for (DataType<?> d : this.inputType.getLogical()) {
+            d.setMetadata(Operation.class.getName(), this);
+        }
+        this.outputType.setMetadata(Operation.class.getName(), this);
+        for (DataType<?> d : this.faultTypes) {
+            d.setMetadata(Operation.class.getName(), this);
+        }
     }
 
     /**
@@ -182,7 +190,7 @@ public class Operation<T> {
      * @return the data binding type specified for the operation or null.
      */
     public String getDataBinding() {
-        return dataBinding;
+        return (dataBinding == null && contract != null) ? contract.getDataBinding() : dataBinding;
     }
 
     /**
@@ -212,7 +220,7 @@ public class Operation<T> {
      * @param key the metadata key
      * @param val the metadata value
      */
-    public void addMetaData(String key, Object val) {
+    public void setMetaData(String key, Object val) {
         if (metaData == null) {
             metaData = new HashMap<String, Object>();
         }

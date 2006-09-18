@@ -18,28 +18,37 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.TypeHelper;
 
-public class XMLStreamReader2DataObject extends TransformerExtension<XMLStreamReader, DataObject> implements PullTransformer<XMLStreamReader, DataObject> {
+@Service(Transformer.class)
+public class XMLStreamReader2DataObject extends TransformerExtension<XMLStreamReader, DataObject> implements
+        PullTransformer<XMLStreamReader, DataObject> {
 
     public DataObject transform(XMLStreamReader source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, false);
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
             XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
+            // The XMLStreamHelper requires that the reader is posistioned at START_ELEMENT
+            while (source.getEventType() != XMLStreamConstants.START_ELEMENT && source.hasNext()) {
+                source.next();
+            }
             return streamHelper.loadObject(source);
         } catch (Exception e) {
             throw new TransformationException(e);
-        } 
+        }
     }
 
     public Class getTargetType() {

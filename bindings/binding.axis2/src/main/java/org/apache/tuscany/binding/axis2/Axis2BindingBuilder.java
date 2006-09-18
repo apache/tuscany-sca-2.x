@@ -18,9 +18,13 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import javax.wsdl.PortType;
+
+import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -30,31 +34,43 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-
-import commonj.sdo.helper.TypeHelper;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
- * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured with the Axis2 binding
+ * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured
+ * with the Axis2 binding
  * 
  * @version $Rev$ $Date$
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
+    private static final String OM_DATA_BINDING = OMElement.class.getName();
 
     private ServletHost servletHost;
 
     private ConfigurationContext configContext;
-    
+
     private WorkContext workContext;
+
+    private InterfaceWSDLIntrospector introspector;
 
     public Axis2BindingBuilder() {
         initAxis();
     }
 
-    @Autowire(required=false)
+    @Autowire(required = false)
     public void setServletHost(ServletHost servletHost) {
         this.servletHost = servletHost;
+    }
+
+    /**
+     * @param introspector the introspector to set
+     */
+    @Autowire
+    public void setIntrospector(InterfaceWSDLIntrospector introspector) {
+        this.introspector = introspector;
     }
 
     @Autowire
@@ -63,51 +79,73 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @SuppressWarnings("unchecked")
-    public Service build(CompositeComponent parent, BoundServiceDefinition<WebServiceBinding> serviceDefinition, DeploymentContext deploymentContext) {
+    public Service build(
+            CompositeComponent parent,
+            BoundServiceDefinition<WebServiceBinding> serviceDefinition,
+            DeploymentContext deploymentContext) {
 
-        WebServiceBinding wsBinding = serviceDefinition.getBinding();
-        Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-        TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
-        if(typeHelper==null) typeHelper = TypeHelper.INSTANCE;
+        try {
+            // Set the default databinding
+            serviceDefinition.getServiceContract().setDataBinding(OM_DATA_BINDING);
 
-        return new Axis2Service(serviceDefinition.getName(),
-                interfaze,
-                parent,
-                wireService,
-                wsBinding,
-                servletHost,
-                configContext,
-                typeHelper,
-                workContext);
+            // FIXME: We need to define how the WSDL PortType is honored in the case that
+            // both the binding.ws and interface.wsdl are in place.
+            // The WSDL portType from the WSDL Port decides the incoming SOAP message format
+            // There are also cases that interface.java is used.
+            
+            WebServiceBinding wsBinding = serviceDefinition.getBinding();
+            PortType portType = wsBinding.getWSDLPort().getBinding().getPortType();
+            ServiceContract<?> serviceContract = introspector.introspect(portType);
+            
+            // FIXME:  
+            serviceContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
+            serviceContract.setDataBinding(serviceDefinition.getServiceContract().getDataBinding());
+
+            return new Axis2Service(serviceDefinition.getName(), serviceContract, parent, wireService, wsBinding,
+                    servletHost, configContext, workContext);
+        } catch (InvalidServiceContractException e) {
+            throw new Axis2BindingBuilderRuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
-    public Reference build(CompositeComponent parent, BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
+    public Reference build(
+            CompositeComponent parent,
+            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
             DeploymentContext deploymentContext) {
-        
-        WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
-        TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
-        if(typeHelper==null) typeHelper = TypeHelper.INSTANCE;
 
-        return new Axis2Reference(boundReferenceDefinition.getName(),
-                parent,
-                wireService,
-                wsBinding,
-                boundReferenceDefinition.getServiceContract(),
-                typeHelper,
-                workContext);
+        try {
+            // Set the default binding
+            boundReferenceDefinition.getServiceContract().setDataBinding(OM_DATA_BINDING);
+            
+            // FIXME: We need to define how the WSDL PortType is honored in the case that
+            // both the binding.ws and interface.wsdl are in place
+            // The WSDL portType from the WSDL Port decides the incoming SOAP message format
+
+            WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+            PortType portType = wsBinding.getWSDLPort().getBinding().getPortType();
+            ServiceContract<?> serviceContract = introspector.introspect(portType);
+            
+            // Set the default databinding
+            serviceContract.setDataBinding(OM_DATA_BINDING);
+            
+            return new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding,
+                    serviceContract, workContext);
+        } catch (InvalidServiceContractException e) {
+            throw new Axis2BindingBuilderRuntimeException(e);
+        }
     }
 
     protected Class<WebServiceBinding> getBindingType() {
         return WebServiceBinding.class;
     }
-    
+
     protected void initAxis() {
-        // TODO: Fix classloader switching. See TUSCANY-647 
+        // TODO: Fix classloader switching. See TUSCANY-647
         // TODO: also consider having a system component wrapping the Axis2 ConfigContext
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();
         ClassLoader scl = getClass().getClassLoader();
-        try { 
+        try {
             if (tccl != scl) {
                 Thread.currentThread().setContextClassLoader(scl);
             }

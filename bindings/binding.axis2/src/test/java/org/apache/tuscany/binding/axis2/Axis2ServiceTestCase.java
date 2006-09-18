@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,18 +38,20 @@ import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
-import commonj.sdo.helper.TypeHelper;
 import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 
 public class Axis2ServiceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
         TestServletHost tomcatHost = new TestServletHost();
-        Axis2Service axis2Service = createAxis2Service("testWebAppName", "testServiceName", tomcatHost, false);
+        Axis2Service axis2Service = createAxis2Service("testServiceName", tomcatHost, false);
         axis2Service.start();
 
         if (true) return;
@@ -62,11 +66,11 @@ public class Axis2ServiceTestCase extends TestCase {
     public void testAsyncMessageReceiver() throws Exception {
 
         TestServletHost tomcatHost = new TestServletHost();
-        Axis2Service axis2Service = createAxis2Service("testWebAppName", "testServiceName", tomcatHost, true);
+        Axis2Service axis2Service = createAxis2Service("testServiceName", tomcatHost, true);
         axis2Service.start();
     }
 
-    private Axis2Service createAxis2Service(String webAppName, String serviceName, ServletHost tomcatHost, boolean callback)
+    private Axis2Service createAxis2Service(String serviceName, ServletHost tomcatHost, boolean callback)
         throws Exception {
         //Create WebServiceBinding
         String wsdlLocation = "/wsdl/hello_world_doc_lit.wsdl";
@@ -82,7 +86,6 @@ public class Axis2ServiceTestCase extends TestCase {
             "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
         WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
-        wsBinding.setWebAppName(webAppName);
 
         //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
@@ -93,11 +96,21 @@ public class Axis2ServiceTestCase extends TestCase {
         //Create a mocked InboundWire, make the call of ServiceExtension.getInterface() returns a Class
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
+        Map<String, Operation<Type>> opMap = new HashMap<String, Operation<Type>>();
+        for(Method m: Greeter.class.getMethods()) {
+            opMap.put(m.getName(), new Operation<Type>(m.getName(), null, null, null));
+        }
+        contract.setOperations(opMap);
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         if (callback) {
             EasyMock.expect(inboundWire.getCallbackReferenceName()).andReturn("").anyTimes();
         }
         EasyMock.replay(inboundWire);
+
+        OutboundWire outboundWire = EasyMock.createNiceMock(OutboundWire.class);
+        Map<Operation<?>, OutboundInvocationChain> map = new HashMap<Operation<?>, OutboundInvocationChain>();
+        EasyMock.expect(outboundWire.getInvocationChains()).andReturn(map).once();
+        EasyMock.replay(outboundWire);
 
         TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
         ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
@@ -105,15 +118,15 @@ public class Axis2ServiceTestCase extends TestCase {
         EasyMock.replay(workContext);
         Axis2Service axis2Service =
             new Axis2Service(serviceName,
-                Greeter.class,
+                contract,
                 null,
                 wireService,
                 wsBinding,
                 tomcatHost,
                 configurationContext,
-                TypeHelper.INSTANCE,
                 workContext);
         axis2Service.setInboundWire(inboundWire);
+        axis2Service.setOutboundWire(outboundWire);
 
         return axis2Service;
     }

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding;
 
+import java.util.Map;
+
 import org.apache.tuscany.spi.model.DataType;
 
 /**
@@ -49,5 +51,7 @@ public interface TransformationContext {
      * @return
      */
     public ClassLoader getClassLoader();
+    
+    public Map<Class<?>, Object> getMetadata();
 
 }

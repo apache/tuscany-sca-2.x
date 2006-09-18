@@ -21,44 +21,20 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.client.async.AsyncResult;
 import org.apache.axis2.client.async.Callback;
 import org.apache.axis2.context.MessageContext;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
 
 public class Axis2ReferenceCallback extends Callback {
     
     private Axis2ReferenceCallbackTargetInvoker targetInvoker;
-    private SDODataBinding dataBinding;
-    private boolean pureOMelement;
     
-    public Axis2ReferenceCallback(Axis2ReferenceCallbackTargetInvoker targetInvoker,
-            SDODataBinding dataBinding,
-            boolean pureOMelement) {
+    public Axis2ReferenceCallback(Axis2ReferenceCallbackTargetInvoker targetInvoker) {
         this.targetInvoker = targetInvoker;
-        this.dataBinding = dataBinding;
-        this.pureOMelement = pureOMelement;
     }
 
     public void onComplete(AsyncResult result) {
         MessageContext responseMC = result.getResponseMessageContext();
         OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
-
-        Object[] os = null;
-        if (responseOM != null) {
-            os = dataBinding.fromOMElement(responseOM);
-        }
-
-        Object response;
-        if (pureOMelement) {
-            response = responseOM;
-        } else {
-            if (os == null || os.length < 1) {
-                response = null;
-            } else {
-                response = os[0];
-            }
-        }
-
         try {
-            targetInvoker.invokeTarget(response);
+            targetInvoker.invokeTarget(new Object[] {responseOM});
         } catch(InvocationTargetException e) {
             // FIXME what is the appropriate exception here?
             throw new RuntimeException(e);

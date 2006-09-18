@@ -20,22 +20,25 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
+import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLHelper;
 
+@Service(Transformer.class)
 public class DataObject2String extends TransformerExtension<DataObject, String> implements
         PullTransformer<DataObject, String> {
 
     public String transform(DataObject source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context, true);
+            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
             XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
             Object logicalType = context.getSourceDataType().getLogical();
             if (logicalType instanceof QName) {

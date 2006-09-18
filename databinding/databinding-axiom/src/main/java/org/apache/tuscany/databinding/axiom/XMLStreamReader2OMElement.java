@@ -18,15 +18,20 @@
  */
 package org.apache.tuscany.databinding.axiom;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Service;
 
 @Service(Transformer.class)
@@ -39,11 +44,36 @@ public class XMLStreamReader2OMElement extends TransformerExtension<XMLStreamRea
     public OMElement transform(XMLStreamReader source, TransformationContext context) {
         try {
             StAXOMBuilder builder = new StAXOMBuilder(source);
-            return builder.getDocumentElement();
+            OMElement element = builder.getDocumentElement();
+            adjustElementName(context, element);
+            return element;
         } catch (Exception e) {
             throw new TransformationException(e);
         }
     }
+    
+    /**
+     * For data trasnformation purpose, we may only care about the content of the OMElement.
+     * If the incoming OMElement is under a different name, then we try to adjust it based on the target
+     * data type
+     * @param context
+     * @param element
+     */
+    private void adjustElementName(TransformationContext context, OMElement element) {
+        if (context != null) {
+            DataType<QName> dataType = context.getTargetDataType();
+            QName targetQName = dataType == null ? null : dataType.getLogical();
+            if (targetQName != null && !element.getQName().equals(targetQName)) {
+                // TODO: Throw expection or switch to the new Element
+                OMFactory factory = OMAbstractFactory.getOMFactory();
+                OMNamespace namespace =
+                        factory.createOMNamespace(targetQName.getNamespaceURI(), targetQName.getPrefix());
+                element.setNamespace(namespace);
+                element.setLocalName(targetQName.getLocalPart());
+            }
+        }
+    }
+    
 
     public Class getTargetType() {
         return OMElement.class;

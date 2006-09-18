@@ -36,13 +36,13 @@ import commonj.sdo.helper.XMLHelper;
 /**
  * SDO Wrapper Handler
  */
-public class SDOWrapperHandler implements WrapperHandler<XMLDocument> {
+public class SDOWrapperHandler implements WrapperHandler<Object> {
 
     /**
      * @see org.apache.tuscany.databinding.idl.WrapperHandler#create(org.apache.ws.commons.schema.XmlSchemaElement,
      *      TransformationContext)
      */
-    public XMLDocument create(XmlSchemaElement element, TransformationContext context) {
+    public Object create(XmlSchemaElement element, TransformationContext context) {
         TypeHelper typeHelper = TypeHelper.INSTANCE;
         if (context != null) {
             DataType targetType = context.getTargetDataType();
@@ -64,16 +64,20 @@ public class SDOWrapperHandler implements WrapperHandler<XMLDocument> {
      * @see org.apache.tuscany.databinding.idl.WrapperHandler#getChild(java.lang.Object, int,
      *      org.apache.ws.commons.schema.XmlSchemaElement)
      */
-    public Object getChild(XMLDocument wrapper, int i, XmlSchemaElement element) {
-        return wrapper.getRootObject().get(element.getName());
+    public Object getChild(Object wrapper, int i, XmlSchemaElement element) {
+        DataObject wrapperDO =
+                (wrapper instanceof XMLDocument) ? ((XMLDocument) wrapper).getRootObject() : (DataObject) wrapper;
+        return wrapperDO.get(element.getName());
     }
 
     /**
      * @see org.apache.tuscany.databinding.idl.WrapperHandler#setChild(java.lang.Object, int,
      *      org.apache.ws.commons.schema.XmlSchemaElement, java.lang.Object)
      */
-    public void setChild(XMLDocument wrapper, int i, XmlSchemaElement childElement, Object value) {
-        wrapper.getRootObject().set(childElement.getName(), value);
+    public void setChild(Object wrapper, int i, XmlSchemaElement childElement, Object value) {
+        DataObject wrapperDO =
+                (wrapper instanceof XMLDocument) ? ((XMLDocument) wrapper).getRootObject() : (DataObject) wrapper;
+        wrapperDO.set(childElement.getName(), value);
     }
 
 }

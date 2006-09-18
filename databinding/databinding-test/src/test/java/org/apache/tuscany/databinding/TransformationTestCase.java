@@ -25,7 +25,9 @@ import static org.easymock.EasyMock.replay;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -43,6 +45,7 @@ import org.apache.tuscany.databinding.sdo.DataObject2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.XMLDocument2XMLStreamReader;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2DataObject;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
+import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
 import org.apache.tuscany.databinding.xml.Node2String;
 import org.apache.tuscany.databinding.xml.String2Node;
 import org.apache.tuscany.databinding.xml.String2XMLStreamReader;
@@ -51,26 +54,32 @@ import org.apache.tuscany.databinding.xmlbeans.Node2XmlObject;
 import org.apache.tuscany.databinding.xmlbeans.XMLStreamReader2XmlObject;
 import org.apache.tuscany.databinding.xmlbeans.XmlObject2Node;
 import org.apache.tuscany.databinding.xmlbeans.XmlObject2XMLStreamReader;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
 import commonj.sdo.DataObject;
+import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 import commonj.sdo.helper.XSDHelper;
 
 public class TransformationTestCase extends TestCase {
-    private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "  xmlns:ipo=\"http://www.example.com/IPO\""
-            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
-            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>" + "    <street>47 Eden Street</street>"
-            + "    <city>Cambridge</city>" + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
-            + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>" + "    <city>Old Town</city>" + "    <state>PA</state>"
-            + "    <zip>95819</zip>" + "  </billTo>" + "  <items>" + "    <item partNum=\"833-AA\">"
-            + "      <productName>Lapis necklace</productName>" + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
-            + "      <ipo:comment>Want this for the holidays</ipo:comment>" + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>"
-            + "</ipo:purchaseOrder>";
+    private static final String IPO_XML =
+            "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
+                    + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                    + "  xmlns:ipo=\"http://www.example.com/IPO\""
+                    + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
+                    + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>"
+                    + "    <street>47 Eden Street</street>" + "    <city>Cambridge</city>"
+                    + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
+                    + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>"
+                    + "    <city>Old Town</city>" + "    <state>PA</state>" + "    <zip>95819</zip>" + "  </billTo>"
+                    + "  <items>" + "    <item partNum=\"833-AA\">" + "      <productName>Lapis necklace</productName>"
+                    + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
+                    + "      <ipo:comment>Want this for the holidays</ipo:comment>"
+                    + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>" + "</ipo:purchaseOrder>";
 
     private TransformerRegistry registry;
 
@@ -125,7 +134,9 @@ public class TransformationTestCase extends TestCase {
     // XMLBeans --> SDO
     public void testTransformation1() throws Exception {
         URL xsdFile = getClass().getClassLoader().getResource("ipo.xsd");
-        XSDHelper.INSTANCE.define(xsdFile.openStream(), null);
+        TypeHelper typeHelper = SDOUtil.createTypeHelper();
+        XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
+        xsdHelper.define(xsdFile.openStream(), xsdFile.toExternalForm());
 
         // URL/Stream/Reader to XmlObject
         XmlObject object = XmlObject.Factory.parse(new StringReader(IPO_XML));
@@ -134,6 +145,7 @@ public class TransformationTestCase extends TestCase {
         System.out.println("Path: " + path);
 
         TransformationContext tContext = createTransformationContext();
+        tContext.getMetadata().put(SDOType.class, new SDOType(typeHelper));
 
         Object result = object;
         for (Transformer transformer : path) {
@@ -197,11 +209,12 @@ public class TransformationTestCase extends TestCase {
         DataType dataType = new DataType<Class>(Object.class, null);
         dataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
-
         TransformationContext tContext = createMock(TransformationContext.class);
         expect(tContext.getTargetDataType()).andReturn(dataType).anyTimes();
 
         expect(tContext.getSourceDataType()).andReturn(dataType).anyTimes();
+        Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
+        expect(tContext.getMetadata()).andReturn(metadata).anyTimes();
         replay(tContext);
         return tContext;
     }

@@ -36,8 +36,6 @@ public class WebServiceBinding extends Binding {
     private Service service;
     //private String portURI;
     private String uri;
-    private String webAppName;
-
     public WebServiceBinding(Definition definition, Port port, String uri, String portURI, Service service) {
         this.definition = definition;
         this.port = port;
@@ -76,13 +74,5 @@ public class WebServiceBinding extends Binding {
 
     public void setURI(String theUri) {
         this.uri = theUri;
-    }
-
-    public void setWebAppName(String webAppName) {
-        this.webAppName = webAppName;
-    }
-
-    public String getWebAppName() {
-        return webAppName;
     }
 }

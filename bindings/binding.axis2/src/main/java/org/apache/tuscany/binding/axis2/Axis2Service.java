@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
-import javax.wsdl.Part;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
@@ -40,8 +40,6 @@ import org.apache.axis2.description.WSDLToAxisServiceBuilder;
 import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
-import org.apache.tuscany.binding.axis2.util.SDODataBinding;
-import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -49,12 +47,14 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageId;
+import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Destroy;
-
-import commonj.sdo.helper.TypeHelper;
 
 /**
  * An implementation of a {@link ServiceExtension} configured with the Axis2 binding
@@ -62,28 +62,28 @@ import commonj.sdo.helper.TypeHelper;
  * @version $Rev$ $Date$
  */
 public class Axis2Service extends ServiceExtension {
+    private ServiceContract<?> serviceContract;
 
     private ServletHost servletHost;
 
     private ConfigurationContext configContext;
 
     private WebServiceBinding binding;
-    
-    private TypeHelper typeHelper;
 
     private WorkContext workContext;
-    
+
     private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
 
-    public Axis2Service(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, WebServiceBinding binding,
-            ServletHost servletHost, ConfigurationContext configContext, TypeHelper typeHelper, WorkContext workContext) {
+    public Axis2Service(String theName, ServiceContract<?> serviceContract, CompositeComponent parent,
+            WireService wireService, WebServiceBinding binding, ServletHost servletHost,
+            ConfigurationContext configContext, WorkContext workContext) {
 
-        super(theName, interfaze, parent, wireService);
+        super(theName, serviceContract.getInterfaceClass(), parent, wireService);
 
+        this.serviceContract = serviceContract;
         this.binding = binding;
         this.servletHost = servletHost;
         this.configContext = configContext;
-        this.typeHelper = typeHelper;
         this.workContext = workContext;
     }
 
@@ -115,10 +115,13 @@ public class Axis2Service extends ServiceExtension {
 
     private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {
         Definition definition = wsBinding.getWSDLDefinition();
-        WebServicePortMetaData wsdlPortInfo = new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
+        WebServicePortMetaData wsdlPortInfo =
+                new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
 
         // TODO investigate if this is 20 wsdl what todo?
-        WSDLToAxisServiceBuilder builder = new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort().getName());
+        WSDLToAxisServiceBuilder builder =
+                new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort()
+                        .getName());
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
@@ -130,33 +133,21 @@ public class Axis2Service extends ServiceExtension {
         wsdlParam.setValue(definition);
         axisService.addParameter(wsdlParam);
         Parameter userWSDL = new Parameter("useOriginalwsdl", "true");
-        axisService.addParameter(userWSDL );
-
-        Class<?> serviceInterface = this.getInterface();
+        axisService.addParameter(userWSDL);
 
         PortType wsdlPortType = wsdlPortInfo.getPortType();
         for (Object o : wsdlPortType.getOperations()) {
             Operation wsdlOperation = (Operation) o;
             String operationName = wsdlOperation.getName();
             QName operationQN = new QName(definition.getTargetNamespace(), operationName);
-            Object entryPointProxy = this.getServiceInstance();
 
-            WebServiceOperationMetaData omd = wsdlPortInfo.getOperationMetaData(operationName);
-            QName responseQN = null;
-            Part outputPart = omd.getOutputPart(0);
-            if (outputPart != null) {
-                responseQN = outputPart.getElementName();
-            }
+            org.apache.tuscany.spi.model.Operation<?> op = serviceContract.getOperations().get(operationName);
 
-            Method operationMethod = getMethod(serviceInterface, operationName);
-            // outElementQName is not needed when calling fromOMElement method, and we can not get elementQName for
-            // oneway operation.
-            SDODataBinding dataBinding = new SDODataBinding(typeHelper, omd.isDocLitWrapped(), responseQN);
             MessageReceiver msgrec = null;
             if (inboundWire.getCallbackReferenceName() != null) {
-                msgrec = new Axis2ServiceInOutAsyncMessageReceiver(entryPointProxy, operationMethod, dataBinding, this, workContext);
+                msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op, workContext);
             } else {
-                msgrec = new Axis2ServiceInOutSyncMessageReceiver(entryPointProxy, operationMethod, dataBinding);
+                msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
             }
 
             AxisOperation axisOp = axisService.getOperation(operationQN);
@@ -165,6 +156,46 @@ public class Axis2Service extends ServiceExtension {
         }
 
         return axisService;
+    }
+
+    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args)
+        throws InvocationTargetException {
+        InvocationChain chain = inboundWire.getInvocationChains().get(op);
+        Interceptor headInterceptor = chain.getHeadInterceptor();
+        if (headInterceptor == null) {
+            try {
+                // short-circuit the dispatch and invoke the target directly
+                if (chain.getTargetInvoker() == null) {
+                    throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
+                }
+                return chain.getTargetInvoker().invokeTarget(args);
+            } catch (InvocationTargetException e) {
+                // the cause was thrown by the target so throw it
+                throw e;
+            }
+        } else {
+            Object messageId = workContext.getCurrentMessageId();
+            workContext.setCurrentMessageId(null);
+            Object correlationId = workContext.getCurrentCorrelationId();
+            workContext.setCurrentCorrelationId(null);
+
+            Message msg = new MessageImpl();
+            msg.setTargetInvoker(chain.getTargetInvoker());
+            if (messageId == null) {
+                messageId = new MessageId();
+            }
+            msg.setMessageId(messageId);
+            msg.setCorrelationId(correlationId);
+            msg.setBody(args);
+            Message resp;
+            // dispatch the wire down the chain and get the response
+            resp = headInterceptor.invoke(msg);
+            Object body = resp.getBody();
+            if (resp.isFault()) {
+                throw new InvocationTargetException((Throwable) body);
+            }
+            return body;
+        }
     }
 
     /**
@@ -184,40 +215,40 @@ public class Axis2Service extends ServiceExtension {
                 return m;
             }
         }
-        throw new BuilderConfigException("no operation named " + operationName + " found on service interface: " + serviceInterface.getName());
+        throw new BuilderConfigException("no operation named " + operationName + " found on service interface: "
+                + serviceInterface.getName());
     }
 
-    TypeHelper getTypeHelper() {
-        return typeHelper;
-    }
-
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, org.apache.tuscany.spi.model.Operation operation) {
+    public TargetInvoker createCallbackTargetInvoker(
+            ServiceContract contract,
+            org.apache.tuscany.spi.model.Operation operation) {
 
         return new Axis2ServiceCallbackTargetInvoker(workContext, this);
     }
-    
+
     public void addMapping(MessageId msgId, InvocationContext invCtx) {
         this.invCtxMap.put(msgId, invCtx);
     }
-    
+
     public InvocationContext retrieveMapping(MessageId msgId) {
         return this.invCtxMap.get(msgId);
     }
-    
+
     public void removeMapping(MessageId msgId) {
         this.invCtxMap.remove(msgId);
     }
-    
+
     protected class InvocationContext {
         public MessageContext inMessageContext;
-        public Method operationMethod;
-        public SDODataBinding dataBinding;
+
+        public org.apache.tuscany.spi.model.Operation<?> operation;
+
         public SOAPFactory soapFactory;
-        
-        public InvocationContext(MessageContext messageCtx, Method operationMethod, SDODataBinding dataBinding, SOAPFactory soapFactory) {
+
+        public InvocationContext(MessageContext messageCtx, org.apache.tuscany.spi.model.Operation<?> operation,
+                SOAPFactory soapFactory) {
             this.inMessageContext = messageCtx;
-            this.operationMethod = operationMethod;
-            this.dataBinding = dataBinding;
+            this.operation = operation;
             this.soapFactory = soapFactory;
         }
     }

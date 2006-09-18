@@ -19,8 +19,12 @@
 
 package org.apache.tuscany.databinding.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.tuscany.databinding.Mediator;
 import org.apache.tuscany.idl.wsdl.WSDLOperation;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -34,9 +38,7 @@ import org.apache.tuscany.spi.wire.RuntimeWire;
 public class DataBindingInteceptor implements Interceptor {
     private Interceptor next;
 
-    private RuntimeWire sourceWire; // NOPMD by rfeng on 8/29/06 10:15 AM
-
-    private RuntimeWire targetWire; // NOPMD by rfeng on 8/29/06 10:15 AM
+    private CompositeComponent compositeComponent;
 
     private Operation<?> sourceOperation;
 
@@ -47,10 +49,11 @@ public class DataBindingInteceptor implements Interceptor {
     public DataBindingInteceptor(RuntimeWire sourceWire, Operation<?> sourceOperation, RuntimeWire targetWire,
             Operation<?> targetOperation) {
         super();
-        this.sourceWire = sourceWire;
+        // this.sourceWire = sourceWire;
         this.sourceOperation = sourceOperation;
-        this.targetWire = targetWire;
+        // this.targetWire = targetWire;
         this.targetOperation = targetOperation;
+        this.compositeComponent = (CompositeComponent) sourceWire.getContainer().getParent();
     }
 
     /**
@@ -69,15 +72,19 @@ public class DataBindingInteceptor implements Interceptor {
         Message resultMsg = next.invoke(msg);
         Object result = resultMsg.getBody();
         // FIXME: How to deal with faults?
-        if(resultMsg.isFault()) {
+        if (resultMsg.isFault()) {
             // We need to figure out what fault type it is and then transform it back the source fault type
             throw new InvocationRuntimeException((Throwable) result);
         } else if (result != null) {
             // FIXME: Should we fix the Operation model so that getOutputType returns DataType<DataType<T>>?
-            DataType<DataType> targetType = new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
-            targetType.setMetadata(WSDLOperation.class.getName(), targetOperation.getOutputType().getMetadata(WSDLOperation.class.getName()));
-            DataType<DataType> sourceType = new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
-            sourceType.setMetadata(WSDLOperation.class.getName(), sourceOperation.getOutputType().getMetadata(WSDLOperation.class.getName()));
+            DataType<DataType> targetType =
+                    new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
+            targetType.setMetadata(WSDLOperation.class.getName(), targetOperation.getOutputType().getMetadata(
+                    WSDLOperation.class.getName()));
+            DataType<DataType> sourceType =
+                    new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
+            sourceType.setMetadata(WSDLOperation.class.getName(), sourceOperation.getOutputType().getMetadata(
+                    WSDLOperation.class.getName()));
 
             result = transform(result, targetType, sourceType);
             resultMsg.setBody(result);
@@ -93,7 +100,9 @@ public class DataBindingInteceptor implements Interceptor {
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return source;
         }
-        return mediator.mediate(source, sourceType, targetType);
+        Map<Class<?>, Object> metadata = new HashMap<Class<?>, Object>();
+        metadata.put(CompositeComponent.class, compositeComponent);
+        return mediator.mediate(source, sourceType, targetType, metadata);
     }
 
     /**

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding;
 
+import java.util.Map;
+
 import org.apache.tuscany.spi.model.DataType;
 
 /**
@@ -33,9 +35,10 @@ public interface Mediator {
      * @param source The data to be mediated
      * @param sourceDataType Data type for the source data
      * @param targetDataType Data type for the target data
+     * @param context 
      * @return
      */
-    public Object mediate(Object source, DataType sourceDataType, DataType targetDataType);
+    Object mediate(Object source, DataType sourceDataType, DataType targetDataType, Map<Class<?>, Object> context);
     /**
      * Mediate the source data into the target which is a sink to receive the data
      * @param source The data to be mediated
@@ -43,6 +46,6 @@ public interface Mediator {
      * @param sourceDataType Data type for the source data
      * @param targetDataType Data type for the target data
      */
-    public void mediate(Object source, Object target, DataType sourceDataType, DataType targetDataType);
+    void mediate(Object source, Object target, DataType sourceDataType, DataType targetDataType, Map<Class<?>, Object> context);
     
 }
