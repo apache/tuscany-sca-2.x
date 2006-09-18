@@ -49,7 +49,7 @@ public class MavenArtifactRepositoryTest extends TestCase {
      */
     public void testResolveArtifact() {
         
-        String[] remoteRepoUrls = {"http://www.ibiblio.org/maven/"};
+        String[] remoteRepoUrls = {"http://repo1.maven.org/maven2/"};
         MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls);
         Artifact artifact = new Artifact();
         artifact.setGroup("org.apache.maven");
