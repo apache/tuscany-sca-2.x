@@ -27,12 +27,12 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public abstract class ModelObject {
-    private final Map<?, ?> extensions = new HashMap<Object, Object>();
+    private final Map<Object, Object> extensions = new HashMap<Object, Object>();
 
     protected ModelObject() {
     }
 
-    public Map<?, ?> getExtensions() {
+    public Map<Object, Object> getExtensions() {
         return extensions;
     }
 }

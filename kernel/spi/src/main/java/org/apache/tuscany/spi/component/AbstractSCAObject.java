@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +41,7 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
     private final String name;
     private final CompositeComponent parent;
+    private final Map<Object, Object> extensions = new HashMap<Object, Object>();
 
     public AbstractSCAObject(String name, CompositeComponent parent) {
         this.name = name;
@@ -108,5 +110,9 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
 
     public String toString() {
         return "[" + name + "] in state [" + super.toString() + ']';
+    }
+
+    public Map<Object, Object> getExtensions() {
+        return extensions;
     }
 }

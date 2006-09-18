@@ -101,6 +101,11 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                                 ccl.addURL(artifact.getUrl());
                             }
                         }
+                    } else {
+                        // HACK: [rfeng] Add as an unknown model extension
+                        if (o != null) {
+                            composite.getExtensions().put(o.getClass(), o);
+                        }    
                     }
                     reader.next();
                     break;

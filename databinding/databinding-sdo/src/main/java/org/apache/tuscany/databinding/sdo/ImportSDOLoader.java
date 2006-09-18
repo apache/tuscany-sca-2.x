@@ -22,25 +22,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import commonj.sdo.helper.TypeHelper;
-import commonj.sdo.helper.XSDHelper;
-
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderUtil;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.annotation.Autowire;
-
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.osoa.sca.Version;
 import org.osoa.sca.annotations.Constructor;
+
+import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.XSDHelper;
 
 /**
  * Loader that handles &lt;import.sdo&gt; elements.
@@ -59,9 +59,10 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException,
-            LoaderException {
+    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
+
         // FIXME: [rfeng] How to associate the TypeHelper with deployment context?
         TypeHelper typeHelper = TypeHelper.INSTANCE;
         if (deploymentContext != null && deploymentContext.getParent() != null) {
@@ -75,7 +76,7 @@ public class ImportSDOLoader extends LoaderExtension {
         importFactory(reader, deploymentContext);
         importWSDL(reader, deploymentContext, typeHelper);
         LoaderUtil.skipToEndElement(reader);
-        return null;
+        return new SDOType(typeHelper);
     }
 
     private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext) throws LoaderException {
@@ -87,6 +88,7 @@ public class ImportSDOLoader extends LoaderExtension {
                 ClassLoader cl = deploymentContext.getClassLoader();
                 Thread.currentThread().setContextClassLoader(cl);
                 Class<?> factoryClass = cl.loadClass(factoryName);
+                // FIXME: We require the SDO to provide an API to register static types in a given TypeHelper
                 SDOUtil.registerStaticTypes(factoryClass);
             } catch (ClassNotFoundException e) {
                 throw new LoaderException(e.getMessage(), e);
@@ -96,7 +98,8 @@ public class ImportSDOLoader extends LoaderExtension {
         }
     }
 
-    private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, TypeHelper typeHelper) throws LoaderException {
+    private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, TypeHelper typeHelper)
+        throws LoaderException {
         String location = reader.getAttributeValue(null, "location");
         if (location == null)
             location = reader.getAttributeValue(null, "wsdlLocation");
@@ -125,6 +128,19 @@ public class ImportSDOLoader extends LoaderExtension {
                 sfe.setResourceURI(location);
                 throw sfe;
             }
+        }
+    }
+
+    public static class SDOType extends ModelObject {
+        private TypeHelper typeHelper;
+
+        public SDOType(TypeHelper typeHelper) {
+            super();
+            this.typeHelper = typeHelper;
+        }
+
+        public TypeHelper getTypeHelper() {
+            return typeHelper;
         }
     }
 }
