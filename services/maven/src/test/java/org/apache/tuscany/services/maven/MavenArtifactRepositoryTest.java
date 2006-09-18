@@ -18,6 +18,12 @@
  */
 package org.apache.tuscany.services.maven;
 
+
+import java.net.URL;
+import java.util.Set;
+
+import org.apache.tuscany.spi.services.artifact.Artifact;
+
 import junit.framework.TestCase;
 
 /**
@@ -42,6 +48,21 @@ public class MavenArtifactRepositoryTest extends TestCase {
      * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Artifact)'
      */
     public void testResolveArtifact() {
+        
+        String[] remoteRepoUrls = {"http://www.ibiblio.org/maven/"};
+        MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls);
+        Artifact artifact = new Artifact();
+        artifact.setGroup("org.apache.maven");
+        artifact.setName("maven-artifact");
+        artifact.setVersion("2.0.4");
+        artifact.setType("jar");
+        
+        repository.resolve(artifact);
+        
+        Set<URL> urls = artifact.getUrls();
+        assertEquals(2, urls.size());
+        
+        
 
     }
 
@@ -49,6 +70,7 @@ public class MavenArtifactRepositoryTest extends TestCase {
      * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Collection<? extends Artifact>)'
      */
     public void testResolveCollectionOfQextendsArtifact() {
+        
 
     }
 
