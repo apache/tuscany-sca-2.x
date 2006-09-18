@@ -54,8 +54,8 @@ public class TransformerRegistryImplTestCase extends TestCase {
 
     public void testRegisterTransformerTransformer() {
         Transformer transformer = createMock(Transformer.class);
-        expect(transformer.getSourceBinding()).andReturn("a");
-        expect(transformer.getTargetBinding()).andReturn("b");
+        expect(transformer.getSourceDataBinding()).andReturn("a");
+        expect(transformer.getTargetDataBinding()).andReturn("b");
         expect(transformer.getWeight()).andReturn(10);
         replay(transformer);
         registry.registerTransformer(transformer);
@@ -74,19 +74,19 @@ public class TransformerRegistryImplTestCase extends TestCase {
 
     public void testGetTransformerChain() {
         Transformer t1 = createMock(Transformer.class);
-        expect(t1.getSourceBinding()).andReturn("a");
-        expect(t1.getTargetBinding()).andReturn("b");
+        expect(t1.getSourceDataBinding()).andReturn("a");
+        expect(t1.getTargetDataBinding()).andReturn("b");
         expect(t1.getWeight()).andReturn(10);
         replay(t1);
         Transformer t2 = createMock(Transformer.class);
-        expect(t2.getSourceBinding()).andReturn("b");
-        expect(t2.getTargetBinding()).andReturn("c");
+        expect(t2.getSourceDataBinding()).andReturn("b");
+        expect(t2.getTargetDataBinding()).andReturn("c");
         expect(t2.getWeight()).andReturn(20);
         replay(t2);
 
         Transformer t3 = createMock(Transformer.class);
-        expect(t3.getSourceBinding()).andReturn("a");
-        expect(t3.getTargetBinding()).andReturn("c");
+        expect(t3.getSourceDataBinding()).andReturn("a");
+        expect(t3.getTargetDataBinding()).andReturn("c");
         expect(t3.getWeight()).andReturn(120);
         replay(t3);
 

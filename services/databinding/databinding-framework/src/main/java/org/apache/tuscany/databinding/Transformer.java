@@ -32,7 +32,7 @@ public interface Transformer {
      *  
      * @return A key indentifying the source type
      */
-    public String getSourceBinding();
+    public String getSourceDataBinding();
 
     /**
      * Get the target type that this transformer transforms data into. The type is used as the key when the
@@ -40,7 +40,7 @@ public interface Transformer {
      * 
      * @return A key indentifying the target type
      */
-    public String getTargetBinding();
+    public String getTargetDataBinding();
 
     /**
      * Get the cost of the transformation. The weight can be used to choose the most efficient path if

@@ -76,12 +76,12 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     }
 
     @Override
-    public String getSourceBinding() {
+    public String getSourceDataBinding() {
         return IDL_OUTPUT;
     }
 
     @Override
-    public String getTargetBinding() {
+    public String getTargetDataBinding() {
         return IDL_OUTPUT;
     }
 

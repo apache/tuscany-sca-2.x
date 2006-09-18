@@ -111,9 +111,9 @@ public class MediatorImpl implements Mediator {
             Map<Class<?>, Object> metadata) {
         DataType sourceType =
                 (index == 0) ? sourceDataType
-                        : new DataType<Object>(transformer.getSourceBinding(), Object.class, null);
+                        : new DataType<Object>(transformer.getSourceDataBinding(), Object.class, null);
         DataType targetType =
-                (index == size - 1) ? targetDataType : new DataType<Object>(transformer.getTargetBinding(),
+                (index == size - 1) ? targetDataType : new DataType<Object>(transformer.getTargetDataBinding(),
                         Object.class, null);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         TransformationContext context = new TransformationContextImpl(sourceType, targetType, classLoader, metadata);

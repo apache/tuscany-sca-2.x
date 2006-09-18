@@ -49,11 +49,11 @@ public abstract class TransformerExtension<S, T> implements Transformer {
     protected abstract Class getSourceType();
     protected abstract Class getTargetType();
     
-    public String getSourceBinding() {
+    public String getSourceDataBinding() {
         return getSourceType().getName();
     }
 
-    public String getTargetBinding() {
+    public String getTargetDataBinding() {
         return getTargetType().getName();
     }
 

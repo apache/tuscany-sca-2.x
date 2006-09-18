@@ -36,6 +36,8 @@ import commonj.sdo.helper.XMLHelper;
 public class DataObject2String extends TransformerExtension<DataObject, String> implements
         PullTransformer<DataObject, String> {
 
+    private static final String TUSCANY_SDO = "http://tuscany.apache.org/xmlns/sdo/1.0-SNAPSHOT";
+
     public String transform(DataObject source, TransformationContext context) {
         try {
             TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
@@ -45,7 +47,7 @@ public class DataObject2String extends TransformerExtension<DataObject, String> 
                 QName elementName = (QName) logicalType;
                 return xmlHelper.save(source, elementName.getNamespaceURI(), elementName.getLocalPart());
             } else {
-                return xmlHelper.save(source, "commonj.sdo", "dataObject");
+                return xmlHelper.save(source, TUSCANY_SDO, "dataObject");
             }
         } catch (Exception e) {
             throw new TransformationException(e);
