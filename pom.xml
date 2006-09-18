@@ -32,9 +32,6 @@
     <properties>
         <sca.version>1.0-incubator-M2-SNAPSHOT</sca.version>
         <scaKernelVersion>1.0-incubator-M2-SNAPSHOT</scaKernelVersion>
-	<!--
-        <notice.dir>.</notice.dir>
-	-->
         <axis2Version>SNAPSHOT</axis2Version>
     </properties>
 
