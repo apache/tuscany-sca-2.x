@@ -24,10 +24,10 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.PullTransformer;
 
 /**
- *
- * @param <S>
- * @param <I>
- * @param <R>
+ * A utility class to connect PushTransformer and DataPipe to create a PullTransformer
+ * @param <S> Source type
+ * @param <I> Intermidate type
+ * @param <R> Result type
  */
 public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {
     private PushTransformer<S, I> pusher;
@@ -49,12 +49,12 @@ public class PipedTransformer<S, I, R> implements PullTransformer<S, R> {
         return pipe.getResult();
     }
 
-    public String getSourceBinding() {
-        return pusher.getSourceBinding();
+    public String getSourceDataBinding() {
+        return pusher.getSourceDataBinding();
     }
 
-    public String getTargetBinding() {
-        return pipe.getTargetBinding();
+    public String getTargetDataBinding() {
+        return pipe.getTargetDataBinding();
     }
 
     public int getWeight() {

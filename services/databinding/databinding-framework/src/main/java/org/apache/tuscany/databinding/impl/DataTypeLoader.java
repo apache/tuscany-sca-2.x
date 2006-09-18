@@ -25,8 +25,10 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Constructor;
 
@@ -34,9 +36,9 @@ import org.osoa.sca.annotations.Constructor;
  * The StAX loader for data type
  */
 public class DataTypeLoader extends LoaderExtension<DataType> {
-    public static final QName DATA_BINDING = new QName("http://tuscany.apache.org/xmlns/databinding/1.0", "databinding");
+    public static final QName DATA_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/databinding/1.0", "databinding");
 
-    @Constructor({"registry"})
+    @Constructor( { "registry" })
     public DataTypeLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -46,10 +48,15 @@ public class DataTypeLoader extends LoaderExtension<DataType> {
         return DATA_BINDING;
     }
 
-    public DataType load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public DataType load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
         assert DATA_BINDING.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
+        LoaderUtil.skipToEndElement(reader);
+        if (name == null) {
+            throw new InvalidValueException("The 'name' attrbiute is required");
+        }
         DataType dataType = new DataType<Class>(name, Object.class, Object.class);
         return dataType;
-    }    
+    }
 }

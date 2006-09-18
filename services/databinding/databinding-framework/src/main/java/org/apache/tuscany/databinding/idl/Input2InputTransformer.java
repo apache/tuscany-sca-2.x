@@ -57,12 +57,12 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     }
 
     @Override
-    public String getSourceBinding() {
+    public String getSourceDataBinding() {
         return IDL_INPUT;
     }
 
     @Override
-    public String getTargetBinding() {
+    public String getTargetDataBinding() {
         return IDL_INPUT;
     }
 

@@ -19,9 +19,13 @@
 package org.apache.tuscany.idl.wsdl;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.wsdl.PortType;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -38,6 +42,9 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Loads a WSDL interface definition from an XML-based assembly file
@@ -81,9 +88,23 @@ public class InterfaceWSDLLoader extends LoaderExtension {
 
         String callbackURI = reader.getAttributeValue(null, "callbackInterface");
         String wsdlLocation = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
+        
+        Map<Class<?>, ModelObject> extensions = new HashMap<Class<?>, ModelObject>();
+        while (true) {
+            int event = reader.next();
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                ModelObject mo = registry.load(parent, reader, deploymentContext);
+                if (mo != null) {
+                    extensions.put(mo.getClass(), mo);
+                }
+            } else if (event == XMLStreamConstants.END_ELEMENT) {
+                if (reader.getName().equals(INTERFACE_WSDL)) {
+                    break;
+                }
+            }
+        }        
         // FIXME set the interaction scope
         // serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
-        LoaderUtil.skipToEndElement(reader);
 
         if (wsdlLocation != null) {
             try {
@@ -108,7 +129,13 @@ public class InterfaceWSDLLoader extends LoaderExtension {
             callback = getPortType(callbackURI);
         }
         try {
-            return introspector.introspect(portType, callback);
+            WSDLServiceContract contract = introspector.introspect(portType, callback);
+            DataType<?> dataType = (DataType<?>) extensions.get(DataType.class);
+            if (dataType != null) {
+                contract.setDataBinding(dataType.getDataBinding());
+            }
+            contract.getExtensions().putAll(extensions);
+            return contract;
         } catch (InvalidServiceContractException e) {
             LoaderException le = new LoaderException(e);
             le.setIdentifier(wsdlLocation);

@@ -51,4 +51,13 @@ public class DataObject2StringTestCase extends SDOTransformerTestCaseBase {
         Assert.assertEquals("San Jose", orderType.getBillTo().getCity());
     }
 
+    public final void testXML() {
+        String xml =
+                "<foo xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ipo=\"http://www.example.com/IPO\" xsi:type=\"ipo:USAddress\"/>";
+        DataObject dataObject = new String2DataObject().transform(xml, reversedContext);
+        context.setSourceDataType(new DataType<QName>(DataObject.class.getName(), DataObject.class, null));
+        xml = new DataObject2String().transform(dataObject, context);
+        Assert.assertTrue(xml.contains("xsi:type=\"ipo:USAddress\""));
+    }
+
 }
