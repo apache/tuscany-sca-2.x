@@ -20,7 +20,8 @@
 package org.apache.tuscany.databinding.sdo;
 
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
+import org.apache.tuscany.spi.component.CompositeComponent;
 
 import commonj.sdo.helper.TypeHelper;
 
@@ -31,14 +32,20 @@ public class SDODataTypeHelper {
     private SDODataTypeHelper() {
     }
 
-    public static TypeHelper getTypeHelper(TransformationContext context, boolean source) {
-        if (context == null) {
+    public static TypeHelper getTypeHelper(TransformationContext context) {
+        TypeHelper typeHelper = null;
+        if (context == null || context.getMetadata() == null) {
             return TypeHelper.INSTANCE;
         }
-        DataType<?> dataType = source ? context.getSourceDataType() : context.getTargetDataType();
-        TypeHelper typeHelper = (TypeHelper) dataType.getMetadata(TypeHelper.class.getName());
+        CompositeComponent composite = (CompositeComponent) context.getMetadata().get(CompositeComponent.class);
+        if (composite != null) {
+            SDOType sdoType = (SDOType) composite.getExtensions().get(SDOType.class);
+            if (sdoType != null) {
+                typeHelper = sdoType.getTypeHelper();
+            }
+        }
         if (typeHelper == null) {
-            typeHelper = TypeHelper.INSTANCE;
+            return TypeHelper.INSTANCE;
         }
         return typeHelper;
     }

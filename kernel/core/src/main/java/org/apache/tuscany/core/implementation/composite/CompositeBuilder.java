@@ -82,22 +82,6 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
             }
         }
 
-        /*
-        // add in components and services from included composites
-        for (Include include : componentType.getIncludes().values()) {
-            CompositeComponentType<?, ?, ?> included = include.getIncluded();
-            allComponents.addAll(included.getComponents().values());
-            for (ServiceDefinition serviceDefinition : included.getServices().values()) {
-                if (serviceDefinition instanceof BoundServiceDefinition) {
-                    BoundServiceDefinition<? extends Binding> boundService =
-                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
-                    allBoundServices.add(boundService);
-                }
-            }
-            // TODO how to include references
-        }
-        */
-
         String name = componentDefinition.getName();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, null, connector, null);
         for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
@@ -115,6 +99,10 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
             component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
         }
+        
+        // HACK: [rfeng] We need a better way to propagate model extensions to SCAObject.
+        component.getExtensions().putAll(componentType.getExtensions());
+        
         return component;
     }
 

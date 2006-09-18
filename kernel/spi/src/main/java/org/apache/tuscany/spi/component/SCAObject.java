@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.util.Map;
+
 import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.event.EventPublisher;
 import org.apache.tuscany.spi.model.Scope;
@@ -56,5 +58,12 @@ public interface SCAObject extends EventPublisher, Lifecycle {
      * as wiring of its children
      */
     void prepare();
+    
+    /**
+     * The extensions map contains other runtime context such as type systems for various databindings
+     * 
+     * @return A live map of extended context
+     */
+    Map<Object, Object> getExtensions();
 
 }
