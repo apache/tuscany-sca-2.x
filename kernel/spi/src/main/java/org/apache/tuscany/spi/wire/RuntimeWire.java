@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.wire;
 
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.component.SCAObject;
 
 /**
  * The base wire type used to connect references and services
@@ -58,12 +59,12 @@ public interface RuntimeWire {
     boolean isOptimizable();
 
     /**
-     * Returns the name of the SCAObject that contains this wire
+     * Returns the SCAObject that contains this wire
      */
-    String getContainerName();
+    SCAObject getContainer();
 
     /**
      * Sets the name of the SCAObject that contains this wire
      */
-    void setContainerName(String name);
+    void setContainer(SCAObject container);
 }

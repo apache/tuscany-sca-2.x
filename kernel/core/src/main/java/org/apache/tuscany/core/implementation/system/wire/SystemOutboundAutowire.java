@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -44,7 +45,7 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
     private ServiceContract serviceContract;
     private AutowireComponent component;
     private final boolean required;
-    private String containerName;
+    private SCAObject container;
 
     public SystemOutboundAutowire(String referenceName, Class<?> interfaze, AutowireComponent component,
                                   boolean required) {
@@ -141,11 +142,11 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
         return true;
     }
 
-    public String getContainerName() {
-        return containerName;
+    public SCAObject getContainer() {
+        return container;
     }
     
-    public void setContainerName(String name) {
-        this.containerName = name;
+    public void setContainer(SCAObject container) {
+        this.container = container;
     }
 }

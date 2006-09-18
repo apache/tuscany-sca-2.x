@@ -60,7 +60,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
         throws NoMethodForOperationException {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        this.fromAddress = wire.getContainerName();
+        this.fromAddress = (wire.getContainer() == null) ? null : wire.getContainer().getName();
         Method[] methods = wire.getServiceContract().getInterfaceClass().getMethods();
         // TODO optimize this
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
