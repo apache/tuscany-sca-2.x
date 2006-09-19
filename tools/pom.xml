@@ -57,9 +57,9 @@
         </dependency>
 
         <dependency>
-            <groupId>ws-commons</groupId>
-            <artifactId>policy</artifactId>
-            <version>1.0</version>
+            <groupId>org.apache.ws.commons</groupId>
+            <artifactId>neethi</artifactId>
+            <version>SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
