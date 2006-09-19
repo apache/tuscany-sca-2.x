@@ -102,6 +102,8 @@ public class MavenHelper {
             artifactResolver = (ArtifactResolver) embedder.lookup(ArtifactResolver.ROLE);
 
             setUpRepositories(embedder);
+            
+            embedder.stop();
 
         } catch (DuplicateRealmException ex) {
             throw new TuscanyMavenException(ex);
