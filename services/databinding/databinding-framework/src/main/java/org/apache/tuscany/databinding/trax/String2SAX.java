@@ -20,10 +20,13 @@ package org.apache.tuscany.databinding.trax;
 
 import java.io.StringReader;
 
+import javax.xml.transform.Transformer;
+
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
@@ -31,6 +34,7 @@ import org.xml.sax.InputSource;
  * Transform XML string to SAX
  * 
  */
+@Service(Transformer.class)
 public class String2SAX extends TransformerExtension<String, ContentHandler> implements PushTransformer<String, ContentHandler> {
     /*
      * private static final TransformerFactory factory = TransformerFactory.newInstance();

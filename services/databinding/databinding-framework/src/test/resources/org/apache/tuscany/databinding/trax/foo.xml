@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<f:foo xmlns:f="http://foo" name="foo">
+    <b:bar xmlns:b="http://bar">bar</b:bar>
+</f:foo>    
