@@ -86,6 +86,8 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         TransformerRegistryImpl tr = new TransformerRegistryImpl();
         tr.registerTransformer(new String2OMElement());
         tr.registerTransformer(new OMElement2String());
+        tr.registerTransformer(new Object2OMElement());
+        tr.registerTransformer(new OMElement2Object());
         m.setTransformerRegistry(tr);
         DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
         dataBindingRegistry.register(new AxiomDataBinding());
@@ -98,9 +100,9 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
 
         TransformationContext context = new TransformationContextImpl();
         List<DataType<Class>> types = new ArrayList<DataType<Class>>();
-        types.add(new DataType<Class>(null, String.class, String.class));
+        types.add(new DataType<Class>(Object.class.getName(), String.class, String.class));
         types.add(new DataType<Class>("java.lang.String", String.class, String.class));
-        types.add(new DataType<Class>(null, int.class, int.class));
+        types.add(new DataType<Class>(Object.class.getName(), int.class, int.class));
         DataType<List<DataType<Class>>> inputType1 =
                 new DataType<List<DataType<Class>>>("idl:input", Object[].class, types);
         context.setSourceDataType(inputType1);
@@ -118,7 +120,7 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         
         context1.setSourceDataType(sourceType);
         DataType<DataType> targetType =
-                new DataType<DataType>("idl:output", Object.class, new DataType<Class>("java.lang.String",
+                new DataType<DataType>("idl:output", Object.class, new DataType<Class>("java.lang.Object",
                         String.class, String.class));
         context1.setTargetDataType(targetType);
 

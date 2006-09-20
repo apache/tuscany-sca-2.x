@@ -36,8 +36,6 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
-import org.apache.ws.commons.schema.XmlSchemaType;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -126,7 +124,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     private WrapperHandler getWapperHandler(String dataBindingId) {
         DataBinding dataBinding = dataBindingRegistry.getDataBinding(dataBindingId);
         return dataBinding == null ? null : dataBinding.getWrapperHandler();
-    }    
+    }
 
     @SuppressWarnings("unchecked")
     public Object transform(Object response, TransformationContext context) {
@@ -157,15 +155,9 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
 
                 XmlSchemaElement argElement = wrapper.getOutputChildElements().get(0);
                 DataType<QName> argType = wrapper.getUnwrappedOutputType();
-                XmlSchemaType argXSDType = argElement.getSchemaType();
-                boolean isSimpleType = (argXSDType instanceof XmlSchemaSimpleType);
                 Object child = response;
-                if (!isSimpleType) {
-                    child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
-                    targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
-                } else {
-                    targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
-                }
+                child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
+                targetWrapperHandler.setChild(targetWrapper, 0, argElement, child);
                 return targetWrapper;
             } else if (sourceWrapped && (!targetWrapped)) {
                 // Wrapped to Unwrapped
@@ -185,13 +177,9 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                                     .getMetadata());
                     return targetWrapperHandler.getChild(targetWrapper, 0, childElement);
                 } else {
-                    if (childElement.getSchemaType() instanceof XmlSchemaSimpleType) {
-                        return sourceWrapperHandler.getChild(sourceWrapper, 0, childElement);
-                    } else {
-                        Object child = sourceWrapperHandler.getChild(sourceWrapper, 0, childElement);
-                        DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
-                        return mediator.mediate(child, childType, targetType.getLogical(), context.getMetadata());
-                    }
+                    Object child = sourceWrapperHandler.getChild(sourceWrapper, 0, childElement);
+                    DataType<?> childType = sourceOp.getWrapper().getUnwrappedOutputType();
+                    return mediator.mediate(child, childType, targetType.getLogical(), context.getMetadata());
                 }
             } else {
                 // FIXME: Do we want to handle wrapped to wrapped?

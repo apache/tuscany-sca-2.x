@@ -20,6 +20,16 @@
 package org.apache.tuscany.databinding.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.tuscany.api.annotation.DataContext;
 import org.apache.tuscany.api.annotation.DataType;
@@ -32,6 +42,8 @@ import org.apache.tuscany.spi.model.Operation;
  * The databinding annotation processor for java interfaces
  */
 public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExtension {
+
+    private static final String SIMPLE_JAVA_OBJECTS = "java.lang.Object";
 
     /**
      * @see org.apache.tuscany.spi.idl.java.JavaInterfaceProcessor#visitInterface(java.lang.Class,
@@ -47,27 +59,48 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
             }
         }
         for (Method method : clazz.getMethods()) {
+            Operation<?> operation = contract.getOperations().get(method.getName());
             DataType operationDataType = method.getAnnotation(DataType.class);
-            if (operationDataType == null) {
-                operationDataType = interfaceDataType;
-            }
+
             if (operationDataType != null) {
-                Operation<?> operation = contract.getOperations().get(method.getName());
-                String dataBinding = operationDataType.name();
-                operation.setDataBinding(dataBinding);
+                operation.setDataBinding(operationDataType.name());
                 // FIXME: [rfeng] Keep data context as metadata?
                 for (DataContext c : operationDataType.context()) {
                     operation.setMetaData(c.key(), c.value());
                 }
-                for (org.apache.tuscany.spi.model.DataType<?> d : operation.getInputType().getLogical()) {
-                    d.setDataBinding(dataBinding);
-                }
-                if (operation.getOutputType() != null) {
-                    operation.getOutputType().setDataBinding(dataBinding);
-                }
-                for (org.apache.tuscany.spi.model.DataType<?> d : operation.getFaultTypes()) {
-                    d.setDataBinding(dataBinding);
-                }
+            }
+
+            String dataBinding = operation.getDataBinding();
+
+            for (org.apache.tuscany.spi.model.DataType<?> d : operation.getInputType().getLogical()) {
+                adjustSimpleType(d, dataBinding);
+            }
+            if (operation.getOutputType() != null) {
+                adjustSimpleType(operation.getOutputType(), dataBinding);
+            }
+            for (org.apache.tuscany.spi.model.DataType<?> d : operation.getFaultTypes()) {
+                adjustSimpleType(d, dataBinding);
+            }
+        }
+    }
+
+    private final static Class[] simpleTypes =
+            { Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
+                    Date.class, Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class };
+
+    private final static Set<Class> simpleTypeSet = new HashSet<Class>(Arrays.asList(simpleTypes));
+
+    private void adjustSimpleType(org.apache.tuscany.spi.model.DataType<?> dataType, String dataBinding) {
+        Type type = dataType.getPhysical();
+        if (!(type instanceof Class)) {
+            return;
+        }
+        Class cls = (Class) dataType.getPhysical();
+        if (cls.isPrimitive() || simpleTypeSet.contains(cls)) {
+            dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
+        } else if (cls == String.class) {
+            if (dataBinding == null || !dataBinding.equals(String.class.getName())) {
+                dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
             }
         }
     }

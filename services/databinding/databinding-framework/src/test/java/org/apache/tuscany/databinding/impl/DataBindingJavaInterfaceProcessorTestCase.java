@@ -54,8 +54,8 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         DataBindingJavaInterfaceProcessor processor = new DataBindingJavaInterfaceProcessor();
         JavaServiceContract contract = new JavaServiceContract(MockInterface.class);
         Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
-        Operation<Type> operation = new Operation<Type>("call", null, null, null, false, "dummy");
-        Operation<Type> operation1 = new Operation<Type>("call1", null, null, null, false, "dummy");
+        Operation<Type> operation = new Operation<Type>("call", null, null, null, false, null);
+        Operation<Type> operation1 = new Operation<Type>("call1", null, null, null, false, null);
         operations.put("call", operation);
         operations.put("call1", operation1);
         contract.setOperations(operations);
