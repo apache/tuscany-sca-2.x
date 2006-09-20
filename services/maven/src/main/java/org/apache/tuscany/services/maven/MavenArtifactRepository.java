@@ -20,9 +20,12 @@ package org.apache.tuscany.services.maven;
 
 import java.util.Collection;
 
+import org.apache.maven.plugin.registry.RuntimeInfo;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Property;
 
 /**
  * Artifact repository used for resolving artifacts.
@@ -34,24 +37,26 @@ import org.osoa.sca.annotations.Destroy;
  * @version $Rev$ $Date$
  */
 public class MavenArtifactRepository implements ArtifactRepository {
-    
+
     /** Maven helper */
     private MavenHelper mavenHelper;
 
     /**
      * Conctructs a new artifact repository.
      */
-    public MavenArtifactRepository(String[] remoteRepoUrls) {
-        mavenHelper = new MavenHelper(remoteRepoUrls);
+    public MavenArtifactRepository(@Property(name = "remoteRepoUrls")
+    String[] remoteRepoUrls, @Autowire
+    RuntimeInfo runtimeInfo) {
+        mavenHelper = new MavenHelper(remoteRepoUrls, runtimeInfo);
         mavenHelper.start();
     }
 
     /**
-     * Resolve an artifact.
-     * This ensures that the information associated with an artifact is fully populated;
-     * Specifically, after this operation the URL should contain a location where the artifact can be obtained.
-     *
-     * @param artifact the artifact to be resolved
+     * Resolve an artifact. This ensures that the information associated with an artifact is fully populated; Specifically, after this operation the
+     * URL should contain a location where the artifact can be obtained.
+     * 
+     * @param artifact
+     *            the artifact to be resolved
      */
     public void resolve(Artifact rootArtifact) {
         mavenHelper.resolveTransitively(rootArtifact);
@@ -59,8 +64,9 @@ public class MavenArtifactRepository implements ArtifactRepository {
 
     /**
      * Resolve a collection of Artifacts.
-     *
-     * @param artifacts a collection of artifacts to be resolved
+     * 
+     * @param artifacts
+     *            a collection of artifacts to be resolved
      * @see #resolve(Artifact)
      */
     public void resolve(Collection<? extends Artifact> artifacts) {
@@ -68,10 +74,10 @@ public class MavenArtifactRepository implements ArtifactRepository {
             resolve(artifact);
         }
     }
-    
+
     /**
      * Destroy method.
-     *
+     * 
      */
     @Destroy
     public void destroy() {
