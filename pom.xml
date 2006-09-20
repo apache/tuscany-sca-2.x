@@ -128,7 +128,7 @@
             <dependency>
                 <groupId>woodstox</groupId>
                 <artifactId>wstx-asl</artifactId>
-                <version>2.9.3</version>
+                <version>3.0.1</version>
                 <scope>runtime</scope>
             </dependency>
 
