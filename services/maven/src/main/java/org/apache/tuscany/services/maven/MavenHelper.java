@@ -36,8 +36,9 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.plugin.registry.RuntimeInfo;
+
 import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.services.info.RuntimeInfo;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.plexus.PlexusContainerException;
