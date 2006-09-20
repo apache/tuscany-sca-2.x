@@ -20,17 +20,20 @@ package org.apache.tuscany.databinding.trax;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
 import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Transform TrAX Source to Result
  * 
  */
+@Service(Transformer.class)
 public class Source2ResultTransformer extends TransformerExtension<Source, Result> implements PushTransformer<Source, Result> {
     private static final TransformerFactory factory = TransformerFactory.newInstance();
 

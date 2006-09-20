@@ -20,16 +20,20 @@ package org.apache.tuscany.databinding.trax;
 
 import java.io.StringWriter;
 
+import javax.xml.transform.Transformer;
+
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML String
  *
  */
+@Service(Transformer.class)
 public class Node2String extends TransformerExtension<Node, String> implements PullTransformer<Node, String> {
     private static final Node2Writer transformer = new Node2Writer();
 

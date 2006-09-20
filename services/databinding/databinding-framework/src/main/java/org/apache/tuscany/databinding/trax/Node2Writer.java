@@ -22,6 +22,7 @@ import java.io.Writer;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
@@ -29,12 +30,14 @@ import org.apache.tuscany.databinding.PushTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 
 /**
  * Push DOM Node to Writer
  * 
  */
+@Service(Transformer.class)
 public class Node2Writer extends TransformerExtension<Node, Writer> implements PushTransformer<Node, Writer> {
     private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
 

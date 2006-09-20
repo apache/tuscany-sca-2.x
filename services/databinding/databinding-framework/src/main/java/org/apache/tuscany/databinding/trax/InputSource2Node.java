@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.databinding.trax;
 
-import java.io.InputStream;
-
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -28,19 +27,21 @@ import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
- * Push DOM InputStream to Node
+ * Push DOM InputSource to Node
  * 
  */
-public class InputSource2Node extends TransformerExtension<InputSource, Node> implements PullTransformer<InputStream, Node> {
+@Service(Transformer.class)
+public class InputSource2Node extends TransformerExtension<InputSource, Node> implements PullTransformer<InputSource, Node> {
     private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
 
-    public Node transform(InputStream source, TransformationContext context) {
+    public Node transform(InputSource source, TransformationContext context) {
         try {
-            Source streamSource = new StreamSource(source);
+            Source streamSource = new StreamSource(source.getCharacterStream());
             DOMResult result = new DOMResult();
             transformer.transform(streamSource, result, context);
             return result.getNode();
@@ -50,7 +51,7 @@ public class InputSource2Node extends TransformerExtension<InputSource, Node> im
     }
 
     public Class getSourceType() {
-        return InputStream.class;
+        return InputSource.class;
     }
 
     public Class getTargetType() {

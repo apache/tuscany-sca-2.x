@@ -35,7 +35,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * @author G. Todd Miller
+ * SAX2DOM adapter
+ *
  */
 public class SAX2DOM implements ContentHandler, LexicalHandler {
     public static final String EMPTYSTRING = "";

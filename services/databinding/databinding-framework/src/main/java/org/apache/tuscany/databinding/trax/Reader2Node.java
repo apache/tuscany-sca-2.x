@@ -21,6 +21,7 @@ package org.apache.tuscany.databinding.trax;
 import java.io.Reader;
 
 import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -28,12 +29,14 @@ import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 
 /**
  * Push DOM Reader to Node
  * 
  */
+@Service(Transformer.class)
 public class Reader2Node extends TransformerExtension<Reader, Node> implements PullTransformer<Reader, Node> {
     private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
 
