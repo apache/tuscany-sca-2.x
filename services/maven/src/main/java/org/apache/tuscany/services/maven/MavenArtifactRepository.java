@@ -20,10 +20,10 @@ package org.apache.tuscany.services.maven;
 
 import java.util.Collection;
 
-import org.apache.maven.plugin.registry.RuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+import org.apache.tuscany.spi.services.info.RuntimeInfo;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Property;
 
