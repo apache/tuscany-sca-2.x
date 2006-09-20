@@ -35,8 +35,6 @@ import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
-import org.apache.ws.commons.schema.XmlSchemaType;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -146,15 +144,9 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             for (int i = 0; i < source.length; i++) {
                 XmlSchemaElement argElement = wrapper.getInputChildElements().get(i);
                 DataType<QName> argType = argTypes.get(i);
-                XmlSchemaType argXSDType = argElement.getSchemaType();
-                boolean isSimpleType = (argXSDType instanceof XmlSchemaSimpleType);
                 Object child = source[i];
-                if (!isSimpleType) {
-                    child = mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context.getMetadata());
-                    targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
-                } else {
-                    targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
-                }
+                child = mediator.mediate(source[i], sourceType.getLogical().get(i), argType, context.getMetadata());
+                targetWrapperHandler.setChild(targetWrapper, i, argElement, child);
             }
             return new Object[] { targetWrapper };
         } else if (sourceWrapped && (!targetWrapped)) {
@@ -168,7 +160,8 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
                 XmlSchemaElement wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                 // Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
                 DataType<QName> targetWrapperType =
-                        new DataType<QName>(targetType.getLogical().get(0).getDataBinding(), Object.class, wrapperElement.getQName());
+                        new DataType<QName>(targetType.getLogical().get(0).getDataBinding(), Object.class,
+                                wrapperElement.getQName());
                 Object targetWrapper =
                         mediator.mediate(sourceWrapper, sourceType.getLogical().get(0), targetWrapperType, context
                                 .getMetadata());
@@ -179,15 +172,10 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             } else {
                 for (int i = 0; i < childElements.size(); i++) {
                     XmlSchemaElement childElement = childElements.get(i);
-                    if (childElement.getSchemaType() instanceof XmlSchemaSimpleType) {
-                        target[i] = sourceWrapperHandler.getChild(sourceWrapper, i, childElement);
-                    } else {
-                        Object child = sourceWrapperHandler.getChild(sourceWrapper, i, childElement);
-                        DataType<QName> childType = sourceOp.getWrapper().getUnwrappedInputType().getLogical().get(i);
-                        target[i] =
-                                mediator.mediate(child, childType, targetType.getLogical().get(i), context
-                                        .getMetadata());
-                    }
+                    Object child = sourceWrapperHandler.getChild(sourceWrapper, i, childElement);
+                    DataType<QName> childType = sourceOp.getWrapper().getUnwrappedInputType().getLogical().get(i);
+                    target[i] =
+                            mediator.mediate(child, childType, targetType.getLogical().get(i), context.getMetadata());
                 }
             }
             return target;

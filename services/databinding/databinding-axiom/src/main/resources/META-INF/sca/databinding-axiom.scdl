@@ -36,4 +36,12 @@
     <component name="transformer.OMElement2String">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2String" />
     </component>    
+    
+    <component name="transformer.Object2OMElement">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.Object2OMElement" />
+    </component>
+    
+    <component name="transformer.OMElement2Object">
+        <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2Object" />
+    </component>        
 </composite>

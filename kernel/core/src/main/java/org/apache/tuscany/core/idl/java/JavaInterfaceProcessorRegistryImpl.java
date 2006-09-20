@@ -48,6 +48,8 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
  */
 public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcessorRegistry {
 
+    private static final String UNKNOWN_DATABINDING = null;
+
     public static final String IDL_INPUT = "idl:input";
     
     private List<JavaInterfaceProcessor> processors = new ArrayList<JavaInterfaceProcessor>();
@@ -122,21 +124,20 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             Type[] faultTypes = method.getGenericExceptionTypes();
             boolean nonBlocking = method.isAnnotationPresent(OneWay.class);
 
-            DataType<Type> returnDataType = new DataType<Type>(returnType, returnType);
+            DataType<Type> returnDataType = new DataType<Type>(UNKNOWN_DATABINDING, returnType, returnType);
             List<DataType<Type>> paramDataTypes = new ArrayList<DataType<Type>>(paramTypes.length);
             for (Type paramType : paramTypes) {
-                paramDataTypes.add(new DataType<Type>(paramType, paramType));
+                paramDataTypes.add(new DataType<Type>(UNKNOWN_DATABINDING, paramType, paramType));
             }
             List<DataType<Type>> faultDataTypes = new ArrayList<DataType<Type>>(faultTypes.length);
             for (Type faultType : faultTypes) {
-                faultDataTypes.add(new DataType<Type>(faultType, faultType));
+                faultDataTypes.add(new DataType<Type>(UNKNOWN_DATABINDING, faultType, faultType));
             }
 
-            String dataBinding = "java.lang.Object";
             DataType<List<DataType<Type>>> inputType =
                 new DataType<List<DataType<Type>>>(IDL_INPUT, Object[].class, paramDataTypes);
             Operation<Type> operation =
-                new Operation<Type>(name, inputType, returnDataType, faultDataTypes, nonBlocking, dataBinding);
+                new Operation<Type>(name, inputType, returnDataType, faultDataTypes, nonBlocking, UNKNOWN_DATABINDING);
             operations.put(name, operation);
         }
         return operations;

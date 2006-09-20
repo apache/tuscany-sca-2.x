@@ -84,6 +84,7 @@ public final class StAXUtil {
 
         // root element has no namespace and local name "value"
         Element root = doc.createElementNS(null, "value");
+        doc.appendChild(root);
         loadPropertyValue(reader, root);
 
         return doc;
