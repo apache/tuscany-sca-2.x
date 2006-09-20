@@ -44,7 +44,6 @@
         <dependency>
             <groupId>org.apache.ws.commons</groupId>
             <artifactId>XmlSchema</artifactId>
-            <version>SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
