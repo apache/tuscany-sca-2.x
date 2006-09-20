@@ -32,5 +32,10 @@ public class CustomerValue {
     {
       return new String();   
     }
+    
+    private void privateServiceMethod()
+    {
+        
+    }
 	
 }

@@ -37,8 +37,6 @@ public interface Java2WSDLGenerator {
 
 	public void setCommandLineOptoins(Map cmdLineOpts);
 
-	public WSDLModel getWSDLModel();
-
 	public OutputStream getOutputStream();
 
 	public void setOutputStream(OutputStream outStream);

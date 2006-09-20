@@ -12,49 +12,45 @@ import org.apache.ws.java2wsdl.utils.Java2WSDLOptionsValidator;
  * additional options. 
  *
  */
-public class TuscanyJava2WSDLOptionsValidator 
-    extends Java2WSDLOptionsValidator 
-    implements TuscanyJava2WSDLConstants
-{
-    public boolean isInvalid(Java2WSDLCommandLineOption option) 
-    {
+public class TuscanyJava2WSDLOptionsValidator extends Java2WSDLOptionsValidator implements
+        TuscanyJava2WSDLConstants {
+    public boolean isInvalid(Java2WSDLCommandLineOption option) {
         boolean invalid;
         String optionType = option.getOptionType();
-        
-        invalid = !( (IMPORT_XSD_OPTION).equalsIgnoreCase(optionType) ||
-                (IMPORT_XSD_OPTION_LONG).equalsIgnoreCase(optionType) || 
-                !super.isInvalid(option) );
-        
-        invalid = validateImportXSDOption(invalid, option); 
-       
+
+        invalid = !((IMPORT_XSD_OPTION).equalsIgnoreCase(optionType) 
+                    || (IMPORT_XSD_OPTION_LONG).equalsIgnoreCase(optionType) 
+                    || (TuscanyJava2WSDLConstants.EXTRA_CLASSES_DEFAULT_OPTION_LONG).equalsIgnoreCase(optionType) 
+                    || (TuscanyJava2WSDLConstants.EXTRA_CLASSES_DEFAULT_OPTION).equalsIgnoreCase(optionType) 
+                    || !super.isInvalid(option));
+
+        invalid = validateImportXSDOption(invalid,
+                                          option);
+
         return invalid;
-        
     }
-    
-    private boolean validateImportXSDOption(boolean invalid, Java2WSDLCommandLineOption option)
-    {
+
+    private boolean validateImportXSDOption(boolean invalid, Java2WSDLCommandLineOption option) {
         String optionType = option.getOptionType();
         String schemaNSLocationPair = null;
-        
-        if (!invalid && (IMPORT_XSD_OPTION).equalsIgnoreCase(optionType) ||
-                (IMPORT_XSD_OPTION_LONG).equalsIgnoreCase(optionType) )
-        {
+
+        if (!invalid && (IMPORT_XSD_OPTION).equalsIgnoreCase(optionType)
+                || (IMPORT_XSD_OPTION_LONG).equalsIgnoreCase(optionType)) {
             ArrayList optionValues = option.getOptionValues();
-            
-            for ( int count = 0; count < optionValues.size() ; ++count )
-            {
-                schemaNSLocationPair = ((String)optionValues.get(count)).trim();
-                if ( (schemaNSLocationPair.charAt(0) != OPEN_BRACKET) ||
-                        (schemaNSLocationPair.charAt(schemaNSLocationPair.length() - 1 ) != CLOSE_BRACKET) ||
-                        (schemaNSLocationPair.indexOf(COMMA) == -1 ) )
-               
+
+            for (int count = 0; count < optionValues.size(); ++count) {
+                schemaNSLocationPair = ((String) optionValues.get(count)).trim();
+                if ((schemaNSLocationPair.charAt(0) != OPEN_BRACKET)
+                        || (schemaNSLocationPair.charAt(schemaNSLocationPair.length() - 1) != CLOSE_BRACKET)
+                        || (schemaNSLocationPair.indexOf(COMMA) == -1))
+
                 {
                     System.out.println("Schema Namespace-Location pair option not specified properly!!");
                     invalid = true;
                 }
             }
         }
-        
+
         return invalid;
     }
 }
