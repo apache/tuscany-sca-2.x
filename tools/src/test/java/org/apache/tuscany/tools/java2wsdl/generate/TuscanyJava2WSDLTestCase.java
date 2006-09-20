@@ -48,10 +48,10 @@ public class TuscanyJava2WSDLTestCase extends TestCase {
 	 * Simple WSDL generation test.
 	 */
 	public void testSimpleWSDLGeneration() {
-		String[] arguments = new String[] { "-cn",
-				"org.apache.tuscany.tools.java2wsdl.generate.CustomerValue",
-				"-o", "target/java2wsdl-source"
-                };
+		String[] arguments = new String[] { "-cn","org.apache.tuscany.tools.java2wsdl.generate.CustomerValue",
+				"-o", "target/java2wsdl-source",
+                "-xc", "org.apache.tuscany.tools.java2wsdl.generate.extra.GoldCustomer"};
+                
 
 		Java2WSDL.main(arguments);
 

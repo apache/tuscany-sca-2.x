@@ -46,6 +46,7 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 	private FileOutputStream outputFileStream = null;
 	private String sourceClassName = null;
 	
+    private ArrayList extraClasses;
     private String attrFormDefault = null;
     private String elementFormDefault = null;
 	private String targetNamespace = null;
@@ -54,9 +55,9 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 	private String schemaTargetNamespacePrefix = null;
 	private ClassLoader classLoader = null;
 	private String serviceName = null;
-	private String style = null;
-	private String use = null;
-	private String locationUri = null;
+	private String style = DOCUMENT;
+	private String use = LITERAL;
+	private String locationUri = DEFAULT_LOCATION_URL;
     private Map schemaLocationMap = null;
 	
 	public GenerationParameters(Map cmdLineOptions) throws Exception
@@ -239,6 +240,10 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
         
         option = loadOption(ELEMENT_FORM_DEFAULT_OPTION,ELEMENT_FORM_DEFAULT_OPTION_LONG);
         elementFormDefault = option == null ? null : option.getOptionValue();
+        
+        option = loadOption(TuscanyJava2WSDLConstants.EXTRA_CLASSES_DEFAULT_OPTION,
+                            TuscanyJava2WSDLConstants.EXTRA_CLASSES_DEFAULT_OPTION_LONG);
+        extraClasses = option == null ? new ArrayList() : option.getOptionValues();
 	}
 	
 	public ClassLoader getClassLoader()
@@ -253,6 +258,10 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 
 	public String getLocationUri()
 	{
+        if ( locationUri == null )
+        {
+            locationUri = DEFAULT_LOCATION_URL;
+        }
 		return locationUri;
 	}
 
@@ -271,9 +280,15 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 		this.outputFileStream = outputFileStream;
 	}
 
-	public String getSchemaTargetNamespace()
-	{
-		return schemaTargetNamespace;
+	public String getSchemaTargetNamespace() throws Exception
+    {
+        if (schemaTargetNamespace == null
+                || schemaTargetNamespace.trim().equals("")) 
+        {
+            this.schemaTargetNamespace = Java2WSDLUtils
+                    .schemaNamespaceFromClassName(getSourceClassName(), getClassLoader()).toString();
+        }
+        return schemaTargetNamespace;
 	}
 
 	public void setSchemaTargetNamespace(String schemaTargetNamespace)
@@ -283,7 +298,13 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 
 	public String getSchemaTargetNamespacePrefix()
 	{
-		return schemaTargetNamespacePrefix;
+        if (schemaTargetNamespacePrefix == null
+           || schemaTargetNamespacePrefix.trim().equals("")) 
+        {
+            this.schemaTargetNamespacePrefix = SCHEMA_NAMESPACE_PRFIX;
+        }
+   
+        return schemaTargetNamespacePrefix;
 	}
 
 	public void setSchemaTargetNamespacePrefix(String schemaTargetNamespacePrefix)
@@ -293,6 +314,10 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 
 	public String getServiceName()
 	{
+        if ( serviceName == null )
+        {
+            serviceName = Java2WSDLUtils.getSimpleClassName(getSourceClassName());
+        }
 		return serviceName;
 	}
 
@@ -313,6 +338,10 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 
 	public String getStyle()
 	{
+        if ( style == null )
+        {
+            style = DOCUMENT;
+        }
 		return style;
 	}
 
@@ -321,8 +350,11 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 		this.style = style;
 	}
 
-	public String getTargetNamespace()
+	public String getTargetNamespace() throws Exception
 	{
+        if ( targetNamespace == null ) {
+            targetNamespace = Java2WSDLUtils.namespaceFromClassName(this.sourceClassName, this.classLoader).toString();
+        }
 		return targetNamespace;
 	}
 
@@ -343,6 +375,10 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
 
 	public String getUse()
 	{
+        if ( use == null )
+        {
+            use = LITERAL;
+        }
 		return use;
 	}
 
@@ -365,6 +401,10 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
     }
 
     public String getAttrFormDefault() {
+        if ( attrFormDefault == null )
+        {
+            attrFormDefault = FORM_DEFAULT_QUALIFIED;
+        }
         return attrFormDefault;
     }
 
@@ -373,11 +413,23 @@ public class GenerationParameters implements TuscanyJava2WSDLConstants
     }
 
     public String getElementFormDefault() {
+        if ( elementFormDefault == null )
+        {
+            elementFormDefault = FORM_DEFAULT_QUALIFIED;
+        }
         return elementFormDefault;
     }
 
     public void setElementFormDefault(String elementFormDefault) {
         this.elementFormDefault = elementFormDefault;
+    }
+
+    public ArrayList getExtraClasses() {
+        return extraClasses;
+    }
+
+    public void setExtraClasses(ArrayList extraClasses) {
+        this.extraClasses = extraClasses;
     }
 }
 	

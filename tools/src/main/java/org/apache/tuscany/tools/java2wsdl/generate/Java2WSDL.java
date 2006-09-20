@@ -73,6 +73,8 @@ public class Java2WSDL {
             System.out.println("-ixsd [<schema namespace>, <schema location>] : schemas to be imported (and not generated)");
             System.out.println("-efd <unqualified> : Setting for elementFormDefault (defaults to qualified)");
             System.out.println("-afd <unqualified> : Setting for attributeFormDefault (defaults to qualified)");
+            System.out.println("-xc <extra class> : Extra class for which schematype must be generated.  " +
+            "\t\tUse as : -xc class1 -xc class2 ...");
             System.exit(0);
         }
 }

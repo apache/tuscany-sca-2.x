@@ -28,111 +28,18 @@ import org.apache.ws.java2wsdl.Java2WSDLUtils;
 
 public class TuscanyJava2WSDLBuilder implements Java2WSDLConstants
 {
-
+    
     private OutputStream out;
     private String className;
     private ClassLoader classLoader;
     private String wsdlPrefix = "wsdl";
 
-    private String serviceName = null;
-
     //these apply for the WSDL
-    private GenerationParameters genParams = null;
-    private String targetNamespace = null;
-    private String targetNamespacePrefix = null;
-
-    private String attrFormDefault = null;
-    private String elementFormDefault = null;
-    private String schemaTargetNamespace = null;
-    private String schemaTargetNamespacePrefix = null;
-    private String style = Java2WSDLConstants.DOCUMENT;
-    private String use = Java2WSDLConstants.LITERAL;
-    private String locationUri = Java2WSDLConstants.DEFAULT_LOCATION_URL;
-    private Map schemaLocationMap = null;
-    
+    private GenerationParameters generationParams;
+        
     private OMElement wsdlDocument = null;
 
-    public String getSchemaTargetNamespace() throws Exception
-    {
-        if (schemaTargetNamespace == null
-                || schemaTargetNamespace.trim().equals("")) 
-        {
-            this.schemaTargetNamespace = Java2WSDLUtils
-                    .schemaNamespaceFromClassName(className,classLoader).toString();
-        }
-        
-        return schemaTargetNamespace;
-    }
-
-    public String getStyle() {
-        return style;
-    }
-
-    public String getLocationUri() {
-        return locationUri;
-    }
-
-    public void setLocationUri(String locationUri) {
-        this.locationUri = locationUri;
-    }
-
-    public void setStyle(String style) {
-        this.style = style;
-    }
-
-    public String getUse() {
-        return use;
-    }
-
-    public void setUse(String use) {
-        this.use = use;
-    }
-
-    public void setSchemaTargetNamespace(String schemaTargetNamespace) 
-    {
-        this.schemaTargetNamespace = schemaTargetNamespace;
-    }
-
-    public String getSchemaTargetNamespacePrefix() 
-    {
-        if (schemaTargetNamespacePrefix == null
-                || schemaTargetNamespacePrefix.trim().equals("")) 
-        {
-            this.schemaTargetNamespacePrefix = SCHEMA_NAMESPACE_PRFIX;
-        }
-        
-        return schemaTargetNamespacePrefix;
-    }
-
-    public void setSchemaTargetNamespacePrefix(String schemaTargetNamespacePrefix) {
-        this.schemaTargetNamespacePrefix = schemaTargetNamespacePrefix;
-    }
-
-    public String getTargetNamespace() {
-        return targetNamespace;
-    }
-
-    public void setTargetNamespace(String targetNamespace) {
-        this.targetNamespace = targetNamespace;
-    }
-
-    public String getTargetNamespacePrefix() {
-        return targetNamespacePrefix;
-    }
-
-    public void setTargetNamespacePrefix(String targetNamespacePrefix) {
-        this.targetNamespacePrefix = targetNamespacePrefix;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-
+   
     public String getWsdlPrefix() {
         return wsdlPrefix;
     }
@@ -141,18 +48,10 @@ public class TuscanyJava2WSDLBuilder implements Java2WSDLConstants
         this.wsdlPrefix = wsdlPrefix;
     }
 
-    /**
-     * @param out
-     * @param className
-     * @param classLoader
-     */
-    public TuscanyJava2WSDLBuilder(OutputStream out, String className, ClassLoader classLoader) {
-        this.out = out;
-        this.className = className;
-        this.classLoader = classLoader;
+    public TuscanyJava2WSDLBuilder(GenerationParameters genParams) {
+        this.generationParams = genParams;
     }
-
-
+    
     /**
      * Externally visible generator method
      *
@@ -165,30 +64,15 @@ public class TuscanyJava2WSDLBuilder implements Java2WSDLConstants
         excludeOpeartion.add("setOperationContext");
         excludeOpeartion.add("destroy");
         
-        TuscanySchemaGenerator typesGenerator = 
-            new TuscanySchemaGenerator(classLoader, 
-                                        className,
-                                        getSchemaTargetNamespace(), 
-                                        getSchemaTargetNamespacePrefix(),
-                                        getSchemaLocationMap());
+        TuscanyWSDLTypesGenerator typesGenerator = new TuscanyWSDLTypesGenerator(generationParams);
         typesGenerator.setExcludeMethods(excludeOpeartion);
-        typesGenerator.setAttrFormDefault(getAttrFormDefault());
-        typesGenerator.setElementFormDefault(getElementFormDefault());
-        
         Collection schemaCollection = typesGenerator.buildWSDLTypes();
         
         TuscanyJava2OMBuilder java2OMBuilder = new TuscanyJava2OMBuilder(typesGenerator.getMethods(),
-        		schemaCollection,
-                getSchemaTargetNamespace(),
-                getSchemaTargetNamespacePrefix(),
-                typesGenerator.getTypeTable(),
-                typesGenerator.getSdoAnnoMap(),
-                serviceName == null ? Java2WSDLUtils.getSimpleClassName(className) : serviceName,
-                targetNamespace == null ? Java2WSDLUtils.namespaceFromClassName(className, classLoader).toString():targetNamespace,
-                targetNamespacePrefix,
-                style,
-                use,
-                locationUri);
+                                                                         schemaCollection,
+                                                                         typesGenerator.getTypeTable(),
+                                                                         generationParams);
+                
         wsdlDocument = java2OMBuilder.generateOM();
     }
 
@@ -201,35 +85,5 @@ public class TuscanyJava2WSDLBuilder implements Java2WSDLConstants
 	{
 		this.wsdlDocument = wsdlDocument;
 	}
-
-    public Map getSchemaLocationMap() 
-    {
-        if ( schemaLocationMap == null )
-        {
-            schemaLocationMap = new Hashtable();
-            
-        }
-        return schemaLocationMap;
-    }
-
-    public void setSchemaLocationMap(Map schemaLocationMap) {
-        this.schemaLocationMap = schemaLocationMap;
-    }
-    
-    public String getAttrFormDefault() {
-        return attrFormDefault;
-    }
-
-    public void setAttrFormDefault(String attrFormDefault) {
-        this.attrFormDefault = attrFormDefault;
-    }
-
-    public String getElementFormDefault() {
-        return elementFormDefault;
-    }
-
-    public void setElementFormDefault(String elementFormDefault) {
-        this.elementFormDefault = elementFormDefault;
-    }
 }
 

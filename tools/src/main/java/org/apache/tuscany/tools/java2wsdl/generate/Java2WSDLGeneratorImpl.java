@@ -55,28 +55,6 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 	private TuscanyJava2WSDLBuilder java2WsdlBuilder;
 	private OutputStream outputStream = null;
 	
-	/*public static final String HTTP = "http://";
-
-	public static final String WSDL_FILENAME_SUFFIX = ".wsdl";
-
-	public static final String DEFAULT_PREFIX = "wsdl";
-
-	public static final char PACKAGE_CLASS_DELIMITER = '.';
-
-	public static final String DEFAULT_TARGET_NAMESPACE_PREFIX = "tns";
-
-	public static final String DEFAULT_SCHEMA_TARGET_NAMESPACE_PREFIX = "stns";
-
-	private String sourceClassName = null;
-
-	
-
-	private ClassLoader classLoader;
-
-	private WSDLDescription wsdlDescription = null;
-
-	private WSDLModel wsdlModel = null;*/
-
 	public Java2WSDLGeneratorImpl()
 	{
 		
@@ -93,40 +71,7 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 	private void initJava2WSDLBuilder() throws Exception 
 	{
 //		Now we are done with loading the basic values - time to create the builder
-        java2WsdlBuilder = new TuscanyJava2WSDLBuilder(genParams.getOutputFileStream(),
-        										genParams.getSourceClassName(),
-        										genParams.getClassLoader());
-        java2WsdlBuilder.setSchemaTargetNamespace(genParams.getSchemaTargetNamespace());
-        java2WsdlBuilder.setSchemaTargetNamespacePrefix(genParams.getSchemaTargetNamespacePrefix());
-        java2WsdlBuilder.setTargetNamespace(genParams.getTargetNamespace());
-        java2WsdlBuilder.setTargetNamespacePrefix(genParams.getTargetNamespacePrefix());
-        java2WsdlBuilder.setServiceName(genParams.getServiceName() == null ? 
-        		Java2WSDLUtils.getSimpleClassName(genParams.getSourceClassName()) : genParams.getServiceName());
-        java2WsdlBuilder.setSchemaLocationMap(genParams.getSchemaLocationMap());
-
-        if (genParams.getStyle() != null) 
-        {
-            java2WsdlBuilder.setStyle(genParams.getStyle());
-        }
-
-        if (genParams.getLocationUri() != null) {
-            java2WsdlBuilder.setLocationUri(genParams.getLocationUri());
-        }
-
-        if (genParams.getUse() != null) 
-        {
-            java2WsdlBuilder.setUse(genParams.getUse());
-        }
-        
-        if ( genParams.getAttrFormDefault() == null )
-        {
-            java2WsdlBuilder.setAttrFormDefault(FORM_DEFAULT_QUALIFIED);
-        }
-        
-        if ( genParams.getElementFormDefault() == null )
-        {
-            java2WsdlBuilder.setElementFormDefault(FORM_DEFAULT_UNQUALIFIED);
-        }
+        java2WsdlBuilder = new TuscanyJava2WSDLBuilder(genParams);
 	}
         
    	protected boolean validateInputArgs(String[] args) 
@@ -167,7 +112,7 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 			setOutputStream(genParams.getOutputFileStream());
 		}
 		
-		java2WsdlBuilder.getWsdlDocument().serialize(getOutputStream());
+        java2WsdlBuilder.getWsdlDocument().serialize(getOutputStream());
 		getOutputStream().flush();
 		getOutputStream().close();;
 
@@ -289,9 +234,5 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 		this.java2WsdlBuilder = java2WsdlBuilder;
 	}
 
-	public WSDLModel getWSDLModel()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }

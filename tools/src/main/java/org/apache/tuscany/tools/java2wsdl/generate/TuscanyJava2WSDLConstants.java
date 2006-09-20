@@ -23,9 +23,11 @@ public interface TuscanyJava2WSDLConstants extends Java2WSDLConstants
     String IMPORT_XSD_OPTION = "ixsd";      //option for importing XSDs
     String ATTR_FORM_DEFAULT_OPTION = "afd";
     String ELEMENT_FORM_DEFAULT_OPTION = "efd";
+    String EXTRA_CLASSES_DEFAULT_OPTION = "xc";
     
     //long options
     String IMPORT_XSD_OPTION_LONG = "import_xsd";       //option for importing XSDs
     String ATTR_FORM_DEFAULT_OPTION_LONG = "attributeFormDefault";
     String ELEMENT_FORM_DEFAULT_OPTION_LONG = "elementFormDefault";
+    String EXTRA_CLASSES_DEFAULT_OPTION_LONG = "extraClasses";
 }
