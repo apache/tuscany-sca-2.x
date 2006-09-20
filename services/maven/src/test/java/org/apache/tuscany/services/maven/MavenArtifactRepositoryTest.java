@@ -50,7 +50,7 @@ public class MavenArtifactRepositoryTest extends TestCase {
     public void testResolveArtifact() {
         
         String[] remoteRepoUrls = {"http://repo1.maven.org/maven2/"};
-        MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls);
+        MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls, null);
         Artifact artifact = new Artifact();
         artifact.setGroup("org.apache.maven");
         artifact.setName("maven-artifact");

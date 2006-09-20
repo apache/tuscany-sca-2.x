@@ -36,6 +36,7 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.plugin.registry.RuntimeInfo;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
@@ -76,8 +77,9 @@ public class MavenHelper {
      * 
      * @param remoteRepositoryUrls
      *            Remote repository URLS.
+     * @param runtimeInfo Runtime information.
      */
-    public MavenHelper(String[] remoteRepositoryUrls) {
+    public MavenHelper(String[] remoteRepositoryUrls, RuntimeInfo runtimeInfo) {
         this.remoteRepositoryUrls = remoteRepositoryUrls;
     }
 
