@@ -84,6 +84,7 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         TransformationContext context = new TransformationContextImpl();
         NamespaceContext namespaceContext = EasyMock.createMock(NamespaceContext.class);
         EasyMock.expect(namespaceContext.getNamespaceURI(EasyMock.eq("f"))).andReturn("http://foo").anyTimes();
+        EasyMock.expect(namespaceContext.getPrefix(EasyMock.eq("http://foo"))).andReturn("f").anyTimes();
         EasyMock.replay(namespaceContext);
         context.getMetadata().put(NamespaceContext.class, namespaceContext);
         for (XmlSchemaSimpleType simpleType : SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.values()) {
@@ -92,13 +93,16 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
             if (value instanceof String[]) {
                 for (String s : (String[]) value) {
                     Object obj = extension.toJavaObject(simpleType, s, context);
-                    extension.toXMLLiteral(simpleType, obj, context);
+                    String str = extension.toXMLLiteral(simpleType, obj, context);
+                    assertNotNull(str);
+                    // assertTrue("[" + name + "] " + s + " " + str, str.contains((String) s));
                 }
             } else if (value instanceof String) {
                 Object obj = extension.toJavaObject(simpleType, (String) value, context);
-                extension.toXMLLiteral(simpleType, obj, context);
+                String str = extension.toXMLLiteral(simpleType, obj, context);
+                assertNotNull(str);
+                // assertTrue("[" + name + "] " + value + " " + str, str.contains((String) value));
             }
-            // assertTrue("[" + type + "] " + str + " " + value, str.contains(value));
         }
     }
 }
