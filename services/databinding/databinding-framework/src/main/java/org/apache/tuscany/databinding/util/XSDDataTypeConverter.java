@@ -66,11 +66,27 @@ public class XSDDataTypeConverter {
     }
 
     public float parseFloat(String value) {
-        return Float.parseFloat(value);
+        if (value.equals("INF")) {
+            return Float.POSITIVE_INFINITY;
+        } else if (value.equals("-INF")) {
+            return Float.NEGATIVE_INFINITY;
+        } else if (value.equals("NaN")) {
+            return Float.NaN;
+        } else {
+            return Float.parseFloat(value);
+        }
     }
 
     public double parseDouble(String value) {
-        return Double.parseDouble(value);
+        if (value.equals("INF")) {
+            return Double.POSITIVE_INFINITY;
+        } else if (value.equals("-INF")) {
+            return Double.NEGATIVE_INFINITY;
+        } else if (value.equals("NaN")) {
+            return Double.NaN;
+        } else {
+            return Double.parseDouble(value);
+        }
     }
 
     public boolean parseBoolean(String value) {

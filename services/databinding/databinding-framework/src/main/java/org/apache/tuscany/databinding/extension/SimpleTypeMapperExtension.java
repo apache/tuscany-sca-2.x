@@ -67,8 +67,6 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements SimpleTypeMapper {
     private DatatypeFactory factory;
 
-    protected NamespaceContext namespaceContext;
-
     public static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";
 
     private static final String[] typeNames =
@@ -78,18 +76,20 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
                     "unsignedByte", "positiveInteger", "negativeInteger", "nonNegativeInteger", "nonPositiveInteger",
                     "gYearMonth", "gMonthDay", "gYear", "gMonth", "gDay", "duration", "Name", "NCName", "NMTOKEN",
                     "NMTOKENS", "NOTATION", "ENTITY", "ENTITIES", "IDREF", "IDREFS", "anyURI", "language", "ID" };
-    
-    public static final Map<String, XmlSchemaSimpleType> XSD_SIMPLE_TYPES= new HashMap<String, XmlSchemaSimpleType>();
-    
+
+    public static final Map<String, XmlSchemaSimpleType> XSD_SIMPLE_TYPES = new HashMap<String, XmlSchemaSimpleType>();
+
     static {
         XmlSchemaCollection collection = new XmlSchemaCollection();
         for (String type : typeNames) {
             XmlSchemaSimpleType simpleType =
                     (XmlSchemaSimpleType) collection.getTypeByQName(new QName(URI_2001_SCHEMA_XSD, type));
-            XSD_SIMPLE_TYPES.put(type, simpleType);
+            if (simpleType != null) {
+                XSD_SIMPLE_TYPES.put(type, simpleType);
+            }
         }
     }
-    
+
     public SimpleTypeMapperExtension() {
         super();
         try {
@@ -100,6 +100,8 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
     }
 
     public Object toJavaObject(XmlSchemaSimpleType simpleType, String value, TransformationContext context) {
+        NamespaceContext namespaceContext =
+                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
 
         /**
          * <ul>
@@ -246,20 +248,6 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
                 new GregorianCalendar(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), date
                         .getMinutes(), date.getSeconds());
         return factory.newXMLGregorianCalendar(c);
-    }
-
-    /**
-     * @return the namespaceContext
-     */
-    public NamespaceContext getNamespaceContext() {
-        return namespaceContext;
-    }
-
-    /**
-     * @param namespaceContext the namespaceContext to set
-     */
-    public void setNamespaceContext(NamespaceContext namespaceContext) {
-        this.namespaceContext = namespaceContext;
     }
 
 }
