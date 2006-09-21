@@ -17,11 +17,14 @@
 
 package org.apache.tuscany.databinding.xml;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Helper for DOM
@@ -44,6 +47,24 @@ public class DOMHelper {
     public static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
         DocumentBuilder builder = factory.newDocumentBuilder();
         return builder;
+    }
+
+    public static QName getQName(Node node) {
+        String ns = node.getNamespaceURI();
+        if (ns == null) {
+            ns = "";
+        }
+        // node.getLocalName() will return null if it is created using DOM Level 1 method 
+        // such as createElement()
+        QName name = new QName(ns, node.getNodeName());
+        return name;
+    }
+    
+    public static Element createElement(Document document, QName name) {
+        String prefix = name.getPrefix();
+        String qname =
+                (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name.getLocalPart();
+        return document.createElementNS(name.getNamespaceURI(), qname);
     }
 
 }
