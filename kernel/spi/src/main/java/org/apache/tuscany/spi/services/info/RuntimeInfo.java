@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.services.info;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  * Interface that provides information on the runtime environment.
@@ -26,6 +27,7 @@ import java.io.File;
  * @version $Rev$ $Date$
  */
 public interface RuntimeInfo {
+    
     /**
      * Return the directory where the running runtime was installed.
      *
@@ -39,4 +41,11 @@ public interface RuntimeInfo {
      * @return the directory used to resolve application file paths.
      */
     File getApplicationRootDirectory();
+    
+    /**
+     * Gets the base URL for the runtime.
+     * 
+     * @return The base URL for the runtime.
+     */
+    URL getBaseURL();
 }
