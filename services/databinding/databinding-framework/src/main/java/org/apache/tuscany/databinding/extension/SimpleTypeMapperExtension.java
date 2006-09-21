@@ -100,9 +100,6 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
     }
 
     public Object toJavaObject(XmlSchemaSimpleType simpleType, String value, TransformationContext context) {
-        NamespaceContext namespaceContext =
-                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
-
         /**
          * <ul>
          * <li>xsd:string --- java.lang.String
@@ -180,8 +177,12 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         } else if (type.equals(XSD_BASE64)) {
             return parseBase64Binary(value);
         } else if (type.equals(XSD_QNAME)) {
+            NamespaceContext namespaceContext =
+                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
             return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_NOTATION)) {
+            NamespaceContext namespaceContext =
+                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
             return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_YEAR)) {
             return factory.newXMLGregorianCalendar(value);
@@ -200,28 +201,13 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
 
     public String toXMLLiteral(XmlSchemaSimpleType simpleType, Object obj, TransformationContext context) {
         if (obj instanceof Float || obj instanceof Double) {
-            double data;
             if (obj instanceof Float) {
-                data = ((Float) obj).doubleValue();
+                return printDouble(((Float) obj).floatValue());
             } else {
-                data = ((Double) obj).doubleValue();
-            }
-            if (Double.isNaN(data)) {
-                return "NaN";
-            } else if (data == Double.POSITIVE_INFINITY) {
-                return "INF";
-            } else if (data == Double.NEGATIVE_INFINITY) {
-                return "-INF";
-            } else {
-                return obj.toString();
+                return printDouble(((Double) obj).doubleValue());
             }
         } else if (obj instanceof GregorianCalendar) {
             GregorianCalendar calendar = (GregorianCalendar) obj;
-            /*
-             * if (type.equals(XSD_DATE)) { return printDate(calendar); } else if (type.equals(XSD_TIME)) { return
-             * printTime(calendar); } else if (type.equals(XSD_DATETIME)) { return printDateTime(calendar); } else {
-             * return printDateTime(calendar); }
-             */
             return toXMLGregorianCalendar(calendar).toXMLFormat();
         } else if (obj instanceof Date) {
             return toXMLGregorianCalendar((Date) obj).toXMLFormat();
@@ -234,6 +220,10 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             } else if (simpleType.getQName().equals(XSD_HEXBIN)) {
                 return printHexBinary((byte[]) obj);
             }
+        } else if(obj instanceof QName) {
+            NamespaceContext namespaceContext =
+                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+           return printQName((QName) obj, namespaceContext);
         }
         return obj.toString();
     }
