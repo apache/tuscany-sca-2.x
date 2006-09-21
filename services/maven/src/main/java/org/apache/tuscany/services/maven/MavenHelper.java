@@ -20,6 +20,7 @@ package org.apache.tuscany.services.maven;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -55,8 +56,11 @@ public class MavenHelper {
     /** Local repository */
     private static final File LOCAL_REPO = new File(System.getProperty("user.home") + File.separator + "m2" + File.separator + "repository");
 
-    /** Remote repositories */
-    private String[] remoteRepositoryUrls;
+    /** Remote repository URLs */
+    private final String[] remoteRepositoryUrls;
+    
+    /** Deployed repository URL */
+    private final URL deployedRepositoryUrl;
 
     /** Maven metadata source */
     private ArtifactMetadataSource metadataSource;
@@ -66,6 +70,9 @@ public class MavenHelper {
 
     /** Local artifact repository */
     private ArtifactRepository localRepository;
+
+    /** Repository from the deployed unit like a WAR or standalobe distribution */
+    private ArtifactRepository deployedRepository;
 
     /** Remote artifact repositories */
     private List<ArtifactRepository> remoteRepositories = new LinkedList<ArtifactRepository>();
@@ -80,8 +87,13 @@ public class MavenHelper {
      *            Remote repository URLS.
      * @param runtimeInfo Runtime information.
      */
-    public MavenHelper(String[] remoteRepositoryUrls, RuntimeInfo runtimeInfo) {
-        this.remoteRepositoryUrls = remoteRepositoryUrls;
+    public MavenHelper(String[] remoteRepositoryUrls, URL baseUrl) {
+        try {
+            this.remoteRepositoryUrls = remoteRepositoryUrls;
+            this.deployedRepositoryUrl = new URL(baseUrl, "repository");
+        } catch (MalformedURLException ex) {
+            throw new TuscanyMavenException(ex);
+        }
     }
 
     /**
