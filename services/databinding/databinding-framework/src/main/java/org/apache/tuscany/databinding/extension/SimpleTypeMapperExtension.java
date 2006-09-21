@@ -49,19 +49,47 @@ import static org.apache.ws.commons.schema.constants.Constants.XSD_YEARMONTH;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.SimpleTypeMapper;
 import org.apache.tuscany.databinding.util.XSDDataTypeConverter;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 
 public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements SimpleTypeMapper {
     private DatatypeFactory factory;
 
+    protected NamespaceContext namespaceContext;
+
+    public static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";
+
+    private static final String[] typeNames =
+            { "string", "boolean", "double", "float", "int", "integer", "long", "short", "byte", "decimal",
+                    "base64Binary", "hexBinary", "anySimpleType", "anyType", "any", "QName", "dateTime", "date",
+                    "time", "normalizedString", "token", "unsignedLong", "unsignedInt", "unsignedShort",
+                    "unsignedByte", "positiveInteger", "negativeInteger", "nonNegativeInteger", "nonPositiveInteger",
+                    "gYearMonth", "gMonthDay", "gYear", "gMonth", "gDay", "duration", "Name", "NCName", "NMTOKEN",
+                    "NMTOKENS", "NOTATION", "ENTITY", "ENTITIES", "IDREF", "IDREFS", "anyURI", "language", "ID" };
+    
+    public static final Map<String, XmlSchemaSimpleType> XSD_SIMPLE_TYPES= new HashMap<String, XmlSchemaSimpleType>();
+    
+    static {
+        XmlSchemaCollection collection = new XmlSchemaCollection();
+        for (String type : typeNames) {
+            XmlSchemaSimpleType simpleType =
+                    (XmlSchemaSimpleType) collection.getTypeByQName(new QName(URI_2001_SCHEMA_XSD, type));
+            XSD_SIMPLE_TYPES.put(type, simpleType);
+        }
+    }
+    
     public SimpleTypeMapperExtension() {
         super();
         try {
@@ -71,7 +99,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         }
     }
 
-    public Object parse(XmlSchemaSimpleType schemaSimpleType, String value) {
+    public Object toJavaObject(XmlSchemaSimpleType simpleType, String value, TransformationContext context) {
 
         /**
          * <ul>
@@ -102,7 +130,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
          * </ul>
          */
 
-        XmlSchemaSimpleType baseType = schemaSimpleType;
+        XmlSchemaSimpleType baseType = simpleType;
         while (baseType.getBaseSchemaType() != null) {
             baseType = (XmlSchemaSimpleType) baseType.getBaseSchemaType();
         }
@@ -150,9 +178,9 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         } else if (type.equals(XSD_BASE64)) {
             return parseBase64Binary(value);
         } else if (type.equals(XSD_QNAME)) {
-            return parseQName(value, null);
+            return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_NOTATION)) {
-            return parseQName(value, null);
+            return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_YEAR)) {
             return factory.newXMLGregorianCalendar(value);
         } else if (type.equals(XSD_MONTH)) {
@@ -163,16 +191,12 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             return factory.newXMLGregorianCalendar(value);
         } else if (type.equals(XSD_MONTHDAY)) {
             return factory.newXMLGregorianCalendar(value);
-        } else if (type.equals(XSD_NOTATION)) {
-            return parseQName(value, null);
-        } else if (type.equals(XSD_NOTATION)) {
-            return parseQName(value, null);
         } else {
             return value;
         }
     }
 
-    public String toString(XmlSchemaSimpleType schemaSimpleType, Object obj) {
+    public String toXMLLiteral(XmlSchemaSimpleType simpleType, Object obj, TransformationContext context) {
         if (obj instanceof Float || obj instanceof Double) {
             double data;
             if (obj instanceof Float) {
@@ -202,6 +226,12 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         } else if (obj instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) obj;
             return calendar.toXMLFormat();
+        } else if (obj instanceof byte[]) {
+            if (simpleType.getQName().equals(XSD_BASE64)) {
+                return printBase64Binary((byte[]) obj);
+            } else if (simpleType.getQName().equals(XSD_HEXBIN)) {
+                return printHexBinary((byte[]) obj);
+            }
         }
         return obj.toString();
     }
@@ -216,6 +246,20 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
                 new GregorianCalendar(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), date
                         .getMinutes(), date.getSeconds());
         return factory.newXMLGregorianCalendar(c);
+    }
+
+    /**
+     * @return the namespaceContext
+     */
+    public NamespaceContext getNamespaceContext() {
+        return namespaceContext;
+    }
+
+    /**
+     * @param namespaceContext the namespaceContext to set
+     */
+    public void setNamespaceContext(NamespaceContext namespaceContext) {
+        this.namespaceContext = namespaceContext;
     }
 
 }

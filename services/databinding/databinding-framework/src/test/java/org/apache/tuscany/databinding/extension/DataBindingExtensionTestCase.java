@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.databinding.extension;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.DataBindingRegistry;

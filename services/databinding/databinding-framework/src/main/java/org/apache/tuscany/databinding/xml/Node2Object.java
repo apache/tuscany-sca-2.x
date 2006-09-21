@@ -16,26 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.databinding.xml;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.SimpleType2JavaTransformer;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Node;
 
 /**
- * Transformer to convert data from an simple OMElement to Java Object
+ * Transformer to convert data from an simple Node to Java Object
  */
 @Service(Transformer.class)
-public class Object2OMElement extends SimpleType2JavaTransformer<OMElement> {
+public class Node2Object extends SimpleType2JavaTransformer<Node> {
 
     @Override
-    protected String getText(OMElement source) {
-        return source.getText();
+    protected String getText(Node source) {
+        return source.getTextContent();
+    }
+
+    public Node2Object() {
+        super(null);
     }
 
     public Class getSourceType() {
-        return OMElement.class;
+        return Node.class;
     }
 
 }

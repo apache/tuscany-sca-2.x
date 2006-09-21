@@ -16,38 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.databinding.axiom;
+package org.apache.tuscany.databinding.xml;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.tuscany.databinding.TransformationContext;
+import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.Java2SimpleTypeTransformer;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
- * Transformer to convert data from a simple java bject to OMElement
+ * Transformer to convert data from a simple java object to Node
  */
 @Service(Transformer.class)
-public class OMElement2Object extends Java2SimpleTypeTransformer<OMElement> {
+public class Object2Node extends Java2SimpleTypeTransformer<Node> {
 
-    private OMFactory factory;
+    private Document factory;
 
-    public OMElement2Object() {
-        super();
-        factory = OMAbstractFactory.getOMFactory();
+    public Object2Node() {
+        super(null);
+        try {
+            factory = DOMHelper.newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new TransformationException(e);
+        }
     }
 
-    protected OMElement createElement(XmlSchemaElement element, String text, TransformationContext context) {
-        OMElement omElement = factory.createOMElement(element.getQName(), null);
-        factory.createOMText(omElement, text);
-        return omElement;
+    protected Node createElement(XmlSchemaElement element, String text, TransformationContext context) {
+        QName name = element.getQName();
+        Node root = DOMHelper.createElement(factory, name);
+        root.appendChild(factory.createTextNode(text));
+        return root;
     }
 
     public Class getTargetType() {
-        return OMElement.class;
+        return Node.class;
     }
 
 }

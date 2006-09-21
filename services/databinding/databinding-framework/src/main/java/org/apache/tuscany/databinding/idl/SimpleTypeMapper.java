@@ -19,6 +19,7 @@
 
 package org.apache.tuscany.databinding.idl;
 
+import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 
 /**
@@ -27,16 +28,18 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 public interface SimpleTypeMapper {
     /**
      * Parse the XML lexical representation into a java object 
-     * @param schemaSimpleType The XSD simple type
+     * @param simpleType The XSD simple type
      * @param value the XML lexical representation
+     * @param context The context of the transformation
      * @return A java object for the XML value
      */
-    Object parse(XmlSchemaSimpleType schemaSimpleType, String value);
+    Object toJavaObject(XmlSchemaSimpleType simpleType, String value, TransformationContext context);
     /**
      * Create the XML lexical representation for a java object
-     * @param schemaSimpleType The XSD simple type
+     * @param simpleType The XSD simple type
      * @param obj The java object
+     * @param context The context of the transformation
      * @return The XML lexical representation
      */
-    String toString(XmlSchemaSimpleType schemaSimpleType, Object obj);
+    String toXMLLiteral(XmlSchemaSimpleType simpleType, Object obj, TransformationContext context);
 }
