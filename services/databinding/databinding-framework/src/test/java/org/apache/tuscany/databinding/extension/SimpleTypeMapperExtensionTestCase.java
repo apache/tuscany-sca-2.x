@@ -61,7 +61,7 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
                 } else if (name.equals("gMonthDay")) {
                     value = "--11-01+02:00";
                 } else if (name.equals("gMonth")) {
-                    value = "--11+02:00";
+                    value = "--11--";
                 } else if (name.equals("gDay")) {
                     value = "---01+02:00";
                 } else if (name.equals("duration")) {
