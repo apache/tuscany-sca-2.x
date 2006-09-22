@@ -27,11 +27,11 @@ import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.DataType;
-import org.apache.ws.commons.schema.XmlSchemaElement;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.model.DataType;
 
 /**
  * Test case for WSDLOperation
@@ -59,7 +59,6 @@ public class WSDLOperationTestCase extends TestCase {
         WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
         
         DataType<List<DataType<QName>>> inputType = op.getInputType();
-        Assert.assertSame(op, inputType.getMetadata(WSDLOperation.class.getName()));
         Assert.assertEquals(1, inputType.getLogical().size());
         Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), inputType.getLogical()
                 .get(0).getLogical());
@@ -74,12 +73,12 @@ public class WSDLOperationTestCase extends TestCase {
         Assert.assertEquals(1, childTypes.size());
         DataType<QName> childType = childTypes.get(0);
         Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical());
-        XmlSchemaElement element = (XmlSchemaElement) childType.getMetadata(XmlSchemaElement.class.getName());
+        ElementInfo element = (ElementInfo) childType.getMetadata(ElementInfo.class.getName());
         Assert.assertNotNull(element);
         
         childType = op.getWrapper().getUnwrappedOutputType();
         Assert.assertEquals(new QName(null, "price"), childType.getLogical());
-        element = (XmlSchemaElement) childType.getMetadata(XmlSchemaElement.class.getName());
+        element = (ElementInfo) childType.getMetadata(ElementInfo.class.getName());
         Assert.assertNotNull(element);
     }
 

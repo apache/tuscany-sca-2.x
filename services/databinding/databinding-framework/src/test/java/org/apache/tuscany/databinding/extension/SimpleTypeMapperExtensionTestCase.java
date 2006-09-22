@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.impl.TransformationContextImpl;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.tuscany.spi.idl.TypeInfo;
 import org.easymock.EasyMock;
 
 /**
@@ -87,8 +87,8 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         EasyMock.expect(namespaceContext.getPrefix(EasyMock.eq("http://foo"))).andReturn("f").anyTimes();
         EasyMock.replay(namespaceContext);
         context.getMetadata().put(NamespaceContext.class, namespaceContext);
-        for (XmlSchemaSimpleType simpleType : SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.values()) {
-            String name = simpleType.getName();
+        for (TypeInfo simpleType : SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.values()) {
+            String name = simpleType.getQName().getLocalPart();
             Object value = sampleValues.get(name);
             if (value instanceof String[]) {
                 for (String s : (String[]) value) {

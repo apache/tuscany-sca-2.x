@@ -24,7 +24,7 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.Java2SimpleTypeTransformer;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.idl.ElementInfo;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -40,7 +40,7 @@ public class OMElement2Object extends Java2SimpleTypeTransformer<OMElement> {
         factory = OMAbstractFactory.getOMFactory();
     }
 
-    protected OMElement createElement(XmlSchemaElement element, String text, TransformationContext context) {
+    protected OMElement createElement(ElementInfo element, String text, TransformationContext context) {
         OMElement omElement = factory.createOMElement(element.getQName(), null);
         factory.createOMText(omElement, text);
         return omElement;

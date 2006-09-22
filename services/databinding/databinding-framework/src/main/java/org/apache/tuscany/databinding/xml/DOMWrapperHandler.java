@@ -25,7 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.idl.WrapperHandler;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.idl.ElementInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,12 +43,12 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         }
     }
 
-    public Node create(XmlSchemaElement element, TransformationContext context) {
+    public Node create(ElementInfo element, TransformationContext context) {
         QName name = element.getQName();
         return DOMHelper.createElement(document, name);
     }
 
-    public Object getChild(Node wrapper, int i, XmlSchemaElement element) {
+    public Object getChild(Node wrapper, int i, ElementInfo element) {
         int index = 0;
         NodeList nodes = wrapper.getChildNodes();
         for (int j = 0; j < nodes.getLength(); j++) {
@@ -68,7 +68,7 @@ public class DOMWrapperHandler implements WrapperHandler<Node> {
         return null;
     }
 
-    public void setChild(Node wrapper, int i, XmlSchemaElement childElement, Object value) {
+    public void setChild(Node wrapper, int i, ElementInfo childElement, Object value) {
         Node node = (Node) value;
         if (node.getNodeType() == Node.DOCUMENT_NODE) {
             node = ((Document) node).getDocumentElement();

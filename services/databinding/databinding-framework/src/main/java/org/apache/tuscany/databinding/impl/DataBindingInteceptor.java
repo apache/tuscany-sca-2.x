@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.databinding.Mediator;
-import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
@@ -79,12 +78,13 @@ public class DataBindingInteceptor implements Interceptor {
             // FIXME: Should we fix the Operation model so that getOutputType returns DataType<DataType<T>>?
             DataType<DataType> targetType =
                     new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
-            targetType.setMetadata(WSDLOperation.class.getName(), targetOperation.getOutputType().getMetadata(
-                    WSDLOperation.class.getName()));
+            
+            targetType.setMetadata(Operation.class.getName(), targetOperation.getOutputType().getMetadata(
+                    Operation.class.getName()));
             DataType<DataType> sourceType =
                     new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
-            sourceType.setMetadata(WSDLOperation.class.getName(), sourceOperation.getOutputType().getMetadata(
-                    WSDLOperation.class.getName()));
+            sourceType.setMetadata(Operation.class.getName(), sourceOperation.getOutputType().getMetadata(
+                    Operation.class.getName()));
 
             result = transform(result, targetType, sourceType);
             resultMsg.setBody(result);

@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.extension;
 import org.apache.tuscany.databinding.PullTransformer;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.SimpleTypeMapper;
-import org.apache.ws.commons.schema.XmlSchemaElement;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.idl.TypeInfo;
 
 /**
  * Transformer to convert data from a databinding's representation of simple types to Java Objects
@@ -41,9 +41,9 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
     }
 
     public Object transform(T source, TransformationContext context) {
-        XmlSchemaElement element =
-                (XmlSchemaElement) context.getSourceDataType().getMetadata(XmlSchemaElement.class.getName());
-        XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) element.getSchemaType();
+        ElementInfo element =
+                (ElementInfo) context.getSourceDataType().getMetadata(ElementInfo.class.getName());
+        TypeInfo simpleType = (TypeInfo) element.getType();
         return mapper.toJavaObject(simpleType, getText(source), context);
     }
 

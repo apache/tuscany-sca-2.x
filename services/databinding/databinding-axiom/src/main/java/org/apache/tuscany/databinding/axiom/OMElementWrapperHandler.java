@@ -26,7 +26,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.WrapperHandler;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.idl.ElementInfo;
 
 /**
  * OMElement wrapper handler implementation
@@ -40,12 +40,12 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         this.factory = OMAbstractFactory.getOMFactory();
     }
 
-    public OMElement create(XmlSchemaElement element, TransformationContext context) {
+    public OMElement create(ElementInfo element, TransformationContext context) {
         OMElement wrapper = factory.createOMElement(element.getQName(), null);
         return wrapper;
     }
 
-    public Object getChild(OMElement wrapper, int i, XmlSchemaElement element) {
+    public Object getChild(OMElement wrapper, int i, ElementInfo element) {
         int index = 0;
         for (Iterator e = wrapper.getChildElements(); e.hasNext();) {
             OMElement child = (OMElement) e.next();
@@ -59,7 +59,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         return null;
     }
 
-    public void setChild(OMElement wrapper, int i, XmlSchemaElement childElement, Object value) {
+    public void setChild(OMElement wrapper, int i, ElementInfo childElement, Object value) {
         wrapper.addChild((OMElement) value);
     }
 

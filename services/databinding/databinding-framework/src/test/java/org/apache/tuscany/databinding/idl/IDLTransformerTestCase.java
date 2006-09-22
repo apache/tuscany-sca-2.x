@@ -82,7 +82,8 @@ public class IDLTransformerTestCase extends TestCase {
         Definition definition = registry.loadDefinition(null, url);
         PortType portType = definition.getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("checkOrderStatus", null, null);
-        WSDLOperation op = new WSDLOperation(operation, Node.class.getName(), registry.getSchemaRegistry());
+        WSDLOperation wsdlOp = new WSDLOperation(operation, Node.class.getName(), registry.getSchemaRegistry());
+        org.apache.tuscany.spi.model.Operation<?> op = wsdlOp.getOperation();
         assertTrue(op.isWrapperStyle());
 
         MediatorImpl m = new MediatorImpl();
@@ -119,8 +120,8 @@ public class IDLTransformerTestCase extends TestCase {
 
         TransformationContext context1 = new TransformationContextImpl();
         DataType<DataType> sourceType = new DataType<DataType>("idl:output", Object.class, op.getOutputType());
-        sourceType.setMetadata(WSDLOperation.class.getName(), op.getOutputType().getMetadata(
-                WSDLOperation.class.getName()));
+        sourceType.setMetadata(org.apache.tuscany.spi.model.Operation.class.getName(), op.getOutputType().getMetadata(
+                org.apache.tuscany.spi.model.Operation.class.getName()));
         
         context1.setSourceDataType(sourceType);
         DataType<DataType> targetType =

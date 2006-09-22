@@ -16,28 +16,51 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.spi.idl;
 
+import javax.xml.namespace.QName;
+
 /**
- * Exception thrown to indicate that a service contract specification contains an overloaded method.
- *
- * @version $Rev$ $Date$
+ * An abstraction of XML schema types
  */
-public class OverloadedOperationException extends InvalidServiceContractException {
-    private static final long serialVersionUID = -4658711318608885638L;
+public class TypeInfo {
+    private QName name;
 
-    public OverloadedOperationException() {
+    private boolean isSimpleType;
+
+    private TypeInfo baseType;
+
+    /**
+     * @param name
+     * @param isSimpleType
+     */
+    public TypeInfo(QName name, boolean isSimpleType, TypeInfo baseType) {
+        super();
+        this.name = name;
+        this.isSimpleType = isSimpleType;
+        this.baseType = baseType;
     }
 
-    public OverloadedOperationException(String message) {
-        super(message);
+    /**
+     * @return the isSimpleType
+     */
+    public boolean isSimpleType() {
+        return isSimpleType;
     }
 
-    public OverloadedOperationException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * @return the name
+     */
+    public QName getQName() {
+        return name;
     }
 
-    public OverloadedOperationException(Throwable cause) {
-        super(cause);
+    /**
+     * @return the baseType
+     */
+    public TypeInfo getBaseType() {
+        return baseType;
     }
+
 }

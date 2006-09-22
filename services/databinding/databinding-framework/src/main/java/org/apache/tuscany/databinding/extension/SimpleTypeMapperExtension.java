@@ -19,34 +19,6 @@
 
 package org.apache.tuscany.databinding.extension;
 
-import static org.apache.ws.commons.schema.constants.Constants.XSD_BASE64;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_BOOLEAN;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_BYTE;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_DATE;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_DATETIME;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_DAY;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_DECIMAL;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_DOUBLE;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_DURATION;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_FLOAT;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_HEXBIN;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_INT;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_INTEGER;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_LONG;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_MONTH;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_MONTHDAY;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_NOTATION;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_QNAME;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_SHORT;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_STRING;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_TIME;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_UNSIGNEDBYTE;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_UNSIGNEDINT;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_UNSIGNEDLONG;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_UNSIGNEDSHORT;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_YEAR;
-import static org.apache.ws.commons.schema.constants.Constants.XSD_YEARMONTH;
-
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -61,14 +33,62 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.SimpleTypeMapper;
 import org.apache.tuscany.databinding.util.XSDDataTypeConverter;
-import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.tuscany.spi.idl.TypeInfo;
 
 public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements SimpleTypeMapper {
     private DatatypeFactory factory;
 
     public static final String URI_2001_SCHEMA_XSD = "http://www.w3.org/2001/XMLSchema";
+    public static final QName XSD_STRING = new QName(URI_2001_SCHEMA_XSD, "string");
+    public static final QName XSD_BOOLEAN = new QName(URI_2001_SCHEMA_XSD, "boolean");
+    public static final QName XSD_DOUBLE = new QName(URI_2001_SCHEMA_XSD, "double");
+    public static final QName XSD_FLOAT = new QName(URI_2001_SCHEMA_XSD, "float");
+    public static final QName XSD_INT = new QName(URI_2001_SCHEMA_XSD, "int");
+    public static final QName XSD_INTEGER = new QName(URI_2001_SCHEMA_XSD, "integer");
+    public static final QName XSD_LONG = new QName(URI_2001_SCHEMA_XSD, "long");
+    public static final QName XSD_SHORT = new QName(URI_2001_SCHEMA_XSD, "short");
+    public static final QName XSD_BYTE = new QName(URI_2001_SCHEMA_XSD, "byte");
+    public static final QName XSD_DECIMAL = new QName(URI_2001_SCHEMA_XSD, "decimal");
+    public static final QName XSD_BASE64 = new QName(URI_2001_SCHEMA_XSD, "base64Binary");
+    public static final QName XSD_HEXBIN = new QName(URI_2001_SCHEMA_XSD, "hexBinary");
+    public static final QName XSD_ANYSIMPLETYPE = new QName(URI_2001_SCHEMA_XSD, "anySimpleType");
+    public static final QName XSD_ANYTYPE = new QName(URI_2001_SCHEMA_XSD, "anyType");
+    public static final QName XSD_ANY = new QName(URI_2001_SCHEMA_XSD, "any");
+    public static final QName XSD_QNAME = new QName(URI_2001_SCHEMA_XSD, "QName");
+    public static final QName XSD_DATETIME = new QName(URI_2001_SCHEMA_XSD, "dateTime");
+    public static final QName XSD_DATE = new QName(URI_2001_SCHEMA_XSD, "date");
+    public static final QName XSD_TIME = new QName(URI_2001_SCHEMA_XSD, "time");
 
+    public static final QName XSD_NORMALIZEDSTRING = new QName(URI_2001_SCHEMA_XSD, "normalizedString");
+    public static final QName XSD_TOKEN = new QName(URI_2001_SCHEMA_XSD, "token");
+
+    public static final QName XSD_UNSIGNEDLONG = new QName(URI_2001_SCHEMA_XSD, "unsignedLong");
+    public static final QName XSD_UNSIGNEDINT = new QName(URI_2001_SCHEMA_XSD, "unsignedInt");
+    public static final QName XSD_UNSIGNEDSHORT = new QName(URI_2001_SCHEMA_XSD, "unsignedShort");
+    public static final QName XSD_UNSIGNEDBYTE = new QName(URI_2001_SCHEMA_XSD, "unsignedByte");
+    public static final QName XSD_POSITIVEINTEGER = new QName(URI_2001_SCHEMA_XSD, "positiveInteger");
+    public static final QName XSD_NEGATIVEINTEGER = new QName(URI_2001_SCHEMA_XSD, "negativeInteger");
+    public static final QName XSD_NONNEGATIVEINTEGER = new QName(URI_2001_SCHEMA_XSD, "nonNegativeInteger");
+    public static final QName XSD_NONPOSITIVEINTEGER = new QName(URI_2001_SCHEMA_XSD, "nonPositiveInteger");
+
+    public static final QName XSD_YEARMONTH = new QName(URI_2001_SCHEMA_XSD, "gYearMonth");
+    public static final QName XSD_MONTHDAY = new QName(URI_2001_SCHEMA_XSD, "gMonthDay");
+    public static final QName XSD_YEAR = new QName(URI_2001_SCHEMA_XSD, "gYear");
+    public static final QName XSD_MONTH = new QName(URI_2001_SCHEMA_XSD, "gMonth");
+    public static final QName XSD_DAY = new QName(URI_2001_SCHEMA_XSD, "gDay");
+    public static final QName XSD_DURATION = new QName(URI_2001_SCHEMA_XSD, "duration");
+
+    public static final QName XSD_NAME = new QName(URI_2001_SCHEMA_XSD, "Name");
+    public static final QName XSD_NCNAME = new QName(URI_2001_SCHEMA_XSD, "NCName");
+    public static final QName XSD_NMTOKEN = new QName(URI_2001_SCHEMA_XSD, "NMTOKEN");
+    public static final QName XSD_NMTOKENS = new QName(URI_2001_SCHEMA_XSD, "NMTOKENS");
+    public static final QName XSD_NOTATION = new QName(URI_2001_SCHEMA_XSD, "NOTATION");
+    public static final QName XSD_ENTITY = new QName(URI_2001_SCHEMA_XSD, "ENTITY");
+    public static final QName XSD_ENTITIES = new QName(URI_2001_SCHEMA_XSD, "ENTITIES");
+    public static final QName XSD_IDREF = new QName(URI_2001_SCHEMA_XSD, "IDREF");
+    public static final QName XSD_IDREFS = new QName(URI_2001_SCHEMA_XSD, "IDREFS");
+    public static final QName XSD_ANYURI = new QName(URI_2001_SCHEMA_XSD, "anyURI");
+    
     private static final String[] typeNames =
             { "string", "boolean", "double", "float", "int", "integer", "long", "short", "byte", "decimal",
                     "base64Binary", "hexBinary", "anySimpleType", "anyType", "any", "QName", "dateTime", "date",
@@ -77,16 +97,12 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
                     "gYearMonth", "gMonthDay", "gYear", "gMonth", "gDay", "duration", "Name", "NCName", "NMTOKEN",
                     "NMTOKENS", "NOTATION", "ENTITY", "ENTITIES", "IDREF", "IDREFS", "anyURI", "language", "ID" };
 
-    public static final Map<String, XmlSchemaSimpleType> XSD_SIMPLE_TYPES = new HashMap<String, XmlSchemaSimpleType>();
+    public static final Map<String, TypeInfo> XSD_SIMPLE_TYPES = new HashMap<String, TypeInfo>();
 
     static {
-        XmlSchemaCollection collection = new XmlSchemaCollection();
         for (String type : typeNames) {
-            XmlSchemaSimpleType simpleType =
-                    (XmlSchemaSimpleType) collection.getTypeByQName(new QName(URI_2001_SCHEMA_XSD, type));
-            if (simpleType != null) {
-                XSD_SIMPLE_TYPES.put(type, simpleType);
-            }
+            TypeInfo simpleType = new TypeInfo(new QName(URI_2001_SCHEMA_XSD, type), true, null);
+            XSD_SIMPLE_TYPES.put(type, simpleType);
         }
     }
 
@@ -99,7 +115,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         }
     }
 
-    public Object toJavaObject(XmlSchemaSimpleType simpleType, String value, TransformationContext context) {
+    public Object toJavaObject(TypeInfo simpleType, String value, TransformationContext context) {
         /**
          * <ul>
          * <li>xsd:string --- java.lang.String
@@ -129,9 +145,9 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
          * </ul>
          */
 
-        XmlSchemaSimpleType baseType = simpleType;
-        while (baseType.getBaseSchemaType() != null) {
-            baseType = (XmlSchemaSimpleType) baseType.getBaseSchemaType();
+        TypeInfo baseType = simpleType;
+        while (baseType.getBaseType() != null) {
+            baseType = (TypeInfo) baseType.getBaseType();
         }
         QName type = baseType.getQName();
         if (type.equals(XSD_STRING)) {
@@ -178,11 +194,11 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             return parseBase64Binary(value);
         } else if (type.equals(XSD_QNAME)) {
             NamespaceContext namespaceContext =
-                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+                    (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
             return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_NOTATION)) {
             NamespaceContext namespaceContext =
-                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+                    (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
             return parseQName(value, namespaceContext);
         } else if (type.equals(XSD_YEAR)) {
             return factory.newXMLGregorianCalendar(value);
@@ -199,7 +215,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         }
     }
 
-    public String toXMLLiteral(XmlSchemaSimpleType simpleType, Object obj, TransformationContext context) {
+    public String toXMLLiteral(TypeInfo simpleType, Object obj, TransformationContext context) {
         if (obj instanceof Float || obj instanceof Double) {
             if (obj instanceof Float) {
                 return printDouble(((Float) obj).floatValue());
@@ -220,10 +236,10 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             } else if (simpleType.getQName().equals(XSD_HEXBIN)) {
                 return printHexBinary((byte[]) obj);
             }
-        } else if(obj instanceof QName) {
+        } else if (obj instanceof QName) {
             NamespaceContext namespaceContext =
-                (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
-           return printQName((QName) obj, namespaceContext);
+                    (NamespaceContext) ((context != null) ? context.getMetadata().get(NamespaceContext.class) : null);
+            return printQName((QName) obj, namespaceContext);
         }
         return obj.toString();
     }

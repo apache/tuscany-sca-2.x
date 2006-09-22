@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.idl.WrapperInfo;
+
 /**
  * Represents an operation that is part of a service contract. The type paramter of this operation identifies the
  * logical type system for all data types.
@@ -49,6 +51,9 @@ public class Operation<T> {
     private boolean callback;
 
     private String dataBinding;
+    
+    private boolean wrapperStyle;
+    private WrapperInfo wrapper;
 
     /**
      * Construct a minimally-specified operation
@@ -293,5 +298,38 @@ public class Operation<T> {
         }
     }
 
+    /**
+     * Returns true if the operation is wrapper style
+     * @return the wrapperStyle
+     */
+    public boolean isWrapperStyle() {
+        return wrapperStyle;
+    }
+    
+    /**
+     * Return the Wrapper information for this operation is it's wrapper style
+     * @return The Wrapper
+     */
+    public WrapperInfo getWrapper() {
+        if (!isWrapperStyle()) {
+            throw new IllegalStateException("The operation is not wrapper style.");
+        } else {
+            return wrapper;
+        }
+    }
+
+    /**
+     * @param wrapper the wrapper to set
+     */
+    public void setWrapper(WrapperInfo wrapper) {
+        this.wrapper = wrapper;
+    }
+
+    /**
+     * @param wrapperStyle the wrapperStyle to set
+     */
+    public void setWrapperStyle(boolean wrapperStyle) {
+        this.wrapperStyle = wrapperStyle;
+    }
 
 }
