@@ -30,6 +30,8 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public class Operation<T> {
+    private static final String NAME = Operation.class.getName();
+
     protected Map<String, Object> metaData;
 
     private final String name;
@@ -89,11 +91,11 @@ public class Operation<T> {
         this.dataBinding = dataBinding;
         // Register the operation with the types
         for (DataType<?> d : this.inputType.getLogical()) {
-            d.setMetadata(Operation.class.getName(), this);
+            d.setMetadata(NAME, this);
         }
-        this.outputType.setMetadata(Operation.class.getName(), this);
+        this.outputType.setMetadata(NAME, this);
         for (DataType<?> d : this.faultTypes) {
-            d.setMetadata(Operation.class.getName(), this);
+            d.setMetadata(NAME, this);
         }
     }
 
