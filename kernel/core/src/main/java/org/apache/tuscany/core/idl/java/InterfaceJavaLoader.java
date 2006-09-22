@@ -20,7 +20,6 @@ package org.apache.tuscany.core.idl.java;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -29,14 +28,13 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.core.loader.StAXUtil;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -44,6 +42,8 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ModelObject;
+
+import org.apache.tuscany.core.loader.StAXUtil;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
@@ -85,7 +85,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
 
         name = reader.getAttributeValue(null, "callbackInterface");
         Class<?> callbackClass = (name != null) ? LoaderUtil.loadClass(name, deploymentContext.getClassLoader()) : null;
-        
+
         Map<Class<?>, ModelObject> extensions = new HashMap<Class<?>, ModelObject>();
         while (true) {
             int event = reader.next();
@@ -94,12 +94,10 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
                 if (mo != null) {
                     extensions.put(mo.getClass(), mo);
                 }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                if (reader.getName().equals(INTERFACE_JAVA)) {
-                    break;
-                }
+            } else if (event == XMLStreamConstants.END_ELEMENT && reader.getName().equals(INTERFACE_JAVA)) {
+                break;
             }
-        }        
+        }
         JavaServiceContract serviceContract;
         try {
             serviceContract = interfaceRegsitry.introspect(interfaceClass, callbackClass);
@@ -115,7 +113,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
             serviceContract.setDataBinding(dataType.getDataBinding());
         }
         serviceContract.getExtensions().putAll(extensions);
-        
+
         serviceContract.setInteractionScope(interactionScope);
         return serviceContract;
     }

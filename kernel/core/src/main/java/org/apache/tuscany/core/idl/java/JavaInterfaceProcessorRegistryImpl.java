@@ -48,10 +48,9 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
  */
 public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcessorRegistry {
 
+    public static final String IDL_INPUT = "idl:input";
     private static final String UNKNOWN_DATABINDING = null;
 
-    public static final String IDL_INPUT = "idl:input";
-    
     private List<JavaInterfaceProcessor> processors = new ArrayList<JavaInterfaceProcessor>();
 
     public JavaInterfaceProcessorRegistryImpl() {

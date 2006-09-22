@@ -24,8 +24,8 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class RMIHostRuntimeExceptionTestCase extends TestCase {
-    private static final Throwable cause = new Throwable("Cause");
-    private static final String message = "Message";
+    private static final Throwable CAUSE = new Throwable("Cause");
+    private static final String MESSAGE = "Message";
 
     public void testNoArgConstructor() {
         Exception ex = new RMIHostRuntimeException();
@@ -34,21 +34,21 @@ public class RMIHostRuntimeExceptionTestCase extends TestCase {
     }
 
     public void testMessageConstructor() {
-        Exception ex = new RMIHostRuntimeException(message);
-        assertSame(message, ex.getMessage());
+        Exception ex = new RMIHostRuntimeException(MESSAGE);
+        assertSame(MESSAGE, ex.getMessage());
         assertNull(ex.getCause());
     }
 
     public void testThrowableConstructor() {
-        Exception ex = new RMIHostRuntimeException(cause);
-        assertEquals(cause.getClass().getName() + ": " + cause.getMessage(), ex.getMessage());
-        assertSame(cause, ex.getCause());
+        Exception ex = new RMIHostRuntimeException(CAUSE);
+        assertEquals(CAUSE.getClass().getName() + ": " + CAUSE.getMessage(), ex.getMessage());
+        assertSame(CAUSE, ex.getCause());
     }
 
     public void testMessageThrowableConstructor() {
-        Exception ex = new RMIHostRuntimeException(message, cause);
-        assertSame(message, ex.getMessage());
-        assertSame(cause, ex.getCause());
+        Exception ex = new RMIHostRuntimeException(MESSAGE, CAUSE);
+        assertSame(MESSAGE, ex.getMessage());
+        assertSame(CAUSE, ex.getCause());
     }
 
 }

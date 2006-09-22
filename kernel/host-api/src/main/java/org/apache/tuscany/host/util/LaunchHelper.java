@@ -76,7 +76,9 @@ public final class LaunchHelper {
             throw new IllegalStateException(e.getCause());
         }
     }
-
+        ///CLOVER:OFF
+    private LaunchHelper() {
+    }
     /**
      * Invoke a method on an object.
      *
@@ -98,7 +100,5 @@ public final class LaunchHelper {
         }
     }
 
-    ///CLOVER:OFF
-    private LaunchHelper() {
-    }
+
 }
