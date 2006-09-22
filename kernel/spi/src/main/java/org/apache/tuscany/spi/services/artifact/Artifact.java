@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  * Description of some packaged artifact such as a JAR file or a Composite.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class Artifact {
@@ -52,6 +52,7 @@ public class Artifact {
 
     /**
      * Adds a transitive dependency to the artifact.
+     *
      * @param artifact Dependency to be added.
      */
     public void addDependency(Artifact artifact) {
@@ -60,6 +61,7 @@ public class Artifact {
 
     /**
      * Gets the URLs for all the transitive dependencies.
+     *
      * @return Sets of URLs for all the transitive dependencies.
      */
     public Set<URL> getUrls() {
@@ -76,9 +78,9 @@ public class Artifact {
     }
 
     /**
-     * Returns the name of a logical grouping to which this artifact belongs. For example, this might represent the original publisher of the
-     * artifact.
-     * 
+     * Returns the name of a logical grouping to which this artifact belongs. For example, this might represent the
+     * original publisher of the artifact.
+     *
      * @return the name of a logical grouping to which this artifact belongs
      */
     public String getGroup() {
@@ -87,9 +89,8 @@ public class Artifact {
 
     /**
      * Sets the name of a logical grouping to which this artifact belongs.
-     * 
-     * @param group
-     *            the name of a logical grouping to which this artifact belongs
+     *
+     * @param group the name of a logical grouping to which this artifact belongs
      */
     public void setGroup(String group) {
         this.group = group;
@@ -97,7 +98,7 @@ public class Artifact {
 
     /**
      * Returns the name of an artifact.
-     * 
+     *
      * @return the name of an artifact
      */
     public String getName() {
@@ -106,9 +107,8 @@ public class Artifact {
 
     /**
      * Sets the name of an artifact.
-     * 
-     * @param name
-     *            the name of an artifact
+     *
+     * @param name the name of an artifact
      */
     public void setName(String name) {
         this.name = name;
@@ -116,7 +116,7 @@ public class Artifact {
 
     /**
      * Returns the version of an artifact.
-     * 
+     *
      * @return the version of an artifact
      */
     public String getVersion() {
@@ -125,18 +125,18 @@ public class Artifact {
 
     /**
      * Sets the version of an artifact.
-     * 
-     * @param version
-     *            the version of an artifact
+     *
+     * @param version the version of an artifact
      */
     public void setVersion(String version) {
         this.version = version;
     }
 
     /**
-     * Returns a way of classifying an artifact. This can be used to distinguish variants of an artifact that provide the same function but which may
-     * have platform specific requirements. For example, it may contain the name of a hardware platform for artifacts that contain native code.
-     * 
+     * Returns a way of classifying an artifact. This can be used to distinguish variants of an artifact that provide
+     * the same function but which may have platform specific requirements. For example, it may contain the name of a
+     * hardware platform for artifacts that contain native code.
+     *
      * @return a way of classifying an artifact
      */
     public String getClassifier() {
@@ -145,9 +145,8 @@ public class Artifact {
 
     /**
      * Sets a way of classifying an artifact
-     * 
-     * @param classifier
-     *            a way of classifying an artifact
+     *
+     * @param classifier a way of classifying an artifact
      */
     public void setClassifier(String classifier) {
         this.classifier = classifier;
@@ -155,7 +154,7 @@ public class Artifact {
 
     /**
      * Returns the type of artifact.
-     * 
+     *
      * @return the type of artifact
      */
     public String getType() {
@@ -164,9 +163,8 @@ public class Artifact {
 
     /**
      * Sets the type of artifact.
-     * 
-     * @param type
-     *            the type of artifact
+     *
+     * @param type the type of artifact
      */
     public void setType(String type) {
         this.type = type;
@@ -174,7 +172,7 @@ public class Artifact {
 
     /**
      * Returns a URL from which the artifact can be obtained.
-     * 
+     *
      * @return a URL from which the artifact can be obtained
      */
     public URL getUrl() {
@@ -183,9 +181,8 @@ public class Artifact {
 
     /**
      * Sets a URL from which the artifact can be obtained.
-     * 
-     * @param url
-     *            a URL from which the artifact can be obtained
+     *
+     * @param url a URL from which the artifact can be obtained
      */
     public void setUrl(URL url) {
         this.url = url;

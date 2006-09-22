@@ -34,7 +34,6 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -46,8 +45,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
     public Component build(CompositeComponent parent,
-                              ComponentDefinition<CompositeImplementation> componentDefinition,
-                              DeploymentContext deploymentContext) throws BuilderConfigException {
+                           ComponentDefinition<CompositeImplementation> componentDefinition,
+                           DeploymentContext deploymentContext) throws BuilderConfigException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
 
@@ -99,10 +98,10 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
             component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
         }
-        
+
         // HACK: [rfeng] We need a better way to propagate model extensions to SCAObject.
         component.getExtensions().putAll(componentType.getExtensions());
-        
+
         return component;
     }
 

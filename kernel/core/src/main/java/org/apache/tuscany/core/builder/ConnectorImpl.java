@@ -242,7 +242,6 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             OutboundInvocationChain outboundChain = wireService.createOutboundChain(operation);
-            //  connectCallbackChain(source, outboundChain, inboundChain);
             targetWire.addSourceCallbackInvocationChain(source.getName(), operation, outboundChain);
             if (source instanceof Component) {
                 Component component = (Component) source;

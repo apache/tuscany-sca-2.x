@@ -33,7 +33,6 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.component.AutowireComponent;
@@ -60,8 +59,8 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
     }
 
     public Component build(CompositeComponent parent,
-                              ComponentDefinition<SystemCompositeImplementation> componentDefinition,
-                              DeploymentContext deploymentContext) throws BuilderConfigException {
+                           ComponentDefinition<SystemCompositeImplementation> componentDefinition,
+                           DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
 

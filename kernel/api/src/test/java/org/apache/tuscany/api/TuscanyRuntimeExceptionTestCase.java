@@ -19,6 +19,7 @@
 package org.apache.tuscany.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -26,11 +27,11 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class TuscanyRuntimeExceptionTestCase extends TestCase {
-    private static final Throwable cause = new Throwable("Cause");
-    private static final String message = "Message";
-    private static final String identifier = "identifier";
-    private static final String context1 = "context1";
-    private static final String context2 = "context2";
+    private static final Throwable CAUSE = new Throwable("Cause");
+    private static final String MESSAGE = "Message";
+    private static final String IDENTIFIER = "IDENTIFIER";
+    private static final String CONTEXT1 = "CONTEXT1";
+    private static final String CONTEXT2 = "CONTEXT2";
 
     public void testNoArgConstructor() {
         TuscanyRuntimeException ex = new DummyException();
@@ -41,61 +42,61 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
     }
 
     public void testMessageConstructor() {
-        TuscanyRuntimeException ex = new DummyException(message);
-        assertSame(message, ex.getMessage());
+        TuscanyRuntimeException ex = new DummyException(MESSAGE);
+        assertSame(MESSAGE, ex.getMessage());
         assertNull(ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testThrowableConstructor() {
-        TuscanyRuntimeException ex = new DummyException(cause);
-        assertEquals(cause.getClass().getName() + ": " + cause.getMessage(), ex.getMessage());
-        assertSame(cause, ex.getCause());
+        TuscanyRuntimeException ex = new DummyException(CAUSE);
+        assertEquals(CAUSE.getClass().getName() + ": " + CAUSE.getMessage(), ex.getMessage());
+        assertSame(CAUSE, ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testMessageThrowableConstructor() {
-        TuscanyRuntimeException ex = new DummyException(message, cause);
-        assertSame(message, ex.getMessage());
-        assertSame(cause, ex.getCause());
+        TuscanyRuntimeException ex = new DummyException(MESSAGE, CAUSE);
+        assertSame(MESSAGE, ex.getMessage());
+        assertSame(CAUSE, ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testIdentifier() {
-        TuscanyRuntimeException ex = new DummyException(message);
-        ex.setIdentifier(identifier);
-        assertSame(identifier, ex.getIdentifier());
-        assertEquals(message + " [" + identifier + ']', ex.getMessage());
+        TuscanyRuntimeException ex = new DummyException(MESSAGE);
+        ex.setIdentifier(IDENTIFIER);
+        assertSame(IDENTIFIER, ex.getIdentifier());
+        assertEquals(MESSAGE + " [" + IDENTIFIER + ']', ex.getMessage());
     }
 
     public void testContextStack() {
-        TuscanyRuntimeException ex = new DummyException(message);
-        ArrayList<String> contexts = new ArrayList<String>();
-        contexts.add(context1);
-        ex.addContextName(context1);
+        TuscanyRuntimeException ex = new DummyException(MESSAGE);
+        List<String> contexts = new ArrayList<String>();
+        contexts.add(CONTEXT1);
+        ex.addContextName(CONTEXT1);
         assertEquals(contexts, ex.returnContextNames());
-        contexts.add(context2);
-        ex.addContextName(context2);
+        contexts.add(CONTEXT2);
+        ex.addContextName(CONTEXT2);
         assertEquals(contexts, ex.returnContextNames());
     }
 
     public void testContextMessageWithNoIdentifier() {
-        TuscanyRuntimeException ex = new DummyException(message);
-        ex.addContextName(context1);
-        ex.addContextName(context2);
-        assertEquals("Message\nContext stack trace: [context2][context1]", ex.getMessage());
+        TuscanyRuntimeException ex = new DummyException(MESSAGE);
+        ex.addContextName(CONTEXT1);
+        ex.addContextName(CONTEXT2);
+        assertEquals("Message\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
     }
 
 
     public void testContextMessageWithIdentifier() {
-        TuscanyRuntimeException ex = new DummyException(message);
-        ex.setIdentifier(identifier);
-        ex.addContextName(context1);
-        ex.addContextName(context2);
-        assertEquals("Message [identifier]\nContext stack trace: [context2][context1]", ex.getMessage());
+        TuscanyRuntimeException ex = new DummyException(MESSAGE);
+        ex.setIdentifier(IDENTIFIER);
+        ex.addContextName(CONTEXT1);
+        ex.addContextName(CONTEXT2);
+        assertEquals("Message [IDENTIFIER]\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
     }
 
     public static class DummyException extends TuscanyRuntimeException {
