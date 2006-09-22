@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -60,6 +61,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.easymock.EasyMock;
 
 /**
  * Validates wiring from a service context to Java atomic contexts by scope
@@ -174,18 +176,32 @@ public class OutboundWireToJavaTestCase extends TestCase {
     private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
                                                               InvalidServiceContractException {
         ConnectorImpl connector = new ConnectorImpl();
-        OutboundWire wire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
+
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.addServiceInterface(Target.class);
-        JavaAtomicComponent atomicComponent = new JavaAtomicComponent("target", configuration, null);
+        configuration.setParent(parent);
+
+        JavaAtomicComponent source = new JavaAtomicComponent("source", configuration, null);
+        OutboundWire outboundWire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
+        outboundWire.setContainer(source);
+        source.addOutboundWire(outboundWire);
+        JavaAtomicComponent target = new JavaAtomicComponent("target", configuration, null);
         InboundWire targetWire = MockFactory.createTargetWire("Target", Target.class);
-        atomicComponent.addInboundWire(targetWire);
-        connector.connect(atomicComponent, atomicComponent, wire, atomicComponent.getInboundWire("Target"), false);
-        atomicComponent.start();
-        return wire;
+        targetWire.setContainer(target);
+        target.addInboundWire(targetWire);
+        InboundWire inboundWire = target.getInboundWire("Target");
+        inboundWire.setContainer(target);
+
+        EasyMock.expect(parent.getChild("target")).andReturn(target);
+        EasyMock.replay(parent);
+
+        connector.connect(source);
+        target.start();
+        return outboundWire;
     }
 
     public static <T> OutboundWire createOutboundWire(QualifiedName targetName, Class<T> interfaze)

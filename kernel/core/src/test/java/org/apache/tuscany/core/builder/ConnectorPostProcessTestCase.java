@@ -64,7 +64,13 @@ public class ConnectorPostProcessTestCase extends TestCase {
     }
 
     public void testOutboundToInboundPostProcessCalled() throws Exception {
+        Component source = createNiceMock(Component.class);
+        expect(source.getName()).andReturn("Component");
+        replay(source);
+
         OutboundWire owire = createNiceMock(OutboundWire.class);
+        EasyMock.expect(owire.getContainer()).andReturn(source);
+
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
         expect(owire.getInvocationChains()).andReturn(chains);
         Map<Operation<?>, InboundInvocationChain> ichains = new HashMap<Operation<?>, InboundInvocationChain>();
@@ -81,10 +87,8 @@ public class ConnectorPostProcessTestCase extends TestCase {
             (ServiceContract<?>) EasyMock.anyObject())).andReturn(true).anyTimes();
         replay(wireService);
         ConnectorImpl connector = new ConnectorImpl(wireService, registry);
-        Component source = createNiceMock(Component.class);
-        expect(source.getName()).andReturn("Component");
-        replay(source);
-        connector.connect(source, null, owire, iwire, false);
+
+        connector.connect(owire, iwire, false);
         verify(registry);
     }
 

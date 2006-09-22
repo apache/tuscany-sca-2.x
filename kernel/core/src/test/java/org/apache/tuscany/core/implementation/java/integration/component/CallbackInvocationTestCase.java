@@ -91,7 +91,8 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
-        Connector connector = new ConnectorImpl();
+        Connector connector = new ConnectorImpl(new JDKWireService(), null);
+
         connector.connect(clientComponent);
         FooClient client = (FooClient) clientComponent.getServiceInstance();
         client.invoke();
@@ -125,7 +126,7 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
 
-        Connector connector = new ConnectorImpl();
+        Connector connector = new ConnectorImpl(new JDKWireService(), null);
         connector.connect(clientComponent1);
         connector.connect(clientComponent2);
         FooClient client1 = (FooClient) clientComponent1.getServiceInstance();
