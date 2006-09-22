@@ -25,7 +25,7 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.Java2SimpleTypeTransformer;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.idl.ElementInfo;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -47,7 +47,7 @@ public class Object2Node extends Java2SimpleTypeTransformer<Node> {
         }
     }
 
-    protected Node createElement(XmlSchemaElement element, String text, TransformationContext context) {
+    protected Node createElement(ElementInfo element, String text, TransformationContext context) {
         QName name = element.getQName();
         Node root = DOMHelper.createElement(factory, name);
         root.appendChild(factory.createTextNode(text));

@@ -39,14 +39,8 @@
             <groupId>org.apache.tuscany.sca.services.idl</groupId>
             <artifactId>wsdl</artifactId>
             <version>${pom.version}</version>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.ws.commons</groupId>
-            <artifactId>XmlSchema</artifactId>
-            <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>woodstox</groupId>
             <artifactId>wstx-asl</artifactId>

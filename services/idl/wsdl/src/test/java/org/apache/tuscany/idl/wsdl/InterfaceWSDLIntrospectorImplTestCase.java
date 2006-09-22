@@ -68,11 +68,8 @@ public class InterfaceWSDLIntrospectorImplTestCase extends TestCase {
         DataType<QName> returnType = operation.getOutputType();
         Assert.assertNotNull(returnType);
         Assert.assertEquals(0, operation.getFaultTypes().size());
-        WSDLOperation op = 
-            (WSDLOperation) operation.getMetaData().get(WSDLOperation.class.getName());
-        Assert.assertNotNull(op);
-        Assert.assertEquals(1, op.getWrapper().getInputChildElements().size());
-        Assert.assertEquals(1, op.getWrapper().getOutputChildElements().size());
+        Assert.assertEquals(1, operation.getWrapper().getInputChildElements().size());
+        Assert.assertEquals(1, operation.getWrapper().getOutputChildElements().size());
     }
 
     public final void testIntrospectPortTypePortType() throws InvalidServiceContractException {

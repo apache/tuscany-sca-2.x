@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.SimpleTypeMapper;
 import org.apache.tuscany.sdo.util.SDOUtil;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.tuscany.spi.idl.TypeInfo;
 
 import commonj.sdo.Type;
 import commonj.sdo.helper.TypeHelper;
@@ -39,7 +39,7 @@ public class SDOSimpleTypeMapper implements SimpleTypeMapper {
         super();
     }
 
-    public Object toJavaObject(XmlSchemaSimpleType simpleType, String value, TransformationContext context) {
+    public Object toJavaObject(TypeInfo simpleType, String value, TransformationContext context) {
         QName typeName = simpleType.getQName();
         Type type = null;
         if (URI_2001_SCHEMA_XSD.equals(typeName.getNamespaceURI())) {
@@ -51,7 +51,7 @@ public class SDOSimpleTypeMapper implements SimpleTypeMapper {
         return SDOUtil.createFromString(type, value);
     }
 
-    public String toXMLLiteral(XmlSchemaSimpleType simpleType, Object obj, TransformationContext context) {
+    public String toXMLLiteral(TypeInfo simpleType, Object obj, TransformationContext context) {
         QName typeName = simpleType.getQName();
         Type type = null;
         if (URI_2001_SCHEMA_XSD.equals(typeName.getNamespaceURI())) {

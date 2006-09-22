@@ -32,7 +32,10 @@ import javax.wsdl.Output;
 import javax.wsdl.Part;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.idl.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
@@ -40,12 +43,15 @@ import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
 import org.apache.ws.commons.schema.XmlSchemaParticle;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
+import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
 
 /**
  * Metadata for a WSDL operation
  */
 public class WSDLOperation {
+    private static final String OPERATION_KEY = org.apache.tuscany.spi.model.Operation.class.getName();
+
     protected XMLSchemaRegistry schemaRegistry;
 
     protected Operation operation;
@@ -108,7 +114,7 @@ public class WSDLOperation {
             Input input = operation.getInput();
             Message message = (input == null) ? null : input.getMessage();
             inputType = getMessageType(message);
-            inputType.setMetadata(WSDLOperation.class.getName(), this);
+            // inputType.setMetadata(WSDLOperation.class.getName(), this);
             inputType.setDataBinding("idl:input");
         }
         return inputType;
@@ -131,7 +137,7 @@ public class WSDLOperation {
                 }
                 Part part = (Part) outputParts.get(0);
                 outputType = new WSDLPart(part).getDataType();
-                outputType.setMetadata(WSDLOperation.class.getName(), this);
+                // outputType.setMetadata(WSDLOperation.class.getName(), this);
             }
         }
         return outputType;
@@ -183,16 +189,20 @@ public class WSDLOperation {
             operationModel =
                     new org.apache.tuscany.spi.model.Operation<QName>(operation.getName(), getInputType(),
                             getOutputType(), getFaultTypes(), oneway, dataBinding);
-            operationModel.setMetaData(WSDLOperation.class.getName(), this);
+            operationModel.setWrapperStyle(isWrapperStyle());
+            // operationModel.setMetaData(WSDLOperation.class.getName(), this);
             if (isWrapperStyle()) {
+                operationModel.setWrapper(getWrapper().getWrapperInfo());
                 // Register the operation with the types
                 for (DataType<?> d : wrapper.getUnwrappedInputType().getLogical()) {
-                    d.setMetadata(org.apache.tuscany.spi.model.Operation.class.getName(), operationModel);
+                    d.setMetadata(OPERATION_KEY, operationModel);
                 }
-                wrapper.getUnwrappedOutputType().setMetadata(org.apache.tuscany.spi.model.Operation.class.getName(),
+                wrapper.getUnwrappedOutputType().setMetadata(OPERATION_KEY,
                         operationModel);
             }
         }
+        inputType.setMetadata(OPERATION_KEY, operationModel);
+        outputType.setMetadata(OPERATION_KEY, operationModel);
         return operationModel;
     }
 
@@ -230,7 +240,8 @@ public class WSDLOperation {
                 }
             }
             dataType = new DataType<QName>(dataBinding, Object.class, element.getQName());
-            dataType.setMetadata(WSDLPart.class.getName(), this);
+            // dataType.setMetadata(WSDLPart.class.getName(), this);
+            dataType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
         }
 
         /**
@@ -284,6 +295,8 @@ public class WSDLOperation {
         private DataType<List<DataType<QName>>> unwrappedInputType;
 
         private DataType<QName> unwrappedOutputType;
+        
+        private transient WrapperInfo wrapperInfo;
 
         private List<XmlSchemaElement> getChildElements(XmlSchemaElement element) {
             if (element == null) {
@@ -415,7 +428,7 @@ public class WSDLOperation {
                 List<DataType<QName>> childTypes = new ArrayList<DataType<QName>>();
                 for (XmlSchemaElement element : getInputChildElements()) {
                     DataType<QName> type = new DataType<QName>(dataBinding, Object.class, element.getQName());
-                    type.setMetadata(XmlSchemaElement.class.getName(), element);
+                    type.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
                     childTypes.add(type);
                 }
                 unwrappedInputType =
@@ -434,10 +447,50 @@ public class WSDLOperation {
                     }
                     XmlSchemaElement element = elements.get(0);
                     unwrappedOutputType = new DataType<QName>(dataBinding, Object.class, element.getQName());
-                    unwrappedOutputType.setMetadata(XmlSchemaElement.class.getName(), element);
+                    unwrappedOutputType.setMetadata(ElementInfo.class.getName(), getElementInfo(element));
                 }
             }
             return unwrappedOutputType;
         }
+
+        public WrapperInfo getWrapperInfo() throws InvalidServiceContractException {
+            if (wrapperInfo == null) {
+                ElementInfo in = getElementInfo(getInputWrapperElement());
+                ElementInfo out = getElementInfo(getOutputWrapperElement());
+                List<ElementInfo> inChildren = new ArrayList<ElementInfo>();
+                for (XmlSchemaElement e : getInputChildElements()) {
+                    inChildren.add(getElementInfo(e));
+                }
+                List<ElementInfo> outChildren = new ArrayList<ElementInfo>();
+                for (XmlSchemaElement e : getOutputChildElements()) {
+                    outChildren.add(getElementInfo(e));
+                }
+                wrapperInfo =
+                        new WrapperInfo(in, out, inChildren, outChildren, getUnwrappedInputType(), getUnwrappedOutputType());
+            }
+            return wrapperInfo;
+        }
     }
+
+    private static ElementInfo getElementInfo(XmlSchemaElement element) {
+        if (element == null) {
+            return null;
+        }
+        return new ElementInfo(element.getQName(), getTypeInfo(element.getSchemaType()));
+    }
+
+    private static TypeInfo getTypeInfo(XmlSchemaType type) {
+        if (type == null) {
+            return null;
+        }
+        XmlSchemaType baseType = (XmlSchemaType) type.getBaseSchemaType();
+        QName name = type.getQName();
+        boolean simple = (type instanceof XmlSchemaSimpleType);
+        if (baseType == null) {
+            return new TypeInfo(name, simple, null);
+        } else {
+            return new TypeInfo(name, simple, getTypeInfo(baseType));
+        }
+    }
+
 }

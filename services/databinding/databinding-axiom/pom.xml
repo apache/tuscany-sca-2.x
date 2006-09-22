@@ -47,7 +47,13 @@
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.services.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${pom.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
 			<groupId>org.apache.ws.commons.axiom</groupId>
 			<artifactId>axiom-api</artifactId>
 		</dependency>

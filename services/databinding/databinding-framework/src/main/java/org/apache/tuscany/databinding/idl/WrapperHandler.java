@@ -20,7 +20,7 @@
 package org.apache.tuscany.databinding.idl;
 
 import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.idl.ElementInfo;
 
 /**
  * A contract for transformers to deal with wrapping/unwrapping for WSDL wrapper style operations
@@ -33,7 +33,7 @@ public interface WrapperHandler<T> {
      * @param context The transformation context
      * @return An object representing the wrapper element
      */
-    T create(XmlSchemaElement element, TransformationContext context);
+    T create(ElementInfo element, TransformationContext context);
 
     /**
      * Set child element for the wrapper
@@ -43,7 +43,7 @@ public interface WrapperHandler<T> {
      * @param childElement The XSD element
      * @param value The value of the child
      */
-    void setChild(T wrapper, int i, XmlSchemaElement childElement, Object value);
+    void setChild(T wrapper, int i, ElementInfo childElement, Object value);
 
     /**
      * Get child element from the wrapper
@@ -53,5 +53,5 @@ public interface WrapperHandler<T> {
      * @param element The XSD element
      * @return The value of the child
      */
-    Object getChild(T wrapper, int i, XmlSchemaElement element);
+    Object getChild(T wrapper, int i, ElementInfo element);
 }

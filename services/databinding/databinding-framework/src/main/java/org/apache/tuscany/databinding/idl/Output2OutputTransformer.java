@@ -31,11 +31,11 @@ import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.Transformer;
 import org.apache.tuscany.databinding.extension.TransformerExtension;
-import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.idl.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.model.Operation;
 import org.osoa.sca.annotations.Service;
 
 /**
@@ -106,13 +106,9 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
         return 10;
     }
 
-    private WrapperHandler getWapperHandler(WSDLOperation sourceOp) {
+    private WrapperHandler getWapperHandler(Operation<?> operation) {
         String dataBindingId;
-        try {
-            dataBindingId = sourceOp.getOperation().getDataBinding();
-        } catch (InvalidServiceContractException e) {
-            throw new TransformationException(e);
-        }
+        dataBindingId = operation.getDataBinding();
         DataBinding dataBinding = dataBindingRegistry.getDataBinding(dataBindingId);
         WrapperHandler wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
         if (wrapperHandler == null) {
@@ -130,7 +126,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     public Object transform(Object response, TransformationContext context) {
         try {
             DataType<DataType> sourceType = context.getSourceDataType();
-            WSDLOperation sourceOp = (WSDLOperation) sourceType.getMetadata(WSDLOperation.class.getName());
+            Operation<?> sourceOp = (Operation<?>) sourceType.getMetadata(Operation.class.getName());
             boolean sourceWrapped = (sourceOp != null && sourceOp.isWrapperStyle());
             WrapperHandler sourceWrapperHandler = null;
             if (sourceWrapped) {
@@ -138,7 +134,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             }
 
             DataType<DataType> targetType = context.getTargetDataType();
-            WSDLOperation targetOp = (WSDLOperation) targetType.getMetadata(WSDLOperation.class.getName());
+            Operation<?> targetOp = (Operation<?>) targetType.getMetadata(Operation.class.getName());
             boolean targetWrapped = (targetOp != null && targetOp.isWrapperStyle());
             WrapperHandler targetWrapperHandler = null;
             if (targetWrapped) {
@@ -147,13 +143,13 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
 
             if ((!sourceWrapped) && targetWrapped) {
                 // Unwrapped --> Wrapped
-                WSDLOperation.Wrapper wrapper = targetOp.getWrapper();
+                WrapperInfo wrapper = targetOp.getWrapper();
                 Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
                 if (response == null) {
                     return targetWrapper;
                 }
 
-                XmlSchemaElement argElement = wrapper.getOutputChildElements().get(0);
+                ElementInfo argElement = wrapper.getOutputChildElements().get(0);
                 DataType<QName> argType = wrapper.getUnwrappedOutputType();
                 Object child = response;
                 child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
@@ -162,12 +158,12 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             } else if (sourceWrapped && (!targetWrapped)) {
                 // Wrapped to Unwrapped
                 Object sourceWrapper = response;
-                List<XmlSchemaElement> childElements = sourceOp.getWrapper().getOutputChildElements();
-                XmlSchemaElement childElement = childElements.get(0);
+                List<ElementInfo> childElements = sourceOp.getWrapper().getOutputChildElements();
+                ElementInfo childElement = childElements.get(0);
 
                 targetWrapperHandler = getWapperHandler(targetType.getLogical().getDataBinding());
                 if (targetWrapperHandler != null) {
-                    XmlSchemaElement wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
+                    ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                     // Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
                     DataType<QName> targetWrapperType =
                             new DataType<QName>(targetType.getLogical().getDataBinding(), Object.class, wrapperElement

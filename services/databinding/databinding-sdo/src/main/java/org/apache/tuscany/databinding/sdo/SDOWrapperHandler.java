@@ -24,8 +24,8 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.idl.WrapperHandler;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.model.DataType;
-import org.apache.ws.commons.schema.XmlSchemaElement;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.helper.DataFactory;
@@ -39,10 +39,10 @@ import commonj.sdo.helper.XMLHelper;
 public class SDOWrapperHandler implements WrapperHandler<Object> {
 
     /**
-     * @see org.apache.tuscany.databinding.idl.WrapperHandler#create(org.apache.ws.commons.schema.XmlSchemaElement,
+     * @see org.apache.tuscany.databinding.idl.WrapperHandler#create(ElementInfo,
      *      TransformationContext)
      */
-    public Object create(XmlSchemaElement element, TransformationContext context) {
+    public Object create(ElementInfo element, TransformationContext context) {
         TypeHelper typeHelper = TypeHelper.INSTANCE;
         if (context != null) {
             DataType targetType = context.getTargetDataType();
@@ -53,7 +53,7 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
                 }
             }
         }
-        QName typeName = element.getSchemaTypeName();
+        QName typeName = element.getType().getQName();
         DataFactory dataFactory = SDOUtil.createDataFactory(typeHelper);
         DataObject root = dataFactory.create(typeName.getNamespaceURI(), typeName.getLocalPart());
         XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
@@ -62,22 +62,22 @@ public class SDOWrapperHandler implements WrapperHandler<Object> {
 
     /**
      * @see org.apache.tuscany.databinding.idl.WrapperHandler#getChild(java.lang.Object, int,
-     *      org.apache.ws.commons.schema.XmlSchemaElement)
+     *      ElementInfo)
      */
-    public Object getChild(Object wrapper, int i, XmlSchemaElement element) {
+    public Object getChild(Object wrapper, int i, ElementInfo element) {
         DataObject wrapperDO =
                 (wrapper instanceof XMLDocument) ? ((XMLDocument) wrapper).getRootObject() : (DataObject) wrapper;
-        return wrapperDO.get(element.getName());
+        return wrapperDO.get(element.getQName().getLocalPart());
     }
 
     /**
      * @see org.apache.tuscany.databinding.idl.WrapperHandler#setChild(java.lang.Object, int,
-     *      org.apache.ws.commons.schema.XmlSchemaElement, java.lang.Object)
+     *      ElementInfo, java.lang.Object)
      */
-    public void setChild(Object wrapper, int i, XmlSchemaElement childElement, Object value) {
+    public void setChild(Object wrapper, int i, ElementInfo childElement, Object value) {
         DataObject wrapperDO =
                 (wrapper instanceof XMLDocument) ? ((XMLDocument) wrapper).getRootObject() : (DataObject) wrapper;
-        wrapperDO.set(childElement.getName(), value);
+        wrapperDO.set(childElement.getQName().getLocalPart(), value);
     }
 
 }

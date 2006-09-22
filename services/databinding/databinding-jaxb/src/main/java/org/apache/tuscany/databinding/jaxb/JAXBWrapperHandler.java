@@ -31,14 +31,14 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.TransformationException;
 import org.apache.tuscany.databinding.idl.WrapperHandler;
-import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.tuscany.spi.idl.ElementInfo;
 
 /**
  * JAXB WrapperHandler implementation
  */
 public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
 
-    public JAXBElement<?> create(XmlSchemaElement element, TransformationContext context) {
+    public JAXBElement<?> create(ElementInfo element, TransformationContext context) {
         try {
             String packageName = null;
             String factoryClassName = packageName + ".ObjectFactory";
@@ -67,7 +67,7 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
         }
     }
 
-    public Object getChild(JAXBElement<?> wrapper, int i, XmlSchemaElement element) {
+    public Object getChild(JAXBElement<?> wrapper, int i, ElementInfo element) {
         try {
             Object value = wrapper.getValue();
             PropertyDescriptor descriptors[] =
@@ -83,7 +83,7 @@ public class JAXBWrapperHandler implements WrapperHandler<JAXBElement<?>> {
         }
     }
 
-    public void setChild(JAXBElement<?> wrapper, int i, XmlSchemaElement childElement, Object value) {
+    public void setChild(JAXBElement<?> wrapper, int i, ElementInfo childElement, Object value) {
         try {
             Object wrapperValue = wrapper.getValue();
             PropertyDescriptor descriptors[] =
