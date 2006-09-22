@@ -60,7 +60,7 @@ public class Operation<T> {
                      DataType<List<DataType<T>>> inputType,
                      DataType<T> outputType,
                      List<DataType<T>> faultTypes) {
-        this(name, inputType, outputType, faultTypes, true, null);
+        this(name, inputType, outputType, faultTypes, false, null);
     }
 
     /**

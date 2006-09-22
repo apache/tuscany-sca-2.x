@@ -40,6 +40,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -76,6 +77,7 @@ public class ConnectorImpl implements Connector {
         CompositeComponent parent = source.getParent();
         if (source instanceof AtomicComponent) {
             AtomicComponent sourceComponent = (AtomicComponent) source;
+            // connect outbound wires for component references to their targets
             for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
                 for (OutboundWire outboundWire : referenceWires) {
                     if (outboundWire instanceof OutboundAutowire) {
@@ -94,45 +96,44 @@ public class ConnectorImpl implements Connector {
             for (InboundWire inboundWire : sourceComponent.getInboundWires().values()) {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                     Operation<?> operation = chain.getOperation();
-                    TargetInvoker invoker = sourceComponent.createTargetInvoker(null, operation);
+                    String serviceName = inboundWire.getServiceName();
+                    TargetInvoker invoker = sourceComponent.createTargetInvoker(serviceName, operation);
                     chain.setTargetInvoker(invoker);
                     chain.prepare();
                 }
             }
         } else if (source instanceof Reference) {
             Reference reference = (Reference) source;
-            InboundWire wire = reference.getInboundWire();
-            Map<Operation<?>, InboundInvocationChain> chains = wire.getInvocationChains();
-            // for references, no need to have an outbound wire
-            for (InboundInvocationChain chain : chains.values()) {
+            InboundWire inboundWire = reference.getInboundWire();
+            Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
+            for (InboundInvocationChain chain : inboundChains.values()) {
                 //TODO handle async
-                TargetInvoker invoker = reference.createTargetInvoker(wire.getServiceContract(), chain.getOperation());
+                // add target invoker on inbound side
+                TargetInvoker invoker =
+                    reference.createTargetInvoker(inboundWire.getServiceContract(), chain.getOperation());
                 chain.setTargetInvoker(invoker);
                 chain.prepare();
             }
-
-            // Now connect the Reference's outbound wire if it is a composite reference
-            if (source instanceof CompositeReference) {
-                CompositeReference compRef = (CompositeReference) source;
-                connect(compRef, compRef.getOutboundWire());
-            }
+            OutboundWire outboundWire = reference.getOutboundWire();
+            // connect the reference's inbound and outbound wires
+            connect(inboundWire, outboundWire, true);
         } else if (source instanceof Service) {
             Service service = (Service) source;
             InboundWire inboundWire = service.getInboundWire();
             OutboundWire outboundWire = service.getOutboundWire();
             // connect the outbound service wire to the target
             connect(service, outboundWire);
-            // services have inbound and outbound wires
             // NB: this connect must be done after the outbound service chain is connected to its target above
             if (!(source instanceof CompositeService)) {
+                //REVIEW JFM: why is this special for composites?
                 connect(inboundWire, outboundWire, true);
             }
         }
     }
 
     public void connect(InboundWire sourceWire,
-                            OutboundWire targetWire,
-                            boolean optimizable) throws BuilderConfigException {
+                        OutboundWire targetWire,
+                        boolean optimizable) throws BuilderConfigException {
         if (postProcessorRegistry != null) {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
@@ -155,11 +156,20 @@ public class ConnectorImpl implements Connector {
         }
     }
 
+    /**
+     * Connects the source wire to a corresponding target wire
+     *
+     * @param source      the owner of the source wire
+     * @param target      the owner of the target wire
+     * @param sourceWire  the source wire to connect
+     * @param targetWire  the target wire to connect to
+     * @param optimizable true if the wire connection can be optimized
+     */
     public void connect(SCAObject source,
-                            SCAObject target,
-                            OutboundWire sourceWire,
-                            InboundWire targetWire,
-                            boolean optimizable) {
+                        SCAObject target,
+                        OutboundWire sourceWire,
+                        InboundWire targetWire,
+                        boolean optimizable) {
         if (postProcessorRegistry != null) {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
@@ -196,7 +206,7 @@ public class ConnectorImpl implements Connector {
                     invoker = component.createAsyncTargetInvoker(targetWire, operation);
                 } else {
                     Operation<?> inboundOperation = inboundChain.getOperation();
-                    invoker = component.createTargetInvoker(null, inboundOperation);
+                    invoker = component.createTargetInvoker(sourceWire.getTargetName().getPortName(), inboundOperation);
                 }
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
@@ -204,7 +214,8 @@ public class ConnectorImpl implements Connector {
                     // Notice that for bound references we only use async target invokers for callback operations
                     invoker = reference.createAsyncTargetInvoker(sourceWire, operation);
                 } else {
-                    invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
+                    invoker =
+                        reference.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
                 }
             } else if (target instanceof CompositeService) {
                 CompositeService compServ = (CompositeService) target;
@@ -258,15 +269,16 @@ public class ConnectorImpl implements Connector {
     public void connect(OutboundInvocationChain sourceChain,
                         InboundInvocationChain targetChain,
                         TargetInvoker invoker) {
-        if (targetChain.getHeadInterceptor() == null) {
-            BuilderConfigException e = new BuilderConfigException("No chain handler or interceptor for operation");
+        Interceptor headInterceptor = targetChain.getHeadInterceptor();
+        if (headInterceptor == null) {
+            BuilderConfigException e = new BuilderConfigException("No interceptor for operation");
             e.setIdentifier(targetChain.getOperation().getName());
             throw e;
         }
         if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor
-            && targetChain.getHeadInterceptor() instanceof InvokerInterceptor)) {
+            && headInterceptor instanceof InvokerInterceptor)) {
             // check that we do not have the case where the only interceptors are invokers since we just need one
-            sourceChain.setTargetInterceptor(targetChain.getHeadInterceptor());
+            sourceChain.setTargetInterceptor(headInterceptor);
         }
         sourceChain.prepare(); //FIXME prepare should be moved out
         sourceChain.setTargetInvoker(invoker);
@@ -292,7 +304,7 @@ public class ConnectorImpl implements Connector {
      * @throws BuilderConfigException
      */
     private void connect(SCAObject source,
-                             OutboundWire sourceWire) throws BuilderConfigException {
+                         OutboundWire sourceWire) throws BuilderConfigException {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
         CompositeComponent parent = source.getParent();
@@ -362,7 +374,6 @@ public class ConnectorImpl implements Connector {
 
     private void checkIfWireable(OutboundWire sourceWire, InboundWire targetWire) {
         if (wireService == null) {
-            // FIXME: [rfeng] wireService won't be injected for the system connector?
             Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
             Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
             if (!sourceInterface.isAssignableFrom(targetInterface)) {

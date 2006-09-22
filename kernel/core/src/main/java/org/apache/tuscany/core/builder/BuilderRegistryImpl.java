@@ -47,6 +47,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
@@ -144,6 +145,10 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         bindingBuilders.put(implClass, builder);
     }
 
+    public void register(BindlessBuilder builder) {
+        bindlessBuilder = builder;
+    }
+    
     @SuppressWarnings("unchecked")
     public <B extends Binding> SCAObject build(CompositeComponent parent,
                                                BoundServiceDefinition<B> boundServiceDefinition,
@@ -152,7 +157,10 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
         SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
         if (wireService != null) {
-            wireService.createWires((Service) object, boundServiceDefinition);
+            // wireService.createWires((Service) object, boundServiceDefinition);
+            String path = boundServiceDefinition.getTarget().getPath();
+            ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
+            wireService.createWires((Service)object, path, contract);
         }
         return object;
     }
@@ -171,16 +179,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return object;
     }
 
-    public void register(BindlessBuilder builder) {
-        bindlessBuilder = builder;
-    }
-
     public SCAObject build(CompositeComponent parent,
                            BindlessServiceDefinition serviceDefinition,
                            DeploymentContext deploymentContext) {
         SCAObject object = bindlessBuilder.build(parent, serviceDefinition, deploymentContext);
         if (wireService != null) {
-            wireService.createWires((Service) object, serviceDefinition);
+            String path = serviceDefinition.getTarget().getPath();
+            ServiceContract<?> contract = serviceDefinition.getServiceContract();
+            wireService.createWires((Service)object, path, contract);
         }
         return object;
     }
