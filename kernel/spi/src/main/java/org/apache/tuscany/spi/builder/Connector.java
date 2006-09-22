@@ -30,10 +30,10 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 public interface Connector {
 
     /**
-     * Connects the given artifact to a target in its composite
+     * Connects the given source's wires to corresponding wires to a target. Wires are connected by bridging invocation
+     * chains.
      *
-     * @param source the source artifact to context, i.e. a <code>Service</code>, <code>Component</code>, or
-     *               <code>Reference</code>
+     * @param source the source, i.e. a <code>Service</code>, <code>Component</code>, or <code>Reference</code>
      */
     void connect(SCAObject source);
 

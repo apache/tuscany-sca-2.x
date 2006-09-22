@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -207,29 +206,34 @@ public class JDKWireService implements WireService {
         }
     }
 
-    public <T> void createWires(Reference reference, ServiceContract<?> contract) {
-        InboundWire wire = new InboundWireImpl();
-        wire.setServiceContract(contract);
-        wire.setContainer(reference);
+    public void createWires(Reference reference, ServiceContract<?> contract) {
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setServiceContract(contract);
+        inboundWire.setContainer(reference);
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
-            chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(operation, chain);
+            inboundWire.addInvocationChain(operation, chain);
         }
-        // Notice that we skip wire.setCallbackReferenceName
-        // First, an inbound wire's callbackReferenceName is only retrieved by JavaAtomicComponent
+        OutboundWire outboundWire = new OutboundWireImpl();
+        outboundWire.setServiceContract(contract);
+        outboundWire.setContainer(reference);
+        for (Operation<?> operation : contract.getOperations().values()) {
+            OutboundInvocationChain chain = createOutboundChain(operation);
+            chain.addInterceptor(new InvokerInterceptor());
+            outboundWire.addInvocationChain(operation, chain);
+        }
+
+        // Notice that we skip inboundWire.setCallbackReferenceName
+        // First, an inbound inboundWire's callbackReferenceName is only retrieved by JavaAtomicComponent
         // to create a callback injector based on the callback reference member; a composite reference
         // should not need to do that
         // Second, a reference definition does not have a callback reference name like a service
         // definition does
-        reference.setInboundWire(wire);
+        reference.setInboundWire(inboundWire);
+        reference.setOutboundWire(outboundWire);
     }
 
     public void createWires(Service service, BoundServiceDefinition<?> def) {
-        createWires(service, def.getTarget().getPath(), def.getServiceContract());
-    }
-
-    public void createWires(Service service, BindlessServiceDefinition def) {
         createWires(service, def.getTarget().getPath(), def.getServiceContract());
     }
 
@@ -283,7 +287,7 @@ public class JDKWireService implements WireService {
         return wire;
     }
 
-    private <T> void createWires(Service service, String targetName, ServiceContract<?> contract) {
+    public void createWires(Service service, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
         OutboundWire outboundWire = new OutboundWireImpl();
         inboundWire.setServiceContract(contract);
