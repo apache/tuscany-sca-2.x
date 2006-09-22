@@ -40,12 +40,11 @@ public interface Connector {
     /**
      * Bridges the invocation chains associated with an inbound and outbound wire.
      *
-     * @param inboundWire  the wire to bridge from
-     * @param outboundWire the target wire
-     * @param optimizable  if the bridge may be optimized
+     * @param inbound     the wire to bridge from
+     * @param outbound    the target wire
+     * @param optimizable if the bridge may be optimized
      * @throws BuilderConfigException
      */
-    void connect(InboundWire inboundWire, OutboundWire outboundWire, boolean optimizable)
-        throws BuilderConfigException;
+    void connect(InboundWire inbound, OutboundWire outbound, boolean optimizable) throws BuilderConfigException;
 
 }

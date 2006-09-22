@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.QualifiedName;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
@@ -44,21 +45,22 @@ public class ServiceInvocationTestCase extends TestCase {
 
     public void testInvocation() throws InvalidServiceContractException {
         AbstractApplicationContext springContext = createSpringContext();
-        SpringCompositeComponent context = new SpringCompositeComponent("parent", springContext, null, null, null);
+        SpringCompositeComponent composite = new SpringCompositeComponent("parent", springContext, null, null, null);
         InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
+        outboundWire.setTargetName(new QualifiedName("foo"));
         ArtifactFactory.terminateWire(outboundWire);
         Service service =
-            new ServiceExtension("fooService", TestBean.class, context, createWireService());
+            new ServiceExtension("fooService", TestBean.class, composite, createWireService());
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         Connector connector = ArtifactFactory.createConnector();
         connector.connect(inboundWire, outboundWire, true);
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(context.createTargetInvoker("foo", chain.getOperation()));
+            chain.setTargetInvoker(composite.createTargetInvoker("foo", chain.getOperation()));
         }
-        context.register(service);
-        TestBean serviceInstance = (TestBean) context.getService("fooService").getServiceInstance();
+        composite.register(service);
+        TestBean serviceInstance = (TestBean) composite.getService("fooService").getServiceInstance();
         assertEquals("bar", serviceInstance.echo("bar"));
     }
 

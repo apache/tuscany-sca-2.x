@@ -144,7 +144,6 @@ public class OutboundToInboundConnectTestCase extends TestCase {
 
 
     public InboundInvocationChain setupTarget(List<Interceptor> interceptors) {
-
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract;
         try {

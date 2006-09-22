@@ -54,7 +54,7 @@ public final class SpringTestUtils {
         service.setOutboundWire(outboundWire);
         outboundWire.setTargetName(new QualifiedName("foo"));
         Connector connector = ArtifactFactory.createConnector();
-        connector.connect(inboundWire, outboundWire, true);
+        connector.connect(service);
         ArtifactFactory.terminateWire(inboundWire);
         return service;
     }
