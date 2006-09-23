@@ -18,17 +18,22 @@
  */
 package org.apache.tuscany.host.util;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * @version $Rev$ $Date$
  */
 public final class LaunchHelper {
+
+    ///CLOVER:OFF
+    private LaunchHelper() {
+    }
+
     /**
      * Scan a directory for jar files to be added to the classpath.
      *
@@ -58,8 +63,8 @@ public final class LaunchHelper {
      * Set a JavaBean property on an object.
      *
      * @param instance the object whose property should be set
-     * @param name the name of the property
-     * @param value the value to set it to
+     * @param name     the name of the property
+     * @param value    the value to set it to
      */
     public static void setProperty(Object instance, String name, Object value) {
         Class<?> beanType = instance.getClass();
@@ -76,15 +81,13 @@ public final class LaunchHelper {
             throw new IllegalStateException(e.getCause());
         }
     }
-        ///CLOVER:OFF
-    private LaunchHelper() {
-    }
+
     /**
      * Invoke a method on an object.
      *
      * @param instance the object to invoke
-     * @param name the name of the method to invoke
-     * @param args arguments to call the method with
+     * @param name     the name of the method to invoke
+     * @param args     arguments to call the method with
      * @return the value returned by the method
      * @throws InvocationTargetException if the method throw an Exception
      */

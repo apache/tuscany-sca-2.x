@@ -32,16 +32,13 @@ import org.easymock.EasyMock;
  */
 public class ConnectorImplTestCase extends TestCase {
 
-    private ConnectorImpl connector = new ConnectorImpl();
+    private ConnectorImpl connector;
+    private ServiceContract contract;
+    private Operation<Type> operation;
+    private Interceptor headInterceptor;
+    private Interceptor tailInterceptor;
 
     public void testConnectReferenceWires() {
-        // create the wire contract, operation
-        ServiceContract contract = new JavaServiceContract(String.class);
-        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
-
-        // create source and target interceptors
-        Interceptor headInterceptor = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(headInterceptor);
 
         // create the inbound wire and chain
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
@@ -83,20 +80,9 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(outboundWire);
         EasyMock.verify(inboundChain);
         EasyMock.verify(outboundChain);
-
     }
 
     public void testConnectServiceWires() {
-        // create the wire contract, operation
-        ServiceContract contract = new JavaServiceContract(String.class);
-        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
-
-        // create source and target interceptors
-        Interceptor headInterceptor = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(headInterceptor);
-        Interceptor tailInterceptor = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(tailInterceptor);
-
         // create the inbound wire and chain for the target
         InboundInvocationChain targetChain = EasyMock.createMock(InboundInvocationChain.class);
         EasyMock.expect(targetChain.getOperation()).andReturn(operation).atLeastOnce();
@@ -185,15 +171,6 @@ public class ConnectorImplTestCase extends TestCase {
      * Verifies connecting a wire from an atomic component to a target atomic component with one synchronous operation
      */
     public void testConnectAtomicComponentToAtomicComponentSyncWire() throws Exception {
-        // create the wire contractm, operation
-        ServiceContract contract = new JavaServiceContract(String.class);
-        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
-
-        // create source and target interceptors
-        Interceptor headInterceptor = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(headInterceptor);
-        Interceptor tailInterceptor = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(tailInterceptor);
 
         // create the inbound wire and chain
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
@@ -262,8 +239,6 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.replay(outboundWire);
 
         connector.connect(source);
-        EasyMock.verify(headInterceptor);
-        EasyMock.verify(tailInterceptor);
         EasyMock.verify(outboundWire);
         EasyMock.verify(targetWire);
         EasyMock.verify(outboundChain);
@@ -273,11 +248,6 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     public void testConnectInboundAtomicComponentWires() {
-
-        // create the wire contractm, operation
-        ServiceContract contract = new JavaServiceContract(String.class);
-        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
-
         // create the inbound wire and chain
         InboundInvocationChain chain = EasyMock.createMock(InboundInvocationChain.class);
         EasyMock.expect(chain.getOperation()).andReturn(operation).atLeastOnce();
@@ -310,7 +280,6 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(source);
         EasyMock.verify(wire);
         EasyMock.verify(chain);
-
     }
 
     public void testOutboundToInboundOptimization() {
@@ -331,26 +300,21 @@ public class ConnectorImplTestCase extends TestCase {
         connector.connect(outboundWire, inboundWire, true);
         EasyMock.verify(inboundWire);
         EasyMock.verify(outboundWire);
-
     }
 
     public void testOutboundToInboundChainConnect() {
-        Interceptor head = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(head);
-        Interceptor tail = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(tail);
 
         TargetInvoker invoker = EasyMock.createMock(TargetInvoker.class);
         EasyMock.replay(invoker);
 
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
-        EasyMock.expect(inboundChain.getHeadInterceptor()).andReturn(head);
+        EasyMock.expect(inboundChain.getHeadInterceptor()).andReturn(headInterceptor);
         EasyMock.replay(inboundChain);
 
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tail);
+        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tailInterceptor);
         outboundChain.prepare();
-        outboundChain.setTargetInterceptor(head);
+        outboundChain.setTargetInterceptor(headInterceptor);
         outboundChain.setTargetInvoker(invoker);
         EasyMock.replay(outboundChain);
         connector.connect(outboundChain, inboundChain, invoker);
@@ -358,21 +322,78 @@ public class ConnectorImplTestCase extends TestCase {
     }
 
     public void testInboundToOutboundChainConnect() {
-        Interceptor head = EasyMock.createMock(Interceptor.class);
-        EasyMock.replay(head);
-
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
         inboundChain.addInterceptor(EasyMock.isA(BridgingInterceptor.class));
         EasyMock.replay(inboundChain);
 
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(outboundChain.getHeadInterceptor()).andReturn(head);
+        EasyMock.expect(outboundChain.getHeadInterceptor()).andReturn(headInterceptor);
         outboundChain.prepare();
-        outboundChain.setTargetInterceptor(head);
+        outboundChain.setTargetInterceptor(headInterceptor);
         EasyMock.replay(outboundChain);
         connector.connect(inboundChain, outboundChain);
         EasyMock.verify(inboundChain);
     }
 
+    public void testOutboundWireToInboundReferenceTarget() {
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(component.getName()).andReturn("foo");
+        EasyMock.replay(component);
+        // create the inbound wire and chain
+        InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
+        EasyMock.expect(inboundChain.getOperation()).andReturn(operation).atLeastOnce();
+        EasyMock.expect(inboundChain.getHeadInterceptor()).andReturn(headInterceptor);
+        EasyMock.replay(inboundChain);
+        Map<Operation<?>, InboundInvocationChain> inboundChains = new HashMap<Operation<?>, InboundInvocationChain>();
+        inboundChains.put(operation, inboundChain);
+        InboundWire targetWire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(targetWire.getServiceContract()).andReturn(contract).anyTimes();
+        EasyMock.expect(targetWire.getInvocationChains()).andReturn(inboundChains);
+        targetWire.getSourceCallbackInvocationChains("foo");
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap());
+        Reference target = EasyMock.createMock(Reference.class);
+        EasyMock.expect(target.createTargetInvoker(EasyMock.isA(ServiceContract.class), EasyMock.isA(Operation.class)))
+            .andReturn(null);
+        EasyMock.replay(target);
+
+        EasyMock.expect(targetWire.getContainer()).andReturn(target);
+        EasyMock.replay(targetWire);
+
+        // create the outbound wire and chain from the source component
+        OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
+        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tailInterceptor);
+        EasyMock.expect(outboundChain.getOperation()).andReturn(operation).atLeastOnce();
+        outboundChain.setTargetInterceptor(EasyMock.eq(headInterceptor));
+        outboundChain.setTargetInvoker(null);
+        outboundChain.prepare();
+        EasyMock.replay(outboundChain);
+        Map<Operation<?>, OutboundInvocationChain> outboundChains =
+            new HashMap<Operation<?>, OutboundInvocationChain>();
+        outboundChains.put(operation, outboundChain);
+        OutboundWire sourceWire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(sourceWire.getContainer()).andReturn(component);
+        EasyMock.expect(sourceWire.getServiceContract()).andReturn(contract).anyTimes();
+        EasyMock.expect(sourceWire.getTargetName()).andReturn(new QualifiedName("target/FooService")).anyTimes();
+        EasyMock.expect(sourceWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
+        sourceWire.getTargetCallbackInvocationChains();
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap());
+        EasyMock.replay(sourceWire);
+
+        connector.connect(sourceWire, targetWire, false);
+        EasyMock.verify(inboundChain);
+        EasyMock.verify(targetWire);
+        EasyMock.verify(target);
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        connector = new ConnectorImpl();
+        contract = new JavaServiceContract(String.class);
+        operation = new Operation<Type>("bar", null, null, null);
+        headInterceptor = EasyMock.createMock(Interceptor.class);
+        EasyMock.replay(headInterceptor);
+        tailInterceptor = EasyMock.createMock(Interceptor.class);
+        EasyMock.replay(tailInterceptor);
+    }
 
 }
