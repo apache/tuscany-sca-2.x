@@ -392,8 +392,9 @@ public class XSDDataTypeConverter {
             this(true, true);
         }
 
-        private int parseInt(String pString, int pOffset, StringBuffer pDigits) {
+        private int parseInt(String pString, int offset, StringBuffer pDigits) {
             int length = pString.length();
+            int pOffset = offset;
             pDigits.setLength(0);
             while (pOffset < length) {
                 char c = pString.charAt(pOffset);
@@ -409,10 +410,10 @@ public class XSDDataTypeConverter {
 
         public Object parseObject(String pString, ParsePosition pParsePosition) {
             if (pString == null) {
-                throw new NullPointerException("The String argument must not be null.");
+                throw new IllegalArgumentException("The String argument must not be null.");
             }
             if (pParsePosition == null) {
-                throw new NullPointerException("The ParsePosition argument must not be null.");
+                throw new IllegalArgumentException("The ParsePosition argument must not be null.");
             }
             int offset = pParsePosition.getIndex();
             int length = pString.length();
@@ -575,13 +576,13 @@ public class XSDDataTypeConverter {
 
         public StringBuffer format(Object pCalendar, StringBuffer pBuffer, FieldPosition pPos) {
             if (pCalendar == null) {
-                throw new NullPointerException("The Calendar argument must not be null.");
+                throw new IllegalArgumentException("The Calendar argument must not be null.");
             }
             if (pBuffer == null) {
-                throw new NullPointerException("The StringBuffer argument must not be null.");
+                throw new IllegalArgumentException("The StringBuffer argument must not be null.");
             }
             if (pPos == null) {
-                throw new NullPointerException("The FieldPosition argument must not be null.");
+                throw new IllegalArgumentException("The FieldPosition argument must not be null.");
             }
 
             Calendar cal = (Calendar) pCalendar;
@@ -679,7 +680,8 @@ public class XSDDataTypeConverter {
                 S_DECODETABLE[S_BASE64CHAR[i]] = (byte) i;
         }
 
-        private static int decode0(char[] ibuf, byte[] obuf, int wp) {
+        private static int decode0(char[] ibuf, byte[] obuf, int index) {
+            int wp = index;
             int outlen = 3;
             if (ibuf[3] == S_BASE64PAD)
                 outlen = 2;
@@ -703,7 +705,7 @@ public class XSDDataTypeConverter {
                 obuf[wp] = (byte) (b2 << 6 & 0xc0 | b3 & 0x3f);
                 return 3;
             default:
-                throw new RuntimeException("internalError00");
+                throw new IllegalStateException("internalError00");
             }
         }
 
