@@ -65,10 +65,9 @@ public class ConnectorImpl implements Connector {
     public ConnectorImpl() {
     }
 
-    @Constructor({"wireService", "postProcessorRegistry"})
-    public ConnectorImpl(@Autowire WireService wireService,
-                         @Autowire WirePostProcessorRegistry postProcessorRegistry) {
-        this.postProcessorRegistry = postProcessorRegistry;
+    @Constructor({"wireService", "processorRegistry"})
+    public ConnectorImpl(@Autowire WireService wireService, @Autowire WirePostProcessorRegistry processorRegistry) {
+        this.postProcessorRegistry = processorRegistry;
         this.wireService = wireService;
     }
 
@@ -261,6 +260,13 @@ public class ConnectorImpl implements Connector {
         }
     }
 
+    /**
+     * Connects a source to target chain
+     *
+     * @param sourceChain the source chain
+     * @param targetChain the target chain
+     * @param invoker     the invoker to place on the source chain for dispatching invocations
+     */
     void connect(OutboundInvocationChain sourceChain, InboundInvocationChain targetChain, TargetInvoker invoker) {
         Interceptor headInterceptor = targetChain.getHeadInterceptor();
         if (headInterceptor == null) {
