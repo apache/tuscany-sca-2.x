@@ -12,7 +12,7 @@ import org.apache.tuscany.core.wire.OutboundWireImpl;
 /**
  * @version $Rev$ $Date$
  */
-public class JDOutboundInvocationHandlerTestCase extends TestCase {
+public class JDKOutboundInvocationHandlerTestCase extends TestCase {
 
     public void testToString() {
         OutboundWireImpl wire = new OutboundWireImpl();

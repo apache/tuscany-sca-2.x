@@ -129,22 +129,6 @@ public interface WireService {
     void createWires(Service service, String targetName, ServiceContract<?> contract);
 
     /**
-     * Creates wires for a service and injects them on the service
-     *
-     * @param service the service
-     * @param def     the model artifact representing the service
-     */
-    //void createWires(Service service, BoundServiceDefinition<?> def);
-
-    /**
-     * Creates wires for a composite service and injects them on the service
-     *
-     * @param service the service
-     * @param def     the model artifact representing the service
-     */
-    //void createWires(Service service, BindlessServiceDefinition def);
-
-    /**
      * Check the compatiblity of the source and the target service contracts.<p> A wire may only connect a source to a
      * target if the target implements an interface that is compatible with the interface required by the source. The
      * source and the target are compatible if:
