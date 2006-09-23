@@ -144,7 +144,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expectLastCall().andReturn(Collections.emptyMap());
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.expect(outboundWire.getTargetName()).andReturn(new QualifiedName("target/FooService")).anyTimes();
-        EasyMock.expect((outboundWire.getInvocationChains())).andReturn(outboundChains).anyTimes();
+        EasyMock.expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
 
         // create the service
         Service service = EasyMock.createMock(Service.class);

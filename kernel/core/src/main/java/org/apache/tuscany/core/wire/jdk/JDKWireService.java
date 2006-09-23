@@ -85,22 +85,6 @@ public class JDKWireService implements WireService {
     public void init() {
     }
 
-    private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
-        throws NoMethodForOperationException {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
-            Operation<?> operation = entry.getKey();
-            InboundInvocationChain chain = entry.getValue();
-            Method method = findMethod(operation, methods);
-            if (method == null) {
-                NoMethodForOperationException e = new NoMethodForOperationException();
-                e.setIdentifier(operation.getName());
-            }
-            chains.put(method, chain);
-        }
-        return chains;
-    }
-
     public Object createProxy(RuntimeWire wire) throws ProxyCreationException {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
@@ -160,7 +144,6 @@ public class JDKWireService implements WireService {
     public InboundInvocationChain createInboundChain(Operation<?> operation) {
         return new InboundInvocationChainImpl(operation);
     }
-
 
     public void createWires(Component component, ComponentDefinition<?> definition) {
         Implementation<?> implementation = definition.getImplementation();
@@ -231,10 +214,6 @@ public class JDKWireService implements WireService {
         // definition does
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);
-    }
-
-    public void createWires(Service service, BoundServiceDefinition<?> def) {
-        createWires(service, def.getTarget().getPath(), def.getServiceContract());
     }
 
     public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
@@ -323,6 +302,17 @@ public class JDKWireService implements WireService {
         service.setOutboundWire(outboundWire);
     }
 
+    /**
+     * Compares two operations for wiring compatibility as defined by the SCA assembly specification, namely:
+     * <p/>
+     * <ol> <li>compatibility for the individual method is defined as compatibility of the signature, that is method
+     * name, input types, and output types MUST BE the same. <li>the order of the input and output types also MUST BE
+     * the same. <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those
+     * specified by the service. </ol>
+     *
+     * @param source the source contract to compare
+     * @param target the target contract to compare
+     */
     public boolean isWireable(ServiceContract<?> source, ServiceContract<?> target) {
         if (source == target) {
             // Shortcut for performance
@@ -340,7 +330,7 @@ public class JDKWireService implements WireService {
             if (targetOperation == null) {
                 return false;
             }
-            if (!isCompatibleWith(operation, targetOperation)) {
+            if (!operation.equals(targetOperation)) {
                 return false;
             }
         }
@@ -350,28 +340,27 @@ public class JDKWireService implements WireService {
             if (targetOperation == null) {
                 return false;
             }
-            if (!isCompatibleWith(operation, targetOperation)) {
+            if (!operation.equals(targetOperation)) {
                 return false;
             }
         }
         return true;
     }
 
-    /**
-     * Compares two operations for wiring compatibility as defined by the SCA assembly specification, namely: <ol>
-     * <li>compatibility for the individual method is defined as compatibility of the signature, that is method name,
-     * input types, and output types MUST BE the same. <li>the order of the input and output types also MUST BE the
-     * same. <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those
-     * specified by the service. </ol>
-     *
-     * @param source the source operation to compare
-     * @param target the target operation to compare
-     * @return true if the two operations are compatibile
-     */
-    public boolean isCompatibleWith(Operation<?> source, Operation<?> target) {
-        // FIXME:
-        return source.equals(target);
+    private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
+        throws NoMethodForOperationException {
+        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
+        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
+            Operation<?> operation = entry.getKey();
+            InboundInvocationChain chain = entry.getValue();
+            Method method = findMethod(operation, methods);
+            if (method == null) {
+                NoMethodForOperationException e = new NoMethodForOperationException();
+                e.setIdentifier(operation.getName());
+            }
+            chains.put(method, chain);
+        }
+        return chains;
     }
-
 
 }
