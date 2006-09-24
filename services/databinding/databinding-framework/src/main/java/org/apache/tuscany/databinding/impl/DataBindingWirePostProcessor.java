@@ -26,6 +26,8 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.WirePostProcessorExtension;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -76,19 +78,28 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
      *      org.apache.tuscany.spi.wire.OutboundWire)
      */
     public void process(InboundWire source, OutboundWire target) {
+        SCAObject container = source.getContainer();
+        // Either Service or Reference
+        boolean isReference = (container instanceof Reference);
+
         Map<Operation<?>, InboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
+                    getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = getDataBinding(sourceOperation);
             String targetDataBinding = getDataBinding(targetOperation);
             if (sourceDataBinding == null || targetDataBinding == null || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
-                entry.getValue().addInterceptor(0, interceptor);
+                if (isReference) {
+                    target.getInvocationChains().get(targetOperation).addInterceptor(0, interceptor);
+                } else {
+                    entry.getValue().addInterceptor(0, interceptor);
+                }
+
             }
         }
     }

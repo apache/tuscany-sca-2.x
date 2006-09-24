@@ -132,7 +132,6 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         try {
             // Set the default binding
             ServiceContract<?> inboundContract = boundReferenceDefinition.getServiceContract();
-            inboundContract.setDataBinding(OM_DATA_BINDING);
             
             // FIXME: We need to define how the WSDL PortType is honored in the case that
             // both the binding.ws and interface.wsdl are in place
@@ -157,7 +156,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             
             Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding,
-                    outboundContract, workContext);
+                    inboundContract, workContext);
+            reference.setBindingServiceContract(outboundContract);
             
             return reference;
             

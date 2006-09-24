@@ -198,9 +198,15 @@ public class JDKWireService implements WireService {
             inboundWire.addInvocationChain(operation, chain);
         }
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setServiceContract(contract);
+        
+        // [rfeng] Check if the Reference has the binding contract
+        ServiceContract<?> bindingContract = reference.getBindingServiceContract();
+        if (bindingContract == null) {
+            bindingContract = contract;
+        }
+        outboundWire.setServiceContract(bindingContract);
         outboundWire.setContainer(reference);
-        for (Operation<?> operation : contract.getOperations().values()) {
+        for (Operation<?> operation : bindingContract.getOperations().values()) {
             OutboundInvocationChain chain = createOutboundChain(operation);
             chain.addInterceptor(new InvokerInterceptor());
             outboundWire.addInvocationChain(operation, chain);
@@ -268,15 +274,25 @@ public class JDKWireService implements WireService {
 
     public void createWires(Service service, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
-        OutboundWire outboundWire = new OutboundWireImpl();
-        inboundWire.setServiceContract(contract);
+        
+        // [rfeng] Check if the Reference has the binding contract
+        ServiceContract<?> bindingContract = service.getBindingServiceContract();
+        if (bindingContract == null) {
+            bindingContract = contract;
+        }
+        inboundWire.setServiceContract(bindingContract);
         inboundWire.setContainer(service);
+        for (Operation<?> operation : bindingContract.getOperations().values()) {
+            InboundInvocationChain inboundChain = createInboundChain(operation);
+            inboundWire.addInvocationChain(operation, inboundChain);
+        }
+        
+        OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetName(new QualifiedName(targetName));
         outboundWire.setContainer(service);
+
         for (Operation<?> operation : contract.getOperations().values()) {
-            InboundInvocationChain inboundChain = createInboundChain(operation);
-            inboundWire.addInvocationChain(operation, inboundChain);
             OutboundInvocationChain outboundChain = createOutboundChain(operation);
             outboundWire.addInvocationChain(operation, outboundChain);
         }

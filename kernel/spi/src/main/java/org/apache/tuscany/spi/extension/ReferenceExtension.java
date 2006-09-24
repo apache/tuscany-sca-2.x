@@ -92,4 +92,13 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
         throw new UnsupportedOperationException();
     }
 
+    protected ServiceContract<?> bindingServiceContract;
+    public ServiceContract<?> getBindingServiceContract() {
+        return bindingServiceContract;
+    }
+
+    public void setBindingServiceContract(ServiceContract<?> serviceContract) {
+        this.bindingServiceContract = serviceContract;
+    }
+
 }

@@ -85,5 +85,20 @@ public interface Reference extends SCAObject {
      * @param operation the operation to invoke
      */
     TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation);
+    
+    /**
+     * Get the ServiceContract for the binding
+     * @return
+     */
+    ServiceContract<?> getBindingServiceContract();
+    
+    
+    /**
+     * Set the ServiceContract for the binding. This contract will be used for the outbound wire.
+     * If not set, it will be the same as the ServideContract from the interface.
+     *  
+     * @param serviceContract
+     */
+    void setBindingServiceContract(ServiceContract<?> serviceContract);
 
 }
