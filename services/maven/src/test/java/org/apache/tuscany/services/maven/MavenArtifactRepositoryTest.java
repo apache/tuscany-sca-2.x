@@ -48,9 +48,9 @@ public class MavenArtifactRepositoryTest extends TestCase {
     /*
      * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Artifact)'
      */
-    public void testResolveArtifact() throws Exception {
+    public void testResolveArtifactFromLocalRepository() throws Exception {
 
-        final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + "m2").toURL();
+        final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + "m3").toURL();
         String[] remoteRepoUrls = { "http://repo1.maven.org/maven2/" };
         MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls, new RuntimeInfo() {
             public File getApplicationRootDirectory() { return null; }

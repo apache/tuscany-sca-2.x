@@ -151,26 +151,34 @@ public class MavenHelper {
 
         org.apache.maven.artifact.Artifact mavenRootArtifact = artifactFactory.createArtifact(rootArtifact.getGroup(), rootArtifact.getName(),
                 rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
+
         try {
-
-            boolean resolvedFromDeployment = true;
-            artifactResolver.resolve(mavenRootArtifact, Collections.EMPTY_LIST, deployedRepository);
-            if (mavenRootArtifact.getFile() == null) {
-                artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
-                resolvedFromDeployment = false;
+            if (resolve(mavenRootArtifact, Collections.EMPTY_LIST, deployedRepository)) {
+                rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
+                resolveDependencies(rootArtifact, mavenRootArtifact, true);
+            } else if (resolve(mavenRootArtifact, remoteRepositories, localRepository)) {
+                resolveDependencies(rootArtifact, mavenRootArtifact, false);
+            } else {
+                throw new TuscanyMavenException("Unable to resolve artifact " + mavenRootArtifact.toString());
             }
-            rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
-
-            resolveDependencies(rootArtifact, mavenRootArtifact, resolvedFromDeployment);
-
-        } catch (ArtifactResolutionException ex) {
-            throw new TuscanyMavenException(ex);
-        } catch (ArtifactNotFoundException ex) {
-            throw new TuscanyMavenException(ex);
         } catch (MalformedURLException ex) {
             throw new TuscanyMavenException(ex);
         }
 
+    }
+
+    /*
+     * Resolves the artifact.
+     */
+    private boolean resolve(org.apache.maven.artifact.Artifact mavenRootArtifact, List remoteRepositories, ArtifactRepository localRepository) {
+        try {
+            artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
+            return true;
+        } catch (ArtifactResolutionException ex) {
+            return false;
+        } catch (ArtifactNotFoundException ex) {
+            return false;
+        }
     }
 
     /*
