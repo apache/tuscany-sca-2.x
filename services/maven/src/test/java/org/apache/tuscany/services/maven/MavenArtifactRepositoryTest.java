@@ -48,9 +48,11 @@ public class MavenArtifactRepositoryTest extends TestCase {
     /*
      * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Artifact)'
      */
-    public void testResolveArtifactFromLocalRepository() throws Exception {
+    public void testResolveArtifact() throws Exception {
 
-        final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + "m3").toURL();
+        // Test uses the local maven repo as the deployed repo
+        // TODO Need a more realistic test
+        final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + ".m2").toURL();
         String[] remoteRepoUrls = { "http://repo1.maven.org/maven2/" };
         MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls, new RuntimeInfo() {
             public File getApplicationRootDirectory() { return null; }
@@ -66,14 +68,8 @@ public class MavenArtifactRepositoryTest extends TestCase {
         repository.resolve(artifact);
 
         Set<URL> urls = artifact.getUrls();
+        
         assertEquals(2, urls.size());
-
-    }
-
-    /*
-     * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Collection<? extends Artifact>)'
-     */
-    public void testResolveCollectionOfQextendsArtifact() {
 
     }
 

@@ -37,7 +37,6 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
-
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
@@ -53,7 +52,7 @@ import org.codehaus.plexus.embed.Embedder;
 public class MavenHelper {
 
     /** Local repository */
-    private static final File LOCAL_REPO = new File(System.getProperty("user.home") + File.separator + "m2" + File.separator + "repository");
+    private static final File LOCAL_REPO = new File(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
 
     /** Remote repository URLs */
     private final String[] remoteRepositoryUrls;
@@ -157,6 +156,7 @@ public class MavenHelper {
                 rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
                 resolveDependencies(rootArtifact, mavenRootArtifact, true);
             } else if (resolve(mavenRootArtifact, remoteRepositories, localRepository)) {
+                rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
                 resolveDependencies(rootArtifact, mavenRootArtifact, false);
             } else {
                 throw new TuscanyMavenException("Unable to resolve artifact " + mavenRootArtifact.toString());
@@ -205,10 +205,10 @@ public class MavenHelper {
                         snapshotsPolicy, releasesPolicy));
             }
 
-            ArtifactRepositoryPolicy deployedRepositorySnapshotsPolicy = new ArtifactRepositoryPolicy(true,
-                    ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
-            ArtifactRepositoryPolicy deployedRepositoryReleasesPolicy = new ArtifactRepositoryPolicy(true,
-                    ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy deployedRepositorySnapshotsPolicy = new ArtifactRepositoryPolicy(false,
+                    ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy deployedRepositoryReleasesPolicy = new ArtifactRepositoryPolicy(false,
+                    ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
 
             deployedRepository = artifactRepositoryFactory.createArtifactRepository("local", deployedRepositoryUrl.toExternalForm(), layout,
                     deployedRepositorySnapshotsPolicy, deployedRepositoryReleasesPolicy);
