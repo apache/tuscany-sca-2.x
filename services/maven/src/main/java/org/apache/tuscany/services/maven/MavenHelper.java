@@ -21,9 +21,9 @@ package org.apache.tuscany.services.maven;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
@@ -39,7 +39,6 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 
 import org.apache.tuscany.spi.services.artifact.Artifact;
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.plexus.PlexusContainerException;
@@ -58,7 +57,7 @@ public class MavenHelper {
 
     /** Remote repository URLs */
     private final String[] remoteRepositoryUrls;
-    
+
     /** Deployed repository URL */
     private final URL deployedRepositoryUrl;
 
@@ -85,7 +84,8 @@ public class MavenHelper {
      * 
      * @param remoteRepositoryUrls
      *            Remote repository URLS.
-     * @param runtimeInfo Runtime information.
+     * @param runtimeInfo
+     *            Runtime information.
      */
     public MavenHelper(String[] remoteRepositoryUrls, URL baseUrl) {
         try {
@@ -117,7 +117,7 @@ public class MavenHelper {
             artifactResolver = (ArtifactResolver) embedder.lookup(ArtifactResolver.ROLE);
 
             setUpRepositories(embedder);
-            
+
             embedder.stop();
 
         } catch (DuplicateRealmException ex) {
@@ -153,10 +153,15 @@ public class MavenHelper {
                 rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
         try {
 
-            artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
+            boolean resolvedFromDeployment = true;
+            artifactResolver.resolve(mavenRootArtifact, Collections.EMPTY_LIST, deployedRepository);
+            if (mavenRootArtifact.getFile() == null) {
+                artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
+                resolvedFromDeployment = false;
+            }
             rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
 
-            resolveDependencies(rootArtifact, mavenRootArtifact);
+            resolveDependencies(rootArtifact, mavenRootArtifact, resolvedFromDeployment);
 
         } catch (ArtifactResolutionException ex) {
             throw new TuscanyMavenException(ex);
@@ -179,11 +184,10 @@ public class MavenHelper {
 
             ArtifactRepositoryLayout layout = (ArtifactRepositoryLayout) embedder.lookup(ArtifactRepositoryLayout.ROLE, "default");
 
-            String updatePolicyFlag = ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS;
-            String checksumPolicyFlag = ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN;
-
-            ArtifactRepositoryPolicy snapshotsPolicy = new ArtifactRepositoryPolicy(true, updatePolicyFlag, checksumPolicyFlag);
-            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, updatePolicyFlag, checksumPolicyFlag);
+            ArtifactRepositoryPolicy snapshotsPolicy = new ArtifactRepositoryPolicy(true, ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                    ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                    ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
 
             localRepository = artifactRepositoryFactory.createArtifactRepository("local", LOCAL_REPO.toURL().toExternalForm(), layout,
                     snapshotsPolicy, releasesPolicy);
@@ -192,6 +196,14 @@ public class MavenHelper {
                 remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(remoteRespositoryUrl, remoteRespositoryUrl, layout,
                         snapshotsPolicy, releasesPolicy));
             }
+
+            ArtifactRepositoryPolicy deployedRepositorySnapshotsPolicy = new ArtifactRepositoryPolicy(true,
+                    ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy deployedRepositoryReleasesPolicy = new ArtifactRepositoryPolicy(true,
+                    ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+
+            deployedRepository = artifactRepositoryFactory.createArtifactRepository("local", deployedRepositoryUrl.toExternalForm(), layout,
+                    deployedRepositorySnapshotsPolicy, deployedRepositoryReleasesPolicy);
 
         } catch (MalformedURLException ex) {
             throw new TuscanyMavenException(ex);
@@ -204,16 +216,26 @@ public class MavenHelper {
     /*
      * Resolves transitive dependencies.
      */
-    private void resolveDependencies(Artifact rootArtifact, org.apache.maven.artifact.Artifact mavenRootArtifact) {
+    private void resolveDependencies(Artifact rootArtifact, org.apache.maven.artifact.Artifact mavenRootArtifact, boolean resolvedFromDeployment) {
 
         try {
 
-            ResolutionGroup resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
-            ArtifactResolutionResult result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact,
-                    remoteRepositories, localRepository, metadataSource);
+            ResolutionGroup resolutionGroup = null;
+            ArtifactResolutionResult result = null;
+
+            if (resolvedFromDeployment) {
+                resolutionGroup = metadataSource.retrieve(mavenRootArtifact, deployedRepository, Collections.EMPTY_LIST);
+                result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact, remoteRepositories, localRepository,
+                        metadataSource);
+            } else {
+                resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
+                result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact, remoteRepositories, localRepository,
+                        metadataSource);
+            }
 
             // Add the artifacts to the deployment unit
-            for (org.apache.maven.artifact.Artifact depArtifact : (Set<org.apache.maven.artifact.Artifact>) result.getArtifacts()) {
+            for (Object obj : result.getArtifacts()) {
+                org.apache.maven.artifact.Artifact depArtifact = (org.apache.maven.artifact.Artifact) obj;
                 Artifact artifact = new Artifact();
                 artifact.setName(mavenRootArtifact.getArtifactId());
                 artifact.setGroup(mavenRootArtifact.getGroupId());
