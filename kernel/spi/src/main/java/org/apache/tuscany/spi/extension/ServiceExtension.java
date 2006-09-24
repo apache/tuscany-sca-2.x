@@ -86,5 +86,13 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
     public Class<?> getInterface() {
         return interfaze;
     }
+    
+    protected ServiceContract<?> bindingServiceContract;
+    public ServiceContract<?> getBindingServiceContract() {
+        return bindingServiceContract;
+    }
 
+    public void setBindingServiceContract(ServiceContract<?> serviceContract) {
+        this.bindingServiceContract = serviceContract;
+    }
 }

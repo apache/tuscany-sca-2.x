@@ -79,4 +79,19 @@ public interface Service extends SCAObject {
      * @param operation the callback operation the target invoker dispatches to
      */
     TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation);
+    
+    /**
+     * Get the ServiceContract for the binding
+     * @return
+     */
+    ServiceContract<?> getBindingServiceContract();
+    
+    
+    /**
+     * Set the ServiceContract for the binding. This contract will be used for the inbound wire.
+     * If not set, it will be the same as the ServideContract from the interface.
+
+     * @param serviceContract
+     */
+    void setBindingServiceContract(ServiceContract<?> serviceContract);    
 }
