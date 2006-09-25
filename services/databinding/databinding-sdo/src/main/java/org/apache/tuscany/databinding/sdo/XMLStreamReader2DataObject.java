@@ -21,13 +21,13 @@ package org.apache.tuscany.databinding.sdo;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
 import org.apache.tuscany.sdo.helper.XMLStreamHelper;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.spi.databinding.PullTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;

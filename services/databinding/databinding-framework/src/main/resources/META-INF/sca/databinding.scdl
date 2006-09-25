@@ -18,53 +18,53 @@
     name="org.apache.tuscany.databinding.Framework">
 
     <component name="databinding.wirePostProcessor">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingWirePostProcessor"/>
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingWirePostProcessor"/>
     </component>    
 
     <component name="databinding.javaInterfaceProcessor">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingJavaInterfaceProcessor"/>
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingJavaInterfaceProcessor"/>
     </component>    
 
     <!-- DataBinding registry -->
     <component name="databinding.registry">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataBindingRegistryImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl" />
     </component>
 
     <!-- DataBinding registry -->
     <component name="databinding.mediator">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.MediatorImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.MediatorImpl" />
     </component>    
 
     <!-- Transformer registry -->
     <component name="databinding.transformerRegistry" initLevel="90">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.TransformerRegistryImpl" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl" />
     </component>
 
     <component name="dataType.loader">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.DataTypeLoader" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataTypeLoader" />
     </component>
     
     <!-- Simple databindings -->
     <component name="databinding.dom">
-        <system:implementation.system class="org.apache.tuscany.databinding.impl.SimpleDataBinding" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.SimpleDataBinding" />
         <property name="className">org.w3c.dom.Node</property>
     </component>
     
     <!-- Transformers -->
     <component name="transformer.Node2String">
-        <system:implementation.system class="org.apache.tuscany.databinding.xml.Node2String" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.xml.Node2String" />
     </component>
     
     <component name="transformer.String2Node">
-        <system:implementation.system class="org.apache.tuscany.databinding.xml.String2Node" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.xml.String2Node" />
     </component>
 
     <component name="transformer.Input2InputTransformer">
-        <system:implementation.system class="org.apache.tuscany.databinding.idl.Input2InputTransformer" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.Input2InputTransformer" />
     </component>
 
     <component name="transformer.Output2OutputTransformer">
-        <system:implementation.system class="org.apache.tuscany.databinding.idl.Output2OutputTransformer" />
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.Output2OutputTransformer" />
     </component>
     
 </composite>

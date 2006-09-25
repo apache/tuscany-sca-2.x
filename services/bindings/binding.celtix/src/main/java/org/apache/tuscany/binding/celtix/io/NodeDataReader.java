@@ -33,6 +33,7 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 
+import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
 
 import commonj.sdo.DataObject;
@@ -40,8 +41,8 @@ import commonj.sdo.Property;
 import commonj.sdo.Type;
 import commonj.sdo.helper.TypeHelper;
 import commonj.sdo.helper.XMLDocument;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.impl.TransformationContextImpl;
+
+import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.databinding.sdo.XMLStreamReader2XMLDocument;
 import org.objectweb.celtix.bindings.DataReader;
 import org.objectweb.celtix.context.ObjectMessageContext;

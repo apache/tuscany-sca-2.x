@@ -20,10 +20,10 @@ package org.apache.tuscany.databinding.castor;
 
 import java.io.Writer;
 
-import org.apache.tuscany.databinding.PushTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.databinding.PushTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Marshaller;
 
 public class Castor2SAX<T> extends TransformerExtension<T, Writer> implements PushTransformer<T, Writer> {
@@ -50,7 +50,7 @@ public class Castor2SAX<T> extends TransformerExtension<T, Writer> implements Pu
     }
 
     /**
-     * @see org.apache.tuscany.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
+     * @see org.apache.tuscany.spi.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.spi.databinding.TransformationContext)
      */
     public void transform(T source, Writer writer, TransformationContext context) {
         try {

@@ -27,11 +27,11 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.databinding.PullTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Service;
 

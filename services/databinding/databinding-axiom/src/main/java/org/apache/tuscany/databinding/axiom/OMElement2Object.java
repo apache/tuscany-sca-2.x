@@ -21,9 +21,9 @@ package org.apache.tuscany.databinding.axiom;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.extension.Java2SimpleTypeTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.Java2SimpleTypeTransformer;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.osoa.sca.annotations.Service;
 

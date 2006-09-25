@@ -19,8 +19,8 @@ package org.apache.tuscany.databinding.jaxb;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.model.DataType;
 
 public class JAXBContextHelper {

@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.databinding.xmlbeans;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.databinding.PullTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 

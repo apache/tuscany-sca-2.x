@@ -19,9 +19,9 @@
 
 package org.apache.tuscany.databinding.sdo;
 
-import org.apache.tuscany.databinding.TransformationContext;
 import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.databinding.TransformationContext;
 
 import commonj.sdo.helper.TypeHelper;
 

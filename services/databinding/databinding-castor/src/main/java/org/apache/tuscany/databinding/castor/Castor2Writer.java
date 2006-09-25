@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.databinding.castor;
 
-import org.apache.tuscany.databinding.PushTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.databinding.PushTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Marshaller;
 import org.xml.sax.ContentHandler;
 
@@ -49,7 +49,7 @@ public class Castor2Writer<T> extends TransformerExtension<T, ContentHandler> im
     }
 
     /**
-     * @see org.apache.tuscany.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
+     * @see org.apache.tuscany.spi.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.spi.databinding.TransformationContext)
      */
     public void transform(T source, ContentHandler contentHandler, TransformationContext context) {
         try {
