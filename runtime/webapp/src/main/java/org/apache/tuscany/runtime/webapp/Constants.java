@@ -69,8 +69,8 @@ public final class Constants {
     /**
      * Default path for extensions if no "extensionScdlPath param is specified
      */
-    static final String DEFAULT_EXTENSION_PATH_PARAM = "/META-INF/tuscany.extensions";
-
+    static final String DEFAULT_EXTENSION_PATH_PARAM = "/WEB-INF/tuscany/extensions";
+    
     /**
      * Servlet context-param name for system monitoring level. Supported values are the names of statics defined in
      * java.util.logging.Level. If absent, no monitoring will take place.
