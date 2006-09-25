@@ -24,6 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.Java2SimpleTypeTransformer;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.osoa.sca.annotations.Service;

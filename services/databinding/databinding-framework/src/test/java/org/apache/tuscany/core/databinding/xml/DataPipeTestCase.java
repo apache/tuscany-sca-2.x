@@ -29,10 +29,10 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.databinding.impl.PipedTransformer;
-import org.apache.tuscany.core.databinding.xml.DOMHelper;
 import org.apache.tuscany.core.databinding.xml.Node2Writer;
 import org.apache.tuscany.core.databinding.xml.StreamDataPipe;
 import org.apache.tuscany.core.databinding.xml.Writer2ReaderDataPipe;
+import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

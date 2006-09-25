@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package org.apache.tuscany.core.databinding.xml;
+package org.apache.tuscany.spi.databinding.extension;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;

@@ -31,10 +31,8 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.impl.DataBindingInteceptor;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
@@ -121,5 +119,13 @@ public class DataBindingInterceptorTestCase extends TestCase {
 
     private static class Foo {
         private String bar;
+
+        public String getBar() {
+            return bar;
+        }
+
+        public void setBar(String bar) {
+            this.bar = bar;
+        }
     }
 }
