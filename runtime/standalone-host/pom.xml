@@ -18,24 +18,23 @@
  * under the License.    
 -->
 <project>
-
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime</groupId>
-    <artifactId>parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Tuscany SCA Runtime Hosts</name>
+    <artifactId>standalone-host</artifactId>
+    <packaging>jar</packaging>
+    <name>Apache Tuscany Standalone Runtime Host</name>
+    <description>Host code to support a standalone runtime</description>
 
-    <modules>
-        <module>webapp</module>
-        <module>webapp-host</module>
-        <module>standalone</module>
-        <module>standalone-host</module>
-    </modules>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>
