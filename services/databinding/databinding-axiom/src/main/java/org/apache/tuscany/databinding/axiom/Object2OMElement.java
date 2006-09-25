@@ -19,8 +19,8 @@
 package org.apache.tuscany.databinding.axiom;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.databinding.Transformer;
-import org.apache.tuscany.databinding.extension.SimpleType2JavaTransformer;
+import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.SimpleType2JavaTransformer;
 import org.osoa.sca.annotations.Service;
 
 /**

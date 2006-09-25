@@ -34,6 +34,7 @@ import org.apache.tuscany.databinding.jaxb.JAXBContextHelper;
 import org.apache.tuscany.databinding.jaxb.XMLStreamReader2JAXB;
 import org.apache.tuscany.databinding.xmlbeans.Node2XmlObject;
 import org.apache.tuscany.databinding.xmlbeans.XmlObject2XMLStreamReader;
+import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;

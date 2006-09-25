@@ -24,8 +24,8 @@ import java.util.Iterator;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.idl.WrapperHandler;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.idl.ElementInfo;
 
 /**

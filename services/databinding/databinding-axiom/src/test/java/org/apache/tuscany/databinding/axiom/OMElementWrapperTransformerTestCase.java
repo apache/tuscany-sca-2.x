@@ -33,17 +33,17 @@ import junit.framework.TestCase;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
-import org.apache.tuscany.databinding.DataBindingRegistry;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.idl.Input2InputTransformer;
-import org.apache.tuscany.databinding.idl.Output2OutputTransformer;
-import org.apache.tuscany.databinding.impl.DataBindingRegistryImpl;
-import org.apache.tuscany.databinding.impl.MediatorImpl;
-import org.apache.tuscany.databinding.impl.TransformationContextImpl;
-import org.apache.tuscany.databinding.impl.TransformerRegistryImpl;
+import org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl;
+import org.apache.tuscany.core.databinding.impl.Input2InputTransformer;
+import org.apache.tuscany.core.databinding.impl.MediatorImpl;
+import org.apache.tuscany.core.databinding.impl.Output2OutputTransformer;
+import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLOperation;
 import org.apache.tuscany.idl.wsdl.XMLSchemaRegistryImpl;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
+import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
 
 public class OMElementWrapperTransformerTestCase extends TestCase {

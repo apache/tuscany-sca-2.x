@@ -22,9 +22,9 @@ package org.apache.tuscany.databinding.sdo;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.impl.TransformationContextImpl;
+import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sdo.util.SDOUtil;
+import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
 
 import com.example.ipo.sdo.PurchaseOrderType;

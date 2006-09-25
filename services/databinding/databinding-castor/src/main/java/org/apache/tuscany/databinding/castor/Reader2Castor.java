@@ -20,10 +20,10 @@ package org.apache.tuscany.databinding.castor;
 
 import java.io.Reader;
 
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.databinding.PullTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Unmarshaller;
 
 public class Reader2Castor<T> extends TransformerExtension<Reader, T> implements PullTransformer<Reader, T> {
@@ -50,7 +50,7 @@ public class Reader2Castor<T> extends TransformerExtension<Reader, T> implements
     }
 
     /**
-     * @see org.apache.tuscany.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
+     * @see org.apache.tuscany.spi.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.spi.databinding.TransformationContext)
      */
     public T transform(Reader source, TransformationContext context) {
         try {

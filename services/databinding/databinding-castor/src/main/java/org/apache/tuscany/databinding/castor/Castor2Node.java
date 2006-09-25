@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.databinding.castor;
 
-import org.apache.tuscany.databinding.PullTransformer;
-import org.apache.tuscany.databinding.TransformationContext;
-import org.apache.tuscany.databinding.TransformationException;
-import org.apache.tuscany.databinding.extension.TransformerExtension;
-import org.apache.tuscany.databinding.xml.DOMHelper;
+import org.apache.tuscany.core.databinding.xml.DOMHelper;
+import org.apache.tuscany.spi.databinding.PullTransformer;
+import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -48,7 +48,7 @@ public class Castor2Node<T> extends TransformerExtension<T, Node> implements Pul
     }
 
     /**
-     * @see org.apache.tuscany.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.databinding.TransformationContext)
+     * @see org.apache.tuscany.spi.databinding.PullTransformer#transform(java.lang.Object, org.apache.tuscany.spi.databinding.TransformationContext)
      */
     public Node transform(Object source, TransformationContext context) {
         try {

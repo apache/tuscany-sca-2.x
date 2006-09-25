@@ -21,8 +21,8 @@ package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.databinding.extension.DataBindingExtension;
-import org.apache.tuscany.databinding.idl.WrapperHandler;
+import org.apache.tuscany.spi.databinding.WrapperHandler;
+import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.spi.model.DataType;
 
 import commonj.sdo.DataObject;
