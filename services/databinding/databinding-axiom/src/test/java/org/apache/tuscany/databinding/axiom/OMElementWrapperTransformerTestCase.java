@@ -18,16 +18,11 @@
  */
 package org.apache.tuscany.databinding.axiom;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.wsdl.Definition;
-import javax.wsdl.Operation;
-import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMAbstractFactory;
@@ -39,14 +34,17 @@ import org.apache.tuscany.core.databinding.impl.MediatorImpl;
 import org.apache.tuscany.core.databinding.impl.Output2OutputTransformer;
 import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl;
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
-import org.apache.tuscany.idl.wsdl.WSDLOperation;
-import org.apache.tuscany.idl.wsdl.XMLSchemaRegistryImpl;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.TransformationContext;
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
+import org.apache.tuscany.spi.idl.ElementInfo;
+import org.apache.tuscany.spi.idl.TypeInfo;
+import org.apache.tuscany.spi.idl.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 
 public class OMElementWrapperTransformerTestCase extends TestCase {
+    private static final String OPERATION_KEY = org.apache.tuscany.spi.model.Operation.class.getName();
+
     private static final String IPO_XML =
             "<?xml version=\"1.0\"?>" + "<order1" + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
                     + "  xmlns:ipo=\"http://www.example.com/IPO\""
@@ -61,27 +59,88 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
                     + "      <ipo:comment>Want this for the holidays</ipo:comment>"
                     + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>" + "</order1>";
 
-    private static final QName PORTTYPE_NAME = new QName("http://example.com/order.wsdl", "OrderPortType");
-
-    private WSDLDefinitionRegistryImpl registry;
+    private final static String URI_ORDER_XSD = "http://example.com/order.xsd";
 
     /**
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new WSDLDefinitionRegistryImpl();
-        registry.setSchemaRegistry(new XMLSchemaRegistryImpl());
     }
 
     public void testTransform() throws Exception {
-        URL url = getClass().getClassLoader().getResource("order.wsdl");
-        Definition definition = registry.loadDefinition(null, url);
-        PortType portType = definition.getPortType(PORTTYPE_NAME);
-        Operation operation = portType.getOperation("checkOrderStatus", null, null);
-        WSDLOperation wsdlOp = new WSDLOperation(operation, AxiomDataBinding.NAME, registry.getSchemaRegistry());
-        org.apache.tuscany.spi.model.Operation<?> op = wsdlOp.getOperation();
-        Assert.assertTrue(op.isWrapperStyle());
+        List<DataType<QName>> types0 = new ArrayList<DataType<QName>>();
+        DataType<QName> wrapperType =
+                new DataType<QName>(null, Object.class, new QName(URI_ORDER_XSD, "checkOrderStatus"));
+        types0.add(wrapperType);
+        DataType<List<DataType<QName>>> inputType0 =
+                new DataType<List<DataType<QName>>>("idl:input", Object[].class, types0);
+
+        List<DataType<QName>> types1 = new ArrayList<DataType<QName>>();
+        DataType<QName> customerIdType =
+                new DataType<QName>(null, Object.class, new QName(URI_ORDER_XSD, "customerId"));
+        DataType<QName> orderType = new DataType<QName>(null, Object.class, new QName(URI_ORDER_XSD, "order"));
+        DataType<QName> flagType = new DataType<QName>(null, Object.class, new QName(URI_ORDER_XSD, "flag"));
+        types1.add(customerIdType);
+        types1.add(orderType);
+        types1.add(flagType);
+        DataType<List<DataType<QName>>> inputType =
+                new DataType<List<DataType<QName>>>("idl:input", Object[].class, types1);
+
+        DataType<QName> statusType = new DataType<QName>(null, Object.class, new QName(URI_ORDER_XSD, "status"));
+        DataType<QName> responseType =
+                new DataType<QName>(null, Object.class, new QName(URI_ORDER_XSD, "checkOrderStatusResponse"));
+
+        org.apache.tuscany.spi.model.Operation<QName> op =
+                new org.apache.tuscany.spi.model.Operation<QName>("checkOrderStatus", inputType0, responseType, null);
+        op.setDataBinding(AxiomDataBinding.NAME);
+
+        inputType0.setMetadata(OPERATION_KEY, op);
+        op.setWrapperStyle(true);
+        ElementInfo inputElement =
+                new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatus"), new TypeInfo(null, false, null));
+        wrapperType.setMetadata(ElementInfo.class.getName(), inputElement);
+
+        ElementInfo customerId =
+                new ElementInfo(new QName("", "customerId"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES
+                        .get("string"));
+        ElementInfo order =
+                new ElementInfo(new QName("", "order"), new TypeInfo(new QName(URI_ORDER_XSD), false, null));
+        ElementInfo flag =
+                new ElementInfo(new QName("", "flag"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("int"));
+
+        customerIdType.setMetadata(ElementInfo.class.getName(), customerId);
+        orderType.setMetadata(ElementInfo.class.getName(), order);
+        flagType.setMetadata(ElementInfo.class.getName(), flag);
+
+        customerIdType.setMetadata(OPERATION_KEY, op);
+        orderType.setMetadata(OPERATION_KEY, op);
+        flagType.setMetadata(OPERATION_KEY, op);
+
+        List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
+        inputElements.add(customerId);
+        inputElements.add(order);
+        inputElements.add(flag);
+
+        ElementInfo statusElement =
+                new ElementInfo(new QName("", "status"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES
+                        .get("string"));
+
+        statusType.setMetadata(ElementInfo.class.getName(), statusElement);
+        statusType.setMetadata(OPERATION_KEY, op);
+
+        List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
+        outputElements.add(statusElement);
+
+        ElementInfo outputElement =
+                new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatusResponse"), new TypeInfo(null, false, null));
+
+        responseType.setMetadata(ElementInfo.class.getName(), inputElement);
+        responseType.setMetadata(OPERATION_KEY, op);
+        
+        WrapperInfo wrapperInfo = new WrapperInfo(inputElement, outputElement, inputElements, outputElements, inputType, statusType);
+        op.setWrapper(wrapperInfo);
+        op.setDataBinding(AxiomDataBinding.NAME);
 
         MediatorImpl m = new MediatorImpl();
         TransformerRegistryImpl tr = new TransformerRegistryImpl();
@@ -109,16 +168,17 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
         context.setSourceDataType(inputType1);
         context.setTargetDataType(op.getInputType());
         Object[] results = t.transform(source, context);
-        Assert.assertEquals(1, results.length);
-        Assert.assertTrue(results[0] instanceof OMElement);
+        assertEquals(1, results.length);
+        assertTrue(results[0] instanceof OMElement);
         OMElement element = (OMElement) results[0];
-        Assert.assertEquals(new QName("http://example.com/order.xsd", "checkOrderStatus"), element.getQName());
+        assertEquals("http://example.com/order.xsd", element.getNamespace().getNamespaceURI());
+        assertEquals("checkOrderStatus", element.getLocalName());
 
         TransformationContext context1 = new TransformationContextImpl();
         DataType<DataType> sourceType = new DataType<DataType>("idl:output", Object.class, op.getOutputType());
-        sourceType.setMetadata(org.apache.tuscany.spi.model.Operation.class.getName(), op.getOutputType().getMetadata(
-                org.apache.tuscany.spi.model.Operation.class.getName()));
-        
+        sourceType.setMetadata(OPERATION_KEY, op.getOutputType().getMetadata(
+                OPERATION_KEY));
+
         context1.setSourceDataType(sourceType);
         DataType<DataType> targetType =
                 new DataType<DataType>("idl:output", Object.class, new DataType<Class>("java.lang.Object",
@@ -130,11 +190,14 @@ public class OMElementWrapperTransformerTestCase extends TestCase {
                 factory.createOMElement(new QName("http://example.com/order.wsdl", "checkOrderStatusResponse"), null);
         OMElement status = factory.createOMElement(new QName(null, "status"), responseElement);
         factory.createOMText(status, "shipped");
+
         Output2OutputTransformer t2 = new Output2OutputTransformer();
         t2.setMediator(m);
         t2.setDataBindingRegistry(dataBindingRegistry);
         Object st = t2.transform(responseElement, context1);
-        Assert.assertEquals("shipped", st);
+        assertEquals("shipped", st);
 
-    }
+    }    
+
+
 }
