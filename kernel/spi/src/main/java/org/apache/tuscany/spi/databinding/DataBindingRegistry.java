@@ -25,29 +25,40 @@ import org.apache.tuscany.spi.model.DataType;
 public interface DataBindingRegistry {
     /**
      * Register a data binding
+     * 
      * @param dataBinding
      */
-    public void register(DataBinding dataBinding);
+    void register(DataBinding dataBinding);
 
     /**
      * Look up a data binding by id
-     * @param id
-     * @return
+     * 
+     * @param id The name of the databinding
+     * @return The databinding
      */
-    public DataBinding getDataBinding(String id);
+    DataBinding getDataBinding(String id);
 
     /**
      * Unregister a data binding
+     * 
      * @param id
-     * @return
+     * @return The unregistered databinding
      */
-    public DataBinding unregister(String id);
-    
+    DataBinding unregister(String id);
+
     /**
      * Introspect the java class to figure out what DataType supports it
+     * 
      * @param javaType The java class or interface
-     * @return
+     * @return A DataType representing the java type or null if no databinding recognizes the java type
      */
-    public DataType introspectType(Class<?> javaType);
-    public DataType introspectType(Object value);
+    DataType introspectType(Class<?> javaType);
+
+    /**
+     * Introspect the value to figure out the corresponding DataType
+     * 
+     * @param value The object value
+     * @return A DataType representing the value or null if no databinding recognizes the value
+     */
+    DataType introspectType(Object value);
 }

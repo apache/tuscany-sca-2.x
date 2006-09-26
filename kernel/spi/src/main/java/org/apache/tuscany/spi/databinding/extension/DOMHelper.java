@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
 /**
  * Helper for DOM
  */
-public class DOMHelper {
+public final class DOMHelper {
     private final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     static {
         factory.setNamespaceAware(true);

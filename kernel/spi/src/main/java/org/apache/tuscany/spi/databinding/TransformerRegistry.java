@@ -32,13 +32,13 @@ public interface TransformerRegistry {
      * @param weight
      * @param transformer
      */
-    public void registerTransformer(String sourceDataBinding, String targetDataBinding, int weight, Transformer transformer);
+     void registerTransformer(String sourceDataBinding, String targetDataBinding, int weight, Transformer transformer);
 
     /**
      * Register a transformer
      * @param transformer
      */
-    public void registerTransformer(Transformer transformer);
+     void registerTransformer(Transformer transformer);
 
     /**
      * Unregister a transformer
@@ -46,7 +46,7 @@ public interface TransformerRegistry {
      * @param targetDataBinding
      * @return
      */
-    public boolean unregisterTransformer(String sourceDataBinding, String targetDataBinding);
+     boolean unregisterTransformer(String sourceDataBinding, String targetDataBinding);
 
     /**
      * Get the direct Transformer which can transform data from source type to result type
@@ -55,7 +55,7 @@ public interface TransformerRegistry {
      * @param targetDataBinding
      * @return
      */
-    public Transformer getTransformer(String sourceDataBinding, String targetDataBinding);
+     Transformer getTransformer(String sourceDataBinding, String targetDataBinding);
 
     /**
      * Get the a chain of Transformers which can transform data from source type to result type
@@ -63,5 +63,5 @@ public interface TransformerRegistry {
      * @param targetDataBinding
      * @return
      */
-    public List<Transformer> getTransformerChain(String sourceDataBinding, String targetDataBinding);
+     List<Transformer> getTransformerChain(String sourceDataBinding, String targetDataBinding);
 }

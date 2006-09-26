@@ -46,6 +46,11 @@ public interface Mediator {
      * @param sourceDataType Data type for the source data
      * @param targetDataType Data type for the target data
      */
-    void mediate(Object source, Object target, DataType sourceDataType, DataType targetDataType, Map<Class<?>, Object> context);
+    void mediate(
+            Object source,
+            Object target,
+            DataType sourceDataType,
+            DataType targetDataType,
+            Map<Class<?>, Object> context);
     
 }
