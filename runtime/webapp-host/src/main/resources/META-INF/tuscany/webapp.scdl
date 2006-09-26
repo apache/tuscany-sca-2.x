@@ -96,12 +96,6 @@
     <!-- Java implementation type -->
     <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
-    <!-- component that scans the extension directory -->
-    <component name="directoryScanExtender">
-        <system:implementation.system class="org.apache.tuscany.core.services.extension.DirectoryScanExtender"/>
-        <property name="path">extension</property>
-    </component>
-
     <!-- WorkScheduler service -->
     <component name="workManager">
         <system:implementation.system

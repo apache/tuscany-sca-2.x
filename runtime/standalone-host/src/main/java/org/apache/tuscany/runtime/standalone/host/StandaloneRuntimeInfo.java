@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,25 +15,13 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
-    <parent>
-        <groupId>org.apache.tuscany.sca.runtime</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-M2-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>standalone-host</artifactId>
-    <packaging>jar</packaging>
-    <name>Apache Tuscany Standalone Runtime Host</name>
-    <description>Host code to support a standalone runtime</description>
+ */
+package org.apache.tuscany.runtime.standalone.host;
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-</project>
+import org.apache.tuscany.spi.services.info.RuntimeInfo;
+
+/**
+ * @version $Rev$ $Date$
+ */
+public interface StandaloneRuntimeInfo extends RuntimeInfo {
+}
