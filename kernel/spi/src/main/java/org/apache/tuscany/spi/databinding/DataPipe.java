@@ -31,12 +31,12 @@ public interface DataPipe<S, R> extends Transformer {
      * receive data pushed by the source
      * @return The sink to consume data
      */
-    public S getSink();
+     S getSink();
     
     /**
      * Returns the data populated by the sink
      * @return
      */
-    public R getResult();
+     R getResult();
     
 }

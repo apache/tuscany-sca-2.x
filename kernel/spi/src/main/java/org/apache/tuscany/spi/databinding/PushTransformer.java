@@ -18,17 +18,17 @@
  */
 package org.apache.tuscany.spi.databinding;
 
-
 /**
  * A transformer that pushes data from its source into the sink
+ * 
  * @param <S>
  * @param <R>
  */
 public interface PushTransformer<S, R> extends Transformer {
     /**
-     * @param source
-     * @param sink
+     * @param source The source data
+     * @param sink The sink to receive the data 
      * @param context
      */
-    public void transform(S source, R sink, TransformationContext context);
+    void transform(S source, R sink, TransformationContext context);
 }
