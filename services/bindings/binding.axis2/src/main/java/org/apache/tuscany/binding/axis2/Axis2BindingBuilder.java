@@ -26,6 +26,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -88,7 +89,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         try {
             // Set the default databinding
             ServiceContract<?> outboundContract = serviceDefinition.getServiceContract();
-            outboundContract.setDataBinding(OM_DATA_BINDING);
+            if (WSDLServiceContract.class.isInstance(outboundContract)) {
+                outboundContract.setDataBinding(OM_DATA_BINDING);
+            }
 
             // FIXME: We need to define how the WSDL PortType is honored in the case that
             // both the binding.ws and interface.wsdl are in place.
@@ -102,12 +105,14 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
                 // the outbound service contract if it's JavaServiceContract
                 inboundContract = outboundContract;
-            }            PortType portType = wsBinding.getWSDLPort().getBinding().getPortType();
+            }            
+            
+            PortType portType = wsBinding.getWSDLPort().getBinding().getPortType();
             inboundContract = introspector.introspect(portType);
             
             // FIXME:  
             inboundContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
-            inboundContract.setDataBinding(serviceDefinition.getServiceContract().getDataBinding());
+            inboundContract.setDataBinding(OM_DATA_BINDING);
 
             if (!wireService.isWireable(inboundContract, outboundContract)) {
                 throw new Axis2BindingBuilderRuntimeException("Incompatible interface");
@@ -132,6 +137,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         try {
             // Set the default binding
             ServiceContract<?> inboundContract = boundReferenceDefinition.getServiceContract();
+            if (WSDLServiceContract.class.isInstance(inboundContract)) {
+                inboundContract.setDataBinding(OM_DATA_BINDING);
+            }
             
             // FIXME: We need to define how the WSDL PortType is honored in the case that
             // both the binding.ws and interface.wsdl are in place

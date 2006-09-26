@@ -30,18 +30,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-framework</artifactId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
@@ -49,6 +43,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>core</artifactId>
+            <version>${pom.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

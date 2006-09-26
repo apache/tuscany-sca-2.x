@@ -43,12 +43,12 @@
     </repositories>
 
 	<dependencies>
-		<dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-			<artifactId>databinding-framework</artifactId>
-			<version>${pom.version}</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
 		<dependency>
             <groupId>org.apache.tuscany.sca.services.databinding</groupId>
 			<artifactId>databinding-jaxb</artifactId>
