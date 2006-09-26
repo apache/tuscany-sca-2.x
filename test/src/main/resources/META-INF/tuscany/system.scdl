@@ -99,12 +99,6 @@
     <!-- System implementation type -->
     <include name="org.apache.tuscany.test.TestBindingImplementation" scdlLocation="test.binding.system.scdl"/>
 
-    <!-- component that scans the extension directory -->
-    <component name="directoryScanExtender" initLevel="90">
-        <system:implementation.system class="org.apache.tuscany.core.services.extension.DirectoryScanExtender"/>
-        <property name="path">extension</property>
-    </component>
-
     <!-- service for resolving artifacts against the user's local Maven repository -->
     <component name="artifactRepository">
         <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>

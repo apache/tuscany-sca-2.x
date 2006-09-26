@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.services.extension;
+package org.apache.tuscany.runtime.standalone.host;
 
 import java.io.File;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.VoidService;
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
 
 /**
  * Service that extends the runtime by loading composites located in a directory.
@@ -33,17 +33,13 @@ import org.apache.tuscany.spi.services.info.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public class DirectoryScanExtender extends AbstractExtensionDeployer implements VoidService {
-    private String path;
-    private RuntimeInfo runtimeInfo;
+    private final StandaloneRuntimeInfo runtimeInfo;
+    private final String path;
 
-    @Property
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    @Autowire
-    public void setRuntimeInfo(RuntimeInfo runtimeInfo) {
+    public DirectoryScanExtender(@Autowire StandaloneRuntimeInfo runtimeInfo,
+                                 @Property String path) {
         this.runtimeInfo = runtimeInfo;
+        this.path = path;
     }
 
     @Init(eager = true)
