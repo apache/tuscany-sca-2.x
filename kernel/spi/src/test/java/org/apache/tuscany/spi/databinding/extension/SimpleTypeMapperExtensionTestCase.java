@@ -26,9 +26,7 @@ import javax.xml.namespace.NamespaceContext;
 
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.easymock.EasyMock;
 
@@ -82,7 +80,11 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
 
     public void testMap() throws Exception {
         SimpleTypeMapperExtension extension = new SimpleTypeMapperExtension();
-        TransformationContext context = new TransformationContextImpl();
+        TransformationContext context = EasyMock.createMock(TransformationContext.class);
+        Map<Class<?>, Object> metaData = new HashMap<Class<?>, Object>();
+        EasyMock.expect(context.getMetadata()).andReturn(metaData).anyTimes();
+        EasyMock.replay(context);
+        
         NamespaceContext namespaceContext = EasyMock.createMock(NamespaceContext.class);
         EasyMock.expect(namespaceContext.getNamespaceURI(EasyMock.eq("f"))).andReturn("http://foo").anyTimes();
         EasyMock.expect(namespaceContext.getPrefix(EasyMock.eq("http://foo"))).andReturn("f").anyTimes();

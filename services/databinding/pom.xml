@@ -32,7 +32,6 @@
     <name>Tuscany SCA Data Bindings</name>
 
     <modules>
-        <module>databinding-framework</module>
         <module>databinding-axiom</module>
         <module>databinding-castor</module>
         <module>databinding-jaxb</module>

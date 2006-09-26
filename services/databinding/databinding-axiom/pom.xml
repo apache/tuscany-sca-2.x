@@ -42,8 +42,8 @@
 
 	<dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-framework</artifactId>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
             <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>

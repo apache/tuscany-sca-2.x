@@ -21,12 +21,12 @@ package org.apache.tuscany.spi.databinding.extension;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl;
-import org.apache.tuscany.spi.databinding.TransformerRegistry;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.w3c.dom.Node;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.TransformerRegistry;
+import org.easymock.EasyMock;
+import org.w3c.dom.Node;
 
 /**
  * Test case for TransformerExtension
@@ -45,7 +45,12 @@ public class TransformerExtensionTestCase extends TestCase {
         assertEquals(Node.class.getName(), transformer.getSourceDataBinding());
         assertEquals(XMLStreamReader.class.getName(), transformer.getTargetDataBinding());
         assertEquals(50, transformer.getWeight());
-        TransformerRegistry registry = new TransformerRegistryImpl();
+        TransformerRegistry registry = EasyMock.createMock(TransformerRegistry.class);
+        registry.registerTransformer(EasyMock.isA(Transformer.class));
+        EasyMock
+                .expect(registry.getTransformer(transformer.getSourceDataBinding(), transformer.getTargetDataBinding()))
+                .andReturn(transformer);
+        EasyMock.replay(registry);
         transformer.setTransformerRegistry(registry);
         transformer.init();
         assertSame(transformer, registry.getTransformer(transformer.getSourceDataBinding(), transformer

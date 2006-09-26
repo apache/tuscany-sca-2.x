@@ -96,6 +96,9 @@
     <!-- Java implementation type -->
     <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
+    <!-- Data Binding -->
+    <include name="org.apache.tuscany.launcher.DataBinding" scdlResource="org/apache/tuscany/core/databinding.scdl"/>
+
     <!-- System implementation type -->
     <include name="org.apache.tuscany.test.TestBindingImplementation" scdlLocation="test.binding.system.scdl"/>
 
