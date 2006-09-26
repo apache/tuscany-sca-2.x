@@ -18,23 +18,37 @@
  */
 package org.apache.tuscany.databinding.axiom;
 
+import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.Transformer;
+import org.apache.tuscany.spi.databinding.extension.Java2SimpleTypeTransformer;
 import org.apache.tuscany.spi.databinding.extension.SimpleType2JavaTransformer;
+import org.apache.tuscany.spi.idl.ElementInfo;
 import org.osoa.sca.annotations.Service;
 
 /**
  * Transformer to convert data from an simple OMElement to Java Object
  */
 @Service(Transformer.class)
-public class Object2OMElement extends SimpleType2JavaTransformer<OMElement> {
+public class Object2OMElement extends Java2SimpleTypeTransformer<OMElement> {
 
-    @Override
-    protected String getText(OMElement source) {
-        return source.getText();
+    private OMFactory factory;
+
+    public Object2OMElement() {
+        super();
+        factory = OMAbstractFactory.getOMFactory();
     }
 
-    public Class getSourceType() {
+    protected OMElement createElement(ElementInfo element, String text, TransformationContext context) {
+        OMElement omElement = factory.createOMElement(element.getQName(), null);
+        factory.createOMText(omElement, text);
+        return omElement;
+    }
+
+    @Override
+    public Class getTargetType() {
         return OMElement.class;
     }
 

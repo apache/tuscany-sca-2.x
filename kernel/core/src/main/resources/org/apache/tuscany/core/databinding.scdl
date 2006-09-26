@@ -66,5 +66,12 @@
     <component name="transformer.Output2OutputTransformer">
         <system:implementation.system class="org.apache.tuscany.core.databinding.impl.Output2OutputTransformer" />
     </component>
+
+    <component name="transformer.Node2Object">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.xml.Node2Object" />
+    </component>
     
+    <component name="transformer.Object2Node">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.xml.Object2Node" />
+    </component>    
 </composite>

@@ -52,7 +52,8 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
     }
 
     public int getWeight() {
-        return 10;
+        // Cannot be used for imtermediate 
+        return 10000;
     }
     
     protected abstract String getText(T source);
