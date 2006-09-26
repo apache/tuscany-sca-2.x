@@ -42,6 +42,7 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
     protected OutboundWire outboundWire;
     protected Class<?> referenceInterface;
     protected WireService wireService;
+    protected ServiceContract<?> bindingServiceContract;
 
     protected ReferenceExtension(String name,
                                  Class<?> referenceInterface,
@@ -92,7 +93,6 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
         throw new UnsupportedOperationException();
     }
 
-    protected ServiceContract<?> bindingServiceContract;
     public ServiceContract<?> getBindingServiceContract() {
         return bindingServiceContract;
     }
