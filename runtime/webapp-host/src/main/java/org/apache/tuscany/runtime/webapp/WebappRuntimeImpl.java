@@ -136,8 +136,10 @@ public class WebappRuntimeImpl implements WebappRuntime {
             Set<String> paths = servletContext.getResourcePaths(extensionScdlPath);
             if (paths != null) {
                 for (String path : paths) {
-                    monitor.deployExtension(path);
-                    deployExtension(rt, path, servletContext.getResource(path));
+                    if (path != null && path.endsWith(".scdl")) { //getResourePaths even includes sub-directory names. Only look at scdl files.
+                        monitor.deployExtension(path);
+                        deployExtension(rt, path, servletContext.getResource(path));
+                    }
                 }
             }
 
