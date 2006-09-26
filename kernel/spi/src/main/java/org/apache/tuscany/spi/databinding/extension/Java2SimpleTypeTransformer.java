@@ -53,7 +53,7 @@ public abstract class Java2SimpleTypeTransformer<T> extends TransformerExtension
     }
 
     public int getWeight() {
-        return 10;
+        return 10000;
     }
 
     protected abstract T createElement(ElementInfo element, String literal, TransformationContext context);

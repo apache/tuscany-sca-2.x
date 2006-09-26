@@ -21,6 +21,7 @@ package org.apache.tuscany.core.databinding.xml;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.SimpleType2JavaTransformer;
 import org.osoa.sca.annotations.Service;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
@@ -31,6 +32,9 @@ public class Node2Object extends SimpleType2JavaTransformer<Node> {
 
     @Override
     protected String getText(Node source) {
+        if (source instanceof Document) {
+            source = ((Document) source).getDocumentElement();
+        }
         return source.getTextContent();
     }
 
