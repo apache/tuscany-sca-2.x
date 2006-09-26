@@ -43,6 +43,7 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
     protected WireService wireService;
+    protected ServiceContract<?> bindingServiceContract;
 
     public ServiceExtension(String name, Class<?> interfaze, CompositeComponent parent, WireService wireService)
         throws CoreRuntimeException {
@@ -87,7 +88,6 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
         return interfaze;
     }
     
-    protected ServiceContract<?> bindingServiceContract;
     public ServiceContract<?> getBindingServiceContract() {
         return bindingServiceContract;
     }
