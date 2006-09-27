@@ -39,6 +39,7 @@ import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import static org.apache.tuscany.runtime.webapp.Constants.CURRENT_COMPOSITE_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.DEFAULT_EXTENSION_PATH_PARAM;
@@ -75,6 +76,7 @@ public class WebappRuntimeImpl implements WebappRuntime {
     private URL systemScdl;
     private URL applicationScdl;
     private ClassLoader webappClassLoader;
+    private RuntimeInfo runtimeInfo;
 
     private CompositeComponent component;
     private ServletLauncherMonitor monitor;
@@ -112,6 +114,14 @@ public class WebappRuntimeImpl implements WebappRuntime {
 
     public void setHostClassLoader(ClassLoader webappClassLoader) {
         this.webappClassLoader = webappClassLoader;
+    }
+
+    public RuntimeInfo getRuntimeInfo() {
+        return runtimeInfo;
+    }
+
+    public void setRuntimeInfo(RuntimeInfo runtimeInfo) {
+        this.runtimeInfo = runtimeInfo;
     }
 
     public void initialize() {

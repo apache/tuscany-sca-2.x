@@ -20,6 +20,8 @@ package org.apache.tuscany.host.runtime;
 
 import java.net.URL;
 
+import org.apache.tuscany.host.RuntimeInfo;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -65,6 +67,22 @@ public interface TuscanyRuntime {
      * @param classLoader the host's ClassLoader
      */
     void setHostClassLoader(ClassLoader classLoader);
+
+    /**
+     * Returns the info this runtime will make available to service components.
+     *
+     * @return the info this runtime will make available to service components
+     */
+    RuntimeInfo getRuntimeInfo();
+
+    /**
+     * Sets the info this runtime should make available to service components.
+     * The instance supplied here should be registered in the system composite with the name
+     * {@link RuntimeInfo#COMPONENT_NAME "RuntimeInfo"}. 
+     *
+     * @param runtimeInfo the information this runtime should make available to service components
+     */
+    void setRuntimeInfo(RuntimeInfo runtimeInfo);
 
     /**
      * Initialize a runtime.

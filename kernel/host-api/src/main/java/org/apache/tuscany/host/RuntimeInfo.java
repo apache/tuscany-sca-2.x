@@ -27,7 +27,11 @@ import java.net.URL;
  * @version $Rev$ $Date$
  */
 public interface RuntimeInfo {
-    
+    /**
+     * The default name that the runtime should assign to the component providing this service.
+     */
+    static final String COMPONENT_NAME = "RuntimeInfo";
+
     /**
      * Return the directory where the running runtime was installed.
      *
