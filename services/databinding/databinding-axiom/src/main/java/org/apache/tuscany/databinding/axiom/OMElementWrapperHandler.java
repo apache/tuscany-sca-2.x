@@ -50,6 +50,7 @@ public class OMElementWrapperHandler implements WrapperHandler<OMElement> {
         for (Iterator e = wrapper.getChildElements(); e.hasNext();) {
             OMElement child = (OMElement) e.next();
             if (index != i) {
+                index++;
                 continue;
             }
             if (child.getQName().equals(element.getQName())) {
