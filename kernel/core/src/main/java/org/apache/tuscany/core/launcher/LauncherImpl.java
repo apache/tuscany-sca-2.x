@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.Launcher;
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
+import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.api.TuscanyException;
 
 /**
@@ -87,7 +87,7 @@ public class LauncherImpl implements Launcher {
 
         // registory the monitor factory
         parent.registerJavaObject("MonitorFactory", MonitorFactory.class, monitor);
-        
+
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         moduleImplementation.setScdlLocation(systemScdl);
