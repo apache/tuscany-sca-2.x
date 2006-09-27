@@ -22,13 +22,13 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
+import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * @version $Rev$ $Date$
  */
 public class LauncherRuntimeInfo implements RuntimeInfo {
-    
+
     /** Install directory */
     private final File installDirectory;
 
@@ -45,7 +45,7 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
         this.installDirectory = installDirectory;
         this.applicationRootDirectory = applicationRootDirectory;
     }
-    
+
     /**
      * Return the directory where the running runtime was installed.
      *
@@ -63,7 +63,7 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
     public File getApplicationRootDirectory() {
         return applicationRootDirectory;
     }
-    
+
     /**
      * Gets the base URL for the runtime.
      * 
@@ -77,5 +77,5 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
             throw new RuntimeException(e);
         }
     }
-    
+
 }

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.runtime.standalone.host;
 
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
+import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * @version $Rev$ $Date$
