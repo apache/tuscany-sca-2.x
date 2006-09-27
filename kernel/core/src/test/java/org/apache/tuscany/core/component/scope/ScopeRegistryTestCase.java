@@ -37,7 +37,7 @@ public class ScopeRegistryTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
         scopeRegistry.registerFactory(Scope.REQUEST, new RequestScopeObjectFactory());
-        scopeRegistry.registerFactory(Scope.SESSION, new HttpSessionScopeObjectFactory());
+        scopeRegistry.registerFactory(Scope.SESSION, new HttpSessionScopeObjectFactory(scopeRegistry));
         ScopeContainer request = scopeRegistry.getScopeContainer(Scope.REQUEST);
         assertTrue(request instanceof RequestScopeContainer);
         assertSame(request, scopeRegistry.getScopeContainer(Scope.REQUEST));

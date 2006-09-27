@@ -78,6 +78,10 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>
     </component>
 
+    <component name="scope.httpsession">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.HttpSessionScopeObjectFactory"/>
+    </component>
+    
     <!-- include loader configuration -->
     <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
 

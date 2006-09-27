@@ -20,6 +20,10 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.model.Scope;
+import org.osoa.sca.annotations.Init;
 
 /**
  * Creates a new HTTP session scope context
@@ -27,6 +31,15 @@ import org.apache.tuscany.spi.ObjectFactory;
  * @version $$Rev$$ $$Date$$
  */
 public class HttpSessionScopeObjectFactory implements ObjectFactory<HttpSessionScopeContainer> {
+    
+    public HttpSessionScopeObjectFactory(@Autowire ScopeRegistry registry) {
+        registry.registerFactory(Scope.SESSION, this);
+    }
+
+    @Init(eager = true)
+    public void init() {
+    }
+
 
     public HttpSessionScopeContainer getInstance() throws ObjectCreationException {
         return new HttpSessionScopeContainer();
