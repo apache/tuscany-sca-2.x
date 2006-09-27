@@ -39,14 +39,11 @@ public final class DOMHelper {
     }
 
     public static Document newDocument() throws ParserConfigurationException {
-        DocumentBuilder builder = newDocumentBuilder();
-        Document document = builder.newDocument();
-        return document;
+        return newDocumentBuilder().newDocument();
     }
 
     public static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder;
+        return factory.newDocumentBuilder();
     }
 
     public static QName getQName(Node node) {
@@ -56,8 +53,7 @@ public final class DOMHelper {
         }
         // node.getLocalName() will return null if it is created using DOM Level 1 method 
         // such as createElement()
-        QName name = new QName(ns, node.getNodeName());
-        return name;
+        return new QName(ns, node.getNodeName());
     }
     
     public static Element createElement(Document document, QName name) {

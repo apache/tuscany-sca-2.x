@@ -358,8 +358,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         } else if (obj instanceof Date) {
             return toXMLGregorianCalendar((Date) obj).toXMLFormat();
         } else if (obj instanceof XMLGregorianCalendar) {
-            XMLGregorianCalendar calendar = (XMLGregorianCalendar) obj;
-            return calendar.toXMLFormat();
+            return ((XMLGregorianCalendar) obj).toXMLFormat();
         } else if (obj instanceof byte[]) {
             if (simpleType.getQName().equals(XSD_BASE64)) {
                 return printBase64Binary((byte[]) obj);
