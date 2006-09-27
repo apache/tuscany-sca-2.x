@@ -45,10 +45,12 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
 
     private static final String SIMPLE_JAVA_OBJECTS = "java.lang.Object";
 
-    /**
-     * @see org.apache.tuscany.spi.idl.java.JavaInterfaceProcessor#visitInterface(java.lang.Class,
-     *      org.apache.tuscany.spi.idl.java.JavaServiceContract)
-     */
+    private final static Class[] simpleTypes =
+            { Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
+                    Date.class, Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class };
+
+    private final static Set<Class> simpleTypeSet = new HashSet<Class>(Arrays.asList(simpleTypes));
+
     public void visitInterface(Class<?> clazz, JavaServiceContract contract) throws InvalidServiceContractException {
         DataType interfaceDataType = clazz.getAnnotation(DataType.class);
         if (interfaceDataType != null) {
@@ -72,6 +74,7 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
 
             String dataBinding = operation.getDataBinding();
 
+            // FIXME: We need a better way to identify simple java types
             for (org.apache.tuscany.spi.model.DataType<?> d : operation.getInputType().getLogical()) {
                 adjustSimpleType(d, dataBinding);
             }
@@ -84,11 +87,6 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
         }
     }
 
-    private final static Class[] simpleTypes =
-            { Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
-                    Date.class, Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class };
-
-    private final static Set<Class> simpleTypeSet = new HashSet<Class>(Arrays.asList(simpleTypes));
 
     private void adjustSimpleType(org.apache.tuscany.spi.model.DataType<?> dataType, String dataBinding) {
         Type type = dataType.getPhysical();
@@ -98,10 +96,9 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
         Class cls = (Class) dataType.getPhysical();
         if (cls.isPrimitive() || simpleTypeSet.contains(cls)) {
             dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
-        } else if (cls == String.class) {
-            if (dataBinding == null || !dataBinding.equals(String.class.getName())) {
-                dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
-            }
+        } else if (cls == String.class && (dataBinding == null || !dataBinding.equals(String.class.getName()))) {
+            // Identify the String as a simple type
+            dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
         }
     }
 }
