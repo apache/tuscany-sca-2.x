@@ -70,8 +70,7 @@ public abstract class DataBindingExtension implements DataBinding {
 
     public DataType introspect(Class<?> javaType) {
         if (baseType.isAssignableFrom(javaType)) {
-            DataType<Class> dataType = new DataType<Class>(name, javaType, baseType);
-            return dataType;
+            return new DataType<Class>(name, javaType, baseType);
         } else {
             return null;
         }
