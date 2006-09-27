@@ -139,8 +139,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
                 break;
             }
         }
-        properties = elementList.toArray(new Map.Entry[0]);
-        attributes = attributeList.toArray(new Map.Entry[0]);
+        properties = elementList.toArray(new Map.Entry[elementList.size()]);
+        attributes = attributeList.toArray(new Map.Entry[attributeList.size()]);
     }
 
     /**
@@ -583,12 +583,9 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
     public boolean hasText() {
         if (state == DELEGATED_STATE) {
             return childReader.hasText();
-        } else if (state == TEXT_STATE) {
-            return true;
-        } else {
-            return false;
+        } else { 
+            return (state == TEXT_STATE);
         }
-
     }
 
     /**
@@ -646,10 +643,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         // if not we should ask the child reader for it.
         if (state == DELEGATED_STATE) {
             return childReader.hasName();
-        } else if (state != TEXT_STATE) {
-            return true;
         } else {
-            return false;
+            return (state != TEXT_STATE);
         }
     }
 

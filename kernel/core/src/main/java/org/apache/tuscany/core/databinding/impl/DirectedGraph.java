@@ -152,9 +152,9 @@ public class DirectedGraph<V, E> {
 
         private long distance = Integer.MAX_VALUE;
 
-        private Node previous = null;
+        private Node previous = null; // NOPMD by rfeng on 9/26/06 9:17 PM
 
-        private Vertex vertex;
+        private Vertex vertex; // NOPMD by rfeng on 9/26/06 9:17 PM
 
         private Node(Vertex vertex) {
             this.vertex = vertex;
