@@ -22,46 +22,54 @@ import java.util.List;
 
 /**
  * Registry for data transformers
- *
  */
 public interface TransformerRegistry {
     /**
      * Register a transformer
+     * 
      * @param sourceDataBinding
      * @param targetDataBinding
      * @param weight
      * @param transformer
      */
-     void registerTransformer(String sourceDataBinding, String targetDataBinding, int weight, Transformer transformer);
+    void registerTransformer(String sourceDataBinding,
+                             String targetDataBinding,
+                             int weight,
+                             Transformer transformer);
 
     /**
      * Register a transformer
+     * 
      * @param transformer
      */
-     void registerTransformer(Transformer transformer);
+    void registerTransformer(Transformer transformer);
 
     /**
      * Unregister a transformer
-     * @param sourceDataBinding
-     * @param targetDataBinding
-     * @return
-     */
-     boolean unregisterTransformer(String sourceDataBinding, String targetDataBinding);
-
-    /**
-     * Get the direct Transformer which can transform data from source type to result type
      * 
      * @param sourceDataBinding
      * @param targetDataBinding
      * @return
      */
-     Transformer getTransformer(String sourceDataBinding, String targetDataBinding);
+    boolean unregisterTransformer(String sourceDataBinding, String targetDataBinding);
 
     /**
-     * Get the a chain of Transformers which can transform data from source type to result type
+     * Get the direct Transformer which can transform data from source type to
+     * result type
+     * 
      * @param sourceDataBinding
      * @param targetDataBinding
      * @return
      */
-     List<Transformer> getTransformerChain(String sourceDataBinding, String targetDataBinding);
+    Transformer getTransformer(String sourceDataBinding, String targetDataBinding);
+
+    /**
+     * Get the a chain of Transformers which can transform data from source type
+     * to result type
+     * 
+     * @param sourceDataBinding
+     * @param targetDataBinding
+     * @return
+     */
+    List<Transformer> getTransformerChain(String sourceDataBinding, String targetDataBinding);
 }

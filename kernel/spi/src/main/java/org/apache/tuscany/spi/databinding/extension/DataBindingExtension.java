@@ -34,14 +34,16 @@ import org.osoa.sca.annotations.Service;
 public abstract class DataBindingExtension implements DataBinding {
     protected DataBindingRegistry registry;
 
-    protected Class<?> baseType = null;
+    protected Class<?> baseType;
 
-    protected String name = null;
+    protected String name;
 
     /**
-     * Create a databinding with the base java type whose name will be used as the name of the databinding
+     * Create a databinding with the base java type whose name will be used as
+     * the name of the databinding
      * 
-     * @param baseType The base java class or interface representing the databinding, for example, org.w3c.dom.Node
+     * @param baseType The base java class or interface representing the
+     *            databinding, for example, org.w3c.dom.Node
      */
     protected DataBindingExtension(Class<?> baseType) {
         this(baseType.getName(), baseType);
@@ -51,7 +53,8 @@ public abstract class DataBindingExtension implements DataBinding {
      * Create a databinding with the name and base java type
      * 
      * @param name The name of the databinding
-     * @param baseType The base java class or interface representing the databinding, for example, org.w3c.dom.Node
+     * @param baseType The base java class or interface representing the
+     *            databinding, for example, org.w3c.dom.Node
      */
     protected DataBindingExtension(String name, Class<?> baseType) {
         this.name = name;
