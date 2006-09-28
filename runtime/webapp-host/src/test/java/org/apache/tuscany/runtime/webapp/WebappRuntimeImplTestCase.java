@@ -43,11 +43,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
      */
     public void testBootWithDefaults() throws Exception {
         expect(context.getInitParameter(Constants.SYSTEM_MONITORING_PARAM)).andReturn(null);
-        expect(context.getInitParameter(Constants.EXTENSION_SCDL_PATH_PARAM)).andReturn(null);
-        expect(context.getResourcePaths("/WEB-INF/tuscany/extensions")).andReturn(null);
-        expect(context.getServletContextName()).andReturn("foo");
-        expect(context.getInitParameter(Constants.CURRENT_COMPOSITE_PATH_PARAM)).andReturn(null);
-        context.setAttribute(eq(Constants.RUNTIME_ATTRIBUTE), isA(WebappRuntime.class));
+        expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
         replay(context);
         runtime.initialize();
         verify(context);
@@ -60,9 +56,11 @@ public class WebappRuntimeImplTestCase extends TestCase {
         context = createMock(ServletContext.class);
 
         runtime = new WebappRuntimeImpl();
+        runtime.setRuntimeInfo(new WebappRuntimeInfoImpl(context, null));
         runtime.setHostClassLoader(getClass().getClassLoader());
         runtime.setServletContext(context);
         runtime.setSystemScdl(systemScdl);
+        runtime.setApplicationName("foo");
         runtime.setApplicationScdl(applicationScdl);
     }
 }
