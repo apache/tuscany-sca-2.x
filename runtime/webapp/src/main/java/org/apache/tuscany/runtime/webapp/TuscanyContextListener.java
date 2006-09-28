@@ -31,6 +31,7 @@ import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_
 import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.BOOTDIR_DEFAULT;
 import static org.apache.tuscany.runtime.webapp.Constants.BOOTDIR_PARAM;
+import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_DEFAULT;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_DEFAULT;
@@ -57,32 +58,45 @@ import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM
  */
 public class TuscanyContextListener implements ServletContextListener {
 
-    private WebappRuntime runtime;
-
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
         try {
             ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader bootClassLoader = getBootClassLoader(servletContext, webappClassLoader);
-            runtime = getRuntime(servletContext, bootClassLoader);
+            WebappRuntime runtime = getRuntime(servletContext, bootClassLoader);
+            WebappRuntimeInfo info = new WebappRuntimeInfoImpl(servletContext,
+                                                               servletContext.getResource("/WEB-INF/tuscany/"));
             URL systemScdl = getSystemScdl(servletContext, bootClassLoader);
             URL applicationScdl = getApplicationScdl(servletContext, webappClassLoader);
+            String name = getApplicationName(servletContext);
 
             runtime.setServletContext(servletContext);
+            runtime.setRuntimeInfo(info);
             runtime.setHostClassLoader(webappClassLoader);
             runtime.setSystemScdl(systemScdl);
+            runtime.setApplicationName(name);
             runtime.setApplicationScdl(applicationScdl);
             runtime.initialize();
+
+            servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
         } catch (TuscanyRuntimeException e) {
             servletContext.log(e.getMessage(), e);
             throw e;
+        } catch (MalformedURLException e) {
+            servletContext.log(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        if (runtime != null) {
-            runtime.destroy();
+        ServletContext servletContext = event.getServletContext();
+        WebappRuntime runtime = (WebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
+        if (runtime == null) {
+            return;
         }
+
+        servletContext.removeAttribute(RUNTIME_ATTRIBUTE);
+        runtime.destroy();
     }
 
     /**
@@ -133,6 +147,14 @@ public class TuscanyContextListener implements ServletContextListener {
         } catch (MalformedURLException e) {
             throw new TuscanyInitException("Invalid resource path for " + SYSTEM_SCDL_PATH_PARAM + " : " + path, e);
         }
+    }
+
+    protected String getApplicationName(ServletContext servletContext) {
+        String name = servletContext.getServletContextName();
+        if (name == null) {
+            name = "application";
+        }
+        return name;
     }
 
     protected URL getApplicationScdl(ServletContext servletContext, ClassLoader bootClassLoader) {

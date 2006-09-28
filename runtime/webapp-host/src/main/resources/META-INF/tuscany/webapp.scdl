@@ -81,7 +81,7 @@
     <component name="scope.httpsession">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.HttpSessionScopeObjectFactory"/>
     </component>
-    
+
     <!-- include loader configuration -->
     <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
 
@@ -113,14 +113,14 @@
     <component name="workScheduler">
         <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
     </component>
-    
+
     <!-- Web app ServletHost -->
     <component name="servletHost">
         <system:implementation.system class="org.apache.tuscany.runtime.webapp.ServletHostImpl"/>
     </component>
 
     <component name="policyBuilderRegistry">
-         <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
+        <system:implementation.system class="org.apache.tuscany.core.policy.PolicyBuilderRegistryImpl"/>
     </component>
 
     <component name="propertyFactory">
@@ -128,16 +128,13 @@
     </component>
 
     <component name="artifactRepository">
-            <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
-            <!-- this value needs to change to a correct one -->
-            <property name = "repository">.</property>
+        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
+        <!-- this value needs to change to a correct one -->
+        <property name="repository">.</property>
     </component>
 
-
-    <!-- TODO: Hack the Axis extension in -->
-    <!--<include name="binding.axis2" scdlLocation="binding.axis2.scdl"/> -->
-    
-    <!-- TODO: Hack the SDO DataBinding extension in -->
-   <!-- <include name="databinding.sdo" scdlLocation="databinding.sdo.scdl"/>  -->
-
+    <component name="extender" initLevel="90">
+        <system:implementation.system class="org.apache.tuscany.runtime.webapp.WebResourceScanExtender"/>
+        <property name="path">/WEB-INF/tuscany/extensions/</property>
+    </component>
 </composite>

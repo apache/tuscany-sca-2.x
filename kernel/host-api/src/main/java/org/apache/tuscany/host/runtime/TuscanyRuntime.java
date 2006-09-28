@@ -41,6 +41,18 @@ public interface TuscanyRuntime {
     void setSystemScdl(URL systemScdl);
 
     /**
+     * Returns the name of the component associated with the application SCDL.
+     * @return the name of the component associated with the application SCDL
+     */
+    String getApplicationName();
+
+    /**
+     * Sets the name of the component associated with the application SCDL.
+     * @param applicationName the name of the component associated with the application SCDL
+     */
+    void setApplicationName(String applicationName);
+
+    /**
      * Returns the location of the default application's SCDL.
      *
      * @return the location of the default application's SCDL
@@ -78,7 +90,7 @@ public interface TuscanyRuntime {
     /**
      * Sets the info this runtime should make available to service components.
      * The instance supplied here should be registered in the system composite with the name
-     * {@link RuntimeInfo#COMPONENT_NAME "RuntimeInfo"}. 
+     * {@link RuntimeInfo#COMPONENT_NAME "RuntimeInfo"}.
      *
      * @param runtimeInfo the information this runtime should make available to service components
      */
