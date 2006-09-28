@@ -96,12 +96,6 @@
     <!-- Java implementation type -->
     <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
-    <!-- component that scans the extension directory -->
-    <component name="directoryScanExtender" initLevel="90">
-        <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.DirectoryScanExtender"/>
-        <property name="path">extension</property>
-    </component>
-
     <!-- service for resolving artifacts against the user's local Maven repository -->
     <component name="artifactRepository">
         <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
@@ -126,5 +120,13 @@
     <component name="propertyFactory">
         <system:implementation.system class="org.apache.tuscany.core.loader.StringParserPropertyFactory"/>
     </component>
+
+    <!-- component that scans the extension directory -->
+<!--
+    <component name="directoryScanExtender" initLevel="90">
+        <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.DirectoryScanExtender"/>
+        <property name="path">extension</property>
+    </component>
+-->
 
 </composite>
