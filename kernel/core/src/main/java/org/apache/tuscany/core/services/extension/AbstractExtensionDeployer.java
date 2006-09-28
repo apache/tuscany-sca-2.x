@@ -20,7 +20,6 @@ package org.apache.tuscany.core.services.extension;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
