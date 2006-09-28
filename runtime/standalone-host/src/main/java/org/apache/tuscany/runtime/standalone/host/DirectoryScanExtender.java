@@ -37,7 +37,7 @@ public class DirectoryScanExtender extends AbstractExtensionDeployer implements 
     private final String path;
 
     public DirectoryScanExtender(@Autowire StandaloneRuntimeInfo runtimeInfo,
-                                 @Property String path) {
+                                 @Property(name = "path") String path) {
         this.runtimeInfo = runtimeInfo;
         this.path = path;
     }
