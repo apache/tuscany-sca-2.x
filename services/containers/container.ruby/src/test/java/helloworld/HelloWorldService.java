@@ -18,10 +18,7 @@
  */
 package helloworld;
 
-import org.apache.axiom.om.OMElement;
-
 public interface HelloWorldService {
 
     String sayHello(String s);
-    OMElement sayE4XHello(OMElement xmlObject);
 }

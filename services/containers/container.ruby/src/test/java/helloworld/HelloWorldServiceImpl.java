@@ -18,36 +18,8 @@
  */
 package helloworld;
 
-import java.io.ByteArrayInputStream;
-
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
-import org.apache.axiom.om.util.StAXUtils;
 
 public class HelloWorldServiceImpl implements HelloWorldService {
-
-    public OMElement sayE4XHello(OMElement xmlObject) {
-
-        String helloString = "<hel:getGreetingsResponse xmlns:hel=\"http://helloworld\">"
-                + "<hel:getGreetingsReturn>Hello from Java Implementation to </hel:getGreetingsReturn>NoString</hel:getGreetingsResponse>";
-
-        try {
-            String inputValue = xmlObject.getFirstElement().getText();
-
-            XMLStreamReader xmlReader = StAXUtils.createXMLStreamReader(new ByteArrayInputStream(helloString.getBytes()));
-
-            StAXOMBuilder staxOMBuilder = new StAXOMBuilder(OMAbstractFactory.getOMFactory(), xmlReader);
-            OMElement response = staxOMBuilder.getDocumentElement();
-            response.getFirstElement().setText(response.getFirstElement().getText() + inputValue);
-
-            return response;
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     public String sayHello(String s) {
         return "Hello " + s;
