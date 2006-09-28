@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.services.extension;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -68,30 +69,30 @@ public class AbstractExtensionDeployer {
     }
 
     protected void deployExtension(String name, URL url) {
-        // todo do we want to support unpacked directories or bare XML files as extensions?
-        // get the URL of the JAR file and the SCDL inside
-        URL extensionURL;
-        URL scdl;
-        try {
-            extensionURL = new URL("jar:" + url + "!/");
-            scdl = new URL(extensionURL, "META-INF/sca/default.scdl");
-            //test if the scdl file exists
-            scdl.openStream();
-        } catch (MalformedURLException e) {
-            // file may not be a JAR file
-            return;
-        } catch (java.io.IOException e) {
-            //The jar file is ignored as it does not contain a valid scdl
-            return;
-        }
-
         // FIXME for now, assume this class's ClassLoader is the Tuscany system classloader
         // FIXME we should really use the one associated with the parent composite
-        ClassLoader extensionCL = new CompositeClassLoader(new URL[]{url}, getClass().getClassLoader());
+        CompositeClassLoader extensionCL = new CompositeClassLoader(getClass().getClassLoader());
+
+        // see if the URL points to a composite JAR by looking for a default SCDL file inside it
+        URL scdlLocation;
+        try {
+            scdlLocation = new URL("jar:" + url.toExternalForm() + "!/META-INF/sca/default.scdl");
+        } catch (MalformedURLException e) {
+            // the form of the jar: URL should be correct given url.toExternalForm() worked
+            throw new AssertionError();
+        }
+        try {
+            scdlLocation.openConnection();
+            // we connected to the SCDL so let's add the JAR file to the classloader
+            extensionCL.addURL(url);
+        } catch (IOException e) {
+            // assume that the URL we were given is not a JAR file so just use the supplied resource
+            scdlLocation = url;
+        }
 
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
-        implementation.setScdlLocation(scdl);
+        implementation.setScdlLocation(scdlLocation);
         implementation.setClassLoader(extensionCL);
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
