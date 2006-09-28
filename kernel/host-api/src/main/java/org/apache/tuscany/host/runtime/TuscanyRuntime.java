@@ -20,7 +20,10 @@ package org.apache.tuscany.host.runtime;
 
 import java.net.URL;
 
+import org.osoa.sca.SCA;
+
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * @version $Rev$ $Date$
@@ -96,6 +99,25 @@ public interface TuscanyRuntime {
      */
     void setRuntimeInfo(RuntimeInfo runtimeInfo);
 
+    /** Returns the MonitorFactory that this runtime is using.
+     *
+     * @return the MonitorFactory that this runtime is using
+     */
+    MonitorFactory getMonitorFactory();
+
+    /**
+     * Sets the MonitorFactory that this runtime should use.
+     * @param monitorFactory the MonitorFactory that this runtime should use
+     */
+    void setMonitorFactory(MonitorFactory monitorFactory);
+
+    /**
+     * Create the default MonitorFactory for this runtime.
+     *
+     * @return the default MonitorFactory for this runtime
+     */
+    MonitorFactory createDefaultMonitorFactory();
+
     /**
      * Initialize a runtime.
      *
@@ -106,4 +128,13 @@ public interface TuscanyRuntime {
      * Destroy the runtime. Any further invocations should result in an error.
      */
     void destroy();
+
+    /**
+     * Returns the current SCA context
+     */
+    SCA getContext();
+
+    ClassLoader getApplicationClassLoader();
+
+    void setApplicationClassLoader(ClassLoader applicationClassLoader);
 }

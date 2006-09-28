@@ -26,6 +26,7 @@ import org.osoa.sca.annotations.Property;
 import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.VoidService;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 
 /**
  * Service that extends the runtime by loading composites located in a directory.

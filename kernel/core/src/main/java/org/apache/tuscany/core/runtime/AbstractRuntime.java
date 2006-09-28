@@ -22,7 +22,9 @@ import java.net.URL;
 
 import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -38,7 +40,9 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
     private String applicationName;
     private URL applicationScdl;
     private ClassLoader hostClassLoader;
+    private ClassLoader applicationClassLoader;
     private RuntimeInfo runtimeInfo;
+    private MonitorFactory monitorFactory;
 
     public URL getSystemScdl() {
         return systemScdl;
@@ -64,6 +68,14 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         this.applicationScdl = applicationScdl;
     }
 
+    public ClassLoader getApplicationClassLoader() {
+        return applicationClassLoader;
+    }
+
+    public void setApplicationClassLoader(ClassLoader applicationClassLoader) {
+        this.applicationClassLoader = applicationClassLoader;
+    }
+
     public ClassLoader getHostClassLoader() {
         return hostClassLoader;
     }
@@ -78,6 +90,18 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     public void setRuntimeInfo(RuntimeInfo runtimeInfo) {
         this.runtimeInfo = runtimeInfo;
+    }
+
+    public MonitorFactory getMonitorFactory() {
+        return monitorFactory;
+    }
+
+    public void setMonitorFactory(MonitorFactory monitorFactory) {
+        this.monitorFactory = monitorFactory;
+    }
+
+    public MonitorFactory createDefaultMonitorFactory() {
+        return new NullMonitorFactory();
     }
 
     protected SystemCompositeComponent deploySystemScdl(Deployer deployer,

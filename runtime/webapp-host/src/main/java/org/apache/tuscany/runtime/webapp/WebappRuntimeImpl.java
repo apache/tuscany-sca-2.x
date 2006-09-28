@@ -40,7 +40,6 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_MONITORING_PARAM;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -67,9 +66,9 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     private ServletContext servletContext;
 
     private ServletLauncherMonitor monitor;
-    private CompositeContextImpl context;
     private ServletRequestInjector requestInjector;
 
+    private CompositeContextImpl context;
     private RuntimeComponent runtime;
     private SystemCompositeComponent systemComponent;
     private SystemCompositeComponent tuscanySystem;
@@ -87,8 +86,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         ClassLoader bootClassLoader = getClass().getClassLoader();
 
         // Read optional system monitor factory classname
-        String systemLogging = servletContext.getInitParameter(SYSTEM_MONITORING_PARAM);
-        MonitorFactory mf = getMonitorFactory(systemLogging);
+        MonitorFactory mf = getMonitorFactory();
         monitor = mf.getMonitor(ServletLauncherMonitor.class);
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
@@ -107,7 +105,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
 
         systemComponent.start();
-        
+
         try {
             // deploy the system scdl
             Deployer deployer = bootstrapper.createDeployer();
