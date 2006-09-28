@@ -27,16 +27,18 @@ package org.apache.tuscany.spi.databinding;
 public interface DataPipe<S, R> extends Transformer {
 
     /**
-     * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to
-     * receive data pushed by the source
+     * Returns a sink (for example, java.io.OutputStream, java.io.Writer or org.xml.sax.ContentHandler) to receive data
+     * pushed by the source
+     * 
      * @return The sink to consume data
      */
-     S getSink();
-    
+    S getSink();
+
     /**
      * Returns the data populated by the sink
+     * 
      * @return
      */
-     R getResult();
-    
+    R getResult();
+
 }

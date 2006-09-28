@@ -35,40 +35,40 @@ import org.easymock.EasyMock;
  */
 public class SimpleTypeMapperExtensionTestCase extends TestCase {
 
-    private static final Map<String, Object> sampleValues = new HashMap<String, Object>();
+    private static final Map<String, Object> SAMPLE_VALUES = new HashMap<String, Object>();
 
     static {
-        sampleValues.put("anyURI", "http://www.w3.com");
-        sampleValues.put("boolean", new String[] { "true", "false", "1", "0" });
-        sampleValues.put("byte", new String[] { "-128", "127" });
-        sampleValues.put("date", new String[] { "2004-03-15", "2002-09-24-06:00" });
-        sampleValues.put("dateTime", "2003-12-25T08:30:00");
-        sampleValues.put("decimal", "3.1415292");
-        sampleValues.put("double", new String[] { "3.1415292", "INF", "NaN" });
-        sampleValues.put("duration", new String[] { "P8M3DT7H33M2S", "P5Y2M10DT15H" });
-        sampleValues.put("float", new String[] { "3.1415292", "INF", "NaN" });
-        sampleValues.put("gDay", "---11");
-        sampleValues.put("gMonth", "--02--");
-        sampleValues.put("gMonthDay", "--02-14");
-        sampleValues.put("gYear", "1999");
-        sampleValues.put("gYearMonth", "1972-08");
-        sampleValues.put("ID", "id-102");
-        sampleValues.put("IDREF", "id-102");
-        sampleValues.put("IDREFS", "id-102 id-103 id-100");
-        sampleValues.put("int", "77");
-        sampleValues.put("integer", "77");
-        sampleValues.put("long", "214");
-        sampleValues.put("negativeInteger", "-123");
-        sampleValues.put("nonNegativeInteger", "2");
-        sampleValues.put("nonPositiveInteger", "0");
-        sampleValues.put("positiveInteger", "500");
-        sampleValues.put("short", "476");
-        sampleValues.put("string", "Joeseph");
-        sampleValues.put("time", "13:02:00");
-        sampleValues.put("base64Binary", "TWFu");
-        sampleValues.put("hexBinary", "2CDB5F");
-        sampleValues.put("QName", "f:foo");
-        sampleValues.put("NOTATION", "f:bar");
+        SAMPLE_VALUES.put("anyURI", "http://www.w3.com");
+        SAMPLE_VALUES.put("boolean", new String[] {"true", "false", "1", "0"});
+        SAMPLE_VALUES.put("byte", new String[] {"-128", "127"});
+        SAMPLE_VALUES.put("date", new String[] {"2004-03-15", "2002-09-24-06:00"});
+        SAMPLE_VALUES.put("dateTime", "2003-12-25T08:30:00");
+        SAMPLE_VALUES.put("decimal", "3.1415292");
+        SAMPLE_VALUES.put("double", new String[] {"3.1415292", "INF", "NaN"});
+        SAMPLE_VALUES.put("duration", new String[] {"P8M3DT7H33M2S", "P5Y2M10DT15H"});
+        SAMPLE_VALUES.put("float", new String[] {"3.1415292", "INF", "NaN"});
+        SAMPLE_VALUES.put("gDay", "---11");
+        SAMPLE_VALUES.put("gMonth", "--02--");
+        SAMPLE_VALUES.put("gMonthDay", "--02-14");
+        SAMPLE_VALUES.put("gYear", "1999");
+        SAMPLE_VALUES.put("gYearMonth", "1972-08");
+        SAMPLE_VALUES.put("ID", "id-102");
+        SAMPLE_VALUES.put("IDREF", "id-102");
+        SAMPLE_VALUES.put("IDREFS", "id-102 id-103 id-100");
+        SAMPLE_VALUES.put("int", "77");
+        SAMPLE_VALUES.put("integer", "77");
+        SAMPLE_VALUES.put("long", "214");
+        SAMPLE_VALUES.put("negativeInteger", "-123");
+        SAMPLE_VALUES.put("nonNegativeInteger", "2");
+        SAMPLE_VALUES.put("nonPositiveInteger", "0");
+        SAMPLE_VALUES.put("positiveInteger", "500");
+        SAMPLE_VALUES.put("short", "476");
+        SAMPLE_VALUES.put("string", "Joeseph");
+        SAMPLE_VALUES.put("time", "13:02:00");
+        SAMPLE_VALUES.put("base64Binary", "TWFu");
+        SAMPLE_VALUES.put("hexBinary", "2CDB5F");
+        SAMPLE_VALUES.put("QName", "f:foo");
+        SAMPLE_VALUES.put("NOTATION", "f:bar");
     }
 
     /**
@@ -84,27 +84,30 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
         Map<Class<?>, Object> metaData = new HashMap<Class<?>, Object>();
         EasyMock.expect(context.getMetadata()).andReturn(metaData).anyTimes();
         EasyMock.replay(context);
-        
+
         NamespaceContext namespaceContext = EasyMock.createMock(NamespaceContext.class);
-        EasyMock.expect(namespaceContext.getNamespaceURI(EasyMock.eq("f"))).andReturn("http://foo").anyTimes();
+        EasyMock.expect(namespaceContext.getNamespaceURI(EasyMock.eq("f"))).andReturn("http://foo")
+            .anyTimes();
         EasyMock.expect(namespaceContext.getPrefix(EasyMock.eq("http://foo"))).andReturn("f").anyTimes();
         EasyMock.replay(namespaceContext);
         context.getMetadata().put(NamespaceContext.class, namespaceContext);
         for (TypeInfo simpleType : SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.values()) {
             String name = simpleType.getQName().getLocalPart();
-            Object value = sampleValues.get(name);
+            Object value = SAMPLE_VALUES.get(name);
             if (value instanceof String[]) {
-                for (String s : (String[]) value) {
+                for (String s : (String[])value) {
                     Object obj = extension.toJavaObject(simpleType, s, context);
                     String str = extension.toXMLLiteral(simpleType, obj, context);
                     assertNotNull(str);
-                    // assertTrue("[" + name + "] " + s + " " + str, str.contains((String) s));
+                    // assertTrue("[" + name + "] " + s + " " + str,
+                    // str.contains((String) s));
                 }
             } else if (value instanceof String) {
-                Object obj = extension.toJavaObject(simpleType, (String) value, context);
+                Object obj = extension.toJavaObject(simpleType, (String)value, context);
                 String str = extension.toXMLLiteral(simpleType, obj, context);
                 assertNotNull(str);
-                // assertTrue("[" + name + "] " + value + " " + str, str.contains((String) value));
+                // assertTrue("[" + name + "] " + value + " " + str,
+                // str.contains((String) value));
             }
         }
     }

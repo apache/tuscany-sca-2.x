@@ -20,9 +20,8 @@
 package org.apache.tuscany.spi.databinding.extension;
 
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import org.apache.tuscany.spi.databinding.extension.XSDDataTypeConverter;
 
 import junit.framework.TestCase;
 
@@ -41,21 +40,21 @@ public class XSDDataTypeConverterTestCase extends TestCase {
     public void testConvert() throws Exception {
         XSDDataTypeConverter c = new XSDDataTypeConverter();
         assertEquals("123", c.parseAnySimpleType(c.printAnySimpleType("123")));
-        assertEquals(true, c.parseBoolean((c.printBoolean(true))));
-        assertEquals(false, c.parseBoolean((c.printBoolean(false))));
-        assertEquals(123.0, c.parseDouble((c.printDouble(123.0))));
-        assertEquals(123.0f, c.parseFloat((c.printFloat(123.0f))));
-        assertEquals(64, c.parseByte((c.printByte((byte) 64))));
-        assertEquals(123, c.parseInt((c.printInt(123))));
-        assertEquals(new BigInteger("123456"), c.parseInteger((c.printInteger(new BigInteger("123456")))));
-        assertEquals(123456l, c.parseLong((c.printLong(123456l))));
-        assertEquals((short) 123, c.parseShort((c.printShort((short) 123))));
-        
-        GregorianCalendar calendar = new GregorianCalendar();
+        assertEquals(true, c.parseBoolean(c.printBoolean(true)));
+        assertEquals(false, c.parseBoolean(c.printBoolean(false)));
+        assertEquals(123.0, c.parseDouble(c.printDouble(123.0)));
+        assertEquals(123.0f, c.parseFloat(c.printFloat(123.0f)));
+        assertEquals(64, c.parseByte(c.printByte((byte)64)));
+        assertEquals(123, c.parseInt(c.printInt(123)));
+        assertEquals(new BigInteger("123456"), c.parseInteger(c.printInteger(new BigInteger("123456"))));
+        assertEquals(123456L, c.parseLong(c.printLong(123456L)));
+        assertEquals((short)123, c.parseShort(c.printShort((short)123)));
+
+        Calendar calendar = new GregorianCalendar();
         String s = c.printDate(calendar);
-        calendar = (GregorianCalendar) c.parseDate(s);
+        calendar = (GregorianCalendar)c.parseDate(s);
         assertEquals(s, c.printDate(calendar));
-        
+
     }
 
 }

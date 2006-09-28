@@ -30,9 +30,9 @@ import org.w3c.dom.Node;
  * Helper for DOM
  */
 public final class DOMHelper {
-    private final static DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    private static final DocumentBuilderFactory FACTORY = DocumentBuilderFactory.newInstance();
     static {
-        factory.setNamespaceAware(true);
+        FACTORY.setNamespaceAware(true);
     }
 
     private DOMHelper() {
@@ -43,7 +43,7 @@ public final class DOMHelper {
     }
 
     public static DocumentBuilder newDocumentBuilder() throws ParserConfigurationException {
-        return factory.newDocumentBuilder();
+        return FACTORY.newDocumentBuilder();
     }
 
     public static QName getQName(Node node) {
@@ -51,15 +51,17 @@ public final class DOMHelper {
         if (ns == null) {
             ns = "";
         }
-        // node.getLocalName() will return null if it is created using DOM Level 1 method 
+        // node.getLocalName() will return null if it is created using DOM Level
+        // 1 method
         // such as createElement()
         return new QName(ns, node.getNodeName());
     }
-    
+
     public static Element createElement(Document document, QName name) {
         String prefix = name.getPrefix();
         String qname =
-                (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name.getLocalPart();
+            (prefix != null && prefix.length() > 0) ? prefix + ":" + name.getLocalPart() : name
+                .getLocalPart();
         return document.createElementNS(name.getNamespaceURI(), qname);
     }
 

@@ -50,7 +50,8 @@ public interface DataBindingRegistry {
      * Introspect the java class to figure out what DataType supports it
      * 
      * @param javaType The java class or interface
-     * @return A DataType representing the java type or null if no databinding recognizes the java type
+     * @return A DataType representing the java type or null if no databinding
+     *         recognizes the java type
      */
     DataType introspectType(Class<?> javaType);
 
@@ -58,7 +59,8 @@ public interface DataBindingRegistry {
      * Introspect the value to figure out the corresponding DataType
      * 
      * @param value The object value
-     * @return A DataType representing the value or null if no databinding recognizes the value
+     * @return A DataType representing the value or null if no databinding
+     *         recognizes the value
      */
     DataType introspectType(Object value);
 }

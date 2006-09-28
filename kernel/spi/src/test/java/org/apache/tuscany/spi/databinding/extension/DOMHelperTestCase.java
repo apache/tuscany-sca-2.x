@@ -31,7 +31,7 @@ import junit.framework.TestCase;
  * 
  */
 public class DOMHelperTestCase extends TestCase {
-    private QName FOO_NAME = new QName("http://foo", "foo");
+    private static final QName FOO_NAME = new QName("http://foo", "foo");
 
     /**
      * @see junit.framework.TestCase#setUp()
