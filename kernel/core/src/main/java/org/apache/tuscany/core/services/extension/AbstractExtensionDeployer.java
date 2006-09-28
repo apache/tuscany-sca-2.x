@@ -20,6 +20,7 @@ package org.apache.tuscany.core.services.extension;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -82,7 +83,7 @@ public class AbstractExtensionDeployer {
             throw new AssertionError();
         }
         try {
-            scdlLocation.openConnection();
+            scdlLocation.openStream().close();
             // we connected to the SCDL so let's add the JAR file to the classloader
             extensionCL.addURL(url);
         } catch (IOException e) {
