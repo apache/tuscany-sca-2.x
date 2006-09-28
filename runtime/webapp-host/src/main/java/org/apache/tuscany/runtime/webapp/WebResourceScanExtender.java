@@ -46,8 +46,6 @@ public class WebResourceScanExtender extends AbstractExtensionDeployer {
 
     @Init
     public void init() {
-        System.out.println("Looking for extensions");
-
         ServletContext servletContext = runtimeInfo.getServletContext();
         Set extensions = servletContext.getResourcePaths(path);
         if (extensions == null || extensions.isEmpty()) {
@@ -79,7 +77,6 @@ public class WebResourceScanExtender extends AbstractExtensionDeployer {
             if (lastDot != -1) {
                 name = name.substring(0, lastDot);
             }
-            System.out.println("extension = " + extension);
             deployExtension(name, extension);
         }
     }
