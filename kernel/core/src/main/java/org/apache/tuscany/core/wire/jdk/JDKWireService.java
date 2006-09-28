@@ -18,24 +18,28 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-
+import org.apache.tuscany.core.implementation.composite.CompositeReference;
+import org.apache.tuscany.core.implementation.composite.CompositeService;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceNotFoundException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -54,14 +58,9 @@ import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.implementation.composite.CompositeReference;
-import org.apache.tuscany.core.implementation.composite.CompositeService;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -170,6 +169,13 @@ public class JDKWireService implements WireService {
         for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
             Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
             ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName());
+            if (mappedReference == null) {
+                String refName = referenceTarget.getReferenceName();
+                ReferenceNotFoundException e = new ReferenceNotFoundException(refName);
+                e.addContextName(refName);
+                e.addContextName(definition.getName());
+                throw e;
+            }
             OutboundWire wire = createWire(referenceTarget, mappedReference);
             wire.setContainer(component);
             component.addOutboundWire(wire);

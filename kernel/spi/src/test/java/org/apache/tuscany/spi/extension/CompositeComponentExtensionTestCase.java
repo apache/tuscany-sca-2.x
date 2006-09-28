@@ -116,6 +116,18 @@ public class CompositeComponentExtensionTestCase extends TestCase {
             // expected
         }
     }
+    
+    public void testTargetNotFound() {
+        Composite composite = new Composite();
+        composite.register(getReference("foo"));
+        composite.start();
+        try {
+            composite.locateService(Foo.class, "foo1");
+            fail();
+        } catch (TargetNotFoundException e) {
+            // expected
+        }
+    }    
 
     public void testReferencesServices() {
         Composite composite = new Composite();

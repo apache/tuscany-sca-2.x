@@ -137,7 +137,13 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     }
 
     public <T> T locateService(Class<T> serviceInterface, String name) {
-        return serviceInterface.cast(children.get(name).getServiceInstance());
+        SCAObject context = children.get(name);
+        if (context == null) {
+            TargetNotFoundException e = new TargetNotFoundException(name);
+            e.addContextName(getName());
+            throw e;
+        }
+        return serviceInterface.cast(context.getServiceInstance());
     }
 
     public List<Reference> getReferences() {
