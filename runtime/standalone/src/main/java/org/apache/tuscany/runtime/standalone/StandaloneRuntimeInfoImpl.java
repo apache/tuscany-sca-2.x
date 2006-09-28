@@ -16,12 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.runtime.standalone.host;
+package org.apache.tuscany.runtime.standalone;
 
-import org.apache.tuscany.host.RuntimeInfo;
+import java.io.File;
+import java.net.URL;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface StandaloneRuntimeInfo extends RuntimeInfo {
+public class StandaloneRuntimeInfoImpl implements StandaloneRuntimeInfo {
+    private final File installDirectory;
+    private final File applicationRootDirectory;
+    private final URL baseURL;
+
+    public StandaloneRuntimeInfoImpl(URL baseURL, File installDirectory, File applicationRootDirectory) {
+        this.baseURL = baseURL;
+        this.installDirectory = installDirectory;
+        this.applicationRootDirectory = applicationRootDirectory;
+    }
+
+    public File getInstallDirectory() {
+        return installDirectory;
+    }
+
+    public File getApplicationRootDirectory() {
+        return applicationRootDirectory;
+    }
+
+    public URL getBaseURL() {
+        return baseURL;
+    }
 }

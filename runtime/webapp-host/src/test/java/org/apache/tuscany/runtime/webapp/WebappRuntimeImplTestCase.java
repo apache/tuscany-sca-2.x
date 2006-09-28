@@ -29,6 +29,8 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -42,7 +44,6 @@ public class WebappRuntimeImplTestCase extends TestCase {
      * Verifies the web app host is configured properly to perform a basic boot
      */
     public void testBootWithDefaults() throws Exception {
-        expect(context.getInitParameter(Constants.SYSTEM_MONITORING_PARAM)).andReturn(null);
         expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
         replay(context);
         runtime.initialize();
@@ -57,6 +58,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
 
         runtime = new WebappRuntimeImpl();
         runtime.setRuntimeInfo(new WebappRuntimeInfoImpl(context, null));
+        runtime.setMonitorFactory(new NullMonitorFactory());
         runtime.setHostClassLoader(getClass().getClassLoader());
         runtime.setServletContext(context);
         runtime.setSystemScdl(systemScdl);

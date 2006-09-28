@@ -21,12 +21,20 @@ package org.apache.tuscany.launcher;
 import java.beans.Beans;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ResourceBundle;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
+import org.osoa.sca.SCA;
+
+import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.host.util.LaunchHelper;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 
 /**
  * Launcher for launcher runtime environment that invokes a jar's Main class.
@@ -40,26 +48,71 @@ public class MainLauncherBooter {
      * @param args the command line args
      */
     public static void main(String[] args) throws Throwable {
-        // The classpath to load the launcher should not any jars from the Tuscany runtime
         MainLauncherBooter booter = new MainLauncherBooter();
-        ClassLoader tuscanyCL = booter.getTuscanyClassLoader();
+
+        File installDir = getInstallDirectory();
+        URL baseUrl = installDir.toURI().toURL();
+        File bootDir = getBootDirectory(installDir);
+        StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDir, installDir);
+
+        File applicationJar = new File(args[0]);
+        URL applicationURL = applicationJar.toURI().toURL();
+        String[] appArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, appArgs, 0, appArgs.length);
+
+        ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
+        ClassLoader bootClassLoader = booter.getTuscanyClassLoader(bootDir);
+        ClassLoader applicationClassLoader = new URLClassLoader(new URL[]{applicationURL}, hostClassLoader);
+
+        URL systemScdl = booter.getSystemScdl(bootClassLoader);
+        URL applicationScdl = booter.getApplicationScdl(applicationClassLoader);
 
         String className = System.getProperty("tuscany.launcherClass",
-                                              "org.apache.tuscany.core.launcher.MainLauncherImpl");
-        Object launcher = Beans.instantiate(tuscanyCL, className);
+                                              "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
+        TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
+        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
+        runtime.setSystemScdl(systemScdl);
+        runtime.setHostClassLoader(hostClassLoader);
+        runtime.setApplicationName("application");
+        runtime.setApplicationScdl(applicationScdl);
+        runtime.setApplicationClassLoader(applicationClassLoader);
+        runtime.setRuntimeInfo(runtimeInfo);
+        runtime.initialize();
+        SCA context = runtime.getContext();
+
         try {
-            LaunchHelper.invoke(launcher, "boot", new Class<?>[]{String[].class}, (Object[]) new Object[]{args});
-        } catch (InvocationTargetException e) {
-            throw e.getCause();
+            context.start();
+            booter.runApplication(applicationJar, applicationClassLoader, appArgs);
+        } finally {
+            context.stop();
+            runtime.destroy();
         }
     }
 
-    protected ClassLoader getTuscanyClassLoader() {
-        File tuscanylib = findBootDir();
-        URL[] urls = LaunchHelper.scanDirectoryForJars(tuscanylib);
-        return new URLClassLoader(urls, getClass().getClassLoader());
+    protected void runApplication(File applicationJar, ClassLoader applicationClassLoader, String[] args)
+        throws Throwable {
+
+        Manifest manifest = new JarFile(applicationJar).getManifest();
+        String mainClassName = manifest.getMainAttributes().getValue("Main-Class");
+        Class<?> mainClass = applicationClassLoader.loadClass(mainClassName);
+        Method main = mainClass.getMethod("main", String[].class);
+
+
+        ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(applicationClassLoader);
+            main.invoke(null, new Object[]{args});
+        } catch (InvocationTargetException e) {
+            throw e.getCause();
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldCL);
+        }
     }
 
+    protected ClassLoader getTuscanyClassLoader(File bootDir) {
+        URL[] urls = LaunchHelper.scanDirectoryForJars(bootDir);
+        return new URLClassLoader(urls, getClass().getClassLoader());
+    }
 
     /**
      * Find the directory containing the bootstrap jars.
@@ -93,5 +146,47 @@ public class MainLauncherBooter {
         ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherBooter.class.getName());
         System.err.print(bundle.getString("org.apache.tuscany.launcher.Usage"));
         System.exit(1);
+    }
+
+    protected URL getSystemScdl(ClassLoader bootClassLoader) {
+        String resource = System.getProperty("tuscany.systemScdlPath", "META-INF/tuscany/system.scdl");
+        return bootClassLoader.getResource(resource);
+    }
+
+    protected URL getApplicationScdl(ClassLoader applicationClassLoader) {
+        String resource = System.getProperty("tuscany.applicationScdlPath", "META-INF/sca/default.scdl");
+        return applicationClassLoader.getResource(resource);
+    }
+
+    public static File getInstallDirectory() {
+        // use system property if defined
+        String property = System.getProperty("tuscany.installDir");
+        if (property != null) {
+            return new File(property);
+        }
+
+        // use the parent of directory containing this command
+        URL url = MainLauncherBooter.class.getResource("MainLauncherBooter.class");
+        if (!"jar".equals(url.getProtocol())) {
+            throw new IllegalStateException("Must be run from a jar: " + url);
+        }
+
+        String jarLocation = url.toString();
+        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
+        if (!jarLocation.startsWith("file:")) {
+            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
+        }
+
+        File jarFile = new File(URI.create(jarLocation));
+        return jarFile.getParentFile().getParentFile();
+    }
+
+    public static File getBootDirectory(File installDirectory) {
+        // use system property if defined
+        String property = System.getProperty("tuscany.bootDir");
+        if (property != null) {
+            return new File(property);
+        }
+        return new File(installDirectory, "boot");
     }
 }

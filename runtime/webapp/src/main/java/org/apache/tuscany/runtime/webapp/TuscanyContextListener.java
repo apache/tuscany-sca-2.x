@@ -71,6 +71,7 @@ public class TuscanyContextListener implements ServletContextListener {
             String name = getApplicationName(servletContext);
 
             runtime.setServletContext(servletContext);
+            runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
             runtime.setRuntimeInfo(info);
             runtime.setHostClassLoader(webappClassLoader);
             runtime.setSystemScdl(systemScdl);

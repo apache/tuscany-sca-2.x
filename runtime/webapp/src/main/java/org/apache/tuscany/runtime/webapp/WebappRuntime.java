@@ -21,10 +21,8 @@ package org.apache.tuscany.runtime.webapp;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionListener;
 
-import org.osoa.sca.SCA;
-
-import org.apache.tuscany.host.servlet.ServletRequestInjector;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
+import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
  * The contract for artifacts loaded in the web application classloader to comminicate with the Tuscany runtime loaded
@@ -49,11 +47,6 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
      * @param servletContext the ServletContext associated with this runtime
      */
     void setServletContext(ServletContext servletContext);
-
-    /**
-     * Returns the current SCA context
-     */
-    SCA getContext();
 
     /**
      * Returns the request injector for the runtime

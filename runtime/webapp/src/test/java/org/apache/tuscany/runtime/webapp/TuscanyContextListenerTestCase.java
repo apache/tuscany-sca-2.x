@@ -27,6 +27,8 @@ import javax.servlet.ServletContextEvent;
 import junit.framework.TestCase;
 import static org.easymock.classextension.EasyMock.*;
 
+import org.apache.tuscany.host.MonitorFactory;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -37,6 +39,7 @@ public class TuscanyContextListenerTestCase extends TestCase {
     private URL systemUrl;
     private URL applicationUrl;
     private Method getRuntimeMethod;
+    private MonitorFactory monitorFactory;
 
     public void testInitializationUsingDefaults() throws Exception {
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
@@ -61,6 +64,8 @@ public class TuscanyContextListenerTestCase extends TestCase {
             expect(listener.getRuntime(context, cl)).andReturn(runtime);
             replay(listener);
             runtime.setServletContext(context);
+            expect(runtime.createDefaultMonitorFactory()).andReturn(monitorFactory);
+            runtime.setMonitorFactory(monitorFactory);
             runtime.setRuntimeInfo(isA(WebappRuntimeInfo.class));
             runtime.setHostClassLoader(cl);
             runtime.setSystemScdl(systemUrl);
@@ -167,12 +172,13 @@ public class TuscanyContextListenerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         getRuntimeMethod = TuscanyContextListener.class.getDeclaredMethod("getRuntime",
-                                                                  ServletContext.class,
-                                                                  ClassLoader.class);
+                                                                          ServletContext.class,
+                                                                          ClassLoader.class);
         listener = new TuscanyContextListener();
         context = createMock(ServletContext.class);
         cl = createMock(ClassLoader.class);
         systemUrl = new URL("file:/system.scdl");
         applicationUrl = new URL("file:/application.scdl");
+        monitorFactory = createMock(MonitorFactory.class);
     }
 }

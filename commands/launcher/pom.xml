@@ -38,8 +38,8 @@
             <artifactId>sca-api-r0.95</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-host-api</artifactId>
+            <groupId>org.apache.tuscany.sca.runtime</groupId>
+            <artifactId>standalone</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
