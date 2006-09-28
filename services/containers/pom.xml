@@ -58,6 +58,7 @@
     <modules>
         <module>container.groovy</module>
         <module>container.javascript</module>
+        <module>container.ruby</module>
         <module>container.spring</module>
     </modules>
 
