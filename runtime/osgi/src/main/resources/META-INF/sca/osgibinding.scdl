@@ -20,7 +20,7 @@
            name="binding.osgi">
 
     <component name="osgi.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.osgi.binding.OSGiBindingLoader"/>
+        <system:implementation.system class="org.apache.tuscany.osgOSGiBindingBuilderi.binding.OSGiBindingLoader"/>
     </component>
     <component name="osgi.bindingBuilder">
         <system:implementation.system class="org.apache.tuscany.osgi.binding.OSGiBindingBuilder"/>

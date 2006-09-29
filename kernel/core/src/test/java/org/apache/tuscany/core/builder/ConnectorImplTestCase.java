@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.wire.BridgingInterceptor;
+import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 import org.easymock.EasyMock;
 
 /**
@@ -43,7 +43,7 @@ public class ConnectorImplTestCase extends TestCase {
         // create the inbound wire and chain
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
         EasyMock.expect(inboundChain.getOperation()).andReturn(operation).atLeastOnce();
-        inboundChain.addInterceptor(EasyMock.isA(BridgingInterceptor.class));
+        inboundChain.addInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         inboundChain.setTargetInvoker(null);
         inboundChain.prepare();
         EasyMock.replay(inboundChain);
@@ -117,7 +117,7 @@ public class ConnectorImplTestCase extends TestCase {
         // create the inbound wire and chain for the source service
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
         EasyMock.expect(inboundChain.getOperation()).andReturn(operation).atLeastOnce();
-        inboundChain.addInterceptor(EasyMock.isA(BridgingInterceptor.class));
+        inboundChain.addInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         inboundChain.setTargetInvoker(null);
         EasyMock.replay(inboundChain);
         Map<Operation<?>, InboundInvocationChain> inboundChains = new HashMap<Operation<?>, InboundInvocationChain>();
@@ -129,9 +129,8 @@ public class ConnectorImplTestCase extends TestCase {
 
         // create the outbound wire and chain for the source service
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tailInterceptor);
         EasyMock.expect(outboundChain.getHeadInterceptor()).andReturn(headInterceptor);
-        outboundChain.setTargetInterceptor(headInterceptor);
+        outboundChain.setTargetInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         outboundChain.prepare();
         outboundChain.setTargetInvoker(null);
         EasyMock.expect(outboundChain.getOperation()).andReturn(operation);
@@ -204,9 +203,8 @@ public class ConnectorImplTestCase extends TestCase {
 
         // create the outbound wire and chain from the source component
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tailInterceptor);
         EasyMock.expect(outboundChain.getOperation()).andReturn(operation).atLeastOnce();
-        outboundChain.setTargetInterceptor(EasyMock.eq(headInterceptor));
+        outboundChain.setTargetInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         outboundChain.setTargetInvoker(null);
         outboundChain.prepare();
         EasyMock.replay(outboundChain);
@@ -312,18 +310,17 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.replay(inboundChain);
 
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tailInterceptor);
         outboundChain.prepare();
-        outboundChain.setTargetInterceptor(headInterceptor);
+        outboundChain.setTargetInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         outboundChain.setTargetInvoker(invoker);
         EasyMock.replay(outboundChain);
-        connector.connect(outboundChain, inboundChain, invoker);
+        connector.connect(outboundChain, inboundChain, invoker, false);
         EasyMock.verify(outboundChain);
     }
 
     public void testInboundToOutboundChainConnect() {
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
-        inboundChain.addInterceptor(EasyMock.isA(BridgingInterceptor.class));
+        inboundChain.addInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         EasyMock.replay(inboundChain);
 
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
@@ -361,9 +358,8 @@ public class ConnectorImplTestCase extends TestCase {
 
         // create the outbound wire and chain from the source component
         OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
-        EasyMock.expect(outboundChain.getTailInterceptor()).andReturn(tailInterceptor);
         EasyMock.expect(outboundChain.getOperation()).andReturn(operation).atLeastOnce();
-        outboundChain.setTargetInterceptor(EasyMock.eq(headInterceptor));
+        outboundChain.setTargetInterceptor(EasyMock.isA(SynchronousBridgingInterceptor.class));
         outboundChain.setTargetInvoker(null);
         outboundChain.prepare();
         EasyMock.replay(outboundChain);

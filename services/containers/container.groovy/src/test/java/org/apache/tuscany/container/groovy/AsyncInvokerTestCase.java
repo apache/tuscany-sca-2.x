@@ -68,7 +68,7 @@ public class AsyncInvokerTestCase extends TestCase {
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
         InboundWire wire = createMock(InboundWire.class);
-        AsyncGroovyInvoker invoker = new AsyncGroovyInvoker("invoke", wire, component, scheduler, monitor, context);
+        AsyncGroovyInvoker invoker = new AsyncGroovyInvoker("invoke", wire, component, monitor, context);
         Message msg = new MessageImpl();
         invoker.invoke(msg);
         verify(instance);

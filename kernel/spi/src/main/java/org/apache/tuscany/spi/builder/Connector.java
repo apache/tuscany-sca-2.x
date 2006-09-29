@@ -45,6 +45,7 @@ public interface Connector {
      * @param optimizable if the bridge may be optimized
      * @throws BuilderConfigException
      */
-    void connect(InboundWire inbound, OutboundWire outbound, boolean optimizable) throws BuilderConfigException;
+    void connect(InboundWire inbound, OutboundWire outbound, boolean optimizable)
+        throws BuilderConfigException;
 
 }

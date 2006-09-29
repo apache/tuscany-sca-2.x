@@ -61,7 +61,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
         expect(invoker.invokeTarget(EasyMock.eq(val))).andReturn(val);
         replay(invoker);
-        connector.connect(outboundChain, inboundChain, invoker);
+        connector.connect(outboundChain, inboundChain, invoker, false);
         inboundChain.prepare();
         assertEquals(val, outboundChain.getTargetInvoker().invokeTarget(val));
         verify(invoker);
@@ -83,7 +83,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
         replay(invoker);
         assertEquals(0, interceptor.getCount());
-        connector.connect(outboundChain, inboundChain, invoker);
+        connector.connect(outboundChain, inboundChain, invoker, false);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
@@ -106,7 +106,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
         replay(invoker);
         assertEquals(0, interceptor.getCount());
-        connector.connect(outboundChain, inboundChain, invoker);
+        connector.connect(outboundChain, inboundChain, invoker, false);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));
@@ -133,7 +133,7 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         replay(invoker);
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
-        connector.connect(outboundChain, inboundChain, invoker);
+        connector.connect(outboundChain, inboundChain, invoker, false);
         inboundChain.prepare();
         msg.setTargetInvoker(outboundChain.getTargetInvoker());
         assertEquals(msg, outboundChain.getHeadInterceptor().invoke(msg));

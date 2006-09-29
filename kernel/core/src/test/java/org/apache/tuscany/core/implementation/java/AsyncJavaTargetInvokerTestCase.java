@@ -51,23 +51,19 @@ public class AsyncJavaTargetInvokerTestCase extends TestCase {
         AsyncMonitor monitor = createMock(AsyncMonitor.class);
         replay(monitor);
 
-        WorkScheduler scheduler = createMock(WorkScheduler.class);
-        scheduler.scheduleWork(isA(Runnable.class));
-        expectLastCall().andStubAnswer(new IAnswer<Object>() {
-            public Object answer() throws Throwable {
-                Runnable runnable = (Runnable) getCurrentArguments()[0];
-                runnable.run();
-                return null;
-            }
-        });
-        replay(scheduler);
+        Message msg = new MessageImpl();
+        Object id = new Object();
+        msg.setMessageId(id);
+
         WorkContext context = createMock(WorkContext.class);
+        context.setCurrentMessageId(null);
+        context.setCurrentCorrelationId(id);
+        replay(context);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
         InboundWire wire = createMock(InboundWire.class);
         AsyncJavaTargetInvoker invoker =
-            new AsyncJavaTargetInvoker(method, wire, component, scheduler, monitor, context);
-        Message msg = new MessageImpl();
+            new AsyncJavaTargetInvoker(method, wire, component, monitor, context);
         invoker.invoke(msg);
         verify(target);
     }
@@ -95,7 +91,7 @@ public class AsyncJavaTargetInvokerTestCase extends TestCase {
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
         AsyncJavaTargetInvoker invoker =
-            new AsyncJavaTargetInvoker(method, wire, component, scheduler, monitor, context);
+            new AsyncJavaTargetInvoker(method, wire, component, monitor, context);
         AsyncJavaTargetInvoker clone = invoker.clone();
         Message msg = new MessageImpl();
         clone.invoke(msg);

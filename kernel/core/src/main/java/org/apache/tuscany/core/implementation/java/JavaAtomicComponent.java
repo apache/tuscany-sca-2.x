@@ -98,7 +98,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         } else {
             method = findMethod(operation, operation.getServiceContract().getInterfaceClass().getMethods());
         }
-        return new AsyncJavaTargetInvoker(method, wire, this, workScheduler, monitor, workContext);
+        return new AsyncJavaTargetInvoker(method, wire, this, monitor, workContext);
     }
 
     protected void onServiceWire(InboundWire wire) {

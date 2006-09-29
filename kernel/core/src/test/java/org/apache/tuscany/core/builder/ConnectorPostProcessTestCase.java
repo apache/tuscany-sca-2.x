@@ -58,7 +58,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
         expect(wireService.isWireable((ServiceContract<?>) EasyMock.anyObject(),
             (ServiceContract<?>) EasyMock.anyObject())).andReturn(true).anyTimes();
         replay(wireService);
-        ConnectorImpl connector = new ConnectorImpl(wireService, registry);
+        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
         connector.connect(iwire, owire, false);
         verify(registry);
     }
@@ -86,7 +86,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
         expect(wireService.isWireable((ServiceContract<?>) EasyMock.anyObject(),
             (ServiceContract<?>) EasyMock.anyObject())).andReturn(true).anyTimes();
         replay(wireService);
-        ConnectorImpl connector = new ConnectorImpl(wireService, registry);
+        ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
 
         connector.connect(owire, iwire, false);
         verify(registry);
