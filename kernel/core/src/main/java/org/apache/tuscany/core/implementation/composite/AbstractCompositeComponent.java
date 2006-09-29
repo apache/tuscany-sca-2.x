@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +30,7 @@ import org.w3c.dom.Document;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.IllegalTargetException;
@@ -55,7 +57,6 @@ import org.apache.tuscany.core.implementation.system.component.SystemService;
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings({"NonPrivateFieldAccessedInSynchronizedContext"})
 public abstract class AbstractCompositeComponent extends CompositeComponentExtension implements AutowireComponent {
 
     public static final int DEFAULT_WAIT = 1000 * 60;
@@ -235,7 +236,16 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     }
 
     public void prepare() {
+        // Connect services and references first so that their wires are linked first
+        List<SCAObject> childList = new ArrayList<SCAObject>();
         for (SCAObject child : children.values()) {
+            if(child instanceof Component) {
+                childList.add(child);
+            } else {
+                childList.add(0, child);
+            }
+        }
+        for (SCAObject child : childList) {
             // connect all children
             // TODO for composite wires, should delegate down
             connector.connect(child);
