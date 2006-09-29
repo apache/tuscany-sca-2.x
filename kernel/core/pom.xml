@@ -37,6 +37,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-host-api</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tuscany</groupId>
             <artifactId>commonj-api_r1.1</artifactId>
         </dependency>

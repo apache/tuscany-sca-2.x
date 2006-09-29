@@ -79,17 +79,20 @@ public class TestSocketBindingService extends ServiceExtension {
             }
             while (!end) {
                 try {
-                    // only handle one client at a time
                     clientSocket = socket.accept();
                     is = new ObjectInputStream(clientSocket.getInputStream());
                     String operation = is.readUTF();
-                    Object o = is.readObject();
+                    int argn = is.readInt();
+                    Object[] args = new Object[argn];
+                    for (int i = 0; i<argn; i++) {
+                        args[i] = is.readObject();
+                    }
                     Map<Operation<?>, InboundInvocationChain> chains = getInboundWire().getInvocationChains();
                     for (InboundInvocationChain chain : chains.values()) {
                         if (chain.getOperation().getName().equals(operation)) {
                             Message message = new MessageImpl();
                             message.setTargetInvoker(chain.getTargetInvoker());
-                            message.setBody(new Object[]{o});
+                            message.setBody(args);
                             message = chain.getHeadInterceptor().invoke(message);
                             os = new ObjectOutputStream(clientSocket.getOutputStream());
                             os.writeObject(message.getBody());
