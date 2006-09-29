@@ -60,10 +60,10 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.host.RuntimeInfo;
 
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
+import org.apache.tuscany.host.RuntimeInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -97,13 +97,15 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         throws XMLStreamException, LoaderException {
 
         String locationAttr = reader.getAttributeValue(null, "location");
-        if (locationAttr == null) {
+        if (locationAttr == null && !contextProvided()) {
             throw new MissingResourceException("No location supplied");
         }
 
         SpringImplementation implementation = new SpringImplementation();
         ClassLoader classLoader = deploymentContext.getClassLoader();
-        implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
+        if (!contextProvided()) {
+            implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
+        }
         registry.loadComponentType(parent, implementation, deploymentContext);
         SpringComponentType type = implementation.getComponentType();
         while (true) {
@@ -203,5 +205,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
             }
         }
         throw new MissingResourceException(APPLICATION_CONTEXT);
+    }
+
+    private boolean contextProvided() {
+        return runtimeInfo instanceof SpringRuntimeInfo;
     }
 }

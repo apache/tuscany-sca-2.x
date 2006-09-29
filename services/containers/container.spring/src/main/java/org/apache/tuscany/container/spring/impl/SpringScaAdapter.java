@@ -16,8 +16,7 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
-import org.apache.tuscany.spi.model.CompositeComponentType;
-
+import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.springframework.sca.ScaAdapter;
 
 /**
@@ -25,14 +24,18 @@ import org.springframework.sca.ScaAdapter;
  * @since 2.1
  */
 public class SpringScaAdapter implements ScaAdapter {
-    //private final CompositeComponentType componentType;
+    //private final SpringComponentType componentType;
 
-    public SpringScaAdapter(CompositeComponentType componentType) {
+    public SpringScaAdapter(SpringComponentType componentType) {
         //this.componentType = componentType;
     }
 
     public Object getServiceReference(String referenceName, Class referenceType, String moduleName,
                                       String defaultServiceName) {
+        /*
+        ReferenceDefinition reference = null;
+        componentType.getReferences().put(referenceName, reference);
+        */
         return null;
     }
 
@@ -42,6 +45,10 @@ public class SpringScaAdapter implements ScaAdapter {
 
     public void publishAsService(Object serviceImplementation, Class serviceInterface, String serviceName,
                                  String moduleName) {
-        // componentType.getServices().put(serviceName, serviceImplementation);
+        /*
+        componentType.addServiceType(serviceName, serviceInterface);
+        ServiceDefinition service = null;
+        componentType.getServices().put(serviceName, service);
+        */
     }
 }

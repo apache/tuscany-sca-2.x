@@ -57,11 +57,13 @@ public class TestSocketInvoker implements TargetInvoker {
      * Sends the payload over a socket
      */
     public Object invokeTarget(final Object object) throws InvocationTargetException {
-        Object payload;
-        if (object != null && !object.getClass().isArray()) {
-            payload = object;
+        int argn;
+        if (object == null) {
+            argn = 0;
+        } else if (!object.getClass().isArray()) {
+            argn = 1;
         } else {
-            payload = ((Object[]) object)[0];
+            argn = ((Object[])object).length;
         }
 
         Socket socket = null;
@@ -71,7 +73,15 @@ public class TestSocketInvoker implements TargetInvoker {
             socket = new Socket(host, port);
             os = new ObjectOutputStream(socket.getOutputStream());
             os.writeUTF(operation);
-            os.writeObject(payload);
+            os.writeInt(argn);
+            for (int i=0; i<argn; i++) {
+                if (!object.getClass().isArray()) {
+                    os.writeObject(object);
+                }
+                else {
+                    os.writeObject(((Object[])object)[i]);
+                }
+            }
             os.flush();
             is = new ObjectInputStream(socket.getInputStream());
             return is.readObject();

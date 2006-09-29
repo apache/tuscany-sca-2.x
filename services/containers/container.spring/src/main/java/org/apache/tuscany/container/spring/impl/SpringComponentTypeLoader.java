@@ -18,21 +18,20 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
-import org.osoa.sca.annotations.Constructor;
+import org.springframework.context.support.AbstractRefreshableApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.sca.ScaServiceExporter;
 
+import org.apache.tuscany.container.spring.config.ScaApplicationContext;
+import org.apache.tuscany.container.spring.model.SpringComponentType;
+import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-
-import org.apache.tuscany.container.spring.config.ScaApplicationContext;
-import org.apache.tuscany.container.spring.model.SpringComponentType;
-import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.springframework.context.support.AbstractRefreshableApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.sca.ScaServiceExporter;
+import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * Loads a component type for a Spring <code>ApplicationContext</code>. The implementation creates a new instance of a
@@ -44,9 +43,11 @@ import org.springframework.sca.ScaServiceExporter;
 public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<SpringImplementation> {
     public static final String SERVICE_BEAN_SUFFIX = ".SCAService";
 
-    @Constructor
-    public SpringComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
+    private org.apache.tuscany.host.RuntimeInfo runtimeInfo;
+
+    public SpringComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry, @Autowire RuntimeInfo runtimeInfo) {
         super(loaderRegistry);
+        this.runtimeInfo = runtimeInfo;
     }
 
     @Override
@@ -71,7 +72,12 @@ public class SpringComponentTypeLoader extends ComponentTypeLoaderExtension<Spri
         Resource resource = implementation.getApplicationResource();
         SpringComponentType componentType = new SpringComponentType();
         // REVIEW andyp -- pass in deploymentContext.getClassLoader()?
-        AbstractRefreshableApplicationContext ctx = new ScaApplicationContext(resource, componentType);
+        AbstractRefreshableApplicationContext ctx;
+        if (runtimeInfo instanceof SpringRuntimeInfo) {
+            ctx = ((SpringRuntimeInfo) runtimeInfo).getApplicationContext();
+        } else {
+            ctx = new ScaApplicationContext(resource, componentType);
+        }
         componentType.setApplicationContext(ctx); // FIXME andyp@bea.com -- don't do this!
 
         // If there are <sca:service> elements, they define (and limit) the services exposed
