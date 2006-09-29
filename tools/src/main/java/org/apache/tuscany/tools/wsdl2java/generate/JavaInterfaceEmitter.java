@@ -195,7 +195,7 @@ public class JavaInterfaceEmitter extends JavaEmitter {
         if (!codegenConfiguration.getOutputLocation().exists()) {
             codegenConfiguration.getOutputLocation().mkdirs();
         }
-        InterfaceWriter interfaceWriter = new InterfaceWriter(this.codegenConfiguration
+        InterfaceWriter interfaceWriter = new RemotableInterfaceWritter(this.codegenConfiguration
             .getOutputLocation(), this.codegenConfiguration.getOutputLanguage());
 
         String packageName = interfaceModel.getDocumentElement().getAttribute("package");
