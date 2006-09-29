@@ -19,7 +19,6 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.lang.reflect.Method;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -36,147 +35,67 @@ public class TuscanyContextListenerTestCase extends TestCase {
     private ServletContext context;
     private TuscanyContextListener listener;
     private ClassLoader cl;
+    private ClassLoader bootClassLoader;
     private URL systemUrl;
     private URL applicationUrl;
-    private Method getRuntimeMethod;
+    private Method getUtilsMethod;
     private MonitorFactory monitorFactory;
+    private WebappUtil utils;
 
     public void testInitializationUsingDefaults() throws Exception {
+        ServletContextEvent event = createMock(ServletContextEvent.class);
+        expect(event.getServletContext()).andReturn(context);
+        replay(event);
+
+        WebappRuntime runtime = createMock(WebappRuntime.class);
+        expect(utils.getBootClassLoader(cl)).andReturn(bootClassLoader);
+        expect(utils.getRuntime(bootClassLoader)).andReturn(runtime);
+        expect(utils.getSystemScdl(bootClassLoader)).andReturn(systemUrl);
+        expect(utils.getApplicationScdl(cl)).andReturn(applicationUrl);
+        expect(utils.getApplicationName()).andReturn("application");
+        replay(utils);
+
+        expect(context.getResource("/WEB-INF/tuscany/")).andReturn(null);
+        context.setAttribute(eq(Constants.RUNTIME_ATTRIBUTE), isA(WebappRuntime.class));
+        replay(context);
+        replay(cl);
+        replay(bootClassLoader);
+        expect(listener.getUtils(context)).andReturn(utils);
+        replay(listener);
+        runtime.setServletContext(context);
+        expect(runtime.createDefaultMonitorFactory()).andReturn(monitorFactory);
+        runtime.setMonitorFactory(monitorFactory);
+        runtime.setRuntimeInfo(isA(WebappRuntimeInfo.class));
+        runtime.setHostClassLoader(cl);
+        runtime.setSystemScdl(systemUrl);
+        runtime.setApplicationName("application");
+        runtime.setApplicationScdl(applicationUrl);
+        runtime.initialize();
+        replay(runtime);
+
         ClassLoader oldCl = Thread.currentThread().getContextClassLoader();
-        listener = createMock(TuscanyContextListener.class, new Method[]{getRuntimeMethod});
         try {
             Thread.currentThread().setContextClassLoader(cl);
-            ServletContextEvent event = createMock(ServletContextEvent.class);
-            WebappRuntime runtime = createMock(WebappRuntime.class);
-            expect(event.getServletContext()).andReturn(context);
-            replay(event);
-            expect(context.getInitParameter("tuscany.bootDir")).andReturn(null);
-            expect(context.getResourcePaths("/WEB-INF/tuscany/boot")).andReturn(null);
-            expect(context.getResource("/WEB-INF/tuscany/")).andReturn(null);
-            expect(context.getInitParameter("tuscany.systemScdlPath")).andReturn(null);
-            expect(context.getServletContextName()).andReturn(null);
-            expect(context.getInitParameter("tuscany.applicationScdlPath")).andReturn(null);
-            expect(context.getResource("/WEB-INF/default.scdl")).andReturn(applicationUrl);
-            context.setAttribute(eq(Constants.RUNTIME_ATTRIBUTE), isA(WebappRuntime.class));
-            replay(context);
-            expect(cl.getResource("META-INF/tuscany/webapp.scdl")).andReturn(systemUrl);
-            replay(cl);
-            expect(listener.getRuntime(context, cl)).andReturn(runtime);
-            replay(listener);
-            runtime.setServletContext(context);
-            expect(runtime.createDefaultMonitorFactory()).andReturn(monitorFactory);
-            runtime.setMonitorFactory(monitorFactory);
-            runtime.setRuntimeInfo(isA(WebappRuntimeInfo.class));
-            runtime.setHostClassLoader(cl);
-            runtime.setSystemScdl(systemUrl);
-            runtime.setApplicationName("application");
-            runtime.setApplicationScdl(applicationUrl);
-            runtime.initialize();
-            replay(runtime);
             listener.contextInitialized(event);
-            verify(event);
-            verify(context);
-            verify(listener);
-            verify(cl);
-            verify(runtime);
         } finally {
             Thread.currentThread().setContextClassLoader(oldCl);
         }
-    }
-
-    public void testGetInitParameterWhenSpecified() {
-        String name = "name";
-        String value = "default";
-        expect(context.getInitParameter(name)).andReturn(value);
-        replay(context);
-
-        assertEquals(value, listener.getInitParameter(context, name, "default"));
+        verify(event);
         verify(context);
-    }
-
-    public void testGetInitParameterUsingDefault() {
-        String name = "name";
-        String value = "default";
-        expect(context.getInitParameter(name)).andReturn(null);
-        replay(context);
-
-        assertEquals(value, listener.getInitParameter(context, name, value));
-        verify(context);
-    }
-
-    public void testGetInitParameterWithZeroLength() {
-        String name = "name";
-        String value = "default";
-        expect(context.getInitParameter(name)).andReturn("");
-        replay(context);
-
-        assertEquals(value, listener.getInitParameter(context, name, value));
-        verify(context);
-    }
-
-    public void testGetScdlFromWebapp() throws MalformedURLException {
-        String path = "/WEB-INF/test";
-        expect(context.getResource(path)).andReturn(systemUrl);
-        replay(context);
-        replay(cl);
-        assertSame(systemUrl, listener.getScdlURL(path, context, cl));
-        verify(context);
+        verify(listener);
         verify(cl);
-    }
-
-    public void testGetScdlFromWebappMissing() throws MalformedURLException {
-        String path = "/WEB-INF/test";
-        expect(context.getResource(path)).andReturn(null);
-        replay(context);
-        replay(cl);
-        assertNull(listener.getScdlURL(path, context, cl));
-        verify(context);
-        verify(cl);
-    }
-
-    public void testGetScdlFromWebappMalformed() throws MalformedURLException {
-        String path = "/WEB-INF/test";
-        expect(context.getResource(path)).andThrow(new MalformedURLException());
-        replay(context);
-        replay(cl);
-        try {
-            listener.getScdlURL(path, context, cl);
-            fail();
-        } catch (MalformedURLException e) {
-            // OK
-        }
-        verify(context);
-        verify(cl);
-    }
-
-    public void testGetScdlFromClasspath() throws MalformedURLException {
-        String path = "META-INF/test";
-        replay(context);
-        expect(cl.getResource(path)).andReturn(systemUrl);
-        replay(cl);
-        assertSame(systemUrl, listener.getScdlURL(path, context, cl));
-        verify(context);
-        verify(cl);
-    }
-
-    public void testGetScdlFromClasspathMissing() throws MalformedURLException {
-        String path = "META-INF/test";
-        replay(context);
-        expect(cl.getResource(path)).andReturn(null);
-        replay(cl);
-        assertNull(listener.getScdlURL(path, context, cl));
-        verify(context);
-        verify(cl);
+        verify(bootClassLoader);
+        verify(runtime);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        getRuntimeMethod = TuscanyContextListener.class.getDeclaredMethod("getRuntime",
-                                                                          ServletContext.class,
-                                                                          ClassLoader.class);
-        listener = new TuscanyContextListener();
+        getUtilsMethod = TuscanyContextListener.class.getDeclaredMethod("getUtils", ServletContext.class);
+        utils = createMock(WebappUtil.class);
+        listener = createMock(TuscanyContextListener.class, new Method[]{getUtilsMethod});
         context = createMock(ServletContext.class);
         cl = createMock(ClassLoader.class);
+        bootClassLoader = createMock(ClassLoader.class);
         systemUrl = new URL("file:/system.scdl");
         applicationUrl = new URL("file:/application.scdl");
         monitorFactory = createMock(MonitorFactory.class);

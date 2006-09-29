@@ -20,22 +20,12 @@ package org.apache.tuscany.runtime.webapp;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
-import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_DEFAULT;
-import static org.apache.tuscany.runtime.webapp.Constants.APPLICATION_SCDL_PATH_PARAM;
-import static org.apache.tuscany.runtime.webapp.Constants.BOOTDIR_DEFAULT;
-import static org.apache.tuscany.runtime.webapp.Constants.BOOTDIR_PARAM;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
-import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_DEFAULT;
-import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_PARAM;
-import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_DEFAULT;
-import static org.apache.tuscany.runtime.webapp.Constants.SYSTEM_SCDL_PATH_PARAM;
 
 /**
  * Launches a Tuscany runtime in a web application, loading information from servlet context parameters. This listener
@@ -60,15 +50,16 @@ public class TuscanyContextListener implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
+        WebappUtil utils = getUtils(servletContext);
         try {
             ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
-            ClassLoader bootClassLoader = getBootClassLoader(servletContext, webappClassLoader);
-            WebappRuntime runtime = getRuntime(servletContext, bootClassLoader);
+            ClassLoader bootClassLoader = utils.getBootClassLoader(webappClassLoader);
+            WebappRuntime runtime = utils.getRuntime(bootClassLoader);
             WebappRuntimeInfo info = new WebappRuntimeInfoImpl(servletContext,
                                                                servletContext.getResource("/WEB-INF/tuscany/"));
-            URL systemScdl = getSystemScdl(servletContext, bootClassLoader);
-            URL applicationScdl = getApplicationScdl(servletContext, webappClassLoader);
-            String name = getApplicationName(servletContext);
+            URL systemScdl = utils.getSystemScdl(bootClassLoader);
+            URL applicationScdl = utils.getApplicationScdl(webappClassLoader);
+            String name = utils.getApplicationName();
 
             runtime.setServletContext(servletContext);
             runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
@@ -89,6 +80,10 @@ public class TuscanyContextListener implements ServletContextListener {
         }
     }
 
+    protected WebappUtil getUtils(ServletContext servletContext) {
+        return new WebappUtilImpl(servletContext);
+    }
+
     public void contextDestroyed(ServletContextEvent event) {
         ServletContext servletContext = event.getServletContext();
         WebappRuntime runtime = (WebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
@@ -100,98 +95,4 @@ public class TuscanyContextListener implements ServletContextListener {
         runtime.destroy();
     }
 
-    /**
-     * Return the classloader that should be used to boot the Tuscany runtime.
-     * This will be a child of the web application's ClassLoader.
-     *
-     * @param servletContext    the servlet context for the webapp containing the bootstrap classes
-     * @param webappClassLoader the web application's classloader
-     * @return a classloader that can be used to load the Tuscany runtime classes
-     */
-    protected ClassLoader getBootClassLoader(ServletContext servletContext, ClassLoader webappClassLoader) {
-        String bootDirName = getInitParameter(servletContext, BOOTDIR_PARAM, BOOTDIR_DEFAULT);
-        Set paths = servletContext.getResourcePaths(bootDirName);
-        if (paths == null) {
-            // nothing in boot directory, assume everything is in the webapp classloader
-            return webappClassLoader;
-        }
-        URL[] urls = new URL[paths.size()];
-        int i = 0;
-        for (Object path : paths) {
-            try {
-                urls[i++] = servletContext.getResource((String) path);
-            } catch (MalformedURLException e) {
-                throw new AssertionError("getResourcePaths returned an invalid path: " + path);
-            }
-        }
-        return new URLClassLoader(urls, webappClassLoader);
-    }
-
-    protected WebappRuntime getRuntime(ServletContext servletContext, ClassLoader bootClassLoader) {
-        try {
-            String className = getInitParameter(servletContext, RUNTIME_PARAM, RUNTIME_DEFAULT);
-            Class<?> runtimeClass = bootClassLoader.loadClass(className);
-            return (WebappRuntime) runtimeClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new TuscanyInitException("Invalid runtime class", e);
-        } catch (IllegalAccessException e) {
-            throw new TuscanyInitException("Invalid runtime class", e);
-        } catch (ClassNotFoundException e) {
-            throw new TuscanyInitException("Runtime Implementation not found", e);
-        }
-    }
-
-    protected URL getSystemScdl(ServletContext servletContext, ClassLoader bootClassLoader) {
-        String path = getInitParameter(servletContext, SYSTEM_SCDL_PATH_PARAM, SYSTEM_SCDL_PATH_DEFAULT);
-        try {
-            return getScdlURL(path, servletContext, bootClassLoader);
-        } catch (MalformedURLException e) {
-            throw new TuscanyInitException("Invalid resource path for " + SYSTEM_SCDL_PATH_PARAM + " : " + path, e);
-        }
-    }
-
-    protected String getApplicationName(ServletContext servletContext) {
-        String name = servletContext.getServletContextName();
-        if (name == null) {
-            name = "application";
-        }
-        return name;
-    }
-
-    protected URL getApplicationScdl(ServletContext servletContext, ClassLoader bootClassLoader) {
-        String path = getInitParameter(servletContext, APPLICATION_SCDL_PATH_PARAM, APPLICATION_SCDL_PATH_DEFAULT);
-        try {
-            return getScdlURL(path, servletContext, bootClassLoader);
-        } catch (MalformedURLException e) {
-            throw new TuscanyInitException("Invalid resource path for " + APPLICATION_SCDL_PATH_PARAM + " : " + path,
-                                           e);
-        }
-    }
-
-    protected URL getScdlURL(String path, ServletContext servletContext, ClassLoader classLoader)
-        throws MalformedURLException {
-        if (path.charAt(0) == '/') {
-            // user supplied an absolute path - look up as a webapp resource
-            return servletContext.getResource(path);
-        } else {
-            // user supplied a relative path - look up as a boot classpath resource
-            return classLoader.getResource(path);
-        }
-    }
-
-    /**
-     * Return a init parameter from the servlet context or provide a default.
-     *
-     * @param servletContext the servlet context for the application
-     * @param name           the name of the parameter
-     * @param value          the default value
-     * @return the value of the specified parameter, or the default if not defined
-     */
-    protected String getInitParameter(ServletContext servletContext, String name, String value) {
-        String result = servletContext.getInitParameter(name);
-        if (result != null && result.length() != 0) {
-            return result;
-        }
-        return value;
-    }
 }
