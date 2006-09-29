@@ -16,19 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.groovy;
+package org.apache.tuscany.core.wire;
+
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
 
 /**
- * A monitor used to log events during non-blocking invocations
- * <p/>
+ * Synchronously bridges interceptors between an {@link org.apache.tuscany.spi.wire.InboundInvocationChain} and an
+ * {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}.
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface AsyncMonitor {
+public class SynchronousBridgingInterceptor implements BridgingInterceptor {
+    private Interceptor next;
 
-    /**
-     * Logs an exception thrown during an invocation
-     */
-    void executionError(Throwable e);
+    public SynchronousBridgingInterceptor() {
+    }
 
+    public SynchronousBridgingInterceptor(Interceptor next) {
+        this.next = next;
+    }
+
+    public Message invoke(Message msg) {
+        return next.invoke(msg);
+    }
+
+    public Interceptor getNext() {
+        return next;
+    }
+
+    public void setNext(Interceptor next) {
+        this.next = next;
+    }
+
+    public boolean isOptimizable() {
+        return true;
+    }
 }

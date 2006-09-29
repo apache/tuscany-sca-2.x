@@ -27,6 +27,7 @@ import org.osoa.sca.annotations.Callback;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -69,7 +70,8 @@ public class CallbackInvocationTestCase extends TestCase {
     private DeploymentContext context;
     private JavaComponentBuilder builder;
     private WireService wireService;
-
+    private WorkScheduler scheduler;
+    private WorkContext workContext;
     /**
      * Verifies callback wires are built and callback invocations are handled properly
      */
@@ -91,7 +93,7 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler , workContext);
 
         connector.connect(clientComponent);
         FooClient client = (FooClient) clientComponent.getServiceInstance();
@@ -126,7 +128,7 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
         connector.connect(clientComponent1);
         connector.connect(clientComponent2);
         FooClient client1 = (FooClient) clientComponent1.getServiceInstance();
@@ -244,7 +246,7 @@ public class CallbackInvocationTestCase extends TestCase {
         expectLastCall().andReturn(container).anyTimes();
         replay(context);
 
-        WorkScheduler scheduler = createMock(WorkScheduler.class);
+        scheduler = createMock(WorkScheduler.class);
         scheduler.scheduleWork(isA(Runnable.class));
         expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
@@ -256,7 +258,7 @@ public class CallbackInvocationTestCase extends TestCase {
         replay(scheduler);
 
         builder = new JavaComponentBuilder();
-        WorkContextImpl workContext = new WorkContextImpl();
+        workContext = new WorkContextImpl();
         builder.setWorkContext(workContext);
         builder.setWireService(new JDKWireService(workContext, null));
         builder.setWorkScheduler(scheduler);

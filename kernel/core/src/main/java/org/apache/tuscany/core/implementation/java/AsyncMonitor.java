@@ -30,6 +30,6 @@ public interface AsyncMonitor {
     /**
      * Logs an exception thrown during an invocation
      */
-    void executionError(Exception e);
+    void executionError(Throwable e);
 
 }

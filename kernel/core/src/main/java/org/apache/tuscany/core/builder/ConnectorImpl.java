@@ -35,9 +35,11 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -48,9 +50,9 @@ import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.implementation.composite.CompositeReference;
 import org.apache.tuscany.core.implementation.composite.CompositeService;
-import org.apache.tuscany.core.wire.BridgingInterceptor;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.NonBlockingBridgingInterceptor;
 import org.apache.tuscany.core.wire.OutboundAutowire;
+import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 
 /**
  * The default connector implmentation
@@ -61,14 +63,21 @@ public class ConnectorImpl implements Connector {
 
     private WirePostProcessorRegistry postProcessorRegistry;
     private WireService wireService;
+    private WorkContext workContext;
+    private WorkScheduler scheduler;
 
     public ConnectorImpl() {
     }
 
-    @Constructor({"wireService", "processorRegistry"})
-    public ConnectorImpl(@Autowire WireService wireService, @Autowire WirePostProcessorRegistry processorRegistry) {
+    @Constructor({"wireService", "processorRegistry", "scheduler", "workContext"})
+    public ConnectorImpl(@Autowire WireService wireService,
+                         @Autowire WirePostProcessorRegistry processorRegistry,
+                         @Autowire WorkScheduler scheduler,
+                         @Autowire WorkContext workContext) {
         this.postProcessorRegistry = processorRegistry;
         this.wireService = wireService;
+        this.scheduler = scheduler;
+        this.workContext = workContext;
     }
 
     public void connect(SCAObject source) {
@@ -219,12 +228,22 @@ public class ConnectorImpl implements Connector {
 
             if (source instanceof Service && !(source instanceof CompositeService)) {
                 // services are a special case: invoker must go on the inbound chain
-                connect(outboundChain, inboundChain, null);
+                if (target instanceof Component && (isOneWayOperation || operationHasCallback)) {
+                    // if the target is a component and the operation is non-blocking
+                    connect(outboundChain, inboundChain, null, true);
+                } else {
+                    connect(outboundChain, inboundChain, null, false);
+                }
                 Service service = (Service) source;
                 InboundInvocationChain chain = service.getInboundWire().getInvocationChains().get(operation);
                 chain.setTargetInvoker(invoker);
             } else {
-                connect(outboundChain, inboundChain, invoker);
+                if (target instanceof Component && (isOneWayOperation || operationHasCallback)) {
+                    // if the target is a component and the operation is non-blocking
+                    connect(outboundChain, inboundChain, invoker, true);
+                } else {
+                    connect(outboundChain, inboundChain, invoker, false);
+                }
             }
         }
 
@@ -245,17 +264,17 @@ public class ConnectorImpl implements Connector {
             if (source instanceof Component) {
                 Component component = (Component) source;
                 TargetInvoker invoker = component.createTargetInvoker(null, operation);
-                connect(outboundChain, inboundChain, invoker);
+                connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof CompositeReference) {
                 CompositeReference compRef = (CompositeReference) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
                 TargetInvoker invoker = compRef.createCallbackTargetInvoker(sourceContract, operation);
-                connect(outboundChain, inboundChain, invoker);
+                connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof Service) {
                 Service service = (Service) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
                 TargetInvoker invoker = service.createCallbackTargetInvoker(sourceContract, operation);
-                connect(outboundChain, inboundChain, invoker);
+                connect(outboundChain, inboundChain, invoker, false);
             }
         }
     }
@@ -266,18 +285,22 @@ public class ConnectorImpl implements Connector {
      * @param sourceChain the source chain
      * @param targetChain the target chain
      * @param invoker     the invoker to place on the source chain for dispatching invocations
+     * @param nonBlocking true if the operation is non-blocking
      */
-    void connect(OutboundInvocationChain sourceChain, InboundInvocationChain targetChain, TargetInvoker invoker) {
-        Interceptor headInterceptor = targetChain.getHeadInterceptor();
-        if (headInterceptor == null) {
+    void connect(OutboundInvocationChain sourceChain,
+                 InboundInvocationChain targetChain,
+                 TargetInvoker invoker,
+                 boolean nonBlocking) {
+        Interceptor head = targetChain.getHeadInterceptor();
+        if (head == null) {
             BuilderConfigException e = new BuilderConfigException("No interceptor for operation");
             e.setIdentifier(targetChain.getOperation().getName());
             throw e;
         }
-        if (!(sourceChain.getTailInterceptor() instanceof InvokerInterceptor
-            && headInterceptor instanceof InvokerInterceptor)) {
-            // check that we do not have the case where the only interceptors are invokers since we just need one
-            sourceChain.setTargetInterceptor(headInterceptor);
+        if (nonBlocking) {
+            sourceChain.setTargetInterceptor(new NonBlockingBridgingInterceptor(scheduler, workContext, head));
+        } else {
+            sourceChain.setTargetInterceptor(new SynchronousBridgingInterceptor(head));
         }
         sourceChain.prepare(); //FIXME prepare should be moved out
         sourceChain.setTargetInvoker(invoker);
@@ -291,8 +314,8 @@ public class ConnectorImpl implements Connector {
      * @param targetChain
      */
     void connect(InboundInvocationChain sourceChain, OutboundInvocationChain targetChain) {
-        // the are always interceptors so the connection algorithm is simple
-        sourceChain.addInterceptor(new BridgingInterceptor(targetChain.getHeadInterceptor()));
+        // invocations from inbound to outbound chains are always syncrhonius as they occur in services and references
+        sourceChain.addInterceptor(new SynchronousBridgingInterceptor(targetChain.getHeadInterceptor()));
     }
 
     /**
