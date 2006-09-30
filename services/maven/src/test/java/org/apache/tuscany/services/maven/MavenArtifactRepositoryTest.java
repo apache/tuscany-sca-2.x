@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.services.maven;
 
@@ -23,13 +23,13 @@ import java.net.URL;
 import java.util.Set;
 
 import org.apache.tuscany.spi.services.artifact.Artifact;
-import org.apache.tuscany.spi.services.info.RuntimeInfo;
+import org.apache.tuscany.host.RuntimeInfo;
 
 import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
- * 
+ *
  */
 public class MavenArtifactRepositoryTest extends TestCase {
 
@@ -50,8 +50,6 @@ public class MavenArtifactRepositoryTest extends TestCase {
      */
     public void testResolveArtifact() throws Exception {
 
-        // Test uses the local maven repo as the deployed repo
-        // TODO Need a more realistic test
         final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + ".m2").toURL();
         String[] remoteRepoUrls = { "http://repo1.maven.org/maven2/" };
         MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls, new RuntimeInfo() {
@@ -68,7 +66,7 @@ public class MavenArtifactRepositoryTest extends TestCase {
         repository.resolve(artifact);
 
         Set<URL> urls = artifact.getUrls();
-        
+
         assertEquals(2, urls.size());
 
     }
