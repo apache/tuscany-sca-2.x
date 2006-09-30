@@ -114,7 +114,7 @@ public class MavenHelper {
             metadataSource = (ArtifactMetadataSource) embedder.lookup(ArtifactMetadataSource.ROLE);
             artifactFactory = (ArtifactFactory) embedder.lookup(ArtifactFactory.ROLE);
             artifactResolver = (ArtifactResolver) embedder.lookup(ArtifactResolver.ROLE);
-
+            
             setUpRepositories(embedder);
 
             embedder.stop();
@@ -152,6 +152,7 @@ public class MavenHelper {
                 rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
 
         try {
+            
             if (resolve(mavenRootArtifact, Collections.EMPTY_LIST, deployedRepository)) {
                 rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
                 resolveDependencies(rootArtifact, mavenRootArtifact, true);
@@ -233,7 +234,7 @@ public class MavenHelper {
 
             if (resolvedFromDeployment) {
                 resolutionGroup = metadataSource.retrieve(mavenRootArtifact, deployedRepository, Collections.EMPTY_LIST);
-                result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact, remoteRepositories, localRepository,
+                result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact, Collections.EMPTY_LIST, deployedRepository,
                         metadataSource);
             } else {
                 resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
