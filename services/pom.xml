@@ -60,6 +60,7 @@
         <module>containers</module>
         <module>databinding</module>
         <module>bindings</module>
+        <module>maven</module>
 <!--
         <module>transports/http.jetty</module>
 -->
