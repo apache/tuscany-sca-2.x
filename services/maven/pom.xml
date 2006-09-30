@@ -36,6 +36,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-api</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-embedder</artifactId>
             <version>2.0.4</version>
