@@ -114,7 +114,6 @@ public class WSDLOperation {
             Input input = operation.getInput();
             Message message = (input == null) ? null : input.getMessage();
             inputType = getMessageType(message);
-            // inputType.setMetadata(WSDLOperation.class.getName(), this);
             inputType.setDataBinding("idl:input");
         }
         return inputType;
@@ -130,7 +129,7 @@ public class WSDLOperation {
             Message outputMsg = (output == null) ? null : output.getMessage();
 
             List outputParts = (outputMsg == null) ? null : outputMsg.getOrderedParts(null);
-            if (outputParts != null || outputParts.size() > 0) {
+            if (outputParts != null && outputParts.size() > 0) {
                 if (outputParts.size() > 1) {
                     // We don't support output with multiple parts
                     throw new NotSupportedWSDLException("Multi-part output is not supported");
@@ -197,12 +196,15 @@ public class WSDLOperation {
                 for (DataType<?> d : wrapper.getUnwrappedInputType().getLogical()) {
                     d.setMetadata(OPERATION_KEY, operationModel);
                 }
-                wrapper.getUnwrappedOutputType().setMetadata(OPERATION_KEY,
-                        operationModel);
+                if (wrapper.getUnwrappedOutputType() != null) {
+                    wrapper.getUnwrappedOutputType().setMetadata(OPERATION_KEY, operationModel);
+                }
             }
         }
         inputType.setMetadata(OPERATION_KEY, operationModel);
-        outputType.setMetadata(OPERATION_KEY, operationModel);
+        if (outputType != null) {
+            outputType.setMetadata(OPERATION_KEY, operationModel);
+        }
         return operationModel;
     }
 
@@ -440,7 +442,7 @@ public class WSDLOperation {
         public DataType<QName> getUnwrappedOutputType() throws InvalidServiceContractException {
             if (unwrappedOutputType == null) {
                 List<XmlSchemaElement> elements = getOutputChildElements();
-                if (elements != null || elements.size() > 0) {
+                if (elements != null && elements.size() > 0) {
                     if (elements.size() > 1) {
                         // We don't support output with multiple parts
                         throw new NotSupportedWSDLException("Multi-part output is not supported");
@@ -462,8 +464,10 @@ public class WSDLOperation {
                     inChildren.add(getElementInfo(e));
                 }
                 List<ElementInfo> outChildren = new ArrayList<ElementInfo>();
-                for (XmlSchemaElement e : getOutputChildElements()) {
-                    outChildren.add(getElementInfo(e));
+                if (out != null) {
+                    for (XmlSchemaElement e : getOutputChildElements()) {
+                        outChildren.add(getElementInfo(e));
+                    }
                 }
                 wrapperInfo =
                         new WrapperInfo(in, out, inChildren, outChildren, getUnwrappedInputType(), getUnwrappedOutputType());
