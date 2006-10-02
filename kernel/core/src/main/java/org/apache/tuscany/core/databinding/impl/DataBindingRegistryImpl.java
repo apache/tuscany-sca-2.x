@@ -31,9 +31,6 @@ import org.osoa.sca.annotations.Init;
 public class DataBindingRegistryImpl implements DataBindingRegistry {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
 
-    /**
-     * @see org.apache.tuscany.spi.databinding.DataBindingRegistry#getDataBinding(java.lang.String)
-     */
     public DataBinding getDataBinding(String id) {
         if (id == null) {
             return null;
@@ -41,16 +38,10 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
         return bindings.get(id.toLowerCase());
     }
 
-    /**
-     * @see org.apache.tuscany.spi.databinding.DataBindingRegistry#register(org.apache.tuscany.spi.databinding.DataBinding)
-     */
     public void register(DataBinding dataBinding) {
         bindings.put(dataBinding.getName().toLowerCase(), dataBinding);
     }
 
-    /**
-     * @see org.apache.tuscany.spi.databinding.DataBindingRegistry#unregister(java.lang.String)
-     */
     public DataBinding unregister(String id) {
         if (id == null) {
             return null;
@@ -81,6 +72,7 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
                 return dataType;
             }
         }
-        return null;    }
+        return null;
+    }
 
 }

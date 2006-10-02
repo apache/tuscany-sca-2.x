@@ -20,16 +20,12 @@ package org.apache.tuscany.core.databinding.xml;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.databinding.impl.PipedTransformer;
-import org.apache.tuscany.core.databinding.xml.Node2String;
-import org.apache.tuscany.core.databinding.xml.SAX2DOMPipe;
-import org.apache.tuscany.core.databinding.xml.String2XMLStreamReader;
-import org.apache.tuscany.core.databinding.xml.XMLStreamReader2SAX;
-import org.w3c.dom.Node;
-import org.xml.sax.ContentHandler;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.tuscany.core.databinding.impl.PipedTransformer;
+import org.w3c.dom.Node;
+import org.xml.sax.ContentHandler;
 
 public class PushTransformationTestCase extends TestCase {
     private static final String IPO_XML =

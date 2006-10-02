@@ -30,16 +30,16 @@ import org.w3c.dom.Node;
 @Service(Transformer.class)
 public class Node2Object extends SimpleType2JavaTransformer<Node> {
 
+    public Node2Object() {
+        super(null);
+    }
+
     @Override
     protected String getText(Node source) {
         if (source instanceof Document) {
-            source = ((Document) source).getDocumentElement();
+            source = ((Document)source).getDocumentElement();
         }
         return source.getTextContent();
-    }
-
-    public Node2Object() {
-        super(null);
     }
 
     public Class getSourceType() {

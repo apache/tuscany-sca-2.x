@@ -37,10 +37,9 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
-
 /**
- * This processor is responsible to add an interceptor to invocation chain if the source and target operations have
- * different databinding requirements
+ * This processor is responsible to add an interceptor to invocation chain if
+ * the source and target operations have different databinding requirements
  */
 public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     private Mediator mediator;
@@ -51,10 +50,6 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         this.mediator = mediator;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.WirePostProcessor#process(org.apache.tuscany.spi.wire.OutboundWire,
-     *      org.apache.tuscany.spi.wire.InboundWire)
-     */
     public void process(OutboundWire source, InboundWire target) {
         Map<Operation<?>, OutboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : chains.entrySet()) {
@@ -63,60 +58,63 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = getDataBinding(sourceOperation);
             String targetDataBinding = getDataBinding(targetOperation);
-            if (sourceDataBinding == null || targetDataBinding == null || !sourceDataBinding.equals(targetDataBinding)) {
-                // Add the interceptor to the source side because multiple references can be wired
+            if (sourceDataBinding == null || targetDataBinding == null
+                || !sourceDataBinding.equals(targetDataBinding)) {
+                // Add the interceptor to the source side because multiple
+                // references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
         }
-        
+
         // Check if there's a callback
         Map callbackOperations = source.getServiceContract().getCallbackOperations();
         if (callbackOperations == null || callbackOperations.isEmpty()) {
             return;
         }
         Object targetAddress = source.getContainer().getName();
-        Map<Operation<?>, OutboundInvocationChain> callbackChains = target.getSourceCallbackInvocationChains(targetAddress);
+        Map<Operation<?>, OutboundInvocationChain> callbackChains =
+            target.getSourceCallbackInvocationChains(targetAddress);
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : callbackChains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                getTargetOperation(source.getTargetCallbackInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(source.getTargetCallbackInvocationChains().keySet(), sourceOperation
+                    .getName());
             String sourceDataBinding = getDataBinding(sourceOperation);
             String targetDataBinding = getDataBinding(targetOperation);
-            if (sourceDataBinding == null || targetDataBinding == null || !sourceDataBinding.equals(targetDataBinding)) {
-                // Add the interceptor to the source side because multiple references can be wired
+            if (sourceDataBinding == null || targetDataBinding == null
+                || !sourceDataBinding.equals(targetDataBinding)) {
+                // Add the interceptor to the source side because multiple
+                // references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
-        }        
+        }
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.WirePostProcessor#process(org.apache.tuscany.spi.wire.InboundWire,
-     *      org.apache.tuscany.spi.wire.OutboundWire)
-     */
     public void process(InboundWire source, OutboundWire target) {
         SCAObject container = source.getContainer();
         // Either Service or Reference
-        boolean isReference = (container instanceof Reference);
+        boolean isReference = container instanceof Reference;
 
         Map<Operation<?>, InboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
-                    getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
+                getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = getDataBinding(sourceOperation);
             String targetDataBinding = getDataBinding(targetOperation);
-            if (sourceDataBinding == null || targetDataBinding == null || !sourceDataBinding.equals(targetDataBinding)) {
+            if (sourceDataBinding == null || targetDataBinding == null
+                || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side
                 DataBindingInteceptor interceptor =
-                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
                 if (isReference) {
                     // FIXME: We need a better way to position the interceptors

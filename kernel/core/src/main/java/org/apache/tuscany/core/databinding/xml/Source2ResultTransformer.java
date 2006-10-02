@@ -31,15 +31,15 @@ import org.osoa.sca.annotations.Service;
 
 /**
  * Transform TrAX Source to Result
- * 
  */
 @Service(Transformer.class)
-public class Source2ResultTransformer extends TransformerExtension<Source, Result> implements PushTransformer<Source, Result> {
-    private static final TransformerFactory factory = TransformerFactory.newInstance();
+public class Source2ResultTransformer extends TransformerExtension<Source, Result> implements
+    PushTransformer<Source, Result> {
+    private static final TransformerFactory FACTORY = TransformerFactory.newInstance();
 
     public void transform(Source source, Result result, TransformationContext context) {
         try {
-            javax.xml.transform.Transformer transformer = factory.newTransformer();
+            javax.xml.transform.Transformer transformer = FACTORY.newTransformer();
             transformer.transform(source, result);
         } catch (Exception e) {
             throw new TransformationException(e);

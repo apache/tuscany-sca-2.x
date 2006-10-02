@@ -38,7 +38,10 @@ public class TransformerRegistryImpl implements TransformerRegistry {
     }
 
     public void registerTransformer(Transformer transformer) {
-        graph.addEdge(transformer.getSourceDataBinding(), transformer.getTargetDataBinding(), transformer, transformer.getWeight());
+        graph.addEdge(transformer.getSourceDataBinding(),
+                      transformer.getTargetDataBinding(),
+                      transformer,
+                      transformer.getWeight());
     }
 
     public boolean unregisterTransformer(String sourceType, String resultType) {

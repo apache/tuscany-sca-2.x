@@ -20,12 +20,11 @@ package org.apache.tuscany.core.databinding.impl;
 
 import java.util.List;
 
-import org.apache.tuscany.core.databinding.impl.DirectedGraph;
-import org.apache.tuscany.core.databinding.impl.DirectedGraph.Edge;
-import org.apache.tuscany.core.databinding.impl.DirectedGraph.Vertex;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.apache.tuscany.core.databinding.impl.DirectedGraph.Edge;
+import org.apache.tuscany.core.databinding.impl.DirectedGraph.Vertex;
 
 public class DirectedGraphTestCase extends TestCase {
     private DirectedGraph<String, Object> graph;

@@ -32,10 +32,10 @@ import org.xml.sax.InputSource;
 
 /**
  * Transform XML string to SAX
- *
  */
 @Service(Transformer.class)
-public class Reader2SAX extends TransformerExtension<Reader, ContentHandler> implements PushTransformer<Reader, ContentHandler> {
+public class Reader2SAX extends TransformerExtension<Reader, ContentHandler> implements
+    PushTransformer<Reader, ContentHandler> {
     public void transform(Reader source, ContentHandler target, TransformationContext context) {
         try {
             new InputSource2SAX().transform(new InputSource(source), target, context);

@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.api.annotation.DataContext;
 import org.apache.tuscany.api.annotation.DataType;
-import org.apache.tuscany.core.databinding.impl.DataBindingJavaInterfaceProcessor;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -48,7 +47,6 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
     }
 
     /**
-     * 
      * @throws InvalidServiceContractException
      */
     public final void testVisitInterface() throws InvalidServiceContractException {
@@ -62,12 +60,12 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         contract.setOperations(operations);
         processor.visitInterface(MockInterface.class, null, contract);
         Assert.assertEquals("org.w3c.dom.Node", contract.getDataBinding());
-        Assert.assertEquals("element", (String) contract.getMetaData().get("nodeType"));
+        Assert.assertEquals("element", (String)contract.getMetaData().get("nodeType"));
         Assert.assertEquals("org.w3c.dom.Node", contract.getOperations().get("call").getDataBinding());
         Assert.assertEquals("xml:string", contract.getOperations().get("call1").getDataBinding());
     }
 
-    @DataType(name = "org.w3c.dom.Node", context = { @DataContext(key = "nodeType", value = "element") })
+    @DataType(name = "org.w3c.dom.Node", context = {@DataContext(key = "nodeType", value = "element")})
     @Remotable
     public static interface MockInterface {
         Node call(Node msg);

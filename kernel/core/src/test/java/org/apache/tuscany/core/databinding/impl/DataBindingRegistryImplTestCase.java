@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.model.DataType;
@@ -52,7 +51,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         expect(db1.getName()).andReturn(ContentHandler.class.getName()).anyTimes();
         DataType<Class> dataType1 = new DataType<Class>(ContentHandler.class, ContentHandler.class);
         expect(db1.introspect(ContentHandler.class)).andReturn(dataType1);
-        expect(db1.introspect((Class) EasyMock.anyObject())).andReturn(null).anyTimes();
+        expect(db1.introspect((Class)EasyMock.anyObject())).andReturn(null).anyTimes();
         replay(db1);
 
         registry.register(db1);
@@ -61,7 +60,7 @@ public class DataBindingRegistryImplTestCase extends TestCase {
         expect(db2.getName()).andReturn(XMLStreamReader.class.getName()).anyTimes();
         DataType<Class> dataType2 = new DataType<Class>(XMLStreamReader.class, XMLStreamReader.class);
         expect(db2.introspect(XMLStreamReader.class)).andReturn(dataType2);
-        expect(db2.introspect((Class) EasyMock.anyObject())).andReturn(null).anyTimes();
+        expect(db2.introspect((Class)EasyMock.anyObject())).andReturn(null).anyTimes();
         replay(db2);
 
         registry.register(db2);

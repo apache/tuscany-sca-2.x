@@ -34,7 +34,7 @@ public class DataBindingTestCase extends TestCase {
         Assert.assertEquals(d.name(), "sdo");
         Assert.assertEquals(d.context().length, 0);
 
-        Method method = testClass.getMethod("test", new Class[] { Object.class });
+        Method method = testClass.getMethod("test", new Class[] {Object.class});
         DataType d2 = method.getAnnotation(DataType.class);
         Assert.assertEquals(d2.name(), "jaxb");
         Assert.assertEquals(d2.context()[0].key(), "contextPath");
@@ -43,7 +43,7 @@ public class DataBindingTestCase extends TestCase {
 
     @DataType(name = "sdo")
     private static interface Test {
-        @DataType(name = "jaxb", context = { @DataContext(key = "contextPath", value = "com.example.ipo.jaxb") })
-        public Object test(Object object);
+        @DataType(name = "jaxb", context = {@DataContext(key = "contextPath", value = "com.example.ipo.jaxb")})
+        Object test(Object object);
     }
 }

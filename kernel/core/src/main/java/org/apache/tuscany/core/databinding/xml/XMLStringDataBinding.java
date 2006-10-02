@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
  * A DataBinding for the XML string
  */
 public class XMLStringDataBinding extends DataBindingExtension {
-    public final static String NAME = String.class.getName();
+    public static final String NAME = String.class.getName();
     
     public XMLStringDataBinding() {
         super(NAME, String.class);

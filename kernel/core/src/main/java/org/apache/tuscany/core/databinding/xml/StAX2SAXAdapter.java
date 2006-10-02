@@ -31,7 +31,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Adapter that converts from StAX to SAX event streams. Currently the following SAX events are not generated:
+ * Adapter that converts from StAX to SAX event streams. Currently the following
+ * SAX events are not generated:
  * <ul>
  * <li>ignorableWhitespace</li>
  * <li>skippedEntity</li>
@@ -46,16 +47,21 @@ import org.xml.sax.helpers.AttributesImpl;
  * <li>NOTATION_DECLARATION</li>
  * <li>SPACE</li>
  * </ul>
- * StAX ATTRIBUTE events are ignored but the equivalent attributes (derived from the START_ELEMENT event) are supplied
- * in the SAX startElement event's Attributes parameter. If the adaptor is configured to pass namespace prefixes then
- * namespace information will also be included in the Attributes; StAX NAMESPACE events are ignored. <p/> Another issue
- * is namespace processing. If the reader is positioned at a sub-node, we cannot capture all the in-scope namespace
- * bindings. Therefore we cannot re-create a proper SAX event stream from a StAX parser. <p/> For example <p/>
- * &lt;a:root xmlns:a="foo" xmlns:b="bar"&gt;&lt;b:sub&gt;a:foo&lt;/b:sub&gt;&lt;/a:root&gt; <p/> And if you are handed
- * a parser at &lt;b:sub&gt;, then your SAX events should look like: <p/> &lt;b:sub xmlns:a="foo"
- * xmlns:b="bar"&gt;a:foo&lt;/b:sub&gt; <p/> not: <p/> &lt;b:sub&gt;a:foo&lt;/b:sub&gt; <p/> <p/> Proposal: we change
- * the receiver of SAX events (SDOXMLResourceImpl) so that it uses NamespaceContext to resolve prefix (as opposed to
- * record start/endPrefixMappings and use it for resolution.)
+ * StAX ATTRIBUTE events are ignored but the equivalent attributes (derived from
+ * the START_ELEMENT event) are supplied in the SAX startElement event's
+ * Attributes parameter. If the adaptor is configured to pass namespace prefixes
+ * then namespace information will also be included in the Attributes; StAX
+ * NAMESPACE events are ignored. <p/> Another issue is namespace processing. If
+ * the reader is positioned at a sub-node, we cannot capture all the in-scope
+ * namespace bindings. Therefore we cannot re-create a proper SAX event stream
+ * from a StAX parser. <p/> For example <p/> &lt;a:root xmlns:a="foo"
+ * xmlns:b="bar"&gt;&lt;b:sub&gt;a:foo&lt;/b:sub&gt;&lt;/a:root&gt; <p/> And if
+ * you are handed a parser at &lt;b:sub&gt;, then your SAX events should look
+ * like: <p/> &lt;b:sub xmlns:a="foo" xmlns:b="bar"&gt;a:foo&lt;/b:sub&gt; <p/>
+ * not: <p/> &lt;b:sub&gt;a:foo&lt;/b:sub&gt; <p/> <p/> Proposal: we change the
+ * receiver of SAX events (SDOXMLResourceImpl) so that it uses NamespaceContext
+ * to resolve prefix (as opposed to record start/endPrefixMappings and use it
+ * for resolution.)
  * 
  * @version $Rev$ $Date$
  */
@@ -63,18 +69,22 @@ public class StAX2SAXAdapter {
     private final boolean namespacePrefixes;
 
     /**
-     * Construct a new StAX to SAX adapter that will convert a StAX event stream into a SAX event stream.
+     * Construct a new StAX to SAX adapter that will convert a StAX event stream
+     * into a SAX event stream.
      * 
-     * @param namespacePrefixes whether xmlns attributes should be included in startElement events;
+     * @param namespacePrefixes whether xmlns attributes should be included in
+     *            startElement events;
      */
     public StAX2SAXAdapter(boolean namespacePrefixes) {
         this.namespacePrefixes = namespacePrefixes;
     }
 
     /**
-     * Pull events from the StAX stream and dispatch to the SAX ContentHandler. The StAX stream would typically be
-     * located on a START_DOCUMENT or START_ELEMENT event and when this method returns it will be located on the
-     * associated END_DOCUMENT or END_ELEMENT event. Behaviour with other start events is undefined.
+     * Pull events from the StAX stream and dispatch to the SAX ContentHandler.
+     * The StAX stream would typically be located on a START_DOCUMENT or
+     * START_ELEMENT event and when this method returns it will be located on
+     * the associated END_DOCUMENT or END_ELEMENT event. Behaviour with other
+     * start events is undefined.
      * 
      * @param reader StAX event source to read
      * @param handler SAX ContentHandler for processing events
@@ -89,38 +99,45 @@ public class StAX2SAXAdapter {
         int event = reader.getEventType();
         while (true) {
             switch (event) {
-            case XMLStreamConstants.START_DOCUMENT:
-                level++;
-                handler.startDocument();
-                break;
-            case XMLStreamConstants.START_ELEMENT:
-                level++;
-                handleStartElement(reader, handler);
-                break;
-            case XMLStreamConstants.PROCESSING_INSTRUCTION:
-                handler.processingInstruction(reader.getPITarget(), reader.getPIData());
-                break;
-            case XMLStreamConstants.CHARACTERS:
-                handler.characters(reader.getTextCharacters(), reader.getTextStart(), reader.getTextLength());
-                break;
-            case XMLStreamConstants.END_ELEMENT:
-                handleEndElement(reader, handler);
-                level--;
-                if (level == 0) {
+                case XMLStreamConstants.START_DOCUMENT:
+                    level++;
+                    handler.startDocument();
+                    break;
+                case XMLStreamConstants.START_ELEMENT:
+                    level++;
+                    handleStartElement(reader, handler);
+                    break;
+                case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                    handler.processingInstruction(reader.getPITarget(), reader.getPIData());
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    handler.characters(reader.getTextCharacters(), reader.getTextStart(), reader
+                        .getTextLength());
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    handleEndElement(reader, handler);
+                    level--;
+                    if (level == 0) {
+                        return;
+                    }
+                    break;
+                case XMLStreamConstants.END_DOCUMENT:
+                    handler.endDocument();
                     return;
-                }
-                break;
-            case XMLStreamConstants.END_DOCUMENT:
-                handler.endDocument();
-                return;
-                /*
-                 * uncomment to handle all events rather than just mapped ones // StAX events that are not mapped to SAX
-                 * case XMLStreamConstants.COMMENT: case XMLStreamConstants.SPACE: case
-                 * XMLStreamConstants.ENTITY_REFERENCE: case XMLStreamConstants.DTD: case XMLStreamConstants.CDATA: case
-                 * XMLStreamConstants.NOTATION_DECLARATION: case XMLStreamConstants.ENTITY_DECLARATION: break; // StAX
-                 * events handled in START_ELEMENT case XMLStreamConstants.ATTRIBUTE: case XMLStreamConstants.NAMESPACE:
-                 * break; default: throw new AssertionError("Unknown StAX event: " + event);
-                 */
+                    /*
+                     * uncomment to handle all events rather than just mapped
+                     * ones // StAX events that are not mapped to SAX case
+                     * XMLStreamConstants.COMMENT: case
+                     * XMLStreamConstants.SPACE: case
+                     * XMLStreamConstants.ENTITY_REFERENCE: case
+                     * XMLStreamConstants.DTD: case XMLStreamConstants.CDATA:
+                     * case XMLStreamConstants.NOTATION_DECLARATION: case
+                     * XMLStreamConstants.ENTITY_DECLARATION: break; // StAX
+                     * events handled in START_ELEMENT case
+                     * XMLStreamConstants.ATTRIBUTE: case
+                     * XMLStreamConstants.NAMESPACE: break; default: throw new
+                     * AssertionError("Unknown StAX event: " + event);
+                     */
             }
             event = reader.next();
         }
@@ -156,7 +173,8 @@ public class StAX2SAXAdapter {
         handler.endElement(qname.getNamespaceURI(), qname.getLocalPart(), qname.toString());
 
         // send endPrefixMapping events immediately after endElement event
-        // we send them in the opposite order to that returned but this is not actually required by SAX
+        // we send them in the opposite order to that returned but this is not
+        // actually required by SAX
         int nsCount = reader.getNamespaceCount();
         for (int i = nsCount - 1; i >= 0; i--) {
             String prefix = reader.getNamespacePrefix(i);
@@ -212,7 +230,7 @@ public class StAX2SAXAdapter {
     /**
      * Adaptor for mapping Locator information.
      */
-    private static class LocatorAdaptor implements Locator {
+    private static final class LocatorAdaptor implements Locator {
         private final Location location;
 
         private LocatorAdaptor(Location location) {

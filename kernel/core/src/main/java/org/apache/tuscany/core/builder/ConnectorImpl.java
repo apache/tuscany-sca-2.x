@@ -289,7 +289,8 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             
-            Operation targetOp = (Operation) targetWire.getServiceContract().getCallbackOperations().get(operation.getName());
+            Operation targetOp =
+                (Operation)targetWire.getServiceContract().getCallbackOperations().get(operation.getName());
             OutboundInvocationChain outboundChain = wireService.createOutboundChain(targetOp);
             targetWire.addSourceCallbackInvocationChain(source.getName(), targetOp, outboundChain);
             if (source instanceof Component) {

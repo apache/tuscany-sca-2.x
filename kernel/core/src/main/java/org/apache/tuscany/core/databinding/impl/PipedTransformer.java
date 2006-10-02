@@ -24,7 +24,9 @@ import org.apache.tuscany.spi.databinding.PushTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 
 /**
- * A utility class to connect PushTransformer and DataPipe to create a PullTransformer
+ * A utility class to connect PushTransformer and DataPipe to create a
+ * PullTransformer
+ * 
  * @param <S> Source type
  * @param <I> Intermidate type
  * @param <R> Result type

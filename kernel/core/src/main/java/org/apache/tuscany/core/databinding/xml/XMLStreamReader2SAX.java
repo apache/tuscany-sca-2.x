@@ -29,7 +29,8 @@ import org.xml.sax.ContentHandler;
 /**
  *
  */
-public class XMLStreamReader2SAX extends TransformerExtension<XMLStreamReader, ContentHandler> implements PushTransformer<XMLStreamReader, ContentHandler> {
+public class XMLStreamReader2SAX extends TransformerExtension<XMLStreamReader, ContentHandler> implements
+    PushTransformer<XMLStreamReader, ContentHandler> {
 
     /**
      * @see org.apache.tuscany.spi.databinding.PushTransformer#getSourceType()
@@ -53,7 +54,9 @@ public class XMLStreamReader2SAX extends TransformerExtension<XMLStreamReader, C
     }
 
     /**
-     * @see org.apache.tuscany.spi.databinding.PushTransformer#transform(java.lang.Object, java.lang.Object, org.apache.tuscany.spi.databinding.TransformationContext)
+     * @see org.apache.tuscany.spi.databinding.PushTransformer#transform(java.lang.Object,
+     *      java.lang.Object,
+     *      org.apache.tuscany.spi.databinding.TransformationContext)
      */
     public void transform(XMLStreamReader source, ContentHandler sink, TransformationContext context) {
         StAX2SAXAdapter adapter = new StAX2SAXAdapter(false);
@@ -61,7 +64,7 @@ public class XMLStreamReader2SAX extends TransformerExtension<XMLStreamReader, C
             adapter.parse(source, sink);
         } catch (Exception e) {
             throw new TransformationException(e);
-        } 
+        }
     }
 
 }

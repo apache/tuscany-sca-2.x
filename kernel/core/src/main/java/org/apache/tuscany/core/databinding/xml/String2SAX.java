@@ -32,18 +32,10 @@ import org.xml.sax.InputSource;
 
 /**
  * Transform XML string to SAX
- * 
  */
 @Service(Transformer.class)
-public class String2SAX extends TransformerExtension<String, ContentHandler> implements PushTransformer<String, ContentHandler> {
-    /*
-     * private static final TransformerFactory factory = TransformerFactory.newInstance();
-     * 
-     * public void transform(String source, ContentHandler target, TransformationContext context) { try { javax.xml.transform.Transformer transformer =
-     * factory.newTransformer(); Source domSource = new StreamSource(new StringReader(source));
-     * 
-     * Result result = new SAXResult(target); transformer.transform(domSource, result); } catch (Exception e) { throw new TransformationException(e); } }
-     */
+public class String2SAX extends TransformerExtension<String, ContentHandler> implements
+    PushTransformer<String, ContentHandler> {
 
     public void transform(String source, ContentHandler target, TransformationContext context) {
         try {

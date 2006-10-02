@@ -23,15 +23,14 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.databinding.impl.DataTypeLoader;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.easymock.EasyMock;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  * Testcase for DataBindingLoader
@@ -57,17 +56,17 @@ public class DataBindingLoaderTestCase extends TestCase {
 
         ModelObject mo = new DataTypeLoader(null).load(null, reader, null);
         Assert.assertTrue(mo instanceof DataType);
-        Assert.assertEquals("ABC", ((DataType<?>) mo).getDataBinding());
+        Assert.assertEquals("ABC", ((DataType<?>)mo).getDataBinding());
         EasyMock.verify(reader);
 
         EasyMock.reset(reader);
-        
+
         // EasyMock.expect(reader.getEventType()).andReturn(XMLStreamConstants.START_ELEMENT);
         EasyMock.expect(reader.hasNext()).andReturn(true).anyTimes();
         EasyMock.expect(reader.getName()).andReturn(DataTypeLoader.DATA_BINDING);
         EasyMock.expect(reader.getAttributeValue(null, "name")).andReturn(null);
         EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
-        EasyMock.replay(reader);        
+        EasyMock.replay(reader);
         try {
             mo = new DataTypeLoader(null).load(null, reader, null);
             Assert.fail("InvalidValueException should have been thrown");

@@ -39,8 +39,10 @@ public class TransformationContextImpl implements TransformationContext {
         setClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
-    public TransformationContextImpl(DataType sourceDataType, DataType targetDataType, ClassLoader classLoader,
-            Map<Class<?>, Object> metadata) {
+    public TransformationContextImpl(DataType sourceDataType,
+                                     DataType targetDataType,
+                                     ClassLoader classLoader,
+                                     Map<Class<?>, Object> metadata) {
         super();
         this.sourceDataType = sourceDataType;
         this.targetDataType = targetDataType;
@@ -66,7 +68,7 @@ public class TransformationContextImpl implements TransformationContext {
         this.targetDataType = targetDataType;
     }
 
-    final public void setClassLoader(ClassLoader classLoader) {
+    public final void setClassLoader(ClassLoader classLoader) {
         this.classLoaderRef = new WeakReference<ClassLoader>(classLoader);
     }
 

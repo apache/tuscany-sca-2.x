@@ -34,17 +34,16 @@ import org.w3c.dom.Node;
 
 /**
  * Push DOM Reader to Node
- * 
  */
 @Service(Transformer.class)
 public class Reader2Node extends TransformerExtension<Reader, Node> implements PullTransformer<Reader, Node> {
-    private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
+    private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 
     public Node transform(Reader source, TransformationContext context) {
         try {
             Source streamSource = new StreamSource(source);
             DOMResult result = new DOMResult();
-            transformer.transform(streamSource, result, context);
+            TRANSFORMER.transform(streamSource, result, context);
             return result.getNode();
         } catch (Exception e) {
             throw new TransformationException(e);
