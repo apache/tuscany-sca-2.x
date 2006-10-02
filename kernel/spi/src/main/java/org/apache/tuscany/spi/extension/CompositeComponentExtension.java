@@ -353,7 +353,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
                     return instanceInterface.cast(this);
                 }
                 // resolve to parent
-                if (parent == null) {
+                if (getParent() == null) {
                     return null;
                 }
                 return getParent().resolveInstance(instanceInterface);
@@ -387,7 +387,11 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         } else {
             try {
                 // resolve to parent
-                return getParent().resolveSystemInstance(instanceInterface);
+                if (getParent() != null) {
+                    return getParent().resolveSystemInstance(instanceInterface);
+                } else {
+                    return null;
+                }
             } catch (AutowireResolutionException e) {
                 e.addContextName(getName());
                 throw e;
