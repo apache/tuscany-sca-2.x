@@ -23,6 +23,7 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -38,7 +39,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
@@ -52,7 +52,7 @@ import org.easymock.EasyMock;
  */
 public class SystemComponentBuilderTestCase extends TestCase {
 
-    AutowireComponent parent;
+    CompositeComponent parent;
     DeploymentContext deploymentContext;
     SystemComponentBuilder builder = new SystemComponentBuilder();
     ModuleScopeContainer container;
@@ -184,16 +184,16 @@ public class SystemComponentBuilderTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        AutowireComponent autowireParent = EasyMock.createNiceMock(AutowireComponent.class);
+        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         FooImpl targetFoo = new FooImpl();
-        EasyMock.expect(autowireParent.resolveInstance(EasyMock.eq(Foo.class))).andReturn(targetFoo);
-        EasyMock.replay(autowireParent);
-        AtomicComponent component = builder.build(autowireParent, definition, deploymentContext);
+        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(Foo.class))).andReturn(targetFoo);
+        EasyMock.replay(parent);
+        AtomicComponent component = builder.build(parent, definition, deploymentContext);
         component.start();
         FooImpl foo = (FooImpl) component.getServiceInstance();
         assertNotNull(foo.ref);
         container.onEvent(new CompositeStop(this, null));
-        EasyMock.verify(autowireParent);
+        EasyMock.verify(parent);
     }
 
     /**
@@ -217,22 +217,22 @@ public class SystemComponentBuilderTestCase extends TestCase {
         mappedReference.setServiceContract(contract);
         type.add(mappedReference);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
-        AutowireComponent autowireParent = EasyMock.createNiceMock(AutowireComponent.class);
+        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         FooImpl targetFoo = new FooImpl();
-        EasyMock.expect(autowireParent.resolveInstance(EasyMock.eq(Foo.class))).andReturn(targetFoo);
-        EasyMock.replay(autowireParent);
-        AtomicComponent component = builder.build(autowireParent, definition, deploymentContext);
+        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(Foo.class))).andReturn(targetFoo);
+        EasyMock.replay(parent);
+        AtomicComponent component = builder.build(parent, definition, deploymentContext);
         component.start();
         container.onEvent(new CompositeStart(this, null));
         FooImpl2 foo = (FooImpl2) component.getServiceInstance();
         assertNotNull(foo.getRef());
         container.onEvent(new CompositeStop(this, null));
-        EasyMock.verify(autowireParent);
+        EasyMock.verify(parent);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = EasyMock.createNiceMock(AutowireComponent.class);
+        parent = EasyMock.createNiceMock(CompositeComponent.class);
         container = new ModuleScopeContainer();
         container.start();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);

@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
@@ -31,10 +33,10 @@ import org.easymock.EasyMock;
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class SystemCompositeLifecycleTestCase extends TestCase {
+public class CompositeLifecycleTestCase extends TestCase {
 
     public void testLifecycle() throws Exception {
-        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
         composite.start();
         assertNull(composite.getChild("nothtere"));
         composite.stop();
@@ -43,7 +45,7 @@ public class SystemCompositeLifecycleTestCase extends TestCase {
         composite.stop();
     }
 
-    public void testRestart() throws NoSuchMethodException {
+    public void testSystemRestart() throws NoSuchMethodException {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         Source originalSource = new SourceImpl();
@@ -52,11 +54,42 @@ public class SystemCompositeLifecycleTestCase extends TestCase {
         component.stop();
         EasyMock.expectLastCall().times(2);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         EasyMock.expect(component.getServiceInstance()).andReturn(originalSource).atLeastOnce();
         EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.replay(component);
 
-        SystemCompositeComponent composite = new SystemCompositeComponentImpl("foo", null, null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
+        composite.start();
+        composite.register(component);
+
+        AtomicComponent atomicComponent = (AtomicComponent) composite.getSystemChild("source");
+        Source source = (Source) atomicComponent.getServiceInstance();
+        assertNotNull(source);
+        composite.stop();
+        composite.start();
+        atomicComponent = (AtomicComponent) composite.getSystemChild("source");
+        Source source2 = (Source) atomicComponent.getServiceInstance();
+        assertNotNull(source2);
+        composite.stop();
+        EasyMock.verify(component);
+    }
+
+    public void testRestart() throws NoSuchMethodException {
+        List<Class<?>> interfaces = new ArrayList<Class<?>>();
+        interfaces.add(Source.class);
+        Source originalSource = new SourceImpl();
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+        component.start();
+        component.stop();
+        EasyMock.expectLastCall().times(2);
+        EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
+        EasyMock.expect(component.getServiceInstance()).andReturn(originalSource).atLeastOnce();
+        EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
+        EasyMock.replay(component);
+
+        CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
         composite.start();
         composite.register(component);
 

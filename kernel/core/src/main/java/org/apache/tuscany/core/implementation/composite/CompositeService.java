@@ -15,7 +15,6 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.injection.WireObjectFactory;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
@@ -27,26 +26,25 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.injection.WireObjectFactory;
+
 public class CompositeService extends ServiceExtension {
-    
+
     private WorkContext workContext;
 
     public CompositeService(String name,
-                       Class<?> interfaze,
-                       CompositeComponent parent,
-                       WireService wireService,
-                       WorkContext workContext) throws CoreRuntimeException {
+                            Class<?> interfaze,
+                            CompositeComponent parent,
+                            WireService wireService,
+                            WorkContext workContext) throws CoreRuntimeException {
         super(name, interfaze, parent, wireService);
         this.workContext = workContext;
     }
-    
+
     /**
-     * A service for a remote binding does not need a target invoker, but a
-     * bindless service does because it gets wired localy from a reference (or from
-     * a parent service?!)
-     * We just reuse CompositeReferenceTargetInvoker for now since it seems the target
-     * invoker we need does the same thing, if this is confirmed we should give it
-     * a common name
+     * A service for a remote binding does not need a target invoker, but a bindless service does because it gets wired
+     * localy from a reference (or from a parent service?!) We just reuse CompositeReferenceTargetInvoker for now since
+     * it seems the target invoker we need does the same thing, if this is confirmed we should give it a common name
      * FIXME !!! Notice that this method is not defined in the SPI !!!
      */
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
@@ -54,14 +52,14 @@ public class CompositeService extends ServiceExtension {
         Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
         return new CompositeReferenceTargetInvoker(method, inboundWire, wireFactory, workContext);
     }
-    
+
     /**
      */
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
         Method method = JavaIDLUtils.findMethod(operation, contract.getCallbackClass().getMethods());
         return new CompositeReferenceCallbackTargetInvoker(method, contract, inboundWire, wireService, workContext);
     }
-    
+
     public Object getServiceInstance() throws TargetException {
         return interfaze.cast(wireService.createProxy(outboundWire));
     }

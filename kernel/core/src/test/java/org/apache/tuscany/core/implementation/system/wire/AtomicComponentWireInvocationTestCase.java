@@ -19,12 +19,12 @@
 package org.apache.tuscany.core.implementation.system.wire;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Source;

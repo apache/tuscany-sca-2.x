@@ -16,85 +16,63 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.extension;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.util.List;
 
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentNotFoundException;
-import org.apache.tuscany.spi.component.DuplicateNameException;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.IllegalTargetException;
-import org.apache.tuscany.spi.component.InvalidComponentTypeException;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.apache.tuscany.core.component.event.CompositeStart;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeComponentExtensionTestCase extends TestCase {
+public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testGetScope() {
-        assertEquals(Scope.COMPOSITE, new Composite().getScope());
-    }
-
-    public void testInvalidType() {
-        Composite composite = new Composite();
-        try {
-            composite.register(getAtomic("foo"));
-            fail();
-        } catch (InvalidComponentTypeException e) {
-            // expected
-        }
-    }
-
-    public void testDuplicateName() {
-        Composite composite = new Composite();
-        composite.register(new ServiceExtension("foo", null, null, null));
-        try {
-            composite.register(new ServiceExtension("foo", null, null, null));
-            fail();
-        } catch (DuplicateNameException e) {
-            // expected
-        }
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
+        Assert.assertEquals(Scope.COMPOSITE, composite.getScope());
     }
 
     public void testGetChildren() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
-        assertEquals(1, composite.getChildren().size());
+        Assert.assertEquals(1, composite.getChildren().size());
     }
 
     public void testGetServices() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.register(getReference("bar"));
-        assertEquals(1, composite.getServices().size());
+        Assert.assertEquals(1, composite.getServices().size());
     }
 
     public void testGetService() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.start();
         assertNotNull(composite.getService("foo"));
     }
 
     public void testServiceNotFound() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.start();
         try {
@@ -106,7 +84,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testNotService() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(getReference("foo"));
         composite.start();
         try {
@@ -116,9 +94,9 @@ public class CompositeComponentExtensionTestCase extends TestCase {
             // expected
         }
     }
-    
+
     public void testTargetNotFound() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(getReference("foo"));
         composite.start();
         try {
@@ -127,17 +105,17 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         } catch (TargetNotFoundException e) {
             // expected
         }
-    }    
+    }
 
     public void testReferencesServices() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.register(getReference("bar"));
-        assertEquals(1, composite.getReferences().size());
+        Assert.assertEquals(1, composite.getReferences().size());
     }
 
     public void testServiceInterfaces() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service1 = getService("foo", Foo.class);
         composite.register(service1);
         Service service2 = getService("bar", Bar.class);
@@ -153,8 +131,9 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testGetServiceInstanceByName() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service = createMock(Service.class);
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
         service.getName();
         expectLastCall().andReturn("foo").anyTimes();
         service.getInterface();
@@ -168,7 +147,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testGetServiceInstanceNotFound() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service = getService("foo", Foo.class);
         composite.register(service);
         try {
@@ -180,7 +159,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testGetServiceInstanceNotService() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Reference reference = getReference("foo");
         composite.register(reference);
         try {
@@ -192,73 +171,45 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testOnEvent() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Event event = new Event() {
             public Object getSource() {
                 return null;
             }
         };
         RuntimeEventListener listener = createMock(RuntimeEventListener.class);
+        listener.onEvent(isA(CompositeStart.class));
         listener.onEvent(eq(event));
         expectLastCall();
         replay(listener);
         composite.addListener(listener);
+        composite.start();
         composite.onEvent(event);
     }
 
     public void testPrepare() {
-        Composite composite = new Composite();
+        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.prepare();
     }
 
-// TODO method not implemented
-//    public void testSingleGetServiceInstance(){
-//        Composite composite = new Composite();
-//        Mock mock = mock(Service.class);
-//        mock.stubs().method("getName").will(returnValue("foo"));
-//        mock.stubs().method("getInterface").will(returnValue(Foo.class));
-//        mock.expects(once()).method("getServiceInstance").will(returnValue(new Foo(){}));
-//        Service service = (Service) mock.proxy();
-//        composite.register(service);
-//        assertNotNull(composite.getServiceInstance());
-//    }
-
-    private class Composite extends CompositeComponentExtension {
-        public Composite() {
-            super(null, null, createNiceMock(Connector.class), null);
-        }
-
-        public void setScopeContainer(ScopeContainer scopeContainer) {
-
-        }
-
-        public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
-            return null;
-        }
-    }
-
-    private AtomicComponent getAtomic(String name) {
-        AtomicComponent component = createMock(AtomicComponent.class);
-        component.getName();
-        expectLastCall().andReturn(name).anyTimes();
-        replay(component);
-        return component;
-    }
-
     private Reference getReference(String name) {
-        Reference reference = createMock(Reference.class);
+        Reference reference = EasyMock.createNiceMock(Reference.class);
+        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
         reference.getName();
         expectLastCall().andReturn(name).anyTimes();
+        reference.getInterface();
+        expectLastCall().andReturn(Object.class).atLeastOnce();
         replay(reference);
         return reference;
     }
 
     private Service getService(String name, Class<?> interfaze) {
         Service service = createMock(Service.class);
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
         service.getName();
         expectLastCall().andReturn(name).anyTimes();
         service.getInterface();
-        expectLastCall().andReturn(interfaze);
+        expectLastCall().andReturn(interfaze).atLeastOnce();
         replay(service);
         return service;
     }

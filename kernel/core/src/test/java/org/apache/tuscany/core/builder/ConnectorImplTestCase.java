@@ -118,6 +118,7 @@ public class ConnectorImplTestCase extends TestCase {
         // create the target
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getScope()).andReturn(Scope.MODULE);
+        EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
         target.getInboundWire(EasyMock.eq("FooService"));
         EasyMock.expectLastCall().andReturn(targetWire).atLeastOnce();
         target.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation));
@@ -166,6 +167,7 @@ public class ConnectorImplTestCase extends TestCase {
         // create the service
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("source");
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.expect(service.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.expect(service.getInboundWire()).andReturn(inboundWire).atLeastOnce();
         EasyMock.expect(service.getScope()).andReturn(Scope.COMPOSITE);
@@ -243,6 +245,7 @@ public class ConnectorImplTestCase extends TestCase {
 
         // create the source
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(source.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.expect(source.getScope()).andReturn(Scope.MODULE);
         EasyMock.expect(source.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(outboundWires);

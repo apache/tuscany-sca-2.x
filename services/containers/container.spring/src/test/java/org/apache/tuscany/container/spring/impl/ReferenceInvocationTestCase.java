@@ -46,6 +46,7 @@ public class ReferenceInvocationTestCase extends TestCase {
         TestBean referenceTarget = new TestBeanImpl();
         Reference reference = createMock(Reference.class);
         expect(reference.getName()).andReturn("bar").anyTimes();
+        expect(reference.isSystem()).andReturn(false).atLeastOnce();
         expect(reference.getInterface()).andStubReturn(TestBean.class);
         expect(reference.getServiceInstance()).andStubReturn(referenceTarget);
         replay(reference);

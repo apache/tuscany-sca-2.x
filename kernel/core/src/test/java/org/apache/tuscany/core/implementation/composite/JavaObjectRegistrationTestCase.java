@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.composite;
 
 import javax.naming.ConfigurationException;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 
 import junit.framework.TestCase;
@@ -29,44 +30,51 @@ import org.apache.tuscany.core.component.event.CompositeStop;
 /**
  * @version $Rev$ $Date$
  */
-public class SystemObjectRegistrationTestCase extends TestCase {
-    private SystemCompositeComponent systemContext;
+public class JavaObjectRegistrationTestCase extends TestCase {
+    private CompositeComponent composite;
 
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
-        systemContext.registerJavaObject("foo", MockComponent.class, instance);
-        MockComponent resolvedInstance = (MockComponent) systemContext.getChild("foo").getServiceInstance();
+        composite.registerJavaObject("foo", MockComponent.class, instance);
+        MockComponent resolvedInstance = (MockComponent) composite.getSystemChild("foo").getServiceInstance();
         assertSame(instance, resolvedInstance);
     }
 
     public void testDuplicateRegistration() throws ConfigurationException {
         MockComponent instance = new MockComponent();
-        systemContext.registerJavaObject("foo", MockComponent.class, instance);
+        composite.registerJavaObject("foo", MockComponent.class, instance);
         try {
-            systemContext.registerJavaObject("foo", MockComponent.class, instance);
+            composite.registerJavaObject("foo", MockComponent.class, instance);
             fail();
         } catch (DuplicateNameException e) {
             // ok
         }
     }
 
-    public void testAutowireToObject() {
+    public void testSystemAutowireToObject() {
         MockComponent instance = new MockComponent();
-        systemContext.registerJavaObject("foo", MockComponent.class, instance);
-        assertSame(instance, systemContext.resolveInstance(MockComponent.class));
-        assertNull(systemContext.resolveExternalInstance(MockComponent.class));
+        composite.registerJavaObject("foo", MockComponent.class, instance);
+        assertSame(instance, composite.resolveSystemInstance(MockComponent.class));
+        assertNull(composite.resolveSystemExternalInstance(MockComponent.class));
+    }
+
+    public void testApplicationAutowireToObject() {
+        MockComponent instance = new MockComponent();
+        composite.registerJavaObject("foo", MockComponent.class, instance);
+        assertNull(composite.resolveInstance(MockComponent.class));
+        assertNull(composite.resolveExternalInstance(MockComponent.class));
     }
 
     protected void setUp() throws Exception {
         super.setUp();
-        systemContext = new SystemCompositeComponentImpl(null, null, null, null, null);
-        systemContext.start();
-        systemContext.publish(new CompositeStart(this, null));
+        composite = new CompositeComponentImpl(null, null, null, null);
+        composite.start();
+        composite.publish(new CompositeStart(this, null));
     }
 
     protected void tearDown() throws Exception {
-        systemContext.publish(new CompositeStop(this, null));
-        systemContext.stop();
+        composite.publish(new CompositeStop(this, null));
+        composite.stop();
         super.tearDown();
     }
 

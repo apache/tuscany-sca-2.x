@@ -38,6 +38,7 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
@@ -49,8 +50,6 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 
 /**
  * The default builder registry in the runtime
@@ -148,7 +147,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public void register(BindlessBuilder builder) {
         bindlessBuilder = builder;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <B extends Binding> SCAObject build(CompositeComponent parent,
                                                BoundServiceDefinition<B> boundServiceDefinition,

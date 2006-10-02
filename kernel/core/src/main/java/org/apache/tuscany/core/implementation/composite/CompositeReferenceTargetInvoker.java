@@ -18,13 +18,14 @@ package org.apache.tuscany.core.implementation.composite;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.injection.WireObjectFactory;
-import org.apache.tuscany.core.wire.PojoTargetInvoker;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
+
+import org.apache.tuscany.core.injection.WireObjectFactory;
+import org.apache.tuscany.core.wire.PojoTargetInvoker;
 
 public class CompositeReferenceTargetInvoker extends PojoTargetInvoker {
 
@@ -32,10 +33,10 @@ public class CompositeReferenceTargetInvoker extends PojoTargetInvoker {
     private WireObjectFactory wireFactory;
     private WorkContext workContext;
 
-    
+
     public CompositeReferenceTargetInvoker(Method operation,
-            InboundWire wire,
-            WireObjectFactory wireFactory, WorkContext workContext) {
+                                           InboundWire wire,
+                                           WireObjectFactory wireFactory, WorkContext workContext) {
         super(operation);
         this.wire = wire;
         this.wireFactory = wireFactory;

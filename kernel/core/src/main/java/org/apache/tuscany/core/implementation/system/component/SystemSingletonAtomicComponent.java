@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -122,5 +123,9 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
 
     public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
         return null;
+    }
+
+    public boolean isSystem() {
+        return true;
     }
 }

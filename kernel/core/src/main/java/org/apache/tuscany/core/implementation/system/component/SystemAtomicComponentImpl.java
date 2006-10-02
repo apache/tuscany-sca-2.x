@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.RuntimeWire;
@@ -51,6 +52,10 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent implements Sy
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
         return null;
+    }
+
+    public boolean isSystem() {
+        return true;
     }
 
     protected ObjectFactory<?> createWireFactory(RuntimeWire wire) {

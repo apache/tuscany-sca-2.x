@@ -87,12 +87,16 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
         throw new UnsupportedOperationException();
     }
-    
+
     public ServiceContract<?> getBindingServiceContract() {
         throw new UnsupportedOperationException();
     }
 
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {
         throw new UnsupportedOperationException();
-    }    
+    }
+
+    public boolean isSystem() {
+        return true;
+    }
 }

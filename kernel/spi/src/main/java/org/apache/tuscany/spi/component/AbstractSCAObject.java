@@ -39,8 +39,8 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
     protected static final EventFilter TRUE_FILTER = new TrueFilter();
 
     protected Map<EventFilter, List<RuntimeEventListener>> listeners;
+    protected final CompositeComponent parent;
     private final String name;
-    private final CompositeComponent parent;
     private final Map<Object, Object> extensions = new HashMap<Object, Object>();
 
     public AbstractSCAObject(String name, CompositeComponent parent) {
@@ -114,5 +114,9 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
 
     public Map<Object, Object> getExtensions() {
         return extensions;
+    }
+
+    public boolean isSystem() {
+        return false;
     }
 }

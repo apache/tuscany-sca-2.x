@@ -74,7 +74,7 @@ public class CompositeBuilderTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testBuildConnect() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
 
         CompositeBuilder builder = new CompositeBuilder();
         WireService wireService = new JDKWireService();

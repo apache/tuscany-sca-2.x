@@ -24,10 +24,6 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.CompositeContext;
 
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -35,10 +31,14 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.Launcher;
-import org.apache.tuscany.host.RuntimeInfo;
+
 import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.host.Launcher;
+import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * Basic launcher implementation.
@@ -81,7 +81,7 @@ public class LauncherImpl implements Launcher {
         runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
 
         // initialize the runtime info
-        SystemCompositeComponent parent = (SystemCompositeComponent) runtime.getSystemComponent();
+        CompositeComponent parent = runtime.getSystemComponent();
         RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
@@ -102,7 +102,7 @@ public class LauncherImpl implements Launcher {
         // start the system
         composite.start();
 
-        deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
+        deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
     }
 
     /**
@@ -201,7 +201,7 @@ public class LauncherImpl implements Launcher {
         if (property != null) {
             return new File(property);
         }
-        
+
         // TODO: TUSCANY-648, should this throw an exception if it not running from a jar?
 
         URL url = getClass().getResource("LauncherImpl.class");

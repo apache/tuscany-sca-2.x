@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
-
-import org.apache.tuscany.spi.component.ComponentRuntimeException;
+package org.apache.tuscany.spi.component;
 
 /**
  * Thrown when an error is encountered registering an object

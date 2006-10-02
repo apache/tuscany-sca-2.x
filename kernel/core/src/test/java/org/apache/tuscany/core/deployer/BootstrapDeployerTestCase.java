@@ -129,11 +129,11 @@ public class BootstrapDeployerTestCase extends TestCase {
 
         // load the boot2 file using the bootstrap deployer
         componentDefinition.setName("newDeployer");
-        Component component = deployer.deploy(parent, componentDefinition);
+        CompositeComponent component = (CompositeComponent) deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
         component.start();
-        Deployer newDeployer = (Deployer) component.getServiceInstance("deployer");
+        Deployer newDeployer = (Deployer) component.getSystemServiceInstance("deployer");
         assertNotNull(newDeployer);
 
 /*      // FIXME

@@ -3,11 +3,12 @@ package org.apache.tuscany.container.spring.impl;
 import org.apache.tuscany.spi.component.Service;
 
 import junit.framework.TestCase;
+import static org.easymock.EasyMock.expect;
+import org.easymock.classextension.EasyMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
-import org.easymock.classextension.EasyMock;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * @version $Rev$ $Date$
@@ -31,6 +32,9 @@ public class SpringCompositeComponentTestCase extends TestCase {
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("foo").anyTimes();
         service.start();
+        service.getInterface();
+        EasyMock.expectLastCall().andReturn(Object.class);
+        expect(service.isSystem()).andReturn(false).atLeastOnce();
         replay(service);
         SpringCompositeComponent component = new SpringCompositeComponent("spring", appContext, null, null, null);
         component.register(service);

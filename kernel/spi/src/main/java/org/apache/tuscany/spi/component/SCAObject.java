@@ -58,12 +58,19 @@ public interface SCAObject extends EventPublisher, Lifecycle {
      * as wiring of its children
      */
     void prepare();
-    
+
     /**
      * The extensions map contains other runtime context such as type systems for various databindings
-     * 
+     *
      * @return A live map of extended context
      */
     Map<Object, Object> getExtensions();
+
+    /**
+     * Returns true if the artifact is a system artifact
+     *
+     * @return true if the artifact is a system artifact
+     */
+    boolean isSystem();
 
 }

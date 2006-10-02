@@ -16,32 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component;
-
-import org.apache.tuscany.spi.component.TargetException;
+package org.apache.tuscany.spi.component;
 
 /**
- * Denotes an exception while resolving an automatic wire
+ * Implementations are specialized atomic components used to provide system services by the runtime
  *
- * @version $Rev$ $Date$
+ * @version $$Rev$$ $$Date$$
  */
-public class AutowireResolutionException extends TargetException {
+public interface SystemAtomicComponent extends AtomicComponent {
 
-    public AutowireResolutionException() {
-        super();
-    }
-
-    public AutowireResolutionException(String message) {
-        super(message);
-    }
-
-    public AutowireResolutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public AutowireResolutionException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Returns the target instance associated with the component. A target instance is the actual object a request is
+     * dispatched to sans wire chain.
+     *
+     * @throws org.apache.tuscany.spi.component.TargetException
+     *
+     */
+    Object getTargetInstance() throws TargetException;
 
 }
-

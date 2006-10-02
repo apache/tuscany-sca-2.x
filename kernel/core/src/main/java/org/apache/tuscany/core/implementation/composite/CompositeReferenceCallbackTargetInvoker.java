@@ -18,7 +18,6 @@ package org.apache.tuscany.core.implementation.composite;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.wire.PojoTargetInvoker;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -27,6 +26,8 @@ import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.wire.PojoTargetInvoker;
+
 public class CompositeReferenceCallbackTargetInvoker extends PojoTargetInvoker {
 
     private ServiceContract<?> contract;
@@ -34,12 +35,12 @@ public class CompositeReferenceCallbackTargetInvoker extends PojoTargetInvoker {
     private WireService wireService;
     private WorkContext workContext;
 
-    
+
     public CompositeReferenceCallbackTargetInvoker(Method operation,
-            ServiceContract contract,
-            InboundWire inboundWire,
-            WireService wireService,
-            WorkContext workContext) {
+                                                   ServiceContract contract,
+                                                   InboundWire inboundWire,
+                                                   WireService wireService,
+                                                   WorkContext workContext) {
         super(operation);
         this.contract = contract;
         this.inboundWire = inboundWire;

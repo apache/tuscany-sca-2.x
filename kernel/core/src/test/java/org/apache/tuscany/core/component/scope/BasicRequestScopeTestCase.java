@@ -19,11 +19,11 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;

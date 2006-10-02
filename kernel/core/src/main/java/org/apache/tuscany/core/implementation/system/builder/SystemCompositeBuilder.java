@@ -35,9 +35,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import org.apache.tuscany.core.component.AutowireComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
+import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
@@ -96,9 +94,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
         // create the composite component
         String name = componentDefinition.getName();
-        AutowireComponent autowireContext = getAutowireComponent(parent);
-        SystemCompositeComponent component =
-            new SystemCompositeComponentImpl(name, parent, autowireContext, connector, null);
+        CompositeComponent component = new CompositeComponentImpl(name, parent, connector, null);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
             component.register(builderRegistry.build(component, childComponentDefinition, deploymentContext));
         }
@@ -109,17 +105,4 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         return component;
     }
 
-    /**
-     * Return the autowire component for the supplied parent
-     *
-     * @param parent the parent for a new context
-     * @return the autowire context for the parent or null if it does not support autowire
-     */
-    protected AutowireComponent getAutowireComponent(CompositeComponent parent) {
-        if (parent instanceof AutowireComponent) {
-            return (AutowireComponent) parent;
-        } else {
-            return null;
-        }
-    }
 }

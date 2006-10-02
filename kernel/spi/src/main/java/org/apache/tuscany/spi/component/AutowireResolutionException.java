@@ -16,17 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.composite;
-
-import junit.framework.TestCase;
+package org.apache.tuscany.spi.component;
 
 /**
+ * Denotes an exception while resolving an automatic wire
+ *
  * @version $Rev$ $Date$
  */
-public class CompositeComponentTestCase extends TestCase {
+public class AutowireResolutionException extends TargetException {
 
-    public void testSetUri() throws Exception {
-        CompositeComponentImpl component = new CompositeComponentImpl("foo", "foo/bar", null, null, null, null);
-        assertEquals("foo/bar", component.getURI());
+    public AutowireResolutionException() {
+        super();
     }
+
+    public AutowireResolutionException(String message) {
+        super(message);
+    }
+
+    public AutowireResolutionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public AutowireResolutionException(Throwable cause) {
+        super(cause);
+    }
+
 }
+
