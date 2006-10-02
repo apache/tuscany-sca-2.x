@@ -92,7 +92,7 @@ public class SCATestCase extends TestCase {
             new ComponentDefinition<SystemCompositeImplementation>(extensionName,
                 implementation);
 
-        Deployer deployer = (Deployer) composite.getChild("deployer").getServiceInstance();
+        Deployer deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
         Component component = deployer.deploy(composite, definition);
 
         component.start();

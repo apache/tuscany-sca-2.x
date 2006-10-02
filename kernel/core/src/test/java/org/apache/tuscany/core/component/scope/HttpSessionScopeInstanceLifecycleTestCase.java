@@ -19,13 +19,13 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponent;
 import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;

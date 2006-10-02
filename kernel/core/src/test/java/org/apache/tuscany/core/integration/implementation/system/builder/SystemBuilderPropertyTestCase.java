@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -69,7 +68,7 @@ public class SystemBuilderPropertyTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
-        parent = EasyMock.createNiceMock(AutowireComponent.class);
+        parent = EasyMock.createNiceMock(CompositeComponent.class);
     }
 
     private static class Foo {

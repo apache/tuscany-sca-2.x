@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
@@ -35,19 +37,21 @@ import org.easymock.EasyMock;
 public class DuplicateRegistrationTestCase extends TestCase {
 
     public void testDuplicateRegistration() throws Exception {
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         SystemAtomicComponent component1 = EasyMock.createMock(SystemAtomicComponent.class);
         EasyMock.expect(component1.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(component1.isSystem()).andReturn(true).atLeastOnce();
         component1.stop();
         EasyMock.expect(component1.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.replay(component1);
 
         SystemAtomicComponent component2 = EasyMock.createMock(SystemAtomicComponent.class);
         EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
         component2.stop();
         EasyMock.expect(component2.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.replay(component2);
@@ -61,6 +65,30 @@ public class DuplicateRegistrationTestCase extends TestCase {
         }
         parent.stop();
     }
+
+    public void testDuplicateNameSystemService() throws Exception {
+        List<Class<?>> services = new ArrayList<Class<?>>();
+        services.add(Source.class);
+        CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
+        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
+        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
+        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.replay(component);
+        parent.register(component);
+        SystemAtomicComponent component2 = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(component2.getName()).andReturn("bar").atLeastOnce();
+        EasyMock.expect(component2.getServiceInterfaces()).andReturn(services);
+        EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
+        EasyMock.replay(component2);
+        try {
+            parent.register(component2);
+            fail();
+        } catch (DuplicateNameException e) {
+            // expected
+        }
+    }
+
 
     protected void setUp() throws Exception {
         super.setUp();

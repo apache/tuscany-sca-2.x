@@ -28,8 +28,6 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Scope;
 
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-
 /**
  * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope
  *
@@ -38,17 +36,12 @@ import org.apache.tuscany.core.implementation.system.component.SystemCompositeCo
 public class ScopeProcessor extends ImplementationProcessorExtension {
 
     public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context)
+                               PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                               DeploymentContext context)
         throws ProcessingException {
         org.osoa.sca.annotations.Scope annotation = clazz.getAnnotation(org.osoa.sca.annotations.Scope.class);
         if (annotation == null) {
-            // TODO do this with a specialization of a system POJO
-            if (SystemCompositeComponent.class.isAssignableFrom(parent.getClass())) {
-                type.setImplementationScope(Scope.MODULE);
-            } else {
-                type.setImplementationScope(Scope.STATELESS);
-            }
+            type.setImplementationScope(Scope.STATELESS);
             return;
         }
         //FIXME deal with eager init

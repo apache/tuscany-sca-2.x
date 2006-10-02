@@ -20,6 +20,7 @@ package org.apache.tuscany.core.integration.implementation.system.builder;
 
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
@@ -36,10 +37,9 @@ import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.Source;
@@ -65,7 +65,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, connector, null);
 
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
         ComponentDefinition<SystemImplementation> sourceComponentDefinition =
@@ -79,9 +79,9 @@ public class SystemBuilderWireTestCase extends TestCase {
         parent.prepare();
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Source source = (Source) parent.getChild("source").getServiceInstance();
+        Source source = (Source) parent.getSystemChild("source").getServiceInstance();
         assertNotNull(source);
-        Target target = (Target) parent.getChild("target").getServiceInstance();
+        Target target = (Target) parent.getSystemChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new CompositeStop(this, parent));
@@ -101,9 +101,8 @@ public class SystemBuilderWireTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeComponent grandParent = new SystemCompositeComponentImpl("grandparent", null, null, null, null);
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl("parent", grandParent, grandParent, null,
-            null);
+        CompositeComponent grandParent = new CompositeComponentImpl("grandparent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("parent", grandParent, null, null);
 
         // create a context in the grandparent that the reference will be autowired to
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
@@ -124,9 +123,9 @@ public class SystemBuilderWireTestCase extends TestCase {
         grandParent.register(parent);
         grandParent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Source source = (Source) parent.getChild("source").getServiceInstance();
+        Source source = (Source) parent.getSystemChild("source").getServiceInstance();
         assertNotNull(source);
-        Target target = (Target) parent.getChild("target").getServiceInstance();
+        Target target = (Target) parent.getSystemChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, source.getTarget());
         scope.onEvent(new CompositeStop(this, parent));
@@ -147,7 +146,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        SystemCompositeComponent parent = new SystemCompositeComponentImpl(null, null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
 
         BoundServiceDefinition<SystemBinding> serviceDefinition = MockComponentFactory.createBoundService();
         ComponentDefinition<SystemImplementation> componentDefinition = MockComponentFactory.createTarget();
@@ -163,9 +162,9 @@ public class SystemBuilderWireTestCase extends TestCase {
 
         parent.start();
         scope.onEvent(new CompositeStart(this, parent));
-        Target target = (Target) parent.getChild("serviceDefinition").getServiceInstance();
+        Target target = (Target) parent.getSystemChild("serviceDefinition").getServiceInstance();
         assertNotNull(target);
-        Target target2 = (Target) parent.getChild("target").getServiceInstance();
+        Target target2 = (Target) parent.getSystemChild("target").getServiceInstance();
         assertNotNull(target);
         assertSame(target, target2);
         scope.onEvent(new CompositeStop(this, parent));

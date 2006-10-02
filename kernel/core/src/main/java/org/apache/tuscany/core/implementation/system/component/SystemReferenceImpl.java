@@ -108,4 +108,8 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {
         throw new UnsupportedOperationException();
     }
+
+    public boolean isSystem() {
+        return true;
+    }
 }

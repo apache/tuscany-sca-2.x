@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.system.wire;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.AutowireComponent;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -33,8 +33,8 @@ import static org.easymock.EasyMock.verify;
 public class SystemOutboundAutowireTestCase extends TestCase {
 
     public void testAutowire() {
-        AutowireComponent component = createMock(AutowireComponent.class);
-        expect(component.resolveInstance(Object.class)).andReturn(new Object());
+        CompositeComponent component = createMock(CompositeComponent.class);
+        expect(component.resolveSystemInstance(Object.class)).andReturn(new Object());
         replay(component);
         SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, false);
         assertNotNull(wire.getTargetService());
@@ -43,8 +43,8 @@ public class SystemOutboundAutowireTestCase extends TestCase {
 
 
     public void testNonExistentAutowire() {
-        AutowireComponent component = createMock(AutowireComponent.class);
-        expect(component.resolveInstance(Object.class)).andReturn(null);
+        CompositeComponent component = createMock(CompositeComponent.class);
+        expect(component.resolveSystemInstance(Object.class)).andReturn(null);
         replay(component);
         SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, true);
         try {
@@ -58,8 +58,8 @@ public class SystemOutboundAutowireTestCase extends TestCase {
 
 
     public void testNonExistentAutowireNotRequired() {
-        AutowireComponent component = createMock(AutowireComponent.class);
-        expect(component.resolveInstance(Object.class)).andReturn(null);
+        CompositeComponent component = createMock(CompositeComponent.class);
+        expect(component.resolveSystemInstance(Object.class)).andReturn(null);
         replay(component);
         SystemOutboundAutowire wire = new SystemOutboundAutowire("foo", Object.class, component, false);
         try {

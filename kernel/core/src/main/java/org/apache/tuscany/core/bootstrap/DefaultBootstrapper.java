@@ -60,8 +60,6 @@ import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.loader.SystemBindingLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader;
@@ -85,7 +83,7 @@ import org.apache.tuscany.host.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
-public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponent> {
+public class DefaultBootstrapper implements Bootstrapper {
     private final MonitorFactory monitorFactory;
     private final XMLInputFactory xmlFactory;
 
@@ -115,13 +113,13 @@ public class DefaultBootstrapper implements Bootstrapper<SystemCompositeComponen
      *
      * @return a newly created root for the component tree
      */
-    public RuntimeComponent<SystemCompositeComponent> createRuntime() {
+    public RuntimeComponent createRuntime() {
         DefaultRuntime runtime = new DefaultRuntime();
-        SystemCompositeComponentImpl systemComponent =
-            new SystemCompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM, runtime, runtime, null, null);
+        CompositeComponent systemComponent =
+            new CompositeComponentImpl(ComponentNames.TUSCANY_SYSTEM, runtime, null, null);
         runtime.setSystemComponent(systemComponent);
         CompositeComponent rootComponent =
-            new CompositeComponentImpl(ComponentNames.TUSCANY_ROOT, runtime, runtime, null, null);
+            new CompositeComponentImpl(ComponentNames.TUSCANY_ROOT, runtime, null, null);
         runtime.setRootComponent(rootComponent);
         return runtime;
     }

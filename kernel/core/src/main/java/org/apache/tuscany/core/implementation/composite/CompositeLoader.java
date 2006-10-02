@@ -28,8 +28,8 @@ import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -105,7 +105,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                         // HACK: [rfeng] Add as an unknown model extension
                         if (o != null) {
                             composite.getExtensions().put(o.getClass(), o);
-                        }    
+                        }
                     }
                     reader.next();
                     break;

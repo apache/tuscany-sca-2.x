@@ -20,15 +20,16 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URL;
 
-import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+
+import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 
 /**
  * Loads a composite component type

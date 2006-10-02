@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.deployer.Deployer;
  *
  * @version $Rev$ $Date$
  */
-public interface RuntimeComponent<S extends CompositeComponent> extends CompositeComponent {
+public interface RuntimeComponent extends CompositeComponent {
     /**
      * Returns the component that forms the root of the user component tree. All user components will be managed by
      * composites that are children of this root.
@@ -42,7 +42,7 @@ public interface RuntimeComponent<S extends CompositeComponent> extends Composit
      *
      * @return the root of the system component tree
      */
-    S getSystemComponent();
+    CompositeComponent getSystemComponent();
 
     /**
      * Returns the deployer for this runtime. This interface can be used to deploy new SCA bundles to the runtime.

@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
 
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemReference;
 import org.apache.tuscany.core.implementation.system.component.SystemReferenceImpl;
 import org.apache.tuscany.core.implementation.system.component.SystemService;
@@ -53,7 +52,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
                                DeploymentContext deploymentContext) {
         Class<?> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
-        Component target = (Component) parent.getChild(targetName.getPartName());
+        Component target = (Component) parent.getSystemChild(targetName.getPartName());
         if (target == null) {
             throw new BuilderConfigException("Target not found: [" + targetName + ']');
         }
@@ -71,9 +70,7 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
     public SystemReference build(CompositeComponent parent,
                                  BoundReferenceDefinition<SystemBinding> boundReferenceDefinition,
                                  DeploymentContext deploymentContext) {
-        assert parent.getParent() instanceof AutowireComponent
-            : "Grandparent not an instance of " + AutowireComponent.class.getName();
-        AutowireComponent autowireComponent = (AutowireComponent) parent.getParent();
+        CompositeComponent autowireComponent = parent.getParent();
         Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
         String name = boundReferenceDefinition.getName();
         SystemReferenceImpl reference = new SystemReferenceImpl(name, interfaze, parent);

@@ -27,12 +27,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.w3c.dom.Document;
 
+import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.AutowireResolutionException;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentNotFoundException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.IllegalTargetException;
-import org.apache.tuscany.spi.component.InvalidComponentTypeException;
+import org.apache.tuscany.spi.component.ObjectRegistrationException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
@@ -44,7 +49,6 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.builder.Connector;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -56,8 +60,19 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
+
     protected final Map<String, Document> propertyValues;
     protected final Connector connector;
+
+    protected final Map<String, SCAObject> systemChildren = new ConcurrentHashMap<String, SCAObject>();
+    protected final List<Service> systemServices = new ArrayList<Service>();
+    protected final List<Reference> systemReferences = new ArrayList<Reference>();
+
+    // autowire mappings
+    protected final Map<Class, SCAObject> autowireInternal = new ConcurrentHashMap<Class, SCAObject>();
+    protected final Map<Class, Service> autowireExternal = new ConcurrentHashMap<Class, Service>();
+    protected final Map<Class, SCAObject> systemAutowireInternal = new ConcurrentHashMap<Class, SCAObject>();
+    protected final Map<Class, Service> systemAutowireExternal = new ConcurrentHashMap<Class, Service>();
 
     protected CompositeComponentExtension(String name,
                                           CompositeComponent parent,
@@ -76,31 +91,9 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         publish(event);
     }
 
-    public void register(SCAObject child) {
-        assert child != null : "child was null";
-        if (children.get(child.getName()) != null) {
-            DuplicateNameException e = new DuplicateNameException("A context is already registered with name");
-            e.setIdentifier(child.getName());
-            e.addContextName(getName());
-            throw e;
-        }
-        children.put(child.getName(), child);
-        if (child instanceof Service) {
-            Service service = (Service) child;
-            synchronized (services) {
-                services.add(service);
-            }
-        } else if (child instanceof Reference) {
-            Reference context = (Reference) child;
-            synchronized (references) {
-                references.add(context);
-            }
-        } else {
-            InvalidComponentTypeException e = new InvalidComponentTypeException(child.getClass().getName());
-            e.setIdentifier(child.getName());
-            e.addContextName(getName());
-            throw e;
-        }
+    public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
+        throws ObjectRegistrationException {
+        throw new UnsupportedOperationException();
     }
 
     public Document getPropertyValue(String name) {
@@ -112,6 +105,23 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return children.get(name);
     }
 
+    public SCAObject getSystemChild(String name) {
+        assert name != null : "Name was null";
+        return systemChildren.get(name);
+    }
+
+    public List<SCAObject> getSystemChildren() {
+        return Collections.unmodifiableList(new ArrayList<SCAObject>(systemChildren.values()));
+    }
+
+    public List<Service> getSystemServices() {
+        return Collections.unmodifiableList(systemServices);
+    }
+
+    public List<Reference> getSystemReferences() {
+        return Collections.unmodifiableList(systemReferences);
+    }
+
     public List<SCAObject> getChildren() {
         return Collections.unmodifiableList(new ArrayList<SCAObject>(children.values()));
     }
@@ -120,66 +130,62 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return Collections.unmodifiableList(services);
     }
 
-    public Service getService(String name) {
-        SCAObject ctx = children.get(name);
-        if (ctx == null) {
-            ComponentNotFoundException e = new ComponentNotFoundException("Service not found");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
-        } else if (!(ctx instanceof Service)) {
-            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
-        }
-        return (Service) ctx;
-    }
-
-    public <T> T locateService(Class<T> serviceInterface, String name) {
-        SCAObject context = children.get(name);
-        if (context == null) {
-            TargetNotFoundException e = new TargetNotFoundException(name);
-            e.addContextName(getName());
-            throw e;
-        }
-        return serviceInterface.cast(context.getServiceInstance());
-    }
-
     public List<Reference> getReferences() {
         return Collections.unmodifiableList(references);
     }
 
-    public Object getServiceInstance() throws TargetException {
-        //TODO implement
-        return null;
-    }
-
-    public Object getServiceInstance(String name) throws TargetException {
-        SCAObject context = children.get(name);
-        if (context == null) {
-            TargetNotFoundException e = new TargetNotFoundException(name);
-            e.addContextName(getName());
-            throw e;
-        } else if (context instanceof Service) {
-            return context.getServiceInstance();
-        } else {
-            IllegalTargetException e = new IllegalTargetException("Target must be a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
-        }
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
-        synchronized (services) {
-            for (Service service : services) {
-                serviceInterfaces.add(service.getInterface());
+    public void register(SCAObject child) {
+        if (child.isSystem()) {
+            if (systemChildren.get(child.getName()) != null) {
+                DuplicateNameException e =
+                    new DuplicateNameException("A system child is already registered with the name");
+                e.setIdentifier(child.getName());
+                e.addContextName(getName());
+                throw e;
             }
+            systemChildren.put(child.getName(), child);
+        } else {
+            if (children.get(child.getName()) != null) {
+                DuplicateNameException e = new DuplicateNameException("A child is already registered with the name");
+                e.setIdentifier(child.getName());
+                e.addContextName(getName());
+                throw e;
+            }
+            children.put(child.getName(), child);
         }
-        return serviceInterfaces;
+        if (child instanceof Service) {
+            Service service = (Service) child;
+            synchronized (services) {
+                if (service.isSystem()) {
+                    systemServices.add(service);
+                } else {
+                    services.add(service);
+                }
+            }
+            registerAutowire(service);
+        } else if (child instanceof Reference) {
+            Reference reference = (Reference) child;
+            synchronized (references) {
+                if (reference.isSystem()) {
+                    systemReferences.add(reference);
+                } else {
+                    references.add(reference);
+                }
+            }
+            registerAutowire(reference);
+        } else if (child instanceof AtomicComponent) {
+            AtomicComponent atomic = (AtomicComponent) child;
+            registerAutowire(atomic);
+        } else if (child instanceof CompositeComponent) {
+            CompositeComponent component = (CompositeComponent) child;
+            if (lifecycleState == RUNNING && component.getLifecycleState() == UNINITIALIZED) {
+                component.start();
+            }
+            registerAutowire(component);
+            addListener(component);
+        }
     }
+
 
     public void addOutboundWire(OutboundWire wire) {
 
@@ -218,5 +224,297 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }
+
+    public Service getService(String name) {
+        SCAObject ctx = children.get(name);
+        if (ctx == null) {
+            ComponentNotFoundException e = new ComponentNotFoundException("Service not found");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        } else if (!(ctx instanceof Service)) {
+            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        }
+        return (Service) ctx;
+    }
+
+    public Object getServiceInstance() throws TargetException {
+        Service service = services.get(0);
+        if (service == null) {
+            throw new TargetException("Component has no services");
+        }
+        return service.getServiceInstance();
+    }
+
+    public Service getSystemService(String name) {
+        SCAObject ctx = systemChildren.get(name);
+        if (ctx == null) {
+            ComponentNotFoundException e = new ComponentNotFoundException("Service not found");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        } else if (!(ctx instanceof Service)) {
+            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        }
+        return (Service) ctx;
+    }
+
+    public <T> T locateService(Class<T> serviceInterface, String name) {
+        SCAObject target = children.get(name);
+        if (target == null) {
+            TargetNotFoundException e = new TargetNotFoundException(name);
+            e.addContextName(getName());
+            throw e;
+        }
+        return serviceInterface.cast(target.getServiceInstance());
+    }
+
+    public <T> T locateSystemService(Class<T> serviceInterface, String name) {
+        SCAObject object = systemChildren.get(name);
+        if (object == null) {
+            TargetNotFoundException e = new TargetNotFoundException(name);
+            e.addContextName(getName());
+            throw e;
+        }
+        return serviceInterface.cast(object.getServiceInstance());
+    }
+
+    public Object getServiceInstance(String name) throws TargetException {
+        SCAObject context = children.get(name);
+        if (context == null) {
+            TargetNotFoundException e = new TargetNotFoundException(name);
+            e.addContextName(getName());
+            throw e;
+        } else if (context instanceof Service) {
+            return context.getServiceInstance();
+        } else {
+            IllegalTargetException e = new IllegalTargetException("Target must be a service");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        }
+    }
+
+    public Object getSystemServiceInstance(String name) throws TargetException {
+        SCAObject target = systemChildren.get(name);
+        if (target == null) {
+            TargetNotFoundException e = new TargetNotFoundException(name);
+            e.addContextName(getName());
+            throw e;
+        } else if (target instanceof Service) {
+            return target.getServiceInstance();
+        } else {
+            IllegalTargetException e = new IllegalTargetException("Target must be a service");
+            e.setIdentifier(name);
+            e.addContextName(getName());
+            throw e;
+        }
+    }
+
+    public List<Class<?>> getServiceInterfaces() {
+        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
+        synchronized (services) {
+            for (Service service : services) {
+                serviceInterfaces.add(service.getInterface());
+            }
+        }
+        return serviceInterfaces;
+    }
+
+    public <T> T resolveInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        if (CompositeComponent.class.equals(instanceInterface)) {
+            return instanceInterface.cast(this);
+        }
+        SCAObject context = autowireInternal.get(instanceInterface);
+        if (context != null) {
+            try {
+                if (context instanceof AtomicComponent || context instanceof Reference || context instanceof Service) {
+                    return instanceInterface.cast(context.getServiceInstance());
+                } else {
+                    IllegalTargetException e = new IllegalTargetException("Autowire target must be a system "
+                        + "service, atomic component, or reference");
+                    e.setIdentifier(instanceInterface.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+            } catch (CoreRuntimeException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        } else {
+            try {
+                if (CompositeComponent.class.isAssignableFrom(instanceInterface)) {
+                    return instanceInterface.cast(this);
+                }
+                // resolve to parent
+                if (parent == null) {
+                    return null;
+                }
+                return getParent().resolveInstance(instanceInterface);
+            } catch (AutowireResolutionException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        }
+    }
+
+    public <T> T resolveSystemInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        if (CompositeComponent.class.equals(instanceInterface)) {
+            return instanceInterface.cast(this);
+        }
+        SCAObject context = systemAutowireInternal.get(instanceInterface);
+        if (context != null) {
+            try {
+                if (context instanceof AtomicComponent || context instanceof Reference || context instanceof Service) {
+                    return instanceInterface.cast(context.getServiceInstance());
+                } else {
+                    IllegalTargetException e = new IllegalTargetException("Autowire target must be a system "
+                        + "service, atomic component, or reference");
+                    e.setIdentifier(instanceInterface.getName());
+                    e.addContextName(getName());
+                    throw e;
+                }
+            } catch (CoreRuntimeException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        } else {
+            try {
+                // resolve to parent
+                return getParent().resolveSystemInstance(instanceInterface);
+            } catch (AutowireResolutionException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        }
+    }
+
+    public <T> T resolveExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        Service service = autowireExternal.get(instanceInterface);
+        if (service != null) {
+            try {
+                return instanceInterface.cast(service.getServiceInstance());
+            } catch (CoreRuntimeException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public <T> T resolveSystemExternalInstance(Class<T> instanceInterface) throws AutowireResolutionException {
+        Service service = systemAutowireExternal.get(instanceInterface);
+        if (service != null) {
+            try {
+                return instanceInterface.cast(service.getServiceInstance());
+            } catch (CoreRuntimeException e) {
+                e.addContextName(getName());
+                throw e;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public void prepare() {
+        // Connect services and references first so that their wires are linked first
+        List<SCAObject> childList = new ArrayList<SCAObject>();
+        for (SCAObject child : systemChildren.values()) {
+            if (child instanceof Component) {
+                childList.add(child);
+            } else {
+                childList.add(0, child);
+            }
+        }
+        // connect system artifacts
+        for (SCAObject child : childList) {
+            // connect all children
+            // TODO for composite wires, should delegate down
+            connector.connect(child);
+            child.prepare();
+        }
+
+        // connect application artifacts
+        childList.clear();
+        for (SCAObject child : children.values()) {
+            if (child instanceof Component) {
+                childList.add(child);
+            } else {
+                childList.add(0, child);
+            }
+        }
+        for (SCAObject child : childList) {
+            // connect all children
+            // TODO for composite wires, should delegate down
+            connector.connect(child);
+            child.prepare();
+        }
+    }
+
+    protected void registerAutowireExternal(Class<?> interfaze, Service service) {
+        if (interfaze == null) {
+            // The ServiceContract is not from Java
+            return;
+        }
+        if (service.isSystem()) {
+            if (systemAutowireExternal.containsKey(interfaze)) {
+                return;
+            }
+            systemAutowireExternal.put(interfaze, service);
+        } else {
+            if (autowireExternal.containsKey(interfaze)) {
+                return;
+            }
+            autowireExternal.put(interfaze, service);
+        }
+    }
+
+    protected void registerAutowireInternal(Class<?> interfaze, SCAObject object) {
+        if (interfaze == null) {
+            // The ServiceContract is not from Java
+            return;
+        }
+        if (object.isSystem()) {
+            if (systemAutowireInternal.containsKey(interfaze)) {
+                return;
+            }
+            systemAutowireInternal.put(interfaze, object);
+        } else {
+            if (autowireInternal.containsKey(interfaze)) {
+                return;
+            }
+            autowireInternal.put(interfaze, object);
+        }
+    }
+
+    protected void registerAutowire(CompositeComponent component) {
+        List<Service> services = component.getServices();
+        for (Service service : services) {
+            registerAutowireInternal(service.getInterface(), service);
+        }
+    }
+
+    protected void registerAutowire(AtomicComponent component) {
+        List<Class<?>> services = component.getServiceInterfaces();
+        for (Class<?> service : services) {
+            registerAutowireInternal(service, component);
+        }
+    }
+
+    protected void registerAutowire(Reference reference) {
+        registerAutowireInternal(reference.getInterface(), reference);
+    }
+
+    protected void registerAutowire(Service service) {
+        registerAutowireExternal(service.getInterface(), service);
+    }
+
 
 }

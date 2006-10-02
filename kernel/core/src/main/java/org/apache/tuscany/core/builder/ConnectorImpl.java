@@ -91,7 +91,19 @@ public class ConnectorImpl implements Connector {
                         continue;
                     }
                     try {
-                        connect(sourceComponent, outboundWire);
+                        // For a composite reference only, since its outbound wire comes from its parent composite,
+                        // the corresponding target would not lie in its parent but rather in its parent's parent
+                        if (source instanceof CompositeReference) {
+                            parent = parent.getParent();
+                            assert parent != null : "Parent of parent was null";
+                        }
+                        SCAObject target;
+                        if (sourceComponent.isSystem()) {
+                            target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
+                        } else {
+                            target = parent.getChild(outboundWire.getTargetName().getPartName());
+                        }
+                        connect(sourceComponent, outboundWire, target);
                     } catch (BuilderConfigException e) {
                         e.addContextName(source.getName());
                         e.addContextName(parent.getName());
@@ -129,8 +141,20 @@ public class ConnectorImpl implements Connector {
             Service service = (Service) source;
             InboundWire inboundWire = service.getInboundWire();
             OutboundWire outboundWire = service.getOutboundWire();
+            // For a composite reference only, since its outbound wire comes from its parent composite,
+            // the corresponding target would not lie in its parent but rather in its parent's parent
+            if (source instanceof CompositeReference) {
+                parent = parent.getParent();
+                assert parent != null : "Parent of parent was null";
+            }
+            SCAObject target;
+            if (service.isSystem()) {
+                target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
+            } else {
+                target = parent.getChild(outboundWire.getTargetName().getPartName());
+            }
             // connect the outbound service wire to the target
-            connect(service, outboundWire);
+            connect(service, outboundWire, target);
             // NB: this connect must be done after the outbound service chain is connected to its target above
             if (!(source instanceof CompositeService)) {
                 //REVIEW JFM: do we need this to be special for composites?
@@ -318,31 +342,16 @@ public class ConnectorImpl implements Connector {
         sourceChain.addInterceptor(new SynchronousBridgingInterceptor(targetChain.getHeadInterceptor()));
     }
 
-    /**
+       /**
      * Connects an component's outbound wire to its target in a composite.  Valid targets are either
      * <code>AtomicComponent</code>s contained in the composite, or <code>References</code> of the composite.
      *
      * @param sourceWire
      * @throws BuilderConfigException
      */
-    private void connect(SCAObject source, OutboundWire sourceWire) throws BuilderConfigException {
+    private void connect(SCAObject source, OutboundWire sourceWire, SCAObject target) throws BuilderConfigException {
         assert sourceWire.getTargetName() != null : "Wire target name was null";
         QualifiedName targetName = sourceWire.getTargetName();
-        CompositeComponent parent = source.getParent();
-        assert parent != null : "Parent was null";
-        // For a composite reference only, since its outbound wire comes from its parent composite,
-        // the corresponding target would not lie in its parent but rather in its parent's parent
-        if (source instanceof CompositeReference) {
-            parent = parent.getParent();
-            assert parent != null : "Parent of parent was null";
-        }
-        SCAObject target = parent.getChild(targetName.getPartName());
-        if (target == null) {
-            String refName = sourceWire.getReferenceName();
-            BuilderConfigException e = new BuilderConfigException("Target not found for reference " + refName);
-            e.setIdentifier(targetName.getQualifiedName());
-            throw e;
-        }
 
         if (target instanceof AtomicComponent) {
             AtomicComponent targetComponent = (AtomicComponent) target;
@@ -365,18 +374,36 @@ public class ConnectorImpl implements Connector {
         } else if (target instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) target;
             InboundWire targetWire = null;
-            for (Object child : composite.getChildren()) {
-                if (child instanceof CompositeService) {
-                    CompositeService compServ = (CompositeService) child;
-                    targetWire = compServ.getInboundWire();
-                    assert targetWire != null;
-                    Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                    Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
-                    if (sourceInterface.isAssignableFrom(targetInterface)) {
-                        target = compServ;
-                        break;
-                    } else {
-                        targetWire = null;
+            if (source.isSystem()) {
+                for (Object child : composite.getSystemChildren()) {
+                    if (child instanceof CompositeService) {
+                        CompositeService compServ = (CompositeService) child;
+                        targetWire = compServ.getInboundWire();
+                        assert targetWire != null;
+                        Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                        Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                        if (sourceInterface.isAssignableFrom(targetInterface)) {
+                            target = compServ;
+                            break;
+                        } else {
+                            targetWire = null;
+                        }
+                    }
+                }
+            } else {
+                for (Object child : composite.getChildren()) {
+                    if (child instanceof CompositeService) {
+                        CompositeService compServ = (CompositeService) child;
+                        targetWire = compServ.getInboundWire();
+                        assert targetWire != null;
+                        Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                        Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                        if (sourceInterface.isAssignableFrom(targetInterface)) {
+                            target = compServ;
+                            break;
+                        } else {
+                            targetWire = null;
+                        }
                     }
                 }
             }

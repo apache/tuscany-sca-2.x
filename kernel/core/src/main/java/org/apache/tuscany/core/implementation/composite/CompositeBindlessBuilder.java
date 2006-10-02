@@ -59,8 +59,8 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     }
 
     public Service build(CompositeComponent parent,
-                            BindlessServiceDefinition definition,
-                            DeploymentContext deploymentContext) {
+                         BindlessServiceDefinition definition,
+                         DeploymentContext deploymentContext) {
         return new CompositeService(definition.getName(),
             definition.getServiceContract().getInterfaceClass(),
             parent,
@@ -69,8 +69,8 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     }
 
     public Reference build(CompositeComponent parent,
-                              ReferenceDefinition definition,
-                              DeploymentContext deploymentContext) {
+                           ReferenceDefinition definition,
+                           DeploymentContext deploymentContext) {
         return new CompositeReference(definition.getName(),
             parent,
             wireService,

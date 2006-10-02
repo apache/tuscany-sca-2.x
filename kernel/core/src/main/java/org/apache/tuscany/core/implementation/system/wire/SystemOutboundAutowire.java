@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
@@ -32,7 +33,6 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.wire.OutboundAutowire;
 
 /**
@@ -43,11 +43,11 @@ import org.apache.tuscany.core.wire.OutboundAutowire;
 public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundWire {
     private String referenceName;
     private ServiceContract serviceContract;
-    private AutowireComponent component;
+    private CompositeComponent component;
     private final boolean required;
     private SCAObject container;
 
-    public SystemOutboundAutowire(String referenceName, Class<?> interfaze, AutowireComponent component,
+    public SystemOutboundAutowire(String referenceName, Class<?> interfaze, CompositeComponent component,
                                   boolean required) {
 
         this.referenceName = referenceName;
@@ -81,7 +81,7 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
 
     public Object getTargetService() throws TargetException {
         Class<?> interfaze = serviceContract.getInterfaceClass();
-        Object service = component.resolveInstance(interfaze);
+        Object service = component.resolveSystemInstance(interfaze);
         if (service == null && required) {
             TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
             e.setIdentifier(interfaze.getName());
@@ -145,7 +145,7 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
     public SCAObject getContainer() {
         return container;
     }
-    
+
     public void setContainer(SCAObject container) {
         this.container = container;
     }

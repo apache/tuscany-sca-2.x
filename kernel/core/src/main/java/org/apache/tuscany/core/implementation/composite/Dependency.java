@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.services.artifact.Artifact;
 
 /**
  * A model object that represents a dependency on an external artifact.

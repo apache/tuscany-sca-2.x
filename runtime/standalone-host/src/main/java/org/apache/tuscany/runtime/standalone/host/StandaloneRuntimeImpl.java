@@ -22,18 +22,18 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
 
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
+
+import org.apache.tuscany.core.bootstrap.Bootstrapper;
+import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.launcher.CompositeContextImpl;
+import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 
 /**
@@ -42,8 +42,8 @@ import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 public class StandaloneRuntimeImpl extends AbstractRuntime {
     private CompositeContextImpl context;
     private RuntimeComponent runtime;
-    private SystemCompositeComponent systemComponent;
-    private SystemCompositeComponent tuscanySystem;
+    private CompositeComponent systemComponent;
+    private CompositeComponent tuscanySystem;
     private CompositeComponent application;
 
     public void initialize() {
@@ -57,12 +57,12 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
         Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory);
         runtime = bootstrapper.createRuntime();
         runtime.start();
-        systemComponent = (SystemCompositeComponent) runtime.getSystemComponent();
+        systemComponent = runtime.getSystemComponent();
 
         // register the runtime info provided by the host
         systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
-                                           StandaloneRuntimeInfo.class,
-                                           (StandaloneRuntimeInfo) getRuntimeInfo());
+            StandaloneRuntimeInfo.class,
+            (StandaloneRuntimeInfo) getRuntimeInfo());
 
         // register the monitor factory provided by the host
         systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
@@ -73,20 +73,20 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             // deploy the system scdl
             Deployer deployer = bootstrapper.createDeployer();
             tuscanySystem = deploySystemScdl(deployer,
-                                             systemComponent,
-                                             ComponentNames.TUSCANY_SYSTEM,
-                                             getSystemScdl(),
-                                             bootClassLoader);
+                systemComponent,
+                ComponentNames.TUSCANY_SYSTEM,
+                getSystemScdl(),
+                bootClassLoader);
             tuscanySystem.start();
 
             // switch to the system deployer
-            deployer = (Deployer) tuscanySystem.getChild("deployer").getServiceInstance();
+            deployer = (Deployer) tuscanySystem.getSystemChild("deployer").getServiceInstance();
 
             application = deployApplicationScdl(deployer,
-                                                runtime.getRootComponent(),
-                                                getApplicationName(),
-                                                getApplicationScdl(),
-                                                getApplicationClassLoader());
+                runtime.getRootComponent(),
+                getApplicationName(),
+                getApplicationScdl(),
+                getApplicationClassLoader());
             application.start();
 
             context = new CompositeContextImpl(application);

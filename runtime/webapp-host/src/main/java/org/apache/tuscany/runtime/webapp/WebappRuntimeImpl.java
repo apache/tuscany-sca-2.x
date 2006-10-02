@@ -27,23 +27,23 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
 
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.Deployer;
+
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.Deployer;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -51,8 +51,8 @@ import org.apache.tuscany.spi.deployer.Deployer;
  * <p/>
  * The bootstrapper launches the runtime, booting system extensions and applications, according to the servlet
  * parameters defined in {@link Constants}. When the runtime is instantiated, it is placed in the servlet context with
- * the attribute {@link Constants.RUNTIME_ATTRIBUTE}. The runtime implements {@link WebappRuntime} so that
- * filters and servlets loaded in the parent web app classloader may pass events and requests to it.
+ * the attribute {@link Constants.RUNTIME_ATTRIBUTE}. The runtime implements {@link WebappRuntime} so that filters and
+ * servlets loaded in the parent web app classloader may pass events and requests to it.
  * <p/>
  * By default, the top-most application composite component will be returned when "non-managed" web application code
  * such as JSPs call {@link org.osoa.sca.CurrentCompositeContext}. If a composite deeper in the hierarchy should be
@@ -70,8 +70,8 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
     private CompositeContextImpl context;
     private RuntimeComponent runtime;
-    private SystemCompositeComponent systemComponent;
-    private SystemCompositeComponent tuscanySystem;
+    private CompositeComponent systemComponent;
+    private CompositeComponent tuscanySystem;
     private CompositeComponent application;
 
     public ServletContext getServletContext() {
@@ -94,12 +94,12 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory);
         runtime = bootstrapper.createRuntime();
         runtime.start();
-        systemComponent = (SystemCompositeComponent) runtime.getSystemComponent();
+        systemComponent = runtime.getSystemComponent();
 
         // register the runtime info provided by the host
         systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
-                                           WebappRuntimeInfo.class,
-                                           (WebappRuntimeInfo) getRuntimeInfo());
+            WebappRuntimeInfo.class,
+            (WebappRuntimeInfo) getRuntimeInfo());
 
         // register the monitor factory provided by the host
         systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
@@ -110,22 +110,22 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             // deploy the system scdl
             Deployer deployer = bootstrapper.createDeployer();
             tuscanySystem = deploySystemScdl(deployer,
-                                             systemComponent,
-                                             ComponentNames.TUSCANY_SYSTEM,
-                                             getSystemScdl(),
-                                             bootClassLoader);
+                systemComponent,
+                ComponentNames.TUSCANY_SYSTEM,
+                getSystemScdl(),
+                bootClassLoader);
             tuscanySystem.start();
 
-            requestInjector = (ServletRequestInjector) tuscanySystem.getChild("servletHost").getServiceInstance();
+            requestInjector = (ServletRequestInjector) tuscanySystem.getSystemChild("servletHost").getServiceInstance();
 
             // switch to the system deployer
-            deployer = (Deployer) tuscanySystem.getChild("deployer").getServiceInstance();
+            deployer = (Deployer) tuscanySystem.getSystemChild("deployer").getServiceInstance();
 
             application = deployApplicationScdl(deployer,
-                                                runtime.getRootComponent(),
-                                                getApplicationName(),
-                                                getApplicationScdl(),
-                                                getHostClassLoader());
+                runtime.getRootComponent(),
+                getApplicationName(),
+                getApplicationScdl(),
+                getHostClassLoader());
             application.start();
 
             context = new CompositeContextImpl(application);

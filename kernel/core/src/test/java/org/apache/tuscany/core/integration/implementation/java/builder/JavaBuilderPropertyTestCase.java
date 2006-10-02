@@ -31,7 +31,6 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.AutowireComponent;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory;
@@ -76,7 +75,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
-        parent = EasyMock.createNiceMock(AutowireComponent.class);
+        parent = EasyMock.createNiceMock(CompositeComponent.class);
         registry = new ScopeRegistryImpl(new WorkContextImpl());
         new StatelessScopeObjectFactory(registry);
     }

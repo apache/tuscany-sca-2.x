@@ -20,17 +20,17 @@ package org.apache.tuscany.core.runtime;
 
 import java.net.URL;
 
-import org.apache.tuscany.core.implementation.system.component.SystemCompositeComponent;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.runtime.TuscanyRuntime;
 
 /**
  * @version $Rev$ $Date$
@@ -104,11 +104,11 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         return new NullMonitorFactory();
     }
 
-    protected SystemCompositeComponent deploySystemScdl(Deployer deployer,
-                                                        SystemCompositeComponent parent,
-                                                        String name,
-                                                        URL systemScdl,
-                                                        ClassLoader systemClassLoader)
+    protected CompositeComponent deploySystemScdl(Deployer deployer,
+                                                  CompositeComponent parent,
+                                                  String name,
+                                                  URL systemScdl,
+                                                  ClassLoader systemClassLoader)
         throws LoaderException {
 
         SystemCompositeImplementation impl = new SystemCompositeImplementation();
@@ -117,7 +117,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(name, impl);
 
-        return (SystemCompositeComponent) deployer.deploy(parent, definition);
+        return (CompositeComponent) deployer.deploy(parent, definition);
     }
 
     protected CompositeComponent deployApplicationScdl(Deployer deployer,

@@ -16,27 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 /**
- * Tests registering arbitrarily deep child composite contexts
  *
  * @version $Rev$ $Date$
  */
 public class CompositePropagationTestCase extends TestCase {
 
-    private SystemCompositeComponent parent;
-    private SystemCompositeComponent child2;
+    private CompositeComponent parent;
+    private CompositeComponent child2;
+
+    public void testSystemLifecyclePropagation() throws NoSuchMethodException {
+        parent.start();
+        List<Class<?>> interfaces = new ArrayList<Class<?>>();
+        interfaces.add(Source.class);
+        SystemAtomicComponent component = createMock(SystemAtomicComponent.class);
+        expect(component.getName()).andReturn("source").anyTimes();
+        component.stop();
+        expect(component.getServiceInterfaces()).andReturn(interfaces);
+        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
+        replay(component);
+        child2.register(component);
+        parent.stop();
+        verify(component);
+    }
 
     public void testLifecyclePropagation() throws NoSuchMethodException {
         parent.start();
@@ -46,6 +64,7 @@ public class CompositePropagationTestCase extends TestCase {
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
         expect(component.getServiceInterfaces()).andReturn(interfaces);
+        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
         replay(component);
         child2.register(component);
         parent.stop();
@@ -55,9 +74,9 @@ public class CompositePropagationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = new SystemCompositeComponentImpl("parent", null, null, null, null);
-        SystemCompositeComponent child1 = new SystemCompositeComponentImpl("child1", parent, null, null, null);
-        child2 = new SystemCompositeComponentImpl("child2", child1, null, null, null);
+        parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent child1 = new CompositeComponentImpl("child1", parent, null, null);
+        child2 = new CompositeComponentImpl("child2", child1, null, null);
         child1.register(child2);
         parent.register(child1);
     }

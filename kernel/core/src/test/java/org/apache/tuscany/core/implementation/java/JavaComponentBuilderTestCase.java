@@ -53,7 +53,7 @@ public class JavaComponentBuilderTestCase extends TestCase {
     private DeploymentContext deploymentContext;
 
     public void testBuild() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
 
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> sourceType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
