@@ -32,10 +32,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Push InputSource to SAX
- *
  */
 @Service(Transformer.class)
-public class InputSource2SAX extends TransformerExtension<InputSource, ContentHandler> implements PushTransformer<InputSource, ContentHandler> {
+public class InputSource2SAX extends TransformerExtension<InputSource, ContentHandler> implements
+    PushTransformer<InputSource, ContentHandler> {
+
     public void transform(InputSource source, ContentHandler target, TransformationContext context) {
         try {
             XMLReader reader = XMLReaderFactory.createXMLReader();

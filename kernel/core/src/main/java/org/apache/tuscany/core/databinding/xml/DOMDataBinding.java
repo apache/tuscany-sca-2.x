@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
  * DOM DataBinding
  */
 public class DOMDataBinding extends DataBindingExtension {
-    public final static String NAME = Node.class.getName();
+    public static final String NAME = Node.class.getName();
 
     public DOMDataBinding() {
         super(Node.class);

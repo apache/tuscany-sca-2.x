@@ -29,10 +29,8 @@ import java.util.Set;
 /**
  * Directed, weighted graph
  * 
- * @param <V>
- *            The type of vertex object
- * @param <E>
- *            The type of edge object
+ * @param <V> The type of vertex object
+ * @param <E> The type of edge object
  */
 public class DirectedGraph<V, E> {
     private final Map<V, Vertex> vertices = new HashMap<V, Vertex>();
@@ -40,17 +38,10 @@ public class DirectedGraph<V, E> {
     /**
      * Key for the shortest path cache
      */
-    private class VertexPair {
+    private final class VertexPair {
         private Vertex source;
 
         private Vertex target;
-
-        public boolean equals(Object object) {
-            if (!VertexPair.class.isInstance(object))
-                return false;
-            VertexPair pair = (VertexPair) object;
-            return source == pair.source && target == pair.target;
-        }
 
         /**
          * @param source
@@ -61,6 +52,21 @@ public class DirectedGraph<V, E> {
             this.source = source;
             this.target = target;
         }
+
+        public boolean equals(Object object) {
+            if (!VertexPair.class.isInstance(object)) {
+                return false;
+            }
+            VertexPair pair = (VertexPair)object;
+            return source == pair.source && target == pair.target;
+        }
+
+        public int hashCode() {
+            int x = source == null ? 0 : source.hashCode();
+            int y = target == null ? 0 : target.hashCode();
+            return x ^ y;
+        }
+
     }
 
     private final Map<VertexPair, Path> paths = new HashMap<VertexPair, Path>();
@@ -68,10 +74,11 @@ public class DirectedGraph<V, E> {
     /**
      * Vertex of a graph
      */
-    public class Vertex {
+    public final class Vertex {
         private V value;
 
-        // TODO: Do we want to support multiple edges for a vertex pair? If so, we should use a List instead of Map
+        // TODO: Do we want to support multiple edges for a vertex pair? If so,
+        // we should use a List instead of Map
         private Map<Vertex, Edge> outEdges = new HashMap<Vertex, Edge>();
 
         private Vertex(V value) {
@@ -95,7 +102,7 @@ public class DirectedGraph<V, E> {
     /**
      * An Edge connects two vertices in one direction
      */
-    public class Edge {
+    public final class Edge {
         private Vertex sourceVertex;
 
         private Vertex targetVertex;
@@ -148,11 +155,11 @@ public class DirectedGraph<V, E> {
         }
     }
 
-    private class Node implements Comparable<Node> {
+    private final class Node implements Comparable<Node> {
 
         private long distance = Integer.MAX_VALUE;
 
-        private Node previous = null; // NOPMD by rfeng on 9/26/06 9:17 PM
+        private Node previous; // NOPMD by rfeng on 9/26/06 9:17 PM
 
         private Vertex vertex; // NOPMD by rfeng on 9/26/06 9:17 PM
 
@@ -209,27 +216,30 @@ public class DirectedGraph<V, E> {
     }
 
     /**
-     * Get the shortes path from the source vertex to the target vertex using Dijkstra's algorithm. If there's no path, null will be returned. If the
-     * source is the same as the target, it returns a path with empty edges with weight 0.
+     * Get the shortes path from the source vertex to the target vertex using
+     * Dijkstra's algorithm. If there's no path, null will be returned. If the
+     * source is the same as the target, it returns a path with empty edges with
+     * weight 0.
      * 
-     * @param sourceValue
-     *            The value identifies the source
-     * @param targetValue
-     *            The value identifies the target
+     * @param sourceValue The value identifies the source
+     * @param targetValue The value identifies the target
      * @return The shortest path
      */
     public Path getShortestPath(V sourceValue, V targetValue) {
         Vertex source = getVertex(sourceValue);
-        if (source == null)
+        if (source == null) {
             return null;
+        }
         Vertex target = getVertex(targetValue);
-        if (target == null)
+        if (target == null) {
             return null;
+        }
 
         VertexPair pair = new VertexPair(source, target);
-        if (paths.containsKey(pair))
+        if (paths.containsKey(pair)) {
             return paths.get(pair);
-        
+        }
+
         // HACK: To support same vertex
         if (source == target) {
             Path path = new Path();
@@ -244,8 +254,9 @@ public class DirectedGraph<V, E> {
         Map<Vertex, Node> nodes = new HashMap<Vertex, Node>();
         for (Vertex v : vertices.values()) {
             Node node = new Node(v);
-            if (v == source)
+            if (v == source) {
                 node.distance = 0;
+            }
             nodes.put(v, node);
         }
 
@@ -272,7 +283,8 @@ public class DirectedGraph<V, E> {
     }
 
     /**
-     * Searches for the vertex u in the vertex set Q that has the least d[u] value. That vertex is removed from the set Q and returned to the user.
+     * Searches for the vertex u in the vertex set Q that has the least d[u]
+     * value. That vertex is removed from the set Q and returned to the user.
      * 
      * @param nodes
      * @return
@@ -286,10 +298,10 @@ public class DirectedGraph<V, E> {
     /**
      * The path between two vertices
      */
-    public class Path {
+    public final class Path {
         private List<Edge> edges = new LinkedList<Edge>();
 
-        private int weight = 0;
+        private int weight;
 
         public int getWeight() {
             return weight;
@@ -310,8 +322,9 @@ public class DirectedGraph<V, E> {
     }
 
     private Path getPath(Node t) {
-        if (t.distance == Integer.MAX_VALUE)
+        if (t.distance == Integer.MAX_VALUE) {
             return null;
+        }
         Path path = new Path();
         Node u = t;
         while (u.previous != null) {

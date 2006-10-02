@@ -24,10 +24,6 @@ import java.io.Writer;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl;
-import org.apache.tuscany.core.databinding.impl.MediatorImpl;
-import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
-import org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl;
 import org.apache.tuscany.core.databinding.xml.Node2String;
 import org.apache.tuscany.core.databinding.xml.Node2Writer;
 import org.apache.tuscany.core.databinding.xml.SAX2DOMPipe;
@@ -45,18 +41,34 @@ import org.w3c.dom.Node;
  */
 public class MediatorImplTestCase extends TestCase {
     private static final String IPO_XML =
-            "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-                    + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-                    + "  xmlns:ipo=\"http://www.example.com/IPO\""
-                    + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
-                    + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + " <name>Helen Zoe</name>"
-                    + " <street>47 Eden Street</street>" + " <city>Cambridge</city>" + " <postcode>CB1 1JR</postcode>"
-                    + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">" + " <name>Robert Smith</name>"
-                    + " <street>8 Oak Avenue</street>" + " <city>Old Town</city>" + "<state>PA</state>"
-                    + " <zip>95819</zip>" + "  </billTo>" + "  <items>" + " <item partNum=\"833-AA\">"
-                    + " <productName>Lapis necklace</productName>" + "   <quantity>1</quantity>"
-                    + "<USPrice>99.95</USPrice>" + "   <ipo:comment>Want this for the holidays</ipo:comment>"
-                    + "   <shipDate>1999-12-05</shipDate>" + " </item>" + "  </items>" + "</ipo:purchaseOrder>";
+        "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + "  xmlns:ipo=\"http://www.example.com/IPO\""
+            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
+            + "  orderDate=\"1999-12-01\">"
+            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
+            + " <name>Helen Zoe</name>"
+            + " <street>47 Eden Street</street>"
+            + " <city>Cambridge</city>"
+            + " <postcode>CB1 1JR</postcode>"
+            + "  </shipTo>"
+            + "  <billTo xsi:type=\"ipo:USAddress\">"
+            + " <name>Robert Smith</name>"
+            + " <street>8 Oak Avenue</street>"
+            + " <city>Old Town</city>"
+            + "<state>PA</state>"
+            + " <zip>95819</zip>"
+            + "  </billTo>"
+            + "  <items>"
+            + " <item partNum=\"833-AA\">"
+            + " <productName>Lapis necklace</productName>"
+            + "   <quantity>1</quantity>"
+            + "<USPrice>99.95</USPrice>"
+            + "   <ipo:comment>Want this for the holidays</ipo:comment>"
+            + "   <shipDate>1999-12-05</shipDate>"
+            + " </item>"
+            + "  </items>"
+            + "</ipo:purchaseOrder>";
 
     private MediatorImpl mediator;
 
@@ -87,9 +99,10 @@ public class MediatorImplTestCase extends TestCase {
 
     public void testTransform1() {
         TransformationContext context = createTransformationContext(String.class, Node.class);
-        Object node = mediator.mediate(IPO_XML, context.getSourceDataType(), context.getTargetDataType(), null);
+        Object node =
+            mediator.mediate(IPO_XML, context.getSourceDataType(), context.getTargetDataType(), null);
         Assert.assertTrue(node instanceof Document);
-        Element root = ((Document) node).getDocumentElement();
+        Element root = ((Document)node).getDocumentElement();
         Assert.assertEquals(root.getNamespaceURI(), "http://www.example.com/IPO");
         Assert.assertEquals(root.getLocalName(), "purchaseOrder");
     }

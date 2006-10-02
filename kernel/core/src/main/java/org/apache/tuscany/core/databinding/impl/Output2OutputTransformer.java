@@ -40,11 +40,12 @@ import org.apache.tuscany.spi.model.Operation;
 import org.osoa.sca.annotations.Service;
 
 /**
- * This is a special transformer to transform the output from one IDL to the other one
+ * This is a special transformer to transform the output from one IDL to the
+ * other one
  */
 @Service(Transformer.class)
 public class Output2OutputTransformer extends TransformerExtension<Object, Object> implements
-        PullTransformer<Object, Object> {
+    PullTransformer<Object, Object> {
     private static final String IDL_OUTPUT = "idl:output";
 
     protected DataBindingRegistry dataBindingRegistry;
@@ -113,7 +114,8 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
         DataBinding dataBinding = dataBindingRegistry.getDataBinding(dataBindingId);
         WrapperHandler wrapperHandler = dataBinding == null ? null : dataBinding.getWrapperHandler();
         if (wrapperHandler == null) {
-            throw new TransformationException("No wrapper handler is provided for databinding: " + dataBindingId);
+            throw new TransformationException(
+                                              "No wrapper handler is provided for databinding: " + dataBindingId);
         }
         return wrapperHandler;
     }
@@ -127,16 +129,16 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     public Object transform(Object response, TransformationContext context) {
         try {
             DataType<DataType> sourceType = context.getSourceDataType();
-            Operation<?> sourceOp = (Operation<?>) sourceType.getMetadata(Operation.class.getName());
-            boolean sourceWrapped = (sourceOp != null && sourceOp.isWrapperStyle());
+            Operation<?> sourceOp = (Operation<?>)sourceType.getMetadata(Operation.class.getName());
+            boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
             WrapperHandler sourceWrapperHandler = null;
             if (sourceWrapped) {
                 sourceWrapperHandler = getWapperHandler(sourceOp);
             }
 
             DataType<DataType> targetType = context.getTargetDataType();
-            Operation<?> targetOp = (Operation<?>) targetType.getMetadata(Operation.class.getName());
-            boolean targetWrapped = (targetOp != null && targetOp.isWrapperStyle());
+            Operation<?> targetOp = (Operation<?>)targetType.getMetadata(Operation.class.getName());
+            boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
             WrapperHandler targetWrapperHandler = null;
             if (targetWrapped) {
                 targetWrapperHandler = getWapperHandler(targetOp);
@@ -145,7 +147,8 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             if ((!sourceWrapped) && targetWrapped) {
                 // Unwrapped --> Wrapped
                 WrapperInfo wrapper = targetOp.getWrapper();
-                Object targetWrapper = targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
+                Object targetWrapper =
+                    targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
                 if (response == null) {
                     return targetWrapper;
                 }
@@ -165,13 +168,14 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                 targetWrapperHandler = getWapperHandler(targetType.getLogical().getDataBinding());
                 if (targetWrapperHandler != null) {
                     ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
-                    // Object targetWrapper = targetWrapperHandler.create(wrapperElement, context);
+                    // Object targetWrapper =
+                    // targetWrapperHandler.create(wrapperElement, context);
                     DataType<QName> targetWrapperType =
-                            new DataType<QName>(targetType.getLogical().getDataBinding(), Object.class, wrapperElement
-                                    .getQName());
+                        new DataType<QName>(targetType.getLogical().getDataBinding(), Object.class,
+                                            wrapperElement.getQName());
                     Object targetWrapper =
-                            mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
-                                    .getMetadata());
+                        mediator.mediate(sourceWrapper, sourceType.getLogical(), targetWrapperType, context
+                            .getMetadata());
                     return targetWrapperHandler.getChild(targetWrapper, 0, childElement);
                 } else {
                     Object child = sourceWrapperHandler.getChild(sourceWrapper, 0, childElement);
@@ -181,7 +185,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             } else {
                 // FIXME: Do we want to handle wrapped to wrapped?
                 return mediator.mediate(response, sourceType.getLogical(), targetType.getLogical(), context
-                        .getMetadata());
+                    .getMetadata());
             }
         } catch (Exception e) {
             throw new TransformationException(e);

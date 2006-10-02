@@ -35,17 +35,17 @@ import org.xml.sax.InputSource;
 
 /**
  * Push DOM InputSource to Node
- * 
  */
 @Service(Transformer.class)
-public class InputStream2Node extends TransformerExtension<InputStream, Node> implements PullTransformer<InputStream, Node> {
-    private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
+public class InputStream2Node extends TransformerExtension<InputStream, Node> implements
+    PullTransformer<InputStream, Node> {
+    private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 
     public Node transform(InputStream source, TransformationContext context) {
         try {
             Source streamSource = new SAXSource(new InputSource(source));
             DOMResult result = new DOMResult();
-            transformer.transform(streamSource, result, context);
+            TRANSFORMER.transform(streamSource, result, context);
             return result.getNode();
         } catch (Exception e) {
             throw new TransformationException(e);

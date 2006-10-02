@@ -55,28 +55,29 @@ public class DataBindingInterceptorTestCase extends TestCase {
         super.setUp();
     }
 
-    /**
-     * Test method for
-     * {@link org.apache.tuscany.core.databinding.impl.DataBindingInteceptor#invoke(org.apache.tuscany.spi.wire.Message)}.
-     */
     @SuppressWarnings("unchecked")
     public final void testInvoke() {
         DataType<Class> type1 = new DataType<Class>("xml:string", String.class, String.class);
         List<DataType<Class>> types1 = new ArrayList<DataType<Class>>();
         types1.add(type1);
         DataType<List<DataType<Class>>> inputType1 =
-                new DataType<List<DataType<Class>>>("xml:string", Object[].class, types1);
+            new DataType<List<DataType<Class>>>("xml:string", Object[].class, types1);
 
         DataType<Class> type2 = new DataType<Class>("foo", Foo.class, Foo.class);
         List<DataType<Class>> types2 = new ArrayList<DataType<Class>>();
         types2.add(type2);
-        DataType<List<DataType<Class>>> inputType2 = new DataType<List<DataType<Class>>>("foo", Object[].class, types2);
+        DataType<List<DataType<Class>>> inputType2 =
+            new DataType<List<DataType<Class>>>("foo", Object[].class, types2);
 
-        Operation<Class> operation1 = new Operation<Class>("call", inputType1, type1, null, false, "xml:string");
-        Operation<Class> operation2 = new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node");
+        Operation<Class> operation1 =
+            new Operation<Class>("call", inputType1, type1, null, false, "xml:string");
+        Operation<Class> operation2 =
+            new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node");
 
-        DataType<DataType> outputType1 = new DataType<DataType>("idl:output", Object.class, operation1.getOutputType());
-        DataType<DataType> outputType2 = new DataType<DataType>("idl:output", Object.class, operation2.getOutputType());
+        DataType<DataType> outputType1 =
+            new DataType<DataType>("idl:output", Object.class, operation1.getOutputType());
+        DataType<DataType> outputType2 =
+            new DataType<DataType>("idl:output", Object.class, operation2.getOutputType());
 
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
@@ -88,17 +89,20 @@ public class DataBindingInterceptorTestCase extends TestCase {
 
         interceptor = new DataBindingInteceptor(outboundWire, operation1, inboundWire, operation2);
         Mediator mediator = createMock(Mediator.class);
-        Object[] source = new Object[] { "<foo>bar</foo>" };
+        Object[] source = new Object[] {"<foo>bar</foo>"};
         Foo foo = new Foo();
         foo.bar = "bar";
-        Object[] target = new Object[] { foo };
-        expect(
-                mediator.mediate(EasyMock.same(source), EasyMock.same(inputType1), EasyMock.same(inputType2), EasyMock
-                        .isA(Map.class))).andReturn(target);
-        // expect(mediator.mediate(target[0], type2, type1)).andReturn(source[0]);
-        expect(
-                mediator.mediate(EasyMock.same(target[0]), EasyMock.eq(outputType2), EasyMock.eq(outputType1), EasyMock
-                        .isA(Map.class))).andReturn(source[0]);
+        Object[] target = new Object[] {foo};
+        expect(mediator.mediate(EasyMock.same(source),
+                                EasyMock.same(inputType1),
+                                EasyMock.same(inputType2),
+                                EasyMock.isA(Map.class))).andReturn(target);
+        // expect(mediator.mediate(target[0], type2,
+        // type1)).andReturn(source[0]);
+        expect(mediator.mediate(EasyMock.same(target[0]),
+                                EasyMock.eq(outputType2),
+                                EasyMock.eq(outputType1),
+                                EasyMock.isA(Map.class))).andReturn(source[0]);
         replay(mediator);
         interceptor.setMediator(mediator);
         Message msg = createMock(Message.class);
@@ -112,7 +116,7 @@ public class DataBindingInterceptorTestCase extends TestCase {
         replay(next);
         interceptor.setNext(next);
         interceptor.invoke(msg);
-        String result = (String) msg.getBody();
+        String result = (String)msg.getBody();
         Assert.assertEquals(source[0], result);
         EasyMock.verify(mediator, msg, next);
     }

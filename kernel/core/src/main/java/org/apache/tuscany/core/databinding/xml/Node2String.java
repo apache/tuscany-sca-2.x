@@ -29,16 +29,15 @@ import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML String
- *
  */
 @Service(org.apache.tuscany.spi.databinding.Transformer.class)
 public class Node2String extends TransformerExtension<Node, String> implements PullTransformer<Node, String> {
-    private static final Node2Writer transformer = new Node2Writer();
+    private static final Node2Writer TRANSFORMER = new Node2Writer();
 
     public String transform(Node source, TransformationContext context) {
         try {
             StringWriter writer = new StringWriter();
-            transformer.transform(source, writer, context);
+            TRANSFORMER.transform(source, writer, context);
             return writer.toString();
         } catch (Exception e) {
             throw new TransformationException(e);

@@ -25,7 +25,8 @@ import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 
-public class SAX2DOMPipe extends TransformerExtension<ContentHandler, Node> implements DataPipe<ContentHandler, Node> {
+public class SAX2DOMPipe extends TransformerExtension<ContentHandler, Node> implements
+    DataPipe<ContentHandler, Node> {
     private SAX2DOM pipe;
 
     /**

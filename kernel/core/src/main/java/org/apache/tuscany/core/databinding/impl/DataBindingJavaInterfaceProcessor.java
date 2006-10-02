@@ -46,11 +46,11 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
 
     private static final String SIMPLE_JAVA_OBJECTS = "java.lang.Object";
 
-    private final static Class[] simpleTypes =
-            { Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
-                    Date.class, Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class };
+    private static final Class[] SIMPLE_JAVA_TYPES =
+        {Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
+         Date.class, Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class};
 
-    private final static Set<Class> simpleTypeSet = new HashSet<Class>(Arrays.asList(simpleTypes));
+    private static final Set<Class> SIMPLE_TYPE_SET = new HashSet<Class>(Arrays.asList(SIMPLE_JAVA_TYPES));
 
     public void visitInterface(Class<?> clazz, Class<?> callbackClass, JavaServiceContract contract)
         throws InvalidServiceContractException {
@@ -62,8 +62,9 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
         }
     }
 
-
-    private void processInterface(Class<?> clazz, JavaServiceContract contract, Map<String, Operation<Type>> operations) {
+    private void processInterface(Class<?> clazz,
+                                  JavaServiceContract contract,
+                                  Map<String, Operation<Type>> operations) {
         DataType interfaceDataType = clazz.getAnnotation(DataType.class);
         if (interfaceDataType != null) {
             contract.setDataBinding(interfaceDataType.name());
@@ -99,14 +100,13 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
         }
     }
 
-
     private void adjustSimpleType(org.apache.tuscany.spi.model.DataType<?> dataType, String dataBinding) {
         Type type = dataType.getPhysical();
         if (!(type instanceof Class)) {
             return;
         }
-        Class cls = (Class) dataType.getPhysical();
-        if (cls.isPrimitive() || simpleTypeSet.contains(cls)) {
+        Class cls = (Class)dataType.getPhysical();
+        if (cls.isPrimitive() || SIMPLE_TYPE_SET.contains(cls)) {
             dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
         } else if (cls == String.class && (dataBinding == null || !dataBinding.equals(String.class.getName()))) {
             // Identify the String as a simple type

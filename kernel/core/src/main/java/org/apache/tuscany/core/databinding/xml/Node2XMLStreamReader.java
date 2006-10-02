@@ -29,9 +29,9 @@ import org.w3c.dom.Node;
 
 /**
  * Transform DOM Node to XML XMLStreamReader
- * 
  */
-public class Node2XMLStreamReader extends TransformerExtension<Node, XMLStreamReader> implements PullTransformer<Node, XMLStreamReader> {
+public class Node2XMLStreamReader extends TransformerExtension<Node, XMLStreamReader> implements
+    PullTransformer<Node, XMLStreamReader> {
 
     public XMLStreamReader transform(Node source, TransformationContext context) {
         try {

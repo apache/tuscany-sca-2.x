@@ -26,7 +26,8 @@ import java.io.OutputStream;
 import org.apache.tuscany.spi.databinding.DataPipe;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 
-public class StreamDataPipe extends TransformerExtension<OutputStream, InputStream> implements DataPipe<OutputStream, InputStream> {
+public class StreamDataPipe extends TransformerExtension<OutputStream, InputStream> implements
+    DataPipe<OutputStream, InputStream> {
 
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 

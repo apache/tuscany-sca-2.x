@@ -35,17 +35,17 @@ import org.w3c.dom.Node;
 
 /**
  * Push DOM Node to OutputStream
- * 
  */
 @Service(Transformer.class)
-public class Node2OutputStream extends TransformerExtension<Node, OutputStream> implements PushTransformer<Node, OutputStream> {
-    private static final Source2ResultTransformer transformer = new Source2ResultTransformer();
+public class Node2OutputStream extends TransformerExtension<Node, OutputStream> implements
+    PushTransformer<Node, OutputStream> {
+    private static final Source2ResultTransformer TRANSFORMER = new Source2ResultTransformer();
 
     public void transform(Node source, OutputStream writer, TransformationContext context) {
         try {
             Source domSource = new DOMSource(source);
             Result result = new StreamResult(writer);
-            transformer.transform(domSource, result, context);
+            TRANSFORMER.transform(domSource, result, context);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

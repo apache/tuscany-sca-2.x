@@ -37,7 +37,6 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * SAX2DOM adapter
- *
  */
 public class SAX2DOM implements ContentHandler, LexicalHandler {
     public static final String EMPTYSTRING = "";
@@ -45,37 +44,36 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
     public static final String XMLNS_PREFIX = "xmlns";
     public static final String XMLNS_STRING = "xmlns:";
     public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
-    
 
-    private Node _root = null;
+    private Node root;
 
-    private Document _document = null;
+    private Document document;
 
-    private Node _nextSibling = null;
+    private Node nextSibling;
 
-    private Stack<Node> _nodeStk = new Stack<Node>();
+    private Stack<Node> nodeStk = new Stack<Node>();
 
-    private List<String> _namespaceDecls = null;
+    private List<String> namespaceDecls;
 
-    private Node _lastSibling = null;
+    private Node lastSibling;
 
     public SAX2DOM() throws ParserConfigurationException {
-        _document = DOMHelper.newDocument();
-        _root = _document;
+        this.document = DOMHelper.newDocument();
+        this.root = document;
     }
 
     public SAX2DOM(Node root, Node nextSibling) throws ParserConfigurationException {
-        _root = root;
+        this.root = root;
         if (root instanceof Document) {
-            _document = (Document) root;
+            this.document = (Document)root;
         } else if (root != null) {
-            _document = root.getOwnerDocument();
+            this.document = root.getOwnerDocument();
         } else {
-            _document = DOMHelper.newDocument();
-            _root = _document;
+            this.document = DOMHelper.newDocument();
+            this.root = document;
         }
 
-        _nextSibling = nextSibling;
+        this.nextSibling = nextSibling;
     }
 
     public SAX2DOM(Node root) throws ParserConfigurationException {
@@ -83,50 +81,50 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
     }
 
     public Node getDOM() {
-        return _root;
+        return root;
     }
 
     public void characters(char[] ch, int start, int length) {
-        final Node last = (Node) _nodeStk.peek();
+        final Node last = (Node)nodeStk.peek();
 
         // No text nodes can be children of root (DOM006 exception)
-        if (last != _document) {
+        if (last != document) {
             final String text = new String(ch, start, length);
-            if (_lastSibling != null && _lastSibling.getNodeType() == Node.TEXT_NODE) {
-                ((Text) _lastSibling).appendData(text);
-            } else if (last == _root && _nextSibling != null) {
-                _lastSibling = last.insertBefore(_document.createTextNode(text), _nextSibling);
+            if (lastSibling != null && lastSibling.getNodeType() == Node.TEXT_NODE) {
+                ((Text)lastSibling).appendData(text);
+            } else if (last == root && nextSibling != null) {
+                lastSibling = last.insertBefore(document.createTextNode(text), nextSibling);
             } else {
-                _lastSibling = last.appendChild(_document.createTextNode(text));
+                lastSibling = last.appendChild(document.createTextNode(text));
             }
 
         }
     }
 
     public void startDocument() {
-        _nodeStk.push(_root);
+        nodeStk.push(root);
     }
 
     public void endDocument() {
-        _nodeStk.pop();
+        nodeStk.pop();
     }
 
     public void startElement(String namespace, String localName, String qName, Attributes attrs) {
-        final Element tmp = (Element) _document.createElementNS(namespace, qName);
+        final Element tmp = (Element)document.createElementNS(namespace, qName);
 
         // Add namespace declarations first
-        if (_namespaceDecls != null) {
-            final int nDecls = _namespaceDecls.size();
+        if (namespaceDecls != null) {
+            final int nDecls = namespaceDecls.size();
             for (int i = 0; i < nDecls; i++) {
-                final String prefix = (String) _namespaceDecls.get(i++);
+                final String prefix = (String)namespaceDecls.get(i++);
 
                 if (prefix == null || prefix.equals(EMPTYSTRING)) {
-                    tmp.setAttributeNS(XMLNS_URI, XMLNS_PREFIX, (String) _namespaceDecls.get(i));
+                    tmp.setAttributeNS(XMLNS_URI, XMLNS_PREFIX, (String)namespaceDecls.get(i));
                 } else {
-                    tmp.setAttributeNS(XMLNS_URI, XMLNS_STRING + prefix, (String) _namespaceDecls.get(i));
+                    tmp.setAttributeNS(XMLNS_URI, XMLNS_STRING + prefix, (String)namespaceDecls.get(i));
                 }
             }
-            _namespaceDecls.clear();
+            namespaceDecls.clear();
         }
 
         // Add attributes to element
@@ -140,31 +138,32 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
         }
 
         // Append this new node onto current stack node
-        Node last = (Node) _nodeStk.peek();
+        Node last = (Node)nodeStk.peek();
 
         // If the SAX2DOM is created with a non-null next sibling node,
         // insert the result nodes before the next sibling under the root.
-        if (last == _root && _nextSibling != null)
-            last.insertBefore(tmp, _nextSibling);
-        else
+        if (last == root && nextSibling != null) {
+            last.insertBefore(tmp, nextSibling);
+        } else {
             last.appendChild(tmp);
+        }
 
         // Push this node onto stack
-        _nodeStk.push(tmp);
-        _lastSibling = null;
+        nodeStk.push(tmp);
+        lastSibling = null;
     }
 
     public void endElement(String namespace, String localName, String qName) {
-        _nodeStk.pop();
-        _lastSibling = null;
+        nodeStk.pop();
+        lastSibling = null;
     }
 
     public void startPrefixMapping(String prefix, String uri) {
-        if (_namespaceDecls == null) {
-            _namespaceDecls = new ArrayList<String>(2);
+        if (namespaceDecls == null) {
+            namespaceDecls = new ArrayList<String>(2);
         }
-        _namespaceDecls.add(prefix);
-        _namespaceDecls.add(uri);
+        namespaceDecls.add(prefix);
+        namespaceDecls.add(uri);
     }
 
     public void endPrefixMapping(String prefix) {
@@ -181,15 +180,16 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
      * adds processing instruction node to DOM.
      */
     public void processingInstruction(String target, String data) {
-        final Node last = (Node) _nodeStk.peek();
-        ProcessingInstruction pi = _document.createProcessingInstruction(target, data);
+        final Node last = (Node)nodeStk.peek();
+        ProcessingInstruction pi = document.createProcessingInstruction(target, data);
         if (pi != null) {
-            if (last == _root && _nextSibling != null)
-                last.insertBefore(pi, _nextSibling);
-            else
+            if (last == root && nextSibling != null) {
+                last.insertBefore(pi, nextSibling);
+            } else {
                 last.appendChild(pi);
+            }
 
-            _lastSibling = pi;
+            lastSibling = pi;
         }
     }
 
@@ -209,15 +209,16 @@ public class SAX2DOM implements ContentHandler, LexicalHandler {
      * Lexical Handler method to create comment node in DOM tree.
      */
     public void comment(char[] ch, int start, int length) {
-        final Node last = (Node) _nodeStk.peek();
-        Comment comment = _document.createComment(new String(ch, start, length));
+        final Node last = (Node)nodeStk.peek();
+        Comment comment = document.createComment(new String(ch, start, length));
         if (comment != null) {
-            if (last == _root && _nextSibling != null)
-                last.insertBefore(comment, _nextSibling);
-            else
+            if (last == root && nextSibling != null) {
+                last.insertBefore(comment, nextSibling);
+            } else {
                 last.appendChild(comment);
+            }
 
-            _lastSibling = comment;
+            lastSibling = comment;
         }
     }
 

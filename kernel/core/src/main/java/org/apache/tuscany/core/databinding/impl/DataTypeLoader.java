@@ -36,9 +36,10 @@ import org.osoa.sca.annotations.Constructor;
  * The StAX loader for data type
  */
 public class DataTypeLoader extends LoaderExtension<DataType> {
-    public static final QName DATA_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/databinding/1.0", "databinding");
+    public static final QName DATA_BINDING =
+        new QName("http://tuscany.apache.org/xmlns/sca/databinding/1.0", "databinding");
 
-    @Constructor( { "registry" })
+    @Constructor({"registry"})
     public DataTypeLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -48,8 +49,9 @@ public class DataTypeLoader extends LoaderExtension<DataType> {
         return DATA_BINDING;
     }
 
-    public DataType load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
-        throws XMLStreamException, LoaderException {
+    public DataType load(CompositeComponent parent,
+                         XMLStreamReader reader,
+                         DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert DATA_BINDING.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         LoaderUtil.skipToEndElement(reader);

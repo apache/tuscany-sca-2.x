@@ -24,12 +24,15 @@ import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.osoa.sca.annotations.Property;
 
 /**
- * Simple databinding represented by a base java type. A SCDL property className is used to customize
- * this component. 
+ * Simple databinding represented by a base java type. A SCDL property className
+ * is used to customize this component.
  * <p>
- * The following illustrates how a simple data binding can be registered as a SCA component.<p>
+ * The following illustrates how a simple data binding can be registered as a
+ * SCA component.
+ * <p>
  * &lt;component name="databinding.MyDataBinding"&gt;<br>
- * &nbsp;&nbsp;&lt;system:implementation.java class="org.apache.tuscany.databinding.impl.SimpleDataBinding"/&gt;<br>
+ * &nbsp;&nbsp;&lt;system:implementation.java
+ * class="org.apache.tuscany.databinding.impl.SimpleDataBinding"/&gt;<br>
  * &nbsp;&nbsp;&lt;property name="className"&gt;my.Type&lt;/property&gt;<br>
  * &lt/component&gt;
  */
