@@ -42,6 +42,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -165,14 +166,14 @@ public class ConnectorImpl implements Connector {
 
     public void connect(InboundWire sourceWire, OutboundWire targetWire, boolean optimizable)
         throws BuilderConfigException {
-        if (postProcessorRegistry != null) {
-            // run wire post-processors
-            postProcessorRegistry.process(sourceWire, targetWire);
-        }
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
             sourceWire.setTargetWire(targetWire);
+            if (postProcessorRegistry != null) {
+                // run wire post-processors
+                postProcessorRegistry.process(sourceWire, targetWire);
+            }
             return;
         }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
@@ -184,6 +185,10 @@ public class ConnectorImpl implements Connector {
                 throw e;
             }
             connect(inboundChain, outboundChain);
+        }
+        if (postProcessorRegistry != null) {
+            // run wire post-processors
+            postProcessorRegistry.process(sourceWire, targetWire);
         }
     }
 
@@ -198,16 +203,16 @@ public class ConnectorImpl implements Connector {
         SCAObject source = sourceWire.getContainer();
         SCAObject target = targetWire.getContainer();
         ServiceContract contract = sourceWire.getServiceContract();
-        if (postProcessorRegistry != null) {
-            // run wire post-processors
-            postProcessorRegistry.process(sourceWire, targetWire);
-        }
         Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         // REVIEW: (kentaminator@gmail.com) shouldn't this check whether the interceptors in the
         // source & target chains are marked as optimizable?  (and if so, optimize them away?)
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
             sourceWire.setTargetWire(targetWire);
+            if (postProcessorRegistry != null) {
+                // run wire post-processors
+                postProcessorRegistry.process(sourceWire, targetWire);
+            }
             return;
         }
         // match outbound to inbound chains
@@ -283,8 +288,10 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
-            OutboundInvocationChain outboundChain = wireService.createOutboundChain(operation);
-            targetWire.addSourceCallbackInvocationChain(source.getName(), operation, outboundChain);
+            
+            Operation targetOp = (Operation) targetWire.getServiceContract().getCallbackOperations().get(operation.getName());
+            OutboundInvocationChain outboundChain = wireService.createOutboundChain(targetOp);
+            targetWire.addSourceCallbackInvocationChain(source.getName(), targetOp, outboundChain);
             if (source instanceof Component) {
                 Component component = (Component) source;
                 TargetInvoker invoker = component.createTargetInvoker(null, operation);
@@ -300,6 +307,10 @@ public class ConnectorImpl implements Connector {
                 TargetInvoker invoker = service.createCallbackTargetInvoker(sourceContract, operation);
                 connect(outboundChain, inboundChain, invoker, false);
             }
+        }
+        if (postProcessorRegistry != null) {
+            // run wire post-processors
+            postProcessorRegistry.process(sourceWire, targetWire);
         }
     }
 
@@ -427,8 +438,13 @@ public class ConnectorImpl implements Connector {
             if (!sourceInterface.isAssignableFrom(targetInterface)) {
                 throw new BuilderConfigException("Incompatible source and target interfaces");
             }
-        } else if (!wireService.isWireable(sourceWire.getServiceContract(), targetWire.getServiceContract())) {
-            throw new BuilderConfigException("Incompatible source and target interfaces");
+        } else {
+            try {
+                wireService.checkCompatibility(sourceWire.getServiceContract(), targetWire
+                    .getServiceContract(), false);
+            } catch (IncompatibleServiceContractException e) {
+                throw new BuilderConfigException("Incompatible source and target interfaces", e);
+            }
         }
     }
 

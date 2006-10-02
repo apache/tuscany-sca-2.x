@@ -52,6 +52,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
@@ -325,48 +326,78 @@ public class JDKWireService implements WireService {
     }
 
     /**
-     * Compares two operations for wiring compatibility as defined by the SCA assembly specification, namely:
-     * <p/>
-     * <ol> <li>compatibility for the individual method is defined as compatibility of the signature, that is method
-     * name, input types, and output types MUST BE the same. <li>the order of the input and output types also MUST BE
-     * the same. <li>the set of Faults and Exceptions expected by the source MUST BE the same or be a superset of those
-     * specified by the service. </ol>
-     *
+     * Compares two operations for wiring compatibility as defined by the SCA
+     * assembly specification, namely: <p/>
+     * <ol>
+     * <li>compatibility for the individual method is defined as compatibility
+     * of the signature, that is method name, input types, and output types MUST
+     * BE the same.
+     * <li>the order of the input and output types also MUST BE the same.
+     * <li>the set of Faults and Exceptions expected by the source MUST BE the
+     * same or be a superset of those specified by the service.
+     * </ol>
+     * 
      * @param source the source contract to compare
      * @param target the target contract to compare
+     * @IncompatibleServiceContractException Thrown if the two contracts don't
+     *                                       match
      */
-    public boolean isWireable(ServiceContract<?> source, ServiceContract<?> target) {
+    public void checkCompatibility(ServiceContract<?> source, ServiceContract<?> target, boolean ignoreCallback)
+        throws IncompatibleServiceContractException {
         if (source == target) {
             // Shortcut for performance
-            return true;
+            return;
         }
         if (source.isRemotable() != target.isRemotable()) {
-            return false;
+            IncompatibleServiceContractException ex =
+                new IncompatibleServiceContractException("The remotable settings don't match");
+            ex.addContextName("source.remotable: " + source.isRemotable());
+            ex.addContextName("target.remotable: " + target.isRemotable());
+            throw ex;
         }
         if (source.getInteractionScope() != target.getInteractionScope()) {
-            return false;
+            IncompatibleServiceContractException ex =
+                new IncompatibleServiceContractException("The interaction scopes don't match");
+            ex.addContextName("source.interactionScope: " + source.getInteractionScope());
+            ex.addContextName("target.interactionScope: " + target.getInteractionScope());
+            throw ex;
         }
 
         for (Operation<?> operation : source.getOperations().values()) {
             Operation<?> targetOperation = target.getOperations().get(operation.getName());
             if (targetOperation == null) {
-                return false;
+                IncompatibleServiceContractException ex =
+                    new IncompatibleServiceContractException("A operation is not in the target");
+                ex.addContextName("operation: " + operation.getName());
+                throw ex;
             }
             if (!operation.equals(targetOperation)) {
-                return false;
+                IncompatibleServiceContractException ex =
+                    new IncompatibleServiceContractException("A target operation is not compatible");
+                ex.addContextName("operation: " + operation.getName());
+                throw ex;
             }
         }
 
+        if (ignoreCallback) {
+            return;
+        }
+        
         for (Operation<?> operation : source.getCallbackOperations().values()) {
             Operation<?> targetOperation = target.getCallbackOperations().get(operation.getName());
             if (targetOperation == null) {
-                return false;
+                IncompatibleServiceContractException ex =
+                    new IncompatibleServiceContractException("A callback operation is not in the target");
+                ex.addContextName("operation: " + operation.getName());
+                throw ex;
             }
             if (!operation.equals(targetOperation)) {
-                return false;
+                IncompatibleServiceContractException ex =
+                    new IncompatibleServiceContractException("A target callback operation is not compatible");
+                ex.addContextName("operation: " + operation.getName());
+                throw ex;
             }
         }
-        return true;
     }
 
     private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)

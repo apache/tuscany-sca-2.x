@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.binding.axis2;
 
-
-import java.lang.reflect.Method;
+import java.util.Collection;
 
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
@@ -45,7 +44,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
-
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service
  */
@@ -53,7 +51,7 @@ public class Axis2Reference<T> extends ReferenceExtension {
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
-    private WorkContext workContext;
+    // private WorkContext workContext;
 
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
@@ -62,13 +60,13 @@ public class Axis2Reference<T> extends ReferenceExtension {
                           WebServiceBinding wsBinding,
                           ServiceContract contract,
                           WorkContext workContext) {
-        super(theName, (Class<T>) contract.getInterfaceClass(), parent, wireService);
+        super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
             wsPortMetaData =
                 new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);
             serviceClient = createServiceClient(wsdlDefinition, wsPortMetaData);
-            this.workContext = workContext;
+            // this.workContext = workContext;
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }
@@ -87,35 +85,48 @@ public class Axis2Reference<T> extends ReferenceExtension {
     public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         Axis2AsyncTargetInvoker invoker;
         try {
-            //FIXME: SDODataBinding needs to pass in TypeHelper and classLoader as parameters.
+            // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
+            // as parameters.
             invoker =
-                (Axis2AsyncTargetInvoker)createOperationInvoker(serviceClient, operation, wsPortMetaData, true);
-            //FIXME: This makes the (BIG) assumption that there is only one callback method
-            // Relaxing this assumption, however, does not seem to be trivial, it may depend on knowledge
-            // of what actual callback method was invoked by the service at the other end
-            Method callbackMethod = findCallbackMethod();
+                (Axis2AsyncTargetInvoker)createOperationInvoker(serviceClient,
+                                                                operation,
+                                                                wsPortMetaData,
+                                                                true);
+            // FIXME: This makes the (BIG) assumption that there is only one
+            // callback method
+            // Relaxing this assumption, however, does not seem to be trivial,
+            // it may depend on knowledge
+            // of what actual callback method was invoked by the service at the
+            // other end
+            Operation callbackOperation = findCallbackOperation();
+            Axis2CallbackInvocationHandler invocationHandler =
+                new Axis2CallbackInvocationHandler(inboundWire);
             Axis2ReferenceCallbackTargetInvoker callbackInvoker =
-                new Axis2ReferenceCallbackTargetInvoker(callbackMethod,
-                        inboundWire.getServiceContract(),
-                        inboundWire,
-                        wireService,
-                        workContext);
+                new Axis2ReferenceCallbackTargetInvoker(callbackOperation, inboundWire, invocationHandler);
             invoker.setCallbackTargetInvoker(callbackInvoker);
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }
         return invoker;
     }
-    
-    private Method findCallbackMethod() {
-        return inboundWire.getServiceContract().getCallbackClass().getDeclaredMethods()[0];
+
+    private Operation findCallbackOperation() {
+        ServiceContract contract = inboundWire.getServiceContract();
+        Operation callbackOperation = null;
+        Collection callbackOperations = contract.getCallbackOperations().values();
+        if (callbackOperations.size() != 1) {
+            throw new Axis2BindingRunTimeException("Can only handle one callback operation");
+        } else {
+            callbackOperation = (Operation)callbackOperations.iterator().next();
+        }
+        return callbackOperation;
     }
 
     /**
      * Create an Axis2 ServiceClient
      */
-    private ServiceClient createServiceClient(Definition wsdlDefinition,
-                                              WebServicePortMetaData wsPortMetaData) throws AxisFault {
+    private ServiceClient createServiceClient(Definition wsdlDefinition, WebServicePortMetaData wsPortMetaData)
+        throws AxisFault {
 
         TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
         ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
@@ -132,8 +143,7 @@ public class Axis2Reference<T> extends ReferenceExtension {
     private Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
                                                       Operation m,
                                                       WebServicePortMetaData wsPortMetaData,
-                                                      boolean isAsync)
-        throws AxisFault {
+                                                      boolean isAsync) throws AxisFault {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();
 
@@ -158,11 +168,13 @@ public class Axis2Reference<T> extends ReferenceExtension {
 
         Axis2TargetInvoker invoker;
         if (isAsync) {
-            invoker = new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, inboundWire);
+            invoker =
+                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory,
+                                            inboundWire);
         } else {
             invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         }
-        
+
         return invoker;
     }
 

@@ -30,6 +30,8 @@ import org.apache.tuscany.spi.model.Operation;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.easymock.EasyMock;
+
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expectLastCall;
@@ -72,7 +74,7 @@ public class JavaInterfaceProcessorRegistryImplTestCase extends TestCase {
 
     public void testUnregister() throws Exception {
         JavaInterfaceProcessor processor = createMock(JavaInterfaceProcessor.class);
-        processor.visitInterface(eq(Base.class), isA(JavaServiceContract.class));
+        processor.visitInterface(eq(Base.class), EasyMock.same((Class)null), isA(JavaServiceContract.class));
         expectLastCall().once();
         replay(processor);
         impl.registerProcessor(processor);

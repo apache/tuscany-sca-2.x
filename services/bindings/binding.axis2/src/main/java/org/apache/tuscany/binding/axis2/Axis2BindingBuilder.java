@@ -40,6 +40,7 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 
 /**
  * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured
@@ -114,8 +115,10 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             inboundContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
             inboundContract.setDataBinding(OM_DATA_BINDING);
 
-            if (!wireService.isWireable(inboundContract, outboundContract)) {
-                throw new Axis2BindingBuilderRuntimeException("Incompatible interface");
+            try {
+                wireService.checkCompatibility(inboundContract, outboundContract, true);
+            } catch (IncompatibleServiceContractException e) {
+                throw new Axis2BindingBuilderRuntimeException(e);
             }
             
             Service service = new Axis2Service(serviceDefinition.getName(), inboundContract, parent, wireService, wsBinding,
@@ -159,8 +162,10 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             // Set the default databinding
             outboundContract.setDataBinding(OM_DATA_BINDING);
             
-            if (!wireService.isWireable(inboundContract, outboundContract)) {
-                throw new Axis2BindingBuilderRuntimeException("Incompatible interface");
+            try {
+                wireService.checkCompatibility(inboundContract, outboundContract, true);
+            } catch (IncompatibleServiceContractException e) {
+                throw new Axis2BindingBuilderRuntimeException(e);
             }
             
             Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding,

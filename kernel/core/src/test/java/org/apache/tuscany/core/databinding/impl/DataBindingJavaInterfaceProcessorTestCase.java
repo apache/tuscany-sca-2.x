@@ -60,7 +60,7 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         operations.put("call", operation);
         operations.put("call1", operation1);
         contract.setOperations(operations);
-        processor.visitInterface(MockInterface.class, contract);
+        processor.visitInterface(MockInterface.class, null, contract);
         Assert.assertEquals("org.w3c.dom.Node", contract.getDataBinding());
         Assert.assertEquals("element", (String) contract.getMetaData().get("nodeType"));
         Assert.assertEquals("org.w3c.dom.Node", contract.getOperations().get("call").getDataBinding());

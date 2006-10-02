@@ -43,7 +43,7 @@ import org.w3c.dom.Node;
 public class DataPipeTestCase extends TestCase {
 
     public final void testStreamPipe() throws IOException {
-        byte[] bytes = new byte[] { 1, 2, 3 };
+        byte[] bytes = new byte[] {1, 2, 3};
         StreamDataPipe pipe = new StreamDataPipe();
         Assert.assertSame(OutputStream.class, pipe.getSourceType());
         Assert.assertSame(InputStream.class, pipe.getTargetType());
@@ -75,7 +75,7 @@ public class DataPipeTestCase extends TestCase {
         Node2Writer node2Writer = new Node2Writer();
         Writer2ReaderDataPipe pipe = new Writer2ReaderDataPipe();
         PipedTransformer<Node, Writer, Reader> transformer =
-                new PipedTransformer<Node, Writer, Reader>(node2Writer, pipe);
+            new PipedTransformer<Node, Writer, Reader>(node2Writer, pipe);
         Document document = DOMHelper.newDocument();
         Element element = document.createElementNS("http://ns1", "root");
         document.appendChild(element);

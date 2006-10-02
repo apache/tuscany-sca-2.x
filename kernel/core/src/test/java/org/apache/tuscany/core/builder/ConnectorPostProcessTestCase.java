@@ -36,6 +36,7 @@ import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -55,8 +56,9 @@ public class ConnectorPostProcessTestCase extends TestCase {
         registry.process(EasyMock.eq(iwire), EasyMock.eq(owire));
         replay(registry);
         WireService wireService = createMock(WireService.class);
-        expect(wireService.isWireable((ServiceContract<?>) EasyMock.anyObject(),
-            (ServiceContract<?>) EasyMock.anyObject())).andReturn(true).anyTimes();
+        wireService.checkCompatibility((ServiceContract<?>) EasyMock.anyObject(),
+            (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false));
+        expectLastCall().anyTimes();    
         replay(wireService);
         ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
         connector.connect(iwire, owire, false);
@@ -83,8 +85,9 @@ public class ConnectorPostProcessTestCase extends TestCase {
         registry.process(EasyMock.eq(owire), EasyMock.eq(iwire));
         replay(registry);
         WireService wireService = createMock(WireService.class);
-        expect(wireService.isWireable((ServiceContract<?>) EasyMock.anyObject(),
-            (ServiceContract<?>) EasyMock.anyObject())).andReturn(true).anyTimes();
+        wireService.checkCompatibility((ServiceContract<?>) EasyMock.anyObject(),
+            (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false));
+        expectLastCall().anyTimes();
         replay(wireService);
         ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
 

@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -71,6 +72,29 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 entry.getValue().addInterceptor(0, interceptor);
             }
         }
+        
+        // Check if there's a callback
+        Map callbackOperations = source.getServiceContract().getCallbackOperations();
+        if (callbackOperations == null || callbackOperations.isEmpty()) {
+            return;
+        }
+        Object targetAddress = source.getContainer().getName();
+        Map<Operation<?>, OutboundInvocationChain> callbackChains = target.getSourceCallbackInvocationChains(targetAddress);
+        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : callbackChains.entrySet()) {
+            Operation<?> sourceOperation = entry.getKey();
+            Operation<?> targetOperation =
+                getTargetOperation(source.getTargetCallbackInvocationChains().keySet(), sourceOperation.getName());
+            String sourceDataBinding = getDataBinding(sourceOperation);
+            String targetDataBinding = getDataBinding(targetOperation);
+            if (sourceDataBinding == null || targetDataBinding == null || !sourceDataBinding.equals(targetDataBinding)) {
+                // Add the interceptor to the source side because multiple references can be wired
+                // to the same service
+                DataBindingInteceptor interceptor =
+                        new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                interceptor.setMediator(mediator);
+                entry.getValue().addInterceptor(0, interceptor);
+            }
+        }        
     }
 
     /**
@@ -95,7 +119,13 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                         new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
                 interceptor.setMediator(mediator);
                 if (isReference) {
+                    // FIXME: We need a better way to position the interceptors
                     target.getInvocationChains().get(targetOperation).addInterceptor(0, interceptor);
+                    Interceptor tail = entry.getValue().getTailInterceptor();
+                    if (tail != null) {
+                        // HACK to relink the bridging interceptor
+                        tail.setNext(interceptor);
+                    }
                 } else {
                     entry.getValue().addInterceptor(0, interceptor);
                 }

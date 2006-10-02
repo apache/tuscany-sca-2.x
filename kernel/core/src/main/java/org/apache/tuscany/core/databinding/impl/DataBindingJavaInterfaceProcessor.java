@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.datatype.Duration;
@@ -51,7 +52,18 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
 
     private final static Set<Class> simpleTypeSet = new HashSet<Class>(Arrays.asList(simpleTypes));
 
-    public void visitInterface(Class<?> clazz, JavaServiceContract contract) throws InvalidServiceContractException {
+    public void visitInterface(Class<?> clazz, Class<?> callbackClass, JavaServiceContract contract)
+        throws InvalidServiceContractException {
+        Map<String, Operation<Type>> operations = contract.getOperations();
+        processInterface(clazz, contract, operations);
+        if (callbackClass != null) {
+            Map<String, Operation<Type>> callbackOperations = contract.getCallbackOperations();
+            processInterface(callbackClass, contract, callbackOperations);
+        }
+    }
+
+
+    private void processInterface(Class<?> clazz, JavaServiceContract contract, Map<String, Operation<Type>> operations) {
         DataType interfaceDataType = clazz.getAnnotation(DataType.class);
         if (interfaceDataType != null) {
             contract.setDataBinding(interfaceDataType.name());
@@ -61,7 +73,7 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
             }
         }
         for (Method method : clazz.getMethods()) {
-            Operation<?> operation = contract.getOperations().get(method.getName());
+            Operation<?> operation = operations.get(method.getName());
             DataType operationDataType = method.getAnnotation(DataType.class);
 
             if (operationDataType != null) {
