@@ -151,6 +151,8 @@ public class Axis2Reference<T> extends ReferenceExtension {
         if (soapAction != null && soapAction.length() > 1) {
             options.setAction(soapAction);
         }
+        
+        options.setTimeOutInMilliSeconds(5* 60 *1000);
 
         QName wsdlOperationQName = new QName(portTypeNS, wsdlOperationName);
 
