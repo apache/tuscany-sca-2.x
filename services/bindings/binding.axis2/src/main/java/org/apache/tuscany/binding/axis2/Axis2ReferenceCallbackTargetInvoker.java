@@ -16,56 +16,82 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import org.apache.tuscany.core.wire.PojoTargetInvoker;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
-public class Axis2ReferenceCallbackTargetInvoker extends PojoTargetInvoker {
+public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
     
-    private ServiceContract<?> contract;
+    private Operation operation;
     private InboundWire inboundWire;
-    private WireService wireService;
-    private WorkContext workContext;
     private Object correlationId;
+    private boolean cacheable;
+    Axis2CallbackInvocationHandler invocationHandler;
     
-    public Axis2ReferenceCallbackTargetInvoker(Method operation,
-            ServiceContract contract,
+    public Axis2ReferenceCallbackTargetInvoker(Operation operation,
             InboundWire inboundWire,
-            WireService wireService,
-            WorkContext workContext) {
-        super(operation);
-        this.contract = contract;
+            Axis2CallbackInvocationHandler invocationHandler) {
+
+        this.operation = operation;
         this.inboundWire = inboundWire;
-        this.wireService = wireService;
-        this.workContext = workContext;
+        this.invocationHandler = invocationHandler;
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
-        workContext.setCurrentMessageId(null);
-        workContext.setCurrentCorrelationId(correlationId);
-        return super.invokeTarget(payload);
+        invocationHandler.setMessageId(null);
+        invocationHandler.setCorrelationId(correlationId);
+        Object[] args;
+        if (payload != null && !payload.getClass().isArray()) {
+            args = new Object[]{payload};
+        } else {
+            args = (Object[]) payload;
+        }
+        try {
+            return invocationHandler.invoke(operation, args);
+        } catch(Throwable t) {
+            t.printStackTrace();
+            throw new InvocationTargetException(t);
+        }
     }
     
+    public Message invoke(Message msg) throws InvocationRuntimeException {
+        try {
+            Object resp = invokeTarget(msg.getBody());
+            msg.setBody(resp);
+        } catch (InvocationTargetException e) {
+            msg.setBodyWithFault(e.getCause());
+        } catch (Throwable e) {
+            msg.setBodyWithFault(e);
+        }
+        return msg;
+    }
+
+    public boolean isCacheable() {
+        return cacheable;
+    }
+
+    public void setCacheable(boolean cacheable) {
+        this.cacheable = cacheable;
+    }
+
+    public boolean isOptimizable() {
+        return isCacheable(); // we only need to check if the scopes are correct
+    }
+
     public Axis2ReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {
         Axis2ReferenceCallbackTargetInvoker invoker = (Axis2ReferenceCallbackTargetInvoker) super.clone();
-        invoker.contract = this.contract;
+        invoker.operation = this.operation;
         invoker.inboundWire = this.inboundWire;
-        invoker.wireService = this.wireService;
-        invoker.workContext = this.workContext;
         invoker.correlationId = this.correlationId;
+        invoker.cacheable = this.cacheable;
+        invoker.invocationHandler = this.invocationHandler;
         return invoker;
     }
     
     public void setCorrelationId(Object correlationId) {
         this.correlationId = correlationId;
-    }
-
-    protected Object getInstance() throws TargetException {
-        return wireService.createCallbackProxy(contract, inboundWire);
     }
 }

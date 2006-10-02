@@ -103,7 +103,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             }
         }
         for (JavaInterfaceProcessor processor : processors) {
-            processor.visitInterface(type, contract);
+            processor.visitInterface(type, callback, contract);
         }
         return contract;
     }

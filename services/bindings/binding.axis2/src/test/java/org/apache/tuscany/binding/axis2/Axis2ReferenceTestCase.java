@@ -20,6 +20,7 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.HashMap;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
@@ -57,6 +58,10 @@ public class Axis2ReferenceTestCase extends TestCase {
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         contract.setCallbackClass(GreetingCallback.class);
+        Operation<Type> callbackOp = new Operation<Type>("sayHiCallback", null, null, null, true, null);
+        HashMap<String,Operation<Type>> callbackOps = new HashMap<String,Operation<Type>>();
+        callbackOps.put("sayHiCallback", callbackOp);
+        contract.setCallbackOperations(callbackOps);
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 

@@ -19,8 +19,12 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,17 +64,17 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
     }
 
     public void testProcess1() {
-        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
-        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        InboundWire inboundWire = createMock(InboundWire.class);
+        OutboundWire outboundWire = createMock(OutboundWire.class);
 
-        Component component = EasyMock.createMock(Component.class);
-        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(component.getParent()).andReturn(composite);
-        EasyMock.expect(inboundWire.getContainer()).andReturn(component);
-        EasyMock.expect(outboundWire.getContainer()).andReturn(component);
+        Component component = createMock(Component.class);
+        CompositeComponent composite = createMock(CompositeComponent.class);
+        expect(component.getParent()).andReturn(composite);
+        expect(inboundWire.getContainer()).andReturn(component);
+        expect(outboundWire.getContainer()).andReturn(component);
 
         Map<Operation<?>, OutboundInvocationChain> outboundChains =
-                new HashMap<Operation<?>, OutboundInvocationChain>();
+            new HashMap<Operation<?>, OutboundInvocationChain>();
         DataType<Type> type1 = new DataType<Type>(String.class, String.class);
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         types.add(type1);
@@ -81,43 +85,50 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         outboundContract.setDataBinding(String.class.getName());
         op1.setServiceContract(outboundContract);
 
-        OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
+        OutboundInvocationChain outboundChain = createMock(OutboundInvocationChain.class);
         outboundChains.put(op1, outboundChain);
-        EasyMock.expect(outboundWire.getInvocationChains()).andReturn(outboundChains);
-        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
+        expect(outboundWire.getInvocationChains()).andReturn(outboundChains);
+        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)EasyMock.anyObject());
 
-        Map<Operation<?>, InboundInvocationChain> inboundChains = new HashMap<Operation<?>, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> inboundChains =
+            new HashMap<Operation<?>, InboundInvocationChain>();
         DataType<Type> type2 = new DataType<Type>(Node.class, Node.class);
         List<DataType<Type>> types2 = new ArrayList<DataType<Type>>();
         types2.add(type2);
-        DataType<List<DataType<Type>>> inputType2 = new DataType<List<DataType<Type>>>(Object[].class, types2);
+        DataType<List<DataType<Type>>> inputType2 =
+            new DataType<List<DataType<Type>>>(Object[].class, types2);
         DataType<Type> outputType2 = new DataType<Type>(String.class, String.class);
         Operation<Type> op2 = new Operation<Type>("test", inputType2, outputType2, null);
         ServiceContract<Type> inboundContract = new JavaServiceContract(null);
         inboundContract.setDataBinding(Node.class.getName());
         op2.setServiceContract(inboundContract);
 
-        InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
+        InboundInvocationChain inboundChain = createMock(InboundInvocationChain.class);
         inboundChains.put(op2, inboundChain);
-        EasyMock.expect(inboundWire.getInvocationChains()).andReturn(inboundChains);
-  
+        expect(inboundWire.getInvocationChains()).andReturn(inboundChains);
+
+        ServiceContract<Type> contract = new JavaServiceContract();
+        Map<String, Operation<Type>> operations = Collections.emptyMap();
+        contract.setCallbackOperations(operations);
+        expect(outboundWire.getServiceContract()).andReturn(contract);
+
         EasyMock.replay(composite, component, inboundWire, outboundWire, inboundChain, outboundChain);
 
         processor.process(outboundWire, inboundWire);
     }
 
     public void testProcess2() {
-        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
-        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        InboundWire inboundWire = createMock(InboundWire.class);
+        OutboundWire outboundWire = createMock(OutboundWire.class);
 
-        Reference reference = EasyMock.createMock(Reference.class);
-        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(reference.getParent()).andReturn(composite);
-        EasyMock.expect(inboundWire.getContainer()).andReturn(reference).anyTimes();
-        EasyMock.expect(outboundWire.getContainer()).andReturn(reference).anyTimes();
+        Reference reference = createMock(Reference.class);
+        CompositeComponent composite = createMock(CompositeComponent.class);
+        expect(reference.getParent()).andReturn(composite);
+        expect(inboundWire.getContainer()).andReturn(reference).anyTimes();
+        expect(outboundWire.getContainer()).andReturn(reference).anyTimes();
 
         Map<Operation<?>, OutboundInvocationChain> outboundChains =
-                new HashMap<Operation<?>, OutboundInvocationChain>();
+            new HashMap<Operation<?>, OutboundInvocationChain>();
         DataType<Type> type1 = new DataType<Type>(String.class, String.class);
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         types.add(type1);
@@ -128,26 +139,33 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         outboundContract.setDataBinding(String.class.getName());
         op1.setServiceContract(outboundContract);
 
-        OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
+        OutboundInvocationChain outboundChain = createMock(OutboundInvocationChain.class);
         outboundChains.put(op1, outboundChain);
-        EasyMock.expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
-        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
+        expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
+        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)EasyMock.anyObject());
 
-        Map<Operation<?>, InboundInvocationChain> inboundChains = new HashMap<Operation<?>, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> inboundChains =
+            new HashMap<Operation<?>, InboundInvocationChain>();
         DataType<Type> type2 = new DataType<Type>(Node.class, Node.class);
         List<DataType<Type>> types2 = new ArrayList<DataType<Type>>();
         types2.add(type2);
-        DataType<List<DataType<Type>>> inputType2 = new DataType<List<DataType<Type>>>(Object[].class, types2);
+        DataType<List<DataType<Type>>> inputType2 =
+            new DataType<List<DataType<Type>>>(Object[].class, types2);
         DataType<Type> outputType2 = new DataType<Type>(String.class, String.class);
         Operation<Type> op2 = new Operation<Type>("test", inputType2, outputType2, null);
         ServiceContract<Type> inboundContract = new JavaServiceContract(null);
         inboundContract.setDataBinding(Node.class.getName());
         op2.setServiceContract(inboundContract);
 
-        InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
+        InboundInvocationChain inboundChain = createMock(InboundInvocationChain.class);
         inboundChains.put(op2, inboundChain);
-        EasyMock.expect(inboundWire.getInvocationChains()).andReturn(inboundChains).anyTimes();
-        // inboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
+        expect(inboundWire.getInvocationChains()).andReturn(inboundChains).anyTimes();
+
+        ServiceContract<Type> contract = new JavaServiceContract();
+        Map<String, Operation<Type>> operations = Collections.emptyMap();
+        contract.setCallbackOperations(operations);
+        expect(inboundWire.getServiceContract()).andReturn(contract);
+        expect(inboundChain.getTailInterceptor()).andReturn(null);
 
         EasyMock.replay(composite, reference, inboundWire, outboundWire, inboundChain, outboundChain);
 
@@ -155,17 +173,17 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
     }
 
     public void testProcess3() {
-        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
-        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        InboundWire inboundWire = createMock(InboundWire.class);
+        OutboundWire outboundWire = createMock(OutboundWire.class);
 
-        Service service = EasyMock.createMock(Service.class);
-        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(service.getParent()).andReturn(composite);
-        EasyMock.expect(inboundWire.getContainer()).andReturn(service).anyTimes();
-        EasyMock.expect(outboundWire.getContainer()).andReturn(service).anyTimes();
+        Service service = createMock(Service.class);
+        CompositeComponent composite = createMock(CompositeComponent.class);
+        expect(service.getParent()).andReturn(composite);
+        expect(inboundWire.getContainer()).andReturn(service).anyTimes();
+        expect(outboundWire.getContainer()).andReturn(service).anyTimes();
 
         Map<Operation<?>, OutboundInvocationChain> outboundChains =
-                new HashMap<Operation<?>, OutboundInvocationChain>();
+            new HashMap<Operation<?>, OutboundInvocationChain>();
         DataType<Type> type1 = new DataType<Type>(String.class, String.class);
         List<DataType<Type>> types = new ArrayList<DataType<Type>>();
         types.add(type1);
@@ -176,26 +194,34 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         outboundContract.setDataBinding(String.class.getName());
         op1.setServiceContract(outboundContract);
 
-        OutboundInvocationChain outboundChain = EasyMock.createMock(OutboundInvocationChain.class);
+        OutboundInvocationChain outboundChain = createMock(OutboundInvocationChain.class);
         outboundChains.put(op1, outboundChain);
-        EasyMock.expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
-        // outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
+        expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
+        // outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)
+        // EasyMock.anyObject());
 
-        Map<Operation<?>, InboundInvocationChain> inboundChains = new HashMap<Operation<?>, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> inboundChains =
+            new HashMap<Operation<?>, InboundInvocationChain>();
         DataType<Type> type2 = new DataType<Type>(Node.class, Node.class);
         List<DataType<Type>> types2 = new ArrayList<DataType<Type>>();
         types2.add(type2);
-        DataType<List<DataType<Type>>> inputType2 = new DataType<List<DataType<Type>>>(Object[].class, types2);
+        DataType<List<DataType<Type>>> inputType2 =
+            new DataType<List<DataType<Type>>>(Object[].class, types2);
         DataType<Type> outputType2 = new DataType<Type>(String.class, String.class);
         Operation<Type> op2 = new Operation<Type>("test", inputType2, outputType2, null);
         ServiceContract<Type> inboundContract = new JavaServiceContract(null);
         inboundContract.setDataBinding(Node.class.getName());
         op2.setServiceContract(inboundContract);
 
-        InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
+        InboundInvocationChain inboundChain = createMock(InboundInvocationChain.class);
         inboundChains.put(op2, inboundChain);
-        EasyMock.expect(inboundWire.getInvocationChains()).andReturn(inboundChains).anyTimes();
-        inboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
+        expect(inboundWire.getInvocationChains()).andReturn(inboundChains).anyTimes();
+        inboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)EasyMock.anyObject());
+
+        ServiceContract<Type> contract = new JavaServiceContract();
+        Map<String, Operation<Type>> operations = Collections.emptyMap();
+        contract.setCallbackOperations(operations);
+        expect(inboundWire.getServiceContract()).andReturn(contract);
 
         EasyMock.replay(composite, service, inboundWire, outboundWire, inboundChain, outboundChain);
 

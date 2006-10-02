@@ -19,6 +19,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
@@ -27,42 +28,41 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
-    protected static final Message RESPONSE = new ImmutableMessage();
+    protected static final OMElement RESPONSE = null;
 
     private InboundWire wire;
     private Object messageId;
     private Axis2ReferenceCallbackTargetInvoker callbackInvoker;
 
     public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
-            QName wsdlOperationName,
-            Options options,
-            SOAPFactory soapFactory,
-            InboundWire wire) {
+                                   QName wsdlOperationName,
+                                   Options options,
+                                   SOAPFactory soapFactory,
+                                   InboundWire wire) {
         super(serviceClient, wsdlOperationName, options, soapFactory);
         this.wire = wire;
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
-            Object[] args = (Object[]) payload;
+            Object[] args = (Object[])payload;
             OperationClient operationClient = createOperationClient(args);
             callbackInvoker.setCorrelationId(messageId);
-            Axis2ReferenceCallback callback =
-                    new Axis2ReferenceCallback(callbackInvoker);
+            Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker);
             operationClient.setCallback(callback);
 
             operationClient.execute(false);
 
+            // REVIEW it seems ok to return null
             return RESPONSE;
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         }
     }
-    
+
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             wire.addMapping(msg.getMessageId(), msg.getFromAddress());
@@ -74,67 +74,8 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         }
         return msg;
     }
-    
+
     public void setCallbackTargetInvoker(Axis2ReferenceCallbackTargetInvoker callbackInvoker) {
         this.callbackInvoker = callbackInvoker;
-    }
-
-    /**
-     * A dummy message passed back on an invocation
-     */
-    private static class ImmutableMessage implements Message {
-
-        public Object getBody() {
-            return null;
-        }
-
-        public void setBody(Object body) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void setTargetInvoker(TargetInvoker invoker) {
-            throw new UnsupportedOperationException();
-        }
-
-        public TargetInvoker getTargetInvoker() {
-            return null;
-        }
-
-        public Message getRelatedCallbackMessage() {
-            return null;
-        }
-
-        public Object getFromAddress() {
-            return null;
-        }
-
-        public void setFromAddress(Object fromAddress) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object getMessageId() {
-            return null;
-        }
-
-        public void setMessageId(Object messageId) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object getCorrelationId() {
-            return null;
-        }
-
-        public void setCorrelationId(Object correlationId) {
-            throw new UnsupportedOperationException();
-        }
-        
-        public boolean isFault() {
-            return false;
-        }
-
-        public void setBodyWithFault(Object fault) {
-            throw new UnsupportedOperationException();
-        }
-        
     }
 }
