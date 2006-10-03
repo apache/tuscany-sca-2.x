@@ -30,7 +30,7 @@ public interface RuntimeInfo {
     /**
      * The default name that the runtime should assign to the component providing this service.
      */
-    static final String COMPONENT_NAME = "RuntimeInfo";
+    String COMPONENT_NAME = "RuntimeInfo";
 
     /**
      * Return the directory where the running runtime was installed.
@@ -45,10 +45,10 @@ public interface RuntimeInfo {
      * @return the directory used to resolve application file paths.
      */
     File getApplicationRootDirectory();
-    
+
     /**
      * Gets the base URL for the runtime.
-     * 
+     *
      * @return The base URL for the runtime.
      */
     URL getBaseURL();

@@ -39,13 +39,13 @@ public interface Launcher {
      * @throws TuscanyException if there was a problem booting the runtimr
      */
     void bootRuntime(URL systemScdl, ClassLoader systemClassLoader, MonitorFactory monitorFactory)
-            throws TuscanyException;
+        throws TuscanyException;
 
     /**
      * Shutdown the Tuscany runtime.
      */
     void shutdownRuntime();
-    
+
     /**
      * Boot a default application into the runtime.
      *
