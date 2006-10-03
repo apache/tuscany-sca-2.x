@@ -61,15 +61,19 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof HttpSessionStart) {
+        if (event instanceof HttpSessionStart) {            
             Object key = ((HttpSessionStart) event).getId();
+            workContext.setIdentifier(HTTP_IDENTIFIER, key);
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
+                    
                     getInstance(entry.getKey(), key);
                 }
             }
         } else if (event instanceof HttpSessionEnd) {
-            shutdownInstances(((HttpSessionEnd) event).getId());
+            Object key = ((HttpSessionEnd) event).getId();
+            shutdownInstances(key);
+            workContext.clearIdentifier(key);
         }
     }
 
