@@ -22,6 +22,9 @@ import org.apache.tuscany.spi.model.AtomicImplementation;
 import org.apache.tuscany.spi.model.ComponentType;
 
 /**
+ * Represents the implementation type of a system service that manages JPA
+ * <code>EntityManagerFactoryImplementation</code> implementations
+ *
  * @version $Rev$ $Date$
  */
 public class EntityManagerFactoryImplementation extends AtomicImplementation<ComponentType> {

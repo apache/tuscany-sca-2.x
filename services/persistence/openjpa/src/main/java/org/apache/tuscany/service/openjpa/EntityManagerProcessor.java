@@ -18,63 +18,61 @@
  */
 package org.apache.tuscany.service.openjpa;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Member;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
+import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
+
 /**
+ * Evaluates constructors, methods, and fields annotated with {@link PersistenceContext }, creating a mapped property
+ * that will inject an {@link EntityManager} on an implementation instance.
+ *
  * @version $Rev$ $Date$
  */
-public class EntityManagerProcessor extends ImplementationProcessorExtension {
+public class EntityManagerProcessor extends AbstractPropertyProcessor<PersistenceContext> {
 
-    public void visitMethod(CompositeComponent parent,
-                            Method method,
-                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context) throws ProcessingException {
-
-        if (method.getAnnotation(PersistenceContext.class) == null) {
-            return;
-        }
-        // TODO process other JPA annotations
-        addProperty(parent, method, type);
+    public EntityManagerProcessor(@Autowire ImplementationProcessorService service) {
+        super(PersistenceContext.class, service);
     }
 
-    public void visitField(CompositeComponent parent, Field field,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
-        if (field.getAnnotation(PersistenceContext.class) == null) {
-            return;
+    protected String getName(PersistenceContext annotation) {
+        String name = annotation.unitName();
+        if (name == null) {
+            return "_defaultJPAPersistenceUnit";
         }
-        // TODO process other JPA annotations
-        addProperty(parent, field, type);
+        return name;
     }
 
-    private void addProperty(CompositeComponent parent,
-                             Member member,
-                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type)
-        throws ProcessingException {
-        EntityManagerFactory emf = parent.resolveInstance(EntityManagerFactory.class);
-        if (emf == null) {
-            ProcessingException e = new ProcessingException("EntityManagerFactory not configured in composite");
-            e.setIdentifier(parent.getName());
+    protected <T>JavaMappedProperty<T> createProperty(String name,
+                                                      Class<T> javaType,
+                                                      Member member) throws ProcessingException {
+        if (!EntityManager.class.equals(javaType)) {
+            InvalidInjectionSite e =
+                new InvalidInjectionSite("Injection site must by of type " + EntityManager.class.getName());
+            e.setIdentifier(name);
             throw e;
         }
-        JavaMappedProperty<EntityManager> prop = new JavaMappedProperty<EntityManager>();
-        prop.setMember(member);
-        prop.setName(member.getName());
-        prop.setDefaultValueFactory(new EntityManagerObjectFactory(emf));
-        type.add(prop);
+        return super.createProperty(name, javaType, member);
     }
+
+    @SuppressWarnings("unchecked")
+    protected <T> void initProperty(JavaMappedProperty<T> property,
+                                    PersistenceContext annotation,
+                                    CompositeComponent parent,
+                                    DeploymentContext context) {
+        EntityManagerFactory emf = parent.resolveSystemInstance(EntityManagerFactory.class);
+        ObjectFactory factory = new EntityManagerObjectFactory(emf);
+        property.setDefaultValueFactory(factory);
+    }
+
 }

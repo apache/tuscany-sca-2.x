@@ -30,6 +30,11 @@ import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.SystemAtomicComponentExtension;
 
 /**
+ * A system service that manages a JPA <code>EntityManagerFactory</code>. This service is used by {@link
+ * EntityManagerProcessor} to inject an <code>EntityManager<code> on a constructor parameter, field, or method of an
+ * implementation instance. Since a JPA persistence context is specific to an application, this system service is scoped
+ * to the application composite. That is, it is contained as a system child of the application composite.
+ *
  * @version $Rev$ $Date$
  */
 public class JPAAtomicComponent extends SystemAtomicComponentExtension {

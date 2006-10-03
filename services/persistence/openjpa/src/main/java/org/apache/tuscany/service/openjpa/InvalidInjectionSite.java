@@ -18,18 +18,24 @@
  */
 package org.apache.tuscany.service.openjpa;
 
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+
 /**
- * Constants used by the JPA extension
- *
  * @version $Rev$ $Date$
  */
-public final class Constants {
-
-    public static final String PERSISTENCE_UNIT = "persistenceUnit";
-    public static final String CONFIG_PROPERTIES = "configProperties";
-
-    private Constants() {
+public class InvalidInjectionSite extends ProcessingException {
+    public InvalidInjectionSite() {
     }
 
+    public InvalidInjectionSite(String message) {
+        super(message);
+    }
 
+    public InvalidInjectionSite(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidInjectionSite(Throwable cause) {
+        super(cause);
+    }
 }
