@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.processor;
-
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
+package org.apache.tuscany.spi.implementation.java;
 
 /**
  * Denotes an illegal property definition in a component type

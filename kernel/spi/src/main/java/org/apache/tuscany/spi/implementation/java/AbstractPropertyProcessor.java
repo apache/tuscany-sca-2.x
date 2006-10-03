@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -27,18 +27,6 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
-
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * Base class for ImplementationProcessors that handle annotations that add Properties.
@@ -80,7 +68,7 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         if (name == null || name.length() == 0) {
             name = method.getName();
             if (name.startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(method.getName());
+                name = toPropertyName(method.getName());
             }
         }
 
@@ -121,8 +109,8 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
     }
 
     public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 DeploymentContext context) throws ProcessingException {
+                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                     DeploymentContext context) throws ProcessingException {
 
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
         Class[] params = constructor.getParameterTypes();
@@ -156,10 +144,19 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     A annotation,
                                     CompositeComponent parent,
-                                    DeploymentContext context) {
+                                    DeploymentContext context) throws ProcessingException {
     }
 
-    protected <T> JavaMappedProperty<T> createProperty(String name, Class<T> javaType, Member member) {
+    protected <T> JavaMappedProperty<T> createProperty(String name, Class<T> javaType, Member member)
+        throws ProcessingException {
         return new JavaMappedProperty<T>(name, null, javaType, member);
+    }
+
+
+    public static String toPropertyName(String name) {
+        if (!name.startsWith("set")) {
+            return name;
+        }
+        return Character.toLowerCase(name.charAt(3)) + name.substring(4);
     }
 }

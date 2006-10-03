@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.processor;
-
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
+package org.apache.tuscany.spi.implementation.java;
 
 /**
  * Thrown when an implementation has more than one property injection site with the same name

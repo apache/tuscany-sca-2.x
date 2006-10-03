@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;

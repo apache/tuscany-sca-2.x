@@ -23,6 +23,7 @@ import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ServiceContract;
 

@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -49,8 +50,8 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
     }
 
     public <T>  void visitClass(CompositeComponent parent, Class<T> clazz,
-                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                           DeploymentContext context) throws ProcessingException {
+                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                DeploymentContext context) throws ProcessingException {
         Constructor[] ctors = clazz.getConstructors();
         boolean found = false;
         for (Constructor constructor : ctors) {
@@ -67,8 +68,9 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
     }
 
     public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
-                                 PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                 DeploymentContext context) throws ProcessingException {
+                                     PojoComponentType<JavaMappedService, JavaMappedReference,
+                                     JavaMappedProperty<?>> type,
+                                     DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Constructor annotation =
             constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class);
         if (annotation == null) {
