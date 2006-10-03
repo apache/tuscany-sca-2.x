@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 

@@ -16,24 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.processor;
+package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.util.List;
 
-import org.apache.tuscany.core.idl.java.IllegalCallbackException;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Provides utility methods for Java implementation processing
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface ImplementationProcessorService {
@@ -41,23 +35,24 @@ public interface ImplementationProcessorService {
     /**
      * Introspects the given interface to produce a mapped service
      */
-    JavaMappedService createService(Class<?> interfaze) throws IllegalCallbackException,
-            InvalidServiceContractException;
+    JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException,
+                                                               InvalidServiceContractException;
 
     JavaMappedReference createReference(String name, Member member, Class<?> paramType) throws ProcessingException;
 
     /**
      * Processes the callback contract for a given interface type
-     * 
+     *
      * @param interfaze the interface type to examine
-     * @param contract the service contract the callback is associated wth
-     * @throws org.apache.tuscany.core.idl.java.IllegalCallbackException
+     * @param contract  the service contract the callback is associated wth
+     * @throws InvalidServiceContractException
+     *
      */
-    void processCallback(Class<?> interfaze, ServiceContract<?> contract) throws IllegalCallbackException;
+    void processCallback(Class<?> interfaze, ServiceContract<?> contract) throws InvalidServiceContractException;
 
     /**
      * Determines if all the members of a collection have unique types
-     * 
+     *
      * @param collection the collection to analyze
      * @return true if the types are unique
      */
@@ -70,24 +65,22 @@ public interface ImplementationProcessorService {
 
     /**
      * Processes a constructor parameter by introspecting its annotations
-     * 
-     * @param param the parameter to process
+     *
+     * @param param            the parameter to process
      * @param paramAnnotations the parameter annotations
      * @param constructorNames the array of constructorNames specified by
-     * @Constructor
-     * @param pos the declaration position of the constructor parameter
-     * @param type the component type associated with implementation being reflected
-     * @param injectionNames the list of parameter constructorNames specified on parameter annotations
-     * @throws org.apache.tuscany.spi.implementation.java.ProcessingException
-     * 
+     * @param pos              the declaration position of the constructor parameter
+     * @param type             the component type associated with implementation being reflected
+     * @param injectionNames   the list of parameter constructorNames specified on parameter annotations
+     * @throws ProcessingException
      */
     boolean processParam(
-            Class<?> param,
-            Annotation[] paramAnnotations,
-            String[] constructorNames,
-            int pos,
-            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-            List<String> injectionNames) throws ProcessingException;
+        Class<?> param,
+        Annotation[] paramAnnotations,
+        String[] constructorNames,
+        int pos,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        List<String> injectionNames) throws ProcessingException;
 
     /**
      * Returns true if {@link @Autowire}, {@link @Property}, or {@link @Reference} are present in the given array

@@ -31,7 +31,7 @@ import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
-import org.apache.tuscany.core.implementation.processor.ImplementationProcessorService;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;

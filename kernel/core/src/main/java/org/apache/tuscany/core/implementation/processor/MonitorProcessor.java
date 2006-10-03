@@ -21,6 +21,8 @@ package org.apache.tuscany.core.implementation.processor;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 
 import org.apache.tuscany.api.annotation.Monitor;
