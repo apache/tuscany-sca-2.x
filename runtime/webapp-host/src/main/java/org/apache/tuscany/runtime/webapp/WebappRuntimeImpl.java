@@ -21,16 +21,10 @@ package org.apache.tuscany.runtime.webapp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.xml.stream.XMLInputFactory;
-
-import org.osoa.sca.SCA;
-
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.Deployer;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -44,6 +38,12 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.event.EventPublisher;
+import org.osoa.sca.SCA;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -65,7 +65,7 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
 public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime {
     private ServletContext servletContext;
 
-    private ServletLauncherMonitor monitor;
+
     private ServletRequestInjector requestInjector;
 
     private CompositeContextImpl context;
@@ -87,7 +87,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
         // Read optional system monitor factory classname
         MonitorFactory mf = getMonitorFactory();
-        monitor = mf.getMonitor(ServletLauncherMonitor.class);
+
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
 
@@ -163,11 +163,15 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     }
 
     public void sessionCreated(HttpSessionEvent event) {
-        application.publish(new HttpSessionStart(this, event.getSession().getId()));
+        HttpSessionStart startSession = new HttpSessionStart(this, event.getSession().getId());
+        application.publish(startSession);
+        ((EventPublisher)requestInjector).publish(startSession);
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
-        application.publish(new HttpSessionEnd(this, event.getSession().getId()));
+        HttpSessionEnd endSession = new HttpSessionEnd(this, event.getSession().getId());
+        application.publish(endSession);
+        ((EventPublisher)requestInjector).publish(endSession);
     }
 
     public void startRequest() {
