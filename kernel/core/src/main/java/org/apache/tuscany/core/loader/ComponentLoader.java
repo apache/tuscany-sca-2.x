@@ -34,6 +34,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
@@ -47,7 +48,7 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
 import org.apache.tuscany.spi.loader.MissingMustOverridePropertyException;
 import org.apache.tuscany.spi.loader.NotOverridablePropertyException;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
+import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -73,10 +74,13 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     private static final String PROPERTY_FILE_ATTR = "file";
     private static final String PROPERTY_NAME_ATTR = "name";
     private static final String PROPERTY_SOURCE_ATTR = "source";
+    
+    private PropertyObjectFactory propertyFactory;
 
-    @Constructor( {"registry", "defaultPropertyFactory"})
-    public ComponentLoader(@Autowire LoaderRegistry registry, @Autowire StAXPropertyFactory propertyFactory) {
+    @Constructor( {"registry", "propertyFactory"})
+    public ComponentLoader(@Autowire LoaderRegistry registry, @Autowire PropertyObjectFactory propertyFactory) {
         super(registry);
+        this.propertyFactory = propertyFactory;
     }
 
     @SuppressWarnings("unchecked")
@@ -209,7 +213,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 throw new LoaderException(e);
             }
         }
-        propertyValue.setValueFactory(new SimplePropertyObjectFactory(property, propertyValue.getValue()));
+        ObjectFactory objectFactory = propertyFactory.createObjectFactory(property, propertyValue);
+        // propertyValue.setValueFactory(new SimplePropertyObjectFactory(property, propertyValue.getValue()));
+        propertyValue.setValueFactory(objectFactory);
         componentDefinition.add(propertyValue);
     }
 

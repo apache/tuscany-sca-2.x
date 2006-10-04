@@ -105,8 +105,23 @@
         <property name="repository">.m2/repository</property>
     </component>
 
+    <!-- DataBinding registry -->
+    <component name="databinding.registry">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingRegistryImpl" />
+    </component>
+
+    <!-- DataBinding registry -->
+    <component name="databinding.mediator">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.MediatorImpl" />
+    </component>    
+
+    <!-- Transformer registry -->
+    <component name="databinding.transformerRegistry" initLevel="90">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.TransformerRegistryImpl" />
+    </component>
+
     <component name="propertyFactory">
-        <system:implementation.system class="org.apache.tuscany.core.loader.StringParserPropertyFactory"/>
+        <system:implementation.system class="org.apache.tuscany.core.property.PropertyObjectFactoryImpl"/>
     </component>
 
     <component name="policyBuilderRegistry">

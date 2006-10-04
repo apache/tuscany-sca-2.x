@@ -124,7 +124,7 @@
     </component>
 
     <component name="propertyFactory">
-        <system:implementation.system class="org.apache.tuscany.core.loader.StringParserPropertyFactory"/>
+        <system:implementation.system class="org.apache.tuscany.core.property.PropertyObjectFactoryImpl"/>
     </component>
 
     <component name="artifactRepository">

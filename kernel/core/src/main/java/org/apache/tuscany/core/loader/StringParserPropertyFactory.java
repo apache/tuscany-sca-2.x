@@ -24,15 +24,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-import org.apache.tuscany.spi.model.Property;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.PropertyObjectFactory;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.PropertyValue;
 
 /**
  * Implementation of StAXPropertyFactory that interprets the XML as
@@ -40,15 +40,14 @@ import org.apache.tuscany.core.injection.SingletonObjectFactory;
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
-public class StringParserPropertyFactory implements StAXPropertyFactory {
+public class StringParserPropertyFactory implements PropertyObjectFactory {
 
-    public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property)
-        throws XMLStreamException, LoaderException {
-        String text = reader.getElementText();
-        return new SingletonObjectFactory<T>(createInstance(text, property.getJavaType()));
+    public ObjectFactory createObjectFactory(Property property, PropertyValue value) throws LoaderException {
+        String text = value.getValue().getDocumentElement().getTextContent();
+        return new SingletonObjectFactory(createInstance(text, property.getJavaType()));
     }
 
-    public <T> T createInstance(String text, Class<T> type) throws XMLStreamException, LoaderException {
+    public <T> T createInstance(String text, Class<T> type) throws LoaderException {
         // Class<T> type = property.getJavaType();
         assert type != null : "property type is null";
 
