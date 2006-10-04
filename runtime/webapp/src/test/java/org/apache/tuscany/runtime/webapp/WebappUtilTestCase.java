@@ -79,6 +79,7 @@ public class WebappUtilTestCase extends TestCase {
         String path = "/WEB-INF/test";
         expect(context.getResource(path)).andReturn(null);
         replay(context);
+        expect(cl.getResource(path)).andReturn(null);
         replay(cl);
         assertNull(listener.getScdlURL(path, cl));
         verify(context);

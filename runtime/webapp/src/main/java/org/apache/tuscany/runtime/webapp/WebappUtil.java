@@ -29,7 +29,6 @@ public interface WebappUtil {
      * Return the classloader that should be used to boot the Tuscany runtime.
      * This will be a child of the web application's ClassLoader.
      *
-     * @param servletContext    the servlet context for the webapp containing the bootstrap classes
      * @param webappClassLoader the web application's classloader
      * @return a classloader that can be used to load the Tuscany runtime classes
      */

@@ -43,10 +43,10 @@ public class WebappRuntimeInfoImpl implements WebappRuntimeInfo {
     }
 
     public File getInstallDirectory() {
-        throw new UnsupportedOperationException();
+        return new File("");
     }
 
     public File getApplicationRootDirectory() {
-        throw new UnsupportedOperationException();
+        return new File("");
     }
 }
