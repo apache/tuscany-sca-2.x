@@ -18,17 +18,18 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import org.osoa.sca.annotations.Property;
+import static org.apache.tuscany.spi.model.OverrideOptions.MUST;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
+import org.apache.tuscany.spi.implementation.java.IllegalPropertyException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.IllegalPropertyException;
-import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.spi.model.OverrideOptions;
+import org.osoa.sca.annotations.Property;
 
 /**
  * @version $Rev$ $Date$
@@ -47,7 +48,7 @@ public class PropertyProcessorTestCase extends TestCase {
         processor.visitMethod(null, Foo.class.getMethod("setFooRequired", String.class), type, null);
         JavaMappedProperty prop = type.getProperties().get("fooRequired");
         assertNotNull(prop);
-        assertTrue(prop.isRequired());
+        assertEquals(prop.getOverride(), MUST);
     }
 
     public void testMethodName() throws Exception {
@@ -64,7 +65,7 @@ public class PropertyProcessorTestCase extends TestCase {
         processor.visitField(null, Foo.class.getDeclaredField("bazRequired"), type, null);
         JavaMappedProperty prop = type.getProperties().get("bazRequired");
         assertNotNull(prop);
-        assertTrue(prop.isRequired());
+        assertEquals(prop.getOverride(), OverrideOptions.MUST);
     }
 
     public void testFieldName() throws Exception {
@@ -78,7 +79,7 @@ public class PropertyProcessorTestCase extends TestCase {
             processor.visitField(null, Bar.class.getDeclaredField("baz"), type, null);
             fail();
         } catch (DuplicatePropertyException e) {
-            //expected
+            // expected
         }
     }
 
@@ -88,7 +89,7 @@ public class PropertyProcessorTestCase extends TestCase {
             processor.visitMethod(null, Bar.class.getMethod("dupSomeMethod", String.class), type, null);
             fail();
         } catch (DuplicatePropertyException e) {
-            //expected
+            // expected
         }
     }
 
@@ -97,7 +98,7 @@ public class PropertyProcessorTestCase extends TestCase {
             processor.visitMethod(null, Bar.class.getMethod("badMethod"), type, null);
             fail();
         } catch (IllegalPropertyException e) {
-            //expected
+            // expected
         }
     }
 
@@ -112,17 +113,16 @@ public class PropertyProcessorTestCase extends TestCase {
 
         @Property
         protected String baz;
-        @Property(required = true)
+        @Property(override = "must")
         protected String bazRequired;
         @Property(name = "theBaz")
         protected String bazField;
-
 
         @Property
         public void setFoo(String string) {
         }
 
-        @Property(required = true)
+        @Property(override = "must")
         public void setFooRequired(String string) {
         }
 
@@ -131,7 +131,6 @@ public class PropertyProcessorTestCase extends TestCase {
         }
 
     }
-
 
     private class Bar {
 
@@ -152,7 +151,6 @@ public class PropertyProcessorTestCase extends TestCase {
         @Property
         public void badMethod() {
         }
-
 
     }
 }

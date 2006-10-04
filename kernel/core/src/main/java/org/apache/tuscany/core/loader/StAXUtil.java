@@ -26,6 +26,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,12 +85,29 @@ public final class StAXUtil {
 
         // root element has no namespace and local name "value"
         Element root = doc.createElementNS(null, "value");
-        doc.appendChild(root);
-        loadPropertyValue(reader, root);
+        if (type != null) {
+            Attr xsi = doc.createAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi");
+            xsi.setValue("http://www.w3.org/2001/XMLSchema-instance");
+            root.setAttributeNodeNS(xsi);
 
+            String prefix = type.getPrefix();
+            if (prefix == null || prefix.length() == 0) {
+                prefix = "ns";
+            }
+            Attr typeXmlns = doc.createAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix);
+            typeXmlns.setValue(type.getNamespaceURI());
+            root.setAttributeNodeNS(typeXmlns);
+
+            Attr xsiType = doc.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:type");
+            xsiType.setValue(prefix + ":" + type.getLocalPart());
+            root.setAttributeNodeNS(xsiType);
+        }
+        doc.appendChild(root);
+        
+        loadPropertyValue(reader, root);
         return doc;
     }
-
+    
     /**
      * Load a property value specification from an StAX stream into a DOM Document. Only elements, text and attributes
      * are processed; all comments and other whitespace are ignored.

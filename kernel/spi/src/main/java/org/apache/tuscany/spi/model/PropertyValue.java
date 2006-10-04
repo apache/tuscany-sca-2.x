@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.model;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.w3c.dom.Document;
 
 /**
  * Represents a configured component property
@@ -28,6 +29,8 @@ import org.apache.tuscany.spi.ObjectFactory;
 public class PropertyValue<T> extends ModelObject {
     private String name;
     private String source;
+    private String file;
+    private Document value;
     private ObjectFactory<T> valueFactory;
 
     public PropertyValue() {
@@ -38,12 +41,23 @@ public class PropertyValue<T> extends ModelObject {
      *
      * @param name the name of the property which this value is for
      * @param source an XPath expression whose result will be the actual value
+     * @param file A URI that the property value can be loaded from
      */
-    public PropertyValue(String name, String source) {
+    public PropertyValue(String name, String source, String file) {
         this.name = name;
         this.source = source;
+        this.file = file;
     }
 
+    /**
+     * @param name
+     * @param value
+     */
+    public PropertyValue(String name, Document value) {
+        this.name = name;
+        this.value = value;
+    }
+    
     public PropertyValue(String name, ObjectFactory<T> valueFactory) {
         this.name = name;
         this.valueFactory = valueFactory;
@@ -88,5 +102,27 @@ public class PropertyValue<T> extends ModelObject {
 
     public void setValueFactory(ObjectFactory<T> valueFactory) {
         this.valueFactory = valueFactory;
+    }
+
+    public Document getValue() {
+        return value;
+    }
+
+    public void setValue(Document value) {
+        this.value = value;
+    }
+
+    /**
+     * @return the file
+     */
+    public String getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(String file) {
+        this.file = file;
     }
 }

@@ -18,6 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -32,27 +38,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.osoa.sca.annotations.Remotable;
-import org.osoa.sca.annotations.Service;
-
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllPublicAndProtectedFields;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+import org.apache.tuscany.spi.model.OverrideOptions;
+import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Heuristically evaluates an un-annotated Java implementation type to determine services, references, and properties
@@ -412,7 +412,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         JavaMappedProperty<T> property = new JavaMappedProperty<T>();
         property.setName(name);
         property.setMember(member);
-        property.setRequired(false);
+        property.setOverride(OverrideOptions.MAY);
         property.setJavaType(paramType);
         return property;
     }

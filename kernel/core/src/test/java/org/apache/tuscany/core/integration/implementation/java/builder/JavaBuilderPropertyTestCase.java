@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -67,6 +68,8 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(Foo.class);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
+        PropertyValue propertyValue = new PropertyValue(property.getName(), property.getDefaultValueFactory());
+        definition.getPropertyValues().put(property.getName(), propertyValue);
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
         JavaBuilderPropertyTestCase.Foo foo = (JavaBuilderPropertyTestCase.Foo) component.createInstance();
         assertEquals("foo", foo.getTest());

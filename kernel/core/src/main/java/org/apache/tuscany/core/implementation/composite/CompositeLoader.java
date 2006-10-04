@@ -18,14 +18,15 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
+import org.apache.tuscany.core.property.PropertyHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
@@ -71,7 +72,8 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         composite.setName(reader.getAttributeValue(null, "name"));
-        while (true) {
+        boolean done = false;
+        while (!done) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(parent, reader, deploymentContext);
@@ -111,9 +113,14 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                     break;
                 case END_ELEMENT:
                     if (COMPOSITE.equals(reader.getName())) {
-                        return composite;
+                        done = true;
+                        break;
                     }
             }
         }
+        for (ComponentDefinition<? extends Implementation<?>> c : composite.getComponents().values()) {
+            PropertyHelper.processProperties(composite, c, deploymentContext);
+        }
+        return composite;
     }
 }

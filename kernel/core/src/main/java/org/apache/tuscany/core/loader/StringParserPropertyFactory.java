@@ -36,16 +36,92 @@ import org.apache.tuscany.core.injection.SingletonObjectFactory;
 
 /**
  * Implementation of StAXPropertyFactory that interprets the XML as
- *
+ * 
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
 public class StringParserPropertyFactory implements StAXPropertyFactory {
+
     public <T> ObjectFactory<T> createObjectFactory(XMLStreamReader reader, Property<T> property)
+        throws XMLStreamException, LoaderException {
+        String text = reader.getElementText();
+        return new SingletonObjectFactory<T>(createInstance(text, property.getJavaType()));
+    }
+
+    public <T> T createInstance(String text, Class<T> type) throws XMLStreamException, LoaderException {
+        // Class<T> type = property.getJavaType();
+        assert type != null : "property type is null";
+
+        // degenerate case where property type is a String
+        if (String.class.equals(type)) {
+            return type.cast(text);
+        }
+
+        // special handler to convert hexBinary to a byte[]
+        if (byte[].class.equals(type)) {
+            byte[] instance = new byte[text.length() >> 1];
+            for (int i = 0; i < instance.length; i++) {
+                instance[i] =
+                    (byte)(Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text
+                        .charAt((i << 1) + 1), 16));
+            }
+            return type.cast(instance);
+        }
+
+        // does this type have a static valueOf(String) method?
+        try {
+            Method valueOf = type.getMethod("valueOf", String.class);
+            if (Modifier.isStatic(valueOf.getModifiers())) {
+                try {
+                    return type.cast(valueOf.invoke(null, text));
+                } catch (IllegalAccessException e) {
+                    throw new AssertionError("getMethod returned an inaccessible method");
+                } catch (InvocationTargetException e) {
+                    // FIXME we should throw something better
+                    throw new LoaderException(e.getCause());
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            // try something else
+        }
+
+        // does this type have a constructor that takes a String?
+        try {
+            Constructor<T> ctr = type.getConstructor(String.class);
+            return ctr.newInstance(text);
+        } catch (NoSuchMethodException e) {
+            // try something else
+        } catch (IllegalAccessException e) {
+            throw new AssertionError("getConstructor returned an inaccessible method");
+        } catch (InstantiationException e) {
+            throw new LoaderException("Property type cannot be instantiated: " + type.getName());
+        } catch (InvocationTargetException e) {
+            // FIXME we should throw something better
+            throw new LoaderException(e.getCause());
+        }
+
+        // do we have a property editor for it?
+        PropertyEditor editor = PropertyEditorManager.findEditor(type);
+        if (editor != null) {
+            try {
+                editor.setAsText(text);
+                return (T)editor.getValue();
+            } catch (IllegalArgumentException e) {
+                // FIXME we should throw something better
+                throw new LoaderException(e);
+
+            }
+        }
+
+        // FIXME we should throw something better
+        throw new LoaderException("Do not have a way to parse a String into a " + type.getName());
+
+    }
+
+    public <T> ObjectFactory<T> createObjectFactory(String text, Property<T> property)
         throws XMLStreamException, LoaderException {
         Class<T> type = property.getJavaType();
         assert type != null : "property type is null";
-        String text = reader.getElementText();
 
         // degenerate case where property type is a String
         if (String.class.equals(type)) {
@@ -56,8 +132,9 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
         if (byte[].class.equals(type)) {
             byte[] instance = new byte[text.length() >> 1];
             for (int i = 0; i < instance.length; i++) {
-                instance[i] = (byte) (Character.digit(text.charAt(i << 1), 16) << 4
-                    | Character.digit(text.charAt((i << 1) + 1), 16));
+                instance[i] =
+                    (byte)(Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text
+                        .charAt((i << 1) + 1), 16));
             }
             return new SingletonObjectFactory<T>(type.cast(instance));
         }
@@ -99,7 +176,7 @@ public class StringParserPropertyFactory implements StAXPropertyFactory {
         if (editor != null) {
             try {
                 editor.setAsText(text);
-                return new SingletonObjectFactory<T>((T) editor.getValue());
+                return new SingletonObjectFactory<T>((T)editor.getValue());
             } catch (IllegalArgumentException e) {
                 // FIXME we should throw something better
                 throw new LoaderException(e);
