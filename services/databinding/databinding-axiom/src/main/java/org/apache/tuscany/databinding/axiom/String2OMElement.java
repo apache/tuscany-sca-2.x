@@ -37,7 +37,7 @@ import org.osoa.sca.annotations.Service;
 
 @Service(Transformer.class)
 public class String2OMElement extends TransformerExtension<String, OMElement> implements
-        PullTransformer<String, OMElement> {
+    PullTransformer<String, OMElement> {
 
     @SuppressWarnings("unchecked")
     public OMElement transform(String source, TransformationContext context) {
@@ -57,15 +57,18 @@ public class String2OMElement extends TransformerExtension<String, OMElement> im
      */
     private void adjustElementName(TransformationContext context, OMElement element) {
         if (context != null) {
-            DataType<QName> dataType = context.getTargetDataType();
-            QName targetQName = dataType == null ? null : dataType.getLogical();
-            if (targetQName != null && !element.getQName().equals(targetQName)) {
+            DataType dataType = context.getTargetDataType();
+            Object targetQName = dataType == null ? null : dataType.getLogical();
+            if (!(targetQName instanceof QName)) {
+                return;
+            }
+            if (!element.getQName().equals(targetQName)) {
                 // TODO: Throw expection or switch to the new Element
                 OMFactory factory = OMAbstractFactory.getOMFactory();
-                OMNamespace namespace =
-                        factory.createOMNamespace(targetQName.getNamespaceURI(), targetQName.getPrefix());
+                QName name = (QName)targetQName;
+                OMNamespace namespace = factory.createOMNamespace(name.getNamespaceURI(), name.getPrefix());
                 element.setNamespace(namespace);
-                element.setLocalName(targetQName.getLocalPart());
+                element.setLocalName(name.getLocalPart());
             }
         }
     }
