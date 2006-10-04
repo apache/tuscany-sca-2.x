@@ -189,7 +189,15 @@ public class Axis2Service extends ServiceExtension {
             msg.setBody(args);
             Message resp;
             // dispatch the wire down the chain and get the response
-            resp = headInterceptor.invoke(msg);
+            //TODO http://issues.apache.org/jira/browse/TUSCANY-777
+             ClassLoader oldtccl = Thread.currentThread().getContextClassLoader();
+             try{
+             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader()) ;   
+             resp = headInterceptor.invoke(msg);
+             
+             }finally{
+                 Thread.currentThread().setContextClassLoader(oldtccl) ;
+             }
             Object body = resp.getBody();
             if (resp.isFault()) {
                 throw new InvocationTargetException((Throwable) body);
