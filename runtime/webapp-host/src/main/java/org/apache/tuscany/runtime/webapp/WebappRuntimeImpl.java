@@ -135,6 +135,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     }
 
     public void destroy() {
+/*
         context = null;
         if (application != null) {
             application.stop();
@@ -152,6 +153,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             runtime.stop();
             runtime = null;
         }
+*/
     }
 
     public SCA getContext() {
