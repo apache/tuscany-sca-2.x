@@ -30,6 +30,7 @@ public class SimplePropertyObjectFactory<P> implements ObjectFactory<P> {
     private SimpleTypeMapperExtension typeMapper;
     private Property<P> property;
     private Document value;
+    private P instance;
 
     public SimplePropertyObjectFactory(Property<P> property, Document value) {
         super();
@@ -43,12 +44,15 @@ public class SimplePropertyObjectFactory<P> implements ObjectFactory<P> {
         if (value == null) {
             return null;
         }
-        String text = value.getDocumentElement().getTextContent();
-        TypeInfo xmlType = typeMapper.getXMLType(property.getJavaType());
-        if (xmlType == null) {
-            throw new IllegalArgumentException("Complex property is not supported.");
+        if (instance == null) {
+            String text = value.getDocumentElement().getTextContent();
+            TypeInfo xmlType = typeMapper.getXMLType(property.getJavaType());
+            if (xmlType == null) {
+                throw new IllegalArgumentException("Complex property is not supported.");
+            }
+            instance = (P)typeMapper.toJavaObject(xmlType, text, null);
         }
-        return (P)typeMapper.toJavaObject(xmlType, text, null);
+        return instance;
     }
 
 }

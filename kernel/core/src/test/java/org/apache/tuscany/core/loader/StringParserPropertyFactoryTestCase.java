@@ -22,60 +22,61 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.PropertyValue;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @version $Rev$ $Date$
  */
 public class StringParserPropertyFactoryTestCase extends TestCase {
 
+    private <T> PropertyValue<T> mock(Class<T> cls, String value) {
+        Document document = EasyMock.createMock(Document.class);
+        Element element = EasyMock.createMock(Element.class);
+        EasyMock.expect(document.getDocumentElement()).andReturn(element);
+        EasyMock.expect(element.getTextContent()).andReturn(value);
+        EasyMock.replay(document, element);
+        return new PropertyValue<T>(null, document);
+    }
 
     public void testInteger() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("1");
-        EasyMock.replay(reader);
+
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Integer> property = new Property<Integer>();
         property.setJavaType(Integer.class);
-        ObjectFactory<Integer> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<Integer> propertyValue = mock(Integer.class, "1");
+        ObjectFactory<Integer> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals(1, oFactory.getInstance().intValue());
-        EasyMock.verify(reader);
     }
 
     public void testPrimitiveInt() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("1");
-        EasyMock.replay(reader);
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Integer> property = new Property<Integer>();
         property.setJavaType(Integer.TYPE);
-        ObjectFactory<Integer> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<Integer> propertyValue = mock(Integer.TYPE, "1");
+        ObjectFactory<Integer> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals(1, oFactory.getInstance().intValue());
-        EasyMock.verify(reader);
     }
 
     public void testString() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("1");
-        EasyMock.replay(reader);
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<String> property = new Property<String>();
         property.setJavaType(String.class);
-        ObjectFactory<String> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<String> propertyValue = mock(String.class, "1");
+        ObjectFactory<String> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals("1", oFactory.getInstance());
-        EasyMock.verify(reader);
     }
 
     public void testByteArray() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("1");
-        EasyMock.replay(reader);
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<byte[]> property = new Property<byte[]>();
         property.setJavaType(byte[].class);
-        ObjectFactory<byte[]> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<byte[]> propertyValue = mock(byte[].class, "1");
+        ObjectFactory<byte[]> oFactory = factory.createObjectFactory(property, propertyValue);
         byte[] result = oFactory.getInstance();
         byte[] expected = "1".getBytes();
         for (int i = 0; i < result.length; i++) {
@@ -84,43 +85,33 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
                 fail();
             }
         }
-        EasyMock.verify(reader);
     }
 
     public void testBoolean() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("true");
-        EasyMock.replay(reader);
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Boolean> property = new Property<Boolean>();
         property.setJavaType(Boolean.class);
-        ObjectFactory<Boolean> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<Boolean> propertyValue = mock(Boolean.class, "true");
+        ObjectFactory<Boolean> oFactory = factory.createObjectFactory(property, propertyValue);
         assertTrue(oFactory.getInstance());
-        EasyMock.verify(reader);
     }
 
     public void testPrimitiveBoolean() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("true");
-        EasyMock.replay(reader);
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Boolean> property = new Property<Boolean>();
         property.setJavaType(Boolean.TYPE);
-        ObjectFactory<Boolean> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<Boolean> propertyValue = mock(Boolean.TYPE, "true");
+        ObjectFactory<Boolean> oFactory = factory.createObjectFactory(property, propertyValue);
         assertTrue(oFactory.getInstance());
-        EasyMock.verify(reader);
     }
 
     public void testStringConstructor() throws Exception {
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getElementText()).andReturn("test");
-        EasyMock.replay(reader);
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Foo> property = new Property<Foo>();
         property.setJavaType(Foo.class);
-        ObjectFactory<Foo> oFactory = factory.createObjectFactory(reader, property);
+        PropertyValue<Foo> propertyValue = mock(Foo.class, "test");
+        ObjectFactory<Foo> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals("test", oFactory.getInstance().getFoo());
-        EasyMock.verify(reader);
     }
 
     private static class Foo {
@@ -134,6 +125,5 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
             return foo;
         }
     }
-
 
 }

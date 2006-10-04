@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.bootstrap;
 
+import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -25,9 +26,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.loader.Loader;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-
-import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 
 /**
  * Interface that abstracts the process used to create a running Tuscany system. Implementation of this may provide
@@ -70,7 +69,7 @@ public interface Bootstrapper {
      * @param introspector    the introspector to be used to extract component type information from a Java class
      * @return a new prmordial Loader
      */
-    Loader createLoader(StAXPropertyFactory propertyFactory, Introspector introspector);
+    Loader createLoader(PropertyObjectFactory propertyFactory, Introspector introspector);
 
     /**
      * Create a ScopeRegistry that supports the Scopes supported for primordial components

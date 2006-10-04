@@ -20,22 +20,6 @@ package org.apache.tuscany.core.bootstrap;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.builder.Builder;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.implementation.java.Introspector;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.StAXPropertyFactory;
-
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -74,8 +58,23 @@ import org.apache.tuscany.core.loader.LoaderRegistryImpl;
 import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
-import org.apache.tuscany.core.loader.StringParserPropertyFactory;
+import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.builder.Builder;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
+import org.apache.tuscany.spi.implementation.java.Introspector;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on the individual methods for how the
@@ -134,7 +133,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         Builder builder = createBuilder(scopeRegistry);
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
-        LoaderRegistry loader = createLoader(new StringParserPropertyFactory(), introspector);
+        LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
         return new DeployerImpl(xmlFactory, loader, builder);
     }
 
@@ -163,7 +162,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @param introspector    the Introspector to be used to inspect component implementations
      * @return a new StAX XML loader
      */
-    public LoaderRegistry createLoader(StAXPropertyFactory propertyFactory, Introspector introspector) {
+    public LoaderRegistry createLoader(PropertyObjectFactory propertyFactory, Introspector introspector) {
         LoaderRegistryImpl loaderRegistry =
             new LoaderRegistryImpl(monitorFactory.getMonitor(LoaderRegistryImpl.Monitor.class));
 

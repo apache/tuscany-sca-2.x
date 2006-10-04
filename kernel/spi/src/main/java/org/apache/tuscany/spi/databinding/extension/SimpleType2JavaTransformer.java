@@ -25,25 +25,29 @@ import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
 
 /**
- * Transformer to convert data from a databinding's representation of simple types to Java Objects
+ * Transformer to convert data from a databinding's representation of simple
+ * types to Java Objects
  */
 public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension<T, Object> implements
-        PullTransformer<T, Object> {
+    PullTransformer<T, Object> {
 
     protected SimpleTypeMapper mapper;
 
     public SimpleType2JavaTransformer() {
         this.mapper = new SimpleTypeMapperExtension();
     }
-    
+
     public SimpleType2JavaTransformer(SimpleTypeMapper mapper) {
         this.mapper = (mapper != null) ? mapper : new SimpleTypeMapperExtension();
     }
 
     public Object transform(T source, TransformationContext context) {
-        ElementInfo element =
-                (ElementInfo) context.getSourceDataType().getMetadata(ElementInfo.class.getName());
-        TypeInfo simpleType = (TypeInfo) element.getType();
+        TypeInfo simpleType = (TypeInfo)context.getSourceDataType().getMetadata(TypeInfo.class.getName());
+        if (simpleType == null) {
+            ElementInfo element =
+                (ElementInfo)context.getSourceDataType().getMetadata(ElementInfo.class.getName());
+            simpleType = (TypeInfo)element.getType();
+        }
         return mapper.toJavaObject(simpleType, getText(source), context);
     }
 
@@ -52,9 +56,14 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
     }
 
     public int getWeight() {
-        // Cannot be used for imtermediate 
+        // Cannot be used for imtermediate
         return 10000;
     }
-    
+
+    /**
+     * Get the string value from the source
+     * @param source
+     * @return A string
+     */
     protected abstract String getText(T source);
 }
