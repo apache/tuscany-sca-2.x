@@ -62,4 +62,17 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
      * Notification that the web application has stopped servicing a request
      */
     void stopRequest();
+
+    /**
+     * httpRequestStarted  request has been started with sessid id
+     * @param session id.
+     */
+    void httpRequestStarted(Object id);
+    
+    /**
+     * httpRequestEnded  request has been ended with sessid id
+     * @param session id.
+     */
+    
+    void httpRequestEnded(Object id);
 }
