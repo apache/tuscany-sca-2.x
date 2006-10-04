@@ -134,7 +134,13 @@ public interface TuscanyRuntime {
      */
     SCA getContext();
 
+    /**
+     * Get the application classloader
+     */
     ClassLoader getApplicationClassLoader();
 
+    /**
+     * Set the application classloader
+     */
     void setApplicationClassLoader(ClassLoader applicationClassLoader);
 }

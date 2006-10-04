@@ -105,13 +105,16 @@ public class WebappUtilImpl implements WebappUtil {
 
     public URL getScdlURL(String path, ClassLoader classLoader)
         throws MalformedURLException {
+        URL ret = null;
         if (path.charAt(0) == '/') {
             // user supplied an absolute path - look up as a webapp resource
-            return servletContext.getResource(path);
-        } else {
-            // user supplied a relative path - look up as a boot classpath resource
-            return classLoader.getResource(path);
+            ret = servletContext.getResource(path);
         }
+        if (ret == null) {
+            // user supplied a relative path - look up as a boot classpath resource
+            ret = classLoader.getResource(path);
+        }
+        return ret;
     }
 
     public String getInitParameter(String name, String value) {

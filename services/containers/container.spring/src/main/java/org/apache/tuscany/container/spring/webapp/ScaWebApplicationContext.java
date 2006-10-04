@@ -93,11 +93,13 @@ public class ScaWebApplicationContext extends XmlWebApplicationContext
             URL systemScdl = utils.getSystemScdl(bootClassLoader);
             URL applicationScdl = utils.getApplicationScdl(webappClassLoader);
 
+            runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
+            runtime.setApplicationName(utils.getApplicationName());
             runtime.setServletContext(servletContext);
             runtime.setHostClassLoader(webappClassLoader);
             runtime.setSystemScdl(systemScdl);
             runtime.setApplicationScdl(applicationScdl);
-            runtime.setRuntimeInfo(new SpringRuntimeInfo(getApplicationRootDirectory(), this));
+            runtime.setRuntimeInfo(new SpringWebappRuntimeInfo(getApplicationRootDirectory(), this));
             runtime.initialize();
         } catch (TuscanyRuntimeException e) {
             servletContext.log(e.getMessage(), e);
@@ -120,7 +122,7 @@ public class ScaWebApplicationContext extends XmlWebApplicationContext
      * What does this do and why to we need it?
      * @return
      */
-    public File getApplicationRootDirectory() {
+    private File getApplicationRootDirectory() {
         String property = System.getProperty("tuscany.applicationRootDir");
         if (property != null) {
             return new File(property);

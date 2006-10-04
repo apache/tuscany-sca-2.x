@@ -20,6 +20,7 @@ package org.apache.tuscany.core.launcher;
 
 import java.io.File;
 import java.net.URL;
+
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.CompositeContext;
@@ -184,6 +185,7 @@ public class LauncherImpl implements Launcher {
 
         // deploy the component into the runtime under the system parent
         CompositeComponent parent = runtime.getRootComponent();
+        // FIXME andyp -- this seems bogus when running inside an appserver
         ClassLoader ccl = Thread.currentThread().getContextClassLoader();
 
         try {

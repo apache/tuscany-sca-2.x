@@ -67,7 +67,6 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
 
     private ServletRequestInjector requestInjector;
-
     private CompositeContextImpl context;
     private RuntimeComponent runtime;
     private CompositeComponent systemComponent;
@@ -97,7 +96,12 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         systemComponent = runtime.getSystemComponent();
 
         // register the runtime info provided by the host
+        // FIXME andyp@bea.com -- autowire appears to need an exact type match,
+        // hence the need to register this twice
         systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
+            RuntimeInfo.class,
+            (WebappRuntimeInfo) getRuntimeInfo());
+        systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
             WebappRuntimeInfo.class,
             (WebappRuntimeInfo) getRuntimeInfo());
 
@@ -105,6 +109,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
 
         systemComponent.start();
+
+        if (getSystemScdl() == null) {
+            throw new TuscanyInitException("Could not find system SCDL");
+        }
 
         try {
             // deploy the system scdl
@@ -120,6 +128,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
             // switch to the system deployer
             deployer = (Deployer) tuscanySystem.getSystemChild("deployer").getServiceInstance();
+
+            if (getApplicationScdl() == null) {
+                throw new TuscanyInitException("Could not find application SCDL");
+            }
 
             application = deployApplicationScdl(deployer,
                 runtime.getRootComponent(),
