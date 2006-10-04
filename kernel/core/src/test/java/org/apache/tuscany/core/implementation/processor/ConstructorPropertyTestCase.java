@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.OverrideOptions;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -46,7 +47,8 @@ public class ConstructorPropertyTestCase extends TestCase {
         Constructor<Foo> ctor = Foo.class.getConstructor(String.class);
         processor.visitConstructor(null, ctor, type, null);
         JavaMappedProperty<?> property = type.getProperties().get("myProp");
-        assertTrue(property.isRequired());
+        //assertTrue(property.isRequired());
+        assertEquals(property.getOverride(), OverrideOptions.MAY);
         assertEquals("myProp", property.getName());
     }
 
@@ -122,7 +124,7 @@ public class ConstructorPropertyTestCase extends TestCase {
     private static class Foo {
 
         @org.osoa.sca.annotations.Constructor()
-        public Foo(@Property(name = "myProp", required = true) String prop) {
+        public Foo(@Property(name = "myProp", override = "may") String prop) {
 
         }
 

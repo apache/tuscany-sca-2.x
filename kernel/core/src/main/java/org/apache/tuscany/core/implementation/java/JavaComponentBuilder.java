@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -115,8 +116,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             new JavaAtomicComponent(definition.getName(), configuration, monitor);
 
         // handle properties
-        for (JavaMappedProperty<?> property : componentType.getProperties().values()) {
-            ObjectFactory<?> factory = property.getDefaultValueFactory();
+        for (PropertyValue<?> property : definition.getPropertyValues().values()) {
+            ObjectFactory<?> factory = property.getValueFactory();
             if (factory != null) {
                 component.addPropertyFactory(property.getName(), factory);
             }

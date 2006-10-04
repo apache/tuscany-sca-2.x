@@ -49,7 +49,7 @@ public class BusServiceImpl implements BusService {
      * FIXME the annotation processing framework must inject this
      * @param wsdlReg
      */
-    @Property (required = true)
+    @Property (override = "must")
     public void setWsdlRegistry(WSDLDefinitionRegistry wsdlReg) {
         wsdlRegistry = wsdlReg;
     }
