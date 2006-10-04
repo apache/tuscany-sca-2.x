@@ -76,10 +76,14 @@ public class PropertyHelperTestCase extends TestCase {
     public void testXPath() throws Exception {
         String2Node t = new String2Node();
         Node node = t.transform(IPO_XML, null);
+        
+        Document doc = PropertyHelper.evaluate(null, node, "/ipo:purchaseOrder/billTo");
+        assertNotNull(doc);
+        
         NamespaceContext context = EasyMock.createMock(NamespaceContext.class);
         EasyMock.expect(context.getNamespaceURI("ipo")).andReturn("http://www.example.com/IPO").anyTimes();
         EasyMock.replay(context);
-        Document doc = PropertyHelper.evaluate(context, node, "/ipo:purchaseOrder/items");
+        doc = PropertyHelper.evaluate(context, node, "/ipo:purchaseOrder/items");
         assertNotNull(doc);
         doc = PropertyHelper.evaluate(context, node, "/ipo:purchaseOrder/billTo");
         assertNotNull(doc);

@@ -22,20 +22,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.Multiplicity;
 
 /**
  * Utility classes to support StAX-based loaders
