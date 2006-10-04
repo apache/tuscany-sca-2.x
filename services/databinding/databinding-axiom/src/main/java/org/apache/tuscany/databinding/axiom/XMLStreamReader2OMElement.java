@@ -35,7 +35,8 @@ import org.apache.tuscany.spi.model.DataType;
 import org.osoa.sca.annotations.Service;
 
 @Service(Transformer.class)
-public class XMLStreamReader2OMElement extends TransformerExtension<XMLStreamReader, OMElement> implements PullTransformer<XMLStreamReader, OMElement> {
+public class XMLStreamReader2OMElement extends TransformerExtension<XMLStreamReader, OMElement> implements
+    PullTransformer<XMLStreamReader, OMElement> {
 
     public XMLStreamReader2OMElement() {
         super();
@@ -51,29 +52,28 @@ public class XMLStreamReader2OMElement extends TransformerExtension<XMLStreamRea
             throw new TransformationException(e);
         }
     }
-    
+
     /**
-     * For data trasnformation purpose, we may only care about the content of the OMElement.
-     * If the incoming OMElement is under a different name, then we try to adjust it based on the target
-     * data type
      * @param context
      * @param element
      */
     private void adjustElementName(TransformationContext context, OMElement element) {
         if (context != null) {
-            DataType<QName> dataType = context.getTargetDataType();
-            QName targetQName = dataType == null ? null : dataType.getLogical();
-            if (targetQName != null && !element.getQName().equals(targetQName)) {
+            DataType dataType = context.getTargetDataType();
+            Object targetQName = dataType == null ? null : dataType.getLogical();
+            if (!(targetQName instanceof QName)) {
+                return;
+            }
+            if (!element.getQName().equals(targetQName)) {
                 // TODO: Throw expection or switch to the new Element
                 OMFactory factory = OMAbstractFactory.getOMFactory();
-                OMNamespace namespace =
-                        factory.createOMNamespace(targetQName.getNamespaceURI(), targetQName.getPrefix());
+                QName name = (QName)targetQName;
+                OMNamespace namespace = factory.createOMNamespace(name.getNamespaceURI(), name.getPrefix());
                 element.setNamespace(namespace);
-                element.setLocalName(targetQName.getLocalPart());
+                element.setLocalName(name.getLocalPart());
             }
         }
     }
-    
 
     public Class getTargetType() {
         return OMElement.class;

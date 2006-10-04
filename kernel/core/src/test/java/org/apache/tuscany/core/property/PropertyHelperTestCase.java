@@ -83,6 +83,10 @@ public class PropertyHelperTestCase extends TestCase {
         assertNotNull(doc);
         doc = PropertyHelper.evaluate(context, node, "/ipo:purchaseOrder/billTo");
         assertNotNull(doc);
+        doc = PropertyHelper.evaluate(context, node, "/");
+        assertNotNull(doc);
+        doc = PropertyHelper.evaluate(context, node, "/ipo:purchaseOrder/billTo1");
+        assertNull(doc);
     }
 
     public void testFile() throws Exception {
