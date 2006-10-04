@@ -105,7 +105,12 @@ public class PropertyHelper {
                 try {
                     // $<name>/...
                     int index = source.indexOf('/');
-                    if (index != -1 && source.charAt(0) == '$') {
+                    if (index == -1) {
+                        // Tolerating $prop
+                        source = source + "/";
+                        index = source.length() - 1;
+                    }
+                    if (source.charAt(0) == '$') {
                         String name = source.substring(1, index);
                         Property<?> compositeProp = parent.getProperties().get(name);
                         if (compositeProp == null) {
