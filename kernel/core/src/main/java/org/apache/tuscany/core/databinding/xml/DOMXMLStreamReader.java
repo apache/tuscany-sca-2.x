@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -1213,6 +1214,10 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         NamedNodeMap nodeMap = rootElement.getAttributes();
         for (int i = 0; i < nodeMap.getLength(); i++) {
             Attr attr = (Attr)nodeMap.item(i);
+            if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
+                // Skip xmlns:xxx
+                continue;
+            }
             QName attrName = new QName(attr.getNamespaceURI(), attr.getLocalName());
             NameValuePair pair = new NameValuePair(attrName, attr.getValue());
             attributeList.add(pair);

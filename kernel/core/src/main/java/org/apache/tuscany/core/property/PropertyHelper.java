@@ -22,6 +22,7 @@ package org.apache.tuscany.core.property;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.namespace.NamespaceContext;
@@ -60,6 +61,8 @@ public class PropertyHelper {
         XPath path = FACTORY.newXPath();
         if (nsContext != null) {
             path.setNamespaceContext(nsContext);
+        } else {
+            path.setNamespaceContext(new DOMNamespeceContext(node));
         }
         XPathExpression expression = path.compile(xPathExpression);
         Node result = (Node)expression.evaluate(node, XPathConstants.NODE);
@@ -164,6 +167,31 @@ public class PropertyHelper {
                 propValue.setValueFactory(new SimplePropertyObjectFactory(prop, propValue.getValue()));
             }
         }
+    }
+
+    private static class DOMNamespeceContext implements NamespaceContext {
+        private Node node;
+
+        /**
+         * @param node
+         */
+        public DOMNamespeceContext(Node node) {
+            super();
+            this.node = node;
+        }
+
+        public String getNamespaceURI(String prefix) {
+            return node.lookupNamespaceURI(prefix);
+        }
+
+        public String getPrefix(String namespaceURI) {
+            return node.lookupPrefix(namespaceURI);
+        }
+
+        public Iterator getPrefixes(String namespaceURI) {
+            return null;
+        }
+
     }
 
 }
