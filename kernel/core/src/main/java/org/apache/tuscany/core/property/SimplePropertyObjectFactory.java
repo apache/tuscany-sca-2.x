@@ -46,7 +46,12 @@ public class SimplePropertyObjectFactory<P> implements ObjectFactory<P> {
         }
         if (instance == null) {
             String text = value.getDocumentElement().getTextContent();
-            TypeInfo xmlType = typeMapper.getXMLType(property.getJavaType());
+            TypeInfo xmlType = null;
+            if (property.getJavaType() == null) {
+                xmlType = new TypeInfo(property.getXmlType(), true, null);
+            } else {
+                xmlType = typeMapper.getXMLType(property.getJavaType());
+            }
             if (xmlType == null) {
                 throw new IllegalArgumentException("Complex property is not supported.");
             }
