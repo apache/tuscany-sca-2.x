@@ -51,7 +51,7 @@ import org.w3c.dom.Node;
 public class PropertyHelper {
 
     private static final XPathFactory FACTORY = XPathFactory.newInstance();
-    
+
     private PropertyHelper() {
     }
 
@@ -63,11 +63,18 @@ public class PropertyHelper {
         }
         XPathExpression expression = path.compile(xPathExpression);
         Node result = (Node)expression.evaluate(node, XPathConstants.NODE);
+        if (result == null) {
+            return null;
+        }
 
         // TODO: How to wrap the result into a Document?
         Document document = DOMHelper.newDocument();
-        document.appendChild(document.importNode(result, true));
-        return document;
+        if (result instanceof Document) {
+            return document;
+        } else {
+            document.appendChild(document.importNode(result, true));
+            return document;
+        }
     }
 
     public static Document loadFromFile(String file, DeploymentContext deploymentContext)
@@ -115,13 +122,21 @@ public class PropertyHelper {
                         Property<?> compositeProp = parent.getProperties().get(name);
                         if (compositeProp == null) {
                             InvalidValueException ex =
-                                new InvalidValueException("The 'source' cannot be resolved to a composite property");
+                                new InvalidValueException(
+                                                          "The 'source' cannot be resolved to a composite property");
                             ex.addContextName(source);
                             throw ex;
                         }
                         Document document = compositeProp.getDefaultValue();
                         // Adding /value because the document root is "value"
-                        String xpath = "/value" + source.substring(index);
+                        String path = source.substring(index);
+                        String xpath = null;
+                        if ("/".equals(path)) {
+                            // trailing / is not legal for xpath
+                            xpath = "/value";
+                        } else {
+                            xpath = "/value" + path;
+                        }
 
                         // FIXME: How to deal with namespaces?
                         node = evaluate(null, document, xpath);

@@ -20,6 +20,9 @@ package org.apache.tuscany.core.loader;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.stream.XMLStreamConstants;
@@ -36,7 +39,7 @@ import org.apache.tuscany.spi.model.Multiplicity;
 
 /**
  * Utility classes to support StAX-based loaders
- *
+ * 
  * @version $Rev$ $Date$
  */
 public final class StAXUtil {
@@ -54,9 +57,9 @@ public final class StAXUtil {
 
     /**
      * Convert a "multiplicity" attribute to the equivalent enum value.
-     *
+     * 
      * @param multiplicity the attribute to convert
-     * @param def          the default value
+     * @param def the default value
      * @return the enum equivalent
      */
     public static Multiplicity multiplicity(String multiplicity, Multiplicity def) {
@@ -64,9 +67,10 @@ public final class StAXUtil {
     }
 
     /**
-     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals (ignoring
-     * case) "conversational", otherwise returns NONCONVERSATIONAL.
-     *
+     * Convert a "scope" attribute to the equivalent enum value. Returns
+     * CONVERSATIONAL if the value equals (ignoring case) "conversational",
+     * otherwise returns NONCONVERSATIONAL.
+     * 
      * @param scope the attribute to convert
      * @return the enum equivalent
      */
@@ -78,42 +82,42 @@ public final class StAXUtil {
         }
     }
 
-    public static Document createPropertyValue(XMLStreamReader reader,
-                                               QName type,
-                                               DocumentBuilder builder) throws XMLStreamException {
+    public static Document createPropertyValue(XMLStreamReader reader, QName type, DocumentBuilder builder)
+        throws XMLStreamException {
         Document doc = builder.newDocument();
 
         // root element has no namespace and local name "value"
         Element root = doc.createElementNS(null, "value");
         if (type != null) {
-            Attr xsi = doc.createAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xsi");
-            xsi.setValue("http://www.w3.org/2001/XMLSchema-instance");
+            Attr xsi = doc.createAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi");
+            xsi.setValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
             root.setAttributeNodeNS(xsi);
 
             String prefix = type.getPrefix();
             if (prefix == null || prefix.length() == 0) {
                 prefix = "ns";
             }
-            Attr typeXmlns = doc.createAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:" + prefix);
+            Attr typeXmlns = doc.createAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:" + prefix);
             typeXmlns.setValue(type.getNamespaceURI());
             root.setAttributeNodeNS(typeXmlns);
 
-            Attr xsiType = doc.createAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:type");
+            Attr xsiType = doc.createAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:type");
             xsiType.setValue(prefix + ":" + type.getLocalPart());
             root.setAttributeNodeNS(xsiType);
         }
         doc.appendChild(root);
-        
+
         loadPropertyValue(reader, root);
         return doc;
     }
-    
+
     /**
-     * Load a property value specification from an StAX stream into a DOM Document. Only elements, text and attributes
-     * are processed; all comments and other whitespace are ignored.
-     *
+     * Load a property value specification from an StAX stream into a DOM
+     * Document. Only elements, text and attributes are processed; all comments
+     * and other whitespace are ignored.
+     * 
      * @param reader the stream to read from
-     * @param root   the DOM node to load
+     * @param root the DOM node to load
      */
     public static void loadPropertyValue(XMLStreamReader reader, Node root) throws XMLStreamException {
         Document document = root.getOwnerDocument();
