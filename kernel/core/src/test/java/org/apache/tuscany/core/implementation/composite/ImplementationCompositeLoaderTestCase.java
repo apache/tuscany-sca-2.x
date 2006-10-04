@@ -53,10 +53,10 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         expect(reader.getName()).andReturn(IMPLEMENTATION_COMPOSITE);
         expect(reader.getAttributeValue(null, "name")).andReturn(name);
         expect(reader.getAttributeValue(null, "scdlLocation")).andReturn(null);
+        expect(reader.getAttributeValue(null, "jarLocation")).andReturn(null);
         expect(reader.next()).andReturn(END_ELEMENT);
         replay(reader);
 
-        expect(context.getClassLoader()).andReturn(cl);
         replay(context);
 
         CompositeImplementation impl = loader.load(null, reader, context);
@@ -64,7 +64,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         verify(context);
         assertEquals(name, impl.getName());
         assertNull(impl.getScdlLocation());
-        assertSame(cl, impl.getClassLoader());
+        assertNull(impl.getClassLoader());
     }
 
     public void testWithScdlLocation() throws LoaderException, XMLStreamException, MalformedURLException {
@@ -72,6 +72,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         expect(reader.getName()).andReturn(IMPLEMENTATION_COMPOSITE);
         expect(reader.getAttributeValue(null, "name")).andReturn(name);
         expect(reader.getAttributeValue(null, "scdlLocation")).andReturn("bar.scdl");
+        expect(reader.getAttributeValue(null, "jarLocation")).andReturn(null);
         expect(reader.next()).andReturn(END_ELEMENT);
         replay(reader);
 
@@ -85,6 +86,27 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         assertEquals(name, impl.getName());
         assertEquals(new URL("http://www.example.com/sca/bar.scdl"), impl.getScdlLocation());
         assertSame(cl, impl.getClassLoader());
+    }
+
+    public void testWithJarLocation() throws LoaderException, XMLStreamException, MalformedURLException {
+        String name = "foo";
+        expect(reader.getName()).andReturn(IMPLEMENTATION_COMPOSITE);
+        expect(reader.getAttributeValue(null, "name")).andReturn(name);
+        expect(reader.getAttributeValue(null, "scdlLocation")).andReturn(null);
+        expect(reader.getAttributeValue(null, "jarLocation")).andReturn("bar.jar");
+        expect(reader.next()).andReturn(END_ELEMENT);
+        replay(reader);
+
+        expect(context.getScdlLocation()).andReturn(new URL("http://www.example.com/sca/base.scdl"));
+        expect(context.getClassLoader()).andReturn(cl);
+        replay(context);
+
+        CompositeImplementation impl = loader.load(null, reader, context);
+        verify(reader);
+        verify(context);
+        assertEquals(name, impl.getName());
+        assertEquals(new URL("jar:http://www.example.com/sca/bar.jar!/META-INF/sca/default.scdl"),
+                     impl.getScdlLocation());
     }
 
     protected void setUp() throws Exception {
