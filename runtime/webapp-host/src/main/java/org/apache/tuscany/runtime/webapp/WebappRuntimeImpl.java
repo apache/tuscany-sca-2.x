@@ -28,6 +28,8 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
+import org.apache.tuscany.core.component.event.HttpRequestEnded;
+import org.apache.tuscany.core.component.event.HttpRequestStart;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
@@ -187,6 +189,19 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         application.publish(endSession);
         ((EventPublisher)requestInjector).publish(endSession);
     }
+    
+    public void httpRequestStarted(Object sessionid) {
+        HttpRequestStart httpRequestStart = new HttpRequestStart(this, sessionid);
+        application.publish(httpRequestStart);
+        ((EventPublisher)requestInjector).publish(httpRequestStart);
+    }
+    
+    public void httpRequestEnded(Object sessionid) {
+        HttpRequestEnded httpRequestEnded = new HttpRequestEnded(this, sessionid);
+        application.publish(httpRequestEnded);
+        ((EventPublisher)requestInjector).publish(httpRequestEnded);
+    }
+
 
     public void startRequest() {
         application.publish(new RequestStart(this));
