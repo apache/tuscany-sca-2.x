@@ -15,19 +15,17 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
-import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.injection.WireObjectFactory;
-
+/**
+ * A bindless reference to a target service in the parent composite
+ */
 public class CompositeReference extends ReferenceExtension {
 
     private WorkContext workContext;
@@ -42,13 +40,10 @@ public class CompositeReference extends ReferenceExtension {
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        WireObjectFactory wireFactory = new WireObjectFactory(outboundWire, wireService);
-        Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
-        return new CompositeReferenceTargetInvoker(method, inboundWire, wireFactory, workContext);
+        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire, workContext);
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        Method method = JavaIDLUtils.findMethod(operation, contract.getCallbackClass().getMethods());
-        return new CompositeReferenceCallbackTargetInvoker(method, contract, inboundWire, wireService, workContext);
+        return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire, workContext);
     }
 }

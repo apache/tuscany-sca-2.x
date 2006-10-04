@@ -16,45 +16,25 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.wire.PojoTargetInvoker;
+/**
+ * 
+ */
+public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 
-public class CompositeReferenceCallbackTargetInvoker extends PojoTargetInvoker {
-
-    private ServiceContract<?> contract;
     private InboundWire inboundWire;
-    private WireService wireService;
     private WorkContext workContext;
 
-
-    public CompositeReferenceCallbackTargetInvoker(Method operation,
-                                                   ServiceContract contract,
-                                                   InboundWire inboundWire,
-                                                   WireService wireService,
-                                                   WorkContext workContext) {
+    public CompositeReferenceCallbackTargetInvoker(Operation operation, InboundWire inboundWire, WorkContext context) {
         super(operation);
-        this.contract = contract;
         this.inboundWire = inboundWire;
-        this.wireService = wireService;
-        this.workContext = workContext;
-    }
-
-    public CompositeReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {
-        CompositeReferenceCallbackTargetInvoker invoker = (CompositeReferenceCallbackTargetInvoker) super.clone();
-        invoker.contract = this.contract;
-        invoker.inboundWire = this.inboundWire;
-        invoker.wireService = this.wireService;
-        invoker.workContext = this.workContext;
-        return invoker;
+        this.workContext = context;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
@@ -71,7 +51,11 @@ public class CompositeReferenceCallbackTargetInvoker extends PojoTargetInvoker {
         return msg;
     }
 
-    protected Object getInstance() throws TargetException {
-        return wireService.createCallbackProxy(contract, inboundWire);
+    public CompositeReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {
+        return (CompositeReferenceCallbackTargetInvoker) super.clone();
+    }
+
+    protected AbstractOperationOutboundInvocationHandler getInvocationHandler() {
+        return new OperationCallbackInvocationHandler(workContext, inboundWire);
     }
 }

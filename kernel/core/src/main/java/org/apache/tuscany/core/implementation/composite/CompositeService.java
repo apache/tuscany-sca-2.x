@@ -13,20 +13,15 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.lang.reflect.Method;
-
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.injection.WireObjectFactory;
 
 public class CompositeService extends ServiceExtension {
 
@@ -48,16 +43,13 @@ public class CompositeService extends ServiceExtension {
      * FIXME !!! Notice that this method is not defined in the SPI !!!
      */
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        WireObjectFactory wireFactory = new WireObjectFactory(outboundWire, wireService);
-        Method method = JavaIDLUtils.findMethod(operation, contract.getInterfaceClass().getMethods());
-        return new CompositeReferenceTargetInvoker(method, inboundWire, wireFactory, workContext);
+        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire, workContext);
     }
 
     /**
      */
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        Method method = JavaIDLUtils.findMethod(operation, contract.getCallbackClass().getMethods());
-        return new CompositeReferenceCallbackTargetInvoker(method, contract, inboundWire, wireService, workContext);
+         return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire, workContext);
     }
 
     public Object getServiceInstance() throws TargetException {

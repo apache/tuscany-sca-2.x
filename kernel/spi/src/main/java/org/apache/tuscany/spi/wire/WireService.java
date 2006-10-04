@@ -141,13 +141,16 @@ public interface WireService {
      * superset of those specified by the service. <li>other specified attributes of the two interfaces MUST match,
      * including Scope and Callback interface </ol>
      * <p/>
-     * <p>Please note this test is not symetric: the success of checkCompatibility(A, B) does NOT imply that checkCompatibility(B, A)
+     * <p>Please note this test is not symetric: the success of checkCompatibility(A, B) does NOT imply that
+     * checkCompatibility(B, A)
      *
-     * @param source The source service contract
-     * @param target The target service contract
+     * @param source         The source service contract
+     * @param target         The target service contract
      * @param ignoreCallback Indicate the callback should be checked
-     * @throws IncompatibleServiceContractException If the source service contract is not compatible with the target one
+     * @throws IncompatibleServiceContractException
+     *          If the source service contract is not compatible with the target one
      */
-    void checkCompatibility(ServiceContract<?> source, ServiceContract<?> target, boolean ignoreCallback) throws IncompatibleServiceContractException;
+    void checkCompatibility(ServiceContract<?> source, ServiceContract<?> target, boolean ignoreCallback)
+        throws IncompatibleServiceContractException;
 
 }
