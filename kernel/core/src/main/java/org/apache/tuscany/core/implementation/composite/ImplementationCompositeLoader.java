@@ -29,6 +29,7 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidValueException;
@@ -63,6 +64,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
         assert IMPLEMENTATION_COMPOSITE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
+        String jarLocation = reader.getAttributeValue(null, "jarLocation");
         LoaderUtil.skipToEndElement(reader);
 
         CompositeImplementation impl = new CompositeImplementation();
@@ -75,8 +77,23 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
                 ive.setIdentifier(name);
                 throw ive;
             }
+            impl.setClassLoader(deploymentContext.getClassLoader());
+        } else if (jarLocation != null) {
+            URL jarUrl;
+            try {
+                jarUrl = new URL(deploymentContext.getScdlLocation(), jarLocation);
+            } catch (MalformedURLException e) {
+                InvalidValueException ive = new InvalidValueException(jarLocation, e);
+                ive.setIdentifier(name);
+                throw ive;
+            }
+            try {
+                impl.setScdlLocation(new URL("jar:" + jarUrl.toExternalForm() + "!/META-INF/sca/default.scdl"));
+            } catch (MalformedURLException e) {
+                throw new AssertionError("Could not convert URL to a jar: url");
+            }
+            impl.setClassLoader(new CompositeClassLoader(new URL[]{jarUrl}, deploymentContext.getClassLoader()));
         }
-        impl.setClassLoader(deploymentContext.getClassLoader());
         return impl;
     }
 }
