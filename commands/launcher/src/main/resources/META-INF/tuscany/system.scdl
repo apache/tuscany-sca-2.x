@@ -79,22 +79,25 @@
     </component>
 
     <!-- include loader configuration -->
-    <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
+    <include name="org.apache.tuscany.core.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
+
+    <!-- include databinding configuration -->
+    <include name="org.apache.tuscany.core.DataBinding" scdlResource="org/apache/tuscany/core/databinding.scdl"/>
 
     <!-- include implementation processor configuration -->
-    <include name="org.apache.tuscany.launcher.Implementation" scdlResource="org/apache/tuscany/core/implementation.scdl"/>
+    <include name="org.apache.tuscany.core.Implementation" scdlResource="org/apache/tuscany/core/implementation.scdl"/>
 
     <!-- Java interface definition language -->
-    <include name="org.apache.tuscany.launcher.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl"/>
+    <include name="org.apache.tuscany.core.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl"/>
 
     <!-- include omposite implementation type -->
-    <include name="org.apache.tuscany.launcher.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
+    <include name="org.apache.tuscany.core.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
 
     <!-- System implementation type -->
-    <include name="org.apache.tuscany.launcher.SystemImplementation" scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
+    <include name="org.apache.tuscany.core.SystemImplementation" scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
 
     <!-- Java implementation type -->
-    <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
+    <include name="org.apache.tuscany.core.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
     <!-- service for resolving artifacts against the user's local Maven repository -->
     <component name="artifactRepository">
