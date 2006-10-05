@@ -18,23 +18,17 @@
  */
 package org.apache.tuscany.container.javascript.function;
 
+import helloworld.HelloWorldService;
+
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Hashtable;
 
 import javax.xml.stream.XMLStreamReader;
-
-import helloworld.HelloWorldService;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.axiom.om.util.StAXUtils;
-import org.apache.tuscany.container.javascript.utils.xmlfromxsd.XMLGenerator;
-import org.apache.tuscany.container.javascript.utils.xmlfromxsd.XMLGeneratorFactory;
-import org.apache.tuscany.container.javascript.utils.xmlfromxsd.XMLfromXSDConfiguration;
 import org.apache.tuscany.test.SCATestCase;
-import org.apache.xmlbeans.XmlObject;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
@@ -43,32 +37,28 @@ import org.osoa.sca.CurrentCompositeContext;
  */
 public class HelloWorldTestCase extends SCATestCase {
 
-    private HelloWorldService helloWorldService;
-
-    private HelloWorldService introspectableService;
-    
-    private HelloWorldService e4xHelloWorldService;
+    private CompositeContext context;
 
     protected void setUp() throws Exception {
         addExtension("JavaScriptContainer", getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
         setApplicationSCDL("org/apache/tuscany/container/javascript/function/helloworld.scdl");
         super.setUp();
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponent");
-        introspectableService = context.locateService(HelloWorldService.class, "IntrospectableHelloWorldComponent");
-        e4xHelloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponentE4X");
+        context = CurrentCompositeContext.getContext();
     }
 
     public void testHelloWorld() throws Exception {
+        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponent");
         assertEquals(helloWorldService.sayHello("petra"), "Hello petra");
     }
 
     public void testIntrospectedHelloWorld() throws Exception {
+        HelloWorldService introspectableService = context.locateService(HelloWorldService.class, "IntrospectableHelloWorldComponent");
         assertEquals(introspectableService.sayHello("petra"), "Hello petra");
     }
     
     public void testE4XImplInvocation() throws Exception {
+        HelloWorldService e4xHelloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponentE4X");
         String xmlInput = "<hel:getGreetings xmlns:hel=\"http://helloworld\"> " +
                             "<hel:name>TuscanyWorld</hel:name> " +
                         "</hel:getGreetings>";
@@ -85,6 +75,8 @@ public class HelloWorldTestCase extends SCATestCase {
     
     public void testE4XRefInvocation() throws Exception 
     {
+        HelloWorldService e4xHelloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponentE4X");
+
         String initialInput = "JavaClient";
         String jsAddition = " thro e4x reference";
         String endSvcImplResponse = "Hello from Java Implementation to ";
@@ -95,4 +87,15 @@ public class HelloWorldTestCase extends SCATestCase {
         assertEquals(endSvcImplResponse + initialInput + jsAddition, response.toString());
         //System.out.println(response);
     }
+
+//    public void testHelloWorldProperty() throws Exception {
+//        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldProperty");
+//        assertEquals(helloWorldService.sayHello("petra"), "Kia ora petra");
+//    }
+//
+    public void testHelloWorldPropertyDefault() throws Exception {
+        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldPropertyDefault");
+        assertEquals(helloWorldService.sayHello("petra"), "Hi petra");
+    }
+
 }

@@ -20,6 +20,7 @@ package org.apache.tuscany.container.javascript;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.xmlbeans.XmlObject;
@@ -44,10 +46,13 @@ import org.osoa.sca.annotations.Constructor;
 public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaScriptImplementation> {
 
     private static String head = "var xmlInstanceMap = new Array();";
+
     private static String part1 = "xmlInstanceMap[\"";
+
     private static String part2 = "\"] = ";
+
     private static String part3 = ";";
-    
+
     private static String getXmlObjectFunction = 
         "function getXmlObject(xmlElementNamespace, xmlElementName){\n" +
         "return xmlInstanceMap[xmlElementNamespace + \"#\" + xmlElementName];\n}";
@@ -80,6 +85,13 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
             enhanceRhinoScript(serviceDefinition, implementation);       
         }
 
+        // get the properties for the component
+        Collection<PropertyValue<?>> propertyValues = componentDefinition.getPropertyValues().values();
+        Map<String, Object> properties = new HashMap<String, Object>();
+        for (PropertyValue propertyValue : propertyValues) {
+            properties.put(propertyValue.getName(), propertyValue.getValueFactory().getInstance());
+        }
+
         RhinoScript rhinoScript = implementation.getRhinoScript();
 
         // TODO: have ComponentBuilderExtension pass ScopeContainer in on build method?
@@ -91,7 +103,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
             scopeContainer = scopeRegistry.getScopeContainer(scope);
         }
 
-        return new JavaScriptComponent(name, rhinoScript, services, parent, scopeContainer, wireService, workContext);
+        return new JavaScriptComponent(name, rhinoScript, properties, services, parent, scopeContainer, wireService, workContext);
     }
 
     private void enhanceRhinoScript(ServiceDefinition serviceDefn, JavaScriptImplementation implementation) throws BuilderConfigException {
