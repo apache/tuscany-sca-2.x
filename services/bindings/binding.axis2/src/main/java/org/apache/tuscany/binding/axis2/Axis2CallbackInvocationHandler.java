@@ -20,8 +20,8 @@ package org.apache.tuscany.binding.axis2;
 
 import java.util.Map;
 
-import org.apache.tuscany.core.wire.AbstractOutboundInvocationHandler;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;

@@ -25,12 +25,12 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
-import org.apache.tuscany.core.wire.AbstractOutboundInvocationHandler;
 
 /**
  * Responsible for invoking on an outbound wire associated with a callback. The handler retrieves the correct outbound
