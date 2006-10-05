@@ -43,13 +43,6 @@
     </repositories>
 
     <dependencies>
-    
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
             
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
