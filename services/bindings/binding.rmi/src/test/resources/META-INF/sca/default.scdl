@@ -20,7 +20,7 @@
 
 	<service name="HelloWorldRmiService" target="HelloWorldServiceComponent">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <rmi:binding.rmi host="localhost" port="1099" serviceName="HelloWorldRemoteService"   />
+        <rmi:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
         <reference>HelloWorldServiceComponent</reference>
     </service>
       
@@ -35,7 +35,7 @@
            
   	<reference name="HelloWorldRmiReference" target="Nothing">
         <interface.java interface="helloworld.HelloWorldService"/>
-        <rmi:binding.rmi host="localhost" port="1099" serviceName="HelloWorldRemoteService"   />
+        <rmi:binding.rmi host="localhost" port="8099" serviceName="HelloWorldRemoteService"   />
     </reference>
 
 </composite>

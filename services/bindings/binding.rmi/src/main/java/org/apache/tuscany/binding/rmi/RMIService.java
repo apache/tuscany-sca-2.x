@@ -91,7 +91,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
         super.stop();
     }
 
-    private Remote createRmiService() {
+    protected Remote createRmiService() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(UnicastRemoteObject.class);
         enhancer.setCallback(new RemoteMethodHandler(getHandler(), interfaze));
@@ -107,7 +107,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
         return (Remote) enhancer.create();
     }
 
-    private int getPort(String port) {
+    protected int getPort(String port) {
         int portNumber = RMIHost.RMI_DEFAULT_PORT;
         if (port != null && port.length() > 0) {
             portNumber = Integer.decode(port);
@@ -121,7 +121,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
     // just generating the bytecode. Defining the class from the byte code must tbe the responsibility
     // of the caller of this method, since it requires a classloader to be created to define and load
     // this interface.
-    private byte[] generateRemoteInterface(Class serviceInterface) {
+    protected byte[] generateRemoteInterface(Class serviceInterface) {
         String interfazeName = serviceInterface.getCanonicalName();
         ClassWriter cw = new ClassWriter(false);
 
