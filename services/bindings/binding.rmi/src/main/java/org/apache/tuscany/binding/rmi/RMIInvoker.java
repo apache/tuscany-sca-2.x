@@ -22,37 +22,20 @@ import java.rmi.Remote;
 
 import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.host.rmi.RMIHostException;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Invoke an RMI reference.
  *
  * @version $Rev$ $Date$
  */
-public class RMIInvoker implements TargetInvoker {
+public class RMIInvoker extends TargetInvokerExtension {
     private Method remoteMethod;
     private String host;
     private String port;
     private String svcName;
     private RMIHost rmiHost;
     private Remote proxy;
-
-    /*@Constructor({"rmiHost", "host", "port", "svnName", "remoteMethod"})
-     public RMIInvoker(@Autowire
-     RMIHost rmiHost, @Autowire
-     String host, @Autowire
-     String port, @Autowire
-     String svcName, @Autowire
-     Method remoteMethod) {
-     // assert remoteMethod.isAccessible();
-     this.remoteMethod = remoteMethod;
-     this.host = host;
-     this.port = port;
-     this.svcName = svcName;
-     this.rmiHost = rmiHost;
-     }*/
 
     public RMIInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
         // assert remoteMethod.isAccessible();
@@ -61,16 +44,6 @@ public class RMIInvoker implements TargetInvoker {
         this.port = port;
         this.svcName = svcName;
         this.rmiHost = rmiHost;
-    }
-
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
-        }
-        return msg;
     }
 
     public Object invokeTarget(Object payload) throws InvocationTargetException {
@@ -90,22 +63,4 @@ public class RMIInvoker implements TargetInvoker {
 
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    public boolean isOptimizable() {
-        return false;
-    }
-
-    public boolean isCacheable() {
-        return false;
-    }
-
-    public void setCacheable(boolean cacheable) {
-    }
 }
