@@ -39,12 +39,10 @@
         <implementation.java class="helloworld.HelloWorldServiceImpl"/>
     </component>
 
-<!--
   	<component name="HelloWorldProperty">
 		<js:implementation.js script="org/apache/tuscany/container/javascript/function/propertyTest.js"/>
         <property name="GREETING">Kia ora</property>
     </component>
--->
 
   	<component name="HelloWorldPropertyDefault">
 		<js:implementation.js script="org/apache/tuscany/container/javascript/function/propertyTest.js"/>

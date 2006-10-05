@@ -88,11 +88,11 @@ public class HelloWorldTestCase extends SCATestCase {
         //System.out.println(response);
     }
 
-//    public void testHelloWorldProperty() throws Exception {
-//        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldProperty");
-//        assertEquals(helloWorldService.sayHello("petra"), "Kia ora petra");
-//    }
-//
+    public void testHelloWorldProperty() throws Exception {
+        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldProperty");
+        assertEquals(helloWorldService.sayHello("petra"), "Kia ora petra");
+    }
+
     public void testHelloWorldPropertyDefault() throws Exception {
         HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldPropertyDefault");
         assertEquals(helloWorldService.sayHello("petra"), "Hi petra");
