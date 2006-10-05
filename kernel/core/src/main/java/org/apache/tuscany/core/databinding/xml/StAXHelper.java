@@ -597,9 +597,12 @@ public final class StAXHelper {
                         // being written previously also. So we need to generate
                         // a prefix
                         // here
-                    } else {
+                    } else if (prefix == null || prefix.equals("")) {
                         prefix = generateUniquePrefix(writer.getNamespaceContext());
                         writer.writeNamespace(prefix, namespaceName);
+                        writer.writeAttribute(prefix, namespaceName, reader.getAttributeLocalName(i), reader
+                            .getAttributeValue(i));
+                    } else {
                         writer.writeAttribute(prefix, namespaceName, reader.getAttributeLocalName(i), reader
                             .getAttributeValue(i));
                     }
