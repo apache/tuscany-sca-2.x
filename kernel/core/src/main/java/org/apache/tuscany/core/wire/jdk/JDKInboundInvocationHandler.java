@@ -25,11 +25,11 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.AbstractInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
-import org.apache.tuscany.core.wire.AbstractInboundInvocationHandler;
 
 /**
  * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.InboundWire} via
