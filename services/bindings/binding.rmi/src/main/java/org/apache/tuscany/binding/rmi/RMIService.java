@@ -97,7 +97,8 @@ public class RMIService<T extends Remote> extends ServiceExtension {
         enhancer.setCallback(new RemoteMethodHandler(getHandler(), interfaze));
 
         if (!Remote.class.isAssignableFrom(serviceInterface)) {
-            RMIServiceClassLoader classloader = new RMIServiceClassLoader(Thread.currentThread().getContextClassLoader());
+            RMIServiceClassLoader classloader = 
+                new RMIServiceClassLoader(getClass().getClassLoader());
             final byte[] byteCode = generateRemoteInterface(serviceInterface);
             serviceInterface = classloader.defineClass(byteCode);
             enhancer.setClassLoader(classloader);
