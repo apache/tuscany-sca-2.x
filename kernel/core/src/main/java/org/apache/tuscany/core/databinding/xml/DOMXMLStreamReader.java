@@ -605,6 +605,11 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         }
         this.rootElementName = rootElement.getLocalName();
         this.rootElementURI = rootElement.getNamespaceURI();
+
+        declaredNamespaceMap.put("xml", "http://www.w3.org/XML/1998/namespace");
+        declaredNamespaceMap.put("xmlns", "http://www.w3.org/2000/xmlns/");
+        declaredNamespaceMap.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        
         populateProperties();
     }
 
@@ -1216,6 +1221,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             Attr attr = (Attr)nodeMap.item(i);
             if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
                 // Skip xmlns:xxx
+                registerNamespace(attr.getLocalName(), attr.getValue());
                 continue;
             }
             QName attrName = new QName(attr.getNamespaceURI(), attr.getLocalName());
