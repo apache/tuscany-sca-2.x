@@ -48,7 +48,7 @@ public class JavaScriptComponent extends AtomicComponentExtension {
 
     private RhinoScript rhinoScript;
 
-    public JavaScriptComponent(String name, RhinoScript rhinoScript, List<Class<?>> services,
+    public JavaScriptComponent(String name, RhinoScript rhinoScript, Map<String, Object> properties, List<Class<?>> services,
                                CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService,
                                WorkContext workContext) {
         super(name, parent, scopeContainer, wireService, workContext, null, 0);
@@ -56,7 +56,7 @@ public class JavaScriptComponent extends AtomicComponentExtension {
         this.rhinoScript = rhinoScript;
         this.services = services;
         this.scope = scopeContainer.getScope();
-        this.properties = new HashMap<String, Object>();
+        this.properties = properties;
     }
 
     public Object createInstance() throws ObjectCreationException {
