@@ -84,7 +84,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
 
     public void stop() {
         try {
-            rmiHost.unregisterService(serviceName);
+            rmiHost.unregisterService(serviceName, Integer.decode(port));
         } catch (RMIHostException e) {
             throw new NoRemoteServiceException(e.getMessage());
         }
