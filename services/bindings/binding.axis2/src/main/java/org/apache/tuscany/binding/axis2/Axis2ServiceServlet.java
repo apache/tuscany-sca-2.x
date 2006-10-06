@@ -104,6 +104,10 @@ public class Axis2ServiceServlet extends AxisServlet {
                     }
 
                     public URL getResource(String path) throws MalformedURLException {
+                        if("/".equals(path)) {
+                            // HACK: To avoid NPE
+                            return new URL("/axis2");
+                        }
                         return null;
                     }
 

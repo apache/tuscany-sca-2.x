@@ -46,7 +46,6 @@ public class Axis2CallbackInvocationHandler extends AbstractOutboundInvocationHa
             inboundWire.getSourceCallbackInvocationChains(targetAddress);
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        // System.out.println("Axis2CallbackInvocationHandler.invoke invoking super: " + args[0]);
         return invoke(chain, invoker, args);
     }
 
