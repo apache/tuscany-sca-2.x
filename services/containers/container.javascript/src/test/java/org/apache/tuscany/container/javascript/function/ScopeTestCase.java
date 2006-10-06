@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.javascript.function;
 
+import java.net.URL;
+
 import helloworld.HelloWorldService;
 
 import org.apache.tuscany.test.SCATestCase;
@@ -32,7 +34,8 @@ public class ScopeTestCase extends SCATestCase {
     private CompositeContext context;
 
     protected void setUp() throws Exception {
-        addExtension("JavaScriptContainer", getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
+        URL base = getClass().getResource("/META-INF/sca/js.system.scdl");
+        addExtension("JavaScriptContainer", new URL(base, "default.scdl"));
         setApplicationSCDL("org/apache/tuscany/container/javascript/function/scopeTest.scdl");
         super.setUp();
 
