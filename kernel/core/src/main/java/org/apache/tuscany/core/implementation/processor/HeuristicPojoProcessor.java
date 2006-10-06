@@ -118,7 +118,9 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         // heuristically determine the properties references
         // make a first pass through all public methods with one param
         for (Method method : methods) {
-            if (method.getParameterTypes().length != 1 || !Modifier.isPublic(method.getModifiers())) {
+            if (method.getParameterTypes().length != 1 || !Modifier.isPublic(method.getModifiers())
+                || !method.getName().startsWith("set")
+                || method.getReturnType() != void.class) {
                 continue;
             }
             if (!isInServiceInterface(method, services)) {
@@ -137,7 +139,9 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         }
         // second pass for protected methods with one param
         for (Method method : methods) {
-            if (method.getParameterTypes().length != 1 || !Modifier.isProtected(method.getModifiers())) {
+            if (method.getParameterTypes().length != 1 || !Modifier.isProtected(method.getModifiers())
+                || !method.getName().startsWith("set")
+                || method.getReturnType() != void.class) {
                 continue;
             }
             Class<?> param = method.getParameterTypes()[0];
@@ -478,13 +482,17 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
                     Class<?>[] interfaceParamTypes = interfaceMethod.getParameterTypes();
                     Class<?>[] methodParamTypes = method.getParameterTypes();
                     if (interfaceParamTypes.length == methodParamTypes.length) {
-                        for (int i = 0; i < methodParamTypes.length; i++) {
-                            Class<?> param = methodParamTypes[i];
-                            if (!param.equals(interfaceParamTypes[i])) {
-                                break;
-                            }
-                            if (i == methodParamTypes.length - 1) {
-                                found = true;
+                        if (interfaceParamTypes.length == 0) {
+                            found = true;
+                        } else {
+                            for (int i = 0; i < methodParamTypes.length; i++) {
+                                Class<?> param = methodParamTypes[i];
+                                if (!param.equals(interfaceParamTypes[i])) {
+                                    break;
+                                }
+                                if (i == methodParamTypes.length - 1) {
+                                    found = true;
+                                }
                             }
                         }
                     }

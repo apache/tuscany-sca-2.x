@@ -220,10 +220,14 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
 
         public void setString1(String val) {
         }
+
     }
 
     private interface HeuristicServiceInterface {
         void fooOperation(String ref);
+        void setInvalid1(); // No parameter
+        void setInvalid2(String str, int i); // More than one parameter
+        String setInvalid3(String str); // return should be void
     }
 
     public static class ServiceImpl implements PropertyInterface, RefInterface, HeuristicServiceInterface {
@@ -246,6 +250,15 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
 
         public void fooOperation(String ref) {
 
+        }
+        public void setInvalid1() {
+        }
+
+        public void setInvalid2(String str, int i) {
+        }
+
+        public String setInvalid3(String str) {
+            return null;
         }
 
     }
