@@ -20,6 +20,10 @@ package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
 
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -74,6 +78,27 @@ public class ConstructorProcessorTestCase extends TestCase {
         }
     }
 
+    public void testMixedParameters() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor<Mixed> ctor1 = Mixed.class.getConstructor(String.class, String.class, String.class);
+        processor.visitConstructor(null, ctor1, type, null);
+        assertEquals("java.lang.String0", type.getConstructorDefinition().getInjectionNames().get(0));
+        assertEquals("foo", type.getConstructorDefinition().getInjectionNames().get(1));
+        assertEquals("bar", type.getConstructorDefinition().getInjectionNames().get(2));
+    }
+
+    public void testAllAutowireWithNoNames() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor<AllAutowireNoName> ctor1 =
+            AllAutowireNoName.class.getConstructor(String.class, String.class, String.class);
+        processor.visitConstructor(null, ctor1, type, null);
+        assertEquals("java.lang.String0", type.getConstructorDefinition().getInjectionNames().get(0));
+        assertEquals("java.lang.String1", type.getConstructorDefinition().getInjectionNames().get(1));
+        assertEquals("java.lang.String2", type.getConstructorDefinition().getInjectionNames().get(2));
+    }
+
     private static class BadFoo {
 
         @org.osoa.sca.annotations.Constructor("foo")
@@ -102,6 +127,21 @@ public class ConstructorProcessorTestCase extends TestCase {
     private static class BadAnnotation {
         @org.osoa.sca.annotations.Constructor("foo")
         public BadAnnotation(String foo, Foo ref) {
+        }
+    }
+
+
+    public static final class Mixed {
+        @org.osoa.sca.annotations.Constructor
+        public Mixed(@Autowire String param1,
+                     @Property(name = "foo") String param2,
+                     @Reference(name = "bar") String param3) {
+        }
+    }
+
+    public static final class AllAutowireNoName {
+        @org.osoa.sca.annotations.Constructor
+        public AllAutowireNoName(@Autowire String param1, @Autowire String param2, @Autowire String param3) {
         }
     }
 
