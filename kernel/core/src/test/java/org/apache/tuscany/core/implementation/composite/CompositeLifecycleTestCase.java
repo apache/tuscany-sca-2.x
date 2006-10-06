@@ -105,6 +105,15 @@ public class CompositeLifecycleTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
+    public void testChildStoppedBeforeParent() {
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent child = new CompositeComponentImpl("child", null, null, null);
+        parent.register(child);
+        parent.start();
+        child.stop();
+        parent.stop();
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
     }
