@@ -34,11 +34,12 @@ public abstract class AbstractOutboundInvocationHandler {
         if (headInterceptor == null) {
             try {
                 // short-circuit the dispatch and invoke the target directly
-                if (chain.getTargetInvoker() == null) {
+                TargetInvoker targetInvoker = chain.getTargetInvoker();
+                if (targetInvoker == null) {
                     String name = chain.getOperation().getName();
                     throw new AssertionError("No target invoker [" + name + "]");
                 }
-                return chain.getTargetInvoker().invokeTarget(args);
+                return targetInvoker.invokeTarget(args);
             } catch (InvocationTargetException e) {
                 // the cause was thrown by the target so throw it
                 throw e.getCause();
