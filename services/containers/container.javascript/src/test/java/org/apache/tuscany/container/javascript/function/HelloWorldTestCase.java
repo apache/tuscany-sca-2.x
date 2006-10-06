@@ -21,6 +21,7 @@ package org.apache.tuscany.container.javascript.function;
 import helloworld.HelloWorldService;
 
 import java.io.ByteArrayInputStream;
+import java.net.URL;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -40,7 +41,8 @@ public class HelloWorldTestCase extends SCATestCase {
     private CompositeContext context;
 
     protected void setUp() throws Exception {
-        addExtension("JavaScriptContainer", getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
+        URL base = getClass().getResource("/META-INF/sca/js.system.scdl");
+        addExtension("JavaScriptContainer", new URL(base, "default.scdl"));
         setApplicationSCDL("org/apache/tuscany/container/javascript/function/helloworld.scdl");
         super.setUp();
 
