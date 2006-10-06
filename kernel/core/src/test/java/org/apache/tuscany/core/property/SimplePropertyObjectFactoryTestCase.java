@@ -18,15 +18,15 @@
  */
 package org.apache.tuscany.core.property;
 
-import junit.framework.TestCase;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
+
+import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * @version $Rev$ $Date$

@@ -49,7 +49,7 @@ import org.w3c.dom.Node;
 /**
  * The property factory backed by the DataBindingframework
  */
-public class PropertyHelper {
+public final class PropertyHelper {
 
     private static final XPathFactory FACTORY = XPathFactory.newInstance();
 
