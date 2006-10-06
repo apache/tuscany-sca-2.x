@@ -68,13 +68,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
+            <groupId>org.apache.ws.commons</groupId>
             <artifactId>axiom-api</artifactId>
+            <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
+            <groupId>org.apache.ws.commons</groupId>
             <artifactId>axiom-impl</artifactId>
+            <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
