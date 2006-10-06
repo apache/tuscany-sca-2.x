@@ -40,13 +40,17 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
         this.operation = operation;
     }
 
+    public Axis2ServiceInOutSyncMessageReceiver() {
+
+    }
+
     @Override
     public void invokeBusinessLogic(MessageContext inMC, MessageContext outMC) throws AxisFault {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
-            Object[] args = new Object[] { requestOM };
+            Object[] args = new Object[] {requestOM};
 
-            OMElement responseOM = (OMElement) axis2Service.invokeTarget(operation, args);
+            OMElement responseOM = (OMElement)axis2Service.invokeTarget(operation, args);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             soapEnvelope.getBody().addChild(responseOM);
@@ -54,12 +58,14 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
         } catch (InvocationTargetException e) {
+            e.printStackTrace();
             Throwable t = e.getCause();
             if (t instanceof Exception) {
-                throw AxisFault.makeFault((Exception) t);
+                throw AxisFault.makeFault((Exception)t);
             }
             throw new InvocationRuntimeException(e);
         } catch (Exception e) {
+            e.printStackTrace();
             throw AxisFault.makeFault(e);
         }
 

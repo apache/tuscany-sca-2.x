@@ -61,6 +61,10 @@
                          class="org.apache.axis2.receivers.RawXMLINOnlyMessageReceiver"/>
         <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
                          class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
+        <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
+                         class="org.apache.tuscany.binding.axis2.Axis2ServiceInOutAsyncMessageReceiver"/>
+        <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out"
+                         class="org.apache.tuscany.binding.axis2.Axis2ServiceInOutSyncMessageReceiver"/>
     </messageReceivers>
     <!-- ================================================= -->
     <!-- Transport Ins -->

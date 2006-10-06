@@ -57,7 +57,8 @@ import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Destroy;
 
 /**
- * An implementation of a {@link ServiceExtension} configured with the Axis2 binding
+ * An implementation of a {@link ServiceExtension} configured with the Axis2
+ * binding
  * 
  * @version $Rev$ $Date$
  */
@@ -74,9 +75,14 @@ public class Axis2Service extends ServiceExtension {
 
     private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
 
-    public Axis2Service(String theName, ServiceContract<?> serviceContract, CompositeComponent parent,
-            WireService wireService, WebServiceBinding binding, ServletHost servletHost,
-            ConfigurationContext configContext, WorkContext workContext) {
+    public Axis2Service(String theName,
+                        ServiceContract<?> serviceContract,
+                        CompositeComponent parent,
+                        WireService wireService,
+                        WebServiceBinding binding,
+                        ServletHost servletHost,
+                        ConfigurationContext configContext,
+                        WorkContext workContext) {
 
         super(theName, serviceContract.getInterfaceClass(), parent, wireService);
 
@@ -116,17 +122,18 @@ public class Axis2Service extends ServiceExtension {
     private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {
         Definition definition = wsBinding.getWSDLDefinition();
         WebServicePortMetaData wsdlPortInfo =
-                new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
+            new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
 
         // TODO investigate if this is 20 wsdl what todo?
         WSDLToAxisServiceBuilder builder =
-                new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort()
-                        .getName());
+            new WSDL11ToAxisServiceBuilder(definition, wsdlPortInfo.getServiceName(), wsdlPortInfo.getPort()
+                .getName());
         builder.setServerSide(true);
         AxisService axisService = builder.populateService();
 
         axisService.setName(this.getName());
-        axisService.setServiceDescription("Tuscany configured AxisService for service: '" + this.getName() + '\'');
+        axisService.setServiceDescription("Tuscany configured AxisService for service: '" + this.getName()
+            + '\'');
 
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
@@ -137,14 +144,14 @@ public class Axis2Service extends ServiceExtension {
 
         PortType wsdlPortType = wsdlPortInfo.getPortType();
         for (Object o : wsdlPortType.getOperations()) {
-            Operation wsdlOperation = (Operation) o;
+            Operation wsdlOperation = (Operation)o;
             String operationName = wsdlOperation.getName();
             QName operationQN = new QName(definition.getTargetNamespace(), operationName);
 
             org.apache.tuscany.spi.model.Operation<?> op = serviceContract.getOperations().get(operationName);
 
             MessageReceiver msgrec = null;
-            if (inboundWire.getCallbackReferenceName() != null) {
+            if (serviceContract.getCallbackName() != null) {
                 msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op, workContext);
             } else {
                 msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
@@ -199,7 +206,7 @@ public class Axis2Service extends ServiceExtension {
             }
             Object body = resp.getBody();
             if (resp.isFault()) {
-                throw new InvocationTargetException((Throwable) body);
+                throw new InvocationTargetException((Throwable)body);
             }
             return body;
         }
@@ -222,13 +229,13 @@ public class Axis2Service extends ServiceExtension {
                 return m;
             }
         }
-        throw new BuilderConfigException("no operation named " + operationName + " found on service interface: "
-                + serviceInterface.getName());
+        throw new BuilderConfigException("no operation named " + operationName
+            + " found on service interface: "
+            + serviceInterface.getName());
     }
 
-    public TargetInvoker createCallbackTargetInvoker(
-            ServiceContract contract,
-            org.apache.tuscany.spi.model.Operation operation) {
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract,
+                                                     org.apache.tuscany.spi.model.Operation operation) {
 
         return new Axis2ServiceCallbackTargetInvoker(workContext, this);
     }
@@ -252,8 +259,9 @@ public class Axis2Service extends ServiceExtension {
 
         public SOAPFactory soapFactory;
 
-        public InvocationContext(MessageContext messageCtx, org.apache.tuscany.spi.model.Operation<?> operation,
-                SOAPFactory soapFactory) {
+        public InvocationContext(MessageContext messageCtx,
+                                 org.apache.tuscany.spi.model.Operation<?> operation,
+                                 SOAPFactory soapFactory) {
             this.inMessageContext = messageCtx;
             this.operation = operation;
             this.soapFactory = soapFactory;

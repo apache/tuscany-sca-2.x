@@ -114,6 +114,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             // FIXME:  
             inboundContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
             inboundContract.setDataBinding(OM_DATA_BINDING);
+            inboundContract.setCallbackName(serviceDefinition.getServiceContract().getCallbackName());
 
             try {
                 wireService.checkCompatibility(inboundContract, outboundContract, true);
@@ -121,8 +122,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
             
-            Service service = new Axis2Service(serviceDefinition.getName(), inboundContract, parent, wireService, wsBinding,
+            Service service = new Axis2Service(serviceDefinition.getName(), outboundContract, parent, wireService, wsBinding,
                     servletHost, configContext, workContext);
+            service.setBindingServiceContract(inboundContract);
             
             return service;
             

@@ -103,7 +103,7 @@ public class Axis2ServiceTestCase extends TestCase {
         contract.setOperations(opMap);
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         if (callback) {
-            EasyMock.expect(inboundWire.getCallbackReferenceName()).andReturn("").anyTimes();
+            contract.setCallbackName("");
         }
         EasyMock.replay(inboundWire);
 
