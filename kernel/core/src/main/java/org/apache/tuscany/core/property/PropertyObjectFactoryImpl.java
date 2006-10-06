@@ -56,7 +56,7 @@ public class PropertyObjectFactoryImpl implements PropertyObjectFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public ObjectFactory createObjectFactory(Property property, PropertyValue value) {
+    public <T> ObjectFactory<T> createObjectFactory(Property<T> property, PropertyValue<T> value) {
         if (mediator == null) {
             return new SimplePropertyObjectFactory(property, value.getValue());
         }

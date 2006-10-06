@@ -24,24 +24,21 @@ import org.apache.tuscany.spi.model.PropertyValue;
 
 /**
  * A factory that will create an ObjectFactory for a property
- * 
+ *
  * @version $Rev$ $Date$
  */
 public interface PropertyObjectFactory {
     /**
-     * Return an ObjectFactory for instances of a property defined in an XML.
-     * The ObjectFactory must return instances that can safely be supplied to
-     * component implementations. If the instance is mutable and isolation
-     * between components is required, then the factory must clone or otherwise
-     * protect the implementation from unexpected modifications by other
-     * implementation instances.
-     * 
-     * @param property the Property definition that the resulting ObjectFactory
-     *            must be able to assign to
+     * Return an ObjectFactory for instances of a property defined in an XML. The ObjectFactory must return instances
+     * that can safely be supplied to component implementations. If the instance is mutable and isolation between
+     * components is required, then the factory must clone or otherwise protect the implementation from unexpected
+     * modifications by other implementation instances.
+     *
+     * @param property      the Property definition that the resulting ObjectFactory must be able to assign to
      * @param propertyValue The component configuration of the property
-     * @return an ObjectFactory that can produce instances that can be assigned
-     *         to the supplied Property
+     * @return an ObjectFactory that can produce instances that can be assigned to the supplied Property
      * @throws LoaderException if there is a problem creating the ObjectFactory
      */
-    ObjectFactory createObjectFactory(Property property, PropertyValue propertyValue) throws LoaderException;
+    <T> ObjectFactory<T> createObjectFactory(Property<T> property, PropertyValue<T> propertyValue)
+        throws LoaderException;
 }
