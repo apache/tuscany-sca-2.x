@@ -33,7 +33,7 @@ import org.easymock.EasyMock;
  */
 public class StringParserPropertyFactoryTestCase extends TestCase {
 
-    private <T> PropertyValue<T> mock(Class<T> cls, String value) {
+    private <T> PropertyValue<T> mock(String value) {
         Document document = EasyMock.createMock(Document.class);
         Element element = EasyMock.createMock(Element.class);
         EasyMock.expect(document.getDocumentElement()).andReturn(element);
@@ -47,7 +47,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Integer> property = new Property<Integer>();
         property.setJavaType(Integer.class);
-        PropertyValue<Integer> propertyValue = mock(Integer.class, "1");
+        PropertyValue<Integer> propertyValue = mock("1");
         ObjectFactory<Integer> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals(1, oFactory.getInstance().intValue());
     }
@@ -56,7 +56,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Integer> property = new Property<Integer>();
         property.setJavaType(Integer.TYPE);
-        PropertyValue<Integer> propertyValue = mock(Integer.TYPE, "1");
+        PropertyValue<Integer> propertyValue = mock("1");
         ObjectFactory<Integer> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals(1, oFactory.getInstance().intValue());
     }
@@ -65,7 +65,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<String> property = new Property<String>();
         property.setJavaType(String.class);
-        PropertyValue<String> propertyValue = mock(String.class, "1");
+        PropertyValue<String> propertyValue = mock("1");
         ObjectFactory<String> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals("1", oFactory.getInstance());
     }
@@ -74,7 +74,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<byte[]> property = new Property<byte[]>();
         property.setJavaType(byte[].class);
-        PropertyValue<byte[]> propertyValue = mock(byte[].class, "1");
+        PropertyValue<byte[]> propertyValue = mock("1");
         ObjectFactory<byte[]> oFactory = factory.createObjectFactory(property, propertyValue);
         byte[] result = oFactory.getInstance();
         byte[] expected = "1".getBytes();
@@ -90,7 +90,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Boolean> property = new Property<Boolean>();
         property.setJavaType(Boolean.class);
-        PropertyValue<Boolean> propertyValue = mock(Boolean.class, "true");
+        PropertyValue<Boolean> propertyValue = mock("true");
         ObjectFactory<Boolean> oFactory = factory.createObjectFactory(property, propertyValue);
         assertTrue(oFactory.getInstance());
     }
@@ -99,7 +99,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Boolean> property = new Property<Boolean>();
         property.setJavaType(Boolean.TYPE);
-        PropertyValue<Boolean> propertyValue = mock(Boolean.TYPE, "true");
+        PropertyValue<Boolean> propertyValue = mock("true");
         ObjectFactory<Boolean> oFactory = factory.createObjectFactory(property, propertyValue);
         assertTrue(oFactory.getInstance());
     }
@@ -108,7 +108,7 @@ public class StringParserPropertyFactoryTestCase extends TestCase {
         StringParserPropertyFactory factory = new StringParserPropertyFactory();
         Property<Foo> property = new Property<Foo>();
         property.setJavaType(Foo.class);
-        PropertyValue<Foo> propertyValue = mock(Foo.class, "test");
+        PropertyValue<Foo> propertyValue = mock("test");
         ObjectFactory<Foo> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals("test", oFactory.getInstance().getFoo());
     }

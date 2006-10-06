@@ -22,29 +22,29 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.core.injection.JNDIObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 
+import org.apache.tuscany.core.injection.JNDIObjectFactory;
+
 /**
- * A StAXPropertyFactory that creates property values by looking them up in the
- * default JNDI InitialContext. <p/> This can be used to locate resources in a
- * J2EE environment and inject them as configuration properties. For example, to
- * access a database a component could write:
- * <code> &at;Property DataSource myDB; </code> and configure with <code>
+ * A StAXPropertyFactory that creates property values by looking them up in the default JNDI InitialContext. <p/> This
+ * can be used to locate resources in a J2EE environment and inject them as configuration properties. For example, to
+ * access a database a component could write: <code> &at;Property DataSource myDB; </code> and configure with <code>
  * &lt;properties&gt; &lt;v:myDb&gt;java:comp/env/jdbc/MyDatabase&lt;/v:myDB&gt; &lt;/properties&gt; </code>
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class JNDIPropertyFactory implements PropertyObjectFactory {
-    public ObjectFactory createObjectFactory(Property property, PropertyValue value) throws LoaderException {
+    public <T> ObjectFactory<T> createObjectFactory(Property<T> property, PropertyValue<T> value)
+        throws LoaderException {
         String text = value.getValue().getDocumentElement().getTextContent();
         try {
             Context context = new InitialContext();
-            return new JNDIObjectFactory(context, text);
+            return new JNDIObjectFactory<T>(context, text);
         } catch (NamingException e) {
             throw new LoaderException(e);
         }

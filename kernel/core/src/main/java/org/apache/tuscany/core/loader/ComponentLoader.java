@@ -21,6 +21,7 @@ package org.apache.tuscany.core.loader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+import java.lang.reflect.Type;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -186,6 +187,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         return (Implementation<?>) o;
     }
 
+    @SuppressWarnings("unchecked")
     protected void loadProperty(XMLStreamReader reader,
                                 DeploymentContext deploymentContext,
                                 ComponentDefinition<?> componentDefinition) throws XMLStreamException,
@@ -193,28 +195,28 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String name = reader.getAttributeValue(null, PROPERTY_NAME_ATTR);
         Implementation<?> implementation = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        Property<?> property = componentType.getProperties().get(name);
+        Property<Type> property = (Property<Type>)componentType.getProperties().get(name);
         if (property == null) {
             throw new UndefinedPropertyException(name);
         } else if (OverrideOptions.NO.equals(property.getOverride())) {
             throw new NotOverridablePropertyException(name);
         }
-        PropertyValue<?> propertyValue = null;
+        PropertyValue<Type> propertyValue;
         String source = reader.getAttributeValue(null, PROPERTY_SOURCE_ATTR);
         String file = reader.getAttributeValue(null, PROPERTY_FILE_ATTR);
         if (source != null || file != null) {
-            propertyValue = new PropertyValue(name, source, file);
+            propertyValue = new PropertyValue<Type>(name, source, file);
             LoaderUtil.skipToEndElement(reader);
         } else {
             try {
                 DocumentBuilder documentBuilder = DOMHelper.newDocumentBuilder();
                 Document value = StAXUtil.createPropertyValue(reader, property.getXmlType(), documentBuilder);
-                propertyValue = new PropertyValue(name, value);
+                propertyValue = new PropertyValue<Type>(name, value);
             } catch (ParserConfigurationException e) {
                 throw new LoaderException(e);
             }
         }
-        ObjectFactory objectFactory = propertyFactory.createObjectFactory(property, propertyValue);
+        ObjectFactory<Type> objectFactory = propertyFactory.createObjectFactory(property, propertyValue);
         // propertyValue.setValueFactory(new SimplePropertyObjectFactory(property, propertyValue.getValue()));
         propertyValue.setValueFactory(objectFactory);
         componentDefinition.add(propertyValue);

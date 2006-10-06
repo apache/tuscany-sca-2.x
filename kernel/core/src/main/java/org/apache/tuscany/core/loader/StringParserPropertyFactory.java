@@ -24,25 +24,26 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 
+import org.apache.tuscany.core.injection.SingletonObjectFactory;
+
 /**
  * Implementation of StAXPropertyFactory that interprets the XML as
- * 
+ *
  * @version $Rev$ $Date$
  */
 @SuppressWarnings("unchecked")
 public class StringParserPropertyFactory implements PropertyObjectFactory {
 
-    public ObjectFactory createObjectFactory(Property property, PropertyValue value) throws LoaderException {
+    public <T> ObjectFactory<T> createObjectFactory(Property<T> property, PropertyValue<T> value)
+        throws LoaderException {
         String text = value.getValue().getDocumentElement().getTextContent();
         return new SingletonObjectFactory(createInstance(text, property.getJavaType()));
     }
@@ -61,7 +62,7 @@ public class StringParserPropertyFactory implements PropertyObjectFactory {
             byte[] instance = new byte[text.length() >> 1];
             for (int i = 0; i < instance.length; i++) {
                 instance[i] =
-                    (byte)(Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text
+                    (byte) (Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text
                         .charAt((i << 1) + 1), 16));
             }
             return type.cast(instance);
@@ -104,7 +105,7 @@ public class StringParserPropertyFactory implements PropertyObjectFactory {
         if (editor != null) {
             try {
                 editor.setAsText(text);
-                return (T)editor.getValue();
+                return (T) editor.getValue();
             } catch (IllegalArgumentException e) {
                 // FIXME we should throw something better
                 throw new LoaderException(e);
@@ -132,7 +133,7 @@ public class StringParserPropertyFactory implements PropertyObjectFactory {
             byte[] instance = new byte[text.length() >> 1];
             for (int i = 0; i < instance.length; i++) {
                 instance[i] =
-                    (byte)(Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text
+                    (byte) (Character.digit(text.charAt(i << 1), 16) << 4 | Character.digit(text
                         .charAt((i << 1) + 1), 16));
             }
             return new SingletonObjectFactory<T>(type.cast(instance));
@@ -175,7 +176,7 @@ public class StringParserPropertyFactory implements PropertyObjectFactory {
         if (editor != null) {
             try {
                 editor.setAsText(text);
-                return new SingletonObjectFactory<T>((T)editor.getValue());
+                return new SingletonObjectFactory<T>((T) editor.getValue());
             } catch (IllegalArgumentException e) {
                 // FIXME we should throw something better
                 throw new LoaderException(e);
