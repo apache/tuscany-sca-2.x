@@ -38,15 +38,15 @@ public class RMIServiceTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testCreateRmiService() {
-        RMIService s = new RMIService("bla", null, null, new RMIHostImpl(), null, "9876", "bla", Runnable.class) {
+        RMIService s = new RMIService("bla023", null, null, new RMIHostImpl(), null, "9996", "bla", Runnable.class) {
             public WireInvocationHandler getHandler() {
                 return null;
             }
         };
         s.start();
         try {
-        s.stop();
-        } catch (RMIHostRuntimeException e){
+            s.stop();
+        } catch (RMIHostRuntimeException e) {
             // expected
         }
     }

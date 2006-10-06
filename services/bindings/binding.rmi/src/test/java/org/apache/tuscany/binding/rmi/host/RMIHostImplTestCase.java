@@ -40,35 +40,37 @@ public class RMIHostImplTestCase extends TestCase {
 
     public void testRegisterService1() throws RMIHostRuntimeException, RMIHostException {
         RMIHostImpl host = new RMIHostImpl();
-        host.registerService("foo1", new Remote() {
-        });
+        host.registerService("foo1", new MockRemote());
         host.unregisterService("foo1");
     }
 
     public void testRegisterService2() throws RMIHostRuntimeException, RMIHostException {
         RMIHostImpl host = new RMIHostImpl();
-        host.registerService("bar1", 9999, new Remote() {
-        });
+        host.registerService("bar1", 9999, new MockRemote());
         host.unregisterService("bar1", 9999);
     }
 
     public void testRegisterServiceAlreadyBound() throws RMIHostRuntimeException, RMIHostException {
         RMIHostImpl host = new RMIHostImpl();
-        host.registerService("bar2", 7777, new Remote() {});
+        host.registerService("bar2", 9997, new MockRemote());
         try {
-        host.registerService("bar2", 7777, new Remote() {});
+            host.registerService("bar2", 9997, new MockRemote());
         } catch (RMIHostException e) {
             // expected
-            host.unregisterService("bar2", 7777);
+            host.unregisterService("bar2", 9997);
         }
     }
+
     public void testUnRegisterService() throws RMIHostRuntimeException, RMIHostException {
         RMIHostImpl host = new RMIHostImpl();
         try {
-            host.unregisterService("bar3", 8888);
+            host.unregisterService("bar3", 9998);
             fail();
         } catch (RMIHostException e) {
             // expected
         }
+    }
+
+    private static class MockRemote implements Remote {
     }
 }
