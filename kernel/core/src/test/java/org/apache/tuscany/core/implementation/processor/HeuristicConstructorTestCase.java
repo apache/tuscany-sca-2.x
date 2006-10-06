@@ -23,12 +23,12 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -184,7 +184,16 @@ public class HeuristicConstructorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitEnd(null, Foo13.class, type, null);
         assertEquals(1, type.getReferences().size());
-        assertNotNull(type.getReferences().get(String.class.getName()));
+        assertNotNull(type.getReferences().get(String.class.getName() + "0"));
+    }
+
+    public void testMultipleAutowire() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo15.class, type, null);
+        assertEquals(2, type.getReferences().size());
+        assertNotNull(type.getReferences().get(String.class.getName() + "0"));
+        assertNotNull(type.getReferences().get(String.class.getName() + "1"));
     }
 
     public void testPrivateConstructor() throws Exception {
@@ -282,7 +291,6 @@ public class HeuristicConstructorTestCase extends TestCase {
         }
     }
 
-
     public @interface Baz {
 
     }
@@ -294,6 +302,11 @@ public class HeuristicConstructorTestCase extends TestCase {
 
     public static final class Foo14 {
         private Foo14() {
+        }
+    }
+
+    public static final class Foo15 {
+        public Foo15(@Autowire String param1, @Autowire String param2) {
         }
     }
 
