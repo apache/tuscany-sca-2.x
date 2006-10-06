@@ -196,6 +196,16 @@ public class HeuristicConstructorTestCase extends TestCase {
         assertNotNull(type.getReferences().get(String.class.getName() + "1"));
     }
 
+    public void testNoAutowireNameInConstructor() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitEnd(null, Foo16.class, type, null);
+        assertEquals(2, type.getReferences().size());
+        assertNotNull(type.getReferences().get(String.class.getName() + "0"));
+        assertNotNull(type.getReferences().get("bar"));
+        assertNotNull(type.getProperties().get("foo"));
+    }
+
     public void testPrivateConstructor() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
@@ -307,6 +317,13 @@ public class HeuristicConstructorTestCase extends TestCase {
 
     public static final class Foo15 {
         public Foo15(@Autowire String param1, @Autowire String param2) {
+        }
+    }
+
+    public static final class Foo16 {
+        public Foo16(@Autowire String param1,
+                     @Property(name = "foo") String param2,
+                     @Reference(name = "bar") String param3) {
         }
     }
 
