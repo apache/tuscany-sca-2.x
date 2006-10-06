@@ -132,7 +132,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     }
 
     public void publish(Event event) {
-        if (lifecycleState == STOPPED){
+        if (lifecycleState == STOPPED) {
             return;
         }
         checkInit();

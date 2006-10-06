@@ -20,17 +20,16 @@
 package org.apache.tuscany.core.property;
 
 import java.net.URL;
-
 import javax.xml.namespace.NamespaceContext;
 
-import org.apache.tuscany.core.databinding.xml.String2Node;
-import org.apache.tuscany.core.property.PropertyHelper;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.easymock.EasyMock;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+
 import junit.framework.TestCase;
+import org.apache.tuscany.core.databinding.xml.String2Node;
+import org.easymock.EasyMock;
 
 /**
  *
@@ -76,10 +75,10 @@ public class PropertyHelperTestCase extends TestCase {
     public void testXPath() throws Exception {
         String2Node t = new String2Node();
         Node node = t.transform(IPO_XML, null);
-        
+
         Document doc = PropertyHelper.evaluate(null, node, "/ipo:purchaseOrder/billTo");
         assertNotNull(doc);
-        
+
         NamespaceContext context = EasyMock.createMock(NamespaceContext.class);
         EasyMock.expect(context.getNamespaceURI("ipo")).andReturn("http://www.example.com/IPO").anyTimes();
         EasyMock.replay(context);

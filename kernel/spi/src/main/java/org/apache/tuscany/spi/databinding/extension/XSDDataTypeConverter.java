@@ -29,7 +29,6 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.TimeZone;
-
 import javax.xml.XMLConstants;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -44,9 +43,9 @@ public class XSDDataTypeConverter {
     public static final class Base64Binary {
         private static final char[] S_BASE64CHAR =
             {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-             'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-             'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
-             '5', '6', '7', '8', '9', '+', '/'};
+                'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+                'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
+                '5', '6', '7', '8', '9', '+', '/'};
 
         private static final char S_BASE64PAD = '=';
 
@@ -58,7 +57,7 @@ public class XSDDataTypeConverter {
             }
             for (int i = 0; i < S_BASE64CHAR.length; i++) {
                 // 0 to 63
-                S_DECODETABLE[S_BASE64CHAR[i]] = (byte)i;
+                S_DECODETABLE[S_BASE64CHAR[i]] = (byte) i;
             }
         }
 
@@ -172,16 +171,16 @@ public class XSDDataTypeConverter {
             int b3 = S_DECODETABLE[ibuf[3]];
             switch (outlen) {
                 case 1:
-                    obuf[wp] = (byte)(b0 << 2 & 0xfc | b1 >> 4 & 0x3);
+                    obuf[wp] = (byte) (b0 << 2 & 0xfc | b1 >> 4 & 0x3);
                     return 1;
                 case 2:
-                    obuf[wp++] = (byte)(b0 << 2 & 0xfc | b1 >> 4 & 0x3);
-                    obuf[wp] = (byte)(b1 << 4 & 0xf0 | b2 >> 2 & 0xf);
+                    obuf[wp++] = (byte) (b0 << 2 & 0xfc | b1 >> 4 & 0x3);
+                    obuf[wp] = (byte) (b1 << 4 & 0xf0 | b2 >> 2 & 0xf);
                     return 2;
                 case 3:
-                    obuf[wp++] = (byte)(b0 << 2 & 0xfc | b1 >> 4 & 0x3);
-                    obuf[wp++] = (byte)(b1 << 4 & 0xf0 | b2 >> 2 & 0xf);
-                    obuf[wp] = (byte)(b2 << 6 & 0xc0 | b3 & 0x3f);
+                    obuf[wp++] = (byte) (b0 << 2 & 0xfc | b1 >> 4 & 0x3);
+                    obuf[wp++] = (byte) (b1 << 4 & 0xf0 | b2 >> 2 & 0xf);
+                    obuf[wp] = (byte) (b2 << 6 & 0xc0 | b3 & 0x3f);
                     return 3;
                 default:
                     throw new IllegalArgumentException("The character sequence is not base64 encoded.");
@@ -234,8 +233,7 @@ public class XSDDataTypeConverter {
         }
 
         /**
-         * Outputs base64 representation of the specified byte array to a byte
-         * stream.
+         * Outputs base64 representation of the specified byte array to a byte stream.
          */
         public static void encode(byte[] data, int off, int len, OutputStream ostream) throws IOException {
             if (len <= 0) {
@@ -248,34 +246,33 @@ public class XSDDataTypeConverter {
                 int i =
                     ((data[rindex] & 0xff) << 16) + ((data[rindex + 1] & 0xff) << 8)
                         + (data[rindex + 2] & 0xff);
-                out[0] = (byte)S_BASE64CHAR[i >> 18];
-                out[1] = (byte)S_BASE64CHAR[(i >> 12) & 0x3f];
-                out[2] = (byte)S_BASE64CHAR[(i >> 6) & 0x3f];
-                out[3] = (byte)S_BASE64CHAR[i & 0x3f];
+                out[0] = (byte) S_BASE64CHAR[i >> 18];
+                out[1] = (byte) S_BASE64CHAR[(i >> 12) & 0x3f];
+                out[2] = (byte) S_BASE64CHAR[(i >> 6) & 0x3f];
+                out[3] = (byte) S_BASE64CHAR[i & 0x3f];
                 ostream.write(out, 0, 4);
                 rindex += 3;
                 rest -= 3;
             }
             if (rest == 1) {
                 int i = data[rindex] & 0xff;
-                out[0] = (byte)S_BASE64CHAR[i >> 2];
-                out[1] = (byte)S_BASE64CHAR[(i << 4) & 0x3f];
-                out[2] = (byte)S_BASE64PAD;
-                out[3] = (byte)S_BASE64PAD;
+                out[0] = (byte) S_BASE64CHAR[i >> 2];
+                out[1] = (byte) S_BASE64CHAR[(i << 4) & 0x3f];
+                out[2] = (byte) S_BASE64PAD;
+                out[3] = (byte) S_BASE64PAD;
                 ostream.write(out, 0, 4);
             } else if (rest == 2) {
                 int i = ((data[rindex] & 0xff) << 8) + (data[rindex + 1] & 0xff);
-                out[0] = (byte)S_BASE64CHAR[i >> 10];
-                out[1] = (byte)S_BASE64CHAR[(i >> 4) & 0x3f];
-                out[2] = (byte)S_BASE64CHAR[(i << 2) & 0x3f];
-                out[3] = (byte)S_BASE64PAD;
+                out[0] = (byte) S_BASE64CHAR[i >> 10];
+                out[1] = (byte) S_BASE64CHAR[(i >> 4) & 0x3f];
+                out[2] = (byte) S_BASE64CHAR[(i << 2) & 0x3f];
+                out[3] = (byte) S_BASE64PAD;
                 ostream.write(out, 0, 4);
             }
         }
 
         /**
-         * Outputs base64 representation of the specified byte array to a
-         * character stream.
+         * Outputs base64 representation of the specified byte array to a character stream.
          */
         public static void encode(byte[] data, int off, int len, Writer writer) throws IOException {
             if (len <= 0) {
@@ -320,9 +317,8 @@ public class XSDDataTypeConverter {
     }
 
     /**
-     * <p>
-     * Utility class for xs:hexbinary.
-     * </p>
+     * <p/>
+     * Utility class for xs:hexbinary. </p>
      */
     public static final class HexBinary {
         private HexBinary() {
@@ -343,20 +339,20 @@ public class XSDDataTypeConverter {
                 char c = pValue.charAt(i++);
                 char d = pValue.charAt(i++);
                 if (c >= '0' && c <= '9') {
-                    b = (byte)((c - '0') << 4);
+                    b = (byte) ((c - '0') << 4);
                 } else if (c >= 'A' && c <= 'F') {
-                    b = (byte)((c - 'A' + 10) << 4);
+                    b = (byte) ((c - 'A' + 10) << 4);
                 } else if (c >= 'a' && c <= 'f') {
-                    b = (byte)((c - 'a' + 10) << 4);
+                    b = (byte) ((c - 'a' + 10) << 4);
                 } else {
                     throw new IllegalArgumentException("Invalid hex digit: " + c);
                 }
                 if (d >= '0' && d <= '9') {
-                    b += (byte)(d - '0');
+                    b += (byte) (d - '0');
                 } else if (d >= 'A' && d <= 'F') {
-                    b += (byte)(d - 'A' + 10);
+                    b += (byte) (d - 'A' + 10);
                 } else if (d >= 'a' && d <= 'f') {
-                    b += (byte)(d - 'a' + 10);
+                    b += (byte) (d - 'a' + 10);
                 } else {
                     throw new IllegalArgumentException("Invalid hex digit: " + d);
                 }
@@ -372,17 +368,17 @@ public class XSDDataTypeConverter {
             StringBuffer result = new StringBuffer();
             for (int i = 0; i < pHexBinary.length; i++) {
                 byte b = pHexBinary[i];
-                byte c = (byte)((b & 0xf0) >> 4);
+                byte c = (byte) ((b & 0xf0) >> 4);
                 if (c <= 9) {
-                    result.append((char)('0' + c));
+                    result.append((char) ('0' + c));
                 } else {
-                    result.append((char)('A' + c - 10));
+                    result.append((char) ('A' + c - 10));
                 }
-                c = (byte)(b & 0x0f);
+                c = (byte) (b & 0x0f);
                 if (c <= 9) {
-                    result.append((char)('0' + c));
+                    result.append((char) ('0' + c));
                 } else {
-                    result.append((char)('A' + c - 10));
+                    result.append((char) ('A' + c - 10));
                 }
             }
             return result.toString();
@@ -410,9 +406,8 @@ public class XSDDataTypeConverter {
     }
 
     /**
-     * <p>
-     * An instance of {@link java.text.Format}, which may be used to parse and
-     * format <code>xs:dateTime</code> values.
+     * <p/>
+     * An instance of {@link java.text.Format}, which may be used to parse and format <code>xs:dateTime</code> values.
      * </p>
      */
     public static class XSDDateTimeFormat extends Format {
@@ -447,7 +442,7 @@ public class XSDDataTypeConverter {
             assert pBuffer != null : "The StringBuffer argument must not be null.";
             assert pPos != null : "The FieldPosition argument must not be null.";
 
-            Calendar cal = (Calendar)pCalendar;
+            Calendar cal = (Calendar) pCalendar;
             if (parseDate) {
                 int year = cal.get(Calendar.YEAR);
                 if (year < 0) {
@@ -687,7 +682,7 @@ public class XSDDataTypeConverter {
         }
     }
 
-    private static final long MAX_UNSIGNED_INT = (((long)Integer.MAX_VALUE) * 2) + 1;
+    private static final long MAX_UNSIGNED_INT = (((long) Integer.MAX_VALUE) * 2) + 1;
 
     private static final int MAX_UNSIGNED_SHORT = Short.MAX_VALUE * 2 + 1;
 
@@ -710,10 +705,10 @@ public class XSDDataTypeConverter {
     public Calendar parseDate(String value) {
         XSDDateFormat format = new XSDDateFormat();
         ParsePosition pos = new ParsePosition(0);
-        Calendar cal = (Calendar)format.parseObject(value, pos);
+        Calendar cal = (Calendar) format.parseObject(value, pos);
         if (cal == null) {
             throw new IllegalArgumentException("Failed to parse date " + value + " at:"
-                                               + value.substring(pos.getErrorIndex()));
+                + value.substring(pos.getErrorIndex()));
         }
         return cal;
     }
@@ -721,10 +716,10 @@ public class XSDDataTypeConverter {
     public Calendar parseDateTime(String value) {
         XSDDateTimeFormat format = new XSDDateTimeFormat();
         ParsePosition pos = new ParsePosition(0);
-        Calendar cal = (Calendar)format.parseObject(value, pos);
+        Calendar cal = (Calendar) format.parseObject(value, pos);
         if (cal == null) {
             throw new IllegalArgumentException("Failed to parse dateTime " + value + " at:"
-                                               + value.substring(pos.getErrorIndex()));
+                + value.substring(pos.getErrorIndex()));
         }
         return cal;
     }
@@ -798,7 +793,7 @@ public class XSDDataTypeConverter {
                 break;
             case 0:
                 throw new IllegalArgumentException("Default prefix must be indicated by not using a colon: "
-                                                   + value);
+                    + value);
             default:
                 String prefix = value.substring(0, offset);
                 localName = value.substring(offset + 1);
@@ -821,10 +816,10 @@ public class XSDDataTypeConverter {
     public Calendar parseTime(String value) {
         XSDTimeFormat format = new XSDTimeFormat();
         ParsePosition pos = new ParsePosition(0);
-        Calendar cal = (Calendar)format.parseObject(value, pos);
+        Calendar cal = (Calendar) format.parseObject(value, pos);
         if (cal == null) {
             throw new IllegalArgumentException("Failed to parse time " + value + " at:"
-                                               + value.substring(pos.getErrorIndex()));
+                + value.substring(pos.getErrorIndex()));
         }
         return cal;
     }
@@ -833,11 +828,11 @@ public class XSDDataTypeConverter {
         long l = Long.parseLong(value);
         if (l < 0) {
             throw new IllegalArgumentException("Failed to parse UnsignedInt " + value
-                                               + ": result is negative");
+                + ": result is negative");
         }
         if (l > MAX_UNSIGNED_INT) {
             throw new IllegalArgumentException("Failed to parse UnsignedInt " + value
-                                               + ": result exceeds maximum value " + MAX_UNSIGNED_INT);
+                + ": result exceeds maximum value " + MAX_UNSIGNED_INT);
         }
         return l;
     }
@@ -846,11 +841,11 @@ public class XSDDataTypeConverter {
         int i = Integer.parseInt(value);
         if (i < 0) {
             throw new IllegalArgumentException("Failed to parse UnsignedShort " + value
-                                               + ": result is negative");
+                + ": result is negative");
         }
         if (i > MAX_UNSIGNED_SHORT) {
             throw new IllegalArgumentException("Failed to parse UnsignedShort " + value
-                                               + ": result exceeds maximum value " + MAX_UNSIGNED_SHORT);
+                + ": result exceeds maximum value " + MAX_UNSIGNED_SHORT);
         }
         return i;
     }
@@ -915,7 +910,7 @@ public class XSDDataTypeConverter {
         String prefix = context.getPrefix(value.getNamespaceURI());
         if (prefix == null) {
             throw new IllegalArgumentException("The namespace URI " + value.getNamespaceURI()
-                                               + " is not bound.");
+                + " is not bound.");
         } else if (XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
             return value.getLocalPart();
         } else {
