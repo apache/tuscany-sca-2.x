@@ -36,7 +36,7 @@ public class ScopeTestCase extends SCATestCase {
     protected void setUp() throws Exception {
         URL base = getClass().getResource("/META-INF/sca/js.system.scdl");
         addExtension("JavaScriptContainer", new URL(base, "default.scdl"));
-        setApplicationSCDL("org/apache/tuscany/container/javascript/function/scopeTest.scdl");
+        setApplicationSCDL(getClass().getResource("scopeTest.scdl"));
         super.setUp();
 
         context = CurrentCompositeContext.getContext();

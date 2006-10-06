@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.ruby.function;
 
+import java.net.URL;
+
 import helloworld.HelloWorldService;
 
 import org.apache.tuscany.test.SCATestCase;
@@ -36,8 +38,9 @@ public class HelloWorldTestCase extends SCATestCase {
     private HelloWorldService e4xHelloWorldService;
 
     protected void setUp() throws Exception {
-        addExtension("JavaScriptContainer", getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
-        setApplicationSCDL("org/apache/tuscany/container/ruby/function/helloworld.scdl");
+        URL base = getClass().getResource("/org/apache/tuscany/container/ruby/RubyComponent.class");
+        addExtension("RubyContainer", new URL(base, "../../../../../META-INF/sca/default.scdl"));
+        setApplicationSCDL(getClass().getResource("helloworld.scdl"));
         super.setUp();
 
         CompositeContext context = CurrentCompositeContext.getContext();

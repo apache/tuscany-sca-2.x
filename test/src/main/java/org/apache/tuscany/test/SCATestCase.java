@@ -18,33 +18,34 @@
  */
 package org.apache.tuscany.test;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.launcher.CompositeContextImpl;
+import org.apache.tuscany.core.launcher.LauncherImpl;
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
-import org.apache.tuscany.core.launcher.LauncherImpl;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
-
 /**
  * Base class for JUnit tests that want to run in an SCA client environment.
  *
  * @version $Rev$ $Date$
  */
-public class SCATestCase extends TestCase {
+public abstract class SCATestCase extends TestCase {
     protected CompositeComponent component;
     private CompositeContextImpl context;
     private Map<String, URL> extensions = new HashMap<String, URL>();
-    private String applicationSCDL = LauncherImpl.METAINF_APPLICATION_SCDL_PATH;
+    private URL applicationSCDL;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -52,17 +53,16 @@ public class SCATestCase extends TestCase {
         LauncherImpl launcher = new LauncherImpl();
         launcher.setApplicationLoader(cl);
         CompositeComponent composite = launcher.bootRuntime(cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH),
-            new NullMonitorFactory());
+                                                            new NullMonitorFactory());
 
         for (String extensionName : extensions.keySet()) {
             deployExtension(composite, extensionName, extensions.get(extensionName));
         }
 
-        URL applicationScdlURL = cl.getResource(applicationSCDL);
-        if (applicationScdlURL == null) {
+        if (applicationSCDL == null) {
             throw new RuntimeException("application SCDL not found: " + applicationSCDL);
         }
-        component = launcher.bootApplication("application", applicationScdlURL);
+        component = launcher.bootApplication("application", applicationSCDL);
         component.start();
         context = new CompositeContextImpl(component);
         context.start();
@@ -71,8 +71,21 @@ public class SCATestCase extends TestCase {
     /**
      * A TestCase can use this to overide the default SCDL location of "META-INF/sca/default.scdl"
      */
-    protected void setApplicationSCDL(String applicationSCDL) {
+    protected void setApplicationSCDL(URL applicationSCDL) {
         this.applicationSCDL = applicationSCDL;
+    }
+
+    /**
+     * Set the application scdl based on the classpath entry for a class.
+     * Normally this will be a class in the production code associated with this test case.
+     *
+     * @param aClass a Class from which to determine the resource base url
+     * @param path   location of the application SCDL relative to the base class
+     * @throws MalformedURLException if the path is malformed
+     */
+    protected void setApplicationSCDL(Class<?> aClass, String path) throws MalformedURLException {
+        URL root = getRoot(aClass);
+        setApplicationSCDL(new URL(root, path));
     }
 
     /**
@@ -89,13 +102,31 @@ public class SCATestCase extends TestCase {
         implementation.setClassLoader(new URLClassLoader(new URL[]{scdlURL}, getClass().getClassLoader()));
 
         ComponentDefinition<SystemCompositeImplementation> definition =
-            new ComponentDefinition<SystemCompositeImplementation>(extensionName,
-                implementation);
+            new ComponentDefinition<SystemCompositeImplementation>(extensionName, implementation);
 
         Deployer deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
         Component component = deployer.deploy(composite, definition);
 
         component.start();
+    }
+
+
+    protected static URL getRoot(Class<?> aClass) {
+        String name = aClass.getName();
+        String classPath = "/" + name.replace('.', '/') + ".class";
+        URL classURL = aClass.getResource(classPath);
+        assert classURL != null;
+        StringBuilder prefix = new StringBuilder();
+        for (int i = 0; i < name.length(); i++) {
+            if (name.charAt(i) == '.') {
+                prefix.append("../");
+            }
+        }
+        try {
+            return new URL(classURL, prefix.toString());
+        } catch (MalformedURLException e) {
+            throw new AssertionError();
+        }
     }
 
     protected void tearDown() throws Exception {
