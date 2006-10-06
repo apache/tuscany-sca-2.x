@@ -144,15 +144,28 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-api</artifactId>
-                <version>1.1</version>
+                <version>1.1.1</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
-                <version>1.1</version>
+                <version>1.1.1</version>
                 <scope>compile</scope>
             </dependency>
+
+            <!-- SNAPSHOT version of AXIOM -->
+            <dependency>
+                <groupId>org.apache.ws.commons</groupId>
+                <artifactId>axiom-api</artifactId>
+                <version>SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons</groupId>
+                <artifactId>axiom-impl</artifactId>
+                <version>SNAPSHOT</version>
+            </dependency>
+
 
             <!-- Woden implementation -->
             <dependency>
