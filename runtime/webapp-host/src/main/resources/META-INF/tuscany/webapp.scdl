@@ -129,8 +129,7 @@
 
     <component name="artifactRepository">
         <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
-        <!-- this value needs to change to a correct one -->
-        <property name="repository">.</property>
+        <property name="repository">.m2/repository</property>
     </component>
 
     <component name="extender" initLevel="90">
