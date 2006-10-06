@@ -25,6 +25,17 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
     name="org.apache.tuscany.idl.WSDL">
 
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>wsdl4j</group>
+        <name>wsdl4j</name>
+        <version>1.5.2</version>
+    </dependency>
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.ws.commons</group>
+        <name>XmlSchema</name>
+        <version>SNAPSHOT</version>
+    </dependency>
+
     <component name="interface.wsdl.Loader">
         <system:implementation.system class="org.apache.tuscany.idl.wsdl.InterfaceWSDLLoader" />
     </component>
