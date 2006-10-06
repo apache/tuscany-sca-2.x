@@ -22,14 +22,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.tuscany.core.databinding.xml.StAXHelper.XMLFragmentStreamReader;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
@@ -38,9 +36,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.apache.tuscany.core.databinding.xml.StAXHelper.XMLFragmentStreamReader;
+
 public class DOMXMLStreamReader implements XMLFragmentStreamReader {
     protected static class DelegatingNamespaceContext implements NamespaceContext {
-        private int counter = 0;
+        private int counter;
 
         private NamespaceContext parent;
 
@@ -56,7 +56,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         }
 
         public synchronized QName createQName(String nsURI, String name) {
-            String prefix = nsURI != null ? (String)getPrefix(nsURI) : null;
+            String prefix = nsURI != null ? (String) getPrefix(nsURI) : null;
             if (prefix == null && nsURI != null && !nsURI.equals("")) {
                 prefix = "p" + (counter++);
             }
@@ -74,7 +74,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
                 throw new IllegalArgumentException("Prefix is null");
             }
 
-            String ns = (String)prefixToNamespaceMapping.get(prefix);
+            String ns = (String) prefixToNamespaceMapping.get(prefix);
             if (ns != null) {
                 return ns;
             } else if (parent != null) {
@@ -87,11 +87,11 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         public String getPrefix(String nsURI) {
             if (nsURI == null) {
                 throw new IllegalArgumentException("Namespace is null");
-            }    
+            }
             for (Map.Entry<String, String> entry1 : prefixToNamespaceMapping.entrySet()) {
                 Map.Entry entry = entry1;
                 if (entry.getValue().equals(nsURI)) {
-                    return (String)entry.getKey();
+                    return (String) entry.getKey();
                 }
             }
             if (parent != null) {
@@ -110,7 +110,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             }
             if (parent != null) {
                 for (Iterator i = parent.getPrefixes(nsURI); i.hasNext();) {
-                    prefixList.add((String)i.next());
+                    prefixList.add((String) i.next());
                 }
             }
             return prefixList.iterator();
@@ -498,7 +498,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
         /**
          * Test whether the xsi namespace is present
-         * 
+         *
          * @return
          */
         private boolean isXsiNamespacePresent() {
@@ -570,8 +570,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
     private XMLFragmentStreamReader childReader;
 
     // current property index
-    // initialized at zero
-    private int currentPropertyIndex = 0;
+    private int currentPropertyIndex;
 
     private Map<String, String> declaredNamespaceMap = new HashMap<String, String>();
 
@@ -595,10 +594,10 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
     public DOMXMLStreamReader(Node node) {
         switch (node.getNodeType()) {
             case Node.DOCUMENT_NODE:
-                this.rootElement = ((Document)node).getDocumentElement();
+                this.rootElement = ((Document) node).getDocumentElement();
                 break;
             case Node.ELEMENT_NODE:
-                this.rootElement = (Element)node;
+                this.rootElement = (Element) node;
                 break;
             default:
                 throw new IllegalArgumentException("Illegal Node");
@@ -609,7 +608,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         declaredNamespaceMap.put("xml", "http://www.w3.org/XML/1998/namespace");
         declaredNamespaceMap.put("xmlns", "http://www.w3.org/2000/xmlns/");
         declaredNamespaceMap.put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        
+
         populateProperties();
     }
 
@@ -669,9 +668,9 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
                     // case one - attrib name is null
                     // this should be the pointer to the OMAttribute then
                     if (attribPointer instanceof String) {
-                        return new QName((String)attribPointer);
+                        return new QName((String) attribPointer);
                     } else if (attribPointer instanceof QName) {
-                        return (QName)attribPointer;
+                        return (QName) attribPointer;
                     } else {
                         return null;
                     }
@@ -733,9 +732,9 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
                     // case one - attrib name is null
                     // this should be the pointer to the OMAttribute then
                     if (attribPointer instanceof String) {
-                        return (String)omAttribObj;
+                        return (String) omAttribObj;
                     } else if (attribPointer instanceof QName) {
-                        return (String)omAttribObj;
+                        return (String) omAttribObj;
                     } else {
                         return null;
                     }
@@ -778,7 +777,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     /**
      * todo implement the right contract for this
-     * 
+     *
      * @return
      * @throws XMLStreamException
      */
@@ -921,7 +920,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             return childReader.getNamespaceURI(i);
         } else if (state != TEXT_STATE) {
             String namespacePrefix = getNamespacePrefix(i);
-            return namespacePrefix == null ? null : (String)declaredNamespaceMap.get(namespacePrefix);
+            return namespacePrefix == null ? null : (String) declaredNamespaceMap.get(namespacePrefix);
         } else {
             throw new IllegalStateException();
         }
@@ -984,7 +983,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         if (state == DELEGATED_STATE) {
             return childReader.getText();
         } else if (state == TEXT_STATE) {
-            return (String)properties[currentPropertyIndex - 1].getValue();
+            return (String) properties[currentPropertyIndex - 1].getValue();
         } else {
             throw new IllegalStateException();
         }
@@ -995,7 +994,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             return childReader.getTextCharacters();
         } else if (state == TEXT_STATE) {
             return properties[currentPropertyIndex - 1].getValue() == null ? new char[0]
-                : ((String)properties[currentPropertyIndex - 1].getValue()).toCharArray();
+                : ((String) properties[currentPropertyIndex - 1].getValue()).toCharArray();
         } else {
             throw new IllegalStateException();
         }
@@ -1068,7 +1067,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     /**
      * check the validity of this implementation
-     * 
+     *
      * @return
      */
     public boolean hasText() {
@@ -1080,9 +1079,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
     }
 
     /**
-     * we need to split out the calling to the populate namespaces seperately
-     * since this needs to be done *after* setting the parent namespace context.
-     * We cannot assume it will happen at construction!
+     * we need to split out the calling to the populate namespaces seperately since this needs to be done *after*
+     * setting the parent namespace context. We cannot assume it will happen at construction!
      */
     public void init() {
         // here we have an extra issue to attend to. we need to look at the
@@ -1115,7 +1113,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     /**
      * are we done ?
-     * 
+     *
      * @return
      */
     public boolean isEndOfFragment() {
@@ -1144,12 +1142,12 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     /**
      * Get the prefix list from the hastable and take that into an array
-     * 
+     *
      * @return
      */
     private String[] makePrefixArray() {
         String[] prefixes =
-            (String[])declaredNamespaceMap.keySet().toArray(new String[declaredNamespaceMap.size()]);
+            (String[]) declaredNamespaceMap.keySet().toArray(new String[declaredNamespaceMap.size()]);
         Arrays.sort(prefixes);
         return prefixes;
     }
@@ -1160,7 +1158,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     /**
      * todo implement this
-     * 
+     *
      * @return
      * @throws XMLStreamException
      */
@@ -1194,7 +1192,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
                 if (attribName instanceof String) {
                     // ignore this case - Nothing to do
                 } else if (attribName instanceof QName) {
-                    QName attribQName = ((QName)attribName);
+                    QName attribQName = (QName) attribName;
                     registerNamespace(attribQName.getPrefix(), attribQName.getNamespaceURI());
 
                 }
@@ -1218,7 +1216,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
         List<Object> attributeList = new ArrayList<Object>();
         NamedNodeMap nodeMap = rootElement.getAttributes();
         for (int i = 0; i < nodeMap.getLength(); i++) {
-            Attr attr = (Attr)nodeMap.item(i);
+            Attr attr = (Attr) nodeMap.item(i);
             if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
                 // Skip xmlns:xxx
                 registerNamespace(attr.getLocalName(), attr.getValue());
@@ -1234,12 +1232,12 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             switch (node.getNodeType()) {
                 case Node.TEXT_NODE:
                 case Node.CDATA_SECTION_NODE:
-                    NameValuePair pair = new NameValuePair(ELEMENT_TEXT, ((CharacterData)node).getData());
+                    NameValuePair pair = new NameValuePair(ELEMENT_TEXT, ((CharacterData) node).getData());
                     elementList.add(pair);
                     break;
 
                 case Node.ELEMENT_NODE:
-                    Element element = (Element)node;
+                    Element element = (Element) node;
                     QName elementName = new QName(element.getNamespaceURI(), element.getLocalName());
                     pair = new NameValuePair(elementName, new DOMXMLStreamReader(element));
                     elementList.add(pair);
@@ -1252,7 +1250,7 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
 
     /**
      * A convenient method to reuse the properties
-     * 
+     *
      * @return event to be thrown
      * @throws XMLStreamException
      */
@@ -1271,10 +1269,10 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             if (ELEMENT_TEXT.equals(propPointer)) {
                 textFound = true;
             } else {
-                propertyQName = new QName((String)propPointer);
+                propertyQName = new QName((String) propPointer);
             }
         } else if (propPointer instanceof QName) {
-            propertyQName = (QName)propPointer;
+            propertyQName = (QName) propPointer;
         } else {
             // oops - we've no idea what kind of key this is
             throw new XMLStreamException("unidentified property key!!!" + propPointer);
@@ -1292,12 +1290,12 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             return CHARACTERS;
         } else if (propertyValue == null || propertyValue instanceof String) {
             // strings are handled by the NameValuePairStreamReader
-            childReader = new SimpleElementStreamReader(propertyQName, (String)propertyValue);
+            childReader = new SimpleElementStreamReader(propertyQName, (String) propertyValue);
             childReader.setParentNamespaceContext(this.namespaceContext);
             childReader.init();
         } else if (propertyValue instanceof DOMXMLStreamReader) {
             // ADBbean has it's own method to get a reader
-            XMLFragmentStreamReader reader = (DOMXMLStreamReader)propertyValue;
+            XMLFragmentStreamReader reader = (DOMXMLStreamReader) propertyValue;
             // we know for sure that this is an ADB XMLStreamreader.
             // However we need to make sure that it is compatible
             childReader = reader;
@@ -1351,8 +1349,8 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
     }
 
     /**
-     * By far this should be the most important method in this class this method
-     * changes the state of the parser according to the change in the
+     * By far this should be the most important method in this class this method changes the state of the parser
+     * according to the change in the
      */
     private int updateStatus() throws XMLStreamException {
         int returnEvent = -1; // invalid state is the default state

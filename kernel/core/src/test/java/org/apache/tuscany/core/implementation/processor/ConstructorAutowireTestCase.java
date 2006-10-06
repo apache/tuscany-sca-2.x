@@ -63,7 +63,7 @@ public class ConstructorAutowireTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         Constructor<Foo2> ctor = Foo2.class.getConstructor(Bar.class);
         processor.visitConstructor(null, ctor, type, null);
-        assertNotNull(type.getReferences().get(Bar.class.getName()+"0"));
+        assertNotNull(type.getReferences().get(Bar.class.getName() + "0"));
     }
 
     public void testInvalidNumberOfNames() throws Exception {
