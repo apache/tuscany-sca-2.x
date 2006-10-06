@@ -188,7 +188,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
                 throw new InvalidAutowireException("Names in @Constructor and autowire parameter do not match at "
                         + (pos + 1));
             } else if (constructorNames.length == 0 || constructorNames[pos].length() == 0) {
-                name = param.getName();
+                name = param.getName() + String.valueOf(pos);
             } else {
                 name = constructorNames[pos];
             }
