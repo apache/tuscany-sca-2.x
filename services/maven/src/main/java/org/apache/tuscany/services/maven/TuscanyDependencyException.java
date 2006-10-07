@@ -25,13 +25,13 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
  * 
  * @version $Rev$ $Date$
  */
-public class TuscanyMavenException extends TuscanyRuntimeException {
+public class TuscanyDependencyException extends TuscanyRuntimeException {
 
     /**
      * Initializes the cause.
      * @param cause Cause of the exception.
      */
-    public TuscanyMavenException(Throwable cause) {
+    public TuscanyDependencyException(Throwable cause) {
         super(cause);
     }
 
@@ -39,7 +39,7 @@ public class TuscanyMavenException extends TuscanyRuntimeException {
      * Initializes the message.
      * @param message Message of the exception.
      */
-    public TuscanyMavenException(String message) {
+    public TuscanyDependencyException(String message) {
         super(message);
     }
 

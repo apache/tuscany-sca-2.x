@@ -40,6 +40,9 @@ public class MavenArtifactRepository implements ArtifactRepository {
 
     /** Maven helper */
     private MavenHelper mavenHelper;
+    
+    /** WAR repository helper */
+    private WarRepositoryHelper warRepositoryHelper;
 
     /**
      * Conctructs a new artifact repository.
@@ -47,7 +50,8 @@ public class MavenArtifactRepository implements ArtifactRepository {
     public MavenArtifactRepository(@Property(name = "remoteRepoUrls")
     String[] remoteRepoUrls, @Autowire
     RuntimeInfo runtimeInfo) {
-        mavenHelper = new MavenHelper(remoteRepoUrls, runtimeInfo.getBaseURL());
+        mavenHelper = new MavenHelper(remoteRepoUrls);
+        warRepositoryHelper = new WarRepositoryHelper(runtimeInfo.getBaseURL());
         mavenHelper.start();
     }
 
@@ -59,7 +63,13 @@ public class MavenArtifactRepository implements ArtifactRepository {
      *            the artifact to be resolved
      */
     public void resolve(Artifact rootArtifact) {
-        mavenHelper.resolveTransitively(rootArtifact);
+        if(warRepositoryHelper.resolveTransitively(rootArtifact)) {
+            return;
+        } 
+        if(mavenHelper.resolveTransitively(rootArtifact)) {
+            return;
+        }
+        throw new TuscanyDependencyException("Unable to resolve artifact: " + rootArtifact.getName());
     }
 
     /**
