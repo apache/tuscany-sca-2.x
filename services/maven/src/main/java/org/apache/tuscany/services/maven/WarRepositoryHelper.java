@@ -30,6 +30,7 @@ public class WarRepositoryHelper {
      * Initializes the repository URL.
      * @param baseUrl Base URL.
      */
+    @SuppressWarnings("unchecked")
     public WarRepositoryHelper(URL baseUrl) {
         
         
