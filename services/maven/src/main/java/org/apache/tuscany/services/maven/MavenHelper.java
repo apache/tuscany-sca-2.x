@@ -54,7 +54,7 @@ public class MavenHelper {
     private static final File LOCAL_REPO = new File(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
 
     /** Remote repository URLs */
-    private final String[] remoteRepositoryUrls;
+    private final String remoteRepositoryUrl;
 
     /** Maven metadata source */
     private ArtifactMetadataSource metadataSource;
@@ -79,8 +79,8 @@ public class MavenHelper {
      * @param runtimeInfo
      *            Runtime information.
      */
-    public MavenHelper(String[] remoteRepositoryUrls) {
-        this.remoteRepositoryUrls = remoteRepositoryUrls;
+    public MavenHelper(String remoteRepositoryUrl) {
+        this.remoteRepositoryUrl = remoteRepositoryUrl;
     }
 
     /**
@@ -190,10 +190,8 @@ public class MavenHelper {
             localRepository = artifactRepositoryFactory.createArtifactRepository("local", LOCAL_REPO.toURL().toExternalForm(), layout,
                     snapshotsPolicy, releasesPolicy);
 
-            for (String remoteRespositoryUrl : remoteRepositoryUrls) {
-                remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(remoteRespositoryUrl, remoteRespositoryUrl, layout,
-                        snapshotsPolicy, releasesPolicy));
-            }
+            remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(remoteRepositoryUrl, remoteRepositoryUrl, layout,
+                    snapshotsPolicy, releasesPolicy));
 
         } catch (MalformedURLException ex) {
             throw new TuscanyDependencyException(ex);

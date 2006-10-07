@@ -47,10 +47,10 @@ public class MavenArtifactRepository implements ArtifactRepository {
     /**
      * Conctructs a new artifact repository.
      */
-    public MavenArtifactRepository(@Property(name = "remoteRepoUrls")
-    String[] remoteRepoUrls, @Autowire
+    public MavenArtifactRepository(@Property(name = "remoteRepoUrl")
+    String remoteRepoUrl, @Autowire
     RuntimeInfo runtimeInfo) {
-        mavenHelper = new MavenHelper(remoteRepoUrls);
+        mavenHelper = new MavenHelper(remoteRepoUrl);
         warRepositoryHelper = new WarRepositoryHelper(runtimeInfo.getBaseURL());
         mavenHelper.start();
     }
