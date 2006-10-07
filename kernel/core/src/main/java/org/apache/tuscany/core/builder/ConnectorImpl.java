@@ -225,6 +225,7 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
+            Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
             boolean operationHasCallback = contract.getCallbackName() != null;
             if (isOneWayOperation && operationHasCallback) {
@@ -234,9 +235,8 @@ public class ConnectorImpl implements Connector {
             if (target instanceof Component) {
                 Component component = (Component) target;
                 if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(targetWire, operation);
+                    invoker = component.createAsyncTargetInvoker(targetWire, inboundOperation);
                 } else {
-                    Operation<?> inboundOperation = inboundChain.getOperation();
                     String portName = sourceWire.getTargetName().getPortName();
                     invoker = component.createTargetInvoker(portName, inboundOperation);
                 }
@@ -244,11 +244,10 @@ public class ConnectorImpl implements Connector {
                 Reference reference = (Reference) target;
                 if (!(reference instanceof CompositeReference) && operationHasCallback) {
                     // Notice that for bound references we only use async target invokers for callback operations
-                    invoker = reference.createAsyncTargetInvoker(sourceWire, operation);
+                    invoker = reference.createAsyncTargetInvoker(sourceWire, inboundOperation);
                 } else {
                     ServiceContract targetContract = targetWire.getServiceContract();
-                    Operation targetOperation = inboundChain.getOperation();
-                    invoker = reference.createTargetInvoker(targetContract, targetOperation);
+                    invoker = reference.createTargetInvoker(targetContract, inboundOperation);
                 }
             } else if (target instanceof CompositeService) {
                 CompositeService compServ = (CompositeService) target;

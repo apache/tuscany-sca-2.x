@@ -48,7 +48,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-			<groupId>org.apache.ws.commons.axiom</groupId>
+			<groupId>org.apache.ws.commons</groupId>
 			<artifactId>axiom-api</artifactId>
 		</dependency>
 
@@ -57,7 +57,7 @@
             <artifactId>junit</artifactId>
         </dependency>
 		<dependency>
-			<groupId>org.apache.ws.commons.axiom</groupId>
+			<groupId>org.apache.ws.commons</groupId>
 			<artifactId>axiom-impl</artifactId>
 			<scope>test</scope>
 		</dependency>
