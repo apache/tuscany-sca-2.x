@@ -37,9 +37,7 @@ public class WarRepositoryHelper {
         try {
             
             reporsitoryUrl = new URL(baseUrl, "repository");
-            System.err.println(reporsitoryUrl);
             URL transDependencyMapUrl = new URL(baseUrl, "repository/dependency.metadata");
-            System.err.println(transDependencyMapUrl);
             transDependencyMapUrl.openConnection();
             transDepMapInputStream = transDependencyMapUrl.openStream();
             
