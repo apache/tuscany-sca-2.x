@@ -148,51 +148,71 @@ public class DataType<L> extends ModelObject {
         return result;
     }
 
-    @SuppressWarnings("unchecked")
-    public boolean equals(Object o) {
+    public boolean equals(Object o){
         if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+             return true;
+         }
+         if (o == null || getClass() != o.getClass()) {
+             return false;
+         }
 
-        final DataType dataType = (DataType) o;
+         final DataType dataType = (DataType) o;
 
-        if (logical instanceof Class && dataType.logical instanceof Class) {
-            Class<?> logicalClass = (Class<?>) logical;
-            Class<?> targetLogicalClass = (Class<?>) dataType.logical;
-            if (!logicalClass.isAssignableFrom(targetLogicalClass)) {
-                return false;
-            }
-        } else {
-            if (logical != null ? !logical.equals(dataType.logical) : dataType.logical != null) {
-                return false;
-            }
-        }
-        if (physical instanceof Class && dataType.physical instanceof Class) {
-            Class<?> physicalClass = (Class<?>) physical;
-            Class<?> physicalTargetClass = (Class<?>) dataType.physical;
-            if (dataBinding != null
-                && dataType.dataBinding != null
-                && dataBinding.equals(physicalClass.getName())
-                && dataType.dataBinding.equals(physicalTargetClass.getName())) {
-                return physicalClass.isAssignableFrom(physicalTargetClass);
-            }
-            if (!physicalClass.isAssignableFrom(physicalTargetClass)) {
-                return false;
-            }
-            return !(dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null);
-
-
-        }
-
-        if (dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null) {
-            return false;
-        }
-
-        return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
+         if (dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null) {
+             return false;
+         }
+         if (logical != null ? !logical.equals(dataType.logical) : dataType.logical != null) {
+             return false;
+         }
+         return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
+        
     }
+
+//    @SuppressWarnings("unchecked")
+//    public boolean equals(Object o) {
+//        if (this == o) {
+//            return true;
+//        }
+//        if (o == null || getClass() != o.getClass()) {
+//            return false;
+//        }
+//
+//        final DataType dataType = (DataType) o;
+//
+//        if (logical instanceof Class && dataType.logical instanceof Class) {
+//            Class<?> logicalClass = (Class<?>) logical;
+//            Class<?> targetLogicalClass = (Class<?>) dataType.logical;
+//            if (!logicalClass.isAssignableFrom(targetLogicalClass)) {
+//                return false;
+//            }
+//        } else {
+//            if (logical != null ? !logical.equals(dataType.logical) : dataType.logical != null) {
+//                return false;
+//            }
+//        }
+//        if (physical instanceof Class && dataType.physical instanceof Class) {
+//            Class<?> physicalClass = (Class<?>) physical;
+//            Class<?> physicalTargetClass = (Class<?>) dataType.physical;
+//            if (dataBinding != null
+//                && dataType.dataBinding != null
+//                && dataBinding.equals(physicalClass.getName())
+//                && dataType.dataBinding.equals(physicalTargetClass.getName())) {
+//                return physicalClass.isAssignableFrom(physicalTargetClass);
+//            }
+//            if (!physicalClass.isAssignableFrom(physicalTargetClass)) {
+//                return false;
+//            }
+//            return !(dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null);
+//
+//
+//        }
+//
+//        if (dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null) {
+//            return false;
+//        }
+//
+//        return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
+//    }
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
