@@ -187,4 +187,11 @@ public class Artifact {
     public void setUrl(URL url) {
         this.url = url;
     }
+
+
+    public String toString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append(group).append(':').append(name).append(':').append(version).append(':').append(type);
+        return buf.toString();
+    }
 }

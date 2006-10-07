@@ -20,6 +20,8 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -36,7 +38,10 @@ import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
 /**
  * Loader that handles an &lt;implementation.composite&gt; element.
@@ -47,9 +52,12 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
     private static final QName IMPLEMENTATION_COMPOSITE =
         new QName(Version.XML_NAMESPACE_1_0, "implementation.composite");
 
-    @Constructor({"registry"})
-    public ImplementationCompositeLoader(@Autowire LoaderRegistry registry) {
+    private final ArtifactRepository artifactRepository;
+
+    public ImplementationCompositeLoader(@Autowire LoaderRegistry registry,
+                                         @Autowire ArtifactRepository artifactRepository) {
         super(registry);
+        this.artifactRepository = artifactRepository;
     }
 
     public QName getXMLType() {
@@ -63,6 +71,8 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
 
         assert IMPLEMENTATION_COMPOSITE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
+        String group = reader.getAttributeValue(null, "group");
+        String version = reader.getAttributeValue(null, "version");
         String scdlLocation = reader.getAttributeValue(null, "scdlLocation");
         String jarLocation = reader.getAttributeValue(null, "jarLocation");
         LoaderUtil.skipToEndElement(reader);
@@ -93,6 +103,30 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
                 throw new AssertionError("Could not convert URL to a jar: url");
             }
             impl.setClassLoader(new CompositeClassLoader(new URL[]{jarUrl}, deploymentContext.getClassLoader()));
+        } else if (artifactRepository != null && group != null && version != null) {
+            Artifact artifact = new Artifact();
+            artifact.setGroup(group);
+            artifact.setName(name);
+            artifact.setVersion(version);
+            artifact.setType("jar");
+            artifactRepository.resolve(artifact);
+            if (artifact.getUrl() == null) {
+                MissingResourceException mre = new MissingResourceException(artifact.toString());
+                mre.setIdentifier(name);
+                throw mre;
+            }
+            try {
+                impl.setScdlLocation(new URL("jar:" + artifact.getUrl() + "!/META-INF/sca/default.scdl"));
+            } catch (MalformedURLException e) {
+                throw new AssertionError(e);
+            }
+            Set<URL> artifactURLs = artifact.getUrls();
+            URL[] urls = new URL[artifactURLs.size()];
+            int i = 0;
+            for (URL artifactURL : artifactURLs) {
+                urls[i++] = artifactURL;
+            }
+            impl.setClassLoader(new CompositeClassLoader(urls, deploymentContext.getClassLoader()));
         }
         return impl;
     }
