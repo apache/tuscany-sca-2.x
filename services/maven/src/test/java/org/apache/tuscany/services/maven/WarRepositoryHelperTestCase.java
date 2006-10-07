@@ -28,12 +28,14 @@ public class WarRepositoryHelperTestCase extends TestCase {
      */
     public void testWarRepositoryHelper() {
 
-        /*URL warUrl = getClass().getClassLoader().getResource("webapp.war");
+        URL warUrl = getClass().getClassLoader().getResource("webapp.war");
         URLClassLoader urlc = new URLClassLoader(new URL[] {warUrl});
         
-        URL repoUrl = urlc.getResource("WEB-INF/tuscany/repository/");
+        URL repoUrl = urlc.getResource("WEB-INF/tuscany/");
+        System.err.println(repoUrl);
+        
         WarRepositoryHelper warRepositoryHelper = new WarRepositoryHelper(repoUrl);
-        assertNotNull(warRepositoryHelper);*/
+        assertNotNull(warRepositoryHelper);
         
     }
 
@@ -42,10 +44,10 @@ public class WarRepositoryHelperTestCase extends TestCase {
      */
     public void testResolveTransitively() {
 
-        /*URL warUrl = getClass().getClassLoader().getResource("webapp.war");
+        URL warUrl = getClass().getClassLoader().getResource("webapp.war");
         URLClassLoader urlc = new URLClassLoader(new URL[] {warUrl});
         
-        URL repoUrl = urlc.getResource("WEB-INF/tuscany/repository/");
+        URL repoUrl = urlc.getResource("WEB-INF/tuscany/");
         WarRepositoryHelper warRepositoryHelper = new WarRepositoryHelper(repoUrl);
         
         Artifact artifact = new Artifact();
@@ -54,7 +56,7 @@ public class WarRepositoryHelperTestCase extends TestCase {
         artifact.setVersion("3.0");
         
         warRepositoryHelper.resolveTransitively(artifact);
-        assertEquals(4, artifact.getUrls().size());*/
+        assertEquals(4, artifact.getUrls().size());
         
     }
 

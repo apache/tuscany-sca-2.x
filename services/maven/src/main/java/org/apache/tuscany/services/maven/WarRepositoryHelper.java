@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class WarRepositoryHelper {
     private URL reporsitoryUrl;
     
     /** Dependency metadata */
-    private Map<String, Set<String>> transDependencyMap;
+    private Map<String, Set<String>> transDependencyMap = new HashMap<String, Set<String>>();
     
     /**
      * Initializes the repository URL.
@@ -46,12 +47,10 @@ public class WarRepositoryHelper {
             transDependencyMap = (Map<String, Set<String>>)decoder.readObject();
             decoder.close();
             
-            //System.err.println(transDependencyMap.get("commons-httpclient/commons-httpclient/3.0/"));
-            
         } catch (MalformedURLException ex) {
-            throw new TuscanyDependencyException(ex);
+            // throw new TuscanyDependencyException(ex);
         } catch (IOException  ex) {
-            throw new TuscanyDependencyException(ex);
+            // throw new TuscanyDependencyException(ex);
         } finally {
             IOUtil.close(transDepMapInputStream);
         }
