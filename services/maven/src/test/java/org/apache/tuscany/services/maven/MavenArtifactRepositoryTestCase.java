@@ -49,6 +49,8 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
      * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Artifact)'
      */
     public void testResolveArtifact() throws Exception {
+        
+        System.err.println(getClass().getClassLoader().getResource("META-INF/maven/plugin.xml"));
 
         final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + ".m2").toURL();
         String remoteRepoUrl = "http://repo1.maven.org/maven2/";
