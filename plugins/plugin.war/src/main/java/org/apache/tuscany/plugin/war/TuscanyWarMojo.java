@@ -262,6 +262,8 @@ public class TuscanyWarMojo extends AbstractMojo {
             
             File file = new File(outputDirectory, "webapp");
             file = new File(file, REPOSITORY_PATH);
+            file.mkdirs();
+            
             file = new File(file, metadataFile);
             file.createNewFile();
             
