@@ -39,15 +39,15 @@ import org.apache.tuscany.core.injection.SingletonObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-@SuppressWarnings("unchecked")
 public class StringParserPropertyFactory implements PropertyObjectFactory {
 
     public <T> ObjectFactory<T> createObjectFactory(Property<T> property, PropertyValue<T> value)
         throws LoaderException {
         String text = value.getValue().getDocumentElement().getTextContent();
-        return new SingletonObjectFactory(createInstance(text, property.getJavaType()));
+        return new SingletonObjectFactory<T>(createInstance(text, property.getJavaType()));
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T createInstance(String text, Class<T> type) throws LoaderException {
         // Class<T> type = property.getJavaType();
         assert type != null : "property type is null";
@@ -118,6 +118,7 @@ public class StringParserPropertyFactory implements PropertyObjectFactory {
 
     }
 
+    @SuppressWarnings("unchecked")
     public <T> ObjectFactory<T> createObjectFactory(String text, Property<T> property)
         throws XMLStreamException, LoaderException {
         Class<T> type = property.getJavaType();

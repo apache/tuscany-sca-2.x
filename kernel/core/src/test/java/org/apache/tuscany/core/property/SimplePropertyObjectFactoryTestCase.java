@@ -31,10 +31,9 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-@SuppressWarnings("unchecked")
 public class SimplePropertyObjectFactoryTestCase extends TestCase {
 
-    private <T> PropertyValue<T> mock(Class<T> cls, String value) {
+    private <T> PropertyValue<T> mock(String value) {
         Document document = EasyMock.createMock(Document.class);
         Element element = EasyMock.createMock(Element.class);
         EasyMock.expect(document.getDocumentElement()).andReturn(element);
@@ -48,7 +47,7 @@ public class SimplePropertyObjectFactoryTestCase extends TestCase {
         PropertyObjectFactoryImpl factory = new PropertyObjectFactoryImpl();
         Property<Integer> property = new Property<Integer>();
         property.setJavaType(Integer.class);
-        PropertyValue<Integer> propertyValue = mock(Integer.class, "1");
+        PropertyValue<Integer> propertyValue = mock("1");
         ObjectFactory<Integer> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals(1, oFactory.getInstance().intValue());
     }
@@ -57,7 +56,7 @@ public class SimplePropertyObjectFactoryTestCase extends TestCase {
         PropertyObjectFactoryImpl factory = new PropertyObjectFactoryImpl();
         Property<Integer> property = new Property<Integer>();
         property.setJavaType(Integer.TYPE);
-        PropertyValue<Integer> propertyValue = mock(Integer.TYPE, "1");
+        PropertyValue<Integer> propertyValue = mock("1");
         ObjectFactory<Integer> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals(1, oFactory.getInstance().intValue());
     }
@@ -66,7 +65,7 @@ public class SimplePropertyObjectFactoryTestCase extends TestCase {
         PropertyObjectFactoryImpl factory = new PropertyObjectFactoryImpl();
         Property<String> property = new Property<String>();
         property.setJavaType(String.class);
-        PropertyValue<String> propertyValue = mock(String.class, "1");
+        PropertyValue<String> propertyValue = mock("1");
         ObjectFactory<String> oFactory = factory.createObjectFactory(property, propertyValue);
         assertEquals("1", oFactory.getInstance());
     }
@@ -75,7 +74,7 @@ public class SimplePropertyObjectFactoryTestCase extends TestCase {
         PropertyObjectFactoryImpl factory = new PropertyObjectFactoryImpl();
         Property<byte[]> property = new Property<byte[]>();
         property.setJavaType(byte[].class);
-        PropertyValue<byte[]> propertyValue = mock(byte[].class, "TWFu"); // BASE64 for "Man"
+        PropertyValue<byte[]> propertyValue = mock("TWFu"); // BASE64 for "Man"
         ObjectFactory<byte[]> oFactory = factory.createObjectFactory(property, propertyValue);
         byte[] result = oFactory.getInstance();
         byte[] expected = "Man".getBytes();
@@ -91,7 +90,7 @@ public class SimplePropertyObjectFactoryTestCase extends TestCase {
         PropertyObjectFactoryImpl factory = new PropertyObjectFactoryImpl();
         Property<Boolean> property = new Property<Boolean>();
         property.setJavaType(Boolean.class);
-        PropertyValue<Boolean> propertyValue = mock(Boolean.class, "true");
+        PropertyValue<Boolean> propertyValue = mock("true");
         ObjectFactory<Boolean> oFactory = factory.createObjectFactory(property, propertyValue);
         assertTrue(oFactory.getInstance());
     }
@@ -100,7 +99,7 @@ public class SimplePropertyObjectFactoryTestCase extends TestCase {
         PropertyObjectFactoryImpl factory = new PropertyObjectFactoryImpl();
         Property<Boolean> property = new Property<Boolean>();
         property.setJavaType(Boolean.TYPE);
-        PropertyValue<Boolean> propertyValue = mock(Boolean.TYPE, "true");
+        PropertyValue<Boolean> propertyValue = mock("true");
         ObjectFactory<Boolean> oFactory = factory.createObjectFactory(property, propertyValue);
         assertTrue(oFactory.getInstance());
     }

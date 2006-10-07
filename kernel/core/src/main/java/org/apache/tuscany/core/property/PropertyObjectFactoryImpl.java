@@ -55,12 +55,11 @@ public class PropertyObjectFactoryImpl implements PropertyObjectFactory {
         this.mediator = mediator;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> ObjectFactory<T> createObjectFactory(Property<T> property, PropertyValue<T> value) {
         if (mediator == null) {
-            return new SimplePropertyObjectFactory(property, value.getValue());
+            return new SimplePropertyObjectFactory<T>(property, value.getValue());
         }
-        return new ObjectFactoryImpl(property, value);
+        return new ObjectFactoryImpl<T>(property, value);
     }
 
     public class ObjectFactoryImpl<P> implements ObjectFactory<P> {
