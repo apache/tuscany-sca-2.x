@@ -97,7 +97,6 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
     }
 
     public void destroy() {
-/* FIXME shutdown hangs due to problems with event publication
         context = null;
         if (application != null) {
             application.stop();
@@ -115,7 +114,6 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             runtime.stop();
             runtime = null;
         }
-*/
     }
 
     public SCA getContext() {
