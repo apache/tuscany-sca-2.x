@@ -21,18 +21,26 @@ import org.easymock.EasyMock;
 public class JNDIPropertyFactoryTestCase extends TestCase {
 
     public void testCreate() throws Exception {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, MockInitialContextFactory.class.getName());
-        JNDIPropertyFactory factory = new JNDIPropertyFactory();
-        Element element = EasyMock.createMock(Element.class);
-        EasyMock.expect(element.getTextContent()).andReturn("foo");
-        EasyMock.replay(element);
-        Document doc = EasyMock.createMock(Document.class);
-        EasyMock.expect(doc.getDocumentElement()).andReturn(element);
-        EasyMock.replay(doc);
-        PropertyValue<?> value = new MockPropertyValue<Type>();
-        value.setValue(doc);
-        JNDIObjectFactory<?> jndiFactory = (JNDIObjectFactory<?>) factory.createObjectFactory(null, value);
-        assertEquals("bar", jndiFactory.getInstance());
+        String old = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
+        try {
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY, MockInitialContextFactory.class.getName());
+            JNDIPropertyFactory factory = new JNDIPropertyFactory();
+            Element element = EasyMock.createMock(Element.class);
+            EasyMock.expect(element.getTextContent()).andReturn("foo");
+            EasyMock.replay(element);
+            Document doc = EasyMock.createMock(Document.class);
+            EasyMock.expect(doc.getDocumentElement()).andReturn(element);
+            EasyMock.replay(doc);
+            PropertyValue<?> value = new MockPropertyValue<Type>();
+            value.setValue(doc);
+            JNDIObjectFactory<?> jndiFactory = (JNDIObjectFactory<?>) factory.createObjectFactory(null, value);
+            assertEquals("bar", jndiFactory.getInstance());
+        } finally {
+            System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
+            if (old != null) {
+                System.setProperty(Context.INITIAL_CONTEXT_FACTORY, old);
+            }
+        }
 
     }
 
