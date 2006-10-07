@@ -128,8 +128,8 @@
     </component>
 
     <component name="artifactRepository">
-        <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
-        <property name="repository">.m2/repository</property>
+        <system:implementation.system class="org.apache.tuscany.services.maven.MavenArtifactRepository"/>
+        <property name="remoteRepoUrl">http://repo1.maven.org/maven2/</property>
     </component>
 
     <component name="extender" initLevel="90">
