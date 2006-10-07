@@ -18,20 +18,15 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.implementation.composite.CompositeReference;
-import org.apache.tuscany.core.implementation.composite.CompositeService;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.osoa.sca.annotations.Constructor;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
@@ -40,6 +35,7 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceNotFoundException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -52,33 +48,36 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
+import org.apache.tuscany.spi.wire.WireServiceExtension;
+
+import org.apache.tuscany.core.implementation.composite.CompositeReference;
+import org.apache.tuscany.core.implementation.composite.CompositeService;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 
 /**
+ * the default implementation of a wire service that uses JDK dynamic proxies
+ *
  * @version $$Rev$$ $$Date$$
  */
 @Scope("MODULE")
-public class JDKWireService implements WireService {
-
-    private WorkContext context;
-    //private PolicyBuilderRegistry policyRegistry;
+public class JDKWireService extends WireServiceExtension {
 
     public JDKWireService() {
+        super(null, null);
     }
 
     @Constructor({"workContext", "policyregisty"})
     public JDKWireService(@Autowire WorkContext context, @Autowire PolicyBuilderRegistry policyRegistry) {
-        this.context = context;
-        //this.policyRegistry = policyRegistry;
+        super(context, policyRegistry);
     }
 
     @Init(eager = true)
@@ -205,7 +204,7 @@ public class JDKWireService implements WireService {
             inboundWire.addInvocationChain(operation, chain);
         }
         OutboundWire outboundWire = new OutboundWireImpl();
-        
+
         // [rfeng] Check if the Reference has the binding contract
         ServiceContract<?> bindingContract = reference.getBindingServiceContract();
         if (bindingContract == null) {
@@ -279,7 +278,7 @@ public class JDKWireService implements WireService {
 
     public void createWires(Service service, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
-        
+
         // [rfeng] Check if the Reference has the binding contract
         ServiceContract<?> bindingContract = service.getBindingServiceContract();
         if (bindingContract == null) {
@@ -291,7 +290,7 @@ public class JDKWireService implements WireService {
             InboundInvocationChain inboundChain = createInboundChain(operation);
             inboundWire.addInvocationChain(operation, inboundChain);
         }
-        
+
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetName(new QualifiedName(targetName));
@@ -322,80 +321,6 @@ public class JDKWireService implements WireService {
         service.setOutboundWire(outboundWire);
     }
 
-    /**
-     * Compares two operations for wiring compatibility as defined by the SCA
-     * assembly specification, namely: <p/>
-     * <ol>
-     * <li>compatibility for the individual method is defined as compatibility
-     * of the signature, that is method name, input types, and output types MUST
-     * BE the same.
-     * <li>the order of the input and output types also MUST BE the same.
-     * <li>the set of Faults and Exceptions expected by the source MUST BE the
-     * same or be a superset of those specified by the service.
-     * </ol>
-     * 
-     * @param source the source contract to compare
-     * @param target the target contract to compare
-     * @IncompatibleServiceContractException Thrown if the two contracts don't
-     *                                       match
-     */
-    public void checkCompatibility(ServiceContract<?> source, ServiceContract<?> target, boolean ignoreCallback)
-        throws IncompatibleServiceContractException {
-        if (source == target) {
-            // Shortcut for performance
-            return;
-        }
-        if (source.isRemotable() != target.isRemotable()) {
-            IncompatibleServiceContractException ex =
-                new IncompatibleServiceContractException("The remotable settings don't match");
-            ex.addContextName("source.remotable: " + source.isRemotable());
-            ex.addContextName("target.remotable: " + target.isRemotable());
-            throw ex;
-        }
-        if (source.getInteractionScope() != target.getInteractionScope()) {
-            IncompatibleServiceContractException ex =
-                new IncompatibleServiceContractException("The interaction scopes don't match");
-            ex.addContextName("source.interactionScope: " + source.getInteractionScope());
-            ex.addContextName("target.interactionScope: " + target.getInteractionScope());
-            throw ex;
-        }
-
-        for (Operation<?> operation : source.getOperations().values()) {
-            Operation<?> targetOperation = target.getOperations().get(operation.getName());
-            if (targetOperation == null) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("A operation is not in the target");
-                ex.addContextName("operation: " + operation.getName());
-                throw ex;
-            }
-            if (!operation.equals(targetOperation)) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("A target operation is not compatible");
-                ex.addContextName("operation: " + operation.getName());
-                throw ex;
-            }
-        }
-
-        if (ignoreCallback) {
-            return;
-        }
-        
-        for (Operation<?> operation : source.getCallbackOperations().values()) {
-            Operation<?> targetOperation = target.getCallbackOperations().get(operation.getName());
-            if (targetOperation == null) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("A callback operation is not in the target");
-                ex.addContextName("operation: " + operation.getName());
-                throw ex;
-            }
-            if (!operation.equals(targetOperation)) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("A target callback operation is not compatible");
-                ex.addContextName("operation: " + operation.getName());
-                throw ex;
-            }
-        }
-    }
 
     private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
         throws NoMethodForOperationException {

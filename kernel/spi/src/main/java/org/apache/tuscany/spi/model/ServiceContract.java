@@ -231,4 +231,16 @@ public abstract class ServiceContract<T> extends ModelObject {
         result = 29 * result + (callbackOperations != null ? callbackOperations.hashCode() : 0);
         return result;
     }
+
+    public String toString() {
+        if (interfaceName != null) {
+            return new StringBuilder().append("ServiceContract[").append(interfaceName).append("]").toString();
+        } else if (interfaceClass != null) {
+            return new StringBuilder().append("ServiceContract[").append(interfaceClass.getName()).append("]")
+                .toString();
+        } else {
+            return super.toString();
+        }
+
+    }
 }

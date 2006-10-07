@@ -51,7 +51,7 @@ public class Operation<T> {
     private boolean callback;
 
     private String dataBinding;
-    
+
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
 
@@ -264,8 +264,21 @@ public class Operation<T> {
             return true;
         }
 
-        if (faultTypes != null ? !faultTypes.equals(operation.faultTypes) : operation.faultTypes != null) {
+        if (faultTypes == null && operation.faultTypes != null) {
             return false;
+        } else if (faultTypes != null
+            && operation.faultTypes != null
+            && faultTypes.size() != 0
+            && operation.faultTypes.size() != 0) {
+            if (faultTypes.size() < operation.faultTypes.size()) {
+                return false;
+            } else {
+                for (int i = 0; i < operation.faultTypes.size(); i++) {
+                    if (!faultTypes.get(i).equals(operation.faultTypes.get(i))) {
+                        return false;
+                    }
+                }
+            }
         }
 
         if (inputType != null ? !inputType.equals(operation.inputType) : operation.inputType != null) {
@@ -300,14 +313,16 @@ public class Operation<T> {
 
     /**
      * Returns true if the operation is wrapper style
+     *
      * @return the wrapperStyle
      */
     public boolean isWrapperStyle() {
         return wrapperStyle;
     }
-    
+
     /**
      * Return the Wrapper information for this operation is it's wrapper style
+     *
      * @return The Wrapper
      */
     public WrapperInfo getWrapper() {
@@ -331,5 +346,6 @@ public class Operation<T> {
     public void setWrapperStyle(boolean wrapperStyle) {
         this.wrapperStyle = wrapperStyle;
     }
+
 
 }
