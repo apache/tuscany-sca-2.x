@@ -18,25 +18,25 @@
  */
 package org.apache.tuscany.core.loader;
 
+import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 /**
  * Verifies loading of a service definition from an XML-based assembly
@@ -47,7 +47,7 @@ public class ServiceLoaderTestCase extends TestCase {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
     private static final QName INTERFACE_JAVA = new QName(XML_NAMESPACE_1_0, "interface.java");
-    
+
     private ServiceLoader loader;
     private DeploymentContext deploymentContext;
     private XMLStreamReader mockReader;
@@ -61,7 +61,7 @@ public class ServiceLoaderTestCase extends TestCase {
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
         replay(mockReader);
-        ServiceDefinition serviceDefinition = loader.load(null, (XMLStreamReader) mockReader, null);
+        ServiceDefinition serviceDefinition = loader.load(null, mockReader, null);
         assertNotNull(serviceDefinition);
         assertEquals(name, serviceDefinition.getName());
     }
@@ -83,12 +83,11 @@ public class ServiceLoaderTestCase extends TestCase {
         expect(mockReader.getName()).andReturn(REFERENCE);
         expect(mockReader.next()).andReturn(END_ELEMENT);
         expect(mockReader.getName()).andReturn(SERVICE);
-        
+
         replay(mockReader);
         replay(mockRegistry);
-        
-        ServiceDefinition serviceDefinition =
-            loader.load(null, (XMLStreamReader) mockReader, deploymentContext);
+
+        ServiceDefinition serviceDefinition = loader.load(null, mockReader, deploymentContext);
         assertNotNull(serviceDefinition);
         assertEquals(name, serviceDefinition.getName());
         assertSame(sc, serviceDefinition.getServiceContract());
