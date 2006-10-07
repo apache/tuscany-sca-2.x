@@ -246,9 +246,8 @@ public class JDKWireService implements WireService {
             wire.addInvocationChain(operation, chain);
 
         }
-        Class<?> callbackInterface = contract.getCallbackClass();
-        if (callbackInterface != null) {
-            wire.setCallbackInterface(callbackInterface);
+        if (contract.getCallbackName() != null) {
+            wire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 // TODO handle policy
@@ -272,8 +271,7 @@ public class JDKWireService implements WireService {
             chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
         }
-        Class<?> callbackInterface = contract.getCallbackClass();
-        if (callbackInterface != null) {
+        if (contract.getCallbackName() != null) {
             wire.setCallbackReferenceName(service.getCallbackReferenceName());
         }
         return wire;
@@ -305,9 +303,8 @@ public class JDKWireService implements WireService {
         }
 
         // Add target callback chain to outbound wire, applicable to both bound and bindless services
-        Class<?> callbackInterface = contract.getCallbackClass();
-        if (callbackInterface != null) {
-            outboundWire.setCallbackInterface(callbackInterface);
+        if (contract.getCallbackName() != null) {
+            outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
 // TODO handle policy

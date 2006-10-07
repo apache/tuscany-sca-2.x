@@ -49,13 +49,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-sdo</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
         </dependency>

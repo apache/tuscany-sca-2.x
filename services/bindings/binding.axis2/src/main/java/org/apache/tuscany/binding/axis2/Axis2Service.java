@@ -74,6 +74,8 @@ public class Axis2Service extends ServiceExtension {
     private WorkContext workContext;
 
     private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
+    
+    private String serviceName;
 
     public Axis2Service(String theName,
                         ServiceContract<?> serviceContract,
@@ -91,6 +93,7 @@ public class Axis2Service extends ServiceExtension {
         this.servletHost = servletHost;
         this.configContext = configContext;
         this.workContext = workContext;
+        this.serviceName = theName;
     }
 
     public void start() {
@@ -188,6 +191,7 @@ public class Axis2Service extends ServiceExtension {
 
             Message msg = new MessageImpl();
             msg.setTargetInvoker(chain.getTargetInvoker());
+            msg.setFromAddress(getFromAddress());
             if (messageId == null) {
                 messageId = new MessageId();
             }
@@ -210,6 +214,10 @@ public class Axis2Service extends ServiceExtension {
             }
             return body;
         }
+    }
+    
+    protected Object getFromAddress() {
+        return this.serviceName;
     }
 
     /**

@@ -33,10 +33,12 @@ import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
-    
+
     private WorkContext workContext;
     private Axis2Service service;
-    
+
+    private MessageId currentCorrelationId;
+
     public Axis2ServiceCallbackTargetInvoker(WorkContext workContext, Axis2Service service) {
         this.workContext = workContext;
         this.service = service;
@@ -45,32 +47,48 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
             // Use correlation id in context as index to retrieve inv context
-            MessageId correlationId = (MessageId)workContext.getCurrentCorrelationId();
-            InvocationContext invCtx = service.retrieveMapping(correlationId);
-            
-            MessageContext outMC = Utils.createOutMessageContext(invCtx.inMessageContext);
-            outMC.getOperationContext().addMessageContext(invCtx.inMessageContext);  // REVIEW was adding newmsgCtx !
+            // MessageId correlationId =
+            // (MessageId)workContext.getCurrentCorrelationId();
+            // InvocationContext invCtx =
+            // service.retrieveMapping(correlationId);
 
-            OMElement responseOM = (OMElement) payload;
+            InvocationContext invCtx = service.retrieveMapping(this.currentCorrelationId);
+
+            MessageContext outMC = Utils.createOutMessageContext(invCtx.inMessageContext);
+            outMC.getOperationContext().addMessageContext(invCtx.inMessageContext); // REVIEW
+                                                                                    // was
+                                                                                    // adding
+                                                                                    // newmsgCtx
+                                                                                    // !
+
+            OMElement responseOM = null;
+            if (payload != null && !payload.getClass().isArray()) {
+                responseOM = (OMElement)payload;
+            } else {
+                responseOM = (OMElement)((Object[])payload)[0];
+            }
             SOAPEnvelope soapEnvelope = invCtx.soapFactory.getDefaultEnvelope();
             soapEnvelope.getBody().addChild(responseOM);
             outMC.setEnvelope(soapEnvelope);
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
             AxisEngine engine =
-                new AxisEngine(invCtx.inMessageContext.getOperationContext().getServiceContext().getConfigurationContext());
+                new AxisEngine(invCtx.inMessageContext.getOperationContext().getServiceContext()
+                    .getConfigurationContext());
             engine.send(outMC);
-            
-            service.removeMapping(correlationId);
-        } catch(AxisFault e) {
+
+            // service.removeMapping(correlationId);
+            service.removeMapping(this.currentCorrelationId);
+        } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         }
-        
+
         return Axis2AsyncTargetInvoker.RESPONSE;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
+            this.currentCorrelationId = (MessageId)msg.getCorrelationId();
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (Throwable e) {
@@ -81,7 +99,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     public Axis2ServiceCallbackTargetInvoker clone() throws CloneNotSupportedException {
         try {
-            return (Axis2ServiceCallbackTargetInvoker) super.clone();
+            return (Axis2ServiceCallbackTargetInvoker)super.clone();
         } catch (CloneNotSupportedException e) {
             // will not happen
             return null;
