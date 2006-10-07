@@ -51,8 +51,8 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
     public void testResolveArtifact() throws Exception {
 
         final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + ".m2").toURL();
-        String[] remoteRepoUrls = { "http://repo1.maven.org/maven2/" };
-        MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrls, new RuntimeInfo() {
+        String remoteRepoUrl = "http://repo1.maven.org/maven2/";
+        MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrl, new RuntimeInfo() {
             public File getApplicationRootDirectory() { return null; }
             public URL getBaseURL() { return BASE_URL; }
             public File getInstallDirectory() { return null; }
