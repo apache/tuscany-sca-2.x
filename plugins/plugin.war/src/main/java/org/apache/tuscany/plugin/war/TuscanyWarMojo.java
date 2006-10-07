@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.zip.ZipException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
@@ -204,10 +205,10 @@ public class TuscanyWarMojo extends AbstractMojo {
 
             copyOriginal(originalWar, newWar);
             
-            newWar.putNextEntry(new JarEntry(TUSCANY_PATH));
-            newWar.putNextEntry(new JarEntry(BOOT_PATH));
-            newWar.putNextEntry(new JarEntry(EXTENSION_PATH));
-            newWar.putNextEntry(new JarEntry(REPOSITORY_PATH));
+            addEntry(newWar, TUSCANY_PATH);
+            addEntry(newWar, BOOT_PATH);
+            addEntry(newWar, EXTENSION_PATH);
+            addEntry(newWar, REPOSITORY_PATH);
 
             for (Dependency dependency : bootLibs) {
                 for (Artifact art : resolveArtifact(dependency.getArtifact(artifactFactory), true)) {
@@ -246,6 +247,24 @@ public class TuscanyWarMojo extends AbstractMojo {
         }
 
     }
+    
+    /**
+     * Adds an entry to the JAR failing safe for duplicate.
+     * 
+     * @param jar JAR to which the entry is added.
+     * @param entry Entry to be added.
+     * @return True if added successfully.
+     * @throws IOException In case of an IO error.
+     */
+    private boolean addEntry(JarOutputStream jar, String entry) throws IOException {
+        try {
+            jar.putNextEntry(new JarEntry(entry));
+            return true;
+        } catch(ZipException duplicateEntry) {
+            getLog().info(duplicateEntry.getMessage());
+            return false;
+        }
+    }
 
     /**
      * Writes the dependency metadata.
@@ -272,9 +291,10 @@ public class TuscanyWarMojo extends AbstractMojo {
             xmlEncoder.writeObject(transDepenedencyMap);
             xmlEncoder.close();
             
-            newWar.putNextEntry(new JarEntry(REPOSITORY_PATH + metadataFile));
-            depMapInStream = new FileInputStream(file);
-            IOUtils.copy(depMapInStream, newWar);
+            if(addEntry(newWar, REPOSITORY_PATH + metadataFile)) {
+                depMapInStream = new FileInputStream(file);
+                IOUtils.copy(depMapInStream, newWar);
+            }
             
         } finally {
             IOUtils.closeQuietly(depMapOutStream);
