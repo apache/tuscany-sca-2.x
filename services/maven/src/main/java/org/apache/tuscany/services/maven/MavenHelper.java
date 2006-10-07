@@ -19,10 +19,13 @@
 package org.apache.tuscany.services.maven;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataRetrievalException;
@@ -38,6 +41,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.DefaultClassRealm;
 import org.codehaus.classworlds.DuplicateRealmException;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -95,8 +99,25 @@ public class MavenHelper {
 
             Embedder embedder = new Embedder();
             ClassWorld classWorld = new ClassWorld();
+            
             classWorld.newRealm("plexus.core", getClass().getClassLoader());
+            
+            // Evil hack for Tomcat classloader issue - starts
+            Field realmsField = ClassWorld.class.getDeclaredField("realms");
+            realmsField.setAccessible(true);
+            Map realms = (Map)realmsField.get(classWorld);
+            DefaultClassRealm realm = (DefaultClassRealm) realms.get("plexus.core");
 
+            Class clazz = Class.forName("org.codehaus.classworlds.RealmClassLoader");
+            Constructor ctr = clazz.getDeclaredConstructor(new Class[] {DefaultClassRealm.class, ClassLoader.class});
+            ctr.setAccessible(true);
+            Object realmClassLoader = ctr.newInstance(realm, getClass().getClassLoader());
+            
+            Field realmClassLoaderField = DefaultClassRealm.class.getDeclaredField("classLoader");
+            realmClassLoaderField.setAccessible(true);
+            realmClassLoaderField.set(realm, realmClassLoader);
+            // Evil hack for Tomcat classloader issue - ends
+            
             embedder.start(classWorld);
 
             metadataSource = (ArtifactMetadataSource) embedder.lookup(ArtifactMetadataSource.ROLE);
@@ -112,6 +133,18 @@ public class MavenHelper {
         } catch (PlexusContainerException ex) {
             throw new TuscanyDependencyException(ex);
         } catch (ComponentLookupException ex) {
+            throw new TuscanyDependencyException(ex);
+        } catch (NoSuchFieldException ex) {
+            throw new TuscanyDependencyException(ex);
+        } catch (IllegalAccessException ex) {
+            throw new TuscanyDependencyException(ex);
+        } catch (ClassNotFoundException ex) {
+            throw new TuscanyDependencyException(ex);
+        } catch (NoSuchMethodException ex) {
+            throw new TuscanyDependencyException(ex);
+        } catch (InstantiationException ex) {
+            throw new TuscanyDependencyException(ex);
+        } catch (InvocationTargetException ex) {
             throw new TuscanyDependencyException(ex);
         }
 
@@ -161,6 +194,7 @@ public class MavenHelper {
      * Resolves the artifact.
      */
     private boolean resolve(org.apache.maven.artifact.Artifact mavenRootArtifact) {
+        
         try {
             artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
             return true;
@@ -169,6 +203,7 @@ public class MavenHelper {
         } catch (ArtifactNotFoundException ex) {
             return false;
         }
+        
     }
 
     /*
