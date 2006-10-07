@@ -18,14 +18,19 @@
  */
 package org.apache.tuscany.plugin.war;
 
+import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -57,6 +62,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  *   <li>Adds the extension artifacts specified using configuration/extensions to WEB-INF/tuscany/extensions</li>
  *   <li>If configuration/loadExtensionsDependency is set to true extension dependencies are transitivel loaded</li>
  *   <li>Extension dependencies are loaded into WEB-INF/tuscany/repository directory in a Maven repo format</li>
+ *   <li>Extension dependency metadata is written to WEB-INF/tuscany/repository/dependency.metadata file</li>
  * </ul>
  * @goal tuscany-war
  * @phase package
@@ -65,21 +71,26 @@ import org.apache.maven.plugin.MojoExecutionException;
  * 
  */
 public class TuscanyWarMojo extends AbstractMojo {
+    
+    /**
+     * Tuscany path.
+     */
+    private static final String TUSCANY_PATH = "WEB-INF/tuscany/";
 
     /**
      * Tuscany boot path.
      */
-    private static final String BOOT_PATH = "WEB-INF/tuscany/boot/";
+    private static final String BOOT_PATH = TUSCANY_PATH + "boot/";
 
     /**
      * Tuscany extension path.
      */
-    private static final String EXTENSION_PATH = "WEB-INF/tuscany/extensions/";
+    private static final String EXTENSION_PATH = TUSCANY_PATH + "extensions/";
 
     /**
      * Tuscany repository path.
      */
-    private static final String REPOSITORY_PATH = "WEB-INF/tuscany/repository/";
+    private static final String REPOSITORY_PATH = TUSCANY_PATH + "repository/";
 
     /**
      * Artifact metadata source.
@@ -167,6 +178,11 @@ public class TuscanyWarMojo extends AbstractMojo {
     private Set<String> packagedLibs = new HashSet<String>();
 
     /**
+     * Transitive dependencies for extensions.
+     */
+    private Map transDepenedencyMap = new HashMap();
+
+    /**
      * Executes the MOJO.
      */
     public void execute() throws MojoExecutionException {
@@ -187,26 +203,31 @@ public class TuscanyWarMojo extends AbstractMojo {
             newWar = new JarOutputStream(new FileOutputStream(newWarFile));
 
             copyOriginal(originalWar, newWar);
+            
+            newWar.putNextEntry(new JarEntry(TUSCANY_PATH));
+            newWar.putNextEntry(new JarEntry(BOOT_PATH));
+            newWar.putNextEntry(new JarEntry(EXTENSION_PATH));
+            newWar.putNextEntry(new JarEntry(REPOSITORY_PATH));
 
             for (Dependency dependency : bootLibs) {
-                for (Artifact art : resolveDependency(dependency, true)) {
+                for (Artifact art : resolveArtifact(dependency.getArtifact(artifactFactory), true)) {
                     addArtifact(newWar, BOOT_PATH, art);
                 }
             }
 
             for (Dependency dependency : extensions) {
-                for (Artifact art : resolveDependency(dependency, loadExtensionDependencies)) {
+                for (Artifact art : resolveArtifact(dependency.getArtifact(artifactFactory), loadExtensionDependencies)) {
                     if (dependency.match(art)) {
                         addArtifact(newWar, EXTENSION_PATH, art);
-                    } else {
-                        String groupId = art.getGroupId().replace('.', '/');
-                        String path = REPOSITORY_PATH + groupId + "/" + art.getArtifactId() + "/" + art.getVersion() + "/";
-                        addArtifact(newWar, path, art);
+                    } else if (loadExtensionDependencies) {
+                        loadExtensionDependencies(newWar, art);
                     }
 
                 }
             }
 
+            writeDependencyMetadata(newWar);
+            
             success = true;
 
         } catch (Exception ex) {
@@ -227,9 +248,72 @@ public class TuscanyWarMojo extends AbstractMojo {
     }
 
     /**
-     * Resolves the specified dependency.
+     * Writes the dependency metadata.
+     * @param newWar WAR to which the metadata is written.
+     * @throws IOException In case of an IO error.
+     */
+    private void writeDependencyMetadata(JarOutputStream newWar) throws IOException {
+        
+        FileOutputStream depMapOutStream = null;
+        FileInputStream depMapInStream = null;
+        
+        try {
+            String metadataFile = "dependency.metadata";
+            
+            File file = new File(outputDirectory, "webapp");
+            file = new File(file, REPOSITORY_PATH);
+            file = new File(file, metadataFile);
+            file.createNewFile();
+            
+            depMapOutStream = new FileOutputStream(file);
+            XMLEncoder xmlEncoder = new XMLEncoder(depMapOutStream);
+            xmlEncoder.writeObject(transDepenedencyMap);
+            xmlEncoder.close();
+            
+            newWar.putNextEntry(new JarEntry(REPOSITORY_PATH + metadataFile));
+            depMapInStream = new FileInputStream(file);
+            IOUtils.copy(depMapInStream, newWar);
+            
+        } finally {
+            IOUtils.closeQuietly(depMapOutStream);
+            IOUtils.closeQuietly(depMapInStream);
+        }
+        
+    }
+
+    /**
+     * Builds the transitive dependencies for artifacts.
      * 
-     * @param dependency Dependency to be resolved.
+     * @param newWar WARto which the artifacts are added.
+     * @param art Extension artifact.
+     * @throws IOException In case of an unexpected IO error.
+     * @throws ArtifactResolutionException If the artifact cannot be resolved.
+     * @throws ArtifactNotFoundException If the artifact is not found.
+     * @throws ArtifactMetadataRetrievalException In case of error in retrieving metadata.
+     */
+    private void loadExtensionDependencies(JarOutputStream newWar, Artifact art) throws IOException, ArtifactResolutionException, ArtifactNotFoundException, ArtifactMetadataRetrievalException {
+        
+        String artPath = art.getGroupId() + "/" + art.getArtifactId() + "/" + art.getVersion() + "/";
+        String path = REPOSITORY_PATH + artPath;
+        addArtifact(newWar, path, art);
+
+        Set<String> transDepenedenyList = new HashSet<String>();
+        transDepenedencyMap.put(artPath, transDepenedenyList);
+
+        // Get the transitive dependencies for each dependency.
+        for (Artifact transArt : resolveArtifact(art, true)) {
+
+            String transArtPath = transArt.getGroupId() + "/" + transArt.getArtifactId() + "/" + transArt.getVersion() + "/" + transArt.getFile().getName();
+            transDepenedenyList.add(transArtPath);
+
+        }
+        
+    }
+
+    /**
+     * Resolves the specified artifact.
+     * 
+     * @param artifact Artifact to be resolved.
      * @param transitive Whether to resolve transitively.
      * @return A set of resolved artifacts.
      * @throws IOException In case of an unexpected IO error.
@@ -237,13 +321,12 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @throws ArtifactNotFoundException If the artifact is not found.
      * @throws ArtifactMetadataRetrievalException In case of error in retrieving metadata.
      */
-    private Set<Artifact> resolveDependency(Dependency dependency, boolean transitive) throws IOException, ArtifactResolutionException,
+    private Set<Artifact> resolveArtifact(Artifact artifact, boolean transitive) throws IOException, ArtifactResolutionException,
             ArtifactNotFoundException, ArtifactMetadataRetrievalException {
 
         Set<Artifact> resolvedArtifacts = new HashSet<Artifact>();
 
         // Resolve the artifact
-        Artifact artifact = dependency.getArtifact(artifactFactory);
         resolver.resolve(artifact, remoteRepositories, localRepository);
         resolvedArtifacts.add((Artifact) artifact);
 
