@@ -18,10 +18,25 @@
  */
 package helloworld;
 
+import org.osoa.sca.annotations.Property;
+
 
 public class HelloWorldServiceImpl implements HelloWorldService {
 
+    @Property
+    public String greeting = "Default hello";
+    
+    public String getGreeting() {
+        return greeting;
+    }
+
+    
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
+
     public String sayHello(String s) {
-        return "Hello " + s;
+        //return greeting + s + " from the JavaWorld!";
+        return greeting + " from Java Reference " + s ; //+ " from " + helloSayer.firstName + " " + helloSayer.lastName;
     }
 }

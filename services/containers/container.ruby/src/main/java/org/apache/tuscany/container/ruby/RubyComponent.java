@@ -19,6 +19,7 @@
 package org.apache.tuscany.container.ruby;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ public class RubyComponent extends AtomicComponentExtension {
                          RubyScript rubyScript,
                          String rubyClassName,
                          List<Class<?>> services,
+                         Map<String, Object> propValues,
                          CompositeComponent parent,
                          ScopeContainer scopeContainer,
                          WireService wireService,
@@ -63,7 +65,8 @@ public class RubyComponent extends AtomicComponentExtension {
         this.rubyClassName = rubyClassName;
         this.services = services;
         this.scope = scopeContainer.getScope();
-        this.properties = new HashMap<String, Object>();
+        //this.properties = new HashMap<String, Object>();
+        this.properties = propValues;
     }
 
     public Object createInstance() throws ObjectCreationException {
@@ -73,23 +76,21 @@ public class RubyComponent extends AtomicComponentExtension {
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
             for (OutboundWire wire : referenceWires) {
                 Object wireProxy = wireService.createProxy(wire);
-                // since all types that may be used in the reference interface may not be known to Rhino
-                // using the wireProxy as is will fail result in type conversion exceptions in cases where
-                // Rhino does not know enough of the tpypes used. Hence introduce a interceptor proxy,
-                // with weak typing (java.lang.Object) so that Rhino's call to the proxy succeeds. Then
-                // within this interceptor proxy perform data mediations required to correctly call the
-                // referenced service.
-                /*
-                 * Class<?> businessInterface = wire.getServiceContract().getInterfaceClass(); /JavaScriptReferenceProxy interceptingProxy = new
-                 * JavaScriptReferenceProxy(businessInterface, wireProxy, rubyScript.createInstanceScope(context));
-                 * context.put(wire.getReferenceName(), interceptingProxy.createProxy());
-                 */
-                context.put(wire.getReferenceName(),
-                            wireProxy);
+                //since all types that may be used in the reference interface may not be known to Rhino
+                //using the wireProxy as is will fail result in type conversion exceptions in cases where
+                //Rhino does not know enough of the tpypes used.  Hence introduce a interceptor proxy, 
+                //with weak typing (java.lang.Object) so that Rhino's call to the proxy succeeds.  Then
+                //within this interceptor proxy perform data mediations required to correctly call the 
+                //referenced service.                
+                Class<?> businessInterface = wire.getServiceContract().getInterfaceClass();
+                RubyReferenceProxy interceptingProxy = new RubyReferenceProxy(businessInterface,
+                                                                              wireProxy,
+                                                                              rubyScript.getRubyEngine());
+                context.put(wire.getReferenceName(), interceptingProxy.createProxy());
             }
         }
-
-        Object instance = rubyScript.createScriptInstance(rubyClassName);
+        
+         Object instance = rubyScript.createScriptInstance(context, rubyClassName);
 
         return instance;
     }

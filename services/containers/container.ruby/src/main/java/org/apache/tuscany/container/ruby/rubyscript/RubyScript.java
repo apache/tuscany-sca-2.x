@@ -19,6 +19,7 @@
 package org.apache.tuscany.container.ruby.rubyscript;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -26,12 +27,14 @@ import org.jruby.IRuby;
 import org.jruby.RubyString;
 import org.jruby.javasupport.JavaEmbedUtils;
 import org.jruby.javasupport.JavaUtil;
+import org.jruby.runtime.builtin.IRubyObject;
 
 /**
  * A RhinoScript represents a compiled JavaScript script
  */
 public class RubyScript {
     protected final String NEW = ".new";
+    protected final String EQUAL = "=";
 
     protected String scriptName;
 
@@ -41,7 +44,7 @@ public class RubyScript {
 
     protected ClassLoader classLoader;
 
-    private  IRuby rubyEngine = JavaEmbedUtils.initialize(new Vector());
+    private IRuby rubyEngine = JavaEmbedUtils.initialize(new Vector());
 
     /**
      * Create a new RubyScript.
@@ -87,15 +90,31 @@ public class RubyScript {
      * 
      * @return a IRubyObject
      */
-    public RubyScriptInstance createScriptInstance(String rubyClassName) {
+public RubyScriptInstance createScriptInstance(Map<String, Object> context, String rubyClassName) {
         if ( rubyClassName == null ) {
             return new RubyScriptInstance(rubyEngine.evalScript(script), responseClasses);
         }
         else {
-            return new RubyScriptInstance(rubyEngine.evalScript(rubyClassName + NEW), responseClasses);
+            IRubyObject rubyObject = rubyEngine.evalScript(rubyClassName + NEW);
+            
+            Iterator<String> keyIterator = context.keySet().iterator();
+            String key = null;
+            Object value = null;
+            while (  keyIterator.hasNext()) {
+                key = keyIterator.next();
+                value = JavaUtil.convertJavaToRuby(rubyEngine, 
+                                                   context.get(key), 
+                                                   context.get(key).getClass());
+            
+                JavaEmbedUtils.invokeMethod(rubyEngine, 
+                                            rubyObject,
+                                            key + EQUAL, 
+                                            new Object[]{value}, null);
+            }
+            
+            return new RubyScriptInstance(rubyObject, responseClasses);
         }
     }
-
     public String getScript() {
         return script;
     }
@@ -121,7 +140,7 @@ public class RubyScript {
         this.responseClasses.put(functionName,
                                  responseClasses);
     }
-    
+
     public RubySCAConfig getSCAConfig() {
         return new RubySCAConfig(rubyEngine.getGlobalVariables());
     }

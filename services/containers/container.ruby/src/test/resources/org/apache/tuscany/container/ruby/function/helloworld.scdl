@@ -22,7 +22,23 @@
 
            name="HelloWorldComposite">
 
-    <component name="HelloWorldComponent">
+	<component name="HelloWorldRubyComponent">
 		<rb:implementation.rb script="org/apache/tuscany/container/ruby/function/HelloWorld.rb"  class="HelloWorldServiceRubyImpl"/>
+		<reference name="extHelloWorld" target="HelloWorldJavaReference">HelloWorldJavaReference</reference>
+		<property name="greeting">Hey</property>
+    </component> 
+    
+    <component name="HelloWorldJavaReference">
+        <implementation.java class="helloworld.HelloWorldServiceImpl"/>
+        <property name="greeting">Howdy</property>
+    </component>
+    
+    <component name="HelloWorldProperty">
+		<rb:implementation.rb script="org/apache/tuscany/container/ruby/function/propertyTest.rb"  class="HelloWorldPropertyTest"/>
+        <property name="GREETING">Namaskaar</property>
+    </component>
+
+  	<component name="HelloWorldPropertyDefault">
+		<rb:implementation.rb script="org/apache/tuscany/container/ruby/function/propertyTest.rb"  class="HelloWorldPropertyTest"/>
     </component>
 </composite>
