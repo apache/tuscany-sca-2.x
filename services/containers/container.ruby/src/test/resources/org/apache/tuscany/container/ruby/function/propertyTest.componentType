@@ -4,8 +4,5 @@
     <service name="HelloWorldService">
         <interface.java interface="helloworld.HelloWorldService"/>
     </service>
-    <reference name="extHelloWorld">
-		<interface.java interface="helloworld.HelloWorldService"/>
-	</reference>
-	<property name="greeting" type="xsd:string">Hullow</property>
+	<property name="GREETING" type="xsd:string">Bow Wow</property>
 </componentType>

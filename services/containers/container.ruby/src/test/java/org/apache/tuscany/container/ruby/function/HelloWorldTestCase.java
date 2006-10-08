@@ -32,28 +32,44 @@ import org.osoa.sca.CurrentCompositeContext;
 public class HelloWorldTestCase extends SCATestCase {
 
     private HelloWorldService helloWorldService;
+    private CompositeContext context = null;
 
-    private HelloWorldService introspectableService;
     
-    private HelloWorldService e4xHelloWorldService;
-
     protected void setUp() throws Exception {
-        URL base = getClass().getResource("/org/apache/tuscany/container/ruby/RubyComponent.class");
-        addExtension("RubyContainer", new URL(base, "../../../../../META-INF/sca/default.scdl"));
+        URL base = getClass().getResource("/META-INF/sca/ruby.system.scdl");
+        addExtension("RubyContainer", new URL(base, "default.scdl"));
         setApplicationSCDL(getClass().getResource("helloworld.scdl"));
         super.setUp();
 
-        CompositeContext context = CurrentCompositeContext.getContext();
-        helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldComponent");
+        context = CurrentCompositeContext.getContext();
+        helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldRubyComponent");
+         
+        //helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldJavaReference");
     }
 
     public void testHelloWorldWithClass() throws Exception {
-        assertEquals(helloWorldService.sayHello("petra"), "Hello to petra from the Ruby World!");
-        //System.out.println(helloWorldService.sayHello("petra"));
+        assertEquals(helloWorldService.sayHello("petra"), "Hey Howdy from Java Reference petra");
+        //System.out.println(helloWorldService.sayHello("petra")); 
     }
     
     public void testHelloWorldGlobal() throws Exception {
-        assertEquals(helloWorldService.sayHello("artep"), "Hello to artep from the Ruby World!");
+        assertEquals(helloWorldService.sayHello("artep"), "Hey Howdy from Java Reference artep");
         //System.out.println(helloWorldService.sayHello("artep"));
+    }
+    
+    public void testHelloWorldProperty() throws Exception {
+        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldProperty");
+        assertEquals(helloWorldService.sayHello("petra"), "Namaskaar petra");
+        //System.out.println(helloWorldService.sayHello("petra"));
+    }
+
+    public void testHelloWorldPropertyDefault() throws Exception {
+        HelloWorldService helloWorldService = context.locateService(HelloWorldService.class, "HelloWorldPropertyDefault");
+        assertEquals(helloWorldService.sayHello("petra"), "Bow Wow petra");
+        //System.out.println(helloWorldService.sayHello("petra"));
+    }
+
+    protected void tearDown() throws Exception {
+       super.tearDown();
     }
 }

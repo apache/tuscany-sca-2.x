@@ -18,7 +18,7 @@
  */
 package helloworld;
 
-public interface HelloWorldService {
 
+public interface HelloWorldService {
     String sayHello(String s);
 }

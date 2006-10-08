@@ -42,10 +42,20 @@ public class RubyScriptInstance {
     }
 
     public Object invokeFunction(String functionName, Object[] args, Class returnType) {
-        return JavaEmbedUtils.invokeMethod(rubyInstance.getRuntime(),
-                                           rubyInstance,
-                                           functionName,
-                                           args,
-                                           returnType);
+        Object[] rubyArgs = RubyUtils.fromJavaToRuby(rubyInstance.getRuntime(), args);
+        
+        Object rubyResponse = JavaEmbedUtils.invokeMethod(rubyInstance.getRuntime(),
+                                                           rubyInstance,
+                                                           functionName,
+                                                           rubyArgs,
+                                                           returnType);
+        Object response = RubyUtils.fromRubyToJava(rubyInstance.getRuntime(),
+                                                   returnType, 
+                                                   rubyResponse);
+        return response;
     }
+    
+    
+    
+
 }

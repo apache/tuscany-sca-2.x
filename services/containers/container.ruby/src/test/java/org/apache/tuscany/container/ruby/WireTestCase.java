@@ -22,7 +22,9 @@ import static org.easymock.EasyMock.reportMatcher;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -113,10 +115,14 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
+        Map<String, Object> properties = new Hashtable<String,Object>();
+        properties.put("greeting","HeyThere");
+        
         RubyComponent context = new RubyComponent("source",
                                                                       implClass2,
                                                                       null,
                                                                       services,
+                                                                      properties,
                                                                       null,
                                                                       scope,
                                                                       ArtifactFactory.createWireService(),
@@ -145,10 +151,13 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
+        Map<String, Object> properties = new Hashtable<String,Object>();
+        properties.put("greeting","HeyThere");
         RubyComponent context = new RubyComponent("source",
                                                                       implClass2,
                                                                       null,
                                                                       services,
+                                                                      properties,
                                                                       null,
                                                                       scope,
                                                                       ArtifactFactory.createWireService(),

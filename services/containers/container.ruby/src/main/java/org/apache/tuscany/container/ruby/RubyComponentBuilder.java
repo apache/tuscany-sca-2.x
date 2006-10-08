@@ -20,7 +20,10 @@ package org.apache.tuscany.container.ruby;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -30,6 +33,8 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -38,22 +43,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplementation> {
 
-    private static String head = "var xmlInstanceMap = new Array();";
-
-    private static String part1 = "xmlInstanceMap[\"";
-
-    private static String part2 = "\"] = ";
-
-    private static String part3 = ";";
-
-    private static String getXmlObjectFunction = "function getXmlObject(xmlElementNamespace, xmlElementName){\n"
-            + "return xmlInstanceMap[xmlElementNamespace + \"#\" + xmlElementName];\n}";
-
-    /*
-     * XmlInstanceRegistry xmlInstRegistry; @Constructor({"xmlInstRegistry"}) public RubyComponentBuilder(@Autowire XmlInstanceRegistry reg) {
-     * this.xmlInstRegistry = reg; }
-     */
-    protected Class<RubyImplementation> getImplementationType() {
+   protected Class<RubyImplementation> getImplementationType() {
         return RubyImplementation.class;
     }
 
@@ -72,7 +62,14 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
         for (ServiceDefinition serviceDefinition : collection) {
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
-
+        
+        Map<String, Object> propertyValues = new Hashtable<String, Object>();
+        Collection<PropertyValue<?>> propValueSettings = componentDefinition.getPropertyValues().values();
+        for (PropertyValue propertyValue : propValueSettings) {
+            propertyValues.put(propertyValue.getName(),
+                               propertyValue.getValueFactory().getInstance());
+        }
+        
         RubyScript rubyScript = implementation.getRubyScript();
 
         // TODO: have ComponentBuilderExtension pass ScopeContainer in on build method?
@@ -88,9 +85,10 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
                                  rubyScript,
                                  implementation.getRubyClassName(),
                                  services,
+                                 propertyValues,
                                  parent,
                                  scopeContainer,
                                  wireService,
-                                 workContext);
+                                 workContext); 
     }
 }
