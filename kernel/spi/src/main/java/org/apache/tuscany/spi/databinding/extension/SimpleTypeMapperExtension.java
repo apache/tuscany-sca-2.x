@@ -235,7 +235,7 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
         return XSD_SIMPLE_TYPES.get(JAVA2XML.get(javaType));
     }
 
-    public Object toJavaObject(TypeInfo simpleType, String value, TransformationContext context) {
+    public Object toJavaObject(TypeInfo simpleType, String literal, TransformationContext context) {
         /**
          * <ul>
          * <li>xsd:string --- java.lang.String
@@ -267,10 +267,15 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
          * </ul>
          */
 
+        if (literal == null) {
+            return null;
+        }
+        String value = literal.trim();
         TypeInfo baseType = simpleType;
         while (baseType.getBaseType() != null) {
             baseType = (TypeInfo)baseType.getBaseType();
         }
+        
         QName type = baseType.getQName();
         if (type.equals(XSD_STRING)) {
             return parseString(value);
