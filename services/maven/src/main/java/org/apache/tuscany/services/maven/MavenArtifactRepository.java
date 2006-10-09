@@ -69,7 +69,9 @@ public class MavenArtifactRepository implements ArtifactRepository {
         if(mavenHelper.resolveTransitively(rootArtifact)) {
             return;
         }
-        throw new TuscanyDependencyException("Unable to resolve artifact: " + rootArtifact.getName());
+        TuscanyDependencyException tde = new TuscanyDependencyException("Unable to resolve artifact: " + rootArtifact);
+        tde.setIdentifier(rootArtifact.toString());
+        throw tde;
     }
 
     /**
