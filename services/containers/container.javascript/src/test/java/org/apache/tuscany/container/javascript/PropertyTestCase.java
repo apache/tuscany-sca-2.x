@@ -41,21 +41,21 @@ public class PropertyTestCase extends TestCase {
     private RhinoScript implClass;
 
     /**
-     * Tests injecting a simple property type on a Groovy implementation instance
+     * Tests injecting a simple property type on a Javascript implementation instance
      */
     public void testPropertyInjection() throws Exception {
-//        ModuleScopeContainer scope = new ModuleScopeContainer(null);
-//        scope.start();
-//        List<Class<?>> services = new ArrayList<Class<?>>();
-//        services.add(Greeting.class);
-//        Map<String, Object> properties = new HashMap<String, Object>();
-//        properties.put("property", "bar");
-//        WireService wireService = ArtifactFactory.createWireService();
-//        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass, services, properties, null, scope, wireService, null);
-//        scope.register(context);
-//        Greeting greeting = context.getServiceInstance();
-//        assertEquals("bar", greeting.greet("foo"));
-//        scope.stop();
+        /*ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        scope.start();
+        List<Class<?>> services = new ArrayList<Class<?>>();
+        services.add(Greeting.class);
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("property", "bar");
+        WireService wireService = ArtifactFactory.createWireService();
+        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass, services, properties, null, scope, wireService, null);
+        scope.register(context);
+        Greeting greeting = context.getServiceInstance();
+        assertEquals("bar", greeting.greet("foo"));
+        scope.stop();*/
     }
 
     protected void setUp() throws Exception {
