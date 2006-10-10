@@ -34,33 +34,22 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
-    private WorkContext workContext;
     private Axis2Service service;
 
     private MessageId currentCorrelationId;
 
     public Axis2ServiceCallbackTargetInvoker(WorkContext workContext, Axis2Service service) {
-        this.workContext = workContext;
         this.service = service;
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         try {
-            // Use correlation id in context as index to retrieve inv context
-            // MessageId correlationId =
-            // (MessageId)workContext.getCurrentCorrelationId();
-            // InvocationContext invCtx =
-            // service.retrieveMapping(correlationId);
-
+            // Use current correlation id as index to retrieve inv context
             InvocationContext invCtx = service.retrieveMapping(this.currentCorrelationId);
 
             MessageContext outMC = Utils.createOutMessageContext(invCtx.inMessageContext);
-            outMC.getOperationContext().addMessageContext(invCtx.inMessageContext); // REVIEW
-                                                                                    // was
-                                                                                    // adding
-                                                                                    // newmsgCtx
-                                                                                    // !
-
+            outMC.getOperationContext().addMessageContext(outMC);
+            
             OMElement responseOM = null;
             if (payload != null && !payload.getClass().isArray()) {
                 responseOM = (OMElement)payload;
@@ -73,14 +62,14 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             outMC.getOperationContext().setProperty(Constants.RESPONSE_WRITTEN, Constants.VALUE_TRUE);
 
             AxisEngine engine =
-                new AxisEngine(invCtx.inMessageContext.getOperationContext().getServiceContext()
-                    .getConfigurationContext());
+                new AxisEngine(invCtx.inMessageContext.getOperationContext().getServiceContext().getConfigurationContext());
             engine.send(outMC);
 
-            // service.removeMapping(correlationId);
             service.removeMapping(this.currentCorrelationId);
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
+        } catch(Throwable t) {
+            throw new Axis2BindingRunTimeException(t);
         }
 
         return Axis2AsyncTargetInvoker.RESPONSE;
