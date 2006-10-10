@@ -17,9 +17,25 @@
 
 package org.apache.tuscany.databinding.sample;
 
+import org.apache.tuscany.api.annotation.DataType;
+import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Service;
+
+import com.example.ipo.jaxb.PurchaseOrderType;
+
+
 /**
  * @version $Rev$ $Date$
  */
+@Remotable
+@Service
 public interface Echo {
-    String echo(String msg);
+    @DataType(name="javax.xml.bind.JAXBElement")
+    PurchaseOrderType echoJAXB(PurchaseOrderType po);
+
+    @DataType(name="commonj.sdo.DataObject")
+    com.example.ipo.sdo.PurchaseOrderType echoSDO(com.example.ipo.sdo.PurchaseOrderType po);
+    
+    @DataType(name="org.apache.xmlbeans.XmlObject")
+    com.example.ipo.xmlbeans.PurchaseOrderType echoXMLBeans(com.example.ipo.xmlbeans.PurchaseOrderType po);
 }

@@ -32,15 +32,34 @@ import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Node;
 
 public class JAXBTestCase extends TestCase {
-    private static final String IPO_XML = "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" + "  xmlns:ipo=\"http://www.example.com/IPO\""
-            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
-            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>" + "    <street>47 Eden Street</street>"
-            + "    <city>Cambridge</city>" + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
-            + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>" + "    <city>Old Town</city>" + "    <state>PA</state>"
-            + "    <zip>95819</zip>" + "  </billTo>" + "  <items>" + "    <item partNum=\"833-AA\">"
-            + "      <productName>Lapis necklace</productName>" + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
-            + "      <ipo:comment>Want this for the holidays</ipo:comment>" + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>"
+    private static final String IPO_XML =
+        "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + "  xmlns:ipo=\"http://www.example.com/IPO\""
+            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
+            + "  orderDate=\"1999-12-01\">"
+            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
+            + "    <name>Helen Zoe</name>"
+            + "    <street>47 Eden Street</street>"
+            + "    <city>Cambridge</city>"
+            + "    <postcode>CB1 1JR</postcode>"
+            + "  </shipTo>"
+            + "  <billTo xsi:type=\"ipo:USAddress\">"
+            + "    <name>Robert Smith</name>"
+            + "    <street>8 Oak Avenue</street>"
+            + "    <city>Old Town</city>"
+            + "    <state>PA</state>"
+            + "    <zip>95819</zip>"
+            + "  </billTo>"
+            + "  <items>"
+            + "    <item partNum=\"833-AA\">"
+            + "      <productName>Lapis necklace</productName>"
+            + "      <quantity>1</quantity>"
+            + "      <USPrice>99.95</USPrice>"
+            + "      <ipo:comment>Want this for the holidays</ipo:comment>"
+            + "      <shipDate>1999-12-05</shipDate>"
+            + "    </item>"
+            + "  </items>"
             + "</ipo:purchaseOrder>";
 
     private String contextPath = "com.example.ipo.jaxb";
@@ -51,10 +70,10 @@ public class JAXBTestCase extends TestCase {
 
     public void testTransform() throws Exception {
         Reader2JAXB t0 = new Reader2JAXB();
-        
+
         DataType targetDataType = new DataType<Class>(Object.class, null);
         targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
-        
+
         TransformationContext tContext = createMock(TransformationContext.class);
         expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
         replay(tContext);
@@ -63,12 +82,11 @@ public class JAXBTestCase extends TestCase {
 
         DataType sourceDataType = new DataType<Class>(Object.class, null);
         sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
-        
+
         TransformationContext tContext1 = createMock(TransformationContext.class);
         expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
         replay(tContext1);
 
-        
         JAXB2Node t1 = new JAXB2Node();
         Node node = t1.transform(object1, tContext1);
 

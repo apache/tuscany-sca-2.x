@@ -24,12 +24,19 @@ import javax.xml.bind.Marshaller;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+@Service(Transformer.class)
 public class JAXB2Node extends TransformerExtension<Object, Node> implements PullTransformer<Object, Node> {
+
+    public JAXB2Node() {
+        super();
+    }
 
     public Node transform(Object source, TransformationContext tContext) {
         if (source == null)
@@ -37,7 +44,8 @@ public class JAXB2Node extends TransformerExtension<Object, Node> implements Pul
         try {
             JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
-            // FIXME: The default Marshaller doesn't support marshaller.getNode()
+            // FIXME: The default Marshaller doesn't support
+            // marshaller.getNode()
             Document document = DOMHelper.newDocument();
             marshaller.marshal(source, document);
             return document;
@@ -58,8 +66,8 @@ public class JAXB2Node extends TransformerExtension<Object, Node> implements Pul
         return 30;
     }
 
-    public JAXB2Node() {
-        super();
+    @Override
+    public String getSourceDataBinding() {
+        return JAXBDataBinding.NAME;
     }
-
 }

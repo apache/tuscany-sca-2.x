@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBElement;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -71,19 +73,34 @@ import commonj.sdo.helper.XSDHelper;
 
 public class TransformationTestCase extends TestCase {
     private static final String IPO_XML =
-            "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
-                    + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
-                    + "  xmlns:ipo=\"http://www.example.com/IPO\""
-                    + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\"" + "  orderDate=\"1999-12-01\">"
-                    + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">" + "    <name>Helen Zoe</name>"
-                    + "    <street>47 Eden Street</street>" + "    <city>Cambridge</city>"
-                    + "    <postcode>CB1 1JR</postcode>" + "  </shipTo>" + "  <billTo xsi:type=\"ipo:USAddress\">"
-                    + "    <name>Robert Smith</name>" + "    <street>8 Oak Avenue</street>"
-                    + "    <city>Old Town</city>" + "    <state>PA</state>" + "    <zip>95819</zip>" + "  </billTo>"
-                    + "  <items>" + "    <item partNum=\"833-AA\">" + "      <productName>Lapis necklace</productName>"
-                    + "      <quantity>1</quantity>" + "      <USPrice>99.95</USPrice>"
-                    + "      <ipo:comment>Want this for the holidays</ipo:comment>"
-                    + "      <shipDate>1999-12-05</shipDate>" + "    </item>" + "  </items>" + "</ipo:purchaseOrder>";
+        "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + "  xmlns:ipo=\"http://www.example.com/IPO\""
+            + "  xsi:schemaLocation=\"http://www.example.com/IPO ipo.xsd\""
+            + "  orderDate=\"1999-12-01\">"
+            + "  <shipTo exportCode=\"1\" xsi:type=\"ipo:UKAddress\">"
+            + "    <name>Helen Zoe</name>"
+            + "    <street>47 Eden Street</street>"
+            + "    <city>Cambridge</city>"
+            + "    <postcode>CB1 1JR</postcode>"
+            + "  </shipTo>"
+            + "  <billTo xsi:type=\"ipo:USAddress\">"
+            + "    <name>Robert Smith</name>"
+            + "    <street>8 Oak Avenue</street>"
+            + "    <city>Old Town</city>"
+            + "    <state>PA</state>"
+            + "    <zip>95819</zip>"
+            + "  </billTo>"
+            + "  <items>"
+            + "    <item partNum=\"833-AA\">"
+            + "      <productName>Lapis necklace</productName>"
+            + "      <quantity>1</quantity>"
+            + "      <USPrice>99.95</USPrice>"
+            + "      <ipo:comment>Want this for the holidays</ipo:comment>"
+            + "      <shipDate>1999-12-05</shipDate>"
+            + "    </item>"
+            + "  </items>"
+            + "</ipo:purchaseOrder>";
 
     private TransformerRegistry registry;
 
@@ -145,7 +162,8 @@ public class TransformationTestCase extends TestCase {
         // URL/Stream/Reader to XmlObject
         XmlObject object = XmlObject.Factory.parse(new StringReader(IPO_XML));
 
-        List<Transformer> path = registry.getTransformerChain(XmlObject.class.getName(), DataObject.class.getName());
+        List<Transformer> path =
+            registry.getTransformerChain(XmlObject.class.getName(), DataObject.class.getName());
         System.out.println("Path: " + path);
 
         TransformationContext tContext = createTransformationContext();
@@ -153,7 +171,7 @@ public class TransformationTestCase extends TestCase {
 
         Object result = object;
         for (Transformer transformer : path) {
-            result = ((PullTransformer) transformer).transform(result, tContext);
+            result = ((PullTransformer)transformer).transform(result, tContext);
         }
         System.out.println("Result: " + result);
         Assert.assertNotNull(result);
@@ -170,14 +188,15 @@ public class TransformationTestCase extends TestCase {
         // URL/Stream/Reader to XmlObject
         XMLDocument object = XMLHelper.INSTANCE.load(xmlFile.openStream());
 
-        List<Transformer> path = registry.getTransformerChain(XMLDocument.class.getName(), Node.class.getName());
+        List<Transformer> path =
+            registry.getTransformerChain(XMLDocument.class.getName(), Node.class.getName());
         System.out.println("Path: " + path);
 
         TransformationContext tContext = createTransformationContext();
 
         Object result = object;
         for (Transformer transformer : path) {
-            result = ((PullTransformer) transformer).transform(result, tContext);
+            result = ((PullTransformer)transformer).transform(result, tContext);
         }
         System.out.println("Result: " + result);
         Assert.assertNotNull(result);
@@ -194,14 +213,15 @@ public class TransformationTestCase extends TestCase {
         // URL/Stream/Reader to XmlObject
         XMLDocument object = XMLHelper.INSTANCE.load(xmlFile.openStream());
 
-        List<Transformer> path = registry.getTransformerChain(XMLDocument.class.getName(), Object.class.getName());
+        List<Transformer> path =
+            registry.getTransformerChain(XMLDocument.class.getName(), JAXBElement.class.getName());
         System.out.println("Path: " + path);
 
         TransformationContext tContext = createTransformationContext();
 
         Object result = object;
         for (Transformer transformer : path) {
-            result = ((PullTransformer) transformer).transform(result, tContext);
+            result = ((PullTransformer)transformer).transform(result, tContext);
         }
         System.out.println("Result: " + result);
         Assert.assertNotNull(result);

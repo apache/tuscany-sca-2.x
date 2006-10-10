@@ -20,6 +20,8 @@ package org.apache.tuscany.databinding.sample;
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Reference;
 
+import com.example.ipo.jaxb.PurchaseOrderType;
+
 /**
  * @version $Rev$ $Date$
  */
@@ -28,12 +30,20 @@ public class ClientImpl implements Client {
     private Echo echoReference;
 
     @Constructor
-    public ClientImpl(@Reference(name = "echoReference", required = true) Echo echoReference) {
+    public ClientImpl(@Reference(name = "echoReference", required = true)
+    Echo echoReference) {
         this.echoReference = echoReference;
     }
 
-    public void call(String msg) {
-        String ret = echoReference.echo(msg);
-        System.out.println("Returned message: "+ ret);
+    public void call(Object po) {
+        Object ret = null;
+        if (po instanceof PurchaseOrderType) {
+            ret = echoReference.echoJAXB((PurchaseOrderType)po);
+        } else if (po instanceof com.example.ipo.sdo.PurchaseOrderType) {
+            ret = echoReference.echoSDO((com.example.ipo.sdo.PurchaseOrderType)po);
+        } else if (po instanceof com.example.ipo.xmlbeans.PurchaseOrderType) {
+            ret = echoReference.echoXMLBeans((com.example.ipo.xmlbeans.PurchaseOrderType)po);
+        }
+        System.out.println("Returned message: " + ret);
     }
 }
