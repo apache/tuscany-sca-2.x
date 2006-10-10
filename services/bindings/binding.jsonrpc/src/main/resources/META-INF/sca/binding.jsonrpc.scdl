@@ -26,6 +26,12 @@
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
            name="org.apache.tuscany.binding.jsonrpc">
 
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <groupId>com.metaparadigm</groupId>
+        <name>json-rpc</name>
+        <version>1.0</version>
+    </dependency>
+
     <component name="binding.jsonrpc.bindingLoader">
         <system:implementation.system class="org.apache.tuscany.binding.jsonrpc.JSONRPCBindingLoader"/>
     </component>
