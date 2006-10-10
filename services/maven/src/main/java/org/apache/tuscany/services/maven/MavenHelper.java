@@ -226,7 +226,10 @@ public class MavenHelper {
                     snapshotsPolicy, releasesPolicy);
 
             for(String remoteRepositoryUrl : remoteRepositoryUrls) {
-                remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(remoteRepositoryUrl, remoteRepositoryUrl, layout,
+                String repoid= remoteRepositoryUrl.replace(':', '_');
+                repoid= repoid.replace('/', '_');
+                repoid= repoid.replace('\\', '_');
+                remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(repoid, remoteRepositoryUrl, layout,
                     snapshotsPolicy, releasesPolicy));
             }
 
