@@ -16,23 +16,16 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:db="http://tuscany.apache.org/xmlns/databinding/1.0"
     name="org.apache.tuscany.databinding.sample">
-
-    <service name="ClientService">
-        <interface.java class="org.apache.tuscany.databinding.sample.Client" />
-        <reference>Client</reference>
-        <!-- <binding.sca/> -->
-        <db:databinding name="sdo"/>
-    </service>
+    
+    <dbsdo:import.sdo xmlns:dbsdo="http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0" factory="com.example.ipo.sdo.SdoFactory"/>
 
     <component name="Client">
         <implementation.java class="org.apache.tuscany.databinding.sample.ClientImpl" />
-        <reference name="echoReference">EchoReference</reference>
-        <db:databinding name="jaxb"/>
+        <reference name="echoReference">Echo</reference>
     </component>
 
-    <reference name="EchoReference">
-        <interface.java interface="org.apache.tuscany.databinding.sample.Echo" />
-        <!-- <binding.sca/> -->
-    </reference>
-
+    <component name="Echo">
+        <implementation.java class="org.apache.tuscany.databinding.sample.EchoImpl" />
+    </component>
+    
 </composite>

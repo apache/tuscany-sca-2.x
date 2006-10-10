@@ -17,9 +17,26 @@
 
 package org.apache.tuscany.databinding.sample;
 
+import com.example.ipo.jaxb.PurchaseOrderType;
+
 /**
  * @version $Rev$ $Date$
  */
-public interface Client {
-    void call(Object po);
+public class EchoImpl implements Echo {
+
+    public PurchaseOrderType echoJAXB(PurchaseOrderType po) {
+        System.out.println("JAXB: " + po);
+        return po;
+    }
+
+    public com.example.ipo.sdo.PurchaseOrderType echoSDO(com.example.ipo.sdo.PurchaseOrderType po) {
+        System.out.println("SDO: " + po);
+        return po;
+    }
+
+    public com.example.ipo.xmlbeans.PurchaseOrderType echoXMLBeans(com.example.ipo.xmlbeans.PurchaseOrderType po) {
+        System.out.println("XMLBeans: " + po);
+        return po;
+    }
+
 }

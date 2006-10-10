@@ -34,9 +34,11 @@ import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.spi.model.DataType;
 
 /**
- * 
+ * JAXB DataBinding
  */
 public class JAXBDataBinding extends DataBindingExtension {
+    
+    public static final String NAME = JAXBElement.class.getName();
 
     @Override
     public DataType introspect(Class<?> javaType) {
@@ -101,7 +103,7 @@ public class JAXBDataBinding extends DataBindingExtension {
     }
 
     public JAXBDataBinding() {
-        super(JAXBElement.class);
+        super(NAME, JAXBElement.class);
     }
 
 }

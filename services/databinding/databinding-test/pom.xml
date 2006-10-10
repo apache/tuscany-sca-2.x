@@ -73,7 +73,13 @@
 			<version>${pom.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+        <dependency>
+            <groupId>org.apache.tuscany.sca.services.idl</groupId>
+            <artifactId>wsdl</artifactId>
+            <version>${pom.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        		
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

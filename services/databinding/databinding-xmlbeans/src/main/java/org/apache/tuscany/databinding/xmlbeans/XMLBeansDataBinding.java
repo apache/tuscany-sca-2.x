@@ -16,37 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
+
 package org.apache.tuscany.databinding.xmlbeans;
 
-import org.apache.tuscany.spi.databinding.PullTransformer;
-import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.apache.xmlbeans.XmlObject;
-import org.osoa.sca.annotations.Service;
-import org.w3c.dom.Node;
 
-@Service(Transformer.class)
-public class XmlObject2Node extends TransformerExtension<XmlObject, Node> implements
-    PullTransformer<XmlObject, Node> {
-    // private XmlOptions options;
-
-    public Node transform(XmlObject source, TransformationContext context) {
-        if (source == null)
-            return null;
-        return source.newDomNode();
-    }
-
-    public Class getSourceType() {
-        return XmlObject.class;
-    }
-
-    public Class getTargetType() {
-        return Node.class;
-    }
-
-    public int getWeight() {
-        return 30;
+/**
+ * XMLBeans DataBinding
+ */
+public class XMLBeansDataBinding extends DataBindingExtension {
+    public static final String NAME = XmlObject.class.getName();
+    
+    public XMLBeansDataBinding() {
+        super(NAME, XmlObject.class);
     }
 
 }

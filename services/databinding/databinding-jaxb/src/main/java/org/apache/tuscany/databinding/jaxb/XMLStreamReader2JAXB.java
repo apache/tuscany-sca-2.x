@@ -25,14 +25,18 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
+import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
+import org.osoa.sca.annotations.Service;
 
-public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, Object> implements PullTransformer<XMLStreamReader, Object> {
-    
+@Service(Transformer.class)
+public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, Object> implements
+    PullTransformer<XMLStreamReader, Object> {
+
     public XMLStreamReader2JAXB() {
         super();
     }
-    
+
     public Object transform(XMLStreamReader source, TransformationContext context) {
         if (source == null)
             return null;
@@ -57,6 +61,8 @@ public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, 
         return 10;
     }
 
-
-
+    @Override
+    public String getTargetDataBinding() {
+        return JAXBDataBinding.NAME;
+    }    
 }
