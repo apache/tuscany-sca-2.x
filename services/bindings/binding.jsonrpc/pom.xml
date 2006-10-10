@@ -28,20 +28,10 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jsonrpc</artifactId>
+    <artifactId>binding-jsonrpc</artifactId>
     <name>Apache Tuscany Binding for JSON-RPC</name>
     <description>Implementation of the SCA JSON-RPC Binding</description>
     
-    <repositories>
-        <repository>
-            <id>ant</id>
-            <url>http://people.apache.org/~antelder/maven2</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
             
         <dependency>
@@ -52,8 +42,8 @@
         </dependency>
         
         <dependency>
-            <groupId>metaparadigm</groupId>
-            <artifactId>jsonrpc</artifactId>
+            <groupId>com.metaparadigm</groupId>
+            <artifactId>json-rpc</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
