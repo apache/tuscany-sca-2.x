@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
@@ -266,13 +267,17 @@ public class Axis2Service extends ServiceExtension {
         public org.apache.tuscany.spi.model.Operation<?> operation;
 
         public SOAPFactory soapFactory;
+        
+        public CountDownLatch doneSignal;
 
         public InvocationContext(MessageContext messageCtx,
                                  org.apache.tuscany.spi.model.Operation<?> operation,
-                                 SOAPFactory soapFactory) {
+                                 SOAPFactory soapFactory,
+                                 CountDownLatch doneSignal) {
             this.inMessageContext = messageCtx;
             this.operation = operation;
             this.soapFactory = soapFactory;
+            this.doneSignal = doneSignal;
         }
     }
 }
