@@ -92,12 +92,6 @@ public class ConnectorImpl implements Connector {
                         continue;
                     }
                     try {
-                        // For a composite reference only, since its outbound wire comes from its parent composite,
-                        // the corresponding target would not lie in its parent but rather in its parent's parent
-                        if (source instanceof CompositeReference) {
-                            parent = parent.getParent();
-                            assert parent != null : "Parent of parent was null";
-                        }
                         SCAObject target;
                         if (sourceComponent.isSystem()) {
                             target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
@@ -138,6 +132,17 @@ public class ConnectorImpl implements Connector {
             OutboundWire outboundWire = reference.getOutboundWire();
             // connect the reference's inbound and outbound wires
             connect(inboundWire, outboundWire, true);
+            
+            if (reference instanceof CompositeReference) {
+                // For a composite reference only, since its outbound wire comes
+                // from its parent composite,
+                // the corresponding target would not lie in its parent but
+                // rather in its parent's parent
+                parent = parent.getParent();
+                assert parent != null : "Parent of parent was null";
+                SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
+                connect((Component)parent, outboundWire, target);
+            }            
         } else if (source instanceof Service) {
             Service service = (Service) source;
             InboundWire inboundWire = service.getInboundWire();
