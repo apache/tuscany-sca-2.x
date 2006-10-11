@@ -51,6 +51,7 @@ public class Axis2Reference<T> extends ReferenceExtension {
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
+
     // private WorkContext workContext;
 
     @SuppressWarnings("unchecked")
@@ -75,7 +76,8 @@ public class Axis2Reference<T> extends ReferenceExtension {
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         Axis2TargetInvoker invoker;
         try {
-            invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false);
+            boolean isOneWay = operation.isNonBlocking();
+            invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }
@@ -91,7 +93,8 @@ public class Axis2Reference<T> extends ReferenceExtension {
                 (Axis2AsyncTargetInvoker)createOperationInvoker(serviceClient,
                                                                 operation,
                                                                 wsPortMetaData,
-                                                                true);
+                                                                true,
+                                                                false);
             // FIXME: This makes the (BIG) assumption that there is only one
             // callback method
             // Relaxing this assumption, however, does not seem to be trivial,
@@ -143,7 +146,8 @@ public class Axis2Reference<T> extends ReferenceExtension {
     private Axis2TargetInvoker createOperationInvoker(ServiceClient serviceClient,
                                                       Operation m,
                                                       WebServicePortMetaData wsPortMetaData,
-                                                      boolean isAsync) throws AxisFault {
+                                                      boolean hasCallback,
+                                                      boolean isOneWay) throws AxisFault {
         SOAPFactory soapFactory = OMAbstractFactory.getSOAP11Factory();
         String portTypeNS = wsPortMetaData.getPortTypeName().getNamespaceURI();
 
@@ -161,16 +165,18 @@ public class Axis2Reference<T> extends ReferenceExtension {
         if (soapAction != null && soapAction.length() > 1) {
             options.setAction(soapAction);
         }
-        
-        options.setTimeOutInMilliSeconds(5* 60 *1000);
+
+        options.setTimeOutInMilliSeconds(5 * 60 * 1000);
 
         QName wsdlOperationQName = new QName(portTypeNS, wsdlOperationName);
 
         Axis2TargetInvoker invoker;
-        if (isAsync) {
+        if (hasCallback) {
             invoker =
                 new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory,
                                             inboundWire);
+        } else if (isOneWay) {
+            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         } else {
             invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         }

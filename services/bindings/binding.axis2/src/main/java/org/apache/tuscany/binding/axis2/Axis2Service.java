@@ -75,7 +75,7 @@ public class Axis2Service extends ServiceExtension {
     private WorkContext workContext;
 
     private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
-    
+
     private String serviceName;
 
     public Axis2Service(String theName,
@@ -137,7 +137,7 @@ public class Axis2Service extends ServiceExtension {
 
         axisService.setName(this.getName());
         axisService.setServiceDescription("Tuscany configured AxisService for service: '" + this.getName()
-            + '\'');
+            + "'");
 
         // Use the existing WSDL
         Parameter wsdlParam = new Parameter(WSDLConstants.WSDL_4_J_DEFINITION, null);
@@ -155,14 +155,21 @@ public class Axis2Service extends ServiceExtension {
             org.apache.tuscany.spi.model.Operation<?> op = serviceContract.getOperations().get(operationName);
 
             MessageReceiver msgrec = null;
+            boolean opIsNonBlocking = op.isNonBlocking();
             if (serviceContract.getCallbackName() != null) {
                 msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op, workContext);
+            } else if (opIsNonBlocking) {
+                msgrec = new Axis2ServiceInMessageReceiver(this, op);
             } else {
                 msgrec = new Axis2ServiceInOutSyncMessageReceiver(this, op);
             }
 
             AxisOperation axisOp = axisService.getOperation(operationQN);
-            axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
+            if (opIsNonBlocking) {
+                axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_ONLY);
+            } else {
+                axisOp.setMessageExchangePattern(WSDL20_2004Constants.MEP_URI_IN_OUT);
+            }
             axisOp.setMessageReceiver(msgrec);
         }
 
@@ -216,7 +223,7 @@ public class Axis2Service extends ServiceExtension {
             return body;
         }
     }
-    
+
     protected Object getFromAddress() {
         return this.serviceName;
     }
@@ -267,7 +274,7 @@ public class Axis2Service extends ServiceExtension {
         public org.apache.tuscany.spi.model.Operation<?> operation;
 
         public SOAPFactory soapFactory;
-        
+
         public CountDownLatch doneSignal;
 
         public InvocationContext(MessageContext messageCtx,
