@@ -64,6 +64,8 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             AxisEngine engine =
                 new AxisEngine(invCtx.inMessageContext.getOperationContext().getServiceContext().getConfigurationContext());
             engine.send(outMC);
+            
+            invCtx.doneSignal.countDown();
 
             service.removeMapping(this.currentCorrelationId);
         } catch (AxisFault e) {
