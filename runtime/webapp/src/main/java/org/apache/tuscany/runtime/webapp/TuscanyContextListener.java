@@ -77,6 +77,9 @@ public class TuscanyContextListener implements ServletContextListener {
         } catch (MalformedURLException e) {
             servletContext.log(e.getMessage(), e);
             throw new RuntimeException(e);
+        } catch (Exception e) {
+            servletContext.log(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
