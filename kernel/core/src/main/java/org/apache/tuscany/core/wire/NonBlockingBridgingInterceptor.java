@@ -63,6 +63,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
                     workContext.setCurrentMessageId(null);
+                    workContext.setCurrentCorrelationId(null);
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
                         BINDER.setContext(currentContext);

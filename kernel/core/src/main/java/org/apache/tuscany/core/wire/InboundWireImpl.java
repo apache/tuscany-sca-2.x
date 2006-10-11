@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetException;
@@ -46,7 +47,7 @@ public class InboundWireImpl implements InboundWire {
     private Map<Object, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
         new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
     private SCAObject container;
-    private Map<Object, Object> msgIdsToAddrs = new HashMap<Object, Object>();
+    private Map<Object, Object> msgIdsToAddrs = new ConcurrentHashMap<Object, Object>();
 
     public Object getTargetService() throws TargetException {
         if (targetWire != null) {

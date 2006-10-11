@@ -40,7 +40,12 @@ public class WorkContextImpl implements WorkContext {
 
     //A map ( associated with the current thread) of scope identifiers keyed on the event context id type.
     //The scope identifier may be a {@link ScopeIdentifier} or an opaque id
-    private ThreadLocal<Map<Object, Object>> workContext = new InheritableThreadLocal<Map<Object, Object>>();
+    
+    // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children 
+    private ThreadLocal<Map<Object, Object>> workContext = new ThreadLocal<Map<Object, Object>>();
+    
+    // [rfeng] Session id requires InheritableThreadLocal
+    private ThreadLocal<Map<Object, Object>> inheritableContext = new InheritableThreadLocal<Map<Object, Object>>();
 
     public WorkContextImpl() {
         super();
@@ -99,7 +104,7 @@ public class WorkContextImpl implements WorkContext {
     }
 
     public Object getIdentifier(Object type) {
-        Map<Object, Object> map = workContext.get();
+        Map<Object, Object> map = inheritableContext.get();
         if (map == null) {
             return null;
         }
@@ -113,10 +118,10 @@ public class WorkContextImpl implements WorkContext {
     }
 
     public void setIdentifier(Object type, Object identifier) {
-        Map<Object, Object> map = workContext.get();
+        Map<Object, Object> map = inheritableContext.get();
         if (map == null) {
             map = new HashMap<Object, Object>();
-            workContext.set(map);
+            inheritableContext.set(map);
         }
         map.put(type, identifier);
     }
@@ -125,14 +130,14 @@ public class WorkContextImpl implements WorkContext {
         if (type == null) {
             return;
         }
-        Map map = workContext.get();
+        Map map = inheritableContext.get();
         if (map != null) {
             map.remove(type);
         }
     }
 
     public void clearIdentifiers() {
-        workContext.remove();
+        inheritableContext.remove();
     }
 
 }
