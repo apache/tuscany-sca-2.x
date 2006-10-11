@@ -23,7 +23,7 @@
            name="org.apache.tuscany.binding.axis2.WebServiceBinding">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>axis2</group>
+        <group>org.apache.axis2</group>
         <name>axis2-kernel</name>
         <version>SNAPSHOT</version>
     </dependency>
