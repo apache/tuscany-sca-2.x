@@ -31,7 +31,7 @@
         <version>1.5.2</version>
     </dependency>
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>org.apache.ws.commons</group>
+        <group>org.apache.ws.commons.schema</group>
         <name>XmlSchema</name>
         <version>SNAPSHOT</version>
     </dependency>
