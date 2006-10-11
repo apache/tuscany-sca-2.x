@@ -271,6 +271,9 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
             return null;
         }
         String value = literal.trim();
+        if (!simpleType.isSimpleType()) {
+            throw new IllegalArgumentException("Complex type is not supported for simple java databinding.");
+        }
         TypeInfo baseType = simpleType;
         while (baseType.getBaseType() != null) {
             baseType = (TypeInfo)baseType.getBaseType();
