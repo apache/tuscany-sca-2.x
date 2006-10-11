@@ -88,6 +88,55 @@ public class WorkContextTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         assertNull(ctx.getIdentifier(this));
     }
+    
+    public void testSetGetMessageIds() {
+        WorkContext context = new WorkContextImpl();
+        context.setCurrentMessageId("msg-009");
+        context.setCurrentCorrelationId("msg-005");
+        assertEquals(context.getCurrentMessageId(), "msg-009");
+        assertEquals(context.getCurrentCorrelationId(), "msg-005");
+        context.setCurrentMessageId(null);
+        context.setCurrentCorrelationId(null);
+        assertNull(context.getCurrentMessageId());
+        assertNull(context.getCurrentCorrelationId());
+    }
 
+    public void testSetGetMessageIdsInNewThread() throws InterruptedException {
+        WorkContext context = new WorkContextImpl();
+        context.setCurrentMessageId("msg-009");
+        context.setCurrentCorrelationId("msg-005");
+        assertEquals(context.getCurrentMessageId(), "msg-009");
+        assertEquals(context.getCurrentCorrelationId(), "msg-005");
+        context.setIdentifier("TX", "002");
+        ChildThread t = new ChildThread(context);
+        t.start();
+        t.join();
+        assertTrue(t.passed);
+        context.setCurrentMessageId(null);
+        context.setCurrentCorrelationId(null);
+        assertNull(context.getCurrentMessageId());
+        assertNull(context.getCurrentCorrelationId());
+    }
+
+    private static class ChildThread extends Thread {
+        private WorkContext context;
+        private boolean passed = true;
+
+        private ChildThread(WorkContext context) {
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            try {
+                assertNull(context.getCurrentMessageId());
+                assertNull(context.getCurrentCorrelationId());
+                assertEquals("002", context.getIdentifier("TX"));
+            } catch (AssertionError e) {
+                passed = false;
+            }
+        }
+
+    }
 
 }
