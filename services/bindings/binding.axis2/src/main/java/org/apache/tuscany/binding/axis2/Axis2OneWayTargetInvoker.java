@@ -45,7 +45,7 @@ public class Axis2OneWayTargetInvoker extends Axis2TargetInvoker {
             Object[] args = (Object[])payload;
             OperationClient operationClient = createOperationClient(args);
 
-            operationClient.execute(true);
+            operationClient.execute(false);
 
             // REVIEW it seems ok to return null
             return RESPONSE;
