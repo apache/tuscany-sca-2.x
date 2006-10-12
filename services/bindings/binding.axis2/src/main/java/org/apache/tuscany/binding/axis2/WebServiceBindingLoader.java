@@ -81,16 +81,16 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
     }
 
     @SuppressWarnings("unchecked")
-    private WebServiceBinding createBinding(String port, String portURI, String wsdlLocation, DeploymentContext deploymentContext)
-        throws WSDLException, IOException {
+    private WebServiceBinding createBinding(String uri, String endpoint, String wsdlLocation, DeploymentContext deploymentContext)
+        throws WSDLException, IOException, LoaderException {
         // Get the WSDL port namespace and name
-        if (port == null && portURI != null) {
-            int h = portURI.indexOf('#');
+        if (uri == null && endpoint != null) {
+            int h = endpoint.indexOf('#');
             String serviceName;
             String portName;
 
-            String namespace = portURI.substring(0, h);
-            String fragment = portURI.substring(h + 1);
+            String namespace = endpoint.substring(0, h);
+            String fragment = endpoint.substring(h + 1);
             if (fragment.startsWith("wsdl.endpoint(") && fragment.endsWith(")")) {
                 fragment = fragment.substring(14, fragment.length() - 1);
                 int slash = fragment.indexOf('/');
@@ -108,7 +108,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
             // FIXME need to find out how to get wsdl and what context to use --- terrible hack attack!
             if (null == wsdlLocation) {
                 throw new Axis2BindingRunTimeException(
-                        "Failed to determin wsdl location on binding. Try specifying 'location' attribute on  binding.");
+                        "Failed to determine wsdl location on binding. Try specifying 'location' attribute on  binding.");
             }    
             Definition definition =
                     wsdlDefinitionRegistry.loadDefinition(namespace+" "+wsdlLocation, deploymentContext.getClassLoader());
@@ -130,13 +130,13 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 }
             }
             if (thePort == null) {
-                throw new IllegalArgumentException("Cannot find WSDL port " + portURI);
+                throw new IllegalArgumentException("Cannot find WSDL port " + endpoint);
 
             }
-            return new WebServiceBinding(definition, thePort, port, portURI, service);
+            return new WebServiceBinding(definition, thePort, uri, endpoint, service);
         }
         // FIXME: Find the first port?
-        return null;
+        throw new LoaderException("Web Service endpoint cannot be resolved: " + endpoint);
 
     }
 
