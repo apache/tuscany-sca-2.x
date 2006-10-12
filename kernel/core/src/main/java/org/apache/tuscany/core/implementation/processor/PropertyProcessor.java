@@ -24,7 +24,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -41,7 +43,8 @@ import org.osoa.sca.annotations.Property;
  * @version $Rev$ $Date$
  */
 public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
-
+    private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
+    
     public PropertyProcessor(@Autowire ImplementationProcessorService service) {
         super(Property.class, service);
     }
@@ -55,7 +58,15 @@ public class PropertyProcessor extends AbstractPropertyProcessor<Property> {
                                     CompositeComponent parent,
                                     DeploymentContext context) {
         property.setOverride(OverrideOptions.valueOf(annotation.override().toUpperCase()));
-        property.setXmlType(QName.valueOf(annotation.xmlType()));
+        String xmlType = annotation.xmlType();
+        if (xmlType != null && xmlType.length() != 0) {
+            property.setXmlType(QName.valueOf(annotation.xmlType()));
+        } else {
+            TypeInfo type = typeMapper.getXMLType(property.getJavaType());
+            if (type != null) {
+                property.setXmlType(type.getQName());
+            }
+        }
     }
 
     public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
