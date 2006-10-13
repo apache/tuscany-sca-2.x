@@ -18,22 +18,19 @@
     * under the License.    
 -->
 <!--
-    Default system configuration for the launcher environment.
+    IDL WSDL extension
+    
+    This is a copy to be included by other extensions
     
     $Rev: 440894 $ $Date: 2006-09-06 15:52:01 -0700 (Wed, 06 Sep 2006) $
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-    name="org.apache.tuscany.idl.WSDL">
+    name="org.apache.tuscany.idl.wsdl.include">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>wsdl4j</group>
-        <name>wsdl4j</name>
-        <version>1.5.2</version>
-    </dependency>
-    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>org.apache.ws.commons.schema</group>
-        <name>XmlSchema</name>
-        <version>SNAPSHOT</version>
+        <group>org.apache.tuscany.sca.services.idl</group>
+        <name>wsdl</name>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
     </dependency>
 
     <component name="interface.wsdl.Loader">
