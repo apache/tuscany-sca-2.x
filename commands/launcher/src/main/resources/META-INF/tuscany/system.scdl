@@ -127,7 +127,7 @@
     <!-- component that scans the extension directory -->
     <component name="directoryScanExtender" initLevel="90">
         <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.DirectoryScanExtender"/>
-        <property name="path">extension</property>
+        <property name="path">extensions</property>
     </component>
 
 </composite>
