@@ -22,6 +22,8 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
+import java.net.URL;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -99,8 +101,10 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                         if (artifact.getUrl() != null) {
                             ClassLoader classLoader = deploymentContext.getClassLoader();
                             if (classLoader instanceof CompositeClassLoader) {
-                                CompositeClassLoader ccl = (CompositeClassLoader) classLoader;
-                                ccl.addURL(artifact.getUrl());
+                                CompositeClassLoader ccl = (CompositeClassLoader)classLoader;
+                                for (URL dep : artifact.getUrls()) {
+                                    ccl.addURL(dep);
+                                }
                             }
                         }
                     } else {

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
@@ -97,15 +96,18 @@ public class AbstractExtensionDeployer {
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
 
+        // FIXME: [rfeng] Should we reset the thread context class loader here?
+        // From the debugger with tomcat, the current TCCL is the RealmClassLoader
+        // ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
         try {
+            // Thread.currentThread().setContextClassLoader(extensionCL);
             Component component = deployer.deploy(parent, definition);
             component.start();
         } catch (LoaderException e) {
             // FIXME handle the exception
             e.printStackTrace();
-        } catch (TuscanyException e) {
-            // FIXME handle the exception
-            e.printStackTrace();
+        } finally {
+            // Thread.currentThread().setContextClassLoader(contextCL);
         }
     }
 }

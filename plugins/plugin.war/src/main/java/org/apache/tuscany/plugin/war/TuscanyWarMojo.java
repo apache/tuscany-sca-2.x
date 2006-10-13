@@ -21,14 +21,12 @@ package org.apache.tuscany.plugin.war;
 import java.beans.XMLEncoder;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -220,7 +218,10 @@ public class TuscanyWarMojo extends AbstractMojo {
                 for (Artifact art : resolveArtifact(dependency.getArtifact(artifactFactory), loadExtensionDependencies)) {
                     if (dependency.match(art)) {
                         addArtifact(newWar, EXTENSION_PATH, art);
-                    } else if (loadExtensionDependencies) {
+                    }
+                    
+                    // Load dependencies even for the extension itself
+                    if (loadExtensionDependencies) {
                         loadExtensionDependencies(newWar, art);
                     }
 
@@ -385,7 +386,8 @@ public class TuscanyWarMojo extends AbstractMojo {
         try {
 
             File artifactFile = artifact.getFile();
-            if (packagedLibs.contains(artifactFile.getName())) {
+            // For extensions, we'll add it even the packagedLibs has it
+            if ((!EXTENSION_PATH.equals(path)) && packagedLibs.contains(artifactFile.getName())) {
                 return;
             }
             artifactStream = new FileInputStream(artifactFile);

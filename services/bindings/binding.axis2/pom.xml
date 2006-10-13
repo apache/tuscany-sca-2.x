@@ -48,6 +48,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- A hack to bring in databinding-axiom transitively -->
+        <dependency>
+            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+            <artifactId>databinding-axiom</artifactId>
+            <version>${sca.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

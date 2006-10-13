@@ -23,11 +23,17 @@
            name="org.apache.tuscany.binding.axis2.WebServiceBinding">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>org.apache.axis2</group>
-        <name>axis2-kernel</name>
-        <version>SNAPSHOT</version>
+        <group>org.apache.tuscany.sca.services.bindings</group>
+        <name>axis2</name>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
     </dependency>
     
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.services.databinding</group>
+        <name>databinding-axiom</name>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
+    </dependency>
+        
     <component name="webservice.bindingLoader">
         <system:implementation.system class="org.apache.tuscany.binding.axis2.WebServiceBindingLoader"/>
     </component>
@@ -36,4 +42,8 @@
         <system:implementation.system class="org.apache.tuscany.binding.axis2.Axis2BindingBuilder"/>
     </component>
 
+    <!-- A workaround to handle inter-extension dependencies -->
+    <include name="idl.wsdl" scdlLocation="idl.wsdl.scdl"/>
+    <include name="databinding.axiom" scdlLocation="databinding.axiom.scdl"/>
+    
 </composite>
