@@ -83,7 +83,7 @@ public class LauncherImpl implements Launcher {
 
         // initialize the runtime info
         CompositeComponent parent = runtime.getSystemComponent();
-        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory());
+        RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory(), true);
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
         // registory the monitor factory

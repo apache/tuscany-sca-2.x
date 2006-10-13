@@ -47,6 +47,10 @@ public final class Constants {
      */
     static final String APPLICATION_SCDL_PATH_DEFAULT = "/WEB-INF/default.scdl";
 
+    /**
+     * Servlet context-param name for setting if the runtime is online.
+     */
+    static final String ONLINE_PARAM = "tuscany.online";
 
 
 

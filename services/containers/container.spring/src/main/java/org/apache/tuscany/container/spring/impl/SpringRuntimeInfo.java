@@ -56,4 +56,8 @@ public class SpringRuntimeInfo implements RuntimeInfo {
     public URL getBaseURL() {
         return null;
     }
+
+    public boolean isOnline() {
+        return true;
+    }
 }

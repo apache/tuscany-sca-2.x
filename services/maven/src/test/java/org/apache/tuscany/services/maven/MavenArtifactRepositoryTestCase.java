@@ -22,14 +22,13 @@ import java.io.File;
 import java.net.URL;
 import java.util.Set;
 
-import org.apache.tuscany.spi.services.artifact.Artifact;
-import org.apache.tuscany.host.RuntimeInfo;
-
 import junit.framework.TestCase;
+
+import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.spi.services.artifact.Artifact;
 
 /**
  * @version $Rev$ $Date$
- *
  */
 public class MavenArtifactRepositoryTestCase extends TestCase {
 
@@ -49,13 +48,25 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
      * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Artifact)'
      */
     public void testResolveArtifact() throws Exception {
-        
+
         final URL BASE_URL = new File(System.getProperty("user.home") + File.separator + ".m2").toURL();
         String remoteRepoUrl = "http://repo1.maven.org/maven2/";
         MavenArtifactRepository repository = new MavenArtifactRepository(remoteRepoUrl, new RuntimeInfo() {
-            public File getApplicationRootDirectory() { return null; }
-            public URL getBaseURL() { return BASE_URL; }
-            public File getInstallDirectory() { return null; }
+            public File getApplicationRootDirectory() {
+                return null;
+            }
+
+            public URL getBaseURL() {
+                return BASE_URL;
+            }
+
+            public File getInstallDirectory() {
+                return null;
+            }
+
+            public boolean isOnline() {
+                return false;
+            }
         });
         Artifact artifact = new Artifact();
         artifact.setGroup("org.apache.maven");

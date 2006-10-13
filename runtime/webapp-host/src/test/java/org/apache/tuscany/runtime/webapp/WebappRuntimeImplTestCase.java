@@ -57,7 +57,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
         context = createMock(ServletContext.class);
 
         runtime = new WebappRuntimeImpl();
-        runtime.setRuntimeInfo(new WebappRuntimeInfoImpl(context, null));
+        runtime.setRuntimeInfo(new WebappRuntimeInfoImpl(context, null, false));
         runtime.setMonitorFactory(new NullMonitorFactory());
         runtime.setHostClassLoader(getClass().getClassLoader());
         runtime.setServletContext(context);

@@ -53,7 +53,8 @@ public class MainLauncherBooter {
         File installDir = getInstallDirectory();
         URL baseUrl = installDir.toURI().toURL();
         File bootDir = getBootDirectory(installDir);
-        StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDir, installDir);
+        boolean online = System.getProperty("offline") != null; 
+        StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDir, installDir, online);
 
         File applicationJar = new File(args[0]);
         URL applicationURL = applicationJar.toURI().toURL();
