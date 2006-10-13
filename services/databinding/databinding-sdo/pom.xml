@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sdo</groupId>
             <artifactId>tuscany-sdo-impl</artifactId>
-            <version>1.0-incubator-M2-SNAPSHOT</version>
+            <version>${pom.version}</version>
             <scope>compile</scope>
         </dependency>
 
