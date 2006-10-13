@@ -52,4 +52,12 @@ public interface RuntimeInfo {
      * @return The base URL for the runtime.
      */
     URL getBaseURL();
+
+    /**
+     * Returns whether the runtime considers itself "online" or connected to the internet.
+     * This can be used by services to enable access to remote resources.
+     *
+     * @return true if the runtime is online.
+     */
+    boolean isOnline();
 }

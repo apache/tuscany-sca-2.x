@@ -28,10 +28,12 @@ import javax.servlet.ServletContext;
 public class WebappRuntimeInfoImpl implements WebappRuntimeInfo {
     private final ServletContext servletContext;
     private final URL baseURL;
+    private final boolean online;
 
-    public WebappRuntimeInfoImpl(ServletContext servletContext, URL baseURL) {
+    public WebappRuntimeInfoImpl(ServletContext servletContext, URL baseURL, boolean online) {
         this.servletContext = servletContext;
         this.baseURL = baseURL;
+        this.online = online;
     }
 
     public ServletContext getServletContext() {
@@ -48,5 +50,9 @@ public class WebappRuntimeInfoImpl implements WebappRuntimeInfo {
 
     public File getApplicationRootDirectory() {
         return new File("");
+    }
+
+    public boolean isOnline() {
+        return online;
     }
 }

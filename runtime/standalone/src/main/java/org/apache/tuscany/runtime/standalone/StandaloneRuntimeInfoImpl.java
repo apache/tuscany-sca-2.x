@@ -28,11 +28,16 @@ public class StandaloneRuntimeInfoImpl implements StandaloneRuntimeInfo {
     private final File installDirectory;
     private final File applicationRootDirectory;
     private final URL baseURL;
+    private final boolean online;
 
-    public StandaloneRuntimeInfoImpl(URL baseURL, File installDirectory, File applicationRootDirectory) {
+    public StandaloneRuntimeInfoImpl(URL baseURL, 
+                                     File installDirectory,
+                                     File applicationRootDirectory,
+                                     boolean online) {
         this.baseURL = baseURL;
         this.installDirectory = installDirectory;
         this.applicationRootDirectory = applicationRootDirectory;
+        this.online = online;
     }
 
     public File getInstallDirectory() {
@@ -45,5 +50,9 @@ public class StandaloneRuntimeInfoImpl implements StandaloneRuntimeInfo {
 
     public URL getBaseURL() {
         return baseURL;
+    }
+
+    public boolean isOnline() {
+        return online;
     }
 }

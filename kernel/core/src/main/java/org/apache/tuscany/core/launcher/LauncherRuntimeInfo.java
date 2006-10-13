@@ -35,15 +35,18 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
     /** Application root directory */
     private final File applicationRootDirectory;
 
+    private final boolean online;
+
     /**
      * Initializes the installation and application root directories.
      * 
      * @param installDirectory Installation directory.
      * @param applicationRootDirectory Application root directory.
      */
-    public LauncherRuntimeInfo(File installDirectory, File applicationRootDirectory) {
+    public LauncherRuntimeInfo(File installDirectory, File applicationRootDirectory, boolean online) {
         this.installDirectory = installDirectory;
         this.applicationRootDirectory = applicationRootDirectory;
+        this.online = online;
     }
 
     /**
@@ -78,4 +81,7 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
         }
     }
 
+    public boolean isOnline() {
+        return online;
+    }
 }

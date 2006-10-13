@@ -49,6 +49,7 @@ public class TuscanyContextListenerTestCase extends TestCase {
 
         WebappRuntime runtime = createMock(WebappRuntime.class);
         expect(utils.getBootClassLoader(cl)).andReturn(bootClassLoader);
+        expect(utils.getInitParameter("tuscany.online", "true")).andReturn("true");
         expect(utils.getRuntime(bootClassLoader)).andReturn(runtime);
         expect(utils.getSystemScdl(bootClassLoader)).andReturn(systemUrl);
         expect(utils.getApplicationScdl(cl)).andReturn(applicationUrl);

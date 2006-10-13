@@ -26,6 +26,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
+import static org.apache.tuscany.runtime.webapp.Constants.ONLINE_PARAM;
 
 /**
  * Launches a Tuscany runtime in a web application, loading information from servlet context parameters. This listener
@@ -55,8 +56,10 @@ public class TuscanyContextListener implements ServletContextListener {
             ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
             ClassLoader bootClassLoader = utils.getBootClassLoader(webappClassLoader);
             WebappRuntime runtime = utils.getRuntime(bootClassLoader);
+            boolean online = Boolean.valueOf(utils.getInitParameter(ONLINE_PARAM, "true"));
             WebappRuntimeInfo info = new WebappRuntimeInfoImpl(servletContext,
-                                                               servletContext.getResource("/WEB-INF/tuscany/"));
+                                                               servletContext.getResource("/WEB-INF/tuscany/"),
+                                                               online);
             URL systemScdl = utils.getSystemScdl(bootClassLoader);
             URL applicationScdl = utils.getApplicationScdl(webappClassLoader);
             String name = utils.getApplicationName();
