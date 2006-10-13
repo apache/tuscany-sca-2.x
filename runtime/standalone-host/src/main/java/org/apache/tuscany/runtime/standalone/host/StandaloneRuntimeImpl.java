@@ -60,9 +60,11 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
         systemComponent = runtime.getSystemComponent();
 
         // register the runtime info provided by the host
-        systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
-            StandaloneRuntimeInfo.class,
-            (StandaloneRuntimeInfo) getRuntimeInfo());
+        RuntimeInfo runtimeInfo = getRuntimeInfo();
+        systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
+        systemComponent.registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
+                                           StandaloneRuntimeInfo.class,
+                                           (StandaloneRuntimeInfo) runtimeInfo);
 
         // register the monitor factory provided by the host
         systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);

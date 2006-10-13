@@ -24,4 +24,5 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public interface StandaloneRuntimeInfo extends RuntimeInfo {
+    static String COMPONENT_NAME = "StandaloneRuntimeInfo";
 }
