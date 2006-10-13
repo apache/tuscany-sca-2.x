@@ -15,14 +15,14 @@
     *  limitations under the License.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-    name="org.apache.tuscany.databinding.Axiom">
+    name="org.apache.tuscany.databinding.axiom">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
         <group>org.apache.tuscany.sca.services.databinding</group>
         <name>databinding-axiom</name>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </dependency>
-    
+
     <component name="databinding.axiom">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.AxiomDataBinding" />
     </component>
@@ -30,24 +30,24 @@
     <component name="transformer.XMLStreamReader2OMElement">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.XMLStreamReader2OMElement" />
     </component>
-    
+
     <component name="transformer.OMElement2XMLStreamReader">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2XMLStreamReader" />
     </component>
-    
+
     <component name="transformer.String2OMElement">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.String2OMElement" />
     </component>
-    
+
     <component name="transformer.OMElement2String">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2String" />
-    </component>    
-    
+    </component>
+
     <component name="transformer.Object2OMElement">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.Object2OMElement" />
     </component>
-    
+
     <component name="transformer.OMElement2Object">
         <system:implementation.system class="org.apache.tuscany.databinding.axiom.OMElement2Object" />
-    </component>        
+    </component>
 </composite>

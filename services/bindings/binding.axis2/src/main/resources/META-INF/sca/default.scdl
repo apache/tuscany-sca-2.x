@@ -43,7 +43,7 @@
     </component>
 
     <!-- A workaround to handle inter-extension dependencies -->
-    <include name="idl.wsdl" scdlLocation="idl.wsdl.scdl"/>
-    <include name="databinding.axiom" scdlLocation="databinding.axiom.scdl"/>
+    <include name="idl.wsdl" scdlResource="META-INF/sca/idl.wsdl.scdl"/>
+    <include name="databinding.axiom" scdlResource="META-INF/sca/databinding.axiom.scdl"/>
     
 </composite>
