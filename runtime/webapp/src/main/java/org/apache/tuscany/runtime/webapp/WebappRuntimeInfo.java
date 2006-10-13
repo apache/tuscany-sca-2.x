@@ -26,7 +26,7 @@ import org.apache.tuscany.host.RuntimeInfo;
  * @version $Rev$ $Date$
  */
 public interface WebappRuntimeInfo extends RuntimeInfo {
-    public final static String COMPONENT_NAME = "WebappRuntimeInfo";
+    static String COMPONENT_NAME = "WebappRuntimeInfo";
     /**
      * Returns the ServletContext associated with this webapp runtime.
      *
