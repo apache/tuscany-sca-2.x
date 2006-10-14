@@ -70,7 +70,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  * 
  */
 public class TuscanyWarMojo extends AbstractMojo {
-    
+
     /**
      * Tuscany path.
      */
@@ -157,6 +157,13 @@ public class TuscanyWarMojo extends AbstractMojo {
     private Dependency[] extensions = new Dependency[0];
 
     /**
+     * The directory for the generated WAR.
+     * 
+     * @parameter
+     */
+    private Dependency[] dependencies = new Dependency[0];
+
+    /**
      * The name of the generated WAR.
      * 
      * @parameter expression="${project.build.finalName}"
@@ -202,7 +209,7 @@ public class TuscanyWarMojo extends AbstractMojo {
             newWar = new JarOutputStream(new FileOutputStream(newWarFile));
 
             copyOriginal(originalWar, newWar);
-            
+
             addEntry(newWar, TUSCANY_PATH);
             addEntry(newWar, BOOT_PATH);
             addEntry(newWar, EXTENSION_PATH);
@@ -219,17 +226,23 @@ public class TuscanyWarMojo extends AbstractMojo {
                     if (dependency.match(art)) {
                         addArtifact(newWar, EXTENSION_PATH, art);
                     }
-                    
+
                     // Load dependencies even for the extension itself
                     if (loadExtensionDependencies) {
-                        loadExtensionDependencies(newWar, art);
+                        loadTransitiveDependencies(newWar, art);
                     }
 
                 }
             }
 
+            for (Dependency dependency : dependencies) {
+                for (Artifact art : resolveArtifact(dependency.getArtifact(artifactFactory), loadExtensionDependencies)) {
+                    loadTransitiveDependencies(newWar, art);
+                }
+            }
+
             writeDependencyMetadata(newWar);
-            
+
             success = true;
 
         } catch (Exception ex) {
@@ -248,7 +261,7 @@ public class TuscanyWarMojo extends AbstractMojo {
         }
 
     }
-    
+
     /**
      * Adds an entry to the JAR failing safe for duplicate.
      * 
@@ -261,7 +274,7 @@ public class TuscanyWarMojo extends AbstractMojo {
         try {
             jar.putNextEntry(new JarEntry(entry));
             return true;
-        } catch(ZipException duplicateEntry) {
+        } catch (ZipException duplicateEntry) {
             getLog().info(duplicateEntry.getMessage());
             return false;
         }
@@ -273,35 +286,35 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @throws IOException In case of an IO error.
      */
     private void writeDependencyMetadata(JarOutputStream newWar) throws IOException {
-        
+
         FileOutputStream depMapOutStream = null;
         FileInputStream depMapInStream = null;
-        
+
         try {
             String metadataFile = "dependency.metadata";
-            
+
             File file = new File(outputDirectory, "webapp");
             file = new File(file, REPOSITORY_PATH);
             file.mkdirs();
-            
+
             file = new File(file, metadataFile);
             file.createNewFile();
-            
+
             depMapOutStream = new FileOutputStream(file);
             XMLEncoder xmlEncoder = new XMLEncoder(depMapOutStream);
             xmlEncoder.writeObject(transDepenedencyMap);
             xmlEncoder.close();
-            
-            if(addEntry(newWar, REPOSITORY_PATH + metadataFile)) {
+
+            if (addEntry(newWar, REPOSITORY_PATH + metadataFile)) {
                 depMapInStream = new FileInputStream(file);
                 IOUtils.copy(depMapInStream, newWar);
             }
-            
+
         } finally {
             IOUtils.closeQuietly(depMapOutStream);
             IOUtils.closeQuietly(depMapInStream);
         }
-        
+
     }
 
     /**
@@ -314,8 +327,9 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @throws ArtifactNotFoundException If the artifact is not found.
      * @throws ArtifactMetadataRetrievalException In case of error in retrieving metadata.
      */
-    private void loadExtensionDependencies(JarOutputStream newWar, Artifact art) throws IOException, ArtifactResolutionException, ArtifactNotFoundException, ArtifactMetadataRetrievalException {
-        
+    private void loadTransitiveDependencies(JarOutputStream newWar, Artifact art) throws IOException, ArtifactResolutionException,
+            ArtifactNotFoundException, ArtifactMetadataRetrievalException {
+
         String artPath = art.getGroupId() + "/" + art.getArtifactId() + "/" + art.getVersion() + "/";
         String path = REPOSITORY_PATH + artPath;
         addArtifact(newWar, path, art);
@@ -325,12 +339,12 @@ public class TuscanyWarMojo extends AbstractMojo {
 
         // Get the transitive dependencies for each dependency.
         for (Artifact transArt : resolveArtifact(art, true)) {
-
-            String transArtPath = transArt.getGroupId() + "/" + transArt.getArtifactId() + "/" + transArt.getVersion() + "/" + transArt.getFile().getName();
-            transDepenedenyList.add(transArtPath);
-
+            String transArtPath = transArt.getGroupId() + "/" + transArt.getArtifactId() + "/" + transArt.getVersion() + "/";
+            if (addArtifact(newWar, REPOSITORY_PATH + transArtPath, transArt)) {
+                transDepenedenyList.add(transArtPath + transArt.getFile().getName());
+            }
         }
-        
+
     }
 
     /**
@@ -378,7 +392,7 @@ public class TuscanyWarMojo extends AbstractMojo {
      * @param artifact Artifact to be added.
      * @throws IOException In case of an unexpected IO error.
      */
-    private void addArtifact(JarOutputStream newWar, String path, Artifact artifact) throws IOException {
+    private boolean addArtifact(JarOutputStream newWar, String path, Artifact artifact) throws IOException {
 
         FileInputStream artifactStream = null;
         FileOutputStream fileOutputStream = null;
@@ -388,7 +402,7 @@ public class TuscanyWarMojo extends AbstractMojo {
             File artifactFile = artifact.getFile();
             // For extensions, we'll add it even the packagedLibs has it
             if ((!EXTENSION_PATH.equals(path)) && packagedLibs.contains(artifactFile.getName())) {
-                return;
+                return false;
             }
             artifactStream = new FileInputStream(artifactFile);
 
@@ -410,6 +424,8 @@ public class TuscanyWarMojo extends AbstractMojo {
             packagedLibs.add(artifactFile.getName());
 
             getLog().info("Processed " + path + artifactFile.getName());
+
+            return true;
 
         } finally {
             IOUtils.closeQuietly(artifactStream);
