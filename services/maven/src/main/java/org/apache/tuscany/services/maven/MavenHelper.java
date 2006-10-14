@@ -75,6 +75,9 @@ public class MavenHelper {
     /** Artifact resolver */
     private ArtifactResolver artifactResolver;
 
+    /** Online */
+    private boolean online;
+
     /**
      * Initialize the remote repository URLs.
      * 
@@ -83,8 +86,9 @@ public class MavenHelper {
      * @param runtimeInfo
      *            Runtime information.
      */
-    public MavenHelper(String remoteRepositoryUrl) {
+    public MavenHelper(String remoteRepositoryUrl, boolean online) {
         this.remoteRepositoryUrls = remoteRepositoryUrl.split(",");
+        this.online = online;
     }
 
     /**
@@ -99,31 +103,31 @@ public class MavenHelper {
 
             Embedder embedder = new Embedder();
             ClassWorld classWorld = new ClassWorld();
-            
+
             classWorld.newRealm("plexus.core", getClass().getClassLoader());
-            
+
             // Evil hack for Tomcat classloader issue - starts
             Field realmsField = ClassWorld.class.getDeclaredField("realms");
             realmsField.setAccessible(true);
-            Map realms = (Map)realmsField.get(classWorld);
+            Map realms = (Map) realmsField.get(classWorld);
             DefaultClassRealm realm = (DefaultClassRealm) realms.get("plexus.core");
 
             Class clazz = Class.forName("org.codehaus.classworlds.RealmClassLoader");
-            Constructor ctr = clazz.getDeclaredConstructor(new Class[] {DefaultClassRealm.class, ClassLoader.class});
+            Constructor ctr = clazz.getDeclaredConstructor(new Class[] { DefaultClassRealm.class, ClassLoader.class });
             ctr.setAccessible(true);
             Object realmClassLoader = ctr.newInstance(realm, getClass().getClassLoader());
-            
+
             Field realmClassLoaderField = DefaultClassRealm.class.getDeclaredField("classLoader");
             realmClassLoaderField.setAccessible(true);
             realmClassLoaderField.set(realm, realmClassLoader);
             // Evil hack for Tomcat classloader issue - ends
-            
+
             embedder.start(classWorld);
 
             metadataSource = (ArtifactMetadataSource) embedder.lookup(ArtifactMetadataSource.ROLE);
             artifactFactory = (ArtifactFactory) embedder.lookup(ArtifactFactory.ROLE);
             artifactResolver = (ArtifactResolver) embedder.lookup(ArtifactResolver.ROLE);
-            
+
             setUpRepositories(embedder);
 
             embedder.stop();
@@ -173,10 +177,10 @@ public class MavenHelper {
                 rootArtifact.getVersion(), org.apache.maven.artifact.Artifact.SCOPE_RUNTIME, rootArtifact.getType());
 
         try {
-            
+
             if (resolve(mavenRootArtifact)) {
                 rootArtifact.setUrl(mavenRootArtifact.getFile().toURL());
-                if(resolveDependencies(rootArtifact, mavenRootArtifact)) {
+                if (resolveDependencies(rootArtifact, mavenRootArtifact)) {
                     return true;
                 } else {
                     return false;
@@ -194,7 +198,7 @@ public class MavenHelper {
      * Resolves the artifact.
      */
     private boolean resolve(org.apache.maven.artifact.Artifact mavenRootArtifact) {
-        
+
         try {
             artifactResolver.resolve(mavenRootArtifact, remoteRepositories, localRepository);
             return true;
@@ -203,7 +207,7 @@ public class MavenHelper {
         } catch (ArtifactNotFoundException ex) {
             return false;
         }
-        
+
     }
 
     /*
@@ -217,20 +221,23 @@ public class MavenHelper {
 
             ArtifactRepositoryLayout layout = (ArtifactRepositoryLayout) embedder.lookup(ArtifactRepositoryLayout.ROLE, "default");
 
-            ArtifactRepositoryPolicy snapshotsPolicy = new ArtifactRepositoryPolicy(true, ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                    ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
-            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS,
-                    ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            String updatePolicy = online ? ArtifactRepositoryPolicy.UPDATE_POLICY_ALWAYS : ArtifactRepositoryPolicy.UPDATE_POLICY_NEVER;
+            ArtifactRepositoryPolicy snapshotsPolicy = new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
+            ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
 
             localRepository = artifactRepositoryFactory.createArtifactRepository("local", LOCAL_REPO.toURL().toExternalForm(), layout,
                     snapshotsPolicy, releasesPolicy);
 
-            for(String remoteRepositoryUrl : remoteRepositoryUrls) {
-                String repoid= remoteRepositoryUrl.replace(':', '_');
-                repoid= repoid.replace('/', '_');
-                repoid= repoid.replace('\\', '_');
-                remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(repoid, remoteRepositoryUrl, layout,
-                    snapshotsPolicy, releasesPolicy));
+            if (!online) {
+                return;
+            }
+
+            for (String remoteRepositoryUrl : remoteRepositoryUrls) {
+                String repoid = remoteRepositoryUrl.replace(':', '_');
+                repoid = repoid.replace('/', '_');
+                repoid = repoid.replace('\\', '_');
+                remoteRepositories.add(artifactRepositoryFactory.createArtifactRepository(repoid, remoteRepositoryUrl, layout, snapshotsPolicy,
+                        releasesPolicy));
             }
 
         } catch (MalformedURLException ex) {
@@ -253,7 +260,7 @@ public class MavenHelper {
 
             resolutionGroup = metadataSource.retrieve(mavenRootArtifact, localRepository, remoteRepositories);
             result = artifactResolver.resolveTransitively(resolutionGroup.getArtifacts(), mavenRootArtifact, remoteRepositories, localRepository,
-                        metadataSource);
+                    metadataSource);
 
             // Add the artifacts to the deployment unit
             for (Object obj : result.getArtifacts()) {
@@ -276,7 +283,7 @@ public class MavenHelper {
         } catch (ArtifactNotFoundException ex) {
             return false;
         }
-        
+
         return true;
 
     }
