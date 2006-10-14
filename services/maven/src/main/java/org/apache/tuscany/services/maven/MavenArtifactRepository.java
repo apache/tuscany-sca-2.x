@@ -50,7 +50,7 @@ public class MavenArtifactRepository implements ArtifactRepository {
     public MavenArtifactRepository(@Property(name = "remoteRepoUrl")
     String remoteRepoUrl, @Autowire
     RuntimeInfo runtimeInfo) {
-        mavenHelper = new MavenHelper(remoteRepoUrl);
+        mavenHelper = new MavenHelper(remoteRepoUrl, runtimeInfo.isOnline());
         warRepositoryHelper = new WarRepositoryHelper(runtimeInfo.getBaseURL());
         mavenHelper.start();
     }

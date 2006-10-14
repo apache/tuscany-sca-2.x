@@ -69,16 +69,18 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
             }
         });
         Artifact artifact = new Artifact();
-        artifact.setGroup("org.apache.maven");
-        artifact.setName("maven-artifact");
-        artifact.setVersion("2.0.4");
+        artifact.setGroup("junit");
+        artifact.setName("junit");
+        artifact.setVersion("3.8.1");
         artifact.setType("jar");
 
         repository.resolve(artifact);
 
         Set<URL> urls = artifact.getUrls();
+        
+        System.err.println(urls);
 
-        assertEquals(2, urls.size());
+        assertEquals(1, urls.size());
 
     }
 
