@@ -104,6 +104,11 @@ public class MainLauncherBooter {
 
         Manifest manifest = new JarFile(applicationJar).getManifest();
         String mainClassName = manifest.getMainAttributes().getValue("Main-Class");
+        if (mainClassName == null) {
+            ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherBooter.class.getName());
+            String s = bundle.getString("org.apache.tuscany.launcher.NoMain-Class");
+            throw new IllegalArgumentException(String.format(s, applicationJar.toString()));
+        }
         Class<?> mainClass = applicationClassLoader.loadClass(mainClassName);
         Method main = mainClass.getMethod("main", String[].class);
 
