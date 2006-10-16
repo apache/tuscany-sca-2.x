@@ -48,6 +48,9 @@ public class MainLauncherBooter {
      * @param args the command line args
      */
     public static void main(String[] args) throws Throwable {
+        if (args.length == 0) {
+            usage();
+        }
         MainLauncherBooter booter = new MainLauncherBooter();
 
         File installDir = getInstallDirectory();
@@ -88,6 +91,12 @@ public class MainLauncherBooter {
             context.stop();
             runtime.destroy();
         }
+    }
+
+    private static void usage() {
+        ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherBooter.class.getName());
+        System.err.println(bundle.getString("org.apache.tuscany.launcher.Usage"));
+        System.exit(1);
     }
 
     protected void runApplication(File applicationJar, ClassLoader applicationClassLoader, String[] args)
@@ -141,12 +150,6 @@ public class MainLauncherBooter {
 
         File jarFile = new File(URI.create(jarLocation));
         return new File(jarFile.getParentFile().getParentFile(), "boot");
-    }
-
-    protected void usage() {
-        ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherBooter.class.getName());
-        System.err.print(bundle.getString("org.apache.tuscany.launcher.Usage"));
-        System.exit(1);
     }
 
     protected URL getSystemScdl(ClassLoader bootClassLoader) {
