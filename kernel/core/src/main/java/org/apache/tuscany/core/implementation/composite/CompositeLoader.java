@@ -68,7 +68,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     }
 
     public CompositeComponentType load(CompositeComponent parent,
-                                       XMLStreamReader reader,
+                                       ModelObject object, XMLStreamReader reader,
                                        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
@@ -78,7 +78,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         while (!done) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, reader, deploymentContext);
+                    ModelObject o = registry.load(parent, null, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         composite.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

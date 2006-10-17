@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Loader for handling <binding.rmi> elements.
@@ -49,6 +50,7 @@ public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
     }
 
     public RMIBinding load(CompositeComponent parent,
+									ModelObject object,
                            XMLStreamReader reader,
                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         String host = reader.getAttributeValue(null, "host");

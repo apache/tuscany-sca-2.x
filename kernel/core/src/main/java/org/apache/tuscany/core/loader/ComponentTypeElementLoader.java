@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -37,7 +38,6 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
  * @version $Rev$ $Date$
@@ -55,16 +55,23 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     }
 
     public ComponentType load(CompositeComponent parent,
+                              ModelObject object,
                               XMLStreamReader reader,
                               DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert COMPONENT_TYPE.equals(reader.getName());
-        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType
-            = new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType;
+        if (object != null) {
+            assert object instanceof ComponentType;
+            // a specialized component type was passed in
+            componentType = (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) object;
+        } else {
+            componentType = new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        }
 
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, reader, deploymentContext);
+                    ModelObject o = registry.load(parent, null, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         componentType.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

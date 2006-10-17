@@ -63,7 +63,7 @@ public class LoaderExtensionTestCase extends TestCase {
         }
 
         public ModelObject load(CompositeComponent parent,
-                                XMLStreamReader reader,
+                                ModelObject object, XMLStreamReader reader,
                                 DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
             throw new AssertionError();
         }

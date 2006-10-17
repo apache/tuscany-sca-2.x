@@ -92,6 +92,6 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
 
 
     protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
-        return loaderRegistry.load(null, url, PojoComponentType.class, deploymentContext);
+        return loaderRegistry.load(null, null, url, PojoComponentType.class, deploymentContext);
     }
 }

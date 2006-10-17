@@ -53,7 +53,7 @@ public class RMIBindingLoaderTestCase extends TestCase {
         replay(deploymentContext);
 
         RMIBindingLoader mockLoader = new RMIBindingLoader(registry);
-        mockLoader.load(parent, reader, deploymentContext);
+        mockLoader.load(parent, null, reader, deploymentContext);
         verify(reader);
         verify(deploymentContext);
     }

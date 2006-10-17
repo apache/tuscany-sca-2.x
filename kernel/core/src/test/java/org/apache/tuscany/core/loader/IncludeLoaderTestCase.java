@@ -24,14 +24,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.isNull;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import org.osoa.sca.Version;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -41,6 +33,16 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingIncludeException;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Include;
+import org.apache.tuscany.spi.model.ModelObject;
+
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * @version $Rev$ $Date$
@@ -68,7 +70,7 @@ public class IncludeLoaderTestCase extends TestCase {
         replay(registry, reader, context);
 
         try {
-            loader.load(null, reader, context);
+            loader.load(null, null, reader, context);
             fail();
         } catch (MissingIncludeException e) {
             // OK expected
@@ -88,13 +90,14 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
 
         expect(registry.load((CompositeComponent) isNull(),
-                             eq(includeURL),
-                             eq(CompositeComponentType.class),
-                             isA(DeploymentContext.class)))
+            (ModelObject) isNull(),
+            eq(includeURL),
+            eq(CompositeComponentType.class),
+            isA(DeploymentContext.class)))
             .andReturn(null);
         replay(registry, reader, context);
 
-        Include include = loader.load(null, reader, context);
+        Include include = loader.load(null, null, reader, context);
         assertEquals(name, include.getName());
         assertEquals(includeURL, include.getScdlLocation());
         verify(registry, reader, context);
@@ -112,13 +115,14 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
 
         expect(registry.load((CompositeComponent) isNull(),
-                             eq(includeURL),
-                             eq(CompositeComponentType.class),
-                             isA(DeploymentContext.class)))
+            (ModelObject) isNull(),
+            eq(includeURL),
+            eq(CompositeComponentType.class),
+            isA(DeploymentContext.class)))
             .andReturn(null);
         replay(registry, reader, context);
 
-        Include include = loader.load(null, reader, context);
+        Include include = loader.load(null, null, reader, context);
         assertEquals(name, include.getName());
         assertEquals(includeURL, include.getScdlLocation());
         verify(registry, reader, context);
@@ -139,13 +143,14 @@ public class IncludeLoaderTestCase extends TestCase {
         expect(context.getClassLoader()).andReturn(cl);
 
         expect(registry.load((CompositeComponent) isNull(),
-                             eq(includeURL),
-                             eq(CompositeComponentType.class),
-                             isA(DeploymentContext.class)))
+            (ModelObject) isNull(),
+            eq(includeURL),
+            eq(CompositeComponentType.class),
+            isA(DeploymentContext.class)))
             .andReturn(null);
         replay(registry, reader, context);
 
-        Include include = loader.load(null, reader, context);
+        Include include = loader.load(null, null, reader, context);
         assertEquals(name, include.getName());
         assertEquals(includeURL, include.getScdlLocation());
         verify(registry, reader, context);

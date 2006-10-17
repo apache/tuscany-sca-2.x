@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Loader for handling <dependency> elements.
@@ -54,7 +55,7 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
     }
 
     public Dependency load(CompositeComponent parent,
-                           XMLStreamReader reader,
+                           ModelObject object, XMLStreamReader reader,
                            DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 

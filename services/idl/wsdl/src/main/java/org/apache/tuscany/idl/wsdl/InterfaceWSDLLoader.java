@@ -40,11 +40,9 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.loader.InvalidValueException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Loads a WSDL interface definition from an XML-based assembly file
@@ -63,9 +61,9 @@ public class InterfaceWSDLLoader extends LoaderExtension {
     private InterfaceWSDLIntrospector introspector;
 
     @Constructor ({ "registry", "wsdlRegistry", "introspector" })
-    public InterfaceWSDLLoader(@Autowire LoaderRegistry registry, 
-            @Autowire WSDLDefinitionRegistry wsdlRegistry, 
-            @Autowire InterfaceWSDLIntrospector introspector) {
+    public InterfaceWSDLLoader(@Autowire LoaderRegistry registry,
+                               @Autowire WSDLDefinitionRegistry wsdlRegistry,
+                               @Autowire InterfaceWSDLIntrospector introspector) {
         super(registry);
         this.wsdlRegistry = wsdlRegistry;
         this.introspector = introspector;
@@ -76,9 +74,9 @@ public class InterfaceWSDLLoader extends LoaderExtension {
     }
 
     public WSDLServiceContract load(
-            CompositeComponent parent,
-            XMLStreamReader reader,
-            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+        CompositeComponent parent,
+        ModelObject object, XMLStreamReader reader,
+        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert INTERFACE_WSDL.equals(reader.getName());
 
         String interfaceURI = reader.getAttributeValue(null, "interface");
@@ -88,12 +86,12 @@ public class InterfaceWSDLLoader extends LoaderExtension {
 
         String callbackURI = reader.getAttributeValue(null, "callbackInterface");
         String wsdlLocation = reader.getAttributeValue(WSDLI, WSDLI_LOCATION);
-        
+
         Map<Class<?>, ModelObject> extensions = new HashMap<Class<?>, ModelObject>();
         while (true) {
             int event = reader.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
-                ModelObject mo = registry.load(parent, reader, deploymentContext);
+                ModelObject mo = registry.load(parent, null, reader, deploymentContext);
                 if (mo != null) {
                     extensions.put(mo.getClass(), mo);
                 }
@@ -102,7 +100,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
                     break;
                 }
             }
-        }        
+        }
         // FIXME set the interaction scope
         // serviceContract.setInteractionScope(StAXUtil.interactionScope(reader.getAttributeValue(null, "scope")));
 

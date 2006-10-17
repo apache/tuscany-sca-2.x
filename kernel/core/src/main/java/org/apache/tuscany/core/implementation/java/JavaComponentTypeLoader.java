@@ -26,18 +26,15 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-
 import org.apache.tuscany.spi.implementation.java.IntrospectionRegistry;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
 import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.ProcessingException;
-
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
@@ -68,7 +65,7 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         if (resource == null) {
             componentType = loadByIntrospection(parent, implementation, deploymentContext);
         } else {
-            componentType = loadFromSidefile(resource, deploymentContext);
+            componentType = loadFromSidefile(parent, resource, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
@@ -83,7 +80,11 @@ public class JavaComponentTypeLoader extends ComponentTypeLoaderExtension<JavaIm
         return componentType;
     }
 
-    protected PojoComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
-        return loaderRegistry.load(null, url, PojoComponentType.class, deploymentContext);
+    protected PojoComponentType loadFromSidefile(CompositeComponent parent,
+                                                 URL url,
+                                                 DeploymentContext deploymentContext) throws LoaderException {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        return loaderRegistry.load(parent, componentType, url, PojoComponentType.class, deploymentContext);
     }
 }

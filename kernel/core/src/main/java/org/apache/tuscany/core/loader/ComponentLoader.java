@@ -116,7 +116,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     public ComponentDefinition<?> load(CompositeComponent parent,
-                                       XMLStreamReader reader,
+                                       ModelObject object, XMLStreamReader reader,
                                        DeploymentContext deploymentContext) throws XMLStreamException,
                                                                                    LoaderException {
         assert COMPONENT.equals(reader.getName());
@@ -180,7 +180,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                                    DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         reader.nextTag();
-        ModelObject o = registry.load(parent, reader, deploymentContext);
+        ModelObject o = registry.load(parent, null, reader, deploymentContext);
         if (!(o instanceof Implementation)) {
             throw new MissingImplementationException();
         }

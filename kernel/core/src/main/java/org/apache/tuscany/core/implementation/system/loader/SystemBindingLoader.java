@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Loads a system binding specified in an XML-based assembly
@@ -51,7 +52,8 @@ public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
         return SYSTEM_BINDING;
     }
 
-    public SystemBinding load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+    public SystemBinding load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+                              DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         LoaderUtil.skipToEndElement(reader);
         return new SystemBinding();

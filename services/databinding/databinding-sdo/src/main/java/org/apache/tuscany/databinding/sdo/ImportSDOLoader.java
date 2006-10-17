@@ -59,7 +59,7 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+    public ModelObject load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
 

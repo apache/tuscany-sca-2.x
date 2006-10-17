@@ -96,7 +96,7 @@ public class JavaScriptComponentTypeLoader extends ComponentTypeLoaderExtension<
 
     protected JavaScriptComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext)
         throws LoaderException {
-        ComponentType ct = loaderRegistry.load(null, url, ComponentType.class, deploymentContext);
+        ComponentType ct = loaderRegistry.load(null,null, url, ComponentType.class, deploymentContext);
         JavaScriptComponentType jsct = new JavaScriptComponentType(ct);
         return jsct;
     }

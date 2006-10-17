@@ -27,7 +27,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -36,13 +37,16 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.osoa.sca.annotations.Constructor;
+import org.apache.tuscany.spi.model.ModelObject;
+
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
 
 /**
  * Loader for handling JavaScript <js:implementation.js> elements.
  */
 public class JavaScriptImplementationLoader extends LoaderExtension<JavaScriptImplementation> {
-    private static final QName IMPLEMENTATION_JAVASCRIPT = new QName("http://tuscany.apache.org/xmlns/js/1.0", "implementation.js");
+    private static final QName IMPLEMENTATION_JAVASCRIPT =
+        new QName("http://tuscany.apache.org/xmlns/js/1.0", "implementation.js");
 
     @Constructor({"registry"})
     public JavaScriptImplementationLoader(@Autowire LoaderRegistry registry) {
@@ -53,8 +57,9 @@ public class JavaScriptImplementationLoader extends LoaderExtension<JavaScriptIm
         return IMPLEMENTATION_JAVASCRIPT;
     }
 
-    public JavaScriptImplementation load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
-            throws XMLStreamException, LoaderException {
+    public JavaScriptImplementation load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+                                         DeploymentContext deploymentContext)
+        throws XMLStreamException, LoaderException {
 
         String script = reader.getAttributeValue(null, "script");
         if (script == null) {

@@ -32,21 +32,6 @@ public class RubyComponentType extends
     public RubyComponentType() {
     }
 
-    @SuppressWarnings("unchecked")
-    public RubyComponentType(ComponentType ct) {
-        // TODO: A bit hacky but this is so the non-Ruby .componentType side file can be used for now
-        setInitLevel(ct.getInitLevel());
-        for (Object property : ct.getProperties().values()) {
-            add((Property) property);
-        }
-        for (Object reference : ct.getReferences().values()) {
-            add((ReferenceDefinition) reference);
-        }
-        for (Object service : ct.getServices().values()) {
-            add((ServiceDefinition) service);
-        }
-    }
-
     public Scope getLifecycleScope() {
         return lifecycleScope;
     }

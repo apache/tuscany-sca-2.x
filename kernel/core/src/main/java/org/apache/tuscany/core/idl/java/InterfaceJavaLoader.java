@@ -67,7 +67,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
     }
 
     public JavaServiceContract load(CompositeComponent parent,
-                                    XMLStreamReader reader,
+                                    ModelObject object, XMLStreamReader reader,
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
@@ -90,7 +90,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         while (true) {
             int event = reader.next();
             if (event == XMLStreamConstants.START_ELEMENT) {
-                ModelObject mo = registry.load(parent, reader, deploymentContext);
+                ModelObject mo = registry.load(parent, null, reader, deploymentContext);
                 if (mo != null) {
                     extensions.put(mo.getClass(), mo);
                 }

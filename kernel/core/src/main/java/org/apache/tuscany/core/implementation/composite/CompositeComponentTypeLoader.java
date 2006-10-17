@@ -62,6 +62,6 @@ public class CompositeComponentTypeLoader extends ComponentTypeLoaderExtension<C
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {
-        return loaderRegistry.load(parent, url, CompositeComponentType.class, deploymentContext);
+        return loaderRegistry.load(parent, null, url, CompositeComponentType.class, deploymentContext);
     }
 }

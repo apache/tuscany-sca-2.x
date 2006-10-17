@@ -46,7 +46,8 @@ public class JPAImportLoader extends LoaderExtension {
         return IMPORT;
     }
 
-    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+    public ModelObject load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+                            DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         //ComponentDefinition definition = new ComponentDefinition()
         // TODO read in persisitence unit setting and properties, and set them as properties on the component

@@ -21,11 +21,9 @@ package org.apache.tuscany.container.ruby;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -33,24 +31,25 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 
 /**
  * Extension point for creating {@link RubyComponent}s from an assembly configuration
  */
 public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplementation> {
 
-   protected Class<RubyImplementation> getImplementationType() {
+    protected Class<RubyImplementation> getImplementationType() {
         return RubyImplementation.class;
     }
 
     @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
-                              ComponentDefinition<RubyImplementation> componentDefinition,
-                              DeploymentContext deploymentContext) throws BuilderConfigException {
+                           ComponentDefinition<RubyImplementation> componentDefinition,
+                           DeploymentContext deploymentContext) throws BuilderConfigException {
 
         String name = componentDefinition.getName();
         RubyImplementation implementation = componentDefinition.getImplementation();
@@ -62,14 +61,14 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
         for (ServiceDefinition serviceDefinition : collection) {
             services.add(serviceDefinition.getServiceContract().getInterfaceClass());
         }
-        
+
         Map<String, Object> propertyValues = new Hashtable<String, Object>();
         Collection<PropertyValue<?>> propValueSettings = componentDefinition.getPropertyValues().values();
         for (PropertyValue propertyValue : propValueSettings) {
             propertyValues.put(propertyValue.getName(),
-                               propertyValue.getValueFactory().getInstance());
+                propertyValue.getValueFactory().getInstance());
         }
-        
+
         RubyScript rubyScript = implementation.getRubyScript();
 
         // TODO: have ComponentBuilderExtension pass ScopeContainer in on build method?
@@ -82,13 +81,13 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
         }
 
         return new RubyComponent(name,
-                                 rubyScript,
-                                 implementation.getRubyClassName(),
-                                 services,
-                                 propertyValues,
-                                 parent,
-                                 scopeContainer,
-                                 wireService,
-                                 workContext); 
+            rubyScript,
+            implementation.getRubyClassName(),
+            services,
+            propertyValues,
+            parent,
+            scopeContainer,
+            wireService,
+            workContext);
     }
 }

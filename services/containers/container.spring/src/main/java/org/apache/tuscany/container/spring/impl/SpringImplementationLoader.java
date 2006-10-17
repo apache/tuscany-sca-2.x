@@ -43,6 +43,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ModelObject;
 
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
@@ -75,7 +76,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
 
     @SuppressWarnings("unchecked")
     public SpringImplementation load(CompositeComponent parent,
-                                     XMLStreamReader reader,
+                                     ModelObject object, XMLStreamReader reader,
                                      DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
@@ -97,7 +98,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                     QName qname = reader.getName();
                     if (SERVICE_ELEMENT.equals(qname)) {
                         BoundServiceDefinition service =
-                            (BoundServiceDefinition) registry.load(parent, reader, deploymentContext);
+                            (BoundServiceDefinition) registry.load(parent, null, reader, deploymentContext);
                         if (!type.isExposeAllBeans()) {
                             String name = service.getName();
                             if (!type.getServiceTypes().containsKey(name)) {
@@ -109,7 +110,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                         type.getDeclaredServices().put(service.getName(), service);
                     } else if (REFERENCE_ELEMENT.equals(qname)) {
                         BoundReferenceDefinition reference =
-                            (BoundReferenceDefinition) registry.load(parent, reader, deploymentContext);
+                            (BoundReferenceDefinition) registry.load(parent, null, reader, deploymentContext);
                         type.getDeclaredReferences().put(reference.getName(), reference);
                     }
                     break;

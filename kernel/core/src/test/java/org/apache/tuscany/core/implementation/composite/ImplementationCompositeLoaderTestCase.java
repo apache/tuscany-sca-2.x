@@ -67,7 +67,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         replay(context);
         replay(artifactRepository);
 
-        CompositeImplementation impl = loader.load(null, reader, context);
+        CompositeImplementation impl = loader.load(null, null, reader, context);
         verify(reader);
         verify(context);
         verify(artifactRepository);
@@ -93,7 +93,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         artifactRepository.resolve(artifactMatcher(url, "com.example", name, "1.0"));
         replay(artifactRepository);
 
-        CompositeImplementation impl = loader.load(null, reader, context);
+        CompositeImplementation impl = loader.load(null, null, reader, context);
         verify(reader);
         verify(context);
         verify(artifactRepository);
@@ -118,7 +118,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         replay(context);
         replay(artifactRepository);
 
-        CompositeImplementation impl = loader.load(null, reader, context);
+        CompositeImplementation impl = loader.load(null, null, reader, context);
         verify(reader);
         verify(context);
         verify(artifactRepository);
@@ -143,7 +143,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         replay(context);
         replay(artifactRepository);
 
-        CompositeImplementation impl = loader.load(null, reader, context);
+        CompositeImplementation impl = loader.load(null, null, reader, context);
         verify(reader);
         verify(context);
         verify(artifactRepository);

@@ -35,6 +35,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Loader for handling <groovy:implementation> elements.
@@ -54,7 +55,7 @@ public class ImplementationLoader extends LoaderExtension<GroovyImplementation> 
     }
 
     public GroovyImplementation load(CompositeComponent parent,
-                                     XMLStreamReader reader,
+                                     ModelObject object, XMLStreamReader reader,
                                      DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 

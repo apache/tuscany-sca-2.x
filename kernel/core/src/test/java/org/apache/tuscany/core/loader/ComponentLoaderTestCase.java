@@ -21,6 +21,8 @@ package org.apache.tuscany.core.loader;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.isNull;
+
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import javax.xml.namespace.QName;
@@ -42,6 +44,8 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.ModelObject;
+
 import org.easymock.EasyMock;
 
 /**
@@ -73,11 +77,12 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.isA(DeploymentContext.class));
 
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
+            (ModelObject)isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
         EasyMock.replay(mockRegistry);
         ComponentDefinition component = loader.load(EasyMock.createNiceMock(CompositeComponent.class),
-            mockReader,
+            null, mockReader,
             EasyMock.createNiceMock(DeploymentContext.class));
         assertEquals(NAME, component.getName());
         assertNull(component.getInitLevel());
@@ -97,11 +102,12 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
+            (ModelObject)isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
         EasyMock.replay(mockRegistry);
         ComponentDefinition component = loader.load(EasyMock.createNiceMock(CompositeComponent.class),
-            mockReader,
+            null, mockReader,
             EasyMock.createNiceMock(DeploymentContext.class));
         assertEquals(NAME, component.getName());
         assertEquals(Integer.valueOf(20), component.getInitLevel());

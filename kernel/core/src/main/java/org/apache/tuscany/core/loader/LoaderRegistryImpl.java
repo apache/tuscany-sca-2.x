@@ -81,7 +81,9 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         loaders.remove(element);
     }
 
-    public ModelObject load(CompositeComponent parent, XMLStreamReader reader,
+    public ModelObject load(CompositeComponent parent,
+                            ModelObject object,
+                            XMLStreamReader reader,
                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         QName name = reader.getName();
         monitor.elementLoad(name);
@@ -89,10 +91,11 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         if (loader == null) {
             throw new UnrecognizedElementException(name);
         }
-        return loader.load(parent, reader, deploymentContext);
+        return loader.load(parent, object, reader, deploymentContext);
     }
 
     public <MO extends ModelObject> MO load(CompositeComponent parent,
+                                            ModelObject object,
                                             URL url,
                                             Class<MO> type,
                                             DeploymentContext ctx) throws LoaderException {
@@ -106,7 +109,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                 try {
                     reader.nextTag();
                     QName name = reader.getName();
-                    ModelObject mo = load(parent, reader, ctx);
+                    ModelObject mo = load(parent, object, reader, ctx);
                     if (type.isInstance(mo)) {
                         return type.cast(mo);
                     } else {
@@ -148,7 +151,8 @@ public class LoaderRegistryImpl implements LoaderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> void loadComponentType(CompositeComponent parent, I implementation,
+    public <I extends Implementation<?>> void loadComponentType(CompositeComponent parent,
+                                                                I implementation,
                                                                 DeploymentContext deploymentContext)
         throws LoaderException {
         Class<I> key = (Class<I>) implementation.getClass();

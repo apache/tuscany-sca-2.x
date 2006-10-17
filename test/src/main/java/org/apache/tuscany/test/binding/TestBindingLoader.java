@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * @version $Rev$ $Date$
@@ -49,7 +50,7 @@ public class TestBindingLoader extends LoaderExtension<TestBinding> {
     }
 
     public TestBinding load(CompositeComponent parent,
-                            XMLStreamReader reader,
+                            ModelObject object, XMLStreamReader reader,
                             DeploymentContext context) throws XMLStreamException, LoaderException {
         return new TestBinding();
     }

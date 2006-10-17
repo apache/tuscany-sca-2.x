@@ -31,6 +31,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.model.ModelObject;
+
 import org.osoa.sca.annotations.Constructor;
 
 /**
@@ -51,7 +53,7 @@ public class DataTypeLoader extends LoaderExtension<DataType> {
     }
 
     public DataType load(CompositeComponent parent,
-                         XMLStreamReader reader,
+                         ModelObject object, XMLStreamReader reader,
                          DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert DATA_BINDING.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
