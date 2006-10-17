@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.loader.MissingIncludeException;
 import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 
@@ -57,7 +58,8 @@ public class IncludeLoader extends LoaderExtension<Include> {
         return INCLUDE;
     }
 
-    public Include load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+    public Include load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+                        DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
         assert INCLUDE.equals(reader.getName());
@@ -103,6 +105,6 @@ public class IncludeLoader extends LoaderExtension<Include> {
                                                       URL url,
                                                       DeploymentContext deploymentContext)
         throws LoaderException {
-        return registry.load(parent, url, CompositeComponentType.class, deploymentContext);
+        return registry.load(parent, null, url, CompositeComponentType.class, deploymentContext);
     }
 }

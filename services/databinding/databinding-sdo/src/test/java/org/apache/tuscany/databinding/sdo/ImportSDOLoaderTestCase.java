@@ -44,13 +44,13 @@ public class ImportSDOLoaderTestCase extends TestCase {
     public void testMinimal() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0'/>";
         XMLStreamReader reader = getReader(xml);
-        assertTrue(loader.load(null, reader, deploymentContext) instanceof SDOType);
+        assertTrue(loader.load(null, null, reader, deploymentContext) instanceof SDOType);
     }
 
     public void testLocation() throws XMLStreamException, LoaderException {
         String xml = "<import.sdo xmlns='http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0' location='ipo.xsd'/>";
         XMLStreamReader reader = getReader(xml);
-        assertTrue(loader.load(null, reader, deploymentContext) instanceof SDOType);
+        assertTrue(loader.load(null, null, reader, deploymentContext) instanceof SDOType);
     }
     
     public void testFactory() throws XMLStreamException, LoaderException {
@@ -58,7 +58,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
                 + "factory='org.apache.tuscany.databinding.sdo.ImportSDOLoaderTestCase$MockFactory'/>";
         XMLStreamReader reader = getReader(xml);
         assertFalse(inited);
-        assertTrue(loader.load(null, reader, deploymentContext) instanceof SDOType);
+        assertTrue(loader.load(null, null, reader, deploymentContext) instanceof SDOType);
         assertTrue(inited);
     }
 

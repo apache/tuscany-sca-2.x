@@ -20,14 +20,12 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.Version;
-import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -40,6 +38,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
@@ -65,7 +64,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
     }
 
     public CompositeImplementation load(CompositeComponent parent,
-                                        XMLStreamReader reader,
+                                        ModelObject object, XMLStreamReader reader,
                                         DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 

@@ -36,6 +36,8 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.model.ModelObject;
+
 import org.osoa.sca.annotations.Constructor;
 
 /**
@@ -56,6 +58,7 @@ public class RubyImplementationLoader extends LoaderExtension<RubyImplementation
     }
 
     public RubyImplementation load(CompositeComponent parent,
+                                   ModelObject object,
                                    XMLStreamReader reader,
                                    DeploymentContext deploymentContext) throws XMLStreamException,
                                                                        LoaderException {

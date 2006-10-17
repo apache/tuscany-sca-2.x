@@ -58,7 +58,7 @@ public class DataObjectLoader implements StAXElementLoader<ModelObject> {
         this.propertyQName = propertyQName;
     }
 
-    public ModelObject load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ModelObject load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert propertyQName.equals(reader.getName());
         // TODO: We need a way to get TypeHelper from deploymentContext
         TypeHelper typeHelper = TypeHelper.INSTANCE;

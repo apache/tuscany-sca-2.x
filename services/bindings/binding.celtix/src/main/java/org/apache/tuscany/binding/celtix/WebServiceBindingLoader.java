@@ -44,6 +44,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 
 import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
@@ -89,6 +90,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
     }
 
     public WebServiceBinding load(CompositeComponent parent,
+											 ModelObject object,
                                   XMLStreamReader reader,
                                   DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {

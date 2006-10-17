@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Loads information for a system implementation
@@ -48,7 +49,7 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
     }
 
     public SystemImplementation load(CompositeComponent parent,
-                                     XMLStreamReader reader,
+                                     ModelObject object, XMLStreamReader reader,
                                      DeploymentContext deploymentContext
     )
         throws XMLStreamException, LoaderException {

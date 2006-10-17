@@ -19,12 +19,9 @@
 package org.apache.tuscany.container.ruby;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
-import org.apache.tuscany.container.ruby.rubyscript.RubyScriptInstance;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -37,6 +34,9 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
+import org.apache.tuscany.container.ruby.rubyscript.RubyScriptInstance;
+
 /**
  * The Ruby component implementation.
  */
@@ -47,7 +47,7 @@ public class RubyComponent extends AtomicComponentExtension {
     private final Map<String, Object> properties;
 
     private RubyScript rubyScript;
-    
+
     private String rubyClassName;
 
     public RubyComponent(String name,
@@ -84,13 +84,13 @@ public class RubyComponent extends AtomicComponentExtension {
                 //referenced service.                
                 Class<?> businessInterface = wire.getServiceContract().getInterfaceClass();
                 RubyReferenceProxy interceptingProxy = new RubyReferenceProxy(businessInterface,
-                                                                              wireProxy,
-                                                                              rubyScript.getRubyEngine());
+                    wireProxy,
+                    rubyScript.getRubyEngine());
                 context.put(wire.getReferenceName(), interceptingProxy.createProxy());
             }
         }
-        
-         Object instance = rubyScript.createScriptInstance(context, rubyClassName);
+
+        Object instance = rubyScript.createScriptInstance(context, rubyClassName);
 
         return instance;
     }

@@ -20,8 +20,6 @@ package org.apache.tuscany.container.ruby;
 
 import java.net.URL;
 
-import org.apache.tuscany.container.ruby.rubyscript.RubySCAConfig;
-import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -31,6 +29,10 @@ import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.ModelObject;
+
+import org.apache.tuscany.container.ruby.rubyscript.RubySCAConfig;
+import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 
 /**
  * @version $Rev$ $Date$
@@ -39,8 +41,7 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
 
     private JavaInterfaceProcessorRegistry processorRegistry;
 
-    public RubyComponentTypeLoader(@Autowire
-    JavaInterfaceProcessorRegistry processorRegistry) {
+    public RubyComponentTypeLoader(@Autowire JavaInterfaceProcessorRegistry processorRegistry) {
         this.processorRegistry = processorRegistry;
     }
 
@@ -48,12 +49,13 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
     protected Class<RubyImplementation> getImplementationClass() {
         return RubyImplementation.class;
     }
-    
+
     protected RubyComponentType loadByIntrospection(CompositeComponent parent,
-                                                          RubyImplementation implementation,
-                                                          DeploymentContext deploymentContext) throws
-                                                                                               MissingResourceException,
-                                                                                               InvalidServiceContractException {
+                                                    ModelObject object,
+                                                    RubyImplementation implementation,
+                                                    DeploymentContext deploymentContext) throws
+                                                                                         MissingResourceException,
+                                                                                         InvalidServiceContractException {
 
         RubyScript rubyScript = implementation.getRubyScript();
         RubySCAConfig scaConfig = rubyScript.getSCAConfig();
@@ -83,7 +85,7 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
         RubyComponentType componentType;
         if (resource == null) {
             try {
-                componentType = loadByIntrospection(parent, implementation, deploymentContext);
+                componentType = loadByIntrospection(parent, null, implementation, deploymentContext);
             } catch (InvalidServiceContractException e) {
                 throw new LoaderException("Invalid service contract", e);
             }
@@ -92,17 +94,19 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
         }
 
         implementation.setComponentType(componentType);
-        
-      
+
+
     }
 
+    @SuppressWarnings("unchecked")
     protected RubyComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
-        ComponentType ct = loaderRegistry.load(null,
-                                               url,
-                                               ComponentType.class,
-                                               deploymentContext);
-        RubyComponentType jsct = new RubyComponentType(ct);
-        return jsct;
+        // This should be fixed to pass in a RubyComponentType instead of null
+        RubyComponentType componentType = new RubyComponentType();
+        return (RubyComponentType) loaderRegistry.load(null,
+            componentType,
+            url,
+            ComponentType.class,
+            deploymentContext);
     }
 
     private String getSideFileName(RubyImplementation implementation) {
@@ -110,7 +114,7 @@ public class RubyComponentTypeLoader extends ComponentTypeLoaderExtension<RubyIm
         int lastDot = baseName.lastIndexOf('.');
         if (lastDot != -1) {
             baseName = baseName.substring(0,
-                                          lastDot);
+                lastDot);
         }
         return baseName + ".componentType";
     }

@@ -58,7 +58,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     }
 
     public ReferenceDefinition load(CompositeComponent parent,
-                                    XMLStreamReader reader,
+                                    ModelObject object, XMLStreamReader reader,
                                     DeploymentContext deploymentContext
     )
         throws XMLStreamException, LoaderException {
@@ -72,7 +72,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, reader, deploymentContext);
+                    ModelObject o = registry.load(parent, null, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
                         serviceContract = (ServiceContract) o;
                     } else if (o instanceof Binding) {

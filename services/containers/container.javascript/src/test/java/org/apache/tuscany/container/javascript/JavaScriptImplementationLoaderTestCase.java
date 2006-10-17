@@ -55,7 +55,7 @@ public class JavaScriptImplementationLoaderTestCase extends TestCase {
         replay(deploymentContext);
 
         try {
-            loader.load(parent, reader, deploymentContext);
+            loader.load(parent, null, reader, deploymentContext);
             fail();
         } catch (MissingResourceException e) {
             // ok
@@ -79,7 +79,7 @@ public class JavaScriptImplementationLoaderTestCase extends TestCase {
             }
         };
         try {
-            mockLoader.load(parent, reader, deploymentContext);
+            mockLoader.load(parent, null, reader, deploymentContext);
             fail();
         } catch (MissingResourceException e) {
             assertEquals("foo.groovy", e.getMessage());

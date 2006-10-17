@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
@@ -67,7 +68,8 @@ public class PropertyLoader extends LoaderExtension<Property> {
         return PROPERTY;
     }
 
-    public Property<?> load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext ctx)
+    public Property<?> load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+                            DeploymentContext ctx)
         throws XMLStreamException, LoaderException {
         assert PROPERTY.equals(reader.getName());
         String name = reader.getAttributeValue(null, PROPERTY_NAME_ATTR);

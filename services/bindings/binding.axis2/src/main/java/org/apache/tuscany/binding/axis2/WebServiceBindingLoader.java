@@ -39,6 +39,8 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
+import org.apache.tuscany.spi.model.ModelObject;
+
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Scope;
 
@@ -65,7 +67,8 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         return BINDING_WS;
     }
 
-    public WebServiceBinding load(CompositeComponent parent, XMLStreamReader reader, DeploymentContext deploymentContext)
+    public WebServiceBinding load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+                                  DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         // not sure what uri was here ? String uri = reader.getAttributeValue(null, "uri");
         String uri = null;

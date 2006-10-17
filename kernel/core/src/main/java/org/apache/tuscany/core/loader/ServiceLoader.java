@@ -62,7 +62,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     }
 
     public ServiceDefinition load(CompositeComponent parent,
-                                  XMLStreamReader reader,
+                                  ModelObject object, XMLStreamReader reader,
                                   DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
@@ -81,7 +81,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         target = text != null ? text.trim() : null;
                     } else {
 
-                        ModelObject o = registry.load(parent, reader, deploymentContext);
+                        ModelObject o = registry.load(parent, null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {
                             serviceContract = (ServiceContract) o;
                         } else if (o instanceof Binding) {

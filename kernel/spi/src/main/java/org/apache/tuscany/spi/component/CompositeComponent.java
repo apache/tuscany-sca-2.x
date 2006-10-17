@@ -38,7 +38,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      *
      * @param context the context to add as a child
      * @throws InvalidComponentTypeException
-     */
+     */                                                        
     void register(SCAObject context) throws InvalidComponentTypeException;
 
     /**

@@ -50,7 +50,7 @@ public class ImplementationLoaderTestCase extends TestCase {
         replay(deploymentContext);
 
         try {
-            loader.load(parent, reader, deploymentContext);
+            loader.load(parent, null, reader, deploymentContext);
             fail();
         } catch (MissingResourceException e) {
             // ok
@@ -74,7 +74,7 @@ public class ImplementationLoaderTestCase extends TestCase {
             }
         };
         try {
-            mockLoader.load(parent, reader, deploymentContext);
+            mockLoader.load(parent, null, reader, deploymentContext);
             fail();
         } catch (MissingResourceException e) {
             assertEquals("foo.groovy", e.getMessage());

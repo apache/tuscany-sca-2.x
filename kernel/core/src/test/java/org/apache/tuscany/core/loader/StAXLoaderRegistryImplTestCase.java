@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import static org.easymock.EasyMock.isNull;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -68,12 +69,13 @@ public class StAXLoaderRegistryImplTestCase extends TestCase {
         mockMonitor.elementLoad(EasyMock.eq(name));
         EasyMock.replay(mockMonitor);
         EasyMock.expect(mockLoader.load(EasyMock.isA(CompositeComponent.class),
+            (ModelObject) isNull(),
             EasyMock.eq(mockReader),
             EasyMock.eq(deploymentContext))).andReturn(modelObject);
         EasyMock.replay(mockLoader);
         registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader);
         CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
-        assertSame(modelObject, registry.load(parent, mockReader, deploymentContext));
+        assertSame(modelObject, registry.load(parent, null, mockReader, deploymentContext));
         EasyMock.verify(mockLoader);
         EasyMock.verify(mockMonitor);
         EasyMock.verify(mockReader);
@@ -86,13 +88,30 @@ public class StAXLoaderRegistryImplTestCase extends TestCase {
         mockMonitor.elementLoad(EasyMock.eq(name));
         EasyMock.replay(mockMonitor);
         try {
-            registry.load(null, mockReader, deploymentContext);
+            registry.load(null, null, mockReader, deploymentContext);
             fail();
         } catch (UnrecognizedElementException e) {
             assertSame(name, e.getElement());
         }
         EasyMock.verify(mockReader);
         EasyMock.verify(mockMonitor);
+    }
+
+    public void testPregivenModelObject() throws Exception {
+        EasyMock.expect(mockReader.getName()).andReturn(name);
+        EasyMock.replay(mockReader);
+        mockMonitor.registeringLoader(EasyMock.eq(name));
+        mockMonitor.elementLoad(EasyMock.eq(name));
+        EasyMock.replay(mockMonitor);
+        EasyMock.expect(mockLoader.load(EasyMock.isA(CompositeComponent.class),
+            EasyMock.eq(modelObject),
+            EasyMock.eq(mockReader),
+            EasyMock.eq(deploymentContext))).andReturn(modelObject);
+        EasyMock.replay(mockLoader);
+        registry.registerLoader(name, (StAXElementLoader<ModelObject>) mockLoader);
+        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
+        assertSame(modelObject, registry.load(parent, modelObject, mockReader, deploymentContext));
+        EasyMock.verify(mockLoader);
     }
 
     @SuppressWarnings("unchecked")
