@@ -18,13 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 
 /**
  * 
@@ -32,26 +27,10 @@ import org.apache.tuscany.spi.wire.Message;
 public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 
     private InboundWire inboundWire;
-    private WorkContext workContext;
 
-    public CompositeReferenceCallbackTargetInvoker(Operation operation, InboundWire inboundWire, WorkContext context) {
+    public CompositeReferenceCallbackTargetInvoker(Operation operation, InboundWire inboundWire) {
         super(operation);
         this.inboundWire = inboundWire;
-        this.workContext = context;
-    }
-
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            workContext.setCurrentMessageId(msg.getMessageId());
-            workContext.setCurrentCorrelationId(msg.getCorrelationId());
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
-        } catch (Throwable e) {
-            msg.setBodyWithFault(e);
-        }
-        return msg;
     }
 
     public CompositeReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {
@@ -59,6 +38,6 @@ public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeRe
     }
 
     protected AbstractOperationOutboundInvocationHandler getInvocationHandler() {
-        return new OperationCallbackInvocationHandler(workContext, inboundWire);
+        return new OperationCallbackInvocationHandler(inboundWire);
     }
 }

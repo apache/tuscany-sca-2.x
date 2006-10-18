@@ -21,7 +21,6 @@ package org.apache.tuscany.core.implementation.composite;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -30,15 +29,11 @@ import org.apache.tuscany.spi.wire.WireService;
 
 public class CompositeService extends ServiceExtension {
 
-    private WorkContext workContext;
-
     public CompositeService(String name,
                             Class<?> interfaze,
                             CompositeComponent parent,
-                            WireService wireService,
-                            WorkContext workContext) throws CoreRuntimeException {
+                            WireService wireService) throws CoreRuntimeException {
         super(name, interfaze, parent, wireService);
-        this.workContext = workContext;
     }
 
     /**
@@ -48,13 +43,13 @@ public class CompositeService extends ServiceExtension {
      * FIXME !!! Notice that this method is not defined in the SPI !!!
      */
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire, workContext);
+        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire);
     }
 
     /**
      */
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-         return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire, workContext);
+         return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire);
     }
 
     public Object getServiceInstance() throws TargetException {

@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -31,22 +30,18 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class CompositeReference extends ReferenceExtension {
 
-    private WorkContext workContext;
-
     public CompositeReference(String name,
                               CompositeComponent parent,
                               WireService wireService,
-                              ServiceContract contract,
-                              WorkContext workContext) {
+                              ServiceContract contract) {
         super(name, contract.getInterfaceClass(), parent, wireService);
-        this.workContext = workContext;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire, workContext);
+        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire);
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire, workContext);
+        return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire);
     }
 }
