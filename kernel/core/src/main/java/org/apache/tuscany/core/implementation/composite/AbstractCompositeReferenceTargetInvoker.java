@@ -21,6 +21,9 @@ package org.apache.tuscany.core.implementation.composite;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -51,19 +54,19 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
-        Object[] args;
-        if (payload != null && !payload.getClass().isArray()) {
-            args = new Object[]{payload};
-        } else {
-            args = (Object[]) payload;
-        }
+        throw new InvocationTargetException(new InvocationRuntimeException("Not allowed to invokeTarget with object"));
+    }
+
+    public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             AbstractOperationOutboundInvocationHandler invocationHandler = getInvocationHandler();
-            return invocationHandler.invoke(operation, args);
-        } catch (Throwable t) {
-            throw new InvocationTargetException(t);
+            return invocationHandler.invoke(operation, msg);
+        } catch (Throwable e) {
+            Message faultMsg = new MessageImpl();
+            faultMsg.setBodyWithFault(e);
+            return faultMsg;
         }
-    }
+}
 
     @Override
     public AbstractCompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {

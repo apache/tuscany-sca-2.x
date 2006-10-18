@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
@@ -34,32 +31,18 @@ public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceT
 
     private InboundWire inboundWire;
     private OutboundWire outboundWire;
-    private WorkContext workContext;
-
 
     public CompositeReferenceTargetInvoker(Operation operation,
                                            InboundWire inboundWire,
-                                           OutboundWire outboundWire,
-                                           WorkContext workContext) {
+                                           OutboundWire outboundWire) {
         super(operation);
         this.inboundWire = inboundWire;
         this.outboundWire = outboundWire;
-        this.workContext = workContext;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            inboundWire.addMapping(msg.getMessageId(), msg.getFromAddress());
-            workContext.setCurrentMessageId(msg.getMessageId());
-            workContext.setCurrentCorrelationId(msg.getCorrelationId());
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
-        } catch (Throwable e) {
-            msg.setBodyWithFault(e);
-        }
-        return msg;
+        inboundWire.addMapping(msg.getMessageId(), msg.getFromAddress());
+        return super.invoke(msg);
     }
 
     public CompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {
@@ -67,6 +50,6 @@ public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceT
     }
     
     protected AbstractOperationOutboundInvocationHandler getInvocationHandler() {
-        return new OperationOutboundInvocationHandler(outboundWire, workContext);
+        return new OperationOutboundInvocationHandler(outboundWire);
     }
 }

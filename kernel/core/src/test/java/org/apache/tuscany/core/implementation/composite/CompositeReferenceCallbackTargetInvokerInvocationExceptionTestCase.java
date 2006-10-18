@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -20,7 +19,6 @@ import org.easymock.EasyMock;
  */
 public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase extends TestCase {
     private InboundWire wire;
-    private WorkContext context;
     private Message message;
     private OutboundInvocationChain chain;
     private CompositeReferenceCallbackTargetInvoker invoker;
@@ -35,7 +33,6 @@ public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase 
         Object body = response.getBody();
         assertTrue(SomeException.class.equals(body.getClass()));
         EasyMock.verify(wire);
-        EasyMock.verify(context);
         EasyMock.verify(chain);
     }
 
@@ -63,15 +60,7 @@ public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase 
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
         EasyMock.expect(wire.getContainer()).andReturn(null);
         EasyMock.replay(wire);
-        context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentMessageId(EasyMock.eq(id));
-        context.setCurrentMessageId(EasyMock.isNull());
-        context.setCurrentCorrelationId(corrId);
-        context.setCurrentCorrelationId(EasyMock.isNull());
-        EasyMock.expect(context.getCurrentMessageId()).andReturn(id);
-        EasyMock.expect(context.getCurrentCorrelationId()).andReturn(corrId);
-        EasyMock.replay(context);
-        invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire, context);
+        invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);
     }
 
     private class SomeException extends Exception {

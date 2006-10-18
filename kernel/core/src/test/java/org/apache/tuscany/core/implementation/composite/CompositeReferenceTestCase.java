@@ -37,8 +37,7 @@ public class CompositeReferenceTestCase extends TestCase {
         CompositeReference compositeReference = new CompositeReference("testCompositeReferemce",
                                                                        null,
                                                                        null,
-                                                                       serviceContract,
-                                                                       null);
+                                                                       serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
         TargetInvoker targetInvoker = compositeReference.createTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);
@@ -50,8 +49,7 @@ public class CompositeReferenceTestCase extends TestCase {
         CompositeReference compositeReference = new CompositeReference("testCompositeReferemce",
                                                                        null,
                                                                        null,
-                                                                       serviceContract,
-                                                                       null);
+                                                                       serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
         TargetInvoker targetInvoker = compositeReference.createCallbackTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);

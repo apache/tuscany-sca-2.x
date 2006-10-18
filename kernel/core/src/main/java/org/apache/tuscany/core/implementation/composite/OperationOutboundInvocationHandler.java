@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -41,12 +41,9 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
      * is not cacheable, the master associated with the wire chains will be used.
      */
     private Map<Operation, ChainHolder> chains;
-    private WorkContext context;
     private Object fromAddress;
-    private Object messageId;
-    private Object correlationId;
 
-    public OperationOutboundInvocationHandler(OutboundWire wire, WorkContext context) {
+    public OperationOutboundInvocationHandler(OutboundWire wire) {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Operation, ChainHolder>(invocationChains.size());
         this.fromAddress = (wire.getContainer() == null) ? null : wire.getContainer().getName();
@@ -55,11 +52,9 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
             Operation operation = entry.getKey();
             this.chains.put(operation, new ChainHolder(entry.getValue()));
         }
-
-        this.context = context;
     }
 
-    public Object invoke(Object proxy, Operation operation, Object[] args) throws Throwable {
+    public Message invoke(Operation operation, Message msg) throws Throwable {
         ChainHolder holder = chains.get(operation);
         if (holder == null) {
             TargetException e = new TargetException("Operation not configured");
@@ -87,27 +82,12 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        messageId = context.getCurrentMessageId();
-        context.setCurrentMessageId(null);
-        correlationId = context.getCurrentCorrelationId();
-        context.setCurrentCorrelationId(null);
-        return invoke(chain, invoker, args);
-    }
 
-    public Object invoke(Operation operation, Object[] args) throws Throwable {
-        return invoke(null, operation, args);
+        return invoke(chain, invoker, msg);
     }
 
     protected Object getFromAddress() {
         return fromAddress;
-    }
-
-    protected Object getMessageId() {
-        return messageId;
-    }
-
-    protected Object getCorrelationId() {
-        return correlationId;
     }
 
     /**

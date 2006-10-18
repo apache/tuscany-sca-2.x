@@ -20,9 +20,9 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -31,21 +31,14 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class OperationCallbackInvocationHandler extends AbstractOperationOutboundInvocationHandler {
 
-    private WorkContext context;
     private InboundWire inboundWire;
-    private Object messageId;
-    private Object correlationId;
 
-    public OperationCallbackInvocationHandler(WorkContext context, InboundWire inboundWire) {
-        this.context = context;
+    public OperationCallbackInvocationHandler(InboundWire inboundWire) {
         this.inboundWire = inboundWire;
     }
 
-    public Object invoke(Object proxy, Operation operation, Object[] args) throws Throwable {
-        messageId = context.getCurrentMessageId();
-        context.setCurrentMessageId(null);
-        correlationId = context.getCurrentCorrelationId();
-        context.setCurrentCorrelationId(null);
+    public Message invoke(Operation operation, Message msg) throws Throwable {
+        Object correlationId = msg.getCorrelationId();
         Object targetAddress = inboundWire.retrieveMapping(correlationId);
         if (targetAddress == null) {
             throw new AssertionError("No from address associated with message id [" + correlationId + "]");
@@ -55,23 +48,11 @@ public class OperationCallbackInvocationHandler extends AbstractOperationOutboun
             inboundWire.getSourceCallbackInvocationChains(targetAddress);
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        return invoke(chain, invoker, args);
+        return invoke(chain, invoker, msg);
     }
 
-
-    public Object invoke(Operation operation, Object[] args) throws Throwable {
-        return invoke(null, operation, args);
-    }
 
     protected Object getFromAddress() {
         return (inboundWire.getContainer() == null) ? null : inboundWire.getContainer().getName();
-    }
-    
-    protected Object getMessageId() {
-        return messageId;
-    }
-    
-    protected Object getCorrelationId() {
-        return correlationId;
     }
 }

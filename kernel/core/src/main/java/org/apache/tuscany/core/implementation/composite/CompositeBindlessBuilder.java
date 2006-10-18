@@ -26,7 +26,6 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -39,7 +38,6 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
 
     protected BuilderRegistry builderRegistry;
     protected WireService wireService;
-    protected WorkContext workContext;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -49,11 +47,6 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     @Autowire
     public void setWireService(WireService wireService) {
         this.wireService = wireService;
-    }
-
-    @Autowire
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
     }
 
     @Init(eager = true)
@@ -67,8 +60,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
         return new CompositeService(definition.getName(),
             definition.getServiceContract().getInterfaceClass(),
             parent,
-            wireService,
-            workContext);
+            wireService);
     }
 
     public Reference build(CompositeComponent parent,
@@ -77,7 +69,6 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
         return new CompositeReference(definition.getName(),
             parent,
             wireService,
-            definition.getServiceContract(),
-            workContext);
+            definition.getServiceContract());
     }
 }
