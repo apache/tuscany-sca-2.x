@@ -34,13 +34,10 @@ import org.w3c.dom.Node;
 @Service(Transformer.class)
 public class JAXB2Node extends TransformerExtension<Object, Node> implements PullTransformer<Object, Node> {
 
-    public JAXB2Node() {
-        super();
-    }
-
     public Node transform(Object source, TransformationContext tContext) {
-        if (source == null)
+        if (source == null) {
             return null;
+        }    
         try {
             JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
