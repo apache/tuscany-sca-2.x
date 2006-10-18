@@ -35,13 +35,10 @@ import org.osoa.sca.annotations.Service;
 public class Reader2JAXB extends TransformerExtension<Reader, Object> implements
     PullTransformer<Reader, Object> {
 
-    public Reader2JAXB() {
-        super();
-    }
-
-    public Object transform(Reader source, TransformationContext context) {
-        if (source == null)
+    public Object transform(final Reader source, final TransformationContext context) {
+        if (source == null) {
             return null;
+        }
         try {
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

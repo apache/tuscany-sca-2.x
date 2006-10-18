@@ -38,8 +38,9 @@ public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, 
     }
 
     public Object transform(XMLStreamReader source, TransformationContext context) {
-        if (source == null)
+        if (source == null) {
             return null;
+        }
         try {
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -64,5 +65,5 @@ public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, 
     @Override
     public String getTargetDataBinding() {
         return JAXBDataBinding.NAME;
-    }    
+    }
 }
