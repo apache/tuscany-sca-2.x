@@ -383,7 +383,6 @@ public class TuscanyStandaloneMojo extends AbstractMojo {
      * @param newZip ZIP to which the metadata is written.
      * @throws IOException In case of an IO error.
      */
-    @SuppressWarnings("unchecked")
     private void writeDependencyMetadata(JarOutputStream newZip) throws IOException {
 
         FileOutputStream depMapOutStream = null;
@@ -440,7 +439,6 @@ public class TuscanyStandaloneMojo extends AbstractMojo {
      * @throws ArtifactMetadataRetrievalException In case of error in retrieving
      *             metadata.
      */
-    @SuppressWarnings("unchecked")
     private void loadTransitiveDependencies(JarOutputStream newWar, Artifact art) throws IOException,
         ArtifactResolutionException, ArtifactNotFoundException, ArtifactMetadataRetrievalException {
 
