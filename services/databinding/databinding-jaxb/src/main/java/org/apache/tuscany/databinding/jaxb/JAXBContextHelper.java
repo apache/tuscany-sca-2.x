@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.databinding.jaxb;
 
+import java.lang.reflect.Type;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
@@ -34,23 +36,36 @@ public class JAXBContextHelper {
     private JAXBContextHelper() {
     }
 
-    public static JAXBContext createJAXBContext(TransformationContext tContext, boolean source) throws JAXBException {
+    public static JAXBContext createJAXBContext(TransformationContext tContext, boolean source)
+        throws JAXBException {
         if (tContext == null)
             throw new TransformationException("JAXB context is not set for the transformation.");
 
         // FIXME: We should check the context path or classes
         // FIXME: What should we do if JAXB is an intermediate node?
         DataType<?> bindingContext = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
-        String contextPath = (String) bindingContext.getMetadata(JAXB_CONTEXT_PATH);
+        String contextPath = (String)bindingContext.getMetadata(JAXB_CONTEXT_PATH);
         JAXBContext context = null;
-        if (contextPath != null)
+        if (contextPath != null) {
             context = JAXBContext.newInstance(contextPath);
-        else {
-            Class[] classes = (Class[]) bindingContext.getMetadata(JAXB_CLASSES);
-            context = JAXBContext.newInstance(classes);
+        } else {
+            Class[] classes = (Class[])bindingContext.getMetadata(JAXB_CLASSES);
+            if (classes != null) {
+                context = JAXBContext.newInstance(classes);
+            } else {
+                Type type = bindingContext.getPhysical();
+                if (type instanceof Class) {
+                    Class cls = (Class)type;
+                    if (cls.getPackage() != null) {
+                        contextPath = cls.getPackage().getName();
+                        context = JAXBContext.newInstance(contextPath);
+                    }
+                }
+            }
         }
-        if (context == null)
+        if (context == null) {
             throw new TransformationException("JAXB context is not set for the transformation.");
+        }
         return context;
     }
 

@@ -31,6 +31,8 @@ import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Node;
 
+import com.example.ipo.jaxb.PurchaseOrderType;
+
 public class JAXBTestCase extends TestCase {
     private static final String IPO_XML =
         "<?xml version=\"1.0\"?>" + "<ipo:purchaseOrder"
@@ -98,6 +100,35 @@ public class JAXBTestCase extends TestCase {
 
     }
 
+    public void testTransform2() throws Exception {
+        Reader2JAXB t0 = new Reader2JAXB();
+
+        DataType targetDataType = new DataType<Class>(PurchaseOrderType.class, null);
+        // targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
+
+        TransformationContext tContext = createMock(TransformationContext.class);
+        expect(tContext.getTargetDataType()).andReturn(targetDataType).anyTimes();
+        replay(tContext);
+
+        Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
+
+        DataType sourceDataType = new DataType<Class>(PurchaseOrderType.class, null);
+        // sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
+
+        TransformationContext tContext1 = createMock(TransformationContext.class);
+        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
+        replay(tContext1);
+
+        JAXB2Node t1 = new JAXB2Node();
+        Node node = t1.transform(object1, tContext1);
+
+        Assert.assertNotNull(node);
+
+        Node2JAXB t2 = new Node2JAXB();
+        Object object2 = t2.transform(node, tContext);
+        Assert.assertNotNull(object2);
+
+    }    
     protected void tearDown() throws Exception {
         super.tearDown();
     }
