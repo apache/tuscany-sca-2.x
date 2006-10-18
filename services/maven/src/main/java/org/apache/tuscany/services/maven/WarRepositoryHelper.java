@@ -110,7 +110,7 @@ public class WarRepositoryHelper {
                 throw new TuscanyDependencyException(ex);
             }      
         }
-        return true;
+        return rootArtifact.getUrl()!=null;
     }
 
 }
