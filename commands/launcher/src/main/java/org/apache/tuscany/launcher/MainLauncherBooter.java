@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -56,7 +57,8 @@ public class MainLauncherBooter {
         File installDir = getInstallDirectory();
         URL baseUrl = installDir.toURI().toURL();
         File bootDir = getBootDirectory(installDir);
-        boolean online = System.getProperty("offline") != null; 
+        
+        boolean online = ! Boolean.parseBoolean(System.getProperty("offline", Boolean.FALSE.toString())); 
         StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDir, installDir, online);
 
         File applicationJar = new File(args[0]);
