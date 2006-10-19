@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-plugin-wsdl2java</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Tuscany SCA - Maven Plugin for WSDL2Java</name>
+    <name>Apache Tuscany SCA Maven Plugin for WSDL2Java</name>
     <description>Implementation of WSDL2Java Generator</description>
 
     <dependencies>
