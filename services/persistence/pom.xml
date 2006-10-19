@@ -56,6 +56,7 @@
     </repositories>
 
     <modules>
+        <module>common</module>
         <module>openjpa</module>
     </modules>
 </project>
