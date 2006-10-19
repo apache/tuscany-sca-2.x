@@ -19,7 +19,7 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.services.idl</groupId>
+        <groupId>org.apache.tuscany.sca.services.persistence</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-M2-SNAPSHOT</version>
     </parent>
