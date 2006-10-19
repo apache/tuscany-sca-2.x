@@ -83,11 +83,10 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
             invoker = chain.getTargetInvoker();
         }
 
-        return invoke(chain, invoker, msg);
-    }
+        // Setting the from address only needs to happen in the outbound (forward) direction
+        msg.setFromAddress(fromAddress);
 
-    protected Object getFromAddress() {
-        return fromAddress;
+        return invoke(chain, invoker, msg);
     }
 
     /**

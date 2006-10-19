@@ -46,13 +46,10 @@ public abstract class AbstractOperationOutboundInvocationHandler {
             }
         } else {
             msg.setTargetInvoker(invoker);
-            msg.setFromAddress(getFromAddress());
 
             Message resp = headInterceptor.invoke(msg);
 
             return resp;
         }
     }
-
-    protected abstract Object getFromAddress();
 }

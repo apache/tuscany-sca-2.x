@@ -47,7 +47,10 @@ public abstract class AbstractOutboundInvocationHandler {
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
-            msg.setFromAddress(getFromAddress());
+            Object fromAddress = getFromAddress();
+            if (fromAddress != null) {
+                msg.setFromAddress(fromAddress);
+            }
             Object messageId = getMessageId();
             if (messageId == null) {
                 messageId = new MessageId();
@@ -66,7 +69,10 @@ public abstract class AbstractOutboundInvocationHandler {
         }
     }
 
-    protected abstract Object getFromAddress();
+    protected Object getFromAddress() {
+        // Default to null, only needed in outbound (forward) direction
+        return null;
+    }
 
     protected abstract Object getMessageId();
 

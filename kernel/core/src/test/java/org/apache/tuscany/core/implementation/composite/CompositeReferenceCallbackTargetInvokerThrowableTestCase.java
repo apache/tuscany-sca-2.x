@@ -89,7 +89,6 @@ public class CompositeReferenceCallbackTargetInvokerThrowableTestCase extends Te
         wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.retrieveMapping(corrId)).andReturn(targetAddress);
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
-        EasyMock.expect(wire.getContainer()).andReturn(null);
         EasyMock.replay(wire);
         invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);
     }
