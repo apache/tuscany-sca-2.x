@@ -37,7 +37,8 @@ import org.apache.tuscany.spi.model.DataType;
  * Test case for WSDLOperation
  */
 public class WSDLOperationTestCase extends TestCase {
-    private static final QName PORTTYPE_NAME = new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
+    private static final QName PORTTYPE_NAME =
+        new QName("http://example.com/stockquote.wsdl", "StockQuotePortType");
 
     private WSDLDefinitionRegistryImpl registry;
 
@@ -55,30 +56,30 @@ public class WSDLOperationTestCase extends TestCase {
         Definition definition = registry.loadDefinition(null, url);
         PortType portType = definition.getPortType(PORTTYPE_NAME);
         Operation operation = portType.getOperation("getLastTradePrice", null, null);
-        
+
         WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
-        
+
         DataType<List<DataType<QName>>> inputType = op.getInputType();
         Assert.assertEquals(1, inputType.getLogical().size());
-        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), inputType.getLogical()
-                .get(0).getLogical());
-        
+        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePrice"), inputType
+            .getLogical().get(0).getLogical());
+
         DataType<QName> outputType = op.getOutputType();
-        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"), outputType
-                .getLogical());
+        Assert.assertEquals(new QName("http://example.com/stockquote.xsd", "getLastTradePriceResponse"),
+                            outputType.getLogical());
         Assert.assertTrue(op.isWrapperStyle());
-        
+
         DataType<List<DataType<QName>>> unwrappedInputType = op.getWrapper().getUnwrappedInputType();
         List<DataType<QName>> childTypes = unwrappedInputType.getLogical();
         Assert.assertEquals(1, childTypes.size());
         DataType<QName> childType = childTypes.get(0);
         Assert.assertEquals(new QName(null, "tickerSymbol"), childType.getLogical());
-        ElementInfo element = (ElementInfo) childType.getMetadata(ElementInfo.class.getName());
+        ElementInfo element = (ElementInfo)childType.getMetadata(ElementInfo.class.getName());
         Assert.assertNotNull(element);
-        
+
         childType = op.getWrapper().getUnwrappedOutputType();
         Assert.assertEquals(new QName(null, "price"), childType.getLogical());
-        element = (ElementInfo) childType.getMetadata(ElementInfo.class.getName());
+        element = (ElementInfo)childType.getMetadata(ElementInfo.class.getName());
         Assert.assertNotNull(element);
     }
 
@@ -86,16 +87,33 @@ public class WSDLOperationTestCase extends TestCase {
         URL url = getClass().getResource("unwrapped-stockquote.wsdl");
         Definition definition = registry.loadDefinition(null, url);
         PortType portType = definition.getPortType(PORTTYPE_NAME);
-        
+
         Operation operation = portType.getOperation("getLastTradePrice1", null, null);
         WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(1, op.getInputType().getLogical().size());
-        
+
         operation = portType.getOperation("getLastTradePrice2", null, null);
         op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
         Assert.assertFalse(op.isWrapperStyle());
         Assert.assertEquals(2, op.getInputType().getLogical().size());
+    }
+
+    public final void testInvalidWSDL() throws Exception {
+        URL url = getClass().getResource("invalid-stockquote.wsdl");
+        Definition definition = registry.loadDefinition(null, url);
+        PortType portType = definition.getPortType(PORTTYPE_NAME);
+
+        Operation operation = portType.getOperation("getLastTradePrice", null, null);
+        WSDLOperation op = new WSDLOperation(operation, "org.w3c.dom.Node", registry.getSchemaRegistry());
+
+        try {
+            op.isWrapperStyle();
+            fail("InvalidWSDLException should have been thrown");
+        } catch (InvalidWSDLException e) {
+            // Expected
+        }
+
     }
 
 }
