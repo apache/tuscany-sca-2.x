@@ -57,7 +57,8 @@ import org.apache.maven.plugin.MojoExecutionException;
  * <ul>
  *   <li>Adds the boot dependencies transitively to WEB-INF/tuscany/boot</li>
  *   <li>By default boot libraries are transitively resolved from webapp-host</li>
- *   <li>This can be overridden using the configuration/bootLibs element in the plugin</li>
+ *   <li>The version of boot libraries can be specified using configuration/runTimeVersion element</li>
+ *   <li>Boot libraries can be overridden using the configuration/bootLibs element in the plugin</li>
  *   <li>Adds the extension artifacts specified using configuration/extensions to WEB-INF/tuscany/extensions</li>
  *   <li>If configuration/loadExtensionsDependency is set to true extension dependencies are transitivel loaded</li>
  *   <li>Extension dependencies are loaded into WEB-INF/tuscany/repository directory in a Maven repo format</li>
@@ -179,6 +180,13 @@ public class TuscanyWarMojo extends AbstractMojo {
     private boolean loadExtensionDependencies;
 
     /**
+     * The default version of boot dependany jar files
+     * 
+     * @parameter
+     */
+    private String runTimeVersion = null;
+    
+    /**
      * WEB-INF jar files.
      */
     private Set<String> packagedLibs = new HashSet<String>();
@@ -202,6 +210,14 @@ public class TuscanyWarMojo extends AbstractMojo {
 
         try {
 
+        	// if there is a runtime version specified and no bootLib dependancies,
+        	// modify the bootLibs to have the runtime version.
+        	if (runTimeVersion != null && bootLibs == Dependency.getDefaultBootLibs()) {
+        		Dependency dependancy = new Dependency("org.apache.tuscany.sca.runtime", 
+        				"webapp-host", runTimeVersion);
+        		bootLibs = new Dependency[] {dependancy};
+        	}
+        	
             originalWarFile = new File(outputDirectory, warName + ".war");
             originalWar = new JarFile(originalWarFile);
 
