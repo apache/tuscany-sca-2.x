@@ -118,7 +118,7 @@ public class WorkContextTestCase extends TestCase {
         assertNull(context.getCurrentCorrelationId());
     }
 
-    private static class ChildThread extends Thread {
+    private static final class ChildThread extends Thread {
         private WorkContext context;
         private boolean passed = true;
 

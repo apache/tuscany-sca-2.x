@@ -25,7 +25,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.NoSuchElementException;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -47,10 +46,9 @@ public final class StAXHelper {
     }
 
     /**
-     * This class is derived from Apache Axis2 class
-     * org.apache.axis2.util.StreamWrapper</a>. It's used wrap a
-     * XMLStreamReader to create a XMLStreamReader representing a document and
-     * it will produce START_DOCUMENT, END_DOCUMENT events.
+     * This class is derived from Apache Axis2 class org.apache.axis2.util.StreamWrapper</a>. It's used wrap a
+     * XMLStreamReader to create a XMLStreamReader representing a document and it will produce START_DOCUMENT,
+     * END_DOCUMENT events.
      */
     public static class XMLDocumentStreamReader implements XMLStreamReader {
         private static final int STATE_COMPLETE_AT_NEXT = 2; // The wrapper
@@ -413,7 +411,7 @@ public final class StAXHelper {
         }
 
         public int next() throws XMLStreamException {
-            int returnEvent = -1;
+            int returnEvent;
 
             switch (state) {
                 case STATE_SWITCHED:
@@ -474,16 +472,13 @@ public final class StAXHelper {
         String ELEMENT_TEXT = "Element Text";
 
         /**
-         * Initiate the parser - this will do whatever the needed tasks to
-         * initiate the parser and must be called before attempting any specific
-         * parsing using this parser
+         * Initiate the parser - this will do whatever the needed tasks to initiate the parser and must be called before
+         * attempting any specific parsing using this parser
          */
         void init();
 
         /**
          * Extra method to query the state of the pullparser
-         * 
-         * @return
          */
         boolean isEndOfFragment();
 
@@ -494,8 +489,7 @@ public final class StAXHelper {
     }
 
     /**
-     * The XMLStreamSerializer pulls events from the XMLStreamReader and dumps
-     * into the XMLStreamWriter
+     * The XMLStreamSerializer pulls events from the XMLStreamReader and dumps into the XMLStreamWriter
      */
     public static class XMLStreamSerializer implements XMLStreamConstants {
 
@@ -514,12 +508,11 @@ public final class StAXHelper {
         /**
          * Field depth
          */
-        private int depth = 0;
+        private int depth;
 
         /**
-         * Generates a unique namespace prefix that is not in the scope of the
-         * NamespaceContext
-         * 
+         * Generates a unique namespace prefix that is not in the scope of the NamespaceContext
+         *
          * @param nsCtxt
          * @return string
          */
@@ -535,7 +528,7 @@ public final class StAXHelper {
 
         /**
          * Method serialize.
-         * 
+         *
          * @param node
          * @param writer
          * @throws XMLStreamException
@@ -552,9 +545,9 @@ public final class StAXHelper {
         protected void serializeAttributes(XMLStreamReader reader, XMLStreamWriter writer)
             throws XMLStreamException {
             int count = reader.getAttributeCount();
-            String prefix = null;
-            String namespaceName = null;
-            String writerPrefix = null;
+            String prefix;
+            String namespaceName;
+            String writerPrefix;
             for (int i = 0; i < count; i++) {
                 prefix = reader.getAttributePrefix(i);
                 namespaceName = reader.getAttributeNamespace(i);
@@ -578,9 +571,9 @@ public final class StAXHelper {
                     // writer
                     if (writerPrefix != null && (prefix == null || prefix.equals(""))) {
                         writer.writeAttribute(writerPrefix,
-                                              namespaceName,
-                                              reader.getAttributeLocalName(i),
-                                              reader.getAttributeValue(i));
+                            namespaceName,
+                            reader.getAttributeLocalName(i),
+                            reader.getAttributeValue(i));
 
                         // writer prefix is available but different from the
                         // current
@@ -616,7 +609,7 @@ public final class StAXHelper {
 
         /**
          * Method serializeCData.
-         * 
+         *
          * @param reader
          * @param writer
          * @throws XMLStreamException
@@ -628,7 +621,7 @@ public final class StAXHelper {
 
         /**
          * Method serializeComment.
-         * 
+         *
          * @param reader
          * @param writer
          * @throws XMLStreamException
@@ -685,7 +678,7 @@ public final class StAXHelper {
 
         /**
          * Method serializeEndElement.
-         * 
+         *
          * @param writer
          * @throws XMLStreamException
          */
@@ -695,7 +688,7 @@ public final class StAXHelper {
 
         /**
          * Method serializeNamespace.
-         * 
+         *
          * @param prefix
          * @param uri
          * @param writer
@@ -712,7 +705,7 @@ public final class StAXHelper {
 
         /**
          * Method serializeNode.
-         * 
+         *
          * @param reader
          * @param writer
          * @throws XMLStreamException
@@ -772,18 +765,15 @@ public final class StAXHelper {
     }
 
     public static XMLStreamReader createXMLStreamReader(InputStream inputStream) throws XMLStreamException {
-        XMLStreamReader streamReader = INPUT_FACTORY.createXMLStreamReader(inputStream);
-        return streamReader;
+        return INPUT_FACTORY.createXMLStreamReader(inputStream);
     }
 
     public static XMLStreamReader createXMLStreamReader(Reader reader) throws XMLStreamException {
-        XMLStreamReader streamReader = INPUT_FACTORY.createXMLStreamReader(reader);
-        return streamReader;
+        return INPUT_FACTORY.createXMLStreamReader(reader);
     }
 
     public static XMLStreamReader createXMLStreamReader(Source source) throws XMLStreamException {
-        XMLStreamReader reader = INPUT_FACTORY.createXMLStreamReader(source);
-        return reader;
+        return INPUT_FACTORY.createXMLStreamReader(source);
     }
 
     public static XMLStreamReader createXMLStreamReader(String string) throws XMLStreamException {

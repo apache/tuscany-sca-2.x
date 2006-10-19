@@ -25,6 +25,15 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -32,14 +41,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reportMatcher;
 import static org.easymock.EasyMock.verify;
 import org.easymock.IArgumentMatcher;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
-import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.deployer.CompositeClassLoader;
-import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.model.CompositeImplementation;
-import org.apache.tuscany.spi.services.artifact.Artifact;
-import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
 /**
  * @version $Rev$ $Date$
@@ -98,7 +99,8 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         verify(context);
         verify(artifactRepository);
         assertEquals(name, impl.getName());
-        assertEquals(new URL("jar:http://www.example.com/sca/base.jar!/META-INF/sca/default.scdl"), impl.getScdlLocation());
+        assertEquals(new URL("jar:http://www.example.com/sca/base.jar!/META-INF/sca/default.scdl"),
+            impl.getScdlLocation());
         assertTrue(impl.getClassLoader() instanceof CompositeClassLoader);
     }
 
@@ -149,7 +151,7 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
         verify(artifactRepository);
         assertEquals(name, impl.getName());
         assertEquals(new URL("jar:http://www.example.com/sca/bar.jar!/META-INF/sca/default.scdl"),
-                     impl.getScdlLocation());
+            impl.getScdlLocation());
     }
 
     protected void setUp() throws Exception {
@@ -173,10 +175,10 @@ public class ImplementationCompositeLoaderTestCase extends TestCase {
                 }
 
                 Artifact artifact = (Artifact) object;
-                boolean match = group.equals(artifact.getGroup()) &&
-                    name.equals(artifact.getName()) &&
-                    version.equals(artifact.getVersion()) &&
-                    "jar".equals(artifact.getType());
+                boolean match = group.equals(artifact.getGroup())
+                    && name.equals(artifact.getName())
+                    && version.equals(artifact.getVersion())
+                    && "jar".equals(artifact.getType());
                 if (match) {
                     artifact.setUrl(url);
                 }

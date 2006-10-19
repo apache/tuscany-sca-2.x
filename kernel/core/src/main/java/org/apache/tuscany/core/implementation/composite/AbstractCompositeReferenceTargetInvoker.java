@@ -66,7 +66,7 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
             faultMsg.setBodyWithFault(e);
             return faultMsg;
         }
-}
+    }
 
     @Override
     public AbstractCompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {

@@ -49,7 +49,7 @@ public class CompositeService extends ServiceExtension {
     /**
      */
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-         return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire);
+        return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire);
     }
 
     public Object getServiceInstance() throws TargetException {
