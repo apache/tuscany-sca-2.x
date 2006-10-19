@@ -19,6 +19,7 @@
 package org.apache.tuscany.databinding.jaxb;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamReader;
 
@@ -44,7 +45,8 @@ public class XMLStreamReader2JAXB extends TransformerExtension<XMLStreamReader, 
         try {
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return unmarshaller.unmarshal(source);
+            Object result = unmarshaller.unmarshal(source);
+            return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

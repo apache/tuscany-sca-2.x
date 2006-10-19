@@ -37,14 +37,15 @@ public class JAXB2Node extends TransformerExtension<Object, Node> implements Pul
     public Node transform(Object source, TransformationContext tContext) {
         if (source == null) {
             return null;
-        }    
+        }
         try {
             JAXBContext context = JAXBContextHelper.createJAXBContext(tContext, true);
             Marshaller marshaller = context.createMarshaller();
             // FIXME: The default Marshaller doesn't support
             // marshaller.getNode()
             Document document = DOMHelper.newDocument();
-            marshaller.marshal(source, document);
+            marshaller.marshal(JAXBContextHelper.createJAXBElement(tContext.getSourceDataType(), source),
+                               document);
             return document;
         } catch (Exception e) {
             throw new TransformationException(e);

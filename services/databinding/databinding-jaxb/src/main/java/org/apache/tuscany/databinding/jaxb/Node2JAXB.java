@@ -42,7 +42,8 @@ public class Node2JAXB extends TransformerExtension<Node, Object> implements Pul
         try {
             JAXBContext jaxbContext = JAXBContextHelper.createJAXBContext(context, false);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return unmarshaller.unmarshal(source);
+            Object result = unmarshaller.unmarshal(source);
+            return JAXBContextHelper.createReturnValue(context.getTargetDataType(), result);
         } catch (Exception e) {
             throw new TransformationException(e);
         }

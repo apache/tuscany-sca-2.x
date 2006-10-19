@@ -21,7 +21,10 @@ package org.apache.tuscany.databinding.jaxb;
 import java.lang.reflect.Type;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
@@ -29,6 +32,7 @@ import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 
 public class JAXBContextHelper {
+    private static final QName JAXB_ELEMENT = new QName("http://jaxb", "element");
     // TODO: Do we need to set them for source and target?
     public static final String JAXB_CLASSES = "jaxb.classes";
 
@@ -72,6 +76,35 @@ public class JAXBContextHelper {
             throw new TransformationException("JAXB context is not set for the transformation.");
         }
         return context;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static JAXBElement createJAXBElement(DataType dataType, Object value) {
+        if (value instanceof JAXBElement) {
+            return (JAXBElement)value;
+        } else {
+            Object logical = dataType.getLogical();
+            if (!(logical instanceof QName)) {
+                logical = JAXB_ELEMENT;
+            }
+            return new JAXBElement((QName)logical, (Class)dataType.getPhysical(), value);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Object createReturnValue(DataType dataType, Object value) {
+        Class<?> cls = (Class)dataType.getPhysical();
+        XmlRootElement element = cls.getAnnotation(XmlRootElement.class);
+        if (element == null) {
+            if (value instanceof JAXBElement) {
+                return ((JAXBElement)value).getValue();
+            } else {
+                return value;
+            }
+        } else {
+            QName root = new QName(element.namespace(), element.name());
+            return new JAXBElement(root, (Class)dataType.getPhysical(), value);
+        }
     }
 
 }
