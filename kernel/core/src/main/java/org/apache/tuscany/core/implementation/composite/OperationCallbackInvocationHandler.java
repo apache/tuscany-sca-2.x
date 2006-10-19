@@ -50,9 +50,4 @@ public class OperationCallbackInvocationHandler extends AbstractOperationOutboun
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, msg);
     }
-
-
-    protected Object getFromAddress() {
-        return (inboundWire.getContainer() == null) ? null : inboundWire.getContainer().getName();
-    }
 }

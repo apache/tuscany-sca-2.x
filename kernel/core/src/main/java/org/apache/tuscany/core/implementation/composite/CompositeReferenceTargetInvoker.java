@@ -41,7 +41,11 @@ public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceT
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
-        inboundWire.addMapping(msg.getMessageId(), msg.getFromAddress());
+        Object messageId = msg.getMessageId();
+        // If there is no callback, there may not be a message id
+        if (messageId != null) {
+            inboundWire.addMapping(messageId, msg.getFromAddress());
+        }
         return super.invoke(msg);
     }
 

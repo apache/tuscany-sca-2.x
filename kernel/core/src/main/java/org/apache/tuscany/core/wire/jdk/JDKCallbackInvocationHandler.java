@@ -75,10 +75,6 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
     }
-
-    protected Object getFromAddress() {
-        return (inboundWire.getContainer() == null) ? null : inboundWire.getContainer().getName();
-    }
     
     protected Object getMessageId() {
         return messageId;
