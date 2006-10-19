@@ -148,24 +148,24 @@ public class DataType<L> extends ModelObject {
         return result;
     }
 
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o) {
-             return true;
-         }
-         if (o == null || getClass() != o.getClass()) {
-             return false;
-         }
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-         final DataType dataType = (DataType) o;
+        final DataType dataType = (DataType) o;
 
-         if (dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null) {
-             return false;
-         }
-         if (logical != null ? !logical.equals(dataType.logical) : dataType.logical != null) {
-             return false;
-         }
-         return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
-        
+        if (dataBinding != null ? !dataBinding.equals(dataType.dataBinding) : dataType.dataBinding != null) {
+            return false;
+        }
+        if (logical != null ? !logical.equals(dataType.logical) : dataType.logical != null) {
+            return false;
+        }
+        return !(physical != null ? !physical.equals(dataType.physical) : dataType.physical != null);
+
     }
 
 //    @SuppressWarnings("unchecked")

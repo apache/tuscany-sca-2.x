@@ -61,6 +61,7 @@ public class CompositeReferenceCallbackTargetInvokerThrowableTestCase extends Te
         EasyMock.verify(head);
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         Object id = new Object();
