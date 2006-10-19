@@ -51,6 +51,19 @@ public class OMElementTestCase extends TestCase {
         Assert.assertNotNull(xml.indexOf("<ipo:comment>") != -1);
     }
 
+    public final void testStringTransform2() {
+        String str =
+            "<p0:firstName xmlns:xml=\"http://www.w3.org/XML/1998/namespace\" " 
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+            + "xmlns:p0=\"http://helloworld\">Robert</p0:firstName>";
+        String2OMElement t1 = new String2OMElement();
+        OMElement element = t1.transform(str, null);
+        OMElement2String t2 = new OMElement2String();
+        String xml = t2.transform(element, null);
+        Assert.assertNotNull(xml);
+        Assert.assertNotNull(xml.indexOf("<ipo:comment>") != -1);
+    }    
+
     public final void testStAXTransform() {
         String2OMElement t1 = new String2OMElement();
         OMElement element = t1.transform(IPO_XML, null);

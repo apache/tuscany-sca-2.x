@@ -24,6 +24,8 @@ import static org.easymock.EasyMock.replay;
 
 import java.io.StringReader;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -31,6 +33,7 @@ import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Node;
 
+import com.example.ipo.jaxb.ObjectFactory;
 import com.example.ipo.jaxb.PurchaseOrderType;
 
 public class JAXBTestCase extends TestCase {
@@ -103,7 +106,8 @@ public class JAXBTestCase extends TestCase {
     public void testTransform2() throws Exception {
         Reader2JAXB t0 = new Reader2JAXB();
 
-        DataType targetDataType = new DataType<Class>(PurchaseOrderType.class, null);
+        QName root = new QName("http://www.example.com/IPO", "purchaseOrder");
+        DataType targetDataType = new DataType<QName>(PurchaseOrderType.class, root);
         // targetDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext = createMock(TransformationContext.class);
@@ -112,7 +116,7 @@ public class JAXBTestCase extends TestCase {
 
         Object object1 = t0.transform(new StringReader(IPO_XML), tContext);
 
-        DataType sourceDataType = new DataType<Class>(PurchaseOrderType.class, null);
+        DataType sourceDataType = new DataType<QName>(PurchaseOrderType.class, root);
         // sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
 
         TransformationContext tContext1 = createMock(TransformationContext.class);
@@ -129,6 +133,24 @@ public class JAXBTestCase extends TestCase {
         Assert.assertNotNull(object2);
 
     }    
+
+    public void testTransform3() throws Exception {
+
+        DataType sourceDataType = new DataType<Class>(PurchaseOrderType.class, null);
+        sourceDataType.setMetadata(JAXBContextHelper.JAXB_CONTEXT_PATH, contextPath);
+
+        TransformationContext tContext1 = createMock(TransformationContext.class);
+        expect(tContext1.getSourceDataType()).andReturn(sourceDataType).anyTimes();
+        replay(tContext1);
+
+        JAXB2Node t1 = new JAXB2Node();
+        PurchaseOrderType po = new ObjectFactory().createPurchaseOrderType();
+        Node node = t1.transform(po, tContext1);
+
+        Assert.assertNotNull(node);
+
+    }
+    
     protected void tearDown() throws Exception {
         super.tearDown();
     }

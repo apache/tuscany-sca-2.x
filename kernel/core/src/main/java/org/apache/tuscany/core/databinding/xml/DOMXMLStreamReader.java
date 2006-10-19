@@ -1221,7 +1221,12 @@ public class DOMXMLStreamReader implements XMLFragmentStreamReader {
             Attr attr = (Attr) nodeMap.item(i);
             if (XMLConstants.XMLNS_ATTRIBUTE_NS_URI.equals(attr.getNamespaceURI())) {
                 // Skip xmlns:xxx
-                registerNamespace(attr.getLocalName(), attr.getValue());
+                if (!attr.getName().equals(attr.getLocalName())) {
+                    // Skip xmlns="..."
+                    registerNamespace(attr.getLocalName(), attr.getValue());
+                } else {
+                    registerNamespace(XMLConstants.DEFAULT_NS_PREFIX, attr.getValue());
+                }
                 continue;
             }
             QName attrName = new QName(attr.getNamespaceURI(), attr.getLocalName());
