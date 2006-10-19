@@ -88,7 +88,7 @@ public class WSDLOperation {
      * 
      * @return true if the operation qualifies wrapper style, otherwise false
      */
-    public boolean isWrapperStyle() {
+    public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
                     Boolean.valueOf(wrapper.getInputChildElements() != null
@@ -97,7 +97,7 @@ public class WSDLOperation {
         return wrapperStyle.booleanValue();
     }
 
-    public Wrapper getWrapper() {
+    public Wrapper getWrapper() throws InvalidWSDLException {
         if (!isWrapperStyle()) {
             throw new IllegalStateException("The operation is not wrapper style.");
         } else {
@@ -300,11 +300,17 @@ public class WSDLOperation {
         
         private transient WrapperInfo wrapperInfo;
 
-        private List<XmlSchemaElement> getChildElements(XmlSchemaElement element) {
+        private List<XmlSchemaElement> getChildElements(XmlSchemaElement element) throws InvalidWSDLException {
             if (element == null) {
                 return null;
             }
             XmlSchemaType type = element.getSchemaType();
+            if (type == null) {
+                InvalidWSDLException ex =
+                    new InvalidWSDLException("The XML schema element doesn't have a type");
+                ex.addContextName("element: " + element.getQName());
+                throw ex;
+            }
             if (!(type instanceof XmlSchemaComplexType)) {
                 // Has to be a complexType
                 return null;
@@ -348,7 +354,7 @@ public class WSDLOperation {
          * 
          * @return a list of child XSD elements or null if if the request element is not wrapped
          */
-        public List<XmlSchemaElement> getInputChildElements() {
+        public List<XmlSchemaElement> getInputChildElements() throws InvalidWSDLException {
             if (inputElements != null) {
                 return inputElements;
             }
@@ -369,7 +375,10 @@ public class WSDLOperation {
                 }
                 inputWrapperElement = schemaRegistry.getElement(elementName);
                 if (inputWrapperElement == null) {
-                    return null;
+                    InvalidWSDLException ex =
+                        new InvalidWSDLException("The element is not declared in a XML schema");
+                    ex.addContextName("element: " + elementName);
+                    throw ex;
                 }
                 inputElements = getChildElements(inputWrapperElement);
                 return inputElements;
@@ -383,7 +392,7 @@ public class WSDLOperation {
          * 
          * @return a list of child XSD elements or null if if the response element is not wrapped
          */
-        public List<XmlSchemaElement> getOutputChildElements() {
+        public List<XmlSchemaElement> getOutputChildElements() throws InvalidWSDLException {
             if (outputElements != null) {
                 return outputElements;
             }
@@ -397,7 +406,10 @@ public class WSDLOperation {
                 Part part = (Part) parts.iterator().next();
                 QName elementName = part.getElementName();
                 if (elementName == null) {
-                    return null;
+                    InvalidWSDLException ex =
+                        new InvalidWSDLException("The element is not declared in the XML schema");
+                    ex.addContextName("element: " + elementName);
+                    throw ex;
                 }
                 outputWrapperElement = schemaRegistry.getElement(elementName);
                 if (outputWrapperElement == null) {
@@ -425,7 +437,7 @@ public class WSDLOperation {
             return outputWrapperElement;
         }
 
-        public DataType<List<DataType<QName>>> getUnwrappedInputType() {
+        public DataType<List<DataType<QName>>> getUnwrappedInputType() throws InvalidWSDLException {
             if (unwrappedInputType == null) {
                 List<DataType<QName>> childTypes = new ArrayList<DataType<QName>>();
                 for (XmlSchemaElement element : getInputChildElements()) {
