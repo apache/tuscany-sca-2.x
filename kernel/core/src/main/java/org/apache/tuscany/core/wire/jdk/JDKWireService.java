@@ -97,7 +97,7 @@ public class JDKWireService extends WireServiceExtension {
             return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
-            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound, context);
+            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound);
             Class<?> interfaze = outbound.getServiceContract().getInterfaceClass();
             ClassLoader cl = interfaze.getClassLoader();
             return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
@@ -124,7 +124,7 @@ public class JDKWireService extends WireServiceExtension {
             return new JDKInboundInvocationHandler(chains, context);
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
-            return new JDKOutboundInvocationHandler(outbound, context);
+            return new JDKOutboundInvocationHandler(outbound);
         } else {
             ProxyCreationException e = new ProxyCreationException("Invalid wire type");
             e.setIdentifier(wire.getClass().getName());

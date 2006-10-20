@@ -65,9 +65,11 @@ public class AsyncJavaTargetInvoker extends PojoTargetInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             Object messageId = msg.getMessageId();
-            wire.addMapping(messageId, msg.getFromAddress());
-            workContext.setCurrentMessageId(null);
-            workContext.setCurrentCorrelationId(messageId);
+            if (messageId != null) {
+                wire.addMapping(messageId, msg.getFromAddress());
+                workContext.setCurrentMessageId(null);
+                workContext.setCurrentCorrelationId(messageId);
+            }
             invokeTarget(msg.getBody());
             // async so no return value
             return null;
