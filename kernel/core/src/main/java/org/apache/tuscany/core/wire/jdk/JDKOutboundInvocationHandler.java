@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
+import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -51,17 +51,18 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
      * is not cacheable, the master associated with the wire chains will be used.
      */
     private Map<Method, ChainHolder> chains;
-    private WorkContext context;
     private Object fromAddress;
     private Object messageId;
     private Object correlationId;
+    private boolean contractHasCallback;
 
-    public JDKOutboundInvocationHandler(OutboundWire wire, WorkContext context)
+    public JDKOutboundInvocationHandler(OutboundWire wire)
         throws NoMethodForOperationException {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         this.fromAddress = (wire.getContainer() == null) ? null : wire.getContainer().getName();
         Method[] methods = wire.getServiceContract().getInterfaceClass().getMethods();
+        this.contractHasCallback = wire.getServiceContract().getCallbackClass() != null;
         // TODO optimize this
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
             Operation operation = entry.getKey();
@@ -71,8 +72,6 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             }
             this.chains.put(method, new ChainHolder(entry.getValue()));
         }
-
-        this.context = context;
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -114,10 +113,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        messageId = context.getCurrentMessageId();
-        context.setCurrentMessageId(null);
-        correlationId = context.getCurrentCorrelationId();
-        context.setCurrentCorrelationId(null);
+        messageId = (contractHasCallback ? new MessageId() : null);
         return invoke(chain, invoker, args);
     }
 

@@ -52,12 +52,13 @@ public abstract class AbstractOutboundInvocationHandler {
                 msg.setFromAddress(fromAddress);
             }
             Object messageId = getMessageId();
-            if (messageId == null) {
-                messageId = new MessageId();
+            if (messageId != null) {
+                msg.setMessageId(messageId);
             }
-            msg.setMessageId(messageId);
             Object corrId = getCorrelationId();
-            msg.setCorrelationId(corrId);
+            if (corrId != null) {
+                msg.setCorrelationId(corrId);
+            }
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
             Message resp = headInterceptor.invoke(msg);
