@@ -200,11 +200,12 @@ public class Axis2Service extends ServiceExtension {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(chain.getTargetInvoker());
             msg.setFromAddress(getFromAddress());
-            if (messageId == null) {
-                messageId = new MessageId();
+            if (messageId != null) {
+                msg.setMessageId(messageId);
             }
-            msg.setMessageId(messageId);
-            msg.setCorrelationId(correlationId);
+            if (correlationId != null) {
+                msg.setCorrelationId(correlationId);
+            }
             msg.setBody(args);
             Message resp;
             // dispatch the wire down the chain and get the response
