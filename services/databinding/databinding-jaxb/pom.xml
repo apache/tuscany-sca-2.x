@@ -83,35 +83,24 @@
     </dependencies>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>target/jaxb-source</directory>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>src/test/java</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
 
         <plugins>
-            <!-- A hack to add target/jaxb-source to testCompileSourceRoots -->
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
                 <executions>
                     <execution>
-                        <id>set-test-source</id>
-                        <phase>generate-test-sources</phase>
-                        <configuration>
-                            <testSourceRoot>target/jaxb-source</testSourceRoot>
-                        </configuration>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>add-test-source</goal>
                         </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/jaxb-source</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
