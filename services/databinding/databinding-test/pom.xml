@@ -105,23 +105,29 @@
 	</dependencies>
     
 	<build>
-        <testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-			</testResource>
-			<testResource>
-				<directory>target/xmlbeans-source</directory>
-				<filtering>true</filtering>
-			</testResource>
-			<testResource>
-				<directory>target/jaxb-source</directory>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
-        
 		<plugins>
-			<plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/jaxb-source</source>
+                                <source>target/sdo-source</source>
+                                <source>target/xmlbeans-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
 				<groupId>org.apache.tuscany.sdo</groupId>
 				<artifactId>tuscany-sdo-plugin</artifactId>
 				<executions>

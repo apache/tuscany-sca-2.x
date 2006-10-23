@@ -49,17 +49,26 @@
     </dependencies>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-            <testResource>
-                <directory>target/xmlbeans-source</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/xmlbeans-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -75,7 +84,6 @@
                                     srcgendir="${project.build.directory}/xmlbeans-source" javasource="1.5"
                                     classgendir="${project.build.directory}/test-classes" />
                             </tasks>
-                            <testSourceRoot>${project.build.directory}/xmlbeans-source</testSourceRoot>
                         </configuration>
                         <goals>
                             <goal>run</goal>
