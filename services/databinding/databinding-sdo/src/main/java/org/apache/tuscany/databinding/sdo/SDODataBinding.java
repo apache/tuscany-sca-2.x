@@ -42,7 +42,7 @@ public class SDODataBinding extends DataBindingExtension {
             return new DataType<QName>(getName(), javaType, null);
         }
         Type type = TypeHelper.INSTANCE.getType(javaType);
-        if (type == null) {
+        if (type == null || type.isDataType()) {
             return null;
         }
         String namespace = type.getURI();
