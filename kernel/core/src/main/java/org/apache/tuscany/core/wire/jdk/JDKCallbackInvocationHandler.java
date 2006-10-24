@@ -45,8 +45,6 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
 
     private WorkContext context;
     private InboundWire inboundWire;
-    private Object messageId;
-    private Object correlationId;
 
     public JDKCallbackInvocationHandler(WorkContext context, InboundWire inboundWire) {
         this.context = context;
@@ -54,9 +52,9 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        messageId = context.getCurrentMessageId();
+        Object messageId = context.getCurrentMessageId();
         context.setCurrentMessageId(null);
-        correlationId = context.getCurrentCorrelationId();
+        Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
         Object targetAddress = inboundWire.retrieveMapping(correlationId);
         if (targetAddress == null) {
@@ -68,19 +66,11 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        return invoke(chain, invoker, args);
+        return invoke(chain, invoker, args, messageId, correlationId);
     }
 
 
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
-    }
-    
-    protected Object getMessageId() {
-        return messageId;
-    }
-    
-    protected Object getCorrelationId() {
-        return correlationId;
     }
 }

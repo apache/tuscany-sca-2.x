@@ -52,8 +52,6 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
      */
     private Map<Method, ChainHolder> chains;
     private Object fromAddress;
-    private Object messageId;
-    private Object correlationId;
     private boolean contractHasCallback;
 
     public JDKOutboundInvocationHandler(OutboundWire wire)
@@ -113,8 +111,8 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        messageId = (contractHasCallback ? new MessageId() : null);
-        return invoke(chain, invoker, args);
+        Object messageId = (contractHasCallback ? new MessageId() : null);
+        return invoke(chain, invoker, args, messageId, null);
     }
 
     public Object invoke(Method method, Object[] args) throws Throwable {
@@ -123,14 +121,6 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
 
     protected Object getFromAddress() {
         return fromAddress;
-    }
-
-    protected Object getMessageId() {
-        return messageId;
-    }
-
-    protected Object getCorrelationId() {
-        return correlationId;
     }
 
     /**

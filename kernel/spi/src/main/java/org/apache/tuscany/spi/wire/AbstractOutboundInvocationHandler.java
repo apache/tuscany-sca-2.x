@@ -29,7 +29,12 @@ import java.lang.reflect.InvocationTargetException;
  */
 public abstract class AbstractOutboundInvocationHandler {
 
-    protected Object invoke(OutboundInvocationChain chain, TargetInvoker invoker, Object[] args) throws Throwable {
+    protected Object invoke(OutboundInvocationChain chain,
+                            TargetInvoker invoker,
+                            Object[] args,
+                            Object messageId,
+                            Object correlationId)
+        throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
             try {
@@ -51,13 +56,11 @@ public abstract class AbstractOutboundInvocationHandler {
             if (fromAddress != null) {
                 msg.setFromAddress(fromAddress);
             }
-            Object messageId = getMessageId();
             if (messageId != null) {
                 msg.setMessageId(messageId);
             }
-            Object corrId = getCorrelationId();
-            if (corrId != null) {
-                msg.setCorrelationId(corrId);
+            if (correlationId != null) {
+                msg.setCorrelationId(correlationId);
             }
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
@@ -74,8 +77,4 @@ public abstract class AbstractOutboundInvocationHandler {
         // Default to null, only needed in outbound (forward) direction
         return null;
     }
-
-    protected abstract Object getMessageId();
-
-    protected abstract Object getCorrelationId();
 }
