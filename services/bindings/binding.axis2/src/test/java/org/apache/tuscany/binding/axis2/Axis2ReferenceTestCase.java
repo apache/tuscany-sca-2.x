@@ -33,7 +33,6 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -93,13 +92,10 @@ public class Axis2ReferenceTestCase extends TestCase {
         // TODO figure out what to do with the service contract
         ServiceContract<?> contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
-        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
-        EasyMock.replay(workContext);
         return new Axis2Reference(serviceName,
                 parent,
                 wireService,
                 wsBinding,
-                contract,
-                workContext);
+                contract);
     }
 }

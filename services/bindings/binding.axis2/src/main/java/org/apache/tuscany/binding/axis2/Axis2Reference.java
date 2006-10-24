@@ -36,7 +36,6 @@ import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -52,22 +51,18 @@ public class Axis2Reference<T> extends ReferenceExtension {
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
 
-    // private WorkContext workContext;
-
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
                           CompositeComponent parent,
                           WireService wireService,
                           WebServiceBinding wsBinding,
-                          ServiceContract contract,
-                          WorkContext workContext) {
+                          ServiceContract contract) {
         super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
             wsPortMetaData =
                 new WebServicePortMetaData(wsdlDefinition, wsBinding.getWSDLPort(), wsBinding.getURI(), false);
             serviceClient = createServiceClient(wsdlDefinition, wsPortMetaData);
-            // this.workContext = workContext;
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }

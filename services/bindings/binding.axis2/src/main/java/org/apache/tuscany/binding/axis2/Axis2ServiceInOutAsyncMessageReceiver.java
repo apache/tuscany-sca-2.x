@@ -26,7 +26,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
 import org.apache.tuscany.binding.axis2.Axis2Service.InvocationContext;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.MessageId;
@@ -35,15 +34,11 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
 
     private Operation<?> operation;
 
-    private WorkContext workContext;
-
     private Axis2Service service;
 
     public Axis2ServiceInOutAsyncMessageReceiver(Axis2Service service,
-                                                 Operation operation,
-                                                 WorkContext workContext) {
+                                                 Operation operation) {
         this.operation = operation;
-        this.workContext = workContext;
         this.service = service;
     }
 
@@ -52,11 +47,8 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
 
     public final void receive(final MessageContext messageCtx) {
         try {
-            // Create a new message id and hand it to
-            // JDKInboundInvocationHandler
-            // via work context
             MessageId messageId = new MessageId();
-            workContext.setCurrentMessageId(messageId);
+
             // Now use message id as index to context to be used by callback
             // target invoker
             CountDownLatch doneSignal = new CountDownLatch(1);
@@ -64,7 +56,7 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
                 service.new InvocationContext(messageCtx, operation, getSOAPFactory(messageCtx), doneSignal);
             service.addMapping(messageId, invCtx);
 
-            invokeBusinessLogic(messageCtx);
+            invokeBusinessLogic(messageCtx, messageId);
             
             try {
                 doneSignal.await();
@@ -76,11 +68,11 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
         }
     }
 
-    public void invokeBusinessLogic(MessageContext inMC) throws AxisFault {
+    private void invokeBusinessLogic(MessageContext inMC, Object messageId) throws AxisFault {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            service.invokeTarget(operation, args);
+            service.invokeTarget(operation, args, messageId);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof Exception) {

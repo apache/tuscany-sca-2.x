@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -55,8 +54,6 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
 
     private ConfigurationContext configContext;
 
-    private WorkContext workContext;
-
     private InterfaceWSDLIntrospector introspector;
 
     public Axis2BindingBuilder() {
@@ -74,11 +71,6 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     @Autowire
     public void setIntrospector(InterfaceWSDLIntrospector introspector) {
         this.introspector = introspector;
-    }
-
-    @Autowire
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +115,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             
             Service service = new Axis2Service(serviceDefinition.getName(), outboundContract, parent, wireService, wsBinding,
-                    servletHost, configContext, workContext);
+                    servletHost, configContext);
             service.setBindingServiceContract(inboundContract);
             
             return service;
@@ -171,7 +163,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             
             Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding,
-                    inboundContract, workContext);
+                    inboundContract);
             reference.setBindingServiceContract(outboundContract);
             
             return reference;

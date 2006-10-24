@@ -48,7 +48,7 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
 
-            axis2Service.invokeTarget(operation, args);
+            axis2Service.invokeTarget(operation, args, null);
 
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();

@@ -35,7 +35,6 @@ import org.xml.sax.InputSource;
 
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -114,8 +113,6 @@ public class Axis2ServiceTestCase extends TestCase {
 
         TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
         ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
-        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
-        EasyMock.replay(workContext);
         Axis2Service axis2Service =
             new Axis2Service(serviceName,
                 contract,
@@ -123,8 +120,7 @@ public class Axis2ServiceTestCase extends TestCase {
                 wireService,
                 wsBinding,
                 tomcatHost,
-                configurationContext,
-                workContext);
+                configurationContext);
         axis2Service.setInboundWire(inboundWire);
         axis2Service.setOutboundWire(outboundWire);
 

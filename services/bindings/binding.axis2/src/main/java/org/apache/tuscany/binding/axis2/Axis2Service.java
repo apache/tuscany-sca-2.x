@@ -44,7 +44,6 @@ import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -72,8 +71,6 @@ public class Axis2Service extends ServiceExtension {
 
     private WebServiceBinding binding;
 
-    private WorkContext workContext;
-
     private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
 
     private String serviceName;
@@ -84,8 +81,7 @@ public class Axis2Service extends ServiceExtension {
                         WireService wireService,
                         WebServiceBinding binding,
                         ServletHost servletHost,
-                        ConfigurationContext configContext,
-                        WorkContext workContext) {
+                        ConfigurationContext configContext) {
 
         super(theName, serviceContract.getInterfaceClass(), parent, wireService);
 
@@ -93,7 +89,6 @@ public class Axis2Service extends ServiceExtension {
         this.binding = binding;
         this.servletHost = servletHost;
         this.configContext = configContext;
-        this.workContext = workContext;
         this.serviceName = theName;
     }
 
@@ -157,7 +152,7 @@ public class Axis2Service extends ServiceExtension {
             MessageReceiver msgrec = null;
             boolean opIsNonBlocking = op.isNonBlocking();
             if (serviceContract.getCallbackName() != null) {
-                msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op, workContext);
+                msgrec = new Axis2ServiceInOutAsyncMessageReceiver(this, op);
             } else if (opIsNonBlocking) {
                 msgrec = new Axis2ServiceInMessageReceiver(this, op);
             } else {
@@ -176,7 +171,7 @@ public class Axis2Service extends ServiceExtension {
         return axisService;
     }
 
-    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args)
+    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId)
         throws InvocationTargetException {
         InvocationChain chain = inboundWire.getInvocationChains().get(op);
         Interceptor headInterceptor = chain.getHeadInterceptor();
@@ -192,19 +187,12 @@ public class Axis2Service extends ServiceExtension {
                 throw e;
             }
         } else {
-            Object messageId = workContext.getCurrentMessageId();
-            workContext.setCurrentMessageId(null);
-            Object correlationId = workContext.getCurrentCorrelationId();
-            workContext.setCurrentCorrelationId(null);
 
             Message msg = new MessageImpl();
             msg.setTargetInvoker(chain.getTargetInvoker());
             msg.setFromAddress(getFromAddress());
             if (messageId != null) {
                 msg.setMessageId(messageId);
-            }
-            if (correlationId != null) {
-                msg.setCorrelationId(correlationId);
             }
             msg.setBody(args);
             Message resp;
@@ -254,7 +242,7 @@ public class Axis2Service extends ServiceExtension {
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract,
                                                      org.apache.tuscany.spi.model.Operation operation) {
 
-        return new Axis2ServiceCallbackTargetInvoker(workContext, this);
+        return new Axis2ServiceCallbackTargetInvoker(this);
     }
 
     public void addMapping(MessageId msgId, InvocationContext invCtx) {

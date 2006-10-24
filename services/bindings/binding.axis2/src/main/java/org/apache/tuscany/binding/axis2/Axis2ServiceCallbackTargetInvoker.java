@@ -29,7 +29,6 @@ import org.apache.axis2.engine.AxisEngine;
 import org.apache.axis2.util.Utils;
 import org.apache.tuscany.binding.axis2.Axis2Service.InvocationContext;
 import org.apache.tuscany.binding.axis2.Axis2AsyncTargetInvoker;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageId;
@@ -39,16 +38,18 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     private Axis2Service service;
 
-    private MessageId currentCorrelationId;
-
-    public Axis2ServiceCallbackTargetInvoker(WorkContext workContext, Axis2Service service) {
+    public Axis2ServiceCallbackTargetInvoker(Axis2Service service) {
         this.service = service;
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
+        throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
+    }
+    
+    private Object invokeTarget(final Object payload, MessageId correlationId) throws InvocationTargetException {
         try {
             // Use current correlation id as index to retrieve inv context
-            InvocationContext invCtx = service.retrieveMapping(this.currentCorrelationId);
+            InvocationContext invCtx = service.retrieveMapping(correlationId);
 
             MessageContext outMC = Utils.createOutMessageContext(invCtx.inMessageContext);
             outMC.getOperationContext().addMessageContext(outMC);
@@ -70,7 +71,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             
             invCtx.doneSignal.countDown();
 
-            service.removeMapping(this.currentCorrelationId);
+            service.removeMapping(correlationId);
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         } catch(Throwable t) {
@@ -82,8 +83,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            this.currentCorrelationId = (MessageId)msg.getCorrelationId();
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), (MessageId)msg.getCorrelationId());
             msg.setBody(resp);
         } catch (Throwable e) {
             msg.setBodyWithFault(e);
