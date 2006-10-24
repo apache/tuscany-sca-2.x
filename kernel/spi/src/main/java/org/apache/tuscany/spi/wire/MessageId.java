@@ -33,8 +33,24 @@ public class MessageId {
     public long getTimestamp() {
         return timestamp;
     }
-    
+
     public String toString() {
         return "MsgId[" + timestamp + "]";
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final MessageId messageId = (MessageId) o;
+        return timestamp == messageId.timestamp;
+    }
+
+    public int hashCode() {
+        return (int) (timestamp ^ (timestamp >>> 32));
     }
 }

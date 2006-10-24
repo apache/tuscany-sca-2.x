@@ -19,7 +19,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"});
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, new Object(), new Object());
         assertEquals("response", resp);
     }
 
@@ -30,7 +30,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(null);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(invoker);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"});
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, new Object(), new Object());
         assertEquals("response", resp);
     }
 
@@ -67,14 +67,6 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
     private class InvocationHandler extends AbstractOutboundInvocationHandler {
 
         protected Object getFromAddress() {
-            return new Object();
-        }
-
-        protected Object getMessageId() {
-            return new Object();
-        }
-
-        protected Object getCorrelationId() {
             return new Object();
         }
     }
