@@ -29,14 +29,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class Axis2CallbackInvocationHandler extends AbstractOutboundInvocationHandler {
 
     private InboundWire inboundWire;
-    private Object messageId;
-    private Object correlationId;
 
     public Axis2CallbackInvocationHandler(InboundWire inboundWire) {
         this.inboundWire = inboundWire;
     }
 
-    public Object invoke(Operation operation, Object[] args) throws Throwable {
+    public Object invoke(Operation operation, Object[] args, Object correlationId) throws Throwable {
         Object targetAddress = inboundWire.retrieveMapping(correlationId);
         if (targetAddress == null) {
             throw new AssertionError("No from address associated with message id [" + correlationId + "]");
@@ -46,29 +44,10 @@ public class Axis2CallbackInvocationHandler extends AbstractOutboundInvocationHa
             inboundWire.getSourceCallbackInvocationChains(targetAddress);
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        return invoke(chain, invoker, args);
-    }
-
-    // This must be called before invoke
-    public void setMessageId(Object messageId) {
-        this.messageId = messageId;
-    }
-    
-    // This must be called before invoke
-    public void setCorrelationId(Object correlationId) {
-        this.correlationId = correlationId;
+        return invoke(chain, invoker, args, null, correlationId);
     }
 
     protected Object getFromAddress() {
         return (inboundWire.getContainer() == null) ? null : inboundWire.getContainer().getName();
     }
-    
-    protected Object getMessageId() {
-        return messageId;
-    }
-    
-    protected Object getCorrelationId() {
-        return correlationId;
-    }
-
 }

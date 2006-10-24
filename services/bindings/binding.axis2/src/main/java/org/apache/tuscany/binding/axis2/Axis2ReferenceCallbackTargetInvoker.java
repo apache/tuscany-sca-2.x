@@ -44,8 +44,6 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
-        invocationHandler.setMessageId(null);
-        invocationHandler.setCorrelationId(correlationId);
         Object[] args;
         if (payload != null && !payload.getClass().isArray()) {
             args = new Object[]{payload};
@@ -53,7 +51,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
             args = (Object[]) payload;
         }
         try {
-            return invocationHandler.invoke(operation, args);
+            return invocationHandler.invoke(operation, args, correlationId);
         } catch(Throwable t) {
             t.printStackTrace();
             throw new InvocationTargetException(t);

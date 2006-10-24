@@ -50,7 +50,7 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
 
-            OMElement responseOM = (OMElement)axis2Service.invokeTarget(operation, args);
+            OMElement responseOM = (OMElement)axis2Service.invokeTarget(operation, args, null);
 
             SOAPEnvelope soapEnvelope = getSOAPFactory(inMC).getDefaultEnvelope();
             soapEnvelope.getBody().addChild(responseOM);

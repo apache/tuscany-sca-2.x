@@ -37,7 +37,6 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
     protected static final OMElement RESPONSE = null;
 
     private InboundWire wire;
-    private Object messageId;
     private Axis2ReferenceCallbackTargetInvoker callbackInvoker;
 
     public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
@@ -50,6 +49,10 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
+        throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
+    }
+
+    private Object invokeTarget(final Object payload, Object messageId) throws InvocationTargetException {
         try {
             Object[] args = (Object[])payload;
             OperationClient operationClient = createOperationClient(args);
@@ -68,9 +71,9 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            wire.addMapping(msg.getMessageId(), msg.getFromAddress());
-            messageId = msg.getMessageId();
-            Object resp = invokeTarget(msg.getBody());
+            Object messageId = msg.getMessageId();
+            wire.addMapping(messageId, msg.getFromAddress());
+            Object resp = invokeTarget(msg.getBody(), messageId);
             msg.setBody(resp);
         } catch (Throwable e) {
             msg.setBodyWithFault(e);
