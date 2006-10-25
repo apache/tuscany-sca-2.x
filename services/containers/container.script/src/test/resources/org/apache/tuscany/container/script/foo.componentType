@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ASCII"?>
+
+<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <service name="HelloWorldService">
+        <interface.java interface="not.used"/>
+    </service>
+
+</componentType>
