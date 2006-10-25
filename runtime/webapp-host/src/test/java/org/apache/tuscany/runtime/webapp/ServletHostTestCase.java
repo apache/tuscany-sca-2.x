@@ -54,6 +54,8 @@ public class ServletHostTestCase extends TestCase {
         Servlet servlet = createMock(Servlet.class);
         ServletHostImpl host = new ServletHostImpl();
         host.registerMapping("foo", servlet);
+        assertEquals(true, host.isMappingRegistered("foo"));
+        assertEquals(false, host.isMappingRegistered("bar"));
         try {
             host.registerMapping("foo", servlet);
             fail();
@@ -71,7 +73,8 @@ public class ServletHostTestCase extends TestCase {
         replay(servlet);
         ServletHostImpl host = new ServletHostImpl();
         host.registerMapping("foo", servlet);
-        host.unregisterMapping("foo");
+        Servlet unregedServlet = host.unregisterMapping("foo");
+        assertEquals(unregedServlet, servlet);
         try {
             host.service(req, res);
         } catch (IllegalStateException e) {

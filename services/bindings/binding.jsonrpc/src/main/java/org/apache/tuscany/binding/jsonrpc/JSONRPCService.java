@@ -29,6 +29,7 @@ import org.osoa.sca.annotations.Destroy;
  */
 public class JSONRPCService extends ServiceExtension {
     private ServletHost servletHost;
+    private static int servletRegistrationCount = 0;
 
     public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
 
@@ -37,18 +38,25 @@ public class JSONRPCService extends ServiceExtension {
         this.servletHost = servletHost;
     }
 
-    public void start() {
+    public synchronized void start() {
         super.start();
 
         JSONRPCEntryPointServlet servlet = new JSONRPCEntryPointServlet(getName(), this.getServiceInstance());
         servletHost.registerMapping("/" + getName(), servlet);
-        servletHost.registerMapping("/SCA/scripts", new ScriptGetterServlet());
+        if((servletRegistrationCount == 0) && (!servletHost.isMappingRegistered("/SCA/scripts"))) {            
+            servletHost.registerMapping("/SCA/scripts", new ScriptGetterServlet());            
+        }
+        servletRegistrationCount++;
     }
 
     @Destroy
-    public void stop() {
+    public synchronized void stop() {
         servletHost.unregisterMapping("/" + getName());
-        servletHost.unregisterMapping("/SCA/scripts");
+        servletRegistrationCount--;
+        if(servletRegistrationCount == 0)
+        {
+            servletHost.unregisterMapping("/SCA/scripts");            
+        }
 
         super.stop();
     }
