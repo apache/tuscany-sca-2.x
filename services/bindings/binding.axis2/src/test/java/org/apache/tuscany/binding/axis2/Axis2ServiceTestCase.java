@@ -134,11 +134,16 @@ public class Axis2ServiceTestCase extends TestCase {
             mappings.put(mapping, servlet);
         }
 
-        public void unregisterMapping(String mapping) {
+        public Servlet unregisterMapping(String mapping) {
+            return mappings.remove(mapping);
         }
 
         public Servlet getMapping(String mapping) {
             return mappings.get(mapping);
+        }
+
+        public boolean isMappingRegistered(String mapping) {
+            return mappings.containsKey(mapping);
         }
 
     }

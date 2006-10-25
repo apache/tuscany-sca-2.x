@@ -42,7 +42,17 @@ public interface ServletHost {
      * registered Servlet.
      *
      * @param mapping the uri-mapping for the Servlet
+     * @returns the servlet that was registered to the mapping, null if nothing was registered to the mapping
      */
-    void unregisterMapping(String mapping);
+    Servlet unregisterMapping(String mapping);
+    
+    /**
+     * Check to see if a mapping exists.
+     * 
+     * @param mapping  the uri-mapping for the Servlet
+     * @return true if mapping is registered, false otherwise
+     */
+    boolean isMappingRegistered(String mapping);
+        
 
 }

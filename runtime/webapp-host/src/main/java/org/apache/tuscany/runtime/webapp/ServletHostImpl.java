@@ -94,9 +94,14 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector, Eve
         }
         servlets.put(path, servlet);
     }
+    
+    public boolean isMappingRegistered(String mapping) {
+        return servlets.containsKey(mapping);
+        
+    }
 
-    public void unregisterMapping(String path) {
-        servlets.remove(path);
+    public Servlet unregisterMapping(String path) {
+        return servlets.remove(path);
     }
 
     public void addListener(RuntimeEventListener listener) {
