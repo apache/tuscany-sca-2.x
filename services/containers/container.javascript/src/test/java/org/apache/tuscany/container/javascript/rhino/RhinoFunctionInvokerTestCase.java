@@ -90,18 +90,18 @@ public class RhinoFunctionInvokerTestCase extends TestCase {
 
     public void testResponseTypeBoolean() {
         RhinoScript rhinoScript = new RhinoScript("foo", "function getTrue() {return true;}");
-        rhinoScript.setResponseClass("getTrue", Boolean.class);
+        //rhinoScript.setResponseClass("getTrue", Boolean.class);
         RhinoScriptInstance instance = rhinoScript.createRhinoScriptInstance();
-        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("getTrue");
+        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("getTrue", Boolean.class);
         assertNotNull(invoker);
         assertTrue((Boolean) invoker.invoke(new Object[0]));
     }
 
     public void testResponseTypeStringArray() {
         RhinoScript rhinoScript = new RhinoScript("foo", "function getAs() {var as = new Array(1);as[0]='petra';return as;}");
-        rhinoScript.setResponseClass("getAs", new String[0].getClass());
+        //rhinoScript.setResponseClass("getAs", new String[0].getClass());
         RhinoScriptInstance instance = rhinoScript.createRhinoScriptInstance();
-        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("getAs");
+        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("getAs", new String[0].getClass());
         assertNotNull(invoker);
         Object o = invoker.invoke(new Object[0]);
         assertNotNull(o);
@@ -113,7 +113,7 @@ public class RhinoFunctionInvokerTestCase extends TestCase {
         RhinoScript rhinoScript = new RhinoScript("foo", "function getBs() {var bs = new Array(1);bs[0]=true;return bs;}");
         rhinoScript.setResponseClass("getBs", new Boolean[0].getClass());
         RhinoScriptInstance instance = rhinoScript.createRhinoScriptInstance();
-        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("getBs");
+        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("getBs", new Boolean[0].getClass());
         assertNotNull(invoker);
         Object o = invoker.invoke(new Object[0]);
         assertNotNull(o);
@@ -147,9 +147,9 @@ public class RhinoFunctionInvokerTestCase extends TestCase {
 
     public void testXMLRequest() throws XmlException, IOException {
         RhinoScript rhinoScript = new RhinoScript("foo", "function isXML(x) {return 'xml' == (typeof x);}");
-        rhinoScript.setResponseClass("isXML", Boolean.class);
+        //rhinoScript.setResponseClass("isXML", Boolean.class);
         RhinoScriptInstance instance = rhinoScript.createRhinoScriptInstance();
-        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("isXML");
+        RhinoFunctionInvoker invoker = instance.createRhinoFunctionInvoker("isXML", Boolean.class);
         assertNotNull(invoker);
 
         Object xml = XmlObject.Factory.parse("<a><b/></a>");

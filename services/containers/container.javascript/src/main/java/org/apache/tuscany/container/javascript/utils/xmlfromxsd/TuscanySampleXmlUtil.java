@@ -121,7 +121,7 @@ public class TuscanySampleXmlUtil {
             //if ( !flag )
             return;
         //else
-        //	flag = false;
+        //  flag = false;
 
         _typeStack.add(stype);
 
