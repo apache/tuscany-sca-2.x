@@ -86,7 +86,7 @@ public class JavaScriptComponent extends AtomicComponentExtension {
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
-        return new JavaScriptInvoker(operation.getName(), this);
+        return new JavaScriptInvoker(operation.getName(), (Class)operation.getOutputType().getLogical(), this);
     }
 
     // TODO: move all the following up to AtomicComponentExtension?

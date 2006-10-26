@@ -75,7 +75,7 @@ public class RhinoScriptTestCase extends TestCase {
         RhinoScript rhinoScript = new RhinoScript("foo", "function getX() {return 42;}");
         rhinoScript.setResponseClass("getX", Integer.class);
         RhinoScriptInstance instance = rhinoScript.createRhinoScriptInstance();
-        Object x = instance.invokeFunction("getX", new Object[0]);
+        Object x = instance.invokeFunction("getX", new Object[0], Integer.class);
         assertTrue(x instanceof Integer);
         assertEquals(new Integer(42), x);
     }

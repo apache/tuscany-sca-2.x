@@ -33,10 +33,13 @@ public class JavaScriptInvoker extends TargetInvokerExtension {
     private JavaScriptComponent context;
 
     private String functionName;
+    
+    private Class responseClass;
 
-    public JavaScriptInvoker(String functionName, JavaScriptComponent context) {
+    public JavaScriptInvoker(String functionName, Class respClass, JavaScriptComponent context) {
         this.functionName = functionName;
         this.context = context;
+        this.responseClass = respClass;
     }
 
     /**
@@ -44,7 +47,7 @@ public class JavaScriptInvoker extends TargetInvokerExtension {
      */
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         RhinoScriptInstance target = context.getTargetInstance();
-        return target.invokeFunction(functionName, (Object[]) payload);
+        return target.invokeFunction(functionName, (Object[]) payload, responseClass);
     }
 
 }

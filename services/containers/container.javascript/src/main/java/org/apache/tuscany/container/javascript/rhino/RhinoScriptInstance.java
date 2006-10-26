@@ -47,15 +47,24 @@ public class RhinoScriptInstance {
         }
         addContexts(instanceScope, context);
     }
-
+    
     public Object invokeFunction(String functionName, Object[] args) {
-        RhinoFunctionInvoker invoker = createRhinoFunctionInvoker(functionName);
+        return invokeFunction(functionName, args, null);
+    }
+
+    public Object invokeFunction(String functionName, Object[] args, Class respClass) {
+        RhinoFunctionInvoker invoker = createRhinoFunctionInvoker(functionName, respClass);
         return invoker.invoke(args);
     }
 
     public RhinoFunctionInvoker createRhinoFunctionInvoker(String functionName) {
+        return createRhinoFunctionInvoker(functionName, null);
+    }
+
+    
+    public RhinoFunctionInvoker createRhinoFunctionInvoker(String functionName, Class responseClass) {
         Function function = getFunction(functionName);
-        Class responseClass = responseClasses.get(functionName);
+        //Class responseClass = responseClasses.get(functionName);
         RhinoFunctionInvoker invoker = new RhinoFunctionInvoker(instanceScope, function, responseClass);
         return invoker;
     }
@@ -98,3 +107,4 @@ public class RhinoScriptInstance {
     }
 
 }
+
