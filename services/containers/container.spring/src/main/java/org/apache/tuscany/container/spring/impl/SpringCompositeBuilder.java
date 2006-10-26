@@ -69,7 +69,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
             for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
                 // FIXME this should go to the connector and get policy and be invoked from SpringComposite.prepare()
                 chain.addInterceptor(new SpringInterceptor());
-                chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(), chain.getOperation()));
+                chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(), chain.getOperation(),
+                    null));
             }
             component.register(service);
         }

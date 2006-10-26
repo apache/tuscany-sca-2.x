@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
@@ -56,6 +57,7 @@ public class PojoConfiguration {
     private WireService wireService;
     private WorkContext workContext;
     private WorkScheduler scheduler;
+    private ExecutionMonitor monitor;
 
     public CompositeComponent getParent() {
         return parent;
@@ -181,4 +183,11 @@ public class PojoConfiguration {
         this.scheduler = scheduler;
     }
 
+    public ExecutionMonitor getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(ExecutionMonitor monitor) {
+        this.monitor = monitor;
+    }
 }

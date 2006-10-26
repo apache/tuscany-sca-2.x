@@ -57,7 +57,7 @@ public class ServiceInvocationTestCase extends TestCase {
         Connector connector = ArtifactFactory.createConnector();
         connector.connect(inboundWire, outboundWire, true);
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-            chain.setTargetInvoker(composite.createTargetInvoker("foo", chain.getOperation()));
+            chain.setTargetInvoker(composite.createTargetInvoker("foo", chain.getOperation(), null));
         }
         composite.register(service);
         TestBean serviceInstance = (TestBean) composite.getService("fooService").getServiceInstance();

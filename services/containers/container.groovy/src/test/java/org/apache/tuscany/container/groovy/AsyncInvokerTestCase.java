@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 
 import groovy.lang.GroovyObject;
 import junit.framework.TestCase;
@@ -51,7 +52,7 @@ public class AsyncInvokerTestCase extends TestCase {
         GroovyAtomicComponent component = EasyMock.createMock(GroovyAtomicComponent.class);
         expect(component.getTargetInstance()).andReturn(instance);
         EasyMock.replay(component);
-        AsyncMonitor monitor = createMock(AsyncMonitor.class);
+        ExecutionMonitor monitor = createMock(ExecutionMonitor.class);
         replay(monitor);
 
         WorkScheduler scheduler = createMock(WorkScheduler.class);
@@ -68,7 +69,7 @@ public class AsyncInvokerTestCase extends TestCase {
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
         InboundWire wire = createMock(InboundWire.class);
-        AsyncGroovyInvoker invoker = new AsyncGroovyInvoker("invoke", wire, component, monitor, context);
+        GroovyInvoker invoker = new GroovyInvoker("invoke", component, wire, context, monitor);
         Message msg = new MessageImpl();
         invoker.invoke(msg);
         verify(instance);

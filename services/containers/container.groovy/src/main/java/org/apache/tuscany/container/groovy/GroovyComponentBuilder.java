@@ -49,8 +49,8 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
     }
 
     public Component build(CompositeComponent parent,
-                              ComponentDefinition<GroovyImplementation> componentDefinition,
-                              DeploymentContext deploymentContext)
+                           ComponentDefinition<GroovyImplementation> componentDefinition,
+                           DeploymentContext deploymentContext)
         throws BuilderConfigException {
 
         String name = componentDefinition.getName();
@@ -103,7 +103,8 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         configuration.setWorkContext(workContext);
         configuration.setInitLevel(initLevel);
         configuration.setServices(services);
-        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration, null);
+        configuration.setMonitor(monitor);
+        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
 
         // handle properties
         for (Property<?> property : componentType.getProperties().values()) {

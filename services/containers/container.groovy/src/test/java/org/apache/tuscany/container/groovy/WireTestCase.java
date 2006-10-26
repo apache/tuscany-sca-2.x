@@ -92,7 +92,7 @@ public class WireTestCase extends TestCase {
         configuration.setServices(services);
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
-        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration, null);
+        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
         OutboundWire wire = createOutboundWire("wire", Greeting.class);
         terminateWire(wire);
 
@@ -143,9 +143,9 @@ public class WireTestCase extends TestCase {
         configuration.setServices(services);
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
-        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration, null);
+        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
         Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null);
-        TargetInvoker invoker = component.createTargetInvoker(null, operation);
+        TargetInvoker invoker = component.createTargetInvoker(null, operation, null);
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
     }
 
@@ -162,11 +162,11 @@ public class WireTestCase extends TestCase {
         configuration.setServices(services);
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
-        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration, null);
+        GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
         InboundWire wire = createInboundWire("Greeting", Greeting.class);
         terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
-            chain.setTargetInvoker(component.createTargetInvoker(null, chain.getOperation()));
+            chain.setTargetInvoker(component.createTargetInvoker(null, chain.getOperation(), null));
         }
         component.addInboundWire(wire);
         Greeting greeting = (Greeting) component.getServiceInstance("Greeting");

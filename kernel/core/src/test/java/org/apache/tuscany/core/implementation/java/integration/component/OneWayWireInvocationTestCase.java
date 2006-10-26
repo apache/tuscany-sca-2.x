@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -30,12 +31,13 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.java.AsyncJavaTargetInvoker;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
+import org.apache.tuscany.core.implementation.java.JavaTargetInvoker;
 import org.apache.tuscany.core.implementation.java.mock.MockFactory;
 import static org.apache.tuscany.core.implementation.java.mock.MockFactory.createServiceWire;
 import org.apache.tuscany.core.implementation.java.mock.components.AsyncTarget;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;
@@ -73,8 +75,8 @@ public class OneWayWireInvocationTestCase extends TestCase {
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
         InboundWire inboundWire = createMock(InboundWire.class);
-        AsyncJavaTargetInvoker invoker =
-            new AsyncJavaTargetInvoker(method, inboundWire, component, null, context);
+        ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, inboundWire, context, monitor);
         InboundWire wire = createServiceWire("foo", AsyncTarget.class, null);
         Map<Operation<?>, InboundInvocationChain> chains = wire.getInvocationChains();
         InboundInvocationChain chain = chains.get(wire.getServiceContract().getOperations().get("invoke"));

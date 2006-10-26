@@ -121,7 +121,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
         target.getInboundWire(EasyMock.eq("FooService"));
         EasyMock.expectLastCall().andReturn(targetWire).atLeastOnce();
-        target.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation));
+        target.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation), EasyMock.eq(targetWire));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(target);
 
@@ -209,7 +209,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expect(target.getScope()).andReturn(Scope.MODULE);
         target.getInboundWire(EasyMock.eq("FooService"));
         EasyMock.expectLastCall().andReturn(targetWire);
-        target.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation));
+        target.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation), EasyMock.eq(targetWire));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(target);
 
@@ -290,7 +290,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expectLastCall().andReturn(Collections.emptyMap());
         source.getInboundWires();
         EasyMock.expectLastCall().andReturn(wires);
-        source.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation));
+        source.createTargetInvoker(EasyMock.eq("FooService"), EasyMock.eq(operation), (InboundWire) EasyMock.isNull());
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(source);
 

@@ -20,12 +20,16 @@ package org.apache.tuscany.container.ruby;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.container.ruby.rubyscript.RubyScriptInstance;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.tuscany.spi.wire.InboundWire;
+
+import org.apache.tuscany.container.ruby.rubyscript.RubyScriptInstance;
 
 /**
  * Dispatches to a JavaScript implementation instance
- * 
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class RubyInvoker extends TargetInvokerExtension {
@@ -36,7 +40,13 @@ public class RubyInvoker extends TargetInvokerExtension {
 
     private Class returnType;
 
-    public RubyInvoker(String functionName, RubyComponent context, Class returnType) {
+    public RubyInvoker(String functionName,
+                       RubyComponent context,
+                       Class returnType,
+                       InboundWire wire,
+                       WorkContext workContext,
+                       ExecutionMonitor monitor) {
+        super(wire, workContext, monitor);
         this.functionName = functionName;
         this.context = context;
         this.returnType = returnType;
@@ -48,8 +58,8 @@ public class RubyInvoker extends TargetInvokerExtension {
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         RubyScriptInstance target = context.getTargetInstance();
         return target.invokeFunction(functionName,
-                                     (Object[]) payload,
-                                     returnType);
+            (Object[]) payload,
+            returnType);
     }
 
 }

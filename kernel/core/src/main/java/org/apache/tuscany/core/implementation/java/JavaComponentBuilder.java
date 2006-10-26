@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 
-import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -50,13 +49,6 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
-
-    private AsyncMonitor monitor;
-
-    @Monitor
-    public void setMonitor(AsyncMonitor monitor) {
-        this.monitor = monitor;
-    }
 
     @SuppressWarnings("unchecked")
     public AtomicComponent build(CompositeComponent parent,
@@ -111,9 +103,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
         configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
-
-        JavaAtomicComponent component =
-            new JavaAtomicComponent(definition.getName(), configuration, monitor);
+        configuration.setMonitor(monitor);
+        JavaAtomicComponent component = new JavaAtomicComponent(definition.getName(), configuration);
 
         // handle properties
         for (PropertyValue<?> property : definition.getPropertyValues().values()) {

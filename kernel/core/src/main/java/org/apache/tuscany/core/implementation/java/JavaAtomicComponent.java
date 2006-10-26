@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -48,14 +49,11 @@ import org.apache.tuscany.core.injection.WireObjectFactory;
  */
 public class JavaAtomicComponent extends PojoAtomicComponent {
 
-    private AsyncMonitor monitor;
+    private ExecutionMonitor monitor;
 
-    public JavaAtomicComponent(String name,
-                               PojoConfiguration configuration,
-                               AsyncMonitor monitor) {
+    public JavaAtomicComponent(String name, PojoConfiguration configuration) {
         super(name, configuration);
         this.scope = configuration.getScopeContainer().getScope();
-        this.monitor = monitor;
     }
 
     public Object getServiceInstance(String name) throws TargetException {
@@ -78,7 +76,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         }
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         Method[] methods;
         if (operation.isCallback()) {
             methods = operation.getServiceContract().getCallbackClass().getMethods();
@@ -87,19 +85,19 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
             methods = operation.getServiceContract().getInterfaceClass().getMethods();
         }
         Method method = findMethod(operation, methods);
-        return new JavaTargetInvoker(method, this);
+        return new JavaTargetInvoker(method, this, callbackWire, workContext, monitor);
     }
 
-    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
-        Method method;
-        if (operation.isCallback()) {
-            method = findMethod(operation, operation.getServiceContract().getCallbackClass().getMethods());
-
-        } else {
-            method = findMethod(operation, operation.getServiceContract().getInterfaceClass().getMethods());
-        }
-        return new AsyncJavaTargetInvoker(method, wire, this, monitor, workContext);
-    }
+//    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
+//        Method method;
+//        if (operation.isCallback()) {
+//            method = findMethod(operation, operation.getServiceContract().getCallbackClass().getMethods());
+//
+//        } else {
+//            method = findMethod(operation, operation.getServiceContract().getInterfaceClass().getMethods());
+//        }
+//        return new AsyncJavaTargetInvoker(method, wire, this, monitor, workContext);
+//    }
 
     protected void onServiceWire(InboundWire wire) {
         String name = wire.getCallbackReferenceName();

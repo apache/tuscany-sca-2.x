@@ -117,11 +117,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
     }
 
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
-        return null;
-    }
-
-    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         return null;
     }
 

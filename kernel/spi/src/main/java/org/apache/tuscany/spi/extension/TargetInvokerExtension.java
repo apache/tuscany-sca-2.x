@@ -23,22 +23,44 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * The default implementation of a TargetInvoker
  */
 public abstract class TargetInvokerExtension implements TargetInvoker {
 
-    private boolean cacheable;
-    
-    public TargetInvokerExtension() {
+    protected InboundWire wire;
+    protected WorkContext workContext;
+    protected ExecutionMonitor monitor;
+    protected boolean cacheable;
+
+    /**
+     * Creates a new invoker
+     *
+     * @param wire the callback wire
+     * @param workContext the work context to use for setting correlation information
+     * @param monitor
+     */
+    public TargetInvokerExtension(InboundWire wire, WorkContext workContext, ExecutionMonitor monitor) {
+        this.wire = wire;
+        this.workContext = workContext;
+        this.monitor = monitor;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
+            Object messageId = msg.getMessageId();
+            if (messageId != null) {
+                wire.addMapping(messageId, msg.getFromAddress());
+                workContext.setCurrentMessageId(null);
+                workContext.setCurrentCorrelationId(messageId);
+            }
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
+            //monitor.executionError(e);
             msg.setBodyWithFault(e.getCause());
         }
         return msg;
@@ -55,8 +77,8 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
     public boolean isOptimizable() {
         return isCacheable();
     }
-    
-    public Object clone() {
+
+    public Object clone() throws CloneNotSupportedException {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {

@@ -32,6 +32,7 @@ public class ScriptHelperInvoker extends TargetInvokerExtension {
     protected String functionName;
 
     public ScriptHelperInvoker(String functionName, ScriptHelperComponent component) {
+		  super(null, null, null);
         this.functionName = functionName;
         this.component = component;
     }

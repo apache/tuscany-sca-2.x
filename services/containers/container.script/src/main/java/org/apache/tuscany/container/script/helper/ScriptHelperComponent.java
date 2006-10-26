@@ -52,7 +52,7 @@ public class ScriptHelperComponent extends AtomicComponentExtension {
     public ScriptHelperComponent(String name, ScriptHelperInstanceFactory instanceFactory, Map<String, Object> properties, List<Class<?>> services, CompositeComponent parent, ScopeContainer scopeContainer,
             WireService wireService, WorkContext workContext, WorkScheduler workScheduler) {
 
-        super(name, parent, scopeContainer, wireService, workContext, workScheduler, 0);
+        super(name, parent, scopeContainer, wireService, workContext, workScheduler, null, 0);
 
         this.instanceFactory = instanceFactory;
         this.services = services;
@@ -74,8 +74,8 @@ public class ScriptHelperComponent extends AtomicComponentExtension {
 
         return instanceFactory.createInstance(services, context);
     }
-
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+	 
+	 public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         Method[] methods = operation.getServiceContract().getInterfaceClass().getMethods();
         Method method = findMethod(operation, methods);
         return new ScriptHelperInvoker(method.getName(), this);

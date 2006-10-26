@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * @version $Rev$ $Date$
@@ -45,7 +46,7 @@ public abstract class SystemAtomicComponentExtension extends AtomicComponentExte
                                           CompositeComponent parent,
                                           ScopeContainer scopeContainer,
                                           int initLevel) {
-        super(name, parent, scopeContainer, null, null, null, initLevel);
+        super(name, parent, scopeContainer, null, null, null, null, initLevel);
         this.interfazes = serviceInterfaces;
     }
 
@@ -61,7 +62,7 @@ public abstract class SystemAtomicComponentExtension extends AtomicComponentExte
         return interfazes;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         throw new UnsupportedOperationException();
     }
 

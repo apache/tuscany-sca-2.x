@@ -88,6 +88,7 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
             parent,
             scopeContainer,
             wireService,
-            workContext);
+            workContext,
+            monitor);
     }
 }

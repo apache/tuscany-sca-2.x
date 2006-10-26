@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.spi.model.Operation;
@@ -31,6 +30,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * Verifies wire optimization analysis
@@ -40,7 +40,6 @@ import junit.framework.TestCase;
 public class WireOptimizationTestCase extends TestCase {
 
     private Operation operation;
-    private Method m;
 
     public void foo() {
     }
@@ -80,7 +79,8 @@ public class WireOptimizationTestCase extends TestCase {
     public void testTargetWireNonTargetInvokerOptimization() throws Exception {
         InboundWire wire = new InboundWireImpl();
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        TargetInvoker invoker = new StaticPojoTargetInvoker(m, new Object());
+        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
+        EasyMock.replay(invoker);
         invoker.setCacheable(false);
         chain.setTargetInvoker(invoker);
         wire.addInvocationChain(operation, chain);
@@ -93,7 +93,6 @@ public class WireOptimizationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        m = getClass().getMethod("foo", (Class[]) null);
         operation = new Operation<Type>("foo", null, null, null, false, null);
 
     }

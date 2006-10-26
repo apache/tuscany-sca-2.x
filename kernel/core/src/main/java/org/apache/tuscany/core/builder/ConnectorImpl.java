@@ -111,7 +111,7 @@ public class ConnectorImpl implements Connector {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                     Operation<?> operation = chain.getOperation();
                     String serviceName = inboundWire.getServiceName();
-                    TargetInvoker invoker = sourceComponent.createTargetInvoker(serviceName, operation);
+                    TargetInvoker invoker = sourceComponent.createTargetInvoker(serviceName, operation, null);
                     chain.setTargetInvoker(invoker);
                     chain.prepare();
                 }
@@ -132,7 +132,7 @@ public class ConnectorImpl implements Connector {
             OutboundWire outboundWire = reference.getOutboundWire();
             // connect the reference's inbound and outbound wires
             connect(inboundWire, outboundWire, true);
-            
+
             if (reference instanceof CompositeReference) {
                 // For a composite reference only, since its outbound wire comes
                 // from its parent composite,
@@ -141,8 +141,8 @@ public class ConnectorImpl implements Connector {
                 parent = parent.getParent();
                 assert parent != null : "Parent of parent was null";
                 SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
-                connect((Component)parent, outboundWire, target);
-            }            
+                connect((Component) parent, outboundWire, target);
+            }
         } else if (source instanceof Service) {
             Service service = (Service) source;
             InboundWire inboundWire = service.getInboundWire();
@@ -239,12 +239,8 @@ public class ConnectorImpl implements Connector {
             TargetInvoker invoker = null;
             if (target instanceof Component) {
                 Component component = (Component) target;
-                if (isOneWayOperation || operationHasCallback) {
-                    invoker = component.createAsyncTargetInvoker(targetWire, inboundOperation);
-                } else {
-                    String portName = sourceWire.getTargetName().getPortName();
-                    invoker = component.createTargetInvoker(portName, inboundOperation);
-                }
+                String portName = sourceWire.getTargetName().getPortName();
+                invoker = component.createTargetInvoker(portName, inboundOperation, targetWire);
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
                 if (!(reference instanceof CompositeReference) && operationHasCallback) {
@@ -292,14 +288,14 @@ public class ConnectorImpl implements Connector {
                 e.setIdentifier(sourceWire.getReferenceName());
                 throw e;
             }
-            
+
             Operation targetOp =
-                (Operation)targetWire.getServiceContract().getCallbackOperations().get(operation.getName());
+                (Operation) targetWire.getServiceContract().getCallbackOperations().get(operation.getName());
             OutboundInvocationChain outboundChain = wireService.createOutboundChain(targetOp);
             targetWire.addSourceCallbackInvocationChain(source.getName(), targetOp, outboundChain);
             if (source instanceof Component) {
                 Component component = (Component) source;
-                TargetInvoker invoker = component.createTargetInvoker(null, operation);
+                TargetInvoker invoker = component.createTargetInvoker(null, operation, null);
                 connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof CompositeReference) {
                 CompositeReference compRef = (CompositeReference) source;
@@ -358,7 +354,7 @@ public class ConnectorImpl implements Connector {
         sourceChain.addInterceptor(new SynchronousBridgingInterceptor(targetChain.getHeadInterceptor()));
     }
 
-       /**
+    /**
      * Connects an component's outbound wire to its target in a composite.  Valid targets are either
      * <code>AtomicComponent</code>s contained in the composite, or <code>References</code> of the composite.
      *

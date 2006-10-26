@@ -20,7 +20,6 @@ package org.apache.tuscany.container.ruby;
 
 import static org.easymock.EasyMock.reportMatcher;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -32,11 +31,9 @@ import org.apache.tuscany.container.ruby.mock.Greeting;
 import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.spi.model.DataType;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.test.ArtifactFactory;
 import org.easymock.IArgumentMatcher;
 
@@ -126,7 +123,8 @@ public class WireTestCase extends TestCase {
                                                                       null,
                                                                       scope,
                                                                       ArtifactFactory.createWireService(),
-                                                                      null);
+                                                                      null,
+                                                                       null);
         scope.register(context);
         DataType<String> returnDataType = new DataType<String>(String.class, String.class.getName());
 //        Operation<String> operation = new Operation<String>("greet",
@@ -161,7 +159,8 @@ public class WireTestCase extends TestCase {
                                                                       null,
                                                                       scope,
                                                                       ArtifactFactory.createWireService(),
-                                                                      null);
+                                                                      null,
+                                                                        null);
         scope.register(context);
 
         InboundWire wire = ArtifactFactory.createInboundWire("Greeting",
@@ -169,7 +168,7 @@ public class WireTestCase extends TestCase {
         ArtifactFactory.terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker(null,
-                                                               chain.getOperation()));
+                                                               chain.getOperation(), null));
         }
         context.addInboundWire(wire);
         Greeting greeting = (Greeting) context.getServiceInstance("Greeting");

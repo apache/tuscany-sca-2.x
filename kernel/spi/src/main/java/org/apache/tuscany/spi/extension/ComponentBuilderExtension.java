@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 
+import org.apache.tuscany.api.annotation.Monitor;
+
 /**
  * An extension point for component builders. When adding support for new component types, implementations may extend
  * this class as a convenience.
@@ -48,6 +50,7 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     protected WorkContext workContext;
     protected PolicyBuilderRegistry policyBuilderRegistry;
     protected Connector connector;
+    protected ExecutionMonitor monitor;
 
     @Autowire
     public void setBuilderRegistry(BuilderRegistry registry) {
@@ -82,6 +85,11 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
     @Autowire
     public void setConnector(Connector connector) {
         this.connector = connector;
+    }
+
+    @Monitor
+    public void setMonitor(ExecutionMonitor monitor) {
+        this.monitor = monitor;
     }
 
     @Init(eager = true)

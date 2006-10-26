@@ -119,7 +119,7 @@ public class AsyncInvoker extends ScriptHelperInvoker {
         }
     }
 
-    public AsyncInvoker clone() {
+    public AsyncInvoker clone() throws CloneNotSupportedException {
         AsyncInvoker invoker = (AsyncInvoker) super.clone();
         invoker.workScheduler = this.workScheduler;
         invoker.monitor = this.monitor;

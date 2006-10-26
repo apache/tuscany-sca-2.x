@@ -20,9 +20,10 @@ package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import groovy.lang.GroovyObject;
 
@@ -31,14 +32,19 @@ import groovy.lang.GroovyObject;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class GroovyInvoker implements TargetInvoker, Cloneable {
+public class GroovyInvoker extends TargetInvokerExtension {
 
     protected GroovyAtomicComponent component;
     protected String operation;
     protected boolean cacheable;
 
-    public GroovyInvoker(String operation, GroovyAtomicComponent context) {
-        this.component = context;
+    public GroovyInvoker(String operation,
+                         GroovyAtomicComponent component,
+                         InboundWire wire,
+                         WorkContext context,
+                         ExecutionMonitor monitor) {
+        super(wire, context, monitor);
+        this.component = component;
         this.operation = operation;
     }
 
@@ -65,18 +71,6 @@ public class GroovyInvoker implements TargetInvoker, Cloneable {
         } catch (Exception ex) {
             throw new InvocationTargetException(ex);
         }
-    }
-
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            Object resp = invokeTarget(msg.getBody());
-            msg.setBody(resp);
-        } catch (InvocationTargetException e) {
-            msg.setBodyWithFault(e.getCause());
-        } catch (Throwable e) {
-            msg.setBodyWithFault(e);
-        }
-        return msg;
     }
 
     public GroovyInvoker clone() throws CloneNotSupportedException {

@@ -36,6 +36,7 @@ import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -81,7 +82,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         this.springContext = springContext;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         ServiceContract contract = operation.getServiceContract();
         Method[] methods = contract.getInterfaceClass().getMethods();
         Method method = findMethod(operation, methods);
