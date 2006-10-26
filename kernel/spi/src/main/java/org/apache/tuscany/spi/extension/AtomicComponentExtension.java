@@ -31,12 +31,10 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -53,7 +51,10 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
     protected WireService wireService;
     protected WorkContext workContext;
     protected WorkScheduler workScheduler;
+    protected ExecutionMonitor monitor;
     private final int initLevel;
+
+
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent parent,
@@ -61,12 +62,14 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
                                        WireService wireService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
+                                       ExecutionMonitor monitor,
                                        int initLevel) {
         super(name, parent);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
+        this.monitor = monitor;
         this.initLevel = initLevel;
     }
 
@@ -130,10 +133,6 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
         assert wires != null && wires.size() > 0;
         referenceWires.put(wires.get(0).getReferenceName(), wires);
         onReferenceWires(multiplicityClass, wires);
-    }
-
-    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
-        throw new UnsupportedOperationException();
     }
 
     protected void onReferenceWire(OutboundWire wire) {

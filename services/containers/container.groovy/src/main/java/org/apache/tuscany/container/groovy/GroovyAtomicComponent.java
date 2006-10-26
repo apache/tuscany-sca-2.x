@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -42,33 +43,29 @@ public class GroovyAtomicComponent extends AtomicComponentExtension {
     private final List<Class<?>> services;
     //FIXME properties should move up to AtomicComponentExtension
     private final Map<String, ObjectFactory> properties;
-    private AsyncMonitor monitor;
 
-    public GroovyAtomicComponent(GroovyConfiguration configuration, AsyncMonitor monitor) {
+    public GroovyAtomicComponent(GroovyConfiguration configuration) {
         super(configuration.getName(),
             configuration.getParent(),
             configuration.getScopeContainer(),
             configuration.getWireService(),
             configuration.getWorkContext(),
-            null, configuration.getInitLevel());
+            null,
+            configuration.getMonitor(),
+            configuration.getInitLevel());
 
         this.groovyClass = configuration.getGroovyClass();
         this.services = Collections.unmodifiableList(configuration.getServices());
         this.properties = new HashMap<String, ObjectFactory>();
         assert groovyClass != null;
-        this.monitor = monitor;
     }
 
     public List<Class<?>> getServiceInterfaces() {
         return services;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
-        return new GroovyInvoker(operation.getName(), this);
-    }
-
-    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
-        return new AsyncGroovyInvoker(operation.getName(), wire, this, monitor, workContext);
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
+        return new GroovyInvoker(operation.getName(), this, callbackWire, workContext, monitor);
     }
 
     public Object createInstance() throws ObjectCreationException {

@@ -44,11 +44,9 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -219,10 +217,6 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
             }
             return map;
         }
-    }
-
-    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
-        throw new UnsupportedOperationException();
     }
 
     public Service getService(String name) {

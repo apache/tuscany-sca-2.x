@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -50,8 +51,9 @@ public class JavaScriptComponent extends AtomicComponentExtension {
 
     public JavaScriptComponent(String name, RhinoScript rhinoScript, Map<String, Object> properties, List<Class<?>> services,
                                CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService,
-                               WorkContext workContext) {
-        super(name, parent, scopeContainer, wireService, workContext, null, 0);
+                               WorkContext workContext,
+                               ExecutionMonitor monitor) {
+        super(name, parent, scopeContainer, wireService, workContext, null, monitor, 0);
 
         this.rhinoScript = rhinoScript;
         this.services = services;
@@ -85,8 +87,8 @@ public class JavaScriptComponent extends AtomicComponentExtension {
         return rhinoScript.createRhinoScriptInstance(context);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
-        return new JavaScriptInvoker(operation.getName(), (Class)operation.getOutputType().getLogical(), this);
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
+        return new JavaScriptInvoker(operation.getName(), this, callbackWire, workContext, monitor);
     }
 
     // TODO: move all the following up to AtomicComponentExtension?

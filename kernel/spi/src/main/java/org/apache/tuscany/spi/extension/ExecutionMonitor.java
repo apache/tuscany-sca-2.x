@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.groovy;
+package org.apache.tuscany.spi.extension;
 
 /**
- * A monitor used to log events during non-blocking invocations
- * <p/>
+ * A monitor used to log events during an invocation
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface AsyncMonitor {
+public interface ExecutionMonitor {
 
     /**
      * Logs an exception thrown during an invocation

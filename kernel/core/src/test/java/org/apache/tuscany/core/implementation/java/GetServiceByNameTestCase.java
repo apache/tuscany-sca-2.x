@@ -54,7 +54,7 @@ public class GetServiceByNameTestCase extends TestCase {
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.addServiceInterface(Target.class);
         configuration.setWireService(new JDKWireService());
-        final JavaAtomicComponent component = new JavaAtomicComponent("target", configuration, null);
+        final JavaAtomicComponent component = new JavaAtomicComponent("target", configuration);
 
         InboundWire wire = createMock(InboundWire.class);
 

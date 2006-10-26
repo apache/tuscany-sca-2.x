@@ -18,32 +18,72 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 
-import org.apache.tuscany.core.wire.PojoTargetInvoker;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
 
 /**
- * Uses a component to resolve an implementation instance based on the current thread component
+ * Responsible for synchronously dispatching an invocation to a Java component implementation instance
  *
  * @version $Rev$ $Date$
  */
-public class JavaTargetInvoker extends PojoTargetInvoker {
+public class JavaTargetInvoker extends TargetInvokerExtension {
 
-    private JavaAtomicComponent component;
-    private Object target;
+    protected Method operation;
+    protected JavaAtomicComponent component;
+    protected Object target;
 
-    /**
-     * Creates a new invoker
-     *
-     * @param operation the operation the invoker is associated with
-     * @param component the target component
-     */
-    public JavaTargetInvoker(Method operation, JavaAtomicComponent component) {
-        super(operation);
-        assert component != null : "No atomic component specified";
+    public JavaTargetInvoker(Method operation,
+                             JavaAtomicComponent component,
+                             InboundWire wire,
+                             WorkContext context,
+                             ExecutionMonitor monitor) {
+        super(wire, context, monitor);
+        assert operation != null : "Operation method cannot be null";
+        this.operation = operation;
         this.component = component;
+    }
+
+    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+        try {
+            Object instance = getInstance();
+            if (!operation.getDeclaringClass().isInstance(instance)) {
+                Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
+                Method newOperation = findClosestMatchingMethod(operation.getName(),
+                    operation.getParameterTypes(), methods);
+                if (newOperation != null) {
+                    operation = newOperation;
+                }
+            }
+            if (payload != null && !payload.getClass().isArray()) {
+                return operation.invoke(instance, payload);
+            } else {
+                return operation.invoke(instance, (Object[]) payload);
+            }
+        } catch (IllegalAccessException e) {
+            throw new InvocationRuntimeException(e);
+        }
+    }
+
+    @Override
+    public JavaTargetInvoker clone() throws CloneNotSupportedException {
+        try {
+            JavaTargetInvoker invoker = (JavaTargetInvoker) super.clone();
+            invoker.target = null;
+            return invoker;
+        } catch (CloneNotSupportedException e) {
+            return null; // will not happen
+        }
     }
 
     /**
@@ -60,11 +100,5 @@ public class JavaTargetInvoker extends PojoTargetInvoker {
         }
     }
 
-    public JavaTargetInvoker clone() throws CloneNotSupportedException {
-        JavaTargetInvoker invoker = (JavaTargetInvoker) super.clone();
-        invoker.target = null;
-        invoker.cacheable = this.cacheable;
-        invoker.component = this.component;
-        return invoker;
-    }
+
 }

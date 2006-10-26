@@ -38,6 +38,7 @@ public class RMIInvoker extends TargetInvokerExtension {
     private Remote proxy;
 
     public RMIInvoker(RMIHost rmiHost, String host, String port, String svcName, Method remoteMethod) {
+        super(null, null, null);
         // assert remoteMethod.isAccessible();
         this.remoteMethod = remoteMethod;
         this.host = host;

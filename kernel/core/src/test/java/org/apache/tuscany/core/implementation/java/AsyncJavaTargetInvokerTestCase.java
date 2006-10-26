@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
@@ -42,39 +43,13 @@ import org.easymock.IAnswer;
  */
 public class AsyncJavaTargetInvokerTestCase extends TestCase {
 
-    public void testInvoke() throws Exception {
-        AsyncTarget target = createMock(AsyncTarget.class);
-        target.invoke();
-        expectLastCall().once();
-        replay(target);
-        JavaAtomicComponent component = createJavaComponent(target);
-        AsyncMonitor monitor = createMock(AsyncMonitor.class);
-        replay(monitor);
-
-        Message msg = new MessageImpl();
-        Object id = new Object();
-        msg.setMessageId(id);
-
-        WorkContext context = createMock(WorkContext.class);
-        context.setCurrentMessageId(null);
-        context.setCurrentCorrelationId(id);
-        replay(context);
-        Method method = AsyncTarget.class.getMethod("invoke");
-        method.setAccessible(true);
-        InboundWire wire = createMock(InboundWire.class);
-        AsyncJavaTargetInvoker invoker =
-            new AsyncJavaTargetInvoker(method, wire, component, monitor, context);
-        invoker.invoke(msg);
-        verify(target);
-    }
-
     public void testClone() throws Exception {
         AsyncTarget target = createMock(AsyncTarget.class);
         target.invoke();
         expectLastCall().once();
         replay(target);
         JavaAtomicComponent component = createJavaComponent(target);
-        AsyncMonitor monitor = createMock(AsyncMonitor.class);
+        ExecutionMonitor monitor = createMock(ExecutionMonitor.class);
         replay(monitor);
         WorkScheduler scheduler = createMock(WorkScheduler.class);
         scheduler.scheduleWork(isA(Runnable.class));
@@ -90,9 +65,8 @@ public class AsyncJavaTargetInvokerTestCase extends TestCase {
         InboundWire wire = createMock(InboundWire.class);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
-        AsyncJavaTargetInvoker invoker =
-            new AsyncJavaTargetInvoker(method, wire, component, monitor, context);
-        AsyncJavaTargetInvoker clone = invoker.clone();
+        JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, wire, context, monitor);
+        JavaTargetInvoker clone = invoker.clone();
         Message msg = new MessageImpl();
         clone.invoke(msg);
         verify(target);

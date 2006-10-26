@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -58,8 +59,9 @@ public class RubyComponent extends AtomicComponentExtension {
                          CompositeComponent parent,
                          ScopeContainer scopeContainer,
                          WireService wireService,
-                         WorkContext workContext) {
-        super(name, parent, scopeContainer, wireService, workContext, null, 0);
+                         WorkContext workContext,
+                         ExecutionMonitor monitor) {
+        super(name, parent, scopeContainer, wireService, workContext, null, monitor, 0);
 
         this.rubyScript = rubyScript;
         this.rubyClassName = rubyClassName;
@@ -95,11 +97,16 @@ public class RubyComponent extends AtomicComponentExtension {
         return instance;
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         /*Method[] methods = operation.getServiceContract().getInterfaceClass().getMethods();
         Method method = findMethod(operation,
                                    methods);*/
-        return new RubyInvoker(operation.getName(), this, operation.getOutputType().getPhysical().getClass());
+        return new RubyInvoker(operation.getName(),
+            this,
+            operation.getOutputType().getPhysical().getClass(),
+            callbackWire,
+            workContext,
+            monitor);
     }
 
     // TODO: move all the following up to AtomicComponentExtension?

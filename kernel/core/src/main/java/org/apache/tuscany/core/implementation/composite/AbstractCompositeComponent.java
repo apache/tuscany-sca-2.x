@@ -139,14 +139,9 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
         super.publish(event);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         return null;
     }
-
-    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
-        return null;
-    }
-
 
     /**
      * Blocks until the module context has been initialized

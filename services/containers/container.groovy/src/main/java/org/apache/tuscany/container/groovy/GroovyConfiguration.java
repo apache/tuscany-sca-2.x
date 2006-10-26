@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 
 import groovy.lang.GroovyObject;
 
@@ -50,6 +51,7 @@ public class GroovyConfiguration {
     private String name;
     private Class<? extends GroovyObject> groovyClass;
     private List<Class<?>> services;
+    private ExecutionMonitor monitor;
 
     public String getName() {
         return name;
@@ -147,4 +149,11 @@ public class GroovyConfiguration {
         this.workContext = workContext;
     }
 
+    public ExecutionMonitor getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(ExecutionMonitor monitor) {
+        this.monitor = monitor;
+    }
 }

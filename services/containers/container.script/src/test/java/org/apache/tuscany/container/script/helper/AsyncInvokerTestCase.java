@@ -80,7 +80,7 @@ public class AsyncInvokerTestCase extends TestCase {
         verify(instance);
     }
     
-    public void testClone() {
+    public void testClone() throws CloneNotSupportedException {
         AsyncInvoker invoker = new AsyncInvoker(null, null, null,null,null,null);
         assertNotNull(invoker.clone());
     }

@@ -50,22 +50,9 @@ public class JavaTargetInvokerTestCase extends TestCase {
         JavaAtomicComponent component =
             MockFactory.createJavaComponent("foo", scope, Echo.class);
         scope.register(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null, null, null);
         invoker.setCacheable(false);
         assertEquals("foo", invoker.invokeTarget("foo"));
-        scope.stop();
-    }
-
-    public void testClone() throws Exception {
-        ScopeContainer scope = new ModuleScopeContainer(null);
-        scope.start();
-        JavaAtomicComponent component =
-            MockFactory.createJavaComponent("foo", scope, Echo.class);
-        scope.register(component);
-        JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component);
-        invoker.setCacheable(false);
-        JavaTargetInvoker clone = invoker.clone();
-        assertEquals("foo", clone.invokeTarget("foo"));
         scope.stop();
     }
 

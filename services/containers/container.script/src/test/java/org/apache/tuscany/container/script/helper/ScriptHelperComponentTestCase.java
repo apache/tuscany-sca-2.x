@@ -41,7 +41,7 @@ public class ScriptHelperComponentTestCase extends TestCase {
         Operation operation = new Operation("hashCode", null,null,null,false,null);
         ServiceContract contract = new ServiceContract(List.class){};
         operation.setServiceContract(contract);
-        TargetInvoker invoker = component.createTargetInvoker("hashCode", operation);
+        TargetInvoker invoker = component.createTargetInvoker("hashCode", operation, null);
         
         assertNotNull(invoker);
     }

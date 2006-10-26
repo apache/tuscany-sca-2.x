@@ -16,13 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.wire;
+package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
+import org.easymock.classextension.EasyMock;
 
 /**
  * Tests invoking on a different interface from the one actually implemented by the target
@@ -38,7 +39,10 @@ public class MediationTestCase extends TestCase {
     }
 
     public void testMediation() throws Exception {
-        StaticPojoTargetInvoker invoker = new StaticPojoTargetInvoker(hello, new SimpleTargetImpl());
+        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
+        EasyMock.expect(component.getTargetInstance()).andReturn(new SimpleTargetImpl());
+        EasyMock.replay(component);
+        JavaTargetInvoker invoker = new JavaTargetInvoker(hello, component, null, null, null);
         Assert.assertEquals("foo", invoker.invokeTarget("foo"));
     }
 

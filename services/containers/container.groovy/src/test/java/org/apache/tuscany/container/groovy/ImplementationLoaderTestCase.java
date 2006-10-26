@@ -28,10 +28,10 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 
 import junit.framework.TestCase;
-import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
+import org.easymock.classextension.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -91,12 +91,12 @@ public class ImplementationLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        registry = createMock(LoaderRegistry.class);
+        registry = EasyMock.createMock(LoaderRegistry.class);
         loader = new ImplementationLoader(registry);
 
-        parent = createMock(CompositeComponent.class);
-        reader = createMock(XMLStreamReader.class);
-        deploymentContext = createMock(DeploymentContext.class);
-        classLoader = createMock(ClassLoader.class);
+        parent = EasyMock.createMock(CompositeComponent.class);
+        reader = EasyMock.createMock(XMLStreamReader.class);
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        classLoader = EasyMock.createMock(ClassLoader.class);
     }
 }

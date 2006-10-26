@@ -73,7 +73,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         }).atLeastOnce();
         EasyMock.replay(service);
         configuration.setWireService(service);
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration, null);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent("source", configuration);
         sourceContext.addOutboundWire(wire);
         sourceContext.start();
         Source source = (Source) sourceContext.getServiceInstance();
