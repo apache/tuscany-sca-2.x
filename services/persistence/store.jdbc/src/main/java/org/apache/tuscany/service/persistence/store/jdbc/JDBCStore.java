@@ -19,6 +19,9 @@
 package org.apache.tuscany.service.persistence.store.jdbc;
 
 import java.util.LinkedHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
@@ -43,6 +46,9 @@ public class JDBCStore implements Store {
     private StoreMonitor monitor;
     private boolean writeBehind;
     private long writeInterval;
+    // TODO integrate with a core threading scheme
+    private ScheduledExecutorService scheduler;
+    private long reaperInterval = 300000;
     private LinkedHashMap<Object, Object> cache;
 
     public JDBCStore(@Monitor StoreMonitor monitor) {
@@ -82,12 +88,29 @@ public class JDBCStore implements Store {
         this.writeInterval = writeInterval;
     }
 
+    /**
+     * Sets the interval for expired entry scanning to be performed
+     */
+    @Property
+    public void setReaperInterval(long reaperInterval) {
+        this.reaperInterval = reaperInterval;
+    }
+
+    /**
+     * Returns the interval for expired entry scanning to be performed
+     */
+    public long getReaperInterval() {
+        return reaperInterval;
+    }
+
     @Init(eager = true)
     public void init() {
-        monitor.start("JDBC store started");
         if (writeBehind) {
             cache = new LinkedHashMap<Object, Object>();
         }
+        this.scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleWithFixedDelay(new Reaper(), reaperInterval, reaperInterval, TimeUnit.MILLISECONDS);
+        monitor.start("JDBC store started");
     }
 
     @Destroy
@@ -123,4 +146,22 @@ public class JDBCStore implements Store {
     public void recover(RecoveryListener listener) {
 
     }
+
+    private class Record {
+        private Object data;
+        private long expiration = NEVER;
+
+        public Record(Object data, long expiration) {
+            this.data = data;
+            this.expiration = expiration;
+        }
+    }
+
+    private class Reaper implements Runnable {
+
+        public void run() {
+            //long now = System.currentTimeMillis();
+        }
+    }
+
 }
