@@ -55,6 +55,9 @@ public class MemoryStore implements Store {
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
+    /**
+     * Sets the interval for expired entry scanning to be performed
+     */
     @Property
     public void setReaperInterval(long reaperInterval) {
         this.reaperInterval = reaperInterval;
@@ -66,8 +69,8 @@ public class MemoryStore implements Store {
 
     @Init(eager = true)
     public void init() {
-        monitor.start("In-memory store started");
         scheduler.scheduleWithFixedDelay(new Reaper(), reaperInterval, reaperInterval, TimeUnit.MILLISECONDS);
+        monitor.start("In-memory store started");
     }
 
     @Destroy
