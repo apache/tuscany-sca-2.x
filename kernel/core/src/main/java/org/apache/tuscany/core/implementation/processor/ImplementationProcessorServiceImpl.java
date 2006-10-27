@@ -27,6 +27,7 @@ import org.osoa.sca.annotations.Callback;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
+import org.osoa.sca.annotations.Resource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -119,6 +120,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             } else if (Reference.class.equals(annot.annotationType())) {
                 processed = true;
                 processReference(annot, constructorNames, pos, type, param, injectionNames);
+            } else if (Resource.class.equals(annot.annotationType())) {
+                processed = true;
+                processResource((Resource) annot, constructorNames, pos, type, param, injectionNames);
             }
         }
         return processed;
@@ -129,12 +133,34 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             for (Annotation annotation : annotations) {
                 Class<? extends Annotation> annotType = annotation.annotationType();
                 if (annotType.equals(Autowire.class) || annotType.equals(Property.class)
-                    || annotType.equals(Reference.class)) {
+                    || annotType.equals(Reference.class)
+                    || annotType.equals(Resource.class)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public JavaMappedReference createReference(String name, Member member, Class<?> paramType)
+        throws ProcessingException {
+        JavaMappedReference reference = new JavaMappedReference();
+        reference.setName(name);
+        reference.setMember(member);
+        reference.setRequired(false);
+        ServiceContract contract;
+        try {
+            contract = registry.introspect(paramType);
+        } catch (InvalidServiceContractException e1) {
+            throw new ProcessingException(e1);
+        }
+        try {
+            processCallback(paramType, contract);
+        } catch (IllegalCallbackException e) {
+            throw new ProcessingException(e);
+        }
+        reference.setServiceContract(contract);
+        return reference;
     }
 
     /**
@@ -315,25 +341,52 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         addName(explicitNames, pos, name);
     }
 
-    public JavaMappedReference createReference(String name, Member member, Class<?> paramType)
-        throws ProcessingException {
-        JavaMappedReference reference = new JavaMappedReference();
-        reference.setName(name);
-        reference.setMember(member);
-        reference.setRequired(false);
-        ServiceContract contract = null;
-        try {
-            contract = registry.introspect(paramType);
-        } catch (InvalidServiceContractException e1) {
-            throw new ProcessingException(e1);
+    /**
+     * Processes resource metadata for a constructor parameter
+     *
+     * @param resourceAnnot    the resource annotation
+     * @param constructorNames the parameter names as specified in an {@link org.osoa.sca.annotations.Constructor}
+     *                         annotation
+     * @param pos              the position of the parameter in the constructor's parameter list
+     * @param type             the component type associated with the implementation being processed
+     * @param param            the parameter type
+     * @param explicitNames    the collection of injection names to update
+     * @throws ProcessingException
+     */
+    private <T> void processResource(
+        Resource resourceAnnot,
+        String[] constructorNames,
+        int pos,
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        Class<T> param,
+        List<String> explicitNames) throws ProcessingException {
+
+        org.apache.tuscany.spi.implementation.java.Resource resource =
+            new org.apache.tuscany.spi.implementation.java.Resource();
+        String name = resourceAnnot.name();
+        if (name == null || name.length() == 0) {
+            if (constructorNames.length < pos + 1 || constructorNames[pos] == null
+                || constructorNames[pos].length() == 0) {
+                throw new InvalidResourceException("No name specified for resource parameter " + (pos + 1));
+            }
+            name = constructorNames[pos];
+        } else if (pos < constructorNames.length && constructorNames[pos] != null
+            && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
+            throw new InvalidConstructorException("Name specified by @Constructor does not match resource name at "
+                + (pos + 1));
         }
-        try {
-            processCallback(paramType, contract);
-        } catch (IllegalCallbackException e) {
-            throw new ProcessingException(e);
+        if (type.getResources().get(name) != null) {
+            throw new DuplicateResourceException(name);
         }
-        reference.setServiceContract(contract);
-        return reference;
+        resource.setName(name);
+        resource.setOptional(resourceAnnot.optional());
+        resource.setType(param);
+        String mappedName = resourceAnnot.mappedName();
+        if (mappedName.length() > 0) {
+            resource.setMappedName(mappedName);
+        }
+        type.add(resource);
+        addName(explicitNames, pos, name);
     }
 
 }

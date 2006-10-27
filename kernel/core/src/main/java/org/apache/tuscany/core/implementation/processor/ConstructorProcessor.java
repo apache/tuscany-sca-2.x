@@ -69,7 +69,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
 
     public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
                                      PojoComponentType<JavaMappedService, JavaMappedReference,
-                                     JavaMappedProperty<?>> type,
+                                         JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
         org.osoa.sca.annotations.Constructor annotation =
             constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class);
@@ -97,8 +97,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
                     String name = (i < names.length) ? names[i] : "";
                     service.addName(injectionNames, i, name);
                 }
-            } catch (ProcessingException
-                e) {
+            } catch (ProcessingException e) {
                 e.setIdentifier(constructor.toString());
                 throw e;
             }
