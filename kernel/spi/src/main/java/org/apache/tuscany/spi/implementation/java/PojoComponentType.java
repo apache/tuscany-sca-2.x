@@ -19,6 +19,8 @@
 package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Property;
@@ -38,6 +40,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     private ConstructorDefinition<?> constructorDefinition;
     private Method initMethod;
     private Method destroyMethod;
+    private final Map<String, Resource> resources = new HashMap<String, Resource>();
 
     /**
      * Returns the component implementation scope
@@ -93,6 +96,14 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
      */
     public void setDestroyMethod(Method destroyMethod) {
         this.destroyMethod = destroyMethod;
+    }
+
+    public Map<String, Resource> getResources() {
+        return resources;
+    }
+
+    public void add(Resource resource) {
+        resources.put(resource.getName(), resource);
     }
 
 }
