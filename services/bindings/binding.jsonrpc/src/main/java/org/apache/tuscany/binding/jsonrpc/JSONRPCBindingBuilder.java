@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBinding> {
 
-    private ServletHost servletHost;
+    ServletHost servletHost;
 
     @Autowire()
     public void setServletHost(ServletHost servletHost) {

@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.model.Binding;
  * @version $Rev$ $Date$
  */
 public class JSONRPCBinding extends Binding {
-    private String uri;
+    String uri;
 
     public String getURI() {
         return uri;

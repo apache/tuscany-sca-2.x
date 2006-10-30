@@ -54,6 +54,30 @@
             <version>5.0.18</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>core</artifactId>
+            <version>${sca.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+	        <groupId>net.sf.json-lib</groupId>
+	        <artifactId>json-lib</artifactId>
+	        <version>0.8</version>
+	        <scope>test</scope>
+        </dependency>    
+        <dependency>
+	        <groupId>org.easymock</groupId>
+	        <artifactId>easymockclassextension</artifactId>
+	        <version>2.2</version>
+	        <scope>test</scope>
+        </dependency>    
+        <dependency>
+	        <groupId>httpunit</groupId>
+	        <artifactId>httpunit</artifactId>
+	        <version>1.6.1</version>
+	        <scope>test</scope>
+        </dependency>
         
     </dependencies>
 </project>
