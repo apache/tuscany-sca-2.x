@@ -28,8 +28,12 @@ import org.osoa.sca.annotations.Destroy;
  * @version $Rev$ $Date$
  */
 public class JSONRPCService extends ServiceExtension {
-    private ServletHost servletHost;
+
     private static int servletRegistrationCount = 0;
+
+    private ServletHost servletHost;
+
+    public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
 
     public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
 
@@ -41,21 +45,31 @@ public class JSONRPCService extends ServiceExtension {
     public synchronized void start() {
         super.start();
 
-        JSONRPCEntryPointServlet servlet = new JSONRPCEntryPointServlet(getName(), this.getServiceInstance());
+        JSONRPCEntryPointServlet servlet = new JSONRPCEntryPointServlet(getName(), interfaze, this.getServiceInstance());
+
+        // register the servlet based on the service name
         servletHost.registerMapping("/" + getName(), servlet);
-        if((servletRegistrationCount == 0) && (!servletHost.isMappingRegistered("/SCA/scripts"))) {            
-            servletHost.registerMapping("/SCA/scripts", new ScriptGetterServlet());            
+
+        // if the script getter servlet is not already registered then register it
+        if ((servletRegistrationCount == 0) && (!servletHost.isMappingRegistered("/SCA/scripts"))) {
+            servletHost.registerMapping(SCRIPT_GETTER_SERVICE_MAPPING, new ScriptGetterServlet());
         }
+
+        // increase the registered servlet count
         servletRegistrationCount++;
     }
 
     @Destroy
     public synchronized void stop() {
+        // unregister the service servlet
         servletHost.unregisterMapping("/" + getName());
+
+        // decrement the registered servlet count
         servletRegistrationCount--;
-        if(servletRegistrationCount == 0)
-        {
-            servletHost.unregisterMapping("/SCA/scripts");            
+
+        // if this was the last servlet, we can now unregister the script getter servlet
+        if (servletRegistrationCount == 0) {
+            servletHost.unregisterMapping(SCRIPT_GETTER_SERVICE_MAPPING);
         }
 
         super.stop();

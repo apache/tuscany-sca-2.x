@@ -41,8 +41,7 @@ import org.osoa.sca.annotations.Scope;
 public class JSONRPCBindingLoader extends LoaderExtension<JSONRPCBinding> {
     public static final QName BINDING_JSON = new QName(XML_NAMESPACE_1_0, "binding.jsonrpc");
 
-    public JSONRPCBindingLoader(@Autowire
-    LoaderRegistry registry) {
+    public JSONRPCBindingLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
