@@ -28,18 +28,6 @@
 	<name>Apache Tuscany Data Binding for Axiom</name>
 	<description>Tuscany Axiom Data Binding</description>
 
-    <repositories>
-      <repository>
-        <id>apache.m1.snapshots</id>
-        <name>Apache M1 Snapshot Repository</name>
-        <url>http://people.apache.org/repo/m1-snapshot-repository</url>
-        <layout>legacy</layout>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-      </repository>
-    </repositories>
-
 	<dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
