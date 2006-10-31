@@ -20,6 +20,7 @@ package org.apache.tuscany.core.component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -35,6 +36,7 @@ public class WorkContextImpl implements WorkContext {
     private static final Object REMOTE_CONTEXT = new Object();
     private static final Object MESSAGE_ID = new Object();
     private static final Object CORRELATION_ID = new Object();
+    private static final Object CALLBACK_ROUTING_CHAIN = new Object();
 
     // TODO implement propagation strategy for creating new threads
 
@@ -85,6 +87,23 @@ public class WorkContextImpl implements WorkContext {
         map.put(CORRELATION_ID, correlationId);
     }
 
+    public Stack<Object> getCurrentCallbackRoutingChain() {
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            return null;
+        }
+        return (Stack<Object>)map.get(CALLBACK_ROUTING_CHAIN);
+    }
+    
+    public void setCurrentCallbackRoutingChain(Stack<Object> callbackRoutingChain) {
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            map = new HashMap<Object, Object>();
+            workContext.set(map);
+        }
+        map.put(CALLBACK_ROUTING_CHAIN, callbackRoutingChain);
+    }
+    
     public CompositeComponent getRemoteComponent() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {

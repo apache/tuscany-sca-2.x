@@ -19,9 +19,6 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
@@ -29,24 +26,12 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 
-    private InboundWire inboundWire;
     private OutboundWire outboundWire;
 
     public CompositeReferenceTargetInvoker(Operation operation,
-                                           InboundWire inboundWire,
                                            OutboundWire outboundWire) {
         super(operation);
-        this.inboundWire = inboundWire;
         this.outboundWire = outboundWire;
-    }
-
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        Object messageId = msg.getMessageId();
-        // If there is no callback, there may not be a message id
-        if (messageId != null) {
-            inboundWire.addMapping(messageId, msg.getFromAddress());
-        }
-        return super.invoke(msg);
     }
 
     public CompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {

@@ -184,6 +184,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.addServiceInterface(Target.class);
         configuration.setParent(parent);
+        configuration.setWorkContext(workContext);
 
         JavaAtomicComponent source = new JavaAtomicComponent("source", configuration);
         OutboundWire outboundWire = createOutboundWire(new QualifiedName("target/Target"), Target.class);

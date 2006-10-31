@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -53,9 +54,12 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
         try {
             Object messageId = msg.getMessageId();
             if (messageId != null) {
-                wire.addMapping(messageId, msg.getFromAddress());
                 workContext.setCurrentMessageId(null);
                 workContext.setCurrentCorrelationId(messageId);
+            }
+            Stack<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
+            if (callbackRoutingChain != null) {
+                workContext.setCurrentCallbackRoutingChain(callbackRoutingChain);
             }
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);

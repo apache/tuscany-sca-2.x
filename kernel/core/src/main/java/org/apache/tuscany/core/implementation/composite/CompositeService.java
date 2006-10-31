@@ -43,7 +43,7 @@ public class CompositeService extends ServiceExtension {
      * FIXME !!! Notice that this method is not defined in the SPI !!!
      */
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceTargetInvoker(operation, inboundWire, outboundWire);
+        return new CompositeReferenceTargetInvoker(operation, outboundWire);
     }
 
     /**

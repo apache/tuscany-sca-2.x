@@ -2,6 +2,7 @@ package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -19,7 +20,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, new Object(), new Object());
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new Stack<Object>());
         assertEquals("response", resp);
     }
 
@@ -30,7 +31,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(null);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(invoker);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, new Object(), new Object());
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new Stack<Object>());
         assertEquals("response", resp);
     }
 
@@ -77,7 +78,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
             assertNotNull(msg.getCorrelationId());
             assertNotNull(msg.getTargetInvoker());
             assertNotNull(msg.getMessageId());
-            assertNotNull(msg.getFromAddress());
+            assertNotNull(msg.getCallbackRoutingChain());
             assertEquals("foo", Array.get(msg.getBody(), 0));
             msg.setBody("response");
             return msg;

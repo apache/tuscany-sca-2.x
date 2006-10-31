@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.wire;
 
+import java.util.Stack;
+
 /**
  * Represents a request, response, or exception flowing through a wire
  *
@@ -45,14 +47,24 @@ public interface Message {
     TargetInvoker getTargetInvoker();
 
     /**
-     * Returns the 'address' of the SCAObject where this message originates
+     * Returns the latest 'address' of the SCAObject where this message originated
      */
-    Object getFromAddress();
+    Object popFromAddress();
 
     /**
-     * Sets the 'address' of the SCAObject where this message originates
+     * Adds the latest 'address' of the SCAObject where this message originated
      */
-    void setFromAddress(Object fromAddress);
+    void pushFromAddress(Object fromAddress);
+    
+    /**
+     * Returns the stack of SCAObject addresses
+     */
+    Stack<Object> getCallbackRoutingChain();
+    
+    /**
+     * Sets the stack of SCAObject addresses
+     */
+    void setCallbackRoutingChain(Stack<Object> fromAddresses);
 
     /**
      * Returns the id of the message
