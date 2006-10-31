@@ -31,7 +31,7 @@
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
         <group>org.apache.tuscany.sca.services.databinding</group>
         <name>databinding-sdo</name>
-        <version>1.0-incubator-M2-SNAPSHOT</version>
+        <version>1.0-incubator-SNAPSHOT</version>
     </dependency>
     
     <!-- import.sdo element loader implementations -->
