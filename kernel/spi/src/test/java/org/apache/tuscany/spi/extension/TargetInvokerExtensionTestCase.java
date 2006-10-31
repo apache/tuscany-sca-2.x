@@ -19,10 +19,10 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
@@ -35,15 +35,12 @@ import org.easymock.EasyMock;
 public class TargetInvokerExtensionTestCase extends TestCase {
 
     public void testNonBlockingDispatch() {
-        MessageId id = new MessageId();
         Object from = new Object();
         InboundWire wire = EasyMock.createMock(InboundWire.class);
-        wire.addMapping(EasyMock.eq(id), EasyMock.eq(from));
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentMessageId(EasyMock.isNull());
-        context.setCurrentCorrelationId(EasyMock.eq(id));
+        context.setCurrentCallbackRoutingChain(EasyMock.isA(Stack.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);
@@ -51,8 +48,7 @@ public class TargetInvokerExtensionTestCase extends TestCase {
         EasyMock.replay(target);
         Invoker invoker = new Invoker(wire, context, monitor, target);
         Message msg = new MessageImpl();
-        msg.setMessageId(id);
-        msg.setFromAddress(from);
+        msg.pushFromAddress(from);
         msg.setBody("test");
         invoker.invoke(msg);
         EasyMock.verify(wire);

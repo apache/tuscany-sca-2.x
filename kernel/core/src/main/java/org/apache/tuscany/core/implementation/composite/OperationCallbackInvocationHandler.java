@@ -38,10 +38,9 @@ public class OperationCallbackInvocationHandler extends AbstractOperationOutboun
     }
 
     public Message invoke(Operation operation, Message msg) throws Throwable {
-        Object correlationId = msg.getCorrelationId();
-        Object targetAddress = inboundWire.retrieveMapping(correlationId);
+        Object targetAddress = msg.popFromAddress();
         if (targetAddress == null) {
-            throw new AssertionError("No from address associated with message id [" + correlationId + "]");
+            throw new AssertionError("Popped a null from address from message");
         }
         //TODO optimize as this is slow in local invocations
         Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =

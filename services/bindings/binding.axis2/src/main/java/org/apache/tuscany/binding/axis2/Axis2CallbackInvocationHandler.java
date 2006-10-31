@@ -19,6 +19,7 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.util.Map;
+import java.util.Stack;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
@@ -34,20 +35,16 @@ public class Axis2CallbackInvocationHandler extends AbstractOutboundInvocationHa
         this.inboundWire = inboundWire;
     }
 
-    public Object invoke(Operation operation, Object[] args, Object correlationId) throws Throwable {
-        Object targetAddress = inboundWire.retrieveMapping(correlationId);
+    public Object invoke(Operation operation, Object[] args, Stack<Object> callbackRoutingChain) throws Throwable {
+        Object targetAddress = callbackRoutingChain.pop();
         if (targetAddress == null) {
-            throw new AssertionError("No from address associated with message id [" + correlationId + "]");
+            throw new AssertionError("Popped a null from address from stack");
         }
         //TODO optimize as this is slow in local invocations
         Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
             inboundWire.getSourceCallbackInvocationChains(targetAddress);
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        return invoke(chain, invoker, args, null, correlationId);
-    }
-
-    protected Object getFromAddress() {
-        return (inboundWire.getContainer() == null) ? null : inboundWire.getContainer().getName();
+        return invoke(chain, invoker, args, null, callbackRoutingChain);
     }
 }

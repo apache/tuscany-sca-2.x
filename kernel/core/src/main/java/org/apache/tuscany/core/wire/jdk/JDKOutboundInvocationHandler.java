@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.component.TargetException;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
-import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -111,8 +110,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        Object messageId = (contractHasCallback ? new MessageId() : null);
-        return invoke(chain, invoker, args, messageId, null);
+        return invoke(chain, invoker, args, null, null);
     }
 
     public Object invoke(Method method, Object[] args) throws Throwable {
@@ -120,7 +118,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     protected Object getFromAddress() {
-        return fromAddress;
+        return (contractHasCallback ? fromAddress : null);
     }
 
     /**

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.wire;
 
+import java.util.Stack;
+
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.SCA;
@@ -139,6 +141,22 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
         }
 
         public void setFromAddress(Object fromAddress) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object popFromAddress() {
+            return null;
+        }
+
+        public void pushFromAddress(Object fromAddress) {
+            throw new UnsupportedOperationException();
+        }
+        
+        public Stack<Object> getCallbackRoutingChain() {
+            return null;
+        }
+        
+        public void setCallbackRoutingChain(Stack<Object> fromAddresses) {
             throw new UnsupportedOperationException();
         }
 

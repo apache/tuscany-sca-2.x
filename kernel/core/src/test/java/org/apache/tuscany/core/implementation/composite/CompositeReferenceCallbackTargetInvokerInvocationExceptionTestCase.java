@@ -38,12 +38,9 @@ public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase 
 
     protected void setUp() throws Exception {
         super.setUp();
-        Object id = new Object();
-        Object corrId = new Object();
         Object targetAddress = new Object();
         message = new MessageImpl();
-        message.setMessageId(id);
-        message.setCorrelationId(corrId);
+        message.pushFromAddress(targetAddress);
         message.setBody("foo");
         Message response = new MessageImpl();
         response.setBody("response");
@@ -56,7 +53,6 @@ public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase 
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
         chains.put(operation, chain);
         wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.retrieveMapping(corrId)).andReturn(targetAddress);
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
         EasyMock.replay(wire);
         invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);

@@ -144,16 +144,4 @@ public class SystemInboundWireImpl implements SystemInboundWire {
     public void setContainer(SCAObject container) {
         this.container = container;
     }
-
-    public void addMapping(Object messageId, Object fromAddress) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Object retrieveMapping(Object messageId) {
-        return null;
-    }
-
-    public void removeMapping(Object messageId) {
-        throw new UnsupportedOperationException();
-    }
 }

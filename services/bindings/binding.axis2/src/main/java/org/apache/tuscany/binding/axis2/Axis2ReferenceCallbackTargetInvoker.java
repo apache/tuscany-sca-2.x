@@ -19,6 +19,7 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -30,7 +31,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
     
     private Operation operation;
     private InboundWire inboundWire;
-    private Object correlationId;
+    private Stack<Object> callbackRoutingChain;
     private boolean cacheable;
     Axis2CallbackInvocationHandler invocationHandler;
     
@@ -51,7 +52,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
             args = (Object[]) payload;
         }
         try {
-            return invocationHandler.invoke(operation, args, correlationId);
+            return invocationHandler.invoke(operation, args, callbackRoutingChain);
         } catch(Throwable t) {
             t.printStackTrace();
             throw new InvocationTargetException(t);
@@ -86,13 +87,13 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         Axis2ReferenceCallbackTargetInvoker invoker = (Axis2ReferenceCallbackTargetInvoker) super.clone();
         invoker.operation = this.operation;
         invoker.inboundWire = this.inboundWire;
-        invoker.correlationId = this.correlationId;
+        invoker.callbackRoutingChain = this.callbackRoutingChain;
         invoker.cacheable = this.cacheable;
         invoker.invocationHandler = this.invocationHandler;
         return invoker;
     }
     
-    public void setCorrelationId(Object correlationId) {
-        this.correlationId = correlationId;
+    public void setCallbackRoutingChain(Stack<Object> callbackRoutingChain) {
+        this.callbackRoutingChain = callbackRoutingChain;
     }
 }

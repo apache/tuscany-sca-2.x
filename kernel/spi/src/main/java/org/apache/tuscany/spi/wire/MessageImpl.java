@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.wire;
 
+import java.util.Stack;
+
 /**
  * The default implementation of a message flowed through a wire during an invocation
  *
@@ -27,7 +29,7 @@ public class MessageImpl implements Message {
 
     private Object body;
     private TargetInvoker invoker;
-    private Object fromAddress;
+    private Stack<Object> callbackRoutingChain;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
@@ -52,14 +54,25 @@ public class MessageImpl implements Message {
         return invoker;
     }
 
-    public Object getFromAddress() {
-        return fromAddress;
+    public Object popFromAddress() {
+        return callbackRoutingChain.pop();
     }
 
-    public void setFromAddress(Object fromAddress) {
-        this.fromAddress = fromAddress;
+    public void pushFromAddress(Object fromAddress) {
+        if (callbackRoutingChain == null) {
+            callbackRoutingChain = new Stack<Object>();
+        }
+        callbackRoutingChain.push(fromAddress);
     }
 
+    public Stack<Object> getCallbackRoutingChain() {
+        return callbackRoutingChain;
+    }
+    
+    public void setCallbackRoutingChain(Stack<Object> callbackRoutingChain) {
+        this.callbackRoutingChain = callbackRoutingChain;
+    }
+    
     public Object getMessageId() {
         return messageId;
     }

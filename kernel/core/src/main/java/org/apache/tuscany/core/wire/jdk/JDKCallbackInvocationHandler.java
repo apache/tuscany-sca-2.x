@@ -21,6 +21,7 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Stack;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
@@ -52,13 +53,16 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object messageId = context.getCurrentMessageId();
-        context.setCurrentMessageId(null);
         Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-        Object targetAddress = inboundWire.retrieveMapping(correlationId);
+        Stack<Object> callbackRoutingChain = context.getCurrentCallbackRoutingChain();
+        context.setCurrentCallbackRoutingChain(null);
+        if (callbackRoutingChain == null) {
+            throw new AssertionError("Missing stack of from addresses");
+        }
+        Object targetAddress = callbackRoutingChain.pop();
         if (targetAddress == null) {
-            throw new AssertionError("No from address associated with message id [" + correlationId + "]");
+            throw new AssertionError("Popped a null from address from stack");
         }
         //TODO optimize as this is slow in local invocations
         Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
@@ -66,7 +70,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        return invoke(chain, invoker, args, messageId, correlationId);
+        return invoke(chain, invoker, args, correlationId, callbackRoutingChain);
     }
 
 

@@ -42,6 +42,7 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
      */
     private Map<Operation, ChainHolder> chains;
     private Object fromAddress;
+    private boolean contractHasCallback;
 
     public OperationOutboundInvocationHandler(OutboundWire wire) {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
@@ -52,6 +53,7 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
             Operation operation = entry.getKey();
             this.chains.put(operation, new ChainHolder(entry.getValue()));
         }
+        this.contractHasCallback = wire.getServiceContract().getCallbackClass() != null;
     }
 
     public Message invoke(Operation operation, Message msg) throws Throwable {
@@ -83,8 +85,10 @@ public class OperationOutboundInvocationHandler extends AbstractOperationOutboun
             invoker = chain.getTargetInvoker();
         }
 
-        // Setting the from address only needs to happen in the outbound (forward) direction
-        msg.setFromAddress(fromAddress);
+        // Pushing the from address only needs to happen in the outbound (forward) direction for callbacks
+        if (contractHasCallback) {
+            msg.pushFromAddress(fromAddress);
+        }
 
         return invoke(chain, invoker, msg);
     }

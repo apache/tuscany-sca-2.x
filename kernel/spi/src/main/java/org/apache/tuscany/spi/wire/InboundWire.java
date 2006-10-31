@@ -86,21 +86,4 @@ public interface InboundWire extends RuntimeWire {
      * Set when a wire can be optimized; that is when no handlers or interceptors exist on either end
      */
     void setTargetWire(OutboundWire wire);
-
-    /**
-     * Creates an association between a message id and the address of the SCAObject that the corresponding message
-     * originates from
-     */
-    void addMapping(Object messageId, Object fromAddress);
-
-    /**
-     * Retrieves the SCAObject address that is associated with a message id
-     */
-    Object retrieveMapping(Object messageId);
-
-    /**
-     * Removes an association between a message id and the address of the SCAObject that the corresponding message
-     * originates from
-     */
-    void removeMapping(Object messageId);
 }

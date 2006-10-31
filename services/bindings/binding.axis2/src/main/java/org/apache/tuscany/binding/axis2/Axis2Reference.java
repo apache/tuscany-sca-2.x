@@ -168,8 +168,7 @@ public class Axis2Reference<T> extends ReferenceExtension {
         Axis2TargetInvoker invoker;
         if (hasCallback) {
             invoker =
-                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory,
-                                            inboundWire);
+                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         } else if (isOneWay) {
             invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
         } else {

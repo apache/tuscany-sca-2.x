@@ -19,6 +19,7 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 import javax.xml.namespace.QName;
 
@@ -28,7 +29,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 
@@ -36,27 +36,24 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
     protected static final OMElement RESPONSE = null;
 
-    private InboundWire wire;
     private Axis2ReferenceCallbackTargetInvoker callbackInvoker;
 
     public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
                                    QName wsdlOperationName,
                                    Options options,
-                                   SOAPFactory soapFactory,
-                                   InboundWire wire) {
+                                   SOAPFactory soapFactory) {
         super(serviceClient, wsdlOperationName, options, soapFactory);
-        this.wire = wire;
     }
 
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
         throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
-    private Object invokeTarget(final Object payload, Object messageId) throws InvocationTargetException {
+    private Object invokeTarget(final Object payload, Stack<Object> callbackRoutingChain) throws InvocationTargetException {
         try {
             Object[] args = (Object[])payload;
             OperationClient operationClient = createOperationClient(args);
-            callbackInvoker.setCorrelationId(messageId);
+            callbackInvoker.setCallbackRoutingChain(callbackRoutingChain);
             Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker);
             operationClient.setCallback(callback);
 
@@ -71,9 +68,7 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object messageId = msg.getMessageId();
-            wire.addMapping(messageId, msg.getFromAddress());
-            Object resp = invokeTarget(msg.getBody(), messageId);
+            Object resp = invokeTarget(msg.getBody(), msg.getCallbackRoutingChain());
             msg.setBody(resp);
         } catch (Throwable e) {
             msg.setBodyWithFault(e);

@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Stack;
 
 
 /**
@@ -32,8 +33,8 @@ public abstract class AbstractOutboundInvocationHandler {
     protected Object invoke(OutboundInvocationChain chain,
                             TargetInvoker invoker,
                             Object[] args,
-                            Object messageId,
-                            Object correlationId)
+                            Object correlationId,
+                            Stack<Object> callbackRoutingChain)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
@@ -53,14 +54,17 @@ public abstract class AbstractOutboundInvocationHandler {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);
             Object fromAddress = getFromAddress();
-            if (fromAddress != null) {
-                msg.setFromAddress(fromAddress);
+            if (fromAddress != null && callbackRoutingChain != null) {
+                throw new AssertionError("Can't use both a from address and callback routing chain");
             }
-            if (messageId != null) {
-                msg.setMessageId(messageId);
+            if (fromAddress != null) {
+                msg.pushFromAddress(fromAddress);
             }
             if (correlationId != null) {
                 msg.setCorrelationId(correlationId);
+            }
+            if (callbackRoutingChain != null) {
+                msg.setCallbackRoutingChain(callbackRoutingChain);
             }
             msg.setBody(args);
             // dispatch the wire down the chain and get the response

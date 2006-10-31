@@ -190,7 +190,7 @@ public class Axis2Service extends ServiceExtension {
 
             Message msg = new MessageImpl();
             msg.setTargetInvoker(chain.getTargetInvoker());
-            msg.setFromAddress(getFromAddress());
+            msg.pushFromAddress(getFromAddress());
             if (messageId != null) {
                 msg.setMessageId(messageId);
             }
