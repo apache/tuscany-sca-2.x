@@ -27,11 +27,11 @@
            xmlns:tuscany="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT"
            name="org.apache.tuscany.binding.rmi">
            
-    <tuscany:dependency>
-        <group>cglib</group>
-        <artifact>cglib-nodep</artifact>
-        <version>2.1_3</version>
-    </tuscany:dependency>
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.services.bindings</group>
+        <name>rmi</name>
+        <version>1.0-incubator-M2-SNAPSHOT</version>
+    </dependency>
     
     <component name="binding.rmi.bindingLoader">
         <system:implementation.system class="org.apache.tuscany.binding.rmi.RMIBindingLoader"/>
