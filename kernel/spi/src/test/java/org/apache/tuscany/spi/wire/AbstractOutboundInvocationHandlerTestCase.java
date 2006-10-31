@@ -2,7 +2,7 @@ package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
+import java.util.LinkedList;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -20,7 +20,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new Stack<Object>());
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<Object>());
         assertEquals("response", resp);
     }
 
@@ -31,7 +31,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         EasyMock.expect(chain.getHeadInterceptor()).andReturn(null);
         EasyMock.expect(chain.getTargetInvoker()).andReturn(invoker);
         EasyMock.replay(chain);
-        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new Stack<Object>());
+        Object resp = handler.invoke(chain, invoker, new String[]{"foo"}, null, new LinkedList<Object>());
         assertEquals("response", resp);
     }
 

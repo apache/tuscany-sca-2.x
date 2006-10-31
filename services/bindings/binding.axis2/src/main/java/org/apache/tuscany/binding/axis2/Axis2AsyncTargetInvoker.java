@@ -19,7 +19,7 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
+import java.util.LinkedList;
 
 import javax.xml.namespace.QName;
 
@@ -49,7 +49,7 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
-    private Object invokeTarget(final Object payload, Stack<Object> callbackRoutingChain) throws InvocationTargetException {
+    private Object invokeTarget(final Object payload, LinkedList<Object> callbackRoutingChain) throws InvocationTargetException {
         try {
             Object[] args = (Object[])payload;
             OperationClient operationClient = createOperationClient(args);

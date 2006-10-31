@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 /**
  * Represents a request, response, or exception flowing through a wire
@@ -57,14 +57,14 @@ public interface Message {
     void pushFromAddress(Object fromAddress);
     
     /**
-     * Returns the stack of SCAObject addresses
+     * Returns the chain of SCAObject addresses
      */
-    Stack<Object> getCallbackRoutingChain();
+    LinkedList<Object> getCallbackRoutingChain();
     
     /**
-     * Sets the stack of SCAObject addresses
+     * Sets the chain of SCAObject addresses
      */
-    void setCallbackRoutingChain(Stack<Object> fromAddresses);
+    void setCallbackRoutingChain(LinkedList<Object> fromAddresses);
 
     /**
      * Returns the id of the message

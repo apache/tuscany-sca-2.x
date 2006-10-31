@@ -19,8 +19,8 @@
 package org.apache.tuscany.core.component;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -87,15 +87,15 @@ public class WorkContextImpl implements WorkContext {
         map.put(CORRELATION_ID, correlationId);
     }
 
-    public Stack<Object> getCurrentCallbackRoutingChain() {
+    public LinkedList<Object> getCurrentCallbackRoutingChain() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             return null;
         }
-        return (Stack<Object>)map.get(CALLBACK_ROUTING_CHAIN);
+        return (LinkedList<Object>)map.get(CALLBACK_ROUTING_CHAIN);
     }
     
-    public void setCurrentCallbackRoutingChain(Stack<Object> callbackRoutingChain) {
+    public void setCurrentCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
             map = new HashMap<Object, Object>();

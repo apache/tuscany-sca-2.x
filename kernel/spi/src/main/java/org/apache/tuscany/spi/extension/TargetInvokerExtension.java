@@ -19,7 +19,7 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
+import java.util.LinkedList;
 
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -57,7 +57,7 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
                 workContext.setCurrentMessageId(null);
                 workContext.setCurrentCorrelationId(messageId);
             }
-            Stack<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
+            LinkedList<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
             if (callbackRoutingChain != null) {
                 workContext.setCurrentCallbackRoutingChain(callbackRoutingChain);
             }

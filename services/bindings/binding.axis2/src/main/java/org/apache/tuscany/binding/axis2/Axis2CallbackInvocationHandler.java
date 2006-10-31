@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.binding.axis2;
 
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
@@ -35,8 +35,8 @@ public class Axis2CallbackInvocationHandler extends AbstractOutboundInvocationHa
         this.inboundWire = inboundWire;
     }
 
-    public Object invoke(Operation operation, Object[] args, Stack<Object> callbackRoutingChain) throws Throwable {
-        Object targetAddress = callbackRoutingChain.pop();
+    public Object invoke(Operation operation, Object[] args, LinkedList<Object> callbackRoutingChain) throws Throwable {
+        Object targetAddress = callbackRoutingChain.removeFirst();
         if (targetAddress == null) {
             throw new AssertionError("Popped a null from address from stack");
         }

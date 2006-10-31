@@ -19,7 +19,7 @@
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
+import java.util.LinkedList;
 
 
 /**
@@ -34,7 +34,7 @@ public abstract class AbstractOutboundInvocationHandler {
                             TargetInvoker invoker,
                             Object[] args,
                             Object correlationId,
-                            Stack<Object> callbackRoutingChain)
+                            LinkedList<Object> callbackRoutingChain)
         throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
