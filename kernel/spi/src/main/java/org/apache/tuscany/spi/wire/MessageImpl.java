@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 /**
  * The default implementation of a message flowed through a wire during an invocation
@@ -29,7 +29,7 @@ public class MessageImpl implements Message {
 
     private Object body;
     private TargetInvoker invoker;
-    private Stack<Object> callbackRoutingChain;
+    private LinkedList<Object> callbackRoutingChain;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
@@ -55,21 +55,21 @@ public class MessageImpl implements Message {
     }
 
     public Object popFromAddress() {
-        return callbackRoutingChain.pop();
+        return callbackRoutingChain.removeFirst();
     }
 
     public void pushFromAddress(Object fromAddress) {
         if (callbackRoutingChain == null) {
-            callbackRoutingChain = new Stack<Object>();
+            callbackRoutingChain = new LinkedList<Object>();
         }
-        callbackRoutingChain.push(fromAddress);
+        callbackRoutingChain.addFirst(fromAddress);
     }
 
-    public Stack<Object> getCallbackRoutingChain() {
+    public LinkedList<Object> getCallbackRoutingChain() {
         return callbackRoutingChain;
     }
     
-    public void setCallbackRoutingChain(Stack<Object> callbackRoutingChain) {
+    public void setCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
         this.callbackRoutingChain = callbackRoutingChain;
     }
     

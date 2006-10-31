@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
@@ -152,11 +152,11 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
             throw new UnsupportedOperationException();
         }
         
-        public Stack<Object> getCallbackRoutingChain() {
+        public LinkedList<Object> getCallbackRoutingChain() {
             return null;
         }
         
-        public void setCallbackRoutingChain(Stack<Object> fromAddresses) {
+        public void setCallbackRoutingChain(LinkedList<Object> fromAddresses) {
             throw new UnsupportedOperationException();
         }
 

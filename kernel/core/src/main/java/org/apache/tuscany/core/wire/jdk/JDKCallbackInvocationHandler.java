@@ -20,8 +20,8 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Stack;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
@@ -55,12 +55,12 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-        Stack<Object> callbackRoutingChain = context.getCurrentCallbackRoutingChain();
+        LinkedList<Object> callbackRoutingChain = context.getCurrentCallbackRoutingChain();
         context.setCurrentCallbackRoutingChain(null);
         if (callbackRoutingChain == null) {
             throw new AssertionError("Missing stack of from addresses");
         }
-        Object targetAddress = callbackRoutingChain.pop();
+        Object targetAddress = callbackRoutingChain.removeFirst();
         if (targetAddress == null) {
             throw new AssertionError("Popped a null from address from stack");
         }

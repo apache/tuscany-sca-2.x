@@ -19,7 +19,7 @@
 package org.apache.tuscany.spi.extension;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Stack;
+import java.util.LinkedList;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -40,7 +40,7 @@ public class TargetInvokerExtensionTestCase extends TestCase {
         EasyMock.replay(wire);
         WorkContext context;
         context = EasyMock.createMock(WorkContext.class);
-        context.setCurrentCallbackRoutingChain(EasyMock.isA(Stack.class));
+        context.setCurrentCallbackRoutingChain(EasyMock.isA(LinkedList.class));
         EasyMock.replay(context);
         ExecutionMonitor monitor = EasyMock.createNiceMock(ExecutionMonitor.class);
         Target target = EasyMock.createMock(Target.class);

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.Stack;
+import java.util.LinkedList;
 
 /**
  * Implementations track information associated with a request as it is processed by the runtime
@@ -36,14 +36,14 @@ public interface WorkContext {
     void setCurrentCorrelationId(Object correlationId);
     
     /**
-     * Returns the current stack of SCAObject addresses
+     * Returns the current chain of SCAObject addresses
      */
-    Stack<Object> getCurrentCallbackRoutingChain();
+    LinkedList<Object> getCurrentCallbackRoutingChain();
     
     /**
      * Sets the current stack of SCAObject addresses
      */
-    void setCurrentCallbackRoutingChain(Stack<Object> callbackRoutingChain);
+    void setCurrentCallbackRoutingChain(LinkedList<Object> callbackRoutingChain);
 
     /**
      * Returns the composite where a remote request came in
