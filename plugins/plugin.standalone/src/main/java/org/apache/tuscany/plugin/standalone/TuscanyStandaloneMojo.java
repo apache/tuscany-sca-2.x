@@ -102,7 +102,7 @@ import org.apache.maven.project.MavenProject;
  * </code>
  * 
  * @goal tuscany-standalone
- * @phase package
+ * @phase install
  * @version $Rev$ $Date$
  */
 public class TuscanyStandaloneMojo extends AbstractMojo {
@@ -254,7 +254,7 @@ public class TuscanyStandaloneMojo extends AbstractMojo {
     private Map transDepenedencyMap = new HashMap();
 
     private Dependency launcher =
-        new Dependency("org.apache.tuscany.sca.commands", "launcher", "1.0-incubator-M2-SNAPSHOT");
+        new Dependency("org.apache.tuscany.sca.commands", "launcher", "1.0-incubator-SNAPSHOT");
 
     /**
      * Executes the MOJO.
@@ -477,9 +477,11 @@ public class TuscanyStandaloneMojo extends AbstractMojo {
 
         Set<Artifact> resolvedArtifacts = new HashSet<Artifact>();
 
-        // Resolve the artifact
-        resolver.resolve(artifact, remoteRepositories, localRepository);
-        resolvedArtifacts.add((Artifact)artifact);
+        if (artifact != project.getArtifact()) {
+            // Resolve the artifact
+            resolver.resolve(artifact, remoteRepositories, localRepository);
+            resolvedArtifacts.add((Artifact)artifact);
+        }        
 
         if (!transitive) {
             return resolvedArtifacts;

@@ -115,7 +115,7 @@ public class Dependency {
     private static class WebappHostDependency extends Dependency {
         // TODO Decide on whether to get snapshot version rather than hardcoded version
         private WebappHostDependency() {
-            super("org.apache.tuscany.sca.runtime", "webapp-host", "1.0-incubator-M2-SNAPSHOT");
+            super("org.apache.tuscany.sca.runtime", "webapp-host", "1.0-incubator-SNAPSHOT");
         }
     }
 
