@@ -71,6 +71,7 @@
         <dependency>
             <groupId>incubator-woden</groupId>
             <artifactId>woden</artifactId>
+            <version>1.0.0M6</version>
         </dependency>
 
         <dependency>
