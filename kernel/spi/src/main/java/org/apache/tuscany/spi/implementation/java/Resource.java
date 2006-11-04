@@ -33,26 +33,52 @@ public class Resource {
     private Member member;
     private Class<?> type;
 
+    /**
+     * The name of the resource
+     *
+     * @return the name of the resource
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the resource
+     *
+     * @param name the name of the resource
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the URI of the resource
+     *
+     * @return the URI of the resource
+     */
     public String getMappedName() {
         return mappedName;
     }
 
+    /**
+     * Sets the resource URI
+     */
     public void setMappedName(String mappedName) {
         this.mappedName = mappedName;
     }
 
+    /**
+     * If true, the resource is optional
+     *
+     * @return true if the resource is optional
+     */
     public boolean isOptional() {
         return optional;
     }
 
+    /**
+     * Sets whether the resource is optional
+     */
     public void setOptional(boolean optional) {
         this.optional = optional;
     }
@@ -75,10 +101,18 @@ public class Resource {
         this.member = member;
     }
 
+    /**
+     * Returns the resource type
+     *
+     * @return the resource type
+     */
     public Class<?> getType() {
         return type;
     }
 
+    /**
+     * Sets the resource type
+     */
     public void setType(Class<?> type) {
         this.type = type;
     }

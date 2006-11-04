@@ -42,7 +42,8 @@ public class SystemAtomicComponentTestCase extends TestCase {
         configuration.addServiceInterface(Foo.class);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl("foo", configuration);
+        configuration.setName("foo");
+        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         Foo foo = (Foo) component.createInstance();
         component.init(foo);
         assertTrue(foo.initialized);
@@ -56,7 +57,8 @@ public class SystemAtomicComponentTestCase extends TestCase {
         configuration.setInitInvoker(initInvoker);
         configuration.addConstructorParamName("foo");
         configuration.addConstructorParamName("ref");
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl("foo", configuration);
+        configuration.setName("foo");
+        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));
         Foo target = new Foo();
         SystemOutboundWire wire = EasyMock.createMock(SystemOutboundWire.class);

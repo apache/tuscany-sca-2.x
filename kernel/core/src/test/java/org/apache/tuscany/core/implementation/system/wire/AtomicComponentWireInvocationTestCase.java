@@ -53,7 +53,8 @@ public class AtomicComponentWireInvocationTestCase extends TestCase {
         configuration.addReferenceSite("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.addServiceInterface(Source.class);
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
-        SystemAtomicComponent sourceContext = new SystemAtomicComponentImpl("source", configuration);
+        configuration.setName("source");
+        SystemAtomicComponent sourceContext = new SystemAtomicComponentImpl(configuration);
         QualifiedName qName = new QualifiedName("service");
         OutboundWire outboundWire = new SystemOutboundWireImpl("setTarget", qName, Target.class);
         outboundWire.setTargetWire(inboundWire);

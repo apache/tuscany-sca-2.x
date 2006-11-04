@@ -42,6 +42,7 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public class PojoConfiguration {
 
+    private String name;
     private CompositeComponent parent;
     private ScopeContainer scopeContainer;
     private PojoObjectFactory<?> instanceFactory;
@@ -52,12 +53,21 @@ public class PojoConfiguration {
     private List<Injector> propertyInjectors = new ArrayList<Injector>();
     private Map<String, Member> referenceSites = new HashMap<String, Member>();
     private Map<String, Member> propertySites = new HashMap<String, Member>();
+    private Map<String, Member> resourceSites = new HashMap<String, Member>();
     private Map<String, Member> callbackSites = new HashMap<String, Member>();
     private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
     private WireService wireService;
     private WorkContext workContext;
     private WorkScheduler scheduler;
     private ExecutionMonitor monitor;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public CompositeComponent getParent() {
         return parent;
@@ -141,6 +151,14 @@ public class PojoConfiguration {
 
     public void addReferenceSite(String name, Member member) {
         referenceSites.put(name, member);
+    }
+
+    public Map<String, Member> getResourceSites() {
+        return resourceSites;
+    }
+
+    public void addResourceSite(String name, Member member) {
+        resourceSites.put(name, member);
     }
 
     public Map<String, Member> getCallbackSite() {

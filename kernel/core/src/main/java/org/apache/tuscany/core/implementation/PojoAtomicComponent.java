@@ -43,6 +43,7 @@ import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -57,12 +58,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected List<String> constructorParamNames;
     protected List<Class<?>> serviceInterfaces;
     protected Map<String, Member> referenceSites;
+    protected Map<String, Member> resourceSites;
     protected Map<String, Member> propertySites;
     protected Map<String, Member> callbackSites;
     protected List<Injector<Object>> injectors;
 
-    public PojoAtomicComponent(String name, PojoConfiguration configuration) {
-        super(name,
+    public PojoAtomicComponent(PojoConfiguration configuration) {
+        super(configuration.getName(),
             configuration.getParent(),
             configuration.getScopeContainer(),
             configuration.getWireService(),
@@ -80,6 +82,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
             : new HashMap<String, Member>();
         propertySites = configuration.getPropertySites() != null ? configuration.getPropertySites()
+            : new HashMap<String, Member>();
+        resourceSites = configuration.getResourceSites() != null ? configuration.getResourceSites()
             : new HashMap<String, Member>();
         callbackSites = configuration.getCallbackSite() != null ? configuration.getCallbackSite()
             : new HashMap<String, Member>();
@@ -128,6 +132,24 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public void addPropertyFactory(String name, ObjectFactory<?> factory) {
         Member member = propertySites.get(name);
+        if (member instanceof Field) {
+            injectors.add(new FieldInjector<Object>((Field) member, factory));
+        } else if (member instanceof Method) {
+            injectors.add(new MethodInjector<Object>((Method) member, factory));
+        }
+        // cycle through constructor param names as well
+        for (int i = 0; i < constructorParamNames.size(); i++) {
+            if (name.equals(constructorParamNames.get(i))) {
+                ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
+                initializerFactories[i] = factory;
+                break;
+            }
+        }
+        //FIXME throw an error if no injection site found
+    }
+
+    public void addResourceFactory(String name, ResourceObjectFactory<?> factory) {
+        Member member = resourceSites.get(name);
         if (member instanceof Field) {
             injectors.add(new FieldInjector<Object>((Field) member, factory));
         } else if (member instanceof Method) {

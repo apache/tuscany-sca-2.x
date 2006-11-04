@@ -23,25 +23,27 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
+import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 
-import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
-import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
-import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
-import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
 
 /**
  * Builds a Java-based atomic context from a component definition
@@ -50,10 +52,17 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  */
 public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplementation> {
 
+    private ResourceHost host;
+
+    @Autowire(required = false)
+    public void setHost(ResourceHost host) {
+        this.host = host;
+    }
+
     @SuppressWarnings("unchecked")
     public AtomicComponent build(CompositeComponent parent,
-                                    ComponentDefinition<JavaImplementation> definition,
-                                    DeploymentContext deployment)
+                                 ComponentDefinition<JavaImplementation> definition,
+                                 DeploymentContext deployment)
         throws BuilderConfigException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             definition.getImplementation().getComponentType();
@@ -97,6 +106,15 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 configuration.addReferenceSite(reference.getName(), member);
             }
         }
+
+        for (Resource resource : componentType.getResources().values()) {
+            Member member = resource.getMember();
+            if (member != null) {
+                // could be null if the resource is mapped to a constructor
+                configuration.addResourceSite(resource.getName(), member);
+            }
+        }
+
         // setup constructor injection
         ConstructorDefinition<?> ctorDef = componentType.getConstructorDefinition();
         Constructor<?> constr = ctorDef.getConstructor();
@@ -104,7 +122,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setInstanceFactory(instanceFactory);
         configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
         configuration.setMonitor(monitor);
-        JavaAtomicComponent component = new JavaAtomicComponent(definition.getName(), configuration);
+        configuration.setName(definition.getName());
+        JavaAtomicComponent component = new JavaAtomicComponent(configuration);
 
         // handle properties
         for (PropertyValue<?> property : definition.getPropertyValues().values()) {
@@ -112,6 +131,23 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             if (factory != null) {
                 component.addPropertyFactory(property.getName(), factory);
             }
+        }
+
+        // handle resources
+        for (Resource resource : componentType.getResources().values()) {
+            String name = resource.getName();
+            boolean optional = resource.isOptional();
+            Class<Object> type = (Class<Object>) resource.getType();
+            ResourceObjectFactory<Object> factory;
+            String mappedName = resource.getMappedName();
+            if (mappedName == null) {
+                // by type
+                factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+            } else {
+                factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+            }
+            component.addResourceFactory(name, factory);
+
         }
 
         for (JavaMappedService service : componentType.getServices().values()) {

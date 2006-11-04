@@ -91,7 +91,9 @@ public final class MockFactory {
         configuration.addServiceInterface(DummyImpl.class);
         configuration.setWireService(WIRE_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
-        return new JavaAtomicComponent(instance.getClass().getName(), configuration);
+        configuration.setName(instance.getClass().getName());
+
+        return new JavaAtomicComponent(configuration);
     }
 
     @SuppressWarnings("unchecked")
@@ -103,7 +105,8 @@ public final class MockFactory {
         configuration.addServiceInterface(clazz);
         configuration.setWireService(WIRE_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
-        return new JavaAtomicComponent(name, configuration);
+        configuration.setName(name);
+        return new JavaAtomicComponent(configuration);
 
     }
 
@@ -185,7 +188,8 @@ public final class MockFactory {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         configuration.setWorkContext(new WorkContextImpl());
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
+        configuration.setName(sourceName);
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent(configuration);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
         sourceContext.addOutboundWire(outboundWire);
         targetScope.register(targetContext);
@@ -236,7 +240,9 @@ public final class MockFactory {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         configuration.setWorkContext(new WorkContextImpl());
-        JavaAtomicComponent sourceContext = new JavaAtomicComponent(sourceName, configuration);
+        configuration.setName(sourceName);
+
+        JavaAtomicComponent sourceContext = new JavaAtomicComponent(configuration);
         OutboundWire outboundWire = createReferenceWire(targetName, sourceReferenceClass, null);
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);
