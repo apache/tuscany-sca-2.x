@@ -39,7 +39,7 @@ import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.core.injection.WireObjectFactory;
+import org.apache.tuscany.spi.wire.WireObjectFactory;
 
 /**
  * The runtime instantiation of Java component implementations
