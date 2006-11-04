@@ -16,30 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.WireObjectFactory;
+
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
- * Uses a wire to return an object instance
- *
  * @version $Rev$ $Date$
  */
-public class WireObjectFactory implements ObjectFactory {
+public class WireObjectFactoryTestCase extends TestCase {
 
-    private RuntimeWire wire;
-    private WireService wireService;
-
-    public WireObjectFactory(RuntimeWire wire, WireService wireService) {
-        this.wire = wire;
-        this.wireService = wireService;
+    public void testCreateInstance() throws Exception {
+        RuntimeWire wire = createMock(RuntimeWire.class);
+        WireService service = createMock(WireService.class);
+        service.createProxy(wire);
+        expectLastCall().andReturn(null);
+        replay(service);
+        WireObjectFactory factory = new WireObjectFactory(wire, service);
+        factory.getInstance();
+        verify(service);
     }
-
-    public Object getInstance() throws ObjectCreationException {
-        return wireService.createProxy(wire);
-    }
-
 }
