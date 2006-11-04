@@ -21,9 +21,9 @@ package org.apache.tuscany.spi.host;
 import javax.servlet.Servlet;
 
 /**
- * ServiceDefinition interface implemented by host environments that allow Servlets to be registered.
+ * Interface implemented by host environments that allow Servlets to be registered.
  * <p/>
- * This interface allows an SCA system component to register a servlet to handle inbound requests.
+ * This interface allows an SCA system service to register a servlet to handle inbound requests.
  *
  * @version $Rev$ $Date$
  */
@@ -42,7 +42,7 @@ public interface ServletHost {
      * registered Servlet.
      *
      * @param mapping the uri-mapping for the Servlet
-     * @returns the servlet that was registered to the mapping, null if nothing was registered to the mapping
+     * @return the servlet that was registered to the mapping, null if nothing was registered to the mapping
      */
     Servlet unregisterMapping(String mapping);
     

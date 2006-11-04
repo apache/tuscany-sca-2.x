@@ -38,8 +38,8 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  */
 public class SystemAtomicComponentImpl extends PojoAtomicComponent implements SystemAtomicComponent {
 
-    public SystemAtomicComponentImpl(String name, PojoConfiguration configuration) {
-        super(name, configuration);
+    public SystemAtomicComponentImpl(PojoConfiguration configuration) {
+        super(configuration);
         scope = Scope.MODULE;
     }
 

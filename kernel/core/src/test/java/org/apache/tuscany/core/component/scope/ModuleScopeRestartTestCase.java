@@ -54,7 +54,8 @@ public class ModuleScopeRestartTestCase extends TestCase {
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
-        SystemAtomicComponent context = new SystemAtomicComponentImpl("InitDestroy", configuration);
+        configuration.setName("InitDestroy");
+        SystemAtomicComponent context = new SystemAtomicComponentImpl(configuration);
         context.start();
 
         scope.onEvent(new CompositeStart(this, null));

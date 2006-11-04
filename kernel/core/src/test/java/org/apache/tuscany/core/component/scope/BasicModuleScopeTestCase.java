@@ -100,7 +100,8 @@ public class BasicModuleScopeTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl("foo", configuration);
+        configuration.setName("foo");
+        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl(configuration);
         context.start();
         return context;
     }

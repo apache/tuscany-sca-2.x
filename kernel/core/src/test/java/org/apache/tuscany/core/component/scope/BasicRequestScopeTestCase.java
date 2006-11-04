@@ -97,7 +97,8 @@ public class BasicRequestScopeTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl("foo", configuration);
+        configuration.setName("foo");
+        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         scopeContainer.register(component);
         return component;
     }

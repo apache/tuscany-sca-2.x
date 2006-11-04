@@ -123,7 +123,8 @@ public final class MockFactory {
         }
 
         sourceConfig.addReferenceSite(setter.getName(), setter);
-        SystemAtomicComponent sourceCtx = new SystemAtomicComponentImpl(source, sourceConfig);
+        sourceConfig.setName(source);
+        SystemAtomicComponent sourceCtx = new SystemAtomicComponentImpl(sourceConfig);
         QualifiedName targetName = new QualifiedName(target);
         SystemOutboundWire wire = new SystemOutboundWireImpl(setter.getName(), targetName, targetClass);
         InboundWire inboundWire = new SystemInboundWireImpl(targetName.getPortName(), targetClass, targetComponent);
@@ -153,7 +154,8 @@ public final class MockFactory {
                 configuration.setDestroyInvoker(new MethodEventInvoker<Object>(method));
             }
         }
-        return new SystemAtomicComponentImpl(name, configuration);
+        configuration.setName(name);
+        return new SystemAtomicComponentImpl(configuration);
     }
 
     public static <T> InboundWire createTargetWireFactory(String serviceName, Class<T> interfaze)

@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -49,10 +48,8 @@ import org.apache.tuscany.core.injection.WireObjectFactory;
  */
 public class JavaAtomicComponent extends PojoAtomicComponent {
 
-    private ExecutionMonitor monitor;
-
-    public JavaAtomicComponent(String name, PojoConfiguration configuration) {
-        super(name, configuration);
+    public JavaAtomicComponent(PojoConfiguration configuration) {
+        super(configuration);
         this.scope = configuration.getScopeContainer().getScope();
     }
 
@@ -87,17 +84,6 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         Method method = findMethod(operation, methods);
         return new JavaTargetInvoker(method, this, callbackWire, workContext, monitor);
     }
-
-//    public TargetInvoker createAsyncTargetInvoker(InboundWire wire, Operation operation) {
-//        Method method;
-//        if (operation.isCallback()) {
-//            method = findMethod(operation, operation.getServiceContract().getCallbackClass().getMethods());
-//
-//        } else {
-//            method = findMethod(operation, operation.getServiceContract().getInterfaceClass().getMethods());
-//        }
-//        return new AsyncJavaTargetInvoker(method, wire, this, monitor, workContext);
-//    }
 
     protected void onServiceWire(InboundWire wire) {
         String name = wire.getCallbackReferenceName();
