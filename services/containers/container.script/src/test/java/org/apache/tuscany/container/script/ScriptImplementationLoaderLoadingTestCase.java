@@ -16,18 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.script.helper;
-
-import static org.easymock.classextension.EasyMock.createMock;
+package org.apache.tuscany.container.script;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.container.script.helper.ScriptHelperImplementation;
-import org.apache.tuscany.container.script.helper.ScriptHelperImplementationLoader;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -35,17 +29,21 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ModelObject;
 
+import junit.framework.TestCase;
+import static org.easymock.classextension.EasyMock.createMock;
+
 /**
  * 
  */
-public class ScriptHelperImplementationLoaderTestCase extends TestCase {
+public class ScriptImplementationLoaderLoadingTestCase extends TestCase {
 
     private LoaderRegistry registry;
 
-    private ScriptHelperImplementationLoader loader;
+    private ScriptImplementationLoader loader;
 
     public void testLoadSource() throws LoaderException {
-        String script = loader.loadSource(getClass().getClassLoader(), "org/apache/tuscany/container/script/helper/foo.mock");
+        String script =
+            loader.loadSource(getClass().getClassLoader(), "org/apache/tuscany/container/script/helper/foo.mock");
         assertTrue(script.startsWith("hello"));
     }
 
@@ -66,13 +64,15 @@ public class ScriptHelperImplementationLoaderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         registry = createMock(LoaderRegistry.class);
-        loader = new ScriptHelperImplementationLoader(registry){
+        loader = new ScriptImplementationLoader(registry) {
             public QName getXMLType() {
                 return new QName("http://foo", "bar");
             }
-//            @Override
-            public ScriptHelperImplementation load(CompositeComponent arg0, ModelObject arg1, XMLStreamReader arg2, DeploymentContext arg3) throws XMLStreamException, LoaderException {
+
+            public ScriptImplementation load(CompositeComponent arg0, ModelObject arg1, XMLStreamReader arg2,
+                                             DeploymentContext arg3) throws XMLStreamException, LoaderException {
                 return null;
-            }};
+            }
+        };
     }
 }

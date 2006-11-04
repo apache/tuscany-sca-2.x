@@ -30,11 +30,11 @@
     </component>
 
     <component name="script.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.container.script.helper.ScriptHelperComponentTypeLoader"/>
+        <system:implementation.system class="org.apache.tuscany.container.script.ScriptComponentTypeLoader"/>
     </component>
 
     <component name="script.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.script.helper.ScriptHelperComponentBuilder"/>
+        <system:implementation.system class="org.apache.tuscany.container.script.ScriptComponentBuilder"/>
     </component>
     
 </composite>

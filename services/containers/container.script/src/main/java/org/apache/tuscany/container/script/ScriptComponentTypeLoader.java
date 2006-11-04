@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.script.helper;
+package org.apache.tuscany.container.script;
 
 import java.net.URL;
 
@@ -29,35 +29,41 @@ import org.apache.tuscany.spi.model.ComponentType;
 /**
  * ComponentType loader for script components
  */
-public class ScriptHelperComponentTypeLoader extends ComponentTypeLoaderExtension<ScriptHelperImplementation> {
+public class ScriptComponentTypeLoader extends ComponentTypeLoaderExtension<ScriptImplementation> {
 
-    public ScriptHelperComponentTypeLoader() {
+    public ScriptComponentTypeLoader() {
     }
 
     @Override
-    protected Class<ScriptHelperImplementation> getImplementationClass() {
-        return ScriptHelperImplementation.class;
+    protected Class<ScriptImplementation> getImplementationClass() {
+        return ScriptImplementation.class;
     }
 
-    // TODO: must be possible to move all the following up in to ComponentTypeLoaderExtension
-
-    public void load(CompositeComponent parent, ScriptHelperImplementation implementation, DeploymentContext deploymentContext) throws LoaderException {
+    public void load(CompositeComponent parent,
+                     ScriptImplementation implementation,
+                     DeploymentContext deploymentContext) throws LoaderException {
         String sideFile = getSideFileName(implementation.getResourceName());
-        URL resource = implementation.getScriptInstanceFactory().getClassLoader().getResource(sideFile);
-        ScriptHelperComponentType componentType;
+        URL resource = implementation.getClassLoader().getResource(sideFile);
+        ScriptComponentType componentType;
         if (resource == null) {
-            throw new IllegalArgumentException("missing .componentType side file: " + sideFile);
+            MissingSideFileException e = new MissingSideFileException("Component type side file not found");
+            e.setIdentifier(sideFile);
+            throw e;
             // TODO: or else implement introspection
         } else {
-            componentType = loadFromSidefile(resource, deploymentContext);
+            componentType = loadFromSidefile(parent, resource, deploymentContext);
         }
         implementation.setComponentType(componentType);
     }
 
-    protected ScriptHelperComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext) throws LoaderException {
-        ComponentType ct = loaderRegistry.load(null, null, url, ComponentType.class, deploymentContext);
-        ScriptHelperComponentType scriptComponentType = new ScriptHelperComponentType(ct);
-        return scriptComponentType;
+    @SuppressWarnings("unchecked")
+    protected ScriptComponentType loadFromSidefile(CompositeComponent parent,
+                                                   URL url,
+                                                   DeploymentContext deploymentContext)
+        throws LoaderException {
+        ScriptComponentType scriptComponentType = new ScriptComponentType();
+        return (ScriptComponentType) loaderRegistry
+            .load(parent, scriptComponentType, url, ComponentType.class, deploymentContext);
     }
 
     protected String getSideFileName(String resourceName) {

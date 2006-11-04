@@ -16,36 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.script.helper;
+package org.apache.tuscany.container.script;
 
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
- * TargetInvoker that calls a function on a ScriptInstance
+ * TargetInvoker implementation that calls a function on a ScriptInstanceImpl
  */
-public class ScriptHelperInvoker extends TargetInvokerExtension {
+public class ScriptTargetInvoker extends TargetInvokerExtension {
 
-    protected ScriptHelperComponent component;
-
+    protected ScriptComponent component;
     protected String functionName;
 
-    public ScriptHelperInvoker(String functionName, ScriptHelperComponent component) {
-		  super(null, null, null);
+    public ScriptTargetInvoker(String functionName, ScriptComponent component) {
+        super(null, null, null);
         this.functionName = functionName;
         this.component = component;
     }
 
-    /**
-     * Invoke the function
-     */
     public Object invokeTarget(final Object payload) throws InvocationTargetException {
-        ScriptHelperInstance target = (ScriptHelperInstance) component.getTargetInstance();
+        ScriptInstance target = (ScriptInstance) component.getTargetInstance();
         try {
-
             return target.invokeTarget(functionName, (Object[]) payload);
-
         } catch (Exception e) {
             throw new InvocationTargetException(e);
         }
