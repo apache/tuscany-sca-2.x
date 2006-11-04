@@ -1,19 +1,26 @@
-package org.apache.tuscany.container.script.helper;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+package org.apache.tuscany.container.script;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import junit.framework.TestCase;
-
-import org.apache.tuscany.container.script.helper.ScriptHelperComponentBuilder;
-import org.apache.tuscany.container.script.helper.ScriptHelperComponentType;
-import org.apache.tuscany.container.script.helper.ScriptHelperImplementation;
-import org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -21,61 +28,23 @@ import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 import org.easymock.IAnswer;
 
-public class ScriptHelperComponentBuilderTestCase extends TestCase {
+public class ScriptComponentBuilderTestCase extends TestCase {
 
     public void testGetImplementationType() {
-        ScriptHelperComponentBuilder builder = new ScriptHelperComponentBuilder();
-        assertEquals(ScriptHelperImplementation.class, builder.getImplementationType());
+        ScriptComponentBuilder builder = new ScriptComponentBuilder();
+        assertEquals(ScriptImplementation.class, builder.getImplementationType());
     }
 
     @SuppressWarnings("unchecked")
     public void testBuild() {
-        ScriptHelperComponentBuilder builder = new ScriptHelperComponentBuilder();
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
-        scopeRegistry.registerFactory(Scope.COMPOSITE, new ModuleScopeObjectFactory(scopeRegistry));
-        builder.setScopeRegistry(scopeRegistry);
-        DeploymentContext deploymentContext = createMock(DeploymentContext.class);
-        final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
-        expect(scopeContainer.getScope()).andStubAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                return Scope.COMPOSITE;
-            }
-        });
-        expect(deploymentContext.getModuleScope()).andStubAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                return scopeContainer;
-            }
-        });
-        replay(deploymentContext);
-        ComponentDefinition<ScriptHelperImplementation> impl = new ComponentDefinition<ScriptHelperImplementation>(new ScriptHelperImplementation());
-        ScriptHelperComponentType componentType = new ScriptHelperComponentType();
-        componentType.setLifecycleScope(Scope.COMPOSITE);
-        ServiceDefinition service = new ServiceDefinition();
-        ServiceContract serviceContract = new JavaServiceContract();
-        service.setServiceContract(serviceContract);
-        componentType.add(service);
-        impl.getImplementation().setComponentType(componentType);
-        
-        PropertyValue pv = new PropertyValue("foo", "", "");
-        ObjectFactory pvFactory = createMock(ObjectFactory.class);
-        expect(pvFactory.getInstance()).andStubAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                return null;
-            }
-        });
-        replay(pvFactory);
-        pv.setValueFactory(pvFactory);
-        impl.add(pv);
-        
-        Component component = builder.build(null, impl, deploymentContext);
-        assertNotNull(component);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void testBuildModuleScope() {
-        ScriptHelperComponentBuilder builder = new ScriptHelperComponentBuilder();
+        ScriptComponentBuilder builder = new ScriptComponentBuilder();
         DeploymentContext deploymentContext = createMock(DeploymentContext.class);
         final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
         expect(scopeContainer.getScope()).andStubAnswer(new IAnswer() {
@@ -89,8 +58,50 @@ public class ScriptHelperComponentBuilderTestCase extends TestCase {
             }
         });
         replay(deploymentContext);
-        ComponentDefinition<ScriptHelperImplementation> impl = new ComponentDefinition<ScriptHelperImplementation>(new ScriptHelperImplementation());
-        ScriptHelperComponentType componentType = new ScriptHelperComponentType();
+        ComponentDefinition<ScriptImplementation> impl =
+            new ComponentDefinition<ScriptImplementation>(new ScriptImplementation());
+        ScriptComponentType componentType = new ScriptComponentType();
+        componentType.setLifecycleScope(Scope.MODULE);
+        ServiceDefinition service = new ServiceDefinition();
+        ServiceContract serviceContract = new JavaServiceContract();
+        service.setServiceContract(serviceContract);
+        componentType.add(service);
+        impl.getImplementation().setComponentType(componentType);
+
+        PropertyValue<String> pv = new PropertyValue<String>("foo", "", "");
+        ObjectFactory<String> pvFactory = (ObjectFactory<String>) createMock(ObjectFactory.class);
+        expect(pvFactory.getInstance()).andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                return null;
+            }
+        });
+        replay(pvFactory);
+        pv.setValueFactory(pvFactory);
+        impl.add(pv);
+
+        Component component = builder.build(null, impl, deploymentContext);
+        assertNotNull(component);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void testBuildModuleScope() {
+        ScriptComponentBuilder builder = new ScriptComponentBuilder();
+        DeploymentContext deploymentContext = createMock(DeploymentContext.class);
+        final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
+        expect(scopeContainer.getScope()).andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                return Scope.MODULE;
+            }
+        });
+        expect(deploymentContext.getModuleScope()).andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                return scopeContainer;
+            }
+        });
+        replay(deploymentContext);
+        ComponentDefinition<ScriptImplementation> impl =
+            new ComponentDefinition<ScriptImplementation>(new ScriptImplementation());
+        ScriptComponentType componentType = new ScriptComponentType();
         ServiceDefinition service = new ServiceDefinition();
         ServiceContract serviceContract = new JavaServiceContract();
         service.setServiceContract(serviceContract);

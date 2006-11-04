@@ -6,26 +6,41 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.container.script.helper;
+package org.apache.tuscany.container.script;
 
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * An invokable instance of a script
- * 
- * Basically just a wrapper around a BSF engine with an optional script class object.
- */
-public interface ScriptHelperInstance {
+import junit.framework.TestCase;
+import org.apache.tuscany.container.script.mock.MockBSFEngine;
 
-    public Object invokeTarget(String operationName, Object[] args) throws InvocationTargetException;
+public class ScriptInstanceImplTestCase extends TestCase {
+    private ScriptInstanceImpl instance;
+
+    public void testInvokeTarget() throws InvocationTargetException {
+        assertEquals("hello:", instance.invokeTarget("hello", null));
+    }
+
+    public void testInvokeTargetException() throws InvocationTargetException {
+        try {
+            instance.invokeTarget("bang", null);
+            fail();
+        } catch (InvocationTargetException e) {
+            // expected
+        }
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        this.instance = new ScriptInstanceImpl(new MockBSFEngine(), null);
+    }
 }

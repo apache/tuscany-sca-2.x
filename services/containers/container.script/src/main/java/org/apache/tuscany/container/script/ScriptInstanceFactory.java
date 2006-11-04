@@ -18,52 +18,67 @@
  */
 package org.apache.tuscany.container.script;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 import org.apache.bsf.BSFEngine;
 import org.apache.bsf.BSFException;
 import org.apache.bsf.BSFManager;
-import org.apache.tuscany.container.script.helper.ScriptHelperInstanceFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
 
 /**
- * ScriptInstanceFactory creates ScriptInstances for a script
+ * ScriptFactory creates ScriptInstances for a script
  */
-public class ScriptInstanceFactory extends ScriptHelperInstanceFactory<ScriptInstance>{
-
+public class ScriptInstanceFactory implements ObjectFactory<ScriptInstance> {
+    protected String resourceName;
+    protected ClassLoader classLoader;
     private String className;
-
     private String scriptSource;
+    private Map<String, ObjectFactory> contextObjects;
 
-    public ScriptInstanceFactory(String resourceName, String className, String scriptSource, ClassLoader classLoader) {
-        super(resourceName, classLoader);
+    public ScriptInstanceFactory(String resourceName,
+                                 String className,
+                                 String scriptSource,
+                                 ClassLoader classLoader) {
+        this.resourceName = resourceName;
+        this.classLoader = classLoader;
         this.className = className;
         this.scriptSource = scriptSource;
+        this.contextObjects = new HashMap<String, ObjectFactory>();
     }
 
     /**
      * Create a new invokeable instance of the script
-     * 
-     * @param context
-     *            objects to add to scope of the script instance
+     * <p/>
+     * objects to add to scope of the script instance
+     *
      * @return a RhinoScriptInstance
      */
-    public ScriptInstance createInstance(List<Class> services, Map<String, Object> context) {
+    //public ScriptInstanceImpl createInstance(List<Class<?>> services, Map<String, Object> context) {
+    public ScriptInstance getInstance() throws ObjectCreationException {
         try {
 
             //TODO: this uses a new manager and recompiles the scrip each time, may be able to optimize
             // but need to be careful about instance scoping
-            
+
             BSFManager bsfManager = new BSFManager();
             bsfManager.setClassLoader(BSFManager.class.getClassLoader());
-            
+
             // TODO: hack to get Ruby working with the standalone launcher
             Thread.currentThread().setContextClassLoader(BSFManager.class.getClassLoader());
 
+//            // register any context objects (SCA properties and references)
+//            for (String beanName : context.keySet()) {
+//                bsfManager.registerBean(beanName, context.get(beanName));
+//            }
+
             // register any context objects (SCA properties and references)
-            for (String beanName : context.keySet()) {
-                bsfManager.registerBean(beanName, context.get(beanName));
+            for (Map.Entry<String, ObjectFactory> entry : contextObjects.entrySet()) {
+                bsfManager.registerBean(entry.getKey(), entry.getValue().getInstance());
             }
 
             String scriptLanguage = BSFManager.getLangFromFilename(resourceName);
@@ -81,7 +96,7 @@ public class ScriptInstanceFactory extends ScriptHelperInstanceFactory<ScriptIns
                 }
             }
 
-            return new ScriptInstance(bsfEngine, clazz);
+            return new ScriptInstanceImpl(bsfEngine, clazz);
 
         } catch (BSFException e) {
             if (e.getTargetException() != null) {
@@ -89,6 +104,30 @@ public class ScriptInstanceFactory extends ScriptHelperInstanceFactory<ScriptIns
             }
             throw new ObjectCreationException(e.getTargetException());
         }
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    protected Map<String, Class> getResponseClasses(List<Class> services) {
+        Map<String, Class> responseClasses = new HashMap<String, Class>();
+        if (services != null) {
+            for (Class s : services) {
+                for (Method m : s.getMethods()) {
+                    responseClasses.put(m.getName(), m.getReturnType());
+                }
+            }
+        }
+        return responseClasses;
+    }
+
+    public void addContextObjectFactory(String name, ObjectFactory<?> factory) {
+        contextObjects.put(name, factory);
     }
 
 }

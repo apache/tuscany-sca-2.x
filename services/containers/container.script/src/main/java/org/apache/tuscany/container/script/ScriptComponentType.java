@@ -16,32 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.script.helper;
+package org.apache.tuscany.container.script;
 
-import org.apache.tuscany.spi.model.AtomicImplementation;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
- * Model object for a script implementation.
+ * A componentType for script components
+ * TODO: need lifecycle methods init/destroy 
  */
-public class ScriptHelperImplementation extends AtomicImplementation<ScriptHelperComponentType> {
+public class ScriptComponentType extends ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> {
 
-    private String resourceName;
-    
-    private ScriptHelperInstanceFactory scriptInstanceFactory;
+    private Scope lifecycleScope = Scope.MODULE;
 
-    public String getResourceName() {
-        return resourceName;
-    }
-    
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
-    }
-    
-    public ScriptHelperInstanceFactory getScriptInstanceFactory() {
-        return scriptInstanceFactory;
+    public ScriptComponentType() {
     }
 
-    public void setScriptInstanceFactory(ScriptHelperInstanceFactory scriptInstanceFactory) {
-        this.scriptInstanceFactory = scriptInstanceFactory;
+    public Scope getLifecycleScope() {
+        return lifecycleScope;
     }
+
+    public void setLifecycleScope(Scope lifecycleScope) {
+        this.lifecycleScope = lifecycleScope;
+    }
+
 }

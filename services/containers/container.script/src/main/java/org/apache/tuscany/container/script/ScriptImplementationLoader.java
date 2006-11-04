@@ -18,35 +18,38 @@
  */
 package org.apache.tuscany.container.script;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.container.script.helper.ScriptHelperImplementation;
-import org.apache.tuscany.container.script.helper.ScriptHelperImplementationLoader;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.osoa.sca.annotations.Constructor;
 
 /**
  * Loader for handling implementation.script elements.
- * 
+ * <p/>
  * <implementation.script script="path/foo.py" class="myclass">
- *  
  */
-public class ScriptImplementationLoader extends ScriptHelperImplementationLoader {
+public class ScriptImplementationLoader extends LoaderExtension<ScriptImplementation> {
 
     private static final QName IMPLEMENTATION_SCRIPT = new QName(XML_NAMESPACE_1_0, "implementation.script");
 
-    @Constructor( { "registry" })
+    @Constructor({"registry"})
     public ScriptImplementationLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -55,7 +58,8 @@ public class ScriptImplementationLoader extends ScriptHelperImplementationLoader
         return IMPLEMENTATION_SCRIPT;
     }
 
-    public ScriptHelperImplementation load(CompositeComponent parent, ModelObject mo, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public ScriptImplementation load(CompositeComponent parent, ModelObject mo, XMLStreamReader reader,
+                                     DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         String scriptName = reader.getAttributeValue(null, "script");
         if (scriptName == null) {
             throw new MissingResourceException("implementation element has no 'script' attribute");
@@ -68,14 +72,53 @@ public class ScriptImplementationLoader extends ScriptHelperImplementationLoader
         ClassLoader cl = deploymentContext.getClassLoader();
         String scriptSource = loadSource(cl, scriptName);
 
-        ScriptInstanceFactory instanceFactory = new ScriptInstanceFactory(scriptName, className, scriptSource, cl);
+//        ScriptInstanceFactory instanceFactory = new ScriptInstanceFactory(scriptName, className, scriptSource, cl);
 
-        ScriptHelperImplementation implementation = new ScriptHelperImplementation();
+        ScriptImplementation implementation = new ScriptImplementation();
         implementation.setResourceName(scriptName);
-        implementation.setScriptInstanceFactory(instanceFactory);
-        
+        implementation.setScriptSource(scriptSource);
+        implementation.setClassName(className);
+        implementation.setScriptName(scriptName);
+        implementation.setClassLoader(cl);
+        //implementation.setScriptInstanceFactory(instanceFactory);
+
         registry.loadComponentType(parent, implementation, deploymentContext);
 
         return implementation;
+    }
+
+    protected String loadSource(ClassLoader cl, String resource) throws LoaderException {
+        URL url = cl.getResource(resource);
+        if (url == null) {
+            throw new MissingResourceException(resource);
+        }
+        InputStream is;
+        try {
+            is = url.openStream();
+        } catch (IOException e) {
+            MissingResourceException mre = new MissingResourceException(resource, e);
+            mre.setIdentifier(resource);
+            throw mre;
+        }
+        try {
+            Reader reader = new InputStreamReader(is, "UTF-8");
+            char[] buffer = new char[1024];
+            StringBuilder source = new StringBuilder();
+            int count;
+            while ((count = reader.read(buffer)) > 0) {
+                source.append(buffer, 0, count);
+            }
+            return source.toString();
+        } catch (IOException e) {
+            LoaderException le = new LoaderException(e);
+            le.setIdentifier(resource);
+            throw le;
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
     }
 }
