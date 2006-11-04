@@ -63,6 +63,16 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
         return scopeContainer.getInstance(this);
     }
 
+    public void destroy(Object instance) throws TargetException {
+        if (instance instanceof DataSourceProvider) {
+            try {
+                ((DataSourceProvider) instance).close();
+            } catch (ProviderException e) {
+                throw new TargetException(e);
+            }
+        }
+    }
+
     protected void onReferenceWire(OutboundWire wire) {
         throw new UnsupportedOperationException("Wires not supported for DataSource components");
     }
