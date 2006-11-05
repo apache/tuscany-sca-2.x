@@ -33,9 +33,27 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
- * Loads a data source component type from an assembly
+ * Loads a DataSource component type from an assembly. This component implementation type provides a
+ * <code>DataSource</code> system service in the runtime. The actual DataSource provider is pluggable, for example,
+ * Commons DBCP could be used. DataSource components are configured as follows:
+ * <pre>
  * <p/>
- * TODO document format
+ *      <component name="MyDataSource">
+ *          <system:implementation.ds provider="org.foo.FooProvider">
+ *              <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+ *              <url>jdbc:mysql://localhost:3306/mydb</url>
+ *              <login>foo</login>
+ *              <password>bar</password>
+ *          </system:implementation.ds>
+ *      </component>
+ * <p/>
+ * </pre>
+ * In the above example, <code>org.foo.FooProvider</code> is responsible for providing the actual DataSource
+ * implementation. It may implement <code>javax.sql.DataSource</code> directly or the {@link DataSourceProvider}
+ * interface and must have a public no-args constructor. Configuration parameters are specified as sub-elements of
+ * <code>implementation.ds</code> and will vary by the provider. Parameter values are generally simple types and will be
+ * instantiated using the JavaBeans <code>PropertyEditorManager</code>. Values will be set on the provider class using
+ * JavaBeans setter methods.
  *
  * @version $Rev$ $Date$
  */

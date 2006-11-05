@@ -33,6 +33,9 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
+ * Loads the component type for a DataSource component. Component type information is currently static, although this
+ * could be changed in the future to allow for configuration parameter checking for specific providers.
+ *
  * @version $Rev$ $Date$
  */
 public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSourceImplementation> {

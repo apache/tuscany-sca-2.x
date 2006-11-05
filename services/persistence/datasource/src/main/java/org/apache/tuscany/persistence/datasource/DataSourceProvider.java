@@ -28,7 +28,7 @@ import javax.sql.DataSource;
 public interface DataSourceProvider {
 
     /**
-     * Signals to the provider to initialize
+     * Signals to the provider to initialize after all parameters have been set
      *
      * @throws ProviderException if an exception occurs during initialization
      */
@@ -42,7 +42,8 @@ public interface DataSourceProvider {
     void close() throws ProviderException;
 
     /**
-     * Returns a new <code>DataSource</code> instance
+     * Returns a new <code>DataSource</code> instance that will be bound into a composite system service tree. Called
+     * after initialize.
      *
      * @throws ProviderException if an error occurs creating a new instance
      */

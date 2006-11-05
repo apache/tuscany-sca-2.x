@@ -26,11 +26,10 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 
 /**
- * Responsible for instantiating a DataSource provider class. The provider class is responsible for initializing the
- * actual <code>DataSource</code> . It must have a no-args constructor and may optionally implement {@link
- * DataSourceProvider}. If it does not implement <code>DataSourceProvider</code>, then the provider class must implement
- * the <code>DataSource<code> interface. A collection of {@link Injector}s is provide to inject the provider instance
- * with configuration parameters.
+ * Responsible for instantiating a DataSource provider class and initializing the actual <code>DataSource</code> . It
+ * must have a no-args constructor and may optionally implement {@link DataSourceProvider}. If it does not implement
+ * <code>DataSourceProvider</code>, then the provider class must implement the <code>DataSource<code> interface. A
+ * collection of {@link Injector}s is used to inject the provider instance with configuration parameters.
  *
  * @version $Rev$ $Date$
  */
