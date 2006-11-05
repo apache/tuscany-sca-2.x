@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.deployer.DeploymentContext;

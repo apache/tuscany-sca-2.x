@@ -18,21 +18,21 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.reflect.Method;
 
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.PropertyValue;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.PropertyValue;
 
 /**
  * Builds a {@link DataSourceComponent} from its model representation
@@ -58,19 +58,16 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
                 ObjectFactory<?> factory = property.getValueFactory();
                 if (factory != null) {
                     String name = property.getName();
-                    JavaMappedProperty mappedProperty  = (JavaMappedProperty) type.getProperties().get(name);
-                    if (mappedProperty == null){
+                    JavaMappedProperty mappedProperty = (JavaMappedProperty) type.getProperties().get(name);
+                    if (mappedProperty == null) {
                         MissingPropertyException e = new MissingPropertyException();
                         e.setIdentifier(name);
                         throw e;
                     }
-                    Injector injector = new Injector((Method)mappedProperty.getMember(), factory);
+                    Injector injector = new Injector((Method) mappedProperty.getMember(), factory);
                     injectors.add(injector);
                 }
             }
-
-
-
             ProviderObjectFactory providerFactory = new ProviderObjectFactory(beanClass, injectors);
             ScopeContainer scope = deploymentContext.getModuleScope();
             int initLevel = implementation.getComponentType().getInitLevel();
