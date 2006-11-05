@@ -22,7 +22,7 @@
            name="bootTest">
 
     <component name="TestDS">
-        <system:implementation.ds provider="org.apache.tuscany.persistence.datasource.mock.Provider">
+        <system:implementation.ds provider="org.apache.tuscany.persistence.datasource.integration.mock.Provider">
             <test>value</test>
         </system:implementation.ds>
     </component>
