@@ -19,22 +19,9 @@
 package org.apache.tuscany.service.persistence.common;
 
 /**
- * Scans the classloader for the specified persistence unit.
+ * Encpasulates the information in the persistence.xml file.
  *
  */
-class PersistenceUnitScanner {
-    
-    /**
-     * Scans the lassloader for the specified persistence unit and creates 
-     * an immutable representation of the information present in the matching 
-     * persistence.xml file.
-     * 
-     * @param unitName Persistence unit name.
-     * @param classLoader Classloader to scan.
-     * @return Persistence unit information.
-     */
-    PersistenceUnitMetadata getPersistenceUnitInfo(String unitName, ClassLoader classLoader) {
-        return null;
-    }
+class PersistenceUnitMetadata {
 
 }

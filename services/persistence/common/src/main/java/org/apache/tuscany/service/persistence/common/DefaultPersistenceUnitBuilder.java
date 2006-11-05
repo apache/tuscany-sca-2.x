@@ -41,7 +41,7 @@ public class DefaultPersistenceUnitBuilder implements PersistenceUnitBuilder {
      */
     public EntityManagerFactory newEntityManagerFactory(String unitName, ClassLoader classLoader) {
         
-        PersistenceUnitInfo info = scanner.getPersistenceUnitInfo(unitName, classLoader);
+        PersistenceUnitMetadata info = scanner.getPersistenceUnitInfo(unitName, classLoader);
         if(info == null) {
             throw new IllegalArgumentException("Persistence unit not found: " + unitName);
         }
