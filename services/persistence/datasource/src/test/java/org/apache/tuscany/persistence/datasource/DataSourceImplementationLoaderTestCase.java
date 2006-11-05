@@ -40,7 +40,6 @@ public class DataSourceImplementationLoaderTestCase extends TestCase {
         EasyMock.replay(registry);
         DataSourceImplementationLoader loader = new DataSourceImplementationLoader(registry);
         XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getName()).andReturn(loader.getXMLType()).atLeastOnce();
         EasyMock.expect(reader.getAttributeValue(null, "provider")).andReturn("org.foo.MyDriver");
         EasyMock.expect(reader.next()).andReturn(END_ELEMENT);
         EasyMock.replay(reader);
@@ -49,30 +48,6 @@ public class DataSourceImplementationLoaderTestCase extends TestCase {
         EasyMock.replay(ctx);
         DataSourceImplementation implementation = (DataSourceImplementation) loader.load(null, null, reader, ctx);
         assertEquals("org.foo.MyDriver", implementation.getProviderName());
-        assertEquals(getClass().getClassLoader(), implementation.getClassLoader());
-        EasyMock.verify(reader);
-        EasyMock.verify(ctx);
-    }
-
-    public void testLoadingParameters() throws Exception {
-        LoaderRegistry registry = EasyMock.createNiceMock(LoaderRegistry.class);
-        EasyMock.replay(registry);
-        DataSourceImplementationLoader loader = new DataSourceImplementationLoader(registry);
-        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
-        EasyMock.expect(reader.getAttributeValue(null, "provider")).andReturn("org.foo.MyDriver").once();
-        EasyMock.expect(reader.next()).andReturn(START_ELEMENT).once();
-        EasyMock.expect(reader.getName()).andReturn(new QName(null, "MyProp")).once();
-        EasyMock.expect(reader.getElementText()).andReturn("MyVal").once();
-        EasyMock.expect(reader.next()).andReturn(END_ELEMENT).once();
-        EasyMock.expect(reader.next()).andReturn(END_ELEMENT).once();
-        EasyMock.expect(reader.getName()).andReturn(loader.getXMLType()).once();
-        EasyMock.replay(reader);
-        DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(ctx.getClassLoader()).andReturn(getClass().getClassLoader());
-        EasyMock.replay(ctx);
-        DataSourceImplementation implementation = (DataSourceImplementation) loader.load(null, null, reader, ctx);
-        assertEquals("org.foo.MyDriver", implementation.getProviderName());
-        assertEquals("MyVal", implementation.getConfigurationParams().get("MyProp"));
         assertEquals(getClass().getClassLoader(), implementation.getClassLoader());
         EasyMock.verify(reader);
         EasyMock.verify(ctx);

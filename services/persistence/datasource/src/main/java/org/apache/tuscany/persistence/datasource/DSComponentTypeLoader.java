@@ -18,16 +18,22 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
+import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -39,6 +45,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  * @version $Rev$ $Date$
  */
 public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSourceImplementation> {
+    private SimpleTypeMapperExtension extension = new SimpleTypeMapperExtension();
+
     public DSComponentTypeLoader(@Autowire LoaderRegistry loaderRegistry) {
         super(loaderRegistry);
     }
@@ -55,6 +63,41 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
         ServiceDefinition service = new ServiceDefinition("DataSource", serviceContract, false);
         componentType.add(service);
         componentType.setInitLevel(1);
+        Class<?> provider;
+        try {
+            provider = implementation.getClassLoader().loadClass(implementation.getProviderName());
+        } catch (ClassNotFoundException e) {
+            throw new LoaderException(e);
+        }
+        introspectProperties(componentType, provider);
         implementation.setComponentType(componentType);
     }
+
+    @SuppressWarnings("unchecked")
+    private void introspectProperties(ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType,
+                                      Class<?> provider) throws AmbiguousPropertyException {
+
+        Method[] methods = provider.getMethods();
+        for (Method method : methods) {
+            String name = method.getName();
+            if (method.getParameterTypes().length == 1 && name.startsWith("set")) {
+                String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+                Class<Type> type = (Class<Type>) method.getParameterTypes()[0];
+                TypeInfo info = extension.getXMLType(type);
+                if (info != null) {
+                    // only include methods as properties that take simple type parameters
+                    if (componentType.getProperties().containsKey(propName)) {
+                        throw new AmbiguousPropertyException(propName);
+                    }
+                    JavaMappedProperty<Type> property =
+                        new JavaMappedProperty<Type>(propName, info.getQName(),
+                            type);  //SimpleTypeMapperExtension.XSD_STRING
+                    property.setOverride(OverrideOptions.MAY);
+                    property.setMember(method);
+                    componentType.add(property);
+                }
+            }
+        }
+    }
+
 }

@@ -18,32 +18,27 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import java.beans.PropertyEditor;
-
-import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 
 /**
- * Instantiates a new parameter using a <code>PropertyEditor</code>
+ * Raised when a property value is specified in an assembly configuration and no corresponding property was found in the
+ * component type
  *
  * @version $Rev$ $Date$
  */
-public class ParameterObjectFactory<T> implements ObjectFactory<T> {
-    private PropertyEditor editor;
-    private String val;
-
-    public ParameterObjectFactory(PropertyEditor editor, String val) {
-        this.editor = editor;
-        this.val = val;
+public class MissingPropertyException extends BuilderConfigException {
+    public MissingPropertyException() {
     }
 
-    @SuppressWarnings("unchecked")
-    public synchronized T getInstance() throws ObjectCreationException {
-        try {
-            editor.setAsText(val);
-            return (T) editor.getValue();
-        } catch (IllegalArgumentException e) {
-            throw new ObjectCreationException(e);
-        }
+    public MissingPropertyException(String message) {
+        super(message);
+    }
+
+    public MissingPropertyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public MissingPropertyException(Throwable cause) {
+        super(cause);
     }
 }

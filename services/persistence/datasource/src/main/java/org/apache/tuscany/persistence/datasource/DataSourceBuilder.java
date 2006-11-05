@@ -18,12 +18,9 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
@@ -32,6 +29,10 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 
 /**
  * Builds a {@link DataSourceComponent} from its model representation
@@ -52,33 +53,54 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
             Class<?> beanClass = classLoader.loadClass(implementation.getProviderName());
 
             // handle configuration parameters
+//            List<Injector> injectors = new ArrayList<Injector>();
+//            Method[] methods = beanClass.getMethods();
+//            for (Map.Entry<String, String> entry : implementation.getConfigurationParams().entrySet()) {
+//                Method found = null;
+//                for (Method method : methods) {
+//                    String setterName = toSetter(entry.getKey());
+//                    if (method.getParameterTypes().length == 1 && method.getName().equals(setterName)) {
+//                        found = method;
+//                        break;
+//                    }
+//                }
+//                if (found == null) {
+//                    SetterNotFoundException e = new SetterNotFoundException("Setter method not found for parameter");
+//                    e.setIdentifier(entry.getKey());
+//                    throw e;
+//                }
+//                Class<?> type = found.getParameterTypes()[0];
+//                PropertyEditor editor = PropertyEditorManager.findEditor(type);
+//                if (editor == null) {
+//                    PropertyEditorNotFoundException e =
+//                        new PropertyEditorNotFoundException("Parameter type not supported");
+//                    e.setIdentifier(type.getName());
+//                    throw e;
+//                }
+//                Injector injector = new Injector(found, new ParameterObjectFactory(editor, entry.getValue()));
+//                injectors.add(injector);
+//            }
+//
+
             List<Injector> injectors = new ArrayList<Injector>();
-            Method[] methods = beanClass.getMethods();
-            for (Map.Entry<String, String> entry : implementation.getConfigurationParams().entrySet()) {
-                Method found = null;
-                for (Method method : methods) {
-                    String setterName = toSetter(entry.getKey());
-                    if (method.getParameterTypes().length == 1 && method.getName().equals(setterName)) {
-                        found = method;
-                        break;
+            // handle properties
+            ComponentType type = definition.getImplementation().getComponentType();
+            for (PropertyValue<?> property : definition.getPropertyValues().values()) {
+                ObjectFactory<?> factory = property.getValueFactory();
+                if (factory != null) {
+                    String name = property.getName();
+                    JavaMappedProperty mappedProperty  = (JavaMappedProperty) type.getProperties().get(name);
+                    if (mappedProperty == null){
+                        MissingPropertyException e = new MissingPropertyException();
+                        e.setIdentifier(name);
+                        throw e;
                     }
+                    Injector injector = new Injector((Method)mappedProperty.getMember(), factory);
+                    injectors.add(injector);
                 }
-                if (found == null) {
-                    SetterNotFoundException e = new SetterNotFoundException("Setter method not found for parameter");
-                    e.setIdentifier(entry.getKey());
-                    throw e;
-                }
-                Class<?> type = found.getParameterTypes()[0];
-                PropertyEditor editor = PropertyEditorManager.findEditor(type);
-                if (editor == null) {
-                    PropertyEditorNotFoundException e =
-                        new PropertyEditorNotFoundException("Parameter type not supported");
-                    e.setIdentifier(type.getName());
-                    throw e;
-                }
-                Injector injector = new Injector(found, new ParameterObjectFactory(editor, entry.getValue()));
-                injectors.add(injector);
             }
+
+
 
             ProviderObjectFactory providerFactory = new ProviderObjectFactory(beanClass, injectors);
             ScopeContainer scope = deploymentContext.getModuleScope();

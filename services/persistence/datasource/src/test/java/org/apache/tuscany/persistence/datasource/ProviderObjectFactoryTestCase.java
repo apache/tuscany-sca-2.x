@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -27,6 +25,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+
+import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.ObjectFactory;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -39,8 +40,7 @@ public class ProviderObjectFactoryTestCase extends TestCase {
     public void testInstantiation() throws Exception {
         List<Injector> injectors = new ArrayList<Injector>();
         Method m = Provider.class.getMethod("setVal", Integer.TYPE);
-        PropertyEditor editor = PropertyEditorManager.findEditor(Integer.TYPE);
-        injectors.add(new Injector(m, new ParameterObjectFactory<Integer>(editor, "1")));
+        injectors.add(new Injector(m, new MockFactory(1)));
         ProviderObjectFactory factory = new ProviderObjectFactory(Provider.class, injectors);
         DataSource ds = factory.getInstance();
         Provider provider = (Provider) ds;
@@ -50,8 +50,7 @@ public class ProviderObjectFactoryTestCase extends TestCase {
     public void testInitInstantiation() throws Exception {
         List<Injector> injectors = new ArrayList<Injector>();
         Method m = DSProvider.class.getMethod("setVal", Integer.TYPE);
-        PropertyEditor editor = PropertyEditorManager.findEditor(Integer.TYPE);
-        injectors.add(new Injector(m, new ParameterObjectFactory<Integer>(editor, "1")));
+        injectors.add(new Injector(m, new MockFactory(1)));
         ProviderObjectFactory factory = new ProviderObjectFactory(DSProvider.class, injectors);
         assertNotNull(factory.getInstance());
 
@@ -134,5 +133,18 @@ public class ProviderObjectFactoryTestCase extends TestCase {
             return EasyMock.createNiceMock(DataSource.class);
         }
     }
+
+    private class MockFactory implements ObjectFactory<Integer> {
+        private Integer instance;
+
+        public MockFactory(Integer instance) {
+            this.instance = instance;
+        }
+
+        public Integer getInstance() throws ObjectCreationException {
+            return instance;
+        }
+    }
+
 
 }
