@@ -54,7 +54,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
     private ResourceHost host;
 
-    @Autowire(required = false)
+    @Autowire
     public void setHost(ResourceHost host) {
         this.host = host;
     }

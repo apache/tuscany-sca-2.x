@@ -46,6 +46,11 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ScopeRegistryImpl"/>
     </component>
 
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
+    </component>
+    
     <!-- Builder and BuilderRegistry -->
     <component name="builder">
         <system:implementation.system class="org.apache.tuscany.core.builder.BuilderRegistryImpl"/>

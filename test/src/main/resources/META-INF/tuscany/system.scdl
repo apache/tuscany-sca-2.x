@@ -61,6 +61,11 @@
         <system:implementation.system class="org.apache.tuscany.core.implementation.IntrospectionRegistryImpl"/>
     </component>
 
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
+    </component>
+    
     <!-- Connector infrastructure -->
     <component name="connector">
         <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>

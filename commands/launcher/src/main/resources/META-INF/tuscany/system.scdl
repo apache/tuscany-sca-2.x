@@ -51,6 +51,11 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.BuilderRegistryImpl"/>
     </component>
 
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
+    </component>
+    
     <!-- Loader and LoaderRegistry -->
     <component name="loader">
         <system:implementation.system class="org.apache.tuscany.core.loader.LoaderRegistryImpl"/>
