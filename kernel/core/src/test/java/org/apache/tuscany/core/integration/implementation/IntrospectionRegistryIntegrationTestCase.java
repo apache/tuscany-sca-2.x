@@ -23,12 +23,13 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Resource;
 
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import static org.apache.tuscany.spi.model.Scope.MODULE;
 
 import junit.framework.TestCase;
@@ -39,6 +40,7 @@ import org.apache.tuscany.core.implementation.processor.ImplementationProcessorS
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
+import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 
@@ -60,6 +62,7 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         assertEquals(MODULE, type.getImplementationScope());
         assertEquals(Foo.class.getMethod("setBar", String.class), type.getProperties().get("bar").getMember());
         assertEquals(Foo.class.getMethod("setTarget", Foo.class), type.getReferences().get("target").getMember());
+        assertEquals(Foo.class.getMethod("setResource", Foo.class), type.getResources().get("resource").getMember());
     }
 
     protected void setUp() throws Exception {
@@ -73,13 +76,14 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         ImplementationProcessorService service = new ImplementationProcessorServiceImpl(interfaceProcessorRegistry);
         registry.registerProcessor(new PropertyProcessor(service));
         registry.registerProcessor(new ReferenceProcessor(interfaceProcessorRegistry));
+        registry.registerProcessor(new ResourceProcessor());
     }
 
     @Scope("MODULE")
     private static class Foo {
         protected Foo target;
         protected String bar;
-
+        protected Foo resource;
         private boolean initialized;
         private boolean destroyed;
 
@@ -116,6 +120,11 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         @Property
         public void setBar(String bar) {
             this.bar = bar;
+        }
+
+        @Resource
+        public void setResource(Foo resource) {
+            this.resource = resource;
         }
 
     }
