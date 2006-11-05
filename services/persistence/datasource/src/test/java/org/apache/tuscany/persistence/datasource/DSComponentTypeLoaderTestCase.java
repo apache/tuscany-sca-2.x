@@ -30,6 +30,19 @@ public class DSComponentTypeLoaderTestCase extends TestCase {
     }
 
 
+    public void testOverloadedMethod() throws Exception {
+        DSComponentTypeLoader loader = new DSComponentTypeLoader(null);
+        DataSourceImplementation implementation = new DataSourceImplementation();
+        implementation.setProviderName(BadFoo.class.getName());
+        implementation.setClassLoader(getClass().getClassLoader());
+        try {
+            loader.load(null, implementation, null);
+            fail();
+        } catch (AmbiguousPropertyException e) {
+            // expected
+        }
+    }
+
     public class Foo {
 
         private String bar;
@@ -62,4 +75,14 @@ public class DSComponentTypeLoaderTestCase extends TestCase {
             this.object = object;
         }
     }
+
+    public class BadFoo {
+
+        public void setBar(String bar) {
+        }
+
+        public void setBar(Object bar) {
+        }
+    }
+
 }

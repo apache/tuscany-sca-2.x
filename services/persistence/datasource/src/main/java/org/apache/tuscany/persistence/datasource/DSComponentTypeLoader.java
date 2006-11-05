@@ -73,6 +73,14 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
         implementation.setComponentType(componentType);
     }
 
+    /**
+     * Creates properties by introspecting the provider class an d including all JavaBean setters that take a simple
+     * type parameter
+     *
+     * @param componentType
+     * @param provider
+     * @throws AmbiguousPropertyException
+     */
     @SuppressWarnings("unchecked")
     private void introspectProperties(ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType,
                                       Class<?> provider) throws AmbiguousPropertyException {
