@@ -18,7 +18,10 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -35,6 +38,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class DataSourceComponent extends SystemAtomicComponentExtension {
     private ProviderObjectFactory instanceFactory;
+    private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
 
     /**
      * Creates a <code>DataSourceComponent</code>
@@ -53,6 +57,7 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
 
         super(name, parent, scopeContainer, initLevel);
         this.instanceFactory = instanceFactory;
+        serviceInterfaces.add(DataSource.class);
     }
 
     public Object createInstance() throws ObjectCreationException {
@@ -71,6 +76,10 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
                 throw new TargetException(e);
             }
         }
+    }
+
+    public List<Class<?>> getServiceInterfaces() {
+        return serviceInterfaces;
     }
 
     protected void onReferenceWire(OutboundWire wire) {

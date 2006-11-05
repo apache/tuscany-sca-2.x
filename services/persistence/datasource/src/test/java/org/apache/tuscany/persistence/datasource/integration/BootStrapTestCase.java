@@ -16,31 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.persistence.datasource;
+package org.apache.tuscany.persistence.datasource.integration;
 
+import java.net.URL;
 import javax.sql.DataSource;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.apache.tuscany.persistence.datasource.mock.Provider;
+import org.apache.tuscany.test.SCATestCase;
 
 /**
+ * Verifies bootstrapping of a datasource implementation as a system service in an application composite
+ *
  * @version $Rev$ $Date$
  */
-public class DataSourceComponentTestCase extends TestCase {
+public class BootstrapTestCase extends SCATestCase {
 
-    public void testDestroy() throws Exception {
-        DataSourceProvider provider = EasyMock.createMock(DataSourceProvider.class);
-        provider.close();
-        EasyMock.replay(provider);
-        DataSourceComponent component = new DataSourceComponent(null, null, null, null, 0);
-        component.destroy(provider);
-        EasyMock.verify(provider);
+    public void testBoot() {
+        DataSource ds = (DataSource) component.getSystemChild("TestDS").getServiceInstance();
+        assertNotNull(ds);
+        assertEquals("value", ((Provider) ds).getTest());
     }
 
-    public void testSerivceInterfaces() {
-        DataSourceComponent component = new DataSourceComponent(null, null, null, null, 0);
-        assertEquals(DataSource.class, component.getServiceInterfaces().get(0));
+    protected void setUp() throws Exception {
+        URL url = getClass().getResource("/META-INF/sca/dataSource.scdl");
+        addExtension("DataSourceExtension", url);
+        setApplicationSCDL(getClass().getResource("/META-INF/sca/application.scdl"));
+        super.setUp();
     }
-
 
 }
