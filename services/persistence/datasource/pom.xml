@@ -38,6 +38,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>test</artifactId>
+            <version>${sca.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>

@@ -18,37 +18,30 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Loads a data source component type from an assembly
- *
+ * <p/>
  * TODO document format
  *
  * @version $Rev$ $Date$
  */
 public class DataSourceImplementationLoader extends LoaderExtension {
-    private static final QName DATASOURCE = new QName(XML_NAMESPACE_1_0, "implementation.ds");
+    private static final QName DATASOURCE =
+        new QName("http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT", "implementation.ds");
     private static final String PROVIDER = "provider";
 
     public DataSourceImplementationLoader(@Autowire LoaderRegistry registry) {
@@ -69,14 +62,6 @@ public class DataSourceImplementationLoader extends LoaderExtension {
         }
 
         DataSourceImplementation implementation = new DataSourceImplementation();
-        // component types information does not need to be introspected
-        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
-            new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        JavaServiceContract serviceContract = new JavaServiceContract(DataSource.class);
-        ServiceDefinition service = new ServiceDefinition("DataSource", serviceContract, false);
-        componentType.add(service);
-        componentType.setInitLevel(1);
-        implementation.setComponentType(componentType);
         implementation.setProviderName(driverName);
         implementation.setClassLoader(deploymentContext.getClassLoader());
 
