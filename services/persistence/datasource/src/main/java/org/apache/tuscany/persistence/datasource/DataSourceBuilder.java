@@ -51,37 +51,6 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
             DataSourceImplementation implementation = definition.getImplementation();
             ClassLoader classLoader = implementation.getClassLoader();
             Class<?> beanClass = classLoader.loadClass(implementation.getProviderName());
-
-            // handle configuration parameters
-//            List<Injector> injectors = new ArrayList<Injector>();
-//            Method[] methods = beanClass.getMethods();
-//            for (Map.Entry<String, String> entry : implementation.getConfigurationParams().entrySet()) {
-//                Method found = null;
-//                for (Method method : methods) {
-//                    String setterName = toSetter(entry.getKey());
-//                    if (method.getParameterTypes().length == 1 && method.getName().equals(setterName)) {
-//                        found = method;
-//                        break;
-//                    }
-//                }
-//                if (found == null) {
-//                    SetterNotFoundException e = new SetterNotFoundException("Setter method not found for parameter");
-//                    e.setIdentifier(entry.getKey());
-//                    throw e;
-//                }
-//                Class<?> type = found.getParameterTypes()[0];
-//                PropertyEditor editor = PropertyEditorManager.findEditor(type);
-//                if (editor == null) {
-//                    PropertyEditorNotFoundException e =
-//                        new PropertyEditorNotFoundException("Parameter type not supported");
-//                    e.setIdentifier(type.getName());
-//                    throw e;
-//                }
-//                Injector injector = new Injector(found, new ParameterObjectFactory(editor, entry.getValue()));
-//                injectors.add(injector);
-//            }
-//
-
             List<Injector> injectors = new ArrayList<Injector>();
             // handle properties
             ComponentType type = definition.getImplementation().getComponentType();
