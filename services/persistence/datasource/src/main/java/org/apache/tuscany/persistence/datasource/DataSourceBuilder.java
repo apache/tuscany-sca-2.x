@@ -80,11 +80,4 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
         }
     }
 
-    /**
-     * Converts a property name to a corresponding setter method
-     */
-    private String toSetter(String name) {
-        return "set" + name.toUpperCase().substring(0, 1) + name.substring(1);
-    }
-
 }
