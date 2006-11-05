@@ -67,7 +67,12 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.ConnectorImpl"/>
     </component>
 
-    <!-- Foundcation element loader implementations -->
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
+    </component>
+    
+    <!-- Foundation element loader implementations -->
     <component name="elementLoader.component">
         <system:implementation.system class="org.apache.tuscany.core.loader.ComponentLoader"/>
     </component>
