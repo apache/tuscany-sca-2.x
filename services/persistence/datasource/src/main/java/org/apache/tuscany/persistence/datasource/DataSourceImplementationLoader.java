@@ -19,8 +19,6 @@
 package org.apache.tuscany.persistence.datasource;
 
 import javax.xml.namespace.QName;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -30,6 +28,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
 
 /**
@@ -39,21 +38,20 @@ import org.apache.tuscany.spi.model.ModelObject;
  * <pre>
  * <p/>
  *      <component name="MyDataSource">
- *          <system:implementation.ds provider="org.foo.FooProvider">
- *              <driverClassName>com.mysql.jdbc.Driver</driverClassName>
- *              <url>jdbc:mysql://localhost:3306/mydb</url>
- *              <login>foo</login>
- *              <password>bar</password>
- *          </system:implementation.ds>
+ *          <system:implementation.ds provider="org.foo.FooProvider"/>
+ *          <property name="driverClassName">com.mysql.jdbc.Driver</property>
+ *          <property name="url">jdbc:mysql://localhost:3306/mydb</property>
+ *          <property name="login">foo</property>
+ *          <property name="password">bar</property>
  *      </component>
  * <p/>
  * </pre>
- * In the above example, <code>org.foo.FooProvider</code> is responsible for providing the actual DataSource
+ * In the above example, <code>org.foo.FooProvider</code> is responsible for bootstrapping the actual DataSource
  * implementation. It may implement <code>javax.sql.DataSource</code> directly or the {@link DataSourceProvider}
- * interface and must have a public no-args constructor. Configuration parameters are specified as sub-elements of
- * <code>implementation.ds</code> and will vary by the provider. Parameter values are generally simple types and will be
- * instantiated using the JavaBeans <code>PropertyEditorManager</code>. Values will be set on the provider class using
- * JavaBeans setter methods.
+ * interface and must have a public no-args constructor. Configuration parameters are simple types specified as
+ * properties. Configuration parameters, i.e. properties, will vary are introspected from the provider class. A
+ * component type containing thse properties is dynamically generated and consists of all JavaBean setter methods that
+ * take a single simple type parameter.
  *
  * @version $Rev$ $Date$
  */
@@ -82,21 +80,7 @@ public class DataSourceImplementationLoader extends LoaderExtension {
         DataSourceImplementation implementation = new DataSourceImplementation();
         implementation.setProviderName(driverName);
         implementation.setClassLoader(deploymentContext.getClassLoader());
-
-        while (true) {
-            switch (reader.next()) {
-                case START_ELEMENT:
-                    // load configuration paramters
-                    String paramName = reader.getName().getLocalPart();
-                    String val = reader.getElementText().trim();
-                    implementation.addConfigurationParam(paramName, val);
-                    reader.next();
-                    break;
-                case END_ELEMENT:
-                    if (reader.getName().equals(DATASOURCE)) {
-                        return implementation;
-                    }
-            }
-        }
+        LoaderUtil.skipToEndElement(reader);
+        return implementation;
     }
 }

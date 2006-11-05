@@ -18,33 +18,27 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorManager;
-
-import org.apache.tuscany.spi.ObjectCreationException;
-
-import junit.framework.TestCase;
+import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
+ * Raised when a property cannot be unambiguously inferred using JavaBean introspection rules, e.g. when a method is
+ * overloaded.
+ *
  * @version $Rev$ $Date$
  */
-public class ParameterObjectFactoryTestCase extends TestCase {
-
-    public void testGetValue() throws Exception {
-        PropertyEditor editor = PropertyEditorManager.findEditor(Integer.TYPE);
-        ParameterObjectFactory<Integer> factory = new ParameterObjectFactory<Integer>(editor, "1");
-        assertEquals(new Integer(1), factory.getInstance());
+public class AmbiguousPropertyException extends LoaderException {
+    public AmbiguousPropertyException() {
     }
 
-    public void testGetInvalidValue() throws Exception {
-        PropertyEditor editor = PropertyEditorManager.findEditor(Integer.TYPE);
-        try {
-            ParameterObjectFactory<Integer> factory = new ParameterObjectFactory<Integer>(editor, "D");
-            factory.getInstance();
-            fail();
-        } catch (ObjectCreationException e) {
-            // expected
-        }
+    public AmbiguousPropertyException(String message) {
+        super(message);
     }
 
+    public AmbiguousPropertyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public AmbiguousPropertyException(Throwable cause) {
+        super(cause);
+    }
 }

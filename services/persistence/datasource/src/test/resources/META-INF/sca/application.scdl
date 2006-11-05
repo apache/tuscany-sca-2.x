@@ -25,6 +25,8 @@
         <system:implementation.ds provider="org.apache.tuscany.persistence.datasource.integration.mock.Provider">
             <test>value</test>
         </system:implementation.ds>
+        <property name="test">value</property>
+        <property name="loginTimeout">1</property>
     </component>
 
 </composite>
