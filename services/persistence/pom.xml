@@ -58,6 +58,7 @@
     <modules>
         <module>common</module>
         <module>openjpa</module>
+        <module>datasource</module>
         <module>store</module>
     </modules>
 </project>
