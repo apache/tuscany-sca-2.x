@@ -18,21 +18,13 @@
  */
 package org.apache.tuscany.core.loader;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.isNull;
-
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -41,12 +33,18 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.ModelObject;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
+import static org.easymock.EasyMock.replay;
 
 /**
  * @version $Rev$ $Date$
@@ -77,7 +75,7 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.isA(DeploymentContext.class));
 
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
-            (ModelObject)isNull(),
+            (ModelObject) isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
         EasyMock.replay(mockRegistry);
@@ -102,7 +100,7 @@ public class ComponentLoaderTestCase extends TestCase {
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
-            (ModelObject)isNull(),
+            (ModelObject) isNull(),
             EasyMock.eq(mockReader),
             EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
         EasyMock.replay(mockRegistry);
@@ -132,6 +130,7 @@ public class ComponentLoaderTestCase extends TestCase {
         assertEquals("$source", defn.getPropertyValues().get("name").getSource());
         EasyMock.verify(reader);
     }
+
 
     protected void setUp() throws Exception {
         super.setUp();

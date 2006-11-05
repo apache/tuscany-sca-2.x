@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.lang.reflect.Type;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -85,7 +85,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     @SuppressWarnings("unchecked")
-    private void populatePropertyValues(ComponentDefinition<Implementation<?>> componentDefinition)
+    protected void populatePropertyValues(ComponentDefinition<Implementation<?>> componentDefinition)
         throws MissingMustOverridePropertyException {
         ComponentType componentType = componentDefinition.getImplementation().getComponentType();
         if (componentType != null) {
@@ -96,7 +96,8 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 if (propertyValues.get(aProperty.getName()) == null) {
                     if (aProperty.getOverride() == OverrideOptions.MUST) {
                         throw new MissingMustOverridePropertyException(aProperty.getName());
-                    } else {
+                    } else if (aProperty.getDefaultValue() != null) {
+                        //} else {
                         PropertyValue propertyValue = new PropertyValue();
                         propertyValue.setName(aProperty.getName());
                         propertyValue.setValue(aProperty.getDefaultValue());
@@ -116,9 +117,9 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     }
 
     public ComponentDefinition<?> load(CompositeComponent parent,
-                                       ModelObject object, XMLStreamReader reader,
-                                       DeploymentContext deploymentContext) throws XMLStreamException,
-                                                                                   LoaderException {
+                                       ModelObject object,
+                                       XMLStreamReader reader,
+                                       DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert COMPONENT.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String initLevel = reader.getAttributeValue(null, "initLevel");
@@ -195,7 +196,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String name = reader.getAttributeValue(null, PROPERTY_NAME_ATTR);
         Implementation<?> implementation = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
-        Property<Type> property = (Property<Type>)componentType.getProperties().get(name);
+        Property<Type> property = (Property<Type>) componentType.getProperties().get(name);
         if (property == null) {
             throw new UndefinedPropertyException(name);
         } else if (OverrideOptions.NO.equals(property.getOverride())) {
