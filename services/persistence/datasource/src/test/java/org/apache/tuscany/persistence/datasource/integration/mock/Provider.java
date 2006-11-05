@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.persistence.datasource.mock;
+package org.apache.tuscany.persistence.datasource.integration.mock;
 
 import java.sql.Connection;
 import java.sql.SQLException;

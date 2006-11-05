@@ -21,7 +21,7 @@ package org.apache.tuscany.persistence.datasource.integration;
 import java.net.URL;
 import javax.sql.DataSource;
 
-import org.apache.tuscany.persistence.datasource.mock.Provider;
+import org.apache.tuscany.persistence.datasource.integration.mock.Provider;
 import org.apache.tuscany.test.SCATestCase;
 
 /**
