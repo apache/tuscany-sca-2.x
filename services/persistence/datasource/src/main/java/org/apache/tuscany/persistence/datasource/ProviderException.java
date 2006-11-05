@@ -21,7 +21,7 @@ package org.apache.tuscany.persistence.datasource;
 import org.apache.tuscany.api.TuscanyException;
 
 /**
- * Denots an error during a provider callback
+ * Denotes an error during a provider callback
  *
  * @version $Rev$ $Date$
  */

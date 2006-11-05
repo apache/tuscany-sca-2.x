@@ -21,6 +21,8 @@ package org.apache.tuscany.persistence.datasource;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 
 /**
+ * Thrown when an editor is not found for a parameter type
+ *
  * @version $Rev$ $Date$
  */
 public class PropertyEditorNotFoundException extends BuilderConfigException {
