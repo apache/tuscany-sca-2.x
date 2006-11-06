@@ -51,7 +51,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
     /**
      * Root JAT URL.
      */
-    private URL rootUrl;
+    private String rootUrl;
     
     /**
      * Persistence unit name.
@@ -131,7 +131,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
      * @param classLoader Classloader.
      * @param unlistedClassesExcluded Whether unlisted classes in the DD are exluded.
      */
-    public TuscanyPersistenceUnitInfo(String transactionType, Properties properties, URL rootUrl, String unitName, String providerClass, String nonJtaDsName, ClassLoader tempClassLoader, List<String> mappingFileNames, List<String> managedClassNames, String jtaDsName, List<String> jarFileUrls, ClassLoader classLoader, boolean unlistedClassesExcluded) {
+    public TuscanyPersistenceUnitInfo(String transactionType, Properties properties, String rootUrl, String unitName, String providerClass, String nonJtaDsName, ClassLoader tempClassLoader, List<String> mappingFileNames, List<String> managedClassNames, String jtaDsName, List<String> jarFileUrls, ClassLoader classLoader, boolean unlistedClassesExcluded) {
         this.transactionType = transactionType;
         this.properties = properties;
         this.rootUrl = rootUrl;
@@ -251,7 +251,11 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitRootUrl()
      */
     public URL getPersistenceUnitRootUrl() {
-        return rootUrl;
+        try {
+            return new URL(rootUrl);
+        } catch(MalformedURLException ex) {
+            throw new TuscanyJpaException(ex);
+        }
     }
 
     /* (non-Javadoc)
