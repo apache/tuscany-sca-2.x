@@ -18,7 +18,12 @@
  */
 package org.apache.tuscany.service.persistence.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
 
 /**
  * Default implementation of the persistence unit builder.
@@ -41,12 +46,19 @@ public class DefaultPersistenceUnitBuilder implements PersistenceUnitBuilder {
      */
     public EntityManagerFactory newEntityManagerFactory(String unitName, ClassLoader classLoader) {
         
-        PersistenceUnitMetadata info = scanner.getPersistenceUnitInfo(unitName, classLoader);
-        if(info == null) {
-            throw new IllegalArgumentException("Persistence unit not found: " + unitName);
+        PersistenceUnitInfo info = scanner.getPersistenceUnitInfo(unitName, classLoader);
+        String providerClass = info.getPersistenceProviderClassName();
+        try {
+            Map overrides = new HashMap();
+            PersistenceProvider provider = (PersistenceProvider) Class.forName(providerClass).newInstance();
+            return provider.createContainerEntityManagerFactory(info, overrides);
+        } catch (InstantiationException ex) {
+            throw new TuscanyJpaException(ex);
+        } catch (IllegalAccessException ex) {
+            throw new TuscanyJpaException(ex);
+        } catch (ClassNotFoundException ex) {
+            throw new TuscanyJpaException(ex);
         }
-        
-        return null;
         
     }
 
