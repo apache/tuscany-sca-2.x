@@ -31,120 +31,49 @@ import javax.persistence.spi.ClassTransformer;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Encpasulates the information in the persistence.xml file.
+ * 
+ * This class is expected to be interogated by the provider only 
+ * during the creation of the entity manager factory. Hence none 
+ * of the values are cached, rather every time a property is queried 
+ * the underlying DOM is interogated.
  *
  */
-class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
+class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
 
-    /**
-     * Transaction type.
-     */
-    private String transactionType;
-    
-    /**
-     * Configuration properties.
-     */
-    private Properties properties;
-    
-    /**
-     * Root JAT URL.
-     */
-    private String rootUrl;
-    
-    /**
-     * Persistence unit name.
-     */
-    private String unitName;
-    
-    /**
-     * Persistence provider class.
-     */
-    private String providerClass;
-    
-    /**
-     * Non JTA Datasource.
-     */
-    private DataSource nonJtaDataSource;
-    
-    /**
-     * Non JTA Datasource name.
-     */
-    private String nonJtaDsName;
-    
-    /**
-     * Temporary classloader.
-     */
-    private ClassLoader tempClassLoader;
-    
-    /**
-     * Mapped file names.
-     */
-    private List<String> mappingFileNames;
-    
-    /**
-     * Mapped persistent classes.
-     */
-    private List<String> managedClassNames;
-    
-    /**
-     * JTA datasource name.
-     */
-    private String jtaDsName;
-    
-    /**
-     * JTA datasource.
-     */
-    private DataSource jtaDataSource;
-    
-    /**
-     * JAR file URLs.
-     */
-    private List<String> jarFileUrls;
-    
-    /**
-     * Classloader.
-     */
+    /** Persistence DOM */
+    private Node persistenceDom;
+
+    /** Classloader */
     private ClassLoader classLoader;
-    
-    /**
-     * Whether unlisted classes in the DD are exluded.
-     */
-    private boolean unlistedClassesExcluded;
 
-    
+    /** Root Url */
+    private String rootUrl;
+
+    /** XPath API */
+    XPath xpath = XPathFactory.newInstance().newXPath();
+
     /**
      * Initializes the properties.
      * 
-     * @param transactionType Transaction type.
-     * @param properties Configuration properties.
-     * @param rootUrl Root JAT URL.
-     * @param unitName Persistence unit name.
-     * @param providerClass Persistence provider class.
-     * @param nonJtaDataSource Non JTA Datasource.
-     * @param tempClassLoader Temporary classloader.
-     * @param mappingFileNames Mapped file names.
-     * @param managedClassNames Mapped persistent classes.
-     * @param jtaDataSource JTA datasource.
-     * @param jarFileUrls JAR file URLs.
-     * @param classLoader Classloader.
-     * @param unlistedClassesExcluded Whether unlisted classes in the DD are exluded.
+     * @param persistenceDom
+     * @param classLoader
+     * @param rootUrl
      */
-    public TuscanyPersistenceUnitInfo(String transactionType, Properties properties, String rootUrl, String unitName, String providerClass, String nonJtaDsName, ClassLoader tempClassLoader, List<String> mappingFileNames, List<String> managedClassNames, String jtaDsName, List<String> jarFileUrls, ClassLoader classLoader, boolean unlistedClassesExcluded) {
-        this.transactionType = transactionType;
-        this.properties = properties;
-        this.rootUrl = rootUrl;
-        this.unitName = unitName;
-        this.providerClass = providerClass;
-        this.nonJtaDsName = nonJtaDsName;
-        this.tempClassLoader = tempClassLoader;
-        this.mappingFileNames = mappingFileNames;
-        this.managedClassNames = managedClassNames;
-        this.jtaDsName = jtaDsName;
-        this.jarFileUrls = jarFileUrls;
+    public TuscanyPersistenceUnitInfo(Node persistenceDom, ClassLoader classLoader, String rootUrl) {
+        this.persistenceDom = persistenceDom;
         this.classLoader = classLoader;
-        this.unlistedClassesExcluded = unlistedClassesExcluded;
+        this.rootUrl = rootUrl;
     }
 
     /* (non-Javadoc)
@@ -157,7 +86,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#excludeUnlistedClasses()
      */
     public boolean excludeUnlistedClasses() {
-        return unlistedClassesExcluded;
+        return getBooleanValue(persistenceDom, JpaConstants.EXCLUDE_UNLISTED_CLASSES);
     }
 
     /* (non-Javadoc)
@@ -171,80 +100,79 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#getJarFileUrls()
      */
     public List<URL> getJarFileUrls() {
+
+        List<String> jarFiles = getMultipleValues(persistenceDom, JpaConstants.JAR_FILE);
         try {
-            List<URL> jarFiles = new LinkedList<URL>();
-            for(String jarFileUrl : jarFileUrls) {
-                jarFiles.add(new URL(jarFileUrl));
+            List<URL> jarUrls = new LinkedList<URL>();
+            for (String jarFile : jarFiles) {
+                jarUrls.add(new URL(jarFile));
             }
-            return jarFiles;
-        } catch(MalformedURLException ex) {
+            return jarUrls;
+        } catch (MalformedURLException ex) {
             throw new TuscanyJpaException(ex);
         }
+
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getJtaDataSource()
      */
     public DataSource getJtaDataSource() {
-        
-        if(jtaDataSource != null) {
-            return jtaDataSource;
-        }
-        if(jtaDsName == null || "".equals(jtaDsName)) {
+
+        String jtaDsName = getSingleValue(persistenceDom, JpaConstants.JTA_DATA_SOURCE);
+        if (jtaDsName == null || "".equals(jtaDsName)) {
             return null;
-        }        
+        }
         return lookupDataSource(jtaDsName);
-        
+
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getManagedClassNames()
      */
     public List<String> getManagedClassNames() {
-        return managedClassNames;
+        return getMultipleValues(persistenceDom, JpaConstants.CLASS);
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getMappingFileNames()
      */
     public List<String> getMappingFileNames() {
-        return mappingFileNames;
+        return getMultipleValues(persistenceDom, JpaConstants.MAPPING_FILE);
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()
      */
     public ClassLoader getNewTempClassLoader() {
-        return tempClassLoader;
+        return null;
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getNonJtaDataSource()
      */
     public DataSource getNonJtaDataSource() {
-        
-        if(nonJtaDataSource != null) {
-            return nonJtaDataSource;
-        }
-        if(nonJtaDsName == null || "".equals(nonJtaDsName)) {
+
+        String nonJtaDsName = getSingleValue(persistenceDom, JpaConstants.NON_JTA_DATA_SOURCE);
+        if (nonJtaDsName == null || "".equals(nonJtaDsName)) {
             return null;
-        }        
+        }
         return lookupDataSource(nonJtaDsName);
-        
+
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceProviderClassName()
      */
     public String getPersistenceProviderClassName() {
-        return providerClass;
+        return getSingleValue(persistenceDom, JpaConstants.PROVIDER);
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitName()
      */
     public String getPersistenceUnitName() {
-        return unitName;
+        return getSingleValue(persistenceDom, JpaConstants.NAME);
     }
 
     /* (non-Javadoc)
@@ -253,7 +181,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
     public URL getPersistenceUnitRootUrl() {
         try {
             return new URL(rootUrl);
-        } catch(MalformedURLException ex) {
+        } catch (MalformedURLException ex) {
             throw new TuscanyJpaException(ex);
         }
     }
@@ -262,14 +190,76 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
      * @see javax.persistence.spi.PersistenceUnitInfo#getProperties()
      */
     public Properties getProperties() {
-        return properties;
+        return getProperties(persistenceDom);
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
      */
     public PersistenceUnitTransactionType getTransactionType() {
+        String transactionType = getSingleValue(persistenceDom, JpaConstants.TRANSACTION_TYPE);
         return "JTA".equals(transactionType) ? PersistenceUnitTransactionType.JTA : PersistenceUnitTransactionType.RESOURCE_LOCAL;
+    }
+
+    /*
+     * Extracts additional properties.
+     */
+    private Properties getProperties(Node root) {
+
+        try {
+            NodeList nodeList = (NodeList) xpath.evaluate(JpaConstants.PROPERTY, root, XPathConstants.NODESET);
+            Properties data = new Properties();
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Element property = (Element) nodeList.item(i);
+                data.put(property.getAttribute(JpaConstants.PROPERTY_NAME), property.getAttribute(JpaConstants.PROPERTY_VALUE));
+            }
+
+            return data;
+        } catch (XPathExpressionException ex) {
+            throw new TuscanyJpaException(ex);
+        }
+
+    }
+
+    /*
+     * Gets multiple values for the specified expression.
+     */
+    private List<String> getMultipleValues(Node context, String expression) {
+
+        try {
+            NodeList nodeList = (NodeList) xpath.evaluate(expression, context, XPathConstants.NODESET);
+            List<String> data = new LinkedList<String>();
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                data.add(nodeList.item(i).getTextContent());
+            }
+
+            return data;
+        } catch (XPathExpressionException ex) {
+            throw new TuscanyJpaException(ex);
+        }
+
+    }
+
+    /*
+     * Gets single value for the specified expression.
+     */
+    private String getSingleValue(Node context, String expression) {
+
+        try {
+            return xpath.evaluate(expression, context);
+        } catch (XPathExpressionException ex) {
+            throw new TuscanyJpaException(ex);
+        }
+
+    }
+
+    /*
+     * Gets single value for the specified expression.
+     */
+    private boolean getBooleanValue(Node context, String expression) {
+        return Boolean.valueOf(getSingleValue(context, expression));
     }
 
     /*
@@ -280,13 +270,13 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo {
         try {
             ctx = new InitialContext();
             return (DataSource) ctx.lookup(dsName);
-        } catch(NamingException ex) {
+        } catch (NamingException ex) {
             throw new TuscanyJpaException(ex);
         } finally {
-            if(ctx != null) {
+            if (ctx != null) {
                 try {
                     ctx.close();
-                } catch(NamingException ex) {
+                } catch (NamingException ex) {
                     throw new TuscanyJpaException(ex);
                 }
             }
