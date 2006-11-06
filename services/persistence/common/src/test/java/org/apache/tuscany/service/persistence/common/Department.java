@@ -19,8 +19,12 @@
 package org.apache.tuscany.service.persistence.common;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Department {
+    
+    @Id
+    private Long id;
 
 }

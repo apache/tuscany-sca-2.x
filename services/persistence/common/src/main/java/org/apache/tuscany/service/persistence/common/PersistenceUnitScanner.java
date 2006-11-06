@@ -37,6 +37,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -83,6 +84,9 @@ class PersistenceUnitScanner {
                         continue;
                     }
                     
+                    String rootJarUrl = persistenceUnitUrl.toString();
+                    rootJarUrl = rootJarUrl.substring(0, rootJarUrl.lastIndexOf("META-INF"));
+                    
                     String transactionType = getSingleValue(xpath, root, "//persistence-unit/@transaction-type");
                     String provider = getSingleValue(xpath, root, "//persistence-unit/provider");
                     String jtaDsName = getSingleValue(xpath, root, "//persistence-unit/jta-data-source");
@@ -93,9 +97,9 @@ class PersistenceUnitScanner {
                     List<String> managedClasses = getMultipleValues(xpath, root, "//persistence-unit/class");
                     
                     // TODO load properties
-                    Properties prop = new Properties();
+                    Properties prop = getProperties(xpath, root);
                     
-                    PersistenceUnitInfo info = new TuscanyPersistenceUnitInfo(transactionType, prop, persistenceUnitUrl, unitName, provider, nonJtaDsName, null, mappingFiles, managedClasses, jtaDsName, jarFiles, classLoader, exludeUnlistedClasses);
+                    PersistenceUnitInfo info = new TuscanyPersistenceUnitInfo(transactionType, prop, rootJarUrl, unitName, provider, nonJtaDsName, null, mappingFiles, managedClasses, jtaDsName, jarFiles, classLoader, exludeUnlistedClasses);
                     persistenceUnitInfos.put(unitName, info);
                     return info;
                     
@@ -115,6 +119,22 @@ class PersistenceUnitScanner {
         
     }
     
+    /*
+     * Extracts additional properties.
+     */
+    private Properties getProperties(XPath xpath, Document root) throws XPathExpressionException {
+        
+        NodeList nodeList = (NodeList) xpath.evaluate("//persistence-unit/properties/property", root, XPathConstants.NODESET);
+        Properties data = new Properties();
+        
+        for(int i = 0;i < nodeList.getLength();i++) {
+            Element property = (Element) nodeList.item(i);
+            data.put(property.getAttribute("name"), property.getAttribute("value"));
+        }
+        
+        return data;
+    }
+
     /*
      * Gets multiple values for the specified expression.
      */
