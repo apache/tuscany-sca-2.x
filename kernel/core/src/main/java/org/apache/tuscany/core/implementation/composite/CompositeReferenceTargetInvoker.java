@@ -19,26 +19,49 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  *
  */
 public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 
-    private OutboundWire outboundWire;
+    private OutboundInvocationChain chain;
+    private Object fromAddress;
+    private boolean contractHasCallback;
 
     public CompositeReferenceTargetInvoker(Operation operation,
                                            OutboundWire outboundWire) {
-        super(operation);
-        this.outboundWire = outboundWire;
+        assert operation != null : "Operation method cannot be null";
+        chain = outboundWire.getInvocationChains().get(operation);
+        fromAddress = (outboundWire.getContainer() == null) ? null : outboundWire.getContainer().getName();
+        contractHasCallback = outboundWire.getServiceContract().getCallbackClass() != null;
     }
 
+    @Override
     public CompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {
         return (CompositeReferenceTargetInvoker) super.clone();
     }
-    
-    protected AbstractOperationOutboundInvocationHandler getInvocationHandler() {
-        return new OperationOutboundInvocationHandler(outboundWire);
+
+    public Message invoke(Message msg) throws InvocationRuntimeException {
+        try {
+            TargetInvoker invoker = chain.getTargetInvoker();
+
+            // Pushing the from address only needs to happen in the outbound (forward) direction for callbacks
+            if (contractHasCallback) {
+                msg.pushFromAddress(fromAddress);
+            }
+
+            return invoke(chain, invoker, msg);
+        } catch (Throwable e) {
+            Message faultMsg = new MessageImpl();
+            faultMsg.setBodyWithFault(e);
+            return faultMsg;
+        }
     }
 }

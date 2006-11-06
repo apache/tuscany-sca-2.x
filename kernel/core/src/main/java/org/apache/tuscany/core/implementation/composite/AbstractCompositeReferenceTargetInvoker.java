@@ -20,10 +20,10 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
@@ -33,13 +33,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public abstract class AbstractCompositeReferenceTargetInvoker implements TargetInvoker {
 
-    protected Operation operation;
     protected boolean cacheable;
-
-    public AbstractCompositeReferenceTargetInvoker(Operation operation) {
-        assert operation != null : "Operation method cannot be null";
-        this.operation = operation;
-    }
 
     public boolean isCacheable() {
         return cacheable;
@@ -57,14 +51,26 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
         throw new InvocationTargetException(new InvocationRuntimeException("Not allowed to invokeTarget with object"));
     }
 
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-            AbstractOperationOutboundInvocationHandler invocationHandler = getInvocationHandler();
-            return invocationHandler.invoke(operation, msg);
-        } catch (Throwable e) {
-            Message faultMsg = new MessageImpl();
-            faultMsg.setBodyWithFault(e);
-            return faultMsg;
+    protected Message invoke(OutboundInvocationChain chain, TargetInvoker invoker, Message msg) throws Throwable {
+        Interceptor headInterceptor = chain.getHeadInterceptor();
+        if (headInterceptor == null) {
+            try {
+                // short-circuit the dispatch and invoke the target directly
+                if (invoker == null) {
+                    String name = chain.getOperation().getName();
+                    throw new AssertionError("No target invoker [" + name + "]");
+                }
+                return invoker.invoke(msg);
+            } catch (InvocationRuntimeException e) {
+                // the cause was thrown by the target so throw it
+                throw e.getCause();
+            }
+        } else {
+            msg.setTargetInvoker(invoker);
+
+            Message resp = headInterceptor.invoke(msg);
+
+            return resp;
         }
     }
 
@@ -72,6 +78,4 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
     public AbstractCompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {
         return (AbstractCompositeReferenceTargetInvoker) super.clone();
     }
-
-    protected abstract AbstractOperationOutboundInvocationHandler getInvocationHandler();
 }
