@@ -18,26 +18,55 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.util.Map;
+
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * 
  */
 public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 
+    private Operation operation;
     private InboundWire inboundWire;
 
     public CompositeReferenceCallbackTargetInvoker(Operation operation, InboundWire inboundWire) {
-        super(operation);
+        assert operation != null : "Operation method cannot be null";
+        this.operation = operation;
         this.inboundWire = inboundWire;
     }
 
+    @Override
     public CompositeReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {
         return (CompositeReferenceCallbackTargetInvoker) super.clone();
     }
 
-    protected AbstractOperationOutboundInvocationHandler getInvocationHandler() {
-        return new OperationCallbackInvocationHandler(inboundWire);
+    public Message invoke(Message msg) throws InvocationRuntimeException {
+        try {
+            return invoke(operation, msg);
+        } catch (Throwable e) {
+            Message faultMsg = new MessageImpl();
+            faultMsg.setBodyWithFault(e);
+            return faultMsg;
+        }
+    }
+
+    private Message invoke(Operation operation, Message msg) throws Throwable {
+        Object targetAddress = msg.popFromAddress();
+        if (targetAddress == null) {
+            throw new AssertionError("Popped a null from address from message");
+        }
+        //TODO optimize as this is slow in local invocations
+        Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
+            inboundWire.getSourceCallbackInvocationChains(targetAddress);
+        OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
+        TargetInvoker invoker = chain.getTargetInvoker();
+        return invoke(chain, invoker, msg);
     }
 }

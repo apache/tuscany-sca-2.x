@@ -19,10 +19,14 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.easymock.EasyMock;
 
 import junit.framework.TestCase;
 
@@ -39,6 +43,16 @@ public class CompositeReferenceTestCase extends TestCase {
                                                                        null,
                                                                        serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
+        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
+        EasyMock.replay(chain);
+        HashMap<Operation<?>,OutboundInvocationChain> chains = new HashMap<Operation<?>,OutboundInvocationChain>();
+        chains.put(operation,chain);
+        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
+        EasyMock.expect(wire.getContainer()).andReturn(null);
+        EasyMock.expect(wire.getServiceContract()).andReturn(serviceContract);
+        EasyMock.replay(wire);
+        compositeReference.setOutboundWire(wire);
         TargetInvoker targetInvoker = compositeReference.createTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);
     }
