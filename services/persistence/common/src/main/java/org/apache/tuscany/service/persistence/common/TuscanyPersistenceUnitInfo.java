@@ -40,6 +40,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import static org.apache.tuscany.service.persistence.common.JpaConstants.*;
+
 /**
  * Encpasulates the information in the persistence.xml file.
  * 
@@ -86,7 +88,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      * @see javax.persistence.spi.PersistenceUnitInfo#excludeUnlistedClasses()
      */
     public boolean excludeUnlistedClasses() {
-        return getBooleanValue(persistenceDom, JpaConstants.EXCLUDE_UNLISTED_CLASSES);
+        return getBooleanValue(persistenceDom, EXCLUDE_UNLISTED_CLASSES);
     }
 
     /* (non-Javadoc)
@@ -101,7 +103,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      */
     public List<URL> getJarFileUrls() {
 
-        List<String> jarFiles = getMultipleValues(persistenceDom, JpaConstants.JAR_FILE);
+        List<String> jarFiles = getMultipleValues(persistenceDom, JAR_FILE);
         try {
             List<URL> jarUrls = new LinkedList<URL>();
             for (String jarFile : jarFiles) {
@@ -119,7 +121,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      */
     public DataSource getJtaDataSource() {
 
-        String jtaDsName = getSingleValue(persistenceDom, JpaConstants.JTA_DATA_SOURCE);
+        String jtaDsName = getSingleValue(persistenceDom, JTA_DATA_SOURCE);
         if (jtaDsName == null || "".equals(jtaDsName)) {
             return null;
         }
@@ -131,14 +133,14 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      * @see javax.persistence.spi.PersistenceUnitInfo#getManagedClassNames()
      */
     public List<String> getManagedClassNames() {
-        return getMultipleValues(persistenceDom, JpaConstants.CLASS);
+        return getMultipleValues(persistenceDom, CLASS);
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getMappingFileNames()
      */
     public List<String> getMappingFileNames() {
-        return getMultipleValues(persistenceDom, JpaConstants.MAPPING_FILE);
+        return getMultipleValues(persistenceDom, MAPPING_FILE);
     }
 
     /* (non-Javadoc)
@@ -153,7 +155,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      */
     public DataSource getNonJtaDataSource() {
 
-        String nonJtaDsName = getSingleValue(persistenceDom, JpaConstants.NON_JTA_DATA_SOURCE);
+        String nonJtaDsName = getSingleValue(persistenceDom, NON_JTA_DATA_SOURCE);
         if (nonJtaDsName == null || "".equals(nonJtaDsName)) {
             return null;
         }
@@ -165,14 +167,14 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceProviderClassName()
      */
     public String getPersistenceProviderClassName() {
-        return getSingleValue(persistenceDom, JpaConstants.PROVIDER);
+        return getSingleValue(persistenceDom, PROVIDER);
     }
 
     /* (non-Javadoc)
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitName()
      */
     public String getPersistenceUnitName() {
-        return getSingleValue(persistenceDom, JpaConstants.NAME);
+        return getSingleValue(persistenceDom, NAME);
     }
 
     /* (non-Javadoc)
@@ -197,7 +199,7 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
      * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
      */
     public PersistenceUnitTransactionType getTransactionType() {
-        String transactionType = getSingleValue(persistenceDom, JpaConstants.TRANSACTION_TYPE);
+        String transactionType = getSingleValue(persistenceDom, TRANSACTION_TYPE);
         return "JTA".equals(transactionType) ? PersistenceUnitTransactionType.JTA : PersistenceUnitTransactionType.RESOURCE_LOCAL;
     }
 
@@ -207,12 +209,12 @@ class TuscanyPersistenceUnitInfo implements PersistenceUnitInfo  {
     private Properties getProperties(Node root) {
 
         try {
-            NodeList nodeList = (NodeList) xpath.evaluate(JpaConstants.PROPERTY, root, XPathConstants.NODESET);
+            NodeList nodeList = (NodeList) xpath.evaluate(PROPERTY, root, XPathConstants.NODESET);
             Properties data = new Properties();
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Element property = (Element) nodeList.item(i);
-                data.put(property.getAttribute(JpaConstants.PROPERTY_NAME), property.getAttribute(JpaConstants.PROPERTY_VALUE));
+                data.put(property.getAttribute(PROPERTY_NAME), property.getAttribute(PROPERTY_VALUE));
             }
 
             return data;
