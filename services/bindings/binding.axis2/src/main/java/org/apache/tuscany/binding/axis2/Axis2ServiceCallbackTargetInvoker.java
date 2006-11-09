@@ -31,7 +31,6 @@ import org.apache.tuscany.binding.axis2.Axis2Service.InvocationContext;
 import org.apache.tuscany.binding.axis2.Axis2AsyncTargetInvoker;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
@@ -46,7 +45,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
         throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
     
-    private Object invokeTarget(final Object payload, MessageId correlationId) throws InvocationTargetException {
+    private Object invokeTarget(final Object payload, Object correlationId) throws InvocationTargetException {
         try {
             // Use current correlation id as index to retrieve inv context
             InvocationContext invCtx = service.retrieveMapping(correlationId);
@@ -83,7 +82,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            MessageId correlationId = (MessageId)msg.getCorrelationId();
+            Object correlationId = msg.getCorrelationId();
             if (correlationId == null) {
                 throw new InvocationRuntimeException("Missing correlation id");
             }
