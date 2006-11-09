@@ -47,7 +47,10 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
 
     public final void receive(final MessageContext messageCtx) {
         try {
-            MessageId messageId = new MessageId();
+            Object messageId = messageCtx.getMessageID();
+            if (messageId == null) {
+                messageId = new MessageId();
+            }
 
             // Now use message id as index to context to be used by callback
             // target invoker

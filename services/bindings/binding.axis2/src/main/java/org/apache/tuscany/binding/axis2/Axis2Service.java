@@ -50,7 +50,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
@@ -71,7 +70,7 @@ public class Axis2Service extends ServiceExtension {
 
     private WebServiceBinding binding;
 
-    private Map<MessageId, InvocationContext> invCtxMap = new HashMap<MessageId, InvocationContext>();
+    private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
 
     private String serviceName;
 
@@ -245,15 +244,15 @@ public class Axis2Service extends ServiceExtension {
         return new Axis2ServiceCallbackTargetInvoker(this);
     }
 
-    public void addMapping(MessageId msgId, InvocationContext invCtx) {
+    public void addMapping(Object msgId, InvocationContext invCtx) {
         this.invCtxMap.put(msgId, invCtx);
     }
 
-    public InvocationContext retrieveMapping(MessageId msgId) {
+    public InvocationContext retrieveMapping(Object msgId) {
         return this.invCtxMap.get(msgId);
     }
 
-    public void removeMapping(MessageId msgId) {
+    public void removeMapping(Object msgId) {
         this.invCtxMap.remove(msgId);
     }
 
