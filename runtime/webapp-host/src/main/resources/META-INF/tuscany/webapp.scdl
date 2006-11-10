@@ -79,12 +79,17 @@
     <component name="scope.module">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory"/>
     </component>
+
     <component name="scope.stateless">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>
     </component>
 
     <component name="scope.httpsession">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.HttpSessionScopeObjectFactory"/>
+    </component>
+
+    <component name="scope.conversational">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeObjectFactory"/>
     </component>
 
     <!-- include loader configuration -->
