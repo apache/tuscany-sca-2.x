@@ -38,6 +38,7 @@ public class ScopeRegistryTestCase extends TestCase {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
         scopeRegistry.registerFactory(Scope.REQUEST, new RequestScopeObjectFactory());
         scopeRegistry.registerFactory(Scope.SESSION, new HttpSessionScopeObjectFactory(scopeRegistry));
+        scopeRegistry.registerFactory(Scope.CONVERSATIONAL, new ConversationalScopeObjectFactory(scopeRegistry));
         ScopeContainer request = scopeRegistry.getScopeContainer(Scope.REQUEST);
         assertTrue(request instanceof RequestScopeContainer);
         assertSame(request, scopeRegistry.getScopeContainer(Scope.REQUEST));
@@ -45,6 +46,10 @@ public class ScopeRegistryTestCase extends TestCase {
         assertTrue(session instanceof HttpSessionScopeContainer);
         assertSame(session, scopeRegistry.getScopeContainer(Scope.SESSION));
         assertNotSame(request, session);
+        ScopeContainer conversation = scopeRegistry.getScopeContainer(Scope.CONVERSATIONAL);
+        assertTrue(conversation instanceof ConversationalScopeContainer);
+        assertSame(conversation, scopeRegistry.getScopeContainer(Scope.CONVERSATIONAL));
+        assertNotSame(session, conversation);
     }
 
     public void testDeregisterFactory() throws Exception {
@@ -55,6 +60,15 @@ public class ScopeRegistryTestCase extends TestCase {
         scopeRegistry.deregisterFactory(Scope.REQUEST);
         try {
             scopeRegistry.getScopeContainer(Scope.REQUEST);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
+        ConversationalScopeObjectFactory convFactory = new ConversationalScopeObjectFactory(scopeRegistry);
+        scopeRegistry.registerFactory(Scope.CONVERSATIONAL, convFactory);
+        scopeRegistry.deregisterFactory(Scope.CONVERSATIONAL);
+        try {
+            scopeRegistry.getScopeContainer(Scope.CONVERSATIONAL);
             fail();
         } catch (ScopeNotFoundException e) {
             // expected
@@ -72,6 +86,12 @@ public class ScopeRegistryTestCase extends TestCase {
         }
         try {
             scopeRegistry.getScopeContainer(Scope.SESSION);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
+        try {
+            scopeRegistry.getScopeContainer(Scope.CONVERSATIONAL);
             fail();
         } catch (ScopeNotFoundException e) {
             // expected
