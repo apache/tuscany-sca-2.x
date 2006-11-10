@@ -43,7 +43,7 @@ public class JMSTargetInvoker implements TargetInvoker {
 	private JMSResourceFactory jmsResourceFactory;
     private OperationSelector operationSelector;
     
-    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector) throws NamingException {
+    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector){
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.operationName = operationName;
@@ -95,7 +95,7 @@ public class JMSTargetInvoker implements TargetInvoker {
     public void setCacheable(boolean cacheable) {
     }
     
-    private Object sendReceiveMessage(Object payload) throws JMSException, NamingException{
+    private Object sendReceiveMessage(Object payload) throws JMSException, NamingException, JMSBindingException{
     	
     	Session session = jmsResourceFactory.createSession();
     	
@@ -118,12 +118,8 @@ public class JMSTargetInvoker implements TargetInvoker {
         
         MessageConsumer consumer = session.createConsumer(replyDest);
         jmsResourceFactory.startConnection();
-        javax.jms.Message reply = consumer.receive(jmsBinding.getTimeToLive());
-        
-        System.out.println("Reply " + reply);
-        
-        consumer.close();
-        
+        javax.jms.Message reply = consumer.receive(jmsBinding.getTimeToLive());        
+        consumer.close();        
         session.close();
         
         return ((javax.jms.TextMessage)reply).getText();

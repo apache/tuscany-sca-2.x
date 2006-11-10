@@ -23,8 +23,8 @@ package org.apache.tuscany.binding.jms;
  */
 public interface OperationSelector {
 	
-	public String getOperationName(javax.jms.Message message);
+	public String getOperationName(javax.jms.Message message) throws JMSBindingException;
 	
-	public void setOperationName(String operationName,javax.jms.Message message);
+	public void setOperationName(String operationName,javax.jms.Message message) throws JMSBindingException;
 	
 }

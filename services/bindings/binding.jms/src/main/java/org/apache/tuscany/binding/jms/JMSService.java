@@ -58,8 +58,7 @@ public class JMSService extends ServiceExtension {
         try {
 			registerListerner();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JMSBindingRuntimeException("Error starting JMSService",e);
 		}
     }
 
@@ -69,8 +68,7 @@ public class JMSService extends ServiceExtension {
     		consumer.close();
     		jmsResourceFactory.closeConnection();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new JMSBindingRuntimeException("Error stopping JMSService",e);
 		}
     	
     	super.stop();
@@ -82,7 +80,7 @@ public class JMSService extends ServiceExtension {
         Destination destination = session.createQueue(jmsBinding.getDestinationName());
         
         consumer = session.createConsumer(destination);
-        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,jmsBinding,operationSelector));
+        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,operationSelector));
         
         jmsResourceFactory.startConnection();
         

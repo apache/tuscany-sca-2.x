@@ -29,8 +29,6 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
-import commonj.sdo.helper.TypeHelper;
-
 /**
  * Builds a Service or Reference for JMS binding.
  *
@@ -50,7 +48,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
     @SuppressWarnings({"unchecked"})
     public Service build(CompositeComponent parent,
                            BoundServiceDefinition<JMSBinding> serviceDefinition,
-                           DeploymentContext deploymentContext) {
+                           DeploymentContext deploymentContext){
 
     	JMSBinding jmsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
@@ -58,8 +56,15 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         ServiceContract serviceContract =  serviceDefinition.getServiceContract();
         serviceContract.setDataBinding(OM_DATA_BINDING);
         
-        JMSResourceFactory jmsResourceFactory = getJMSResourceFactory(jmsBinding);
-        OperationSelector opSec = getOperationSelector(jmsBinding);
+        JMSResourceFactory jmsResourceFactory;
+        OperationSelector opSec;
+		try {
+			jmsResourceFactory = getJMSResourceFactory(jmsBinding);
+			opSec = getOperationSelector(jmsBinding);
+		} catch (JMSBindingException e) {
+			throw new JMSBindingRuntimeException("Error building JMS Service",e);
+		}
+        
         
         Service service = new JMSService(serviceDefinition.getName(),parent, wireService, jmsBinding, jmsResourceFactory,opSec,interfaze);
         service.setBindingServiceContract(serviceContract);
@@ -78,8 +83,14 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         serviceContract.setDataBinding(OM_DATA_BINDING);
         
         JMSBinding jmsBinding = referenceDefinition.getBinding();
-        JMSResourceFactory jmsResourceFactory = getJMSResourceFactory(jmsBinding);
-        OperationSelector opSec = getOperationSelector(jmsBinding);
+        JMSResourceFactory jmsResourceFactory;
+		OperationSelector opSec;
+		try {
+			jmsResourceFactory = getJMSResourceFactory(jmsBinding);
+			opSec = getOperationSelector(jmsBinding);
+		} catch (JMSBindingException e) {
+			throw new JMSBindingRuntimeException("Error building JMS reference",e);
+		}
         
         Reference reference = new JMSReference(name,parent,wireService, jmsBinding, jmsResourceFactory,opSec,interfaze);
         reference.setBindingServiceContract(serviceContract);
@@ -87,7 +98,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 
     }
 
-    private JMSResourceFactory getJMSResourceFactory(JMSBinding jmsBinding) {
+    private JMSResourceFactory getJMSResourceFactory(JMSBinding jmsBinding) throws JMSBindingException {
     	String className = jmsBinding.getJmsResourceFactoryName();   
     	if (className != null && !className.equals("")){
 			try {
@@ -95,21 +106,20 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 				Constructor constructor = factoryClass.getDeclaredConstructor(new Class[]{JMSBinding.class});
 				return (JMSResourceFactory) constructor.newInstance(jmsBinding);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			} catch (SecurityException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
 			}
-			return new SimpleJMSResourceFactory(jmsBinding);
     	}else{
     		return new SimpleJMSResourceFactory(jmsBinding);
     	}	
@@ -117,7 +127,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 	}
     
 
-	private OperationSelector getOperationSelector(JMSBinding jmsBinding) {
+	private OperationSelector getOperationSelector(JMSBinding jmsBinding) throws JMSBindingException {
 		String className = jmsBinding.getOperationSelectorName();    	
 		
 		if (className != null && !className.equals("")){
@@ -126,21 +136,20 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 				Constructor constructor = factoryClass.getDeclaredConstructor(new Class[]{JMSBinding.class});
 				return (OperationSelector) constructor.newInstance(jmsBinding);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			} catch (SecurityException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+				throw new JMSBindingException("Error loading the OperationSelector",e);
 			}
-			return new DefaultOperationSelector(jmsBinding);
 		}else{
 			return new DefaultOperationSelector(jmsBinding);
 		}

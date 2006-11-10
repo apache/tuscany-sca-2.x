@@ -56,7 +56,6 @@ public class JMSBindingTestCase extends SCATestCase{
 		try {
 			test.setUp();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		test.testJMSBinding();

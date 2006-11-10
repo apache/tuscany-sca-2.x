@@ -27,7 +27,6 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.spi.model.Operation;
@@ -39,15 +38,12 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 public class JMSProxy implements MessageListener{
 	
 	protected Method operationMethod;
-    private JMSBinding jmsBinding;
-    private Context context;
-	private JMSResourceFactory jmsResourceFactory; 
+    private JMSResourceFactory jmsResourceFactory; 
 	private OperationSelector operationSelector;
 	private InboundWire inboundWire;;
     
-	public JMSProxy(InboundWire inboundWire,JMSResourceFactory jmsResourceFactory, JMSBinding jmsBinding,OperationSelector operationSelector) throws NamingException{		
+	public JMSProxy(InboundWire inboundWire,JMSResourceFactory jmsResourceFactory,OperationSelector operationSelector) throws NamingException{		
 		
-		this.jmsBinding = jmsBinding;	
 		this.jmsResourceFactory = jmsResourceFactory;
 		this.operationSelector = operationSelector;
 		this.inboundWire = inboundWire;
@@ -55,32 +51,37 @@ public class JMSProxy implements MessageListener{
 
 	public void onMessage(Message msg){
 		
-		String operationName = operationSelector.getOperationName(msg);
-		Operation op = (Operation) inboundWire.getServiceContract().getOperations().get(operationName);
 		
-        try {            
-		        	
+        try{        
+			        	
+			String operationName = operationSelector.getOperationName(msg);
+			Operation op = (Operation) inboundWire.getServiceContract().getOperations().get(operationName);
+			
 		    InvocationChain chain = inboundWire.getInvocationChains().get(op);
-	        Interceptor headInterceptor = chain.getHeadInterceptor();		    
+		    Interceptor headInterceptor = chain.getHeadInterceptor();		    
 		    
-	        org.apache.tuscany.spi.wire.Message tuscanyMsg = new MessageImpl();
-	        tuscanyMsg.setBody(new Object[]{((TextMessage)msg).getText()});
-	        tuscanyMsg.setTargetInvoker(chain.getTargetInvoker());
-	        org.apache.tuscany.spi.wire.Message tuscanyResMsg = null;
-	        
-	        // again over here I expect the data binding interecptors to convert the 
-	        // XML string into objects
-	        if (headInterceptor != null){
-	        	tuscanyResMsg = headInterceptor.invoke(tuscanyMsg);
-	        }
+		    org.apache.tuscany.spi.wire.Message tuscanyMsg = new MessageImpl();
+		    tuscanyMsg.setBody(new Object[]{((TextMessage)msg).getText()});
+		    tuscanyMsg.setTargetInvoker(chain.getTargetInvoker());
+		    org.apache.tuscany.spi.wire.Message tuscanyResMsg = null;
+		    
+		    // again over here I expect the data binding interecptors to convert the 
+		    // XML string into objects
+		    if (headInterceptor != null){
+		    	tuscanyResMsg = headInterceptor.invoke(tuscanyMsg);
+		    }
 		    	        
 		    // if result is null then the method can be assumed as oneway
 		    if (tuscanyResMsg != null && tuscanyResMsg.getBody() != null){
 		    	sendReply(msg,operationName, (String)tuscanyResMsg.getBody());
 		    }
-		} catch (Exception e) {
-			// need to do proper error handling
-			e.printStackTrace();
+		    
+		} catch (JMSBindingException e) {
+			throw new JMSBindingRuntimeException(e);
+		} catch (JMSException e) {
+			throw new JMSBindingRuntimeException(e);
+		} catch (NamingException e) {
+			throw new JMSBindingRuntimeException(e);
 		}
 	}
 
