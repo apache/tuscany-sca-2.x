@@ -66,7 +66,7 @@ public class JMSBinding extends Binding {
 		this.connectionFactoryName = connectionFactoryName;
 		this.activationSpecName = activationSpecName;
 		this.initialContextFactoryName = initialContextFactoryName;
-		jNDIProviderURL = providerURL;
+		this.jNDIProviderURL = providerURL;
 		this.deliveryMode = deliveryMode;
 		this.timeToLive = timeToLive;
 		this.priority = priority;

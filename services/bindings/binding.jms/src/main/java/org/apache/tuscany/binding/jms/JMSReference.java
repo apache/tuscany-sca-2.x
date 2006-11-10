@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.binding.jms;
 
-import javax.naming.NamingException;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -52,10 +50,6 @@ public class JMSReference<T> extends ReferenceExtension {
 	}
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-		try {
-			return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(),operationSelector);
-		} catch (NamingException e) {
-			throw new RuntimeException("Unable to create JMS resources for the invocation",e);
-		}
+    	return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(),operationSelector);
     }
 }

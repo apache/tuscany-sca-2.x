@@ -30,20 +30,21 @@ public class DefaultOperationSelector implements OperationSelector{
 		this.jmsBinding = jmsBinding;
 	}
 
-	public String getOperationName(Message message) {
+	public String getOperationName(Message message) throws JMSBindingException {
 		try {
 			return message.getStringProperty(getPropertyName());
 		} catch (JMSException e) {
-			e.printStackTrace();
-			return null;
+			throw new JMSBindingException(
+					"Error retriving operation name from message", e);
 		}
 	}
 
-	public void setOperationName(String operationName,Message message) {
+	public void setOperationName(String operationName,Message message) throws JMSBindingException {
 		try {
 			message.setStringProperty(getPropertyName(),operationName);
 		} catch (JMSException e) {
-			e.printStackTrace();
+			throw new JMSBindingException(
+					"Error setting the operation name as a message header", e);
 		}		
 	}
 
