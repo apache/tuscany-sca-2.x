@@ -20,6 +20,7 @@ package org.apache.tuscany.binding.jms;
 
 import org.activemq.broker.BrokerContainer;
 import org.activemq.broker.impl.BrokerContainerImpl;
+import org.activemq.store.vm.VMPersistenceAdapter;
 import org.apache.tuscany.test.SCATestCase;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
@@ -65,6 +66,7 @@ public class JMSBindingTestCase extends SCATestCase{
 		broker = new BrokerContainerImpl("JMS Binding Test");
         // configure the broker
 		broker.addConnector("tcp://localhost:61616");
+		broker.setPersistenceAdapter(new VMPersistenceAdapter());
 		broker.start();
 	}
 }
