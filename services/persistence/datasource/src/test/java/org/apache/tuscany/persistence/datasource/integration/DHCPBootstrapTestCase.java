@@ -18,29 +18,30 @@
  */
 package org.apache.tuscany.persistence.datasource.integration;
 
+import java.sql.Connection;
 import java.net.URL;
 import javax.sql.DataSource;
 
-import org.apache.tuscany.persistence.datasource.integration.mock.Provider;
 import org.apache.tuscany.test.SCATestCase;
 
 /**
- * Verifies bootstrapping of a datasource implementation as a system service in an application composite
+ * Verifies bootstrapping of a datasource implementation using Commons DBCP and HSQLDB
  *
  * @version $Rev$ $Date$
  */
-public class BootstrapTestCase extends SCATestCase {
+public class DHCPBootstrapTestCase extends SCATestCase {
 
-    public void testBoot() {
+    public void testBasicConnection() throws Exception {
         DataSource ds = (DataSource) component.getSystemChild("TestDS").getServiceInstance();
         assertNotNull(ds);
-        assertEquals("value", ((Provider) ds).getTest());
+        Connection conn = ds.getConnection();
+        conn.createStatement().execute("CREATE TABLE foo (bar char(20));");
     }
 
     protected void setUp() throws Exception {
         URL url = getClass().getResource("/META-INF/sca/dataSource.scdl");
         addExtension("DataSourceExtension", url);
-        setApplicationSCDL(getClass().getResource("/META-INF/sca/application.scdl"));
+        setApplicationSCDL(getClass().getResource("/META-INF/sca/dbcp.scdl"));
         super.setUp();
     }
 
