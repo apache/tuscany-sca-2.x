@@ -98,8 +98,7 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
                         throw new AmbiguousPropertyException(propName);
                     }
                     JavaMappedProperty<Type> property =
-                        new JavaMappedProperty<Type>(propName, info.getQName(),
-                            type);  //SimpleTypeMapperExtension.XSD_STRING
+                        new JavaMappedProperty<Type>(propName, info.getQName(), type); 
                     property.setOverride(OverrideOptions.MAY);
                     property.setMember(method);
                     componentType.add(property);

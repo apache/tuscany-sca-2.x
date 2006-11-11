@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.apache.tuscany.sca.services.persistence</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-incubator-M2-SNAPSHOT</version>
+        <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>persistence-datasource</artifactId>
@@ -51,5 +51,17 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
         </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+        </dependency>
+
     </dependencies>
 </project>
