@@ -87,6 +87,7 @@ public class WorkContextImpl implements WorkContext {
         map.put(CORRELATION_ID, correlationId);
     }
 
+    @SuppressWarnings("unchecked")
     public LinkedList<Object> getCurrentCallbackRoutingChain() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {

@@ -62,6 +62,7 @@ public class BootstrapDeployerTestCase extends TestCase {
     private ComponentDefinition<SystemCompositeImplementation> componentDefinition;
     private SystemCompositeImplementation implementation;
 
+    @SuppressWarnings("unchecked")
     public void testBoot1Load() throws LoaderException {
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");

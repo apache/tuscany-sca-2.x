@@ -52,6 +52,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
     private CompositeComponent parent;
     private ScopeRegistry registry;
 
+    @SuppressWarnings("unchecked")
     public void testPropertyHandling() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setScopeRegistry(registry);

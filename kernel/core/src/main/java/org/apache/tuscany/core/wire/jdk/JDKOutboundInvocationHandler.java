@@ -118,7 +118,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
     }
 
     protected Object getFromAddress() {
-        return (contractHasCallback ? fromAddress : null);
+        return contractHasCallback ? fromAddress : null;
     }
 
     /**

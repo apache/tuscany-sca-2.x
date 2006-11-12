@@ -35,6 +35,7 @@ import org.easymock.EasyMock;
  */
 public class JavaComponentBuilderResourceTestCase extends TestCase {
 
+    @SuppressWarnings("unchecked")
     public void testResourceInjection() throws Exception {
         ScopeContainer container = EasyMock.createNiceMock(ScopeContainer.class);
         ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);

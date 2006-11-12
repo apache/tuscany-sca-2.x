@@ -30,9 +30,12 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -54,7 +57,8 @@ public final class MockComponentFactory {
     public static ComponentDefinition<SystemImplementation> createSourceWithTargetReference()
         throws NoSuchMethodException {
         SystemImplementation impl = new SystemImplementation();
-        PojoComponentType componentType = new PojoComponentType();
+        PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
+            new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         componentType.setImplementationScope(Scope.MODULE);
         componentType
             .setConstructorDefinition(
@@ -93,7 +97,8 @@ public final class MockComponentFactory {
      */
     public static ComponentDefinition<SystemImplementation> createSourceWithTargetAutowire() {
         SystemImplementation impl = new SystemImplementation();
-        PojoComponentType componentType = new PojoComponentType();
+        PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
+            new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         componentType.setImplementationScope(Scope.MODULE);
         JavaMappedReference reference;
         try {
