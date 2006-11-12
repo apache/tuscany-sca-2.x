@@ -20,15 +20,16 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.easymock.EasyMock;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * 
@@ -36,17 +37,17 @@ import junit.framework.TestCase;
 public class CompositeReferenceTestCase extends TestCase {
 
     public void testCreateTargetInvoker() throws Exception {
-        
+
         MyServiceContract serviceContract = new MyServiceContract();
         CompositeReference compositeReference = new CompositeReference("testCompositeReferemce",
-                                                                       null,
-                                                                       null,
-                                                                       serviceContract);
+            null,
+            null,
+            serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
         EasyMock.replay(chain);
-        HashMap<Operation<?>,OutboundInvocationChain> chains = new HashMap<Operation<?>,OutboundInvocationChain>();
-        chains.put(operation,chain);
+        Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
+        chains.put(operation, chain);
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
         EasyMock.expect(wire.getContainer()).andReturn(null);
@@ -56,20 +57,20 @@ public class CompositeReferenceTestCase extends TestCase {
         TargetInvoker targetInvoker = compositeReference.createTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);
     }
-    
+
     public void testCreateCallbackTargetInvoker() throws Exception {
-        
+
         MyServiceContract serviceContract = new MyServiceContract();
         CompositeReference compositeReference = new CompositeReference("testCompositeReferemce",
-                                                                       null,
-                                                                       null,
-                                                                       serviceContract);
+            null,
+            null,
+            serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
         TargetInvoker targetInvoker = compositeReference.createCallbackTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);
     }
-    
+
     class MyServiceContract extends ServiceContract {
-        
+
     }
 }

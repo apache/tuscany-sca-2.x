@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 
@@ -46,13 +45,13 @@ public class DataBindingInteceptor implements Interceptor {
     private Mediator mediator;
 
     public DataBindingInteceptor(RuntimeWire sourceWire, Operation<?> sourceOperation, RuntimeWire targetWire,
-            Operation<?> targetOperation) {
+                                 Operation<?> targetOperation) {
         super();
         // this.sourceWire = sourceWire;
         this.sourceOperation = sourceOperation;
         // this.targetWire = targetWire;
         this.targetOperation = targetOperation;
-        this.compositeComponent = (CompositeComponent) sourceWire.getContainer().getParent();
+        this.compositeComponent = sourceWire.getContainer().getParent();
     }
 
     /**
@@ -78,14 +77,14 @@ public class DataBindingInteceptor implements Interceptor {
         } else if (result != null) {
             // FIXME: Should we fix the Operation model so that getOutputType returns DataType<DataType<T>>?
             DataType<DataType> targetType =
-                    new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
-            
+                new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
+
             targetType.setMetadata(Operation.class.getName(), targetOperation.getOutputType().getMetadata(
-                    Operation.class.getName()));
+                Operation.class.getName()));
             DataType<DataType> sourceType =
-                    new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
+                new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
             sourceType.setMetadata(Operation.class.getName(), sourceOperation.getOutputType().getMetadata(
-                    Operation.class.getName()));
+                Operation.class.getName()));
 
             result = transform(result, targetType, sourceType);
             resultMsg.setBody(result);

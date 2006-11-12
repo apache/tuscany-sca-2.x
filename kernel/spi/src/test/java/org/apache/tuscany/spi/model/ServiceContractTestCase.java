@@ -29,6 +29,7 @@ import junit.framework.TestCase;
  */
 public class ServiceContractTestCase extends TestCase {
 
+    @SuppressWarnings("unchecked")
     public void testAddOperation() throws Exception {
         ServiceContract<Type> contract = new TestContract();
         Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null);
