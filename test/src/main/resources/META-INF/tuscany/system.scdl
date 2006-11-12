@@ -82,6 +82,9 @@
     <component name="scope.stateless">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>
     </component>
+    <component name="scope.request">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.RequestScopeObjectFactory"/>
+    </component>
 
     <!-- include loader configuration -->
     <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
