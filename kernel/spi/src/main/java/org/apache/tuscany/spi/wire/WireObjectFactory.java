@@ -20,8 +20,6 @@ package org.apache.tuscany.spi.wire;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.wire.RuntimeWire;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Uses a wire to return an object instance

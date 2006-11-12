@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.wire.RuntimeWire;
-import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.wire.WireObjectFactory;
-
 import junit.framework.TestCase;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
