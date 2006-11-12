@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -35,6 +37,7 @@ import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -51,6 +54,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundAutowire
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.injection.ResourceObjectFactory;
 
 /**
  * Produces system atomic components from a component definition
@@ -58,15 +62,21 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  * @version $$Rev$$ $$Date$$
  */
 public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImplementation> {
+    private ResourceHost host;
 
     protected Class<SystemImplementation> getImplementationType() {
         return SystemImplementation.class;
     }
 
+    @Autowire
+    public void setHost(ResourceHost host) {
+        this.host = host;
+    }
+
     @SuppressWarnings("unchecked")
     public AtomicComponent build(CompositeComponent parent,
-                                    ComponentDefinition<SystemImplementation> definition,
-                                    DeploymentContext deploymentContext) throws BuilderConfigException {
+                                 ComponentDefinition<SystemImplementation> definition,
+                                 DeploymentContext deploymentContext) throws BuilderConfigException {
         PojoComponentType<ServiceDefinition, JavaMappedReference, JavaMappedProperty<?>> componentType =
             definition.getImplementation().getComponentType();
 
@@ -101,6 +111,15 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
                 configuration.addReferenceSite(reference.getName(), member);
             }
         }
+
+        for (Resource resource : componentType.getResources().values()) {
+            Member member = resource.getMember();
+            if (member != null) {
+                // could be null if the resource is mapped to a constructor
+                configuration.addResourceSite(resource.getName(), member);
+            }
+        }
+
         // setup constructor injection
         ConstructorDefinition<?> ctorDef = componentType.getConstructorDefinition();
         Constructor<?> constr = ctorDef.getConstructor();
@@ -130,6 +149,24 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
                 component.addOutboundWire(wire);
             }
         }
+
+        // handle resources
+        for (Resource resource : componentType.getResources().values()) {
+            String name = resource.getName();
+            boolean optional = resource.isOptional();
+            Class<Object> type = (Class<Object>) resource.getType();
+            ResourceObjectFactory<Object> factory;
+            String mappedName = resource.getMappedName();
+            if (mappedName == null) {
+                // by type
+                factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+            } else {
+                factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+            }
+            component.addResourceFactory(name, factory);
+
+        }
+
         return component;
     }
 
