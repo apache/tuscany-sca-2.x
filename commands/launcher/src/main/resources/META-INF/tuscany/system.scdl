@@ -83,6 +83,9 @@
     <component name="scope.stateless">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>
     </component>
+    <component name="scope.request">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.RequestScopeObjectFactory"/>
+    </component>
 
     <component name="scope.conversational">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeObjectFactory"/>
