@@ -53,6 +53,10 @@ class PersistenceUnitScanner {
     PersistenceUnitInfo getPersistenceUnitInfo(String unitName, ClassLoader classLoader) {
 
         synchronized (persistenceUnitInfos) {
+            
+            if(persistenceUnitInfos.containsKey(unitName)) {
+                return persistenceUnitInfos.get(unitName);
+            }
 
             try {
 
