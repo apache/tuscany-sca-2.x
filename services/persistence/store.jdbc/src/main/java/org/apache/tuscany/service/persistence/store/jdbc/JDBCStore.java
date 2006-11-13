@@ -328,7 +328,7 @@ public class JDBCStore implements Store {
     }
 
     public void forcedUpdateRecord(UUID id, Object object) throws StoreWriteException {
-
+        throw new UnsupportedOperationException();
     }
 
     public Object readRecord(UUID id) throws StoreReadException {

@@ -135,6 +135,20 @@ public class JDBCStoreTestCase extends TestCase {
         assertEquals("test2", foo2.data);
     }
 
+    public void testBatchAppendUpdate() throws Exception {
+        store.setBatchSize(3);
+        store.init();
+        Foo foo = new Foo("test");
+        UUID id = UUID.randomUUID();
+        store.appendRecord(id, foo, NEVER);
+        foo.data = "test2";
+        store.updateRecord(id, foo);
+        // create a second record to force a batch write
+        store.appendRecord(UUID.randomUUID(), new Foo("test3"), NEVER);
+        Foo foo2 = (Foo) store.readRecord(id);
+        assertEquals("test2", foo2.data);
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         ds = TestUtils.createTables();
@@ -142,6 +156,7 @@ public class JDBCStoreTestCase extends TestCase {
         store.setWriteBehind(true);
         store.setBatchSize(0);
     }
+
 
     protected void tearDown() throws Exception {
         super.tearDown();
