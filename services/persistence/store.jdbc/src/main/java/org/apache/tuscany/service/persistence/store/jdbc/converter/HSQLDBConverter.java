@@ -28,10 +28,6 @@ import java.util.UUID;
 
 import org.apache.tuscany.service.persistence.store.StoreReadException;
 import org.apache.tuscany.service.persistence.store.StoreWriteException;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.DATA;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.EXPIRATION;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.LEAST_SIGNIFICANT_BITS;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.MOST_SIGNIFICANT_BITS;
 
 /**
  * Performs writing and reading operations to HSQLDB
@@ -55,7 +51,9 @@ public class HSQLDBConverter extends AbstractConverter {
 
     public void update(PreparedStatement stmt, UUID id, Serializable object) throws StoreWriteException {
         try {
-            stmt.setBytes(DATA, serialize(object));
+            stmt.setBytes(OBJECT_UPDATE, serialize(object));
+            stmt.setLong(MOST_SIGNIFICANT_BITS_UPDATE, id.getMostSignificantBits());
+            stmt.setLong(LEAST_SIGNIFICANT_BITS_UPDATE, id.getLeastSignificantBits());
         } catch (SQLException e) {
             throw new StoreWriteException(e);
         } catch (IOException e) {

@@ -27,11 +27,9 @@ import javax.sql.DataSource;
 import junit.framework.TestCase;
 import static org.apache.tuscany.service.persistence.store.Store.NEVER;
 import org.apache.tuscany.service.persistence.store.StoreMonitor;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.EXPIRATION;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.LEAST_SIGNIFICANT_BITS;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.MOST_SIGNIFICANT_BITS;
 import static org.apache.tuscany.service.persistence.store.jdbc.TestUtils.SELECT_SQL;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
+import org.apache.tuscany.service.persistence.store.jdbc.converter.AbstractConverter;
 import org.easymock.EasyMock;
 
 /**
@@ -43,7 +41,7 @@ public class JDBCStoreTestCase extends TestCase {
     private DataSource ds;
     private JDBCStore store;
 
-    public void testWriteMetaData() throws Exception {
+    public void testAppendMetaData() throws Exception {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
@@ -51,12 +49,12 @@ public class JDBCStoreTestCase extends TestCase {
         Statement stmt = ds.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(SELECT_SQL);
         rs.next();
-        assertEquals(id.getMostSignificantBits(), rs.getLong(MOST_SIGNIFICANT_BITS));
-        assertEquals(id.getLeastSignificantBits(), rs.getLong(LEAST_SIGNIFICANT_BITS));
-        assertEquals(NEVER, rs.getLong(EXPIRATION));
+        assertEquals(id.getMostSignificantBits(), rs.getLong(AbstractConverter.MOST_SIGNIFICANT_BITS));
+        assertEquals(id.getLeastSignificantBits(), rs.getLong(AbstractConverter.LEAST_SIGNIFICANT_BITS));
+        assertEquals(NEVER, rs.getLong(AbstractConverter.EXPIRATION));
     }
 
-    public void testWriteRead() throws Exception {
+    public void testAppendRead() throws Exception {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
@@ -65,13 +63,14 @@ public class JDBCStoreTestCase extends TestCase {
         assertEquals("test", foo2.data);
     }
 
+
     public void testNotFound() throws Exception {
         store.init();
         UUID id = UUID.randomUUID();
         assertNull(store.readRecord(id));
     }
 
-    public void testBatchWrite() throws Exception {
+    public void testBatchAppend() throws Exception {
         store.setBatchSize(2);
         store.init();
         Foo foo = new Foo("test");
@@ -111,6 +110,29 @@ public class JDBCStoreTestCase extends TestCase {
         store.appendRecord(id, foo, System.currentTimeMillis() + 20);
         Thread.sleep(100);
         assertNull(store.readRecord(id));
+    }
+
+    public void testUpdateRead() throws Exception {
+        store.init();
+        Foo foo = new Foo("test");
+        UUID id = UUID.randomUUID();
+        store.appendRecord(id, foo, NEVER);
+        foo.data = "test2";
+        store.updateRecord(id, foo);
+        Foo foo2 = (Foo) store.readRecord(id);
+        assertEquals("test2", foo2.data);
+    }
+
+    public void testCacheUpdateRead() throws Exception {
+        store.setBatchSize(10);
+        store.init();
+        Foo foo = new Foo("test");
+        UUID id = UUID.randomUUID();
+        store.appendRecord(id, foo, NEVER);
+        foo.data = "test2";
+        store.updateRecord(id, foo);
+        Foo foo2 = (Foo) store.readRecord(id);
+        assertEquals("test2", foo2.data);
     }
 
     protected void setUp() throws Exception {

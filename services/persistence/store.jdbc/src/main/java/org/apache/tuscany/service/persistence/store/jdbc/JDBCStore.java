@@ -54,11 +54,6 @@ import org.apache.tuscany.service.persistence.store.StoreWriteException;
  */
 public class JDBCStore implements Store {
 
-    public static final int LEAST_SIGNIFICANT_BITS = 1;
-    public static final int MOST_SIGNIFICANT_BITS = 2;
-    public static final int EXPIRATION = 3;
-    public static final int DATA = 4;
-
     private DataSource dataSource;
     private StoreMonitor monitor;
     private Converter converter;
