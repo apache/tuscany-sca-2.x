@@ -33,10 +33,6 @@ import java.util.UUID;
 
 import org.apache.tuscany.service.persistence.store.StoreReadException;
 import org.apache.tuscany.service.persistence.store.StoreWriteException;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.DATA;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.EXPIRATION;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.LEAST_SIGNIFICANT_BITS;
-import static org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.MOST_SIGNIFICANT_BITS;
 
 /**
  * Performs writing and reading operations to a JDBC driver/database combination that supports Blobs

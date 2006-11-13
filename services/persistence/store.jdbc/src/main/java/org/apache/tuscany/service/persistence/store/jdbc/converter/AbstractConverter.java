@@ -18,12 +18,11 @@
  */
 package org.apache.tuscany.service.persistence.store.jdbc.converter;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.ObjectInputStream;
-import java.io.ByteArrayInputStream;
 
 import org.apache.tuscany.service.persistence.store.jdbc.Converter;
 import org.apache.tuscany.service.persistence.store.jdbc.TCCLObjectInputStream;
@@ -34,6 +33,14 @@ import org.apache.tuscany.service.persistence.store.jdbc.TCCLObjectInputStream;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractConverter implements Converter {
+    public static final int DATA = 4;
+    public static final int MOST_SIGNIFICANT_BITS = 1;
+    public static final int LEAST_SIGNIFICANT_BITS = 2;
+    public static final int EXPIRATION = 3;
+    public static final int OBJECT_UPDATE = 1;
+    public static final int MOST_SIGNIFICANT_BITS_UPDATE = 2;
+    public static final int LEAST_SIGNIFICANT_BITS_UPDATE = 3;
+
     protected String findSql = "SELECT * FROM CONVERSATION_STATE WHERE ID_1 = ? AND ID_2 = ?";
     protected String insertSql = "INSERT INTO CONVERSATION_STATE (ID_1, ID_2, EXPIRATION, OBJECT) VALUES (?, ?, ?, ?)";
     protected String updateSql = "UPDATE CONVERSATION_STATE SET OBJECT = ? WHERE ID_1 = ? AND ID_2 = ?";
