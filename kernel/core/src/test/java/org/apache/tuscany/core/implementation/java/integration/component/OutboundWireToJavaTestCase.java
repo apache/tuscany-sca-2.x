@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -211,6 +212,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         throws InvalidServiceContractException {
         OutboundWire wire = new OutboundWireImpl();
         JavaServiceContract contract = new JavaServiceContract(interfaze);
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
         wire.setTargetName(targetName);
         wire.addInvocationChains(createInvocationChains(interfaze));

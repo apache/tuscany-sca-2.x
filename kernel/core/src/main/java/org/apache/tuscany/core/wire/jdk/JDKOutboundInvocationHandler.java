@@ -23,8 +23,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
+
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
+
+import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -52,8 +57,15 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
     private Map<Method, ChainHolder> chains;
     private Object fromAddress;
     private boolean contractHasCallback;
+    private boolean contractIsConversational;
+    
+    private WorkContext workContext;
 
-    public JDKOutboundInvocationHandler(OutboundWire wire)
+    public JDKOutboundInvocationHandler(OutboundWire wire) {
+        this(wire, null);
+    }
+    
+    public JDKOutboundInvocationHandler(OutboundWire wire, WorkContext workContext)
         throws NoMethodForOperationException {
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
@@ -69,6 +81,10 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             }
             this.chains.put(method, new ChainHolder(entry.getValue()));
         }
+        
+        this.workContext = workContext;
+        this.contractIsConversational =
+            wire.getServiceContract().getInteractionScope().equals(InteractionScope.CONVERSATIONAL);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -110,6 +126,15 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
+        
+        if (contractIsConversational) {
+            assert workContext != null : "Work context cannot be null for conversational invocation";
+            if (workContext.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER) == null) {
+                Object convID = new org.apache.tuscany.spi.wire.MessageId();
+                workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convID);
+            }
+        }
+        
         return invoke(chain, invoker, args, null, null);
     }
 
