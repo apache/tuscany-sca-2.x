@@ -19,6 +19,7 @@
 package org.apache.tuscany.service.persistence.store.memory;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,7 +44,7 @@ import org.apache.tuscany.service.persistence.store.StoreWriteException;
 @Scope("MODULE")
 public class MemoryStore implements Store {
 
-    private Map<Object, Record> store;
+    private Map<UUID, Record> store;
     // TODO integrate with a core threading scheme
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
@@ -51,7 +52,7 @@ public class MemoryStore implements Store {
 
     public MemoryStore(@Monitor StoreMonitor monitor) {
         this.monitor = monitor;
-        this.store = new ConcurrentHashMap<Object, Record>();
+        this.store = new ConcurrentHashMap<UUID, Record>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -79,24 +80,29 @@ public class MemoryStore implements Store {
         monitor.stop("In-memory store stopped");
     }
 
-    public void writeRecord(Object id, Object record) throws StoreWriteException {
-        writeRecord(id, record, NEVER, false);
+    public void appendRecord(UUID id, Object object, long expiration) throws StoreWriteException {
+        store.put(id, new Record(object, expiration));
     }
 
-    public void writeRecord(Object id, Object record, long expiration) throws StoreWriteException {
-        writeRecord(id, record, expiration, false);
+    public void forcedAppendRecord(UUID id, Object object, long expiration) throws StoreWriteException {
+        appendRecord(id, object, expiration);
     }
 
-    public void writeRecord(Object id, Object record, boolean force) throws StoreWriteException {
-        store.put(id, new Record(record, NEVER));
-
+    public void forcedUpdateRecord(UUID id, Object object) throws StoreWriteException {
+        updateRecord(id, object);
     }
 
-    public void writeRecord(Object id, Object record, long expiration, boolean force) throws StoreWriteException {
-        store.put(id, new Record(record, expiration));
+    public void updateRecord(UUID id, Object object) throws StoreWriteException {
+        Record record = store.get(id);
+        if (record == null) {
+            StoreWriteException e = new StoreWriteException("Record not found");
+            e.setIdentifier(id.toString());
+            throw e;
+        }
+        record.data = object;
     }
 
-    public Object readRecord(Object id) {
+    public Object readRecord(UUID id) {
         Record record = store.get(id);
         if (record != null) {
             return record.data;
@@ -111,7 +117,7 @@ public class MemoryStore implements Store {
     public void recover(RecoveryListener listener) {
         monitor.beginRecover();
         listener.onBegin();
-        for (Object id : store.keySet()) {
+        for (UUID id : store.keySet()) {
             monitor.recover(id);
             listener.onRecord(id);
         }
@@ -127,13 +133,21 @@ public class MemoryStore implements Store {
             this.data = data;
             this.expiration = expiration;
         }
+
+        public Object getData() {
+            return data;
+        }
+
+        public long getExpiration() {
+            return expiration;
+        }
     }
 
     private class Reaper implements Runnable {
 
         public void run() {
             long now = System.currentTimeMillis();
-            for (Map.Entry<Object, Record> entry : store.entrySet()) {
+            for (Map.Entry<UUID, Record> entry : store.entrySet()) {
                 final long expiration = entry.getValue().expiration;
                 if (expiration != NEVER && now >= expiration) {
                     store.remove(entry.getKey());

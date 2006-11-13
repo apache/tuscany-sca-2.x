@@ -59,7 +59,7 @@
 <!--<rule ref="rulesets/codesize.xml/ExcessivePublicCount"/>-->
 <!--<rule ref="rulesets/codesize.xml/TooManyFields"/>-->
 
-<rule ref="rulesets/controversial.xml/AssignmentInOperand"/>
+<!--<rule ref="rulesets/controversial.xml/AssignmentInOperand"/>-->
 <!--<rule ref="rulesets/controversial.xml/AtLeastOneConstructor"/>-->
 <!--<rule ref="rulesets/controversial.xml/CallSuperInConstructor"/>-->
 <!--<rule ref="rulesets/controversial.xml/DontImportSun"/>-->

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.service.persistence.store.memory;
 
+import java.util.UUID;
+
 import org.apache.tuscany.service.persistence.store.StoreMonitor;
 
 import junit.framework.TestCase;
@@ -33,9 +35,9 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         store.setReaperInterval(10);
         store.init();
-        Object id = new Object();
+        UUID id = UUID.randomUUID();
         Object value = new Object();
-        store.writeRecord(id, value, 1);
+        store.appendRecord(id, value, 1);
         Thread.sleep(100);
         assertNull(store.readRecord(id));
         store.destroy();
@@ -45,9 +47,9 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         store.setReaperInterval(10);
         store.init();
-        Object id = new Object();
+        UUID id = UUID.randomUUID();
         Object value = new Object();
-        store.writeRecord(id, value, Store.NEVER);
+        store.appendRecord(id, value, Store.NEVER);
         Thread.sleep(100);
         assertNotNull(store.readRecord(id));
         store.destroy();

@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>persistence-store-jdbc</artifactId>
     <packaging>jar</packaging>
-    <name>Apache Tuscany Store</name>
+    <name>Apache Tuscany JDBC Store</name>
     <description>Defines a JDBC-based persistent store.</description>
 
     <dependencies>
@@ -38,12 +38,30 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+          <groupId>org.apache.tuscany.sca.services.persistence</groupId>
+          <artifactId>persistence-datasource</artifactId>
+          <version>${sca.version}</version>
+          <scope>compile</scope>
+      </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

@@ -61,7 +61,7 @@
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>1.8.0.7</version>
-        </dependency>
-
+             <scope>test</scope>
+       </dependency>
     </dependencies>
 </project>

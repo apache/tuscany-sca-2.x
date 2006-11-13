@@ -16,31 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store;
+package org.apache.tuscany.service.persistence.store.jdbc;
 
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
 
 /**
- * Implementations receive callback events during a store recovery operation
+ * Deserializes an object based on the thread context classloader
  *
  * @version $Rev$ $Date$
  */
-public interface RecoveryListener {
+public class TCCLObjectInputStream extends ObjectInputStream {
+    private final ClassLoader classLoader;
 
-    /**
-     * Signals the start of a recovery
-     */
-    void onBegin();
+    public TCCLObjectInputStream(InputStream in) throws IOException, SecurityException {
+        super(in);
+        this.classLoader = Thread.currentThread().getContextClassLoader();
+    }
 
-    /**
-     * Received when a record is recovered
-     *
-     * @param id
-     */
-    void onRecord(UUID id);
-
-    /**
-     * Signals the end of recovery
-     */
-    void onEnd();
+    protected Class resolveClass(ObjectStreamClass streamClass) throws IOException, ClassNotFoundException {
+        return classLoader.loadClass(streamClass.getName());
+    }
 }
