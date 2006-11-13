@@ -16,31 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store;
+package org.apache.tuscany.service.persistence.store.jdbc;
 
-import java.util.UUID;
+import org.apache.tuscany.service.persistence.store.StoreWriteException;
 
 /**
- * Implementations receive callback events during a store recovery operation
- *
  * @version $Rev$ $Date$
  */
-public interface RecoveryListener {
+public class RecordNotFoundException extends StoreWriteException {
+    public RecordNotFoundException() {
+    }
 
-    /**
-     * Signals the start of a recovery
-     */
-    void onBegin();
+    public RecordNotFoundException(String message) {
+        super(message);
+    }
 
-    /**
-     * Received when a record is recovered
-     *
-     * @param id
-     */
-    void onRecord(UUID id);
+    public RecordNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    /**
-     * Signals the end of recovery
-     */
-    void onEnd();
+    public RecordNotFoundException(Throwable cause) {
+        super(cause);
+    }
 }

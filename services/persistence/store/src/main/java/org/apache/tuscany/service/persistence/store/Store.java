@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.service.persistence.store;
 
+import java.util.UUID;
+
 /**
  * Implementations provide a persistent store for runtime data such as conversational state. A persistent store could be
  * implemented in a durable fashion using JDBC or a journaling system, or using a non-durable mechanism such as an
@@ -28,65 +30,50 @@ package org.apache.tuscany.service.persistence.store;
 public interface Store {
 
     /* Used to indicate an entry should not expire */
-    static final long NEVER = -1;
+    final long NEVER = -1;
 
     /**
-     * Writes the given record to the store. Implementations may choose different strategies for writing data such as
-     * write-through or write-behind.
-     *
-     * @param id     the unique id of the record
-     * @param record the data to persist
-     * @throws StoreWriteException if an error occurs during the write operation
-     */
-    void writeRecord(Object id, Object record) throws StoreWriteException;
-
-    /**
-     * Writes the given record to the store. Implementations may choose different strategies for writing data such as
+     * Adds the given record to the store. Implementations may choose different strategies for writing data such as
      * write-through or write-behind.
      *
      * @param id         the unique id of the record
-     * @param record     the data to persist
+     * @param object     the object representing the data to write
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException if an error occurs during the write operation
      */
-    void writeRecord(Object id, Object record, long expiration) throws StoreWriteException;
+    void appendRecord(UUID id, Object object, long expiration) throws StoreWriteException;
 
     /**
-     * Writes the given record to the store. If force is true, the data must be written in synchronously
+     * Adds the given record to the store using synchronous operation
      *
      * @param id     the unique id of the record
-     * @param record the data to persist
-     * @param force  if true writes the data synchronously
-     * @throws StoreWriteException if an error occurs during the write operation
-     */
-    void writeRecord(Object id, Object record, boolean force) throws StoreWriteException;
-
-    /**
-     * Writes the given record to the store. If force is true, the data must be written in synchronously
-     *
-     * @param id         the unique id of the record
-     * @param record     the data to persist
-     * @param force      if true writes the data synchronously
+     * @param object the object representing the data to write
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException if an error occurs during the write operation
      */
-    void writeRecord(Object id, Object record, long expiration, boolean force) throws StoreWriteException;
+    void forcedAppendRecord(UUID id, Object object, long expiration) throws StoreWriteException;
+
+    void updateRecord(UUID id, Object object) throws StoreWriteException;
+
+    void forcedUpdateRecord(UUID id, Object object) throws StoreWriteException;
 
     /**
-     * Returns a record in the store corresponding to the given id
+     * Returns the deserialized object in the store corresponding to the given id
+     *
+     * @return the deserialized object or null if one is not found
      */
-    Object readRecord(Object id);
+    Object readRecord(UUID id) throws StoreReadException;
 
     /**
      * Removes all records from the store
      */
-    void removeRecords();
+    void removeRecords() throws StoreWriteException;
 
     /**
      * Initiates a recovery operation, for example during restart after a crash
      *
      * @param listener the listener to receive recovery callback events
      */
-    void recover(RecoveryListener listener);
+    void recover(RecoveryListener listener) throws StoreReadException;
 
 }

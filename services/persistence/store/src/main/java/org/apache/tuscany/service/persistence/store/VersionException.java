@@ -18,29 +18,24 @@
  */
 package org.apache.tuscany.service.persistence.store;
 
-import java.util.UUID;
-
 /**
- * Implementations receive callback events during a store recovery operation
+ * Denotes an attempt to write a record to the store that is of a lesser version than the persistent version
  *
  * @version $Rev$ $Date$
  */
-public interface RecoveryListener {
+public class VersionException extends StoreWriteException {
+    public VersionException() {
+    }
 
-    /**
-     * Signals the start of a recovery
-     */
-    void onBegin();
+    public VersionException(String message) {
+        super(message);
+    }
 
-    /**
-     * Received when a record is recovered
-     *
-     * @param id
-     */
-    void onRecord(UUID id);
+    public VersionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    /**
-     * Signals the end of recovery
-     */
-    void onEnd();
+    public VersionException(Throwable cause) {
+        super(cause);
+    }
 }

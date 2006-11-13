@@ -16,31 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store;
+package org.apache.tuscany.service.persistence.store.jdbc.integration;
 
-import java.util.UUID;
+import junit.framework.TestCase;
 
 /**
- * Implementations receive callback events during a store recovery operation
- *
  * @version $Rev$ $Date$
  */
-public interface RecoveryListener {
+public class BootstrapTestCase extends TestCase {
 
-    /**
-     * Signals the start of a recovery
-     */
-    void onBegin();
+    public void testBoot() throws Exception {
+        // TODO
+    }
 
-    /**
-     * Received when a record is recovered
-     *
-     * @param id
-     */
-    void onRecord(UUID id);
+    protected void setUp() throws Exception {
+        super.setUp();
 
-    /**
-     * Signals the end of recovery
-     */
-    void onEnd();
+    }
 }
