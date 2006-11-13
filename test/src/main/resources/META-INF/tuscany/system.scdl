@@ -86,6 +86,10 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.RequestScopeObjectFactory"/>
     </component>
 
+    <component name="scope.conversational">
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeObjectFactory"/>
+    </component>
+
     <!-- include loader configuration -->
     <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
 

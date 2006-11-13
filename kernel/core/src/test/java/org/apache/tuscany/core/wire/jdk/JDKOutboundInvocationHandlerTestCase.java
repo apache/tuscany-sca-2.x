@@ -21,6 +21,8 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Proxy;
 
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
 
@@ -33,7 +35,9 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
 
     public void testToString() {
         OutboundWireImpl wire = new OutboundWireImpl();
-        wire.setServiceContract(new JavaServiceContract(Foo.class));
+        ServiceContract contract = new JavaServiceContract(Foo.class);
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        wire.setServiceContract(contract);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
@@ -41,7 +45,9 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
 
     public void testHashCode() {
         OutboundWireImpl wire = new OutboundWireImpl();
-        wire.setServiceContract(new JavaServiceContract(Foo.class));
+        ServiceContract contract = new JavaServiceContract(Foo.class);
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        wire.setServiceContract(contract);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
