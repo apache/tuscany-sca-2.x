@@ -18,8 +18,11 @@
  */
 package org.apache.tuscany.service.persistence.common;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
+import org.apache.tuscany.service.openjpa.EntityManagerObjectFactory;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -35,7 +38,10 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
  *
  */
 public class PersistenceUnitProcessor extends AbstractPropertyProcessor<PersistenceUnit> {
-    
+
+    /** Persistence unit builder */
+    private PersistenceUnitBuilder builder = new DefaultPersistenceUnitBuilder();
+
     /**
      * Injects the implementation processor service.
      * @param service Implementation processor service.
@@ -56,22 +62,32 @@ public class PersistenceUnitProcessor extends AbstractPropertyProcessor<Persiste
      * Initializes the property.
      */
     @SuppressWarnings("unchecked")
-    protected <EntityManagerFactory> void initProperty(JavaMappedProperty<EntityManagerFactory> property,
-            PersistenceUnit annotation,
-                                    CompositeComponent parent,
-                                    DeploymentContext context) {
+    protected <T> void initProperty(JavaMappedProperty<T> property, PersistenceUnit annotation, CompositeComponent parent, DeploymentContext context) {
+
         String unitName = annotation.unitName();
-        final EntityManagerFactory emf = (EntityManagerFactory)parent.getSystemChild(unitName);
-        if(emf == null) {
-            // TODO Create an EMF, also clarify from jmarino what the second argument is.
-            parent.registerJavaObject(unitName, null, emf);
+        EntityManagerFactory emf = (EntityManagerFactory) parent.getSystemChild(unitName);
+
+        if (emf == null) {
+            emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
+            parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
         }
-        property.setDefaultValueFactory(new ObjectFactory<EntityManagerFactory>() {
-            public EntityManagerFactory getInstance() throws ObjectCreationException {
-                return emf;
-            }
-        });
+        ObjectFactory factory = new EmfObjectFactory(emf);
+        property.setDefaultValueFactory(factory);
+
+    }
+
+    private class EmfObjectFactory implements ObjectFactory<EntityManagerFactory> {
+        
+        private EntityManagerFactory emf;
+
+        public EmfObjectFactory(EntityManagerFactory emf) {
+            this.emf = emf;
+        }
+
+        public EntityManagerFactory getInstance() {
+            return emf;
+        }
         
     }
-    
+
 }
