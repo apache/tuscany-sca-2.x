@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.wire;
 
+import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -51,12 +52,19 @@ public class NonBlockingBridgingInterceptorTestCase extends TestCase {
         });
         replay(scheduler);
         WorkContext context = createMock(WorkContext.class);
+        String convID = "convID";
+        EasyMock.expect(context.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER)).andReturn(convID);
+        context.setCurrentMessageId(null);
+        context.setCurrentCorrelationId(null);
+        context.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convID);
+        EasyMock.replay(context);
         Message msg = new MessageImpl();
         Interceptor next = EasyMock.createMock(Interceptor.class);
         EasyMock.expect(next.invoke(EasyMock.eq(msg))).andReturn(msg);
         EasyMock.replay(next);
         Interceptor interceptor = new NonBlockingBridgingInterceptor(scheduler, context, next);
         interceptor.invoke(msg);
+        verify(context);
         verify(next);
     }
 

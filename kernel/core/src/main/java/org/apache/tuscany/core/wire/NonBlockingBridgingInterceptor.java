@@ -25,6 +25,7 @@ import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
+import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -60,12 +61,19 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
 
     public Message invoke(final Message msg) {
         final CompositeContext currentContext = CurrentCompositeContext.getContext();
+        // Retrieve conversation id to transfer to new thread
+        // Notice that we cannot clear the conversation id from the current thread
+        final Object conversationID = workContext.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER);
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
                     workContext.setCurrentMessageId(null);
                     workContext.setCurrentCorrelationId(null);
+                    // if we got a conversation id, transfer it to new thread
+                    if (conversationID != null) {
+                        workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversationID);
+                    }
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
                         BINDER.setContext(currentContext);
