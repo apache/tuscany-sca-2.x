@@ -19,6 +19,7 @@
 package org.apache.tuscany.service.persistence.store.jdbc;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.UUID;
@@ -28,8 +29,8 @@ import junit.framework.TestCase;
 import static org.apache.tuscany.service.persistence.store.Store.NEVER;
 import org.apache.tuscany.service.persistence.store.StoreMonitor;
 import static org.apache.tuscany.service.persistence.store.jdbc.TestUtils.SELECT_SQL;
-import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.AbstractConverter;
+import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
 import org.easymock.EasyMock;
 
 /**
@@ -117,6 +118,12 @@ public class JDBCStoreTestCase extends TestCase {
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
         store.appendRecord(id, foo, NEVER);
+        Connection conn = ds.getConnection();
+        Statement stm = conn.createStatement();
+        stm.execute("SELECT * FROM CONVERSATION_STATE");
+        ResultSet rs = stm.getResultSet();
+        boolean b = rs.next();
+
         foo.data = "test2";
         store.updateRecord(id, foo);
         Foo foo2 = (Foo) store.readRecord(id);
@@ -147,6 +154,23 @@ public class JDBCStoreTestCase extends TestCase {
         store.appendRecord(UUID.randomUUID(), new Foo("test3"), NEVER);
         Foo foo2 = (Foo) store.readRecord(id);
         assertEquals("test2", foo2.data);
+    }
+
+    public void testBatchUpdateUpdate() throws Exception {
+        store.setBatchSize(2);
+        store.init();
+        Foo foo = new Foo("test");
+        UUID id = UUID.randomUUID();
+        store.appendRecord(id, foo, NEVER);
+        UUID id2 = UUID.randomUUID();
+        store.appendRecord(id2, foo, NEVER);
+        foo.data = "test2";
+        store.updateRecord(id, foo);
+        store.updateRecord(id2, foo);
+        Foo foo2 = (Foo) store.readRecord(id);
+        assertEquals("test2", foo2.data);
+        Foo foo3 = (Foo) store.readRecord(id2);
+        assertEquals("test2", foo3.data);
     }
 
     protected void setUp() throws Exception {

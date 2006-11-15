@@ -42,15 +42,29 @@ public final class TestUtils {
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName("org.hsqldb.jdbcDriver");
         ds.setUrl("jdbc:hsqldb:mem:test");
-        Connection conn = ds.getConnection();
-        conn.createStatement().execute(CREATE_TABLE);
-        conn.close();
+        Connection conn = null;
+        try {
+            conn = ds.getConnection();
+            conn.createStatement().execute(CREATE_TABLE);
+            conn.commit();
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
         return ds;
     }
 
     public static void cleanup(DataSource ds) throws SQLException {
-        Connection conn = ds.getConnection();
-        conn.createStatement().execute(DROP_TABLE);
-        conn.close();
+        Connection conn = null;
+        try {
+            conn = ds.getConnection();
+            conn.createStatement().execute(DROP_TABLE);
+            conn.commit();
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
+        }
     }
 }
