@@ -19,7 +19,6 @@
 package org.apache.tuscany.service.persistence.store.jdbc;
 
 import java.io.Serializable;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.UUID;
@@ -118,12 +117,6 @@ public class JDBCStoreTestCase extends TestCase {
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
         store.appendRecord(id, foo, NEVER);
-        Connection conn = ds.getConnection();
-        Statement stm = conn.createStatement();
-        stm.execute("SELECT * FROM CONVERSATION_STATE");
-        ResultSet rs = stm.getResultSet();
-        boolean b = rs.next();
-
         foo.data = "test2";
         store.updateRecord(id, foo);
         Foo foo2 = (Foo) store.readRecord(id);
