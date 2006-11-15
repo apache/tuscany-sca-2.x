@@ -18,10 +18,18 @@
  */
 package org.apache.tuscany.container.spring.webapp;
 
-import java.net.URL;
 import java.io.File;
+import java.net.URL;
+
 import javax.servlet.ServletContext;
 
+import org.apache.tuscany.api.TuscanyRuntimeException;
+import org.apache.tuscany.container.spring.config.SCANamespaceHandlerResolver;
+import org.apache.tuscany.container.spring.impl.SpringScaAdapter;
+import org.apache.tuscany.container.spring.model.SpringComponentType;
+import org.apache.tuscany.runtime.webapp.WebappRuntime;
+import org.apache.tuscany.runtime.webapp.WebappUtil;
+import org.apache.tuscany.runtime.webapp.WebappUtilImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -31,17 +39,6 @@ import org.springframework.sca.ScaAdapterPostProcessor;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
-
-import org.apache.tuscany.api.TuscanyRuntimeException;
-import org.apache.tuscany.container.spring.config.SCANamespaceHandlerResolver;
-import org.apache.tuscany.container.spring.impl.SpringScaAdapter;
-import org.apache.tuscany.container.spring.impl.SpringRuntimeInfo;
-import org.apache.tuscany.container.spring.model.SpringComponentType;
-import org.apache.tuscany.runtime.webapp.TuscanyContextListener;
-import org.apache.tuscany.runtime.webapp.WebappRuntime;
-import org.apache.tuscany.runtime.webapp.WebappUtil;
-import org.apache.tuscany.runtime.webapp.WebappUtilImpl;
-import org.apache.tuscany.core.launcher.LauncherImpl;
 
 /**
  * WebApplicationContext implementation that understands SCA extensions.

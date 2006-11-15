@@ -20,8 +20,6 @@ package org.apache.tuscany.tools.java2wsdl.generate;
 
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
-import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -33,32 +31,21 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.ws.commons.schema.XmlSchema;
-import org.apache.ws.commons.schema.XmlSchemaAny;
-import org.apache.ws.commons.schema.XmlSchemaAnyAttribute;
-import org.apache.ws.commons.schema.XmlSchemaChoice;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.XmlSchemaComplexContent;
-import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
-import org.apache.ws.commons.schema.XmlSchemaContentProcessing;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaForm;
 import org.apache.ws.commons.schema.XmlSchemaGroupBase;
 import org.apache.ws.commons.schema.XmlSchemaImport;
 import org.apache.ws.commons.schema.XmlSchemaInclude;
-import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaSequence;
-import org.apache.ws.commons.schema.XmlSchemaSimpleType;
-import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
-import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 import org.apache.ws.java2wsdl.Java2WSDLUtils;
 import org.codehaus.jam.JClass;
 import org.codehaus.jam.JProperty;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.Property;
 import commonj.sdo.Type;
 import commonj.sdo.helper.XSDHelper;
 
@@ -159,13 +146,14 @@ public class SchemaBuilder implements TuscanyJava2WSDLConstants {
     }
 
     protected QName buildSchema_JavaType(JClass javaType) throws Exception {
-        QName schemaTypeName = typeTable.getComplexSchemaTypeName(javaType);
+        QName schemaTypeName = typeTable.getComplexSchemaTypeName(javaType, this.classLoader);
         if (schemaTypeName == null) {
-            String simpleName = javaType.getSimpleName();
+            String simpleName = javaType.getSimpleName(); 
 
             String packageName = javaType.getContainingPackage().getQualifiedName();
 
-            String targetNameSpace = Java2WSDLUtils.schemaNamespaceFromPackageName(packageName)
+            String targetNameSpace = 
+            	Java2WSDLUtils.schemaNamespaceFromClassName(javaType.getQualifiedName(), this.classLoader)
                                                    .toString();
 
             XmlSchema xmlSchema = getXmlSchema(targetNameSpace);

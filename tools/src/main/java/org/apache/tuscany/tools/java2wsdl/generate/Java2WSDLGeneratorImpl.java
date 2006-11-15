@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.axis2.wsdl.util.CommandLineOption;
-import org.apache.axis2.wsdl.util.CommandLineOptionParser;
-import org.apache.axis2.wsdl.util.Java2WSDLOptionsValidator;
 import org.apache.ws.java2wsdl.Java2WSDL;
+import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOption;
+import org.apache.ws.java2wsdl.utils.Java2WSDLCommandLineOptionParser;
+import org.apache.ws.java2wsdl.utils.Java2WSDLOptionsValidator;
 
 /**
  * This is an implementation of the Java2WSDLGenerator facade. This
@@ -52,7 +52,7 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
 {
 	private List<WSDLGenListener> genPhaseListeners = new Vector<WSDLGenListener>();
 	private GenerationParameters genParams = null;
-	private Map<String, CommandLineOption> commandLineOptions = null;
+	private Map<String, Java2WSDLCommandLineOption> commandLineOptions = null;
 	private TuscanyJava2WSDLBuilder java2WsdlBuilder;
 	private OutputStream outputStream = null;
 	
@@ -78,7 +78,7 @@ public class Java2WSDLGeneratorImpl implements Java2WSDLGenerator, TuscanyJava2W
    	protected boolean validateInputArgs(String[] args) 
 	{
 		boolean isValid = true;
-		CommandLineOptionParser parser = new CommandLineOptionParser(args);
+		Java2WSDLCommandLineOptionParser parser = new Java2WSDLCommandLineOptionParser(args);
 		if (parser.getAllOptions().size() == 0) {
 			Java2WSDL.printUsage();
 			isValid = false;
