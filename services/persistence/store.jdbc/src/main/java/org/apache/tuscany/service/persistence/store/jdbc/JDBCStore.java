@@ -163,7 +163,7 @@ public class JDBCStore implements Store {
 
             int lastOperaton = -1;
             for (Record record : records) {
-                if (now < record.getExpiration()) {
+                if (now < record.getExpiration() || record.getExpiration() == NEVER) {
                     if (record.getOperation() == Record.INSERT) {
                         if (lastOperaton == -1) {
                             insertStmt = conn.prepareStatement(converter.getInsertSql());
@@ -188,10 +188,10 @@ public class JDBCStore implements Store {
             }
             try {
                 if (insertStmt != null) {
-                    insertStmt.execute();
+                    insertStmt.executeBatch();
                 }
                 if (updateStmt != null) {
-                    updateStmt.execute();
+                    updateStmt.executeBatch();
                 }
                 conn.commit();
             } catch (SQLException e) {
@@ -264,7 +264,9 @@ public class JDBCStore implements Store {
                 if (cache.size() < batchSize) {
                     Record record = cache.get(id);
                     if (record == null) {
-                        throw new RecordNotFoundException(id.toString());
+                        record = new Record(id, serializable, Store.NEVER, Record.UPDATE);
+                        cache.put(id, record);
+                        //throw new RecordNotFoundException(id.toString());
                     }
                     // note that we do not change the operation to an update if it is an insert; both become optimized
                     record.setObject(serializable);
@@ -276,10 +278,9 @@ public class JDBCStore implements Store {
             }
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-
             int lastOperaton = -1;
             for (Record record : records) {
-                if (now < record.getExpiration()) {
+                if (now < record.getExpiration() || record.getExpiration() == NEVER) {
                     if (record.getOperation() == Record.INSERT) {
                         if (lastOperaton == -1) {
                             insertStmt = conn.prepareStatement(converter.getInsertSql());
@@ -303,10 +304,10 @@ public class JDBCStore implements Store {
 
             try {
                 if (insertStmt != null) {
-                    insertStmt.execute();
+                    insertStmt.executeBatch();
                 }
                 if (updateStmt != null) {
-                    updateStmt.execute();
+                    updateStmt.executeBatch();
                 }
                 conn.commit();
             } catch (SQLException e) {
