@@ -30,7 +30,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.ws.java2wsdl.Java2WSDLUtils;
 import org.codehaus.jam.JClass;
 
-
 public class TuscanyTypeTable 
 {
     public static final String XML_SCHEMA_URI = "http://www.w3.org/2001/XMLSchema";
@@ -175,10 +174,10 @@ public class TuscanyTypeTable
         return (QName) complexXSDTypes.get(asQualifiedName(sdoURI, sdoTypeName));
     }    
     
-    public QName getComplexSchemaTypeName(JClass javaClass) throws Exception
+    public QName getComplexSchemaTypeName(JClass javaClass, ClassLoader cl) throws Exception 
     {
-        String namespace = 
-            Java2WSDLUtils.schemaNamespaceFromPackageName(javaClass.getContainingPackage().getQualifiedName()).toString();
+        String namespace = Java2WSDLUtils.schemaNamespaceFromClassName(
+        		javaClass.getQualifiedName(), cl).toString();
         return (QName) complexXSDTypes.get(asQualifiedName(namespace, javaClass.getSimpleName()));
     } 
     

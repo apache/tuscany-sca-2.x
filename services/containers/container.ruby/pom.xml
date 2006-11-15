@@ -30,14 +30,6 @@
     <name>Apache Tuscany Ruby Container</name>
     <description>Apache Tuscany Ruby Container</description>
 
-    <repositories>
-       <repository>
-          <id>codehaus-snapshots-repository</id>
-          <name>Codehaus Snapshots Repository</name>
-          <url>http://snapshots.repository.codehaus.org</url>
-       </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
@@ -48,7 +40,7 @@
         <dependency>
            <groupId>org.jruby</groupId>
            <artifactId>jruby</artifactId>
-           <version>0.9.1-SNAPSHOT</version>
+           <version>0.9.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
