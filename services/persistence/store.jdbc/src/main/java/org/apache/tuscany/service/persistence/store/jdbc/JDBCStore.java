@@ -211,42 +211,6 @@ public class JDBCStore implements Store {
         }
     }
 
-    public void forcedAppendRecord(UUID id, Object object, long expiration) throws StoreWriteException {
-        long now = System.currentTimeMillis();
-        if (now >= expiration && expiration != NEVER) {
-            return;
-        }
-        if (!(object instanceof Serializable)) {
-            StoreWriteException e = new StoreWriteException("Type must implement serializable");
-            e.setIdentifier(object.getClass().getName());
-            throw e;
-        }
-        Serializable serializable = (Serializable) object;
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = dataSource.getConnection();
-            conn.setAutoCommit(false);
-            stmt = conn.prepareStatement(converter.getInsertSql());
-            addInsertBatch(stmt, id, serializable, expiration);
-            try {
-                stmt.execute();
-                conn.commit();
-            } catch (SQLException e) {
-                try {
-                    conn.rollback();
-                } catch (SQLException e2) {
-                    monitor.error(e2);
-                }
-                throw new StoreWriteException(e);
-            }
-        } catch (SQLException e) {
-            throw new StoreWriteException(e);
-        } finally {
-            close(stmt, conn);
-        }
-    }
-
     public void updateRecord(UUID id, Object object) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
@@ -326,10 +290,6 @@ public class JDBCStore implements Store {
             close(conn);
         }
 
-    }
-
-    public void forcedUpdateRecord(UUID id, Object object) throws StoreWriteException {
-        throw new UnsupportedOperationException();
     }
 
     public Object readRecord(UUID id) throws StoreReadException {

@@ -84,14 +84,6 @@ public class MemoryStore implements Store {
         store.put(id, new Record(object, expiration));
     }
 
-    public void forcedAppendRecord(UUID id, Object object, long expiration) throws StoreWriteException {
-        appendRecord(id, object, expiration);
-    }
-
-    public void forcedUpdateRecord(UUID id, Object object) throws StoreWriteException {
-        updateRecord(id, object);
-    }
-
     public void updateRecord(UUID id, Object object) throws StoreWriteException {
         Record record = store.get(id);
         if (record == null) {

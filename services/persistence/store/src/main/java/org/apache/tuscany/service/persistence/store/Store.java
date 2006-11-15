@@ -43,19 +43,7 @@ public interface Store {
      */
     void appendRecord(UUID id, Object object, long expiration) throws StoreWriteException;
 
-    /**
-     * Adds the given record to the store using synchronous operation
-     *
-     * @param id     the unique id of the record
-     * @param object the object representing the data to write
-     * @param expiration the time in milliseconds when the entry expires
-     * @throws StoreWriteException if an error occurs during the write operation
-     */
-    void forcedAppendRecord(UUID id, Object object, long expiration) throws StoreWriteException;
-
     void updateRecord(UUID id, Object object) throws StoreWriteException;
-
-    void forcedUpdateRecord(UUID id, Object object) throws StoreWriteException;
 
     /**
      * Returns the deserialized object in the store corresponding to the given id
