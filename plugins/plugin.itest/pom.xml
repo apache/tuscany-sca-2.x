@@ -43,7 +43,7 @@
             <groupId>org.apache.maven.surefire</groupId>
             <artifactId>surefire-junit</artifactId>
             <version>2.0</version>
-            <scope>runtime</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
