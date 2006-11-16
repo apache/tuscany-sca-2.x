@@ -19,11 +19,8 @@
 package org.apache.tuscany.service.persistence.common;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 
-import org.apache.tuscany.service.openjpa.EntityManagerObjectFactory;
-import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
