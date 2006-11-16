@@ -70,13 +70,6 @@ public interface Converter {
     String getDeleteExpiredSql();
 
     /**
-     * Returns the SQL statement to select a record for update, i.e. it holds a database lock
-     *
-     * @return the SQL statement to select for update
-     */
-    String getSelectLockSql();
-
-    /**
      * Writes a new record to the underlying store using batch semantics. That is, the insert will be added as a batch
      * operation to the prepared statment. It is the responsibility of the client (i.e. the prepared statement "owner")
      * to exectute the statement when the batch threshold is reached. Note implementations must assume auto commit is
