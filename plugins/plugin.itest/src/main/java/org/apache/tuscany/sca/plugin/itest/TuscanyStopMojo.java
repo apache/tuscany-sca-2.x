@@ -29,6 +29,6 @@ import org.apache.maven.plugin.MojoFailureException;
  */
 public class TuscanyStopMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
-        System.out.println("Stopping Tuscany!");
+        getLog().info("Stopping Tuscany...");
     }
 }

@@ -21,14 +21,17 @@ package org.apache.tuscany.sca.plugin.itest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.surefire.Surefire;
-import org.apache.maven.surefire.testset.TestSetFailedException;
+import org.apache.maven.surefire.junit.JUnitDirectoryTestSuite;
 import org.apache.maven.surefire.report.BriefFileReporter;
 import org.apache.maven.surefire.report.ReporterException;
+import org.apache.maven.surefire.report.ReporterManager;
+import org.apache.maven.surefire.suite.SurefireTestSuite;
+import org.apache.maven.surefire.testset.TestSetFailedException;
 
 /**
  * @version $Rev$ $Date$
@@ -42,15 +45,17 @@ public class TuscanyITestMojo extends AbstractMojo {
     private File reportsDirectory;
 
     /**
-     * Whether to trim the stack trace in the reports to just the lines within the test, or show the full trace.
-     *
+     * Whether to trim the stack trace in the reports to just the lines within
+     * the test, or show the full trace.
+     * 
      * @parameter expression="${trimStackTrace}" default-value="true"
      */
     private boolean trimStackTrace;
 
     /**
-     * The directory containing generated test classes of the project being tested.
-     *
+     * The directory containing generated test classes of the project being
+     * tested.
+     * 
      * @parameter expression="${project.build.testOutputDirectory}"
      * @required
      */
@@ -67,7 +72,7 @@ public class TuscanyITestMojo extends AbstractMojo {
     private List excludes = new ArrayList();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        System.out.println("Executing tests");
+        getLog().info("Executing tests...");
 
         boolean success = runSurefire();
         if (!success) {
@@ -77,24 +82,49 @@ public class TuscanyITestMojo extends AbstractMojo {
     }
 
     public boolean runSurefire() throws MojoExecutionException {
-        Surefire surefire = new Surefire();
-        ClassLoader surefireClassLoader = surefire.getClass().getClassLoader();
-
-        List reports = new ArrayList();
-        reports.add(new Object[]{BriefFileReporter.class.getName(),
-            new Object[]{reportsDirectory, trimStackTrace}});
-
-        List testSuites = new ArrayList();
-        testSuites.add(new Object[]{"org.apache.maven.surefire.junit.JUnitDirectoryTestSuite",
-            new Object[]{testClassesDirectory, includes, excludes}});
-
         ClassLoader testsClassLoader = TuscanyStartMojo.foo.get();
         try {
-            return surefire.run(reports, testSuites, surefireClassLoader, testsClassLoader);
+            Properties status = new Properties();
+            boolean success = run(testsClassLoader, status);
+            getLog().info("Test results: "+status);
+            return success;
         } catch (ReporterException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         } catch (TestSetFailedException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
     }
+
+    public boolean run(ClassLoader testsClassLoader, Properties status) throws ReporterException,
+        TestSetFailedException {
+        List reports = new ArrayList();
+        reports.add(new BriefFileReporter(reportsDirectory, trimStackTrace));
+        ReporterManager reporterManager = new ReporterManager(reports);
+        reporterManager.initResultsFromProperties(status);
+
+        List suites = new ArrayList();
+
+        int totalTests = 0;
+        SurefireTestSuite suite =
+            new JUnitDirectoryTestSuite(testClassesDirectory, (ArrayList)includes, (ArrayList)excludes);
+        suite.locateTestSets(testsClassLoader);
+
+        int testCount = suite.getNumTests();
+        if (testCount > 0) {
+            suites.add(suite);
+            totalTests += testCount;
+        }
+        reporterManager.runStarting(totalTests);
+
+        if (totalTests == 0) {
+            reporterManager.writeMessage("There are no tests to run.");
+        } else {
+            suite.execute(reporterManager, testsClassLoader);
+        }
+
+        reporterManager.runCompleted();
+        reporterManager.updateResultsProperties(status);
+        return reporterManager.getNumErrors() == 0 && reporterManager.getNumFailures() == 0;
+    }
+
 }

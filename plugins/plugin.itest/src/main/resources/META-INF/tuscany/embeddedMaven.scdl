@@ -70,6 +70,11 @@
         <system:implementation.system class="org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl"/>
     </component>
     
+    <!-- Resource host registry -->
+    <component name="resourceHostRegistry">
+        <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>
+    </component>
+    
     <!-- Default scopes -->
     <component name="scope.module">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory"/>

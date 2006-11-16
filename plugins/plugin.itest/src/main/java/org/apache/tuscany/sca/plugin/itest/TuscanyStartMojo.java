@@ -60,7 +60,7 @@ public class TuscanyStartMojo extends AbstractMojo {
     static ThreadLocal<ClassLoader> foo = new ThreadLocal<ClassLoader>();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        System.out.println("Starting Tuscany!");
+        getLog().info("Starting Tuscany...");
 
         ClassLoader hostClassLoader = getClass().getClassLoader();
         if (systemScdl == null) {
