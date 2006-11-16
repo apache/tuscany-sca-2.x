@@ -44,7 +44,6 @@ public abstract class AbstractConverter implements Converter {
     protected String findSql = "SELECT * FROM CONVERSATION_STATE WHERE ID_1 = ? AND ID_2 = ?";
     protected String insertSql = "INSERT INTO CONVERSATION_STATE (ID_1, ID_2, EXPIRATION, OBJECT) VALUES (?, ?, ?, ?)";
     protected String updateSql = "UPDATE CONVERSATION_STATE SET OBJECT = ? WHERE ID_1 = ? AND ID_2 = ?";
-    protected String selectLockSql = "SELECT * FOR UPDATE FROM CONVERSATION_STATE WHERE ID_1 = ? AND ID_2 = ?";
     protected String deleteSql = "DELETE FROM CONVERSATION_STATE WHERE ID_1 = ? AND ID_2 = ?";
     protected String deleteExpiredSql = "DELETE FROM CONVERSATION_STATE WHERE EXPIRATION <= ?";
 
@@ -66,10 +65,6 @@ public abstract class AbstractConverter implements Converter {
 
     public String getDeleteExpiredSql() {
         return deleteExpiredSql;
-    }
-
-    public String getSelectLockSql() {
-        return selectLockSql;
     }
 
     protected byte[] serialize(Serializable serializable) throws IOException {
