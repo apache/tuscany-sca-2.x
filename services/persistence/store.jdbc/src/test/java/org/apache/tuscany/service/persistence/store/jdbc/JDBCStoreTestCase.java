@@ -45,7 +45,7 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
+        store.appendRecord(null, id, foo, NEVER);
         Statement stmt = ds.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(SELECT_SQL);
         rs.next();
@@ -58,8 +58,8 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
-        Foo foo2 = (Foo) store.readRecord(id);
+        store.appendRecord(null, id, foo, NEVER);
+        Foo foo2 = (Foo) store.readRecord(null, id);
         assertEquals("test", foo2.data);
     }
 
@@ -67,7 +67,7 @@ public class JDBCStoreTestCase extends TestCase {
     public void testNotFound() throws Exception {
         store.init();
         UUID id = UUID.randomUUID();
-        assertNull(store.readRecord(id));
+        assertNull(store.readRecord(null, id));
     }
 
     public void testBatchAppend() throws Exception {
@@ -75,7 +75,7 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
+        store.appendRecord(null, id, foo, NEVER);
         Statement stmt = ds.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(SELECT_SQL);
         assertFalse(rs.next());
@@ -86,8 +86,8 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
-        Foo foo2 = (Foo) store.readRecord(id);
+        store.appendRecord(null, id, foo, NEVER);
+        Foo foo2 = (Foo) store.readRecord(null, id);
         assertEquals("test", foo2.data);
     }
 
@@ -97,9 +97,9 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, System.currentTimeMillis() + 20);
+        store.appendRecord(null, id, foo, System.currentTimeMillis() + 20);
         Thread.sleep(100);
-        assertNull(store.readRecord(id));
+        assertNull(store.readRecord(null, id));
     }
 
     public void testExpirationFromStore() throws Exception {
@@ -107,19 +107,19 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, System.currentTimeMillis() + 20);
+        store.appendRecord(null, id, foo, System.currentTimeMillis() + 20);
         Thread.sleep(100);
-        assertNull(store.readRecord(id));
+        assertNull(store.readRecord(null, id));
     }
 
     public void testUpdateRead() throws Exception {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
+        store.appendRecord(null, id, foo, NEVER);
         foo.data = "test2";
-        store.updateRecord(id, foo);
-        Foo foo2 = (Foo) store.readRecord(id);
+        store.updateRecord(null, id, foo);
+        Foo foo2 = (Foo) store.readRecord(null, id);
         assertEquals("test2", foo2.data);
     }
 
@@ -128,10 +128,10 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
+        store.appendRecord(null, id, foo, NEVER);
         foo.data = "test2";
-        store.updateRecord(id, foo);
-        Foo foo2 = (Foo) store.readRecord(id);
+        store.updateRecord(null, id, foo);
+        Foo foo2 = (Foo) store.readRecord(null, id);
         assertEquals("test2", foo2.data);
     }
 
@@ -140,12 +140,12 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
+        store.appendRecord(null, id, foo, NEVER);
         foo.data = "test2";
-        store.updateRecord(id, foo);
+        store.updateRecord(null, id, foo);
         // create a second record to force a batch write
-        store.appendRecord(UUID.randomUUID(), new Foo("test3"), NEVER);
-        Foo foo2 = (Foo) store.readRecord(id);
+        store.appendRecord(null, UUID.randomUUID(), new Foo("test3"), NEVER);
+        Foo foo2 = (Foo) store.readRecord(null, id);
         assertEquals("test2", foo2.data);
     }
 
@@ -154,15 +154,15 @@ public class JDBCStoreTestCase extends TestCase {
         store.init();
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(id, foo, NEVER);
+        store.appendRecord(null, id, foo, NEVER);
         UUID id2 = UUID.randomUUID();
-        store.appendRecord(id2, foo, NEVER);
+        store.appendRecord(null, id2, foo, NEVER);
         foo.data = "test2";
-        store.updateRecord(id, foo);
-        store.updateRecord(id2, foo);
-        Foo foo2 = (Foo) store.readRecord(id);
+        store.updateRecord(null, id, foo);
+        store.updateRecord(null, id2, foo);
+        Foo foo2 = (Foo) store.readRecord(null, id);
         assertEquals("test2", foo2.data);
-        Foo foo3 = (Foo) store.readRecord(id2);
+        Foo foo3 = (Foo) store.readRecord(null, id2);
         assertEquals("test2", foo3.data);
     }
 
