@@ -92,19 +92,21 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                 case END_ELEMENT:
                     if (SERVICE.equals(reader.getName())) {
                         if (binding != null) {
-                            if (target == null) {
+                            /*if (target == null) {
                                 InvalidReferenceException e = new InvalidReferenceException("No target for service ");
                                 e.setIdentifier(name);
                                 throw e;
-                            }
-                            URI targetURI;
-                            try {
-                                targetURI = new URI(target);
-                            } catch (URISyntaxException e) {
-                                InvalidReferenceException ire = new InvalidReferenceException(target);
-                                ire.setIdentifier(name);
-                                throw ire;
-                            }
+                            }*/
+                        	URI targetURI = null;
+                        	if ( target != null ) {
+	                            try {
+	                                targetURI = new URI(target);
+	                            } catch (URISyntaxException e) {
+	                                InvalidReferenceException ire = new InvalidReferenceException(target);
+	                                ire.setIdentifier(name);
+	                                throw ire;
+	                            }
+                        	} 
 
                             // FIXME need a way to specify "remotable" on a service
                             return new BoundServiceDefinition<Binding>(name,

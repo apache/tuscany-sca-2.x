@@ -231,6 +231,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String text = reader.getElementText();
         String target = text != null ? text.trim() : null;
 
+        
         if (name == null || target == null) {
             InvalidReferenceException le = new InvalidReferenceException();
             le.setIdentifier(target);
