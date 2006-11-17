@@ -45,5 +45,8 @@
     <component name="elementLoader.service">
         <system:implementation.system class="org.apache.tuscany.core.loader.ServiceLoader"/>
     </component>
+    <component name="elementLoader.wire">
+        <system:implementation.system class="org.apache.tuscany.core.loader.WireLoader"/>
+    </component>
 
 </composite>
