@@ -30,6 +30,8 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 
+import org.apache.tuscany.spi.component.SCAObject;
+
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.service.persistence.store.RecoveryListener;
 import org.apache.tuscany.service.persistence.store.Store;
@@ -43,8 +45,7 @@ import org.apache.tuscany.service.persistence.store.StoreWriteException;
  */
 @Scope("MODULE")
 public class MemoryStore implements Store {
-
-    private Map<UUID, Record> store;
+    private Map<SCAObject, Map<UUID, Record>> store;
     // TODO integrate with a core threading scheme
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
@@ -52,7 +53,7 @@ public class MemoryStore implements Store {
 
     public MemoryStore(@Monitor StoreMonitor monitor) {
         this.monitor = monitor;
-        this.store = new ConcurrentHashMap<UUID, Record>();
+        this.store = new ConcurrentHashMap<SCAObject, Map<UUID, Record>>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -80,12 +81,23 @@ public class MemoryStore implements Store {
         monitor.stop("In-memory store stopped");
     }
 
-    public void appendRecord(UUID id, Object object, long expiration) throws StoreWriteException {
-        store.put(id, new Record(object, expiration));
+    public void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+        Map<UUID, Record> map = store.get(owner);
+        if (map == null) {
+            map = new ConcurrentHashMap<UUID, Record>();
+            store.put(owner, map);
+        }
+        map.put(id, new Record(object, expiration));
     }
 
-    public void updateRecord(UUID id, Object object) throws StoreWriteException {
-        Record record = store.get(id);
+    public void updateRecord(SCAObject owner, UUID id, Object object) throws StoreWriteException {
+        Map<UUID, Record> map = store.get(owner);
+        if (map == null) {
+            StoreWriteException e = new StoreWriteException("Record not found");
+            e.setIdentifier(id.toString());
+            throw e;
+        }
+        Record record = map.get(id);
         if (record == null) {
             StoreWriteException e = new StoreWriteException("Record not found");
             e.setIdentifier(id.toString());
@@ -94,8 +106,12 @@ public class MemoryStore implements Store {
         record.data = object;
     }
 
-    public Object readRecord(UUID id) {
-        Record record = store.get(id);
+    public Object readRecord(SCAObject owner, UUID id) {
+        Map<UUID, Record> map = store.get(owner);
+        if (map == null) {
+            return null;
+        }
+        Record record = map.get(id);
         if (record != null) {
             return record.data;
         }
@@ -107,14 +123,15 @@ public class MemoryStore implements Store {
     }
 
     public void recover(RecoveryListener listener) {
-        monitor.beginRecover();
-        listener.onBegin();
-        for (UUID id : store.keySet()) {
-            monitor.recover(id);
-            listener.onRecord(id);
-        }
-        listener.onEnd();
-        monitor.endRecover();
+        throw new UnsupportedOperationException();
+//        monitor.beginRecover();
+//        listener.onBegin();
+//        for (UUID id : store.keySet()) {
+//            monitor.recover(id);
+//            listener.onRecord(id);
+//        }
+//        listener.onEnd();
+//        monitor.endRecover();
     }
 
     private class Record {
@@ -139,10 +156,12 @@ public class MemoryStore implements Store {
 
         public void run() {
             long now = System.currentTimeMillis();
-            for (Map.Entry<UUID, Record> entry : store.entrySet()) {
-                final long expiration = entry.getValue().expiration;
-                if (expiration != NEVER && now >= expiration) {
-                    store.remove(entry.getKey());
+            for (Map<UUID, Record> map : store.values()) {
+                for (Map.Entry<UUID, Record> entry : map.entrySet()) {
+                    final long expiration = entry.getValue().expiration;
+                    if (expiration != NEVER && now >= expiration) {
+                        map.remove(entry.getKey());
+                    }
                 }
             }
         }

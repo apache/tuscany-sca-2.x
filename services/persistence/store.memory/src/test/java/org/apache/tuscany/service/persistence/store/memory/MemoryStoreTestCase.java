@@ -20,10 +20,11 @@ package org.apache.tuscany.service.persistence.store.memory;
 
 import java.util.UUID;
 
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
+import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.service.persistence.store.Store;
+import org.apache.tuscany.service.persistence.store.StoreMonitor;
 import org.easymock.EasyMock;
 
 /**
@@ -35,11 +36,13 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         store.setReaperInterval(10);
         store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
         UUID id = UUID.randomUUID();
         Object value = new Object();
-        store.appendRecord(id, value, 1);
+        store.appendRecord(component, id, value, 1);
         Thread.sleep(100);
-        assertNull(store.readRecord(id));
+        assertNull(store.readRecord(component, id));
         store.destroy();
     }
 
@@ -47,11 +50,13 @@ public class MemoryStoreTestCase extends TestCase {
         MemoryStore store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
         store.setReaperInterval(10);
         store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
         UUID id = UUID.randomUUID();
         Object value = new Object();
-        store.appendRecord(id, value, Store.NEVER);
+        store.appendRecord(component, id, value, Store.NEVER);
         Thread.sleep(100);
-        assertNotNull(store.readRecord(id));
+        assertNotNull(store.readRecord(component, id));
         store.destroy();
     }
 

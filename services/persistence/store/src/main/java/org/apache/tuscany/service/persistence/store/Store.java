@@ -20,6 +20,8 @@ package org.apache.tuscany.service.persistence.store;
 
 import java.util.UUID;
 
+import org.apache.tuscany.spi.component.SCAObject;
+
 /**
  * Implementations provide a persistent store for runtime data such as conversational state. A persistent store could be
  * implemented in a durable fashion using JDBC or a journaling system, or using a non-durable mechanism such as an
@@ -30,27 +32,28 @@ import java.util.UUID;
 public interface Store {
 
     /* Used to indicate an entry should not expire */
-    final long NEVER = -1;
+    long NEVER = -1;
 
     /**
      * Adds the given record to the store. Implementations may choose different strategies for writing data such as
      * write-through or write-behind.
      *
+     * @param owner
      * @param id         the unique id of the record
      * @param object     the object representing the data to write
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException if an error occurs during the write operation
      */
-    void appendRecord(UUID id, Object object, long expiration) throws StoreWriteException;
+    void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
 
-    void updateRecord(UUID id, Object object) throws StoreWriteException;
+    void updateRecord(SCAObject owner, UUID id, Object object) throws StoreWriteException;
 
     /**
      * Returns the deserialized object in the store corresponding to the given id
      *
      * @return the deserialized object or null if one is not found
      */
-    Object readRecord(UUID id) throws StoreReadException;
+    Object readRecord(SCAObject owner, UUID id) throws StoreReadException;
 
     /**
      * Removes all records from the store

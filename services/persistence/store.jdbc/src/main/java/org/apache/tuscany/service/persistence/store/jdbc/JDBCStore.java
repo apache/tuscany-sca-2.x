@@ -37,6 +37,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Resource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.SCAObject;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.service.persistence.store.RecoveryListener;
@@ -133,7 +134,7 @@ public class JDBCStore implements Store {
 
     }
 
-    public void appendRecord(UUID id, Object object, long expiration) throws StoreWriteException {
+    public void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
             e.setIdentifier(object.getClass().getName());
@@ -211,7 +212,7 @@ public class JDBCStore implements Store {
         }
     }
 
-    public void updateRecord(UUID id, Object object) throws StoreWriteException {
+    public void updateRecord(SCAObject owner, UUID id, Object object) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
             e.setIdentifier(object.getClass().getName());
@@ -292,7 +293,7 @@ public class JDBCStore implements Store {
 
     }
 
-    public Object readRecord(UUID id) throws StoreReadException {
+    public Object readRecord(SCAObject owner, UUID id) throws StoreReadException {
         Record record;
         synchronized (cache) {
             record = cache.get(id);
