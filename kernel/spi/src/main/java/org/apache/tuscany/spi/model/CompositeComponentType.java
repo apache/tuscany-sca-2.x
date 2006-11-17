@@ -20,7 +20,9 @@ package org.apache.tuscany.spi.model;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * A specialization of component type for composite components.
@@ -35,6 +37,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
         new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private final Map<String, Include> includes = new HashMap<String, Include>();
+    private final Vector<WireDefinition> wires = new Vector<WireDefinition>();
 
     public String getName() {
         return name;
@@ -100,6 +103,21 @@ public class CompositeComponentType<S extends ServiceDefinition,
         return Collections.unmodifiableMap(view);
     }
 
+    
+    /**
+     * Get all wires including the ones are from included composites
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public List<WireDefinition> getWires() {
+        List<WireDefinition> view =
+                new Vector<WireDefinition>(wires);
+        for (Include i : includes.values()) {
+            view.addAll(i.getIncluded().getWires());
+        }
+        return Collections.unmodifiableList(view);
+    }
+    
     /**
      * Get declared properties in this composite type, included doesn't count
      * @return
@@ -132,10 +150,23 @@ public class CompositeComponentType<S extends ServiceDefinition,
         return components;
     }
     
+    /**
+     * Get declared wires in this composite type, included doesn't count
+     * @return
+     */
+    public List<WireDefinition> getDeclaredWires() {
+        return wires;
+    }
+    
+    public void add(WireDefinition wireDefn) {
+        wires.add(wireDefn);
+    }
+    
+    
     public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
         components.put(componentDefinition.getName(), componentDefinition);
     }
-
+    
     public Map<String, Include> getIncludes() {
         return includes;
     }
