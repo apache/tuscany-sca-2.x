@@ -37,6 +37,11 @@ public interface SCAObject extends EventPublisher, Lifecycle {
     String getName();
 
     /**
+     * Returns the canonical artifact name
+     */
+    String getCanonicalName();
+
+    /**
      * Returns the parent composite, or null if the artifact does not have one
      */
     CompositeComponent getParent();

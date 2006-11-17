@@ -89,6 +89,13 @@ public class AbstractSCAObjectTestCase extends TestCase {
         object.prepare();
     }
 
+    public void testCanonicalName() {
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getCanonicalName()).andReturn("foo");
+        EasyMock.replay(parent);
+        TestSCAObject test = new TestSCAObject("bar", parent);
+        assertEquals("foo/bar", test.getCanonicalName());
+    }
 
     private class TestSCAObject extends AbstractSCAObject {
         public TestSCAObject(String name, CompositeComponent parent) {
