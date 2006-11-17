@@ -92,6 +92,28 @@ public class ServiceLoaderTestCase extends TestCase {
         assertEquals(name, serviceDefinition.getName());
         assertSame(sc, serviceDefinition.getServiceContract());
     }
+    
+    public void testWithNoReference() throws LoaderException, XMLStreamException {
+        String name = "serviceDefinition";
+        String target = "target";
+        ServiceContract sc = new ServiceContract() {
+        };
+        expect(mockReader.getName()).andReturn(SERVICE).anyTimes();
+        expect(mockReader.getAttributeValue(null, "name")).andReturn(name);
+        expect(mockReader.next()).andReturn(START_ELEMENT);
+        expect(mockReader.getName()).andReturn(INTERFACE_JAVA);
+        expect(mockRegistry.load(null, null, mockReader, deploymentContext)).andReturn(sc);
+        expect(mockReader.next()).andReturn(END_ELEMENT);
+        expect(mockReader.getName()).andReturn(SERVICE);
+
+        replay(mockReader);
+        replay(mockRegistry);
+
+        ServiceDefinition serviceDefinition = loader.load(null, null, mockReader, deploymentContext);
+        assertNotNull(serviceDefinition);
+        assertEquals(name, serviceDefinition.getName());
+        assertSame(sc, serviceDefinition.getServiceContract());
+    }
 
     protected void setUp() throws Exception {
         super.setUp();
