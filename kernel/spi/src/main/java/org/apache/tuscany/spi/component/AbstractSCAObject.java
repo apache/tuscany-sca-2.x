@@ -42,7 +42,7 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
     protected final CompositeComponent parent;
     private final String name;
     private final Map<Object, Object> extensions = new HashMap<Object, Object>();
-    private String cannonicalName;
+    private String canonicalName;
 
     public AbstractSCAObject(String name, CompositeComponent parent) {
         this.name = name;
@@ -54,14 +54,14 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
     }
 
     public String getCanonicalName() {
-        if (cannonicalName == null) {
+        if (canonicalName == null) {
             StringBuffer b = new StringBuffer(name);
             if (parent != null) {
                 b.insert(0, parent.getCanonicalName() + "/");
             }
-            cannonicalName = b.toString();
+            canonicalName = b.toString();
         }
-        return cannonicalName;
+        return canonicalName;
     }
 
     public CompositeComponent getParent() {
