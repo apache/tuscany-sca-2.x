@@ -45,7 +45,7 @@ public class HSQLDBConverterTestCase extends TestCase {
         UUID id = UUID.randomUUID();
         Foo foo = new Foo();
         foo.data = "test";
-        converter.insert(stmt, id, Store.NEVER, foo);
+        converter.insert(stmt, "foo", id, Store.NEVER, foo);
         stmt.addBatch();
         stmt.execute();
         stmt.close();
@@ -53,7 +53,7 @@ public class HSQLDBConverterTestCase extends TestCase {
         conn.close();
         conn = ds.getConnection();
         conn.setAutoCommit(false);
-        Foo foo2 = (Foo) converter.read(id, conn);
+        Foo foo2 = (Foo) converter.read(conn, "foo", id);
         assertEquals("test", foo2.data);
         conn.commit();
         conn.close();
@@ -63,7 +63,7 @@ public class HSQLDBConverterTestCase extends TestCase {
         Connection conn = ds.getConnection();
         conn.setAutoCommit(false);
         UUID id = UUID.randomUUID();
-        assertNull(converter.read(id, conn));
+        assertNull(converter.read(conn, null, id));
         conn.commit();
         conn.close();
     }

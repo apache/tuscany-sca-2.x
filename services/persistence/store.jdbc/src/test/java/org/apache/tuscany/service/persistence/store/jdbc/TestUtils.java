@@ -30,7 +30,8 @@ import org.apache.commons.dbcp.BasicDataSource;
 public final class TestUtils {
 
     public static final String CREATE_TABLE =
-        "CREATE TABLE CONVERSATION_STATE(ID_1 BIGINT, ID_2 BIGINT, EXPIRATION BIGINT, OBJECT LONGVARBINARY);";
+        "CREATE TABLE CONVERSATION_STATE(OWNER VARCHAR, ID_1 BIGINT, ID_2 BIGINT, EXPIRATION BIGINT, "
+            + "OBJECT LONGVARBINARY);";
 
     public static final String DROP_TABLE = "DROP TABLE CONVERSATION_STATE IF EXISTS";
     public static final String SELECT_SQL = "SELECT * FROM CONVERSATION_STATE";
@@ -60,6 +61,7 @@ public final class TestUtils {
         try {
             conn = ds.getConnection();
             conn.createStatement().execute(DROP_TABLE);
+            conn.createStatement().execute("SHUTDOWN");
             conn.commit();
         } finally {
             if (conn != null) {

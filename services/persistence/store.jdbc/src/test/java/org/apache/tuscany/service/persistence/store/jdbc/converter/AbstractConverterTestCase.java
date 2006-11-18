@@ -44,17 +44,29 @@ public class AbstractConverterTestCase extends TestCase {
 
     private class TestConverter extends AbstractConverter {
 
-        public void insert(PreparedStatement stmt, UUID id, long expiration, Serializable object)
+        public void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
             throws StoreWriteException {
 
         }
 
-        public void update(PreparedStatement stmt, UUID id, Serializable object) throws StoreWriteException {
+        public void update(PreparedStatement stmt, String ownerId, UUID id, Serializable object)
+            throws StoreWriteException {
 
         }
 
-        public Object read(UUID id, Connection conn) throws StoreReadException {
+        public boolean findAndLock(PreparedStatement stmt,
+                                   String ownerId,
+                                   UUID id
+        ) throws StoreWriteException {
+            return false;
+        }
+
+        public Object read(Connection conn, String ownerId, UUID id) throws StoreReadException {
             return null;
+        }
+
+        public void delete(PreparedStatement stmt, String ownerId, UUID id) throws StoreWriteException {
+
         }
 
         @Override

@@ -122,6 +122,20 @@ public class MemoryStore implements Store {
         store.clear();
     }
 
+    public void removeRecord(SCAObject owner, UUID id) throws StoreWriteException {
+        Map<UUID, Record> map = store.get(owner);
+        if (map == null) {
+            StoreWriteException e = new StoreWriteException("Owner not found");
+            e.setIdentifier(owner.getCanonicalName());
+            throw e;
+        }
+        if (map.remove(id) == null) {
+            StoreWriteException e = new StoreWriteException("Record not found for owner " + owner.getCanonicalName());
+            e.setIdentifier(id.toString());
+            throw e;
+        }
+    }
+
     public void recover(RecoveryListener listener) {
         throw new UnsupportedOperationException();
 //        monitor.beginRecover();

@@ -29,32 +29,32 @@ import static org.apache.tuscany.service.persistence.store.Store.NEVER;
 public class RecordTestCase extends TestCase {
 
     public void testInsertCompare() {
-        Record record = new Record(UUID.randomUUID(), "foo", NEVER, Record.INSERT);
-        Record record2 = new Record(UUID.randomUUID(), "bar", NEVER, Record.INSERT);
+        Record record = new Record(null, UUID.randomUUID(), "foo", NEVER, Record.INSERT);
+        Record record2 = new Record(null, UUID.randomUUID(), "bar", NEVER, Record.INSERT);
         assertEquals(0, record.compareTo(record2));
     }
 
     public void testUpdateCompare() {
-        Record record = new Record(UUID.randomUUID(), "foo", NEVER, Record.UPDATE);
-        Record record2 = new Record(UUID.randomUUID(), "bar", NEVER, Record.UPDATE);
+        Record record = new Record(null, UUID.randomUUID(), "foo", NEVER, Record.UPDATE);
+        Record record2 = new Record(null, UUID.randomUUID(), "bar", NEVER, Record.UPDATE);
         assertEquals(0, record.compareTo(record2));
     }
 
     public void testInsertUpdateCompare() {
-        Record record = new Record(UUID.randomUUID(), "foo", NEVER, Record.INSERT);
-        Record record2 = new Record(UUID.randomUUID(), "bar", NEVER, Record.UPDATE);
+        Record record = new Record(null, UUID.randomUUID(), "foo", NEVER, Record.INSERT);
+        Record record2 = new Record(null, UUID.randomUUID(), "bar", NEVER, Record.UPDATE);
         assertEquals(-1, record.compareTo(record2));
     }
 
     public void testUpdateInsertCompare() {
-        Record record = new Record(UUID.randomUUID(), "foo", NEVER, Record.UPDATE);
-        Record record2 = new Record(UUID.randomUUID(), "bar", NEVER, Record.INSERT);
+        Record record = new Record(null, UUID.randomUUID(), "foo", NEVER, Record.UPDATE);
+        Record record2 = new Record(null, UUID.randomUUID(), "bar", NEVER, Record.INSERT);
         assertEquals(1, record.compareTo(record2));
     }
 
     public void testAssertion() {
-        Record record = new Record(UUID.randomUUID(), "foo", NEVER, 4);
-        Record record2 = new Record(UUID.randomUUID(), "bar", NEVER, 5);
+        Record record = new Record(null, UUID.randomUUID(), "foo", NEVER, 4);
+        Record record2 = new Record(null, UUID.randomUUID(), "bar", NEVER, 5);
         try {
             record.compareTo(record2);
             fail();
