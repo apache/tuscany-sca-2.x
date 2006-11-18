@@ -57,7 +57,10 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
     private Map<Method, ChainHolder> chains;
     private Object fromAddress;
     private boolean contractHasCallback;
+    private boolean contractIsRemotable;
     private boolean contractIsConversational;
+    private Object convIdForRemotableTarget;
+    private Object convIdFromThread;
     
     private WorkContext workContext;
 
@@ -85,6 +88,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
         this.workContext = workContext;
         this.contractIsConversational =
             wire.getServiceContract().getInteractionScope().equals(InteractionScope.CONVERSATIONAL);
+        this.contractIsRemotable = wire.getServiceContract().isRemotable();
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -129,13 +133,28 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
         
         if (contractIsConversational) {
             assert workContext != null : "Work context cannot be null for conversational invocation";
-            if (workContext.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER) == null) {
-                Object convID = new org.apache.tuscany.spi.wire.MessageId();
-                workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convID);
+            // Check for a conv id on thread and remember it
+            convIdFromThread = workContext.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER);
+            if (contractIsRemotable) {
+                if (convIdForRemotableTarget == null) {
+                    convIdForRemotableTarget = new org.apache.tuscany.spi.wire.MessageId();
+                }
+                // Always use the conv id for this target
+                workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convIdForRemotableTarget);
+            } else if (convIdFromThread == null) {
+                Object newConvId = new org.apache.tuscany.spi.wire.MessageId();
+                workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, newConvId);
             }
         }
         
-        return invoke(chain, invoker, args, null, null);
+        Object result = invoke(chain, invoker, args, null, null);
+        
+        if (contractIsConversational && contractIsRemotable) {
+            // Make sure we restore the remembered conv id to continue propagating
+            workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convIdFromThread);
+        }
+        
+        return result;
     }
 
     public Object invoke(Method method, Object[] args) throws Throwable {
