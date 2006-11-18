@@ -22,15 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.core.component.event.ConversationEnd;
 import org.apache.tuscany.core.component.event.ConversationStart;
+import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeRuntimeException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
+import org.osoa.sca.SessionEndedException;
 
 /**
  * A scope context which manages atomic component instances keyed on a conversation session
@@ -40,9 +45,12 @@ import org.apache.tuscany.spi.model.Scope;
 public class ConversationalScopeContainer extends AbstractScopeContainer {
 
     public static final Object CONVERSATIONAL_IDENTIFIER = new Object();
-
+    public static final long CONVERSATION_MAX_AGE = 10 * 1000;
+    
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
+
+    private Timer conversationTimer;
 
     public ConversationalScopeContainer() {
         this(null);
@@ -52,6 +60,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         super("Conversational Scope", workContext);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
+        conversationTimer = new Timer();
     }
 
     public Scope getScope() {
@@ -60,7 +69,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof ConversationStart) {            
+        if (event instanceof ConversationStart) {
             Object key = ((ConversationStart) event).getId();
             workContext.setIdentifier(CONVERSATIONAL_IDENTIFIER, key);
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
@@ -98,7 +107,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
         Object key = workContext.getIdentifier(CONVERSATIONAL_IDENTIFIER);
         assert key != null : "Conversational session id not bound in work component";
-        return getInstance(component, key);
+        InstanceWrapper wrapper = getInstance(component, key);
+        if (wrapper instanceof TimedoutInstanceWrapper) {
+            throw new TargetException(new SessionEndedException("Conversation has timed out"));
+        }
+        
+        return wrapper;
     }
 
     private InstanceWrapper getInstance(AtomicComponent component, Object key) {
@@ -117,12 +131,20 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
             synchronized (destroyQueue) {
                 destroyQueue.add(ctx);
             }
+            
+            conversationTimer.schedule(new TimeoutConversation(component, key), CONVERSATION_MAX_AGE);
         }
         
         return ctx;
     }
 
     private void shutdownInstances(Object key) {
+        /*
+        for (Map<Object, InstanceWrapper> map : contexts.values()) {
+            InstanceWrapper wrapper = map.remove(key);
+            wrapper.stop();
+        }
+        */
         List<InstanceWrapper> destroyQueue = destroyQueues.remove(key);
         if (destroyQueue != null) {
             for (Map<Object, InstanceWrapper> map : contexts.values()) {
@@ -138,6 +160,51 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
                     }
                 }
             }
+        }
+    }
+    
+    private class TimeoutConversation extends TimerTask {
+        
+        private AtomicComponent component;
+        private Object key;
+        
+        public TimeoutConversation(AtomicComponent component, Object key) {
+            this.component = component;
+            this.key = key;
+        }
+        
+        public void run() {
+            Map<Object, InstanceWrapper> wrappers = contexts.get(component);
+            assert wrappers != null : "Component [" + component + "] not registered";
+            InstanceWrapper wrapper = wrappers.get(key);
+            wrappers.put(key, new TimedoutInstanceWrapper());
+            wrapper.stop();
+            List<InstanceWrapper> destroyQueue = destroyQueues.get(key);
+            if (destroyQueue == null) {
+                return;
+            }
+            synchronized (destroyQueue) {
+                destroyQueue.remove(wrapper);
+            }
+        }
+    }
+    
+    private class TimedoutInstanceWrapper implements InstanceWrapper {
+        
+        public Object getInstance() {
+            throw new ScopeRuntimeException();
+        }
+        
+        public int getLifecycleState() {
+            throw new ScopeRuntimeException();
+        }
+
+        public void start() throws CoreRuntimeException {
+            throw new ScopeRuntimeException();
+        }
+
+        public void stop() throws CoreRuntimeException {
+            throw new ScopeRuntimeException();
         }
     }
 }
