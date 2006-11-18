@@ -150,4 +150,8 @@
         <system:implementation.system class="org.apache.tuscany.runtime.webapp.WebResourceScanExtender"/>
         <property name="path">/WEB-INF/tuscany/extensions/</property>
     </component>
+    
+    <component name="wireLoader">
+        <system:implementation.system class="org.apache.tuscany.core.loader.WireLoader"/>
+    </component>
 </composite>
