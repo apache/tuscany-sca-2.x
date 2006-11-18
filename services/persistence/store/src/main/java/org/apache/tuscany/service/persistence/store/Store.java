@@ -56,6 +56,11 @@ public interface Store {
     Object readRecord(SCAObject owner, UUID id) throws StoreReadException;
 
     /**
+     * Removes a record from the store
+     */
+    void removeRecord(SCAObject owner, UUID id) throws StoreWriteException;
+
+    /**
      * Removes all records from the store
      */
     void removeRecords() throws StoreWriteException;

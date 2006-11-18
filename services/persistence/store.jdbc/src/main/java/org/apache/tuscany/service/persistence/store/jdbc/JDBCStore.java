@@ -22,9 +22,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -47,48 +44,26 @@ import org.apache.tuscany.service.persistence.store.StoreReadException;
 import org.apache.tuscany.service.persistence.store.StoreWriteException;
 
 /**
- * A store implementation that uses a relational database to persist records. Write-through and write-behind strategies
- * are both supported. The write-behind operation is performed when the default write size or value specified by
- * <code>getBatchSize</code> is reached.
+ * A store implementation that uses a relational database to persist records transactionally.
  *
  * @version $Rev$ $Date$
  */
 public class JDBCStore implements Store {
-
     private DataSource dataSource;
     private StoreMonitor monitor;
     private Converter converter;
-    private boolean writeBehind;
-    private int batchSize = 10;
     // TODO integrate with a core threading scheme
+    @SuppressWarnings({"FieldCanBeLocal"})
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
-    private final Map<UUID, Record> cache;
 
+    //private
     public JDBCStore(@Resource(mappedName = "StoreDS") DataSource dataSource,
                      @Autowire Converter converter,
                      @Monitor StoreMonitor monitor) {
         this.dataSource = dataSource;
         this.converter = converter;
         this.monitor = monitor;
-        cache = new LinkedHashMap<UUID, Record>();
-    }
-
-    /**
-     * Returns true if write-through is enabled
-     *
-     * @return true if write-through is enabled
-     */
-    public boolean isWriteBehind() {
-        return writeBehind;
-    }
-
-    /**
-     * Sets whether write-behind is enabled. The default is write-through.
-     */
-    @Property
-    public void setWriteBehind(boolean writeBehind) {
-        this.writeBehind = writeBehind;
     }
 
     /**
@@ -106,21 +81,6 @@ public class JDBCStore implements Store {
         return reaperInterval;
     }
 
-    /**
-     * Sets the number of records to insert during a batch operation
-     */
-    @Property
-    public void setBatchSize(int batchSize) {
-        this.batchSize = batchSize;
-    }
-
-    /**
-     * Returns the number of records to insert during a batch operation
-     */
-    public int getBatchSize() {
-        return batchSize;
-    }
-
     @Init(eager = true)
     public void init() {
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -130,8 +90,8 @@ public class JDBCStore implements Store {
 
     @Destroy
     public void destroy() {
+        scheduler.shutdown();
         monitor.stop("JDBC store stopped");
-
     }
 
     public void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
@@ -141,58 +101,29 @@ public class JDBCStore implements Store {
             throw e;
         }
         Serializable serializable = (Serializable) object;
+        String canonicalName = owner.getCanonicalName();
         Connection conn = null;
         PreparedStatement insertStmt = null;
         PreparedStatement updateStmt = null;
         long now = System.currentTimeMillis();
         try {
-            Record[] records;
-            synchronized (cache) {
-                if (cache.size() < batchSize) {
-                    // todo optimize multiple writes
-                    if (now < expiration || expiration == NEVER) {
-                        cache.put(id, new Record(id, serializable, expiration, Record.INSERT));
-                    }
-                    return;
-                }
-                // sort the records, inserts before deletes so they can be batched
-                records = sort();
-                cache.clear();
-            }
             conn = dataSource.getConnection();
-            conn.setAutoCommit(false);
-
-            int lastOperaton = -1;
-            for (Record record : records) {
-                if (now < record.getExpiration() || record.getExpiration() == NEVER) {
-                    if (record.getOperation() == Record.INSERT) {
-                        if (lastOperaton == -1) {
-                            insertStmt = conn.prepareStatement(converter.getInsertSql());
-                            lastOperaton = Record.INSERT;
-                        }
-                        addInsertBatch(insertStmt, record.getId(), record.getObject(), record.getExpiration());
-                    } else if (record.getOperation() == Record.UPDATE) {
-                        if (lastOperaton == -1 || lastOperaton == Record.INSERT) {
-                            updateStmt = conn.prepareStatement(converter.getUpdateSql());
-                            lastOperaton = Record.UPDATE;
-                        }
-                        addUpdateBatch(updateStmt, record.getId(), record.getObject());
-                    }
-                }
-            }
-            // add the last record
             if (now < expiration || expiration == NEVER) {
-                if (insertStmt == null) {
+                PreparedStatement stmt = conn.prepareStatement(converter.getSelectUpdateSql());
+                if (converter.findAndLock(stmt, canonicalName, id)) {
+                    updateStmt = conn.prepareStatement(converter.getUpdateSql());
+                    converter.update(updateStmt, canonicalName, id, serializable);
+                } else {
                     insertStmt = conn.prepareStatement(converter.getInsertSql());
+                    converter.insert(insertStmt, canonicalName, id, expiration, serializable);
                 }
-                addInsertBatch(insertStmt, id, serializable, expiration);
             }
             try {
                 if (insertStmt != null) {
-                    insertStmt.executeBatch();
+                    insertStmt.executeUpdate();
                 }
                 if (updateStmt != null) {
-                    updateStmt.executeBatch();
+                    updateStmt.executeUpdate();
                 }
                 conn.commit();
             } catch (SQLException e) {
@@ -219,60 +150,19 @@ public class JDBCStore implements Store {
             throw e;
         }
         Serializable serializable = (Serializable) object;
+        String canonicalName = owner.getCanonicalName();
         Connection conn = null;
         PreparedStatement insertStmt = null;
         PreparedStatement updateStmt = null;
-        long now = System.currentTimeMillis();
         try {
-            Record[] records;
-            synchronized (cache) {
-                if (cache.size() < batchSize) {
-                    Record record = cache.get(id);
-                    if (record == null) {
-                        record = new Record(id, serializable, Store.NEVER, Record.UPDATE);
-                        cache.put(id, record);
-                        //throw new RecordNotFoundException(id.toString());
-                    }
-                    // note that we do not change the operation to an update if it is an insert; both become optimized
-                    record.setObject(serializable);
-                    return;
-                }
-                // sort the records, inserts before deletes so they can be batched
-                records = sort();
-                cache.clear();
-            }
+            conn = dataSource.getConnection();
             conn = dataSource.getConnection();
             conn.setAutoCommit(false);
-            int lastOperaton = -1;
-            for (Record record : records) {
-                if (now < record.getExpiration() || record.getExpiration() == NEVER) {
-                    if (record.getOperation() == Record.INSERT) {
-                        if (lastOperaton == -1) {
-                            insertStmt = conn.prepareStatement(converter.getInsertSql());
-                            lastOperaton = Record.INSERT;
-                        }
-                        addInsertBatch(insertStmt, record.getId(), record.getObject(), record.getExpiration());
-                    } else if (record.getOperation() == Record.UPDATE) {
-                        if (lastOperaton == -1 || lastOperaton == Record.INSERT) {
-                            updateStmt = conn.prepareStatement(converter.getUpdateSql());
-                            lastOperaton = Record.UPDATE;
-                        }
-                        addUpdateBatch(updateStmt, record.getId(), record.getObject());
-                    }
-                }
-            }
-            // update the last record
-            if (updateStmt == null) {
-                updateStmt = conn.prepareStatement(converter.getUpdateSql());
-            }
-            addUpdateBatch(updateStmt, id, serializable);
-
+            updateStmt = conn.prepareStatement(converter.getUpdateSql());
+            converter.update(updateStmt, canonicalName, id, serializable);
             try {
-                if (insertStmt != null) {
-                    insertStmt.executeBatch();
-                }
                 if (updateStmt != null) {
-                    updateStmt.executeBatch();
+                    updateStmt.executeUpdate();
                 }
                 conn.commit();
             } catch (SQLException e) {
@@ -294,19 +184,43 @@ public class JDBCStore implements Store {
     }
 
     public Object readRecord(SCAObject owner, UUID id) throws StoreReadException {
-        Record record;
-        synchronized (cache) {
-            record = cache.get(id);
-        }
-        if (record != null) {
-            return record.getObject();
-        }
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
-            return converter.read(id, conn);
+            Object object = converter.read(conn, owner.getCanonicalName(), id);
+            conn.commit();
+            return object;
         } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException e2) {
+                monitor.error(e2);
+            }
             throw new StoreReadException(e);
+        } finally {
+            close(conn);
+        }
+    }
+
+    public void removeRecord(SCAObject owner, UUID id) throws StoreWriteException {
+        Connection conn = null;
+        try {
+            conn = dataSource.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(converter.getDeleteRecordSql());
+            converter.delete(stmt, owner.getCanonicalName(), id);
+            stmt.executeUpdate();
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (SQLException e2) {
+                monitor.error(e2);
+            }
+            throw new StoreWriteException(e);
         } finally {
             close(conn);
         }
@@ -318,7 +232,7 @@ public class JDBCStore implements Store {
         try {
             conn = dataSource.getConnection();
             stmt = conn.prepareStatement(converter.getDeleteSql());
-            stmt.execute();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new StoreWriteException(e);
         } finally {
@@ -328,18 +242,6 @@ public class JDBCStore implements Store {
 
     public void recover(RecoveryListener listener) {
         throw new UnsupportedOperationException();
-    }
-
-    private void addInsertBatch(PreparedStatement stmt, UUID id, Serializable object, long expiration)
-        throws StoreWriteException, SQLException {
-        converter.insert(stmt, id, expiration, object);
-        stmt.addBatch();
-    }
-
-    private void addUpdateBatch(PreparedStatement stmt, UUID id, Serializable object)
-        throws StoreWriteException, SQLException {
-        converter.update(stmt, id, object);
-        stmt.addBatch();
     }
 
     private void close(Connection conn) {
@@ -380,34 +282,18 @@ public class JDBCStore implements Store {
     }
 
     /**
-     * Sorts pending operations, placing inserts before updates so writes may be batched
+     * Inner class responsible for clearing out expired entries
      */
-    private Record[] sort() {
-        synchronized (cache) {
-            Record[] records = new Record[cache.size()];
-            Arrays.sort(cache.values().toArray(records));
-            return records;
-        }
-    }
-
     private class Reaper implements Runnable {
         public void run() {
             long now = System.currentTimeMillis();
-            synchronized (cache) {
-                for (Map.Entry<UUID, Record> entry : cache.entrySet()) {
-                    final long expiration = entry.getValue().getExpiration();
-                    if (expiration != NEVER && now >= expiration) {
-                        cache.remove(entry.getKey());
-                    }
-                }
-            }
             Connection conn = null;
             PreparedStatement stmt = null;
             try {
                 conn = dataSource.getConnection();
                 stmt = conn.prepareStatement(converter.getDeleteExpiredSql());
                 stmt.setLong(1, now);
-                stmt.execute();
+                stmt.executeUpdate();
                 conn.commit();
             } catch (SQLException e) {
                 if (conn != null) {
@@ -436,6 +322,5 @@ public class JDBCStore implements Store {
             }
         }
     }
-
 
 }

@@ -25,6 +25,7 @@ import javax.sql.DataSource;
 import org.apache.tuscany.spi.component.SCAObject;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.service.persistence.store.Store;
 import static org.apache.tuscany.service.persistence.store.Store.NEVER;
 import org.apache.tuscany.service.persistence.store.StoreMonitor;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
@@ -35,20 +36,34 @@ import org.easymock.EasyMock;
  *
  * @version $Rev$ $Date$
  */
-public class JDBCStoreTestCase extends TestCase {
+public class JDBCStoreUpdateTestCase extends TestCase {
     private DataSource ds;
     private JDBCStore store;
 
-    public void testNotFound() throws Exception {
+    public void testMultipleUpdate() throws Exception {
+        SCAObject owner1 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner1.getCanonicalName()).andReturn("baz").atLeastOnce();
+        EasyMock.replay(owner1);
+        SCAObject owner2 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner2.getCanonicalName()).andReturn("bar").atLeastOnce();
+        EasyMock.replay(owner2);
         store.init();
-        SCAObject object = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
-        EasyMock.replay(object);
-        UUID id = UUID.randomUUID();
-        assertNull(store.readRecord(object, id));
+        Foo foo1 = new Foo("test");
+        UUID id1 = UUID.randomUUID();
+        Foo foo2 = new Foo("test2");
+        store.appendRecord(owner1, id1, foo1, Store.NEVER);
+        store.appendRecord(owner2, id1, foo2, Store.NEVER);
+        foo1.data = "testA";
+        foo2.data = "test2A";
+        store.updateRecord(owner1, id1, foo1);
+        store.updateRecord(owner2, id1, foo2);
+        Foo retFoo1 = (Foo) store.readRecord(owner1, id1);
+        assertEquals("testA", retFoo1.data);
+        Foo retFoo2 = (Foo) store.readRecord(owner2, id1);
+        assertEquals("test2A", retFoo2.data);
     }
 
-    public void testRemoveRecord() throws Exception {
+    public void testUpdateRead() throws Exception {
         store.init();
         SCAObject object = EasyMock.createMock(SCAObject.class);
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
@@ -56,31 +71,18 @@ public class JDBCStoreTestCase extends TestCase {
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
         store.appendRecord(object, id, foo, NEVER);
+        foo.data = "test2";
+        store.updateRecord(object, id, foo);
         Foo foo2 = (Foo) store.readRecord(object, id);
-        assertEquals("test", foo2.data);
-        store.removeRecord(object, id);
-        assertNull(store.readRecord(object, id));
+        assertEquals("test2", foo2.data);
     }
 
-    public void testExpirationFromStore() throws Exception {
-        store.setReaperInterval(10);
-        store.init();
-        SCAObject object = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
-        EasyMock.replay(object);
-        Foo foo = new Foo("test");
-        UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, System.currentTimeMillis() + 20);
-        Thread.sleep(100);
-        assertNull(store.readRecord(object, id));
-    }
 
     protected void setUp() throws Exception {
         super.setUp();
         ds = TestUtils.createTables();
         store = new JDBCStore(ds, new HSQLDBConverter(), EasyMock.createNiceMock(StoreMonitor.class));
     }
-
 
     protected void tearDown() throws Exception {
         super.tearDown();

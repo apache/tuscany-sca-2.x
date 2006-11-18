@@ -32,20 +32,21 @@ public class Record implements Comparable {
     public static final int INSERT = 0;
     public static final int UPDATE = 1;
 
+    private String ownerId;
     private UUID id;
     private Serializable object;
     private long expiration = JDBCStore.NEVER;
     private int operation;
-
     /**
      * Creates a new record
      *
+     * @param ownerId
      * @param id         the unique id of the record
      * @param object     the object to serialize
-     * @param expiration the expirary time, {@link JDBCStore.NEVER} if there is no expiration
+     * @param expiration the expirary time, {@link org.apache.tuscany.service.persistence.store.jdbc.JDBCStore.NEVER} if there is no expiration
      * @param operation  an <code>INSERT</code> or <code>UPDATE</code> operation
      */
-    public Record(UUID id, Serializable object, long expiration, int operation) {
+    public Record(String ownerId, UUID id, Serializable object, long expiration, int operation) {
         this.id = id;
         this.object = object;
         this.expiration = expiration;

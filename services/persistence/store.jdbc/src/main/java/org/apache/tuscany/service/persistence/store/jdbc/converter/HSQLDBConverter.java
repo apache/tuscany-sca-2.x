@@ -35,9 +35,18 @@ import org.apache.tuscany.service.persistence.store.StoreWriteException;
  * @version $Rev$ $Date$
  */
 public class HSQLDBConverter extends AbstractConverter {
-    public void insert(PreparedStatement stmt, UUID id, long expiration, Serializable object)
+
+    // HSQLDB does not support SELECT FOR UPDATE
+    protected String selectUpdateSql = "SELECT ID_1 FROM CONVERSATION_STATE WHERE  OWNER = ? AND ID_1 = ? AND ID_2 = ?";
+
+    public String getSelectUpdateSql() {
+        return selectUpdateSql;
+    }
+
+    public void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
         throws StoreWriteException {
         try {
+            stmt.setString(OWNER, ownerId);
             stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
             stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
             stmt.setLong(EXPIRATION, expiration);
@@ -49,9 +58,11 @@ public class HSQLDBConverter extends AbstractConverter {
         }
     }
 
-    public void update(PreparedStatement stmt, UUID id, Serializable object) throws StoreWriteException {
+    public void update(PreparedStatement stmt, String ownerId, UUID id, Serializable object)
+        throws StoreWriteException {
         try {
             stmt.setBytes(OBJECT_UPDATE, serialize(object));
+            stmt.setString(OWNER_UPDATE, ownerId);
             stmt.setLong(MOST_SIGNIFICANT_BITS_UPDATE, id.getMostSignificantBits());
             stmt.setLong(LEAST_SIGNIFICANT_BITS_UPDATE, id.getLeastSignificantBits());
         } catch (SQLException e) {
@@ -61,10 +72,11 @@ public class HSQLDBConverter extends AbstractConverter {
         }
     }
 
-    public Object read(UUID id, Connection conn) throws StoreReadException {
+    public Object read(Connection conn, String ownerId, UUID id) throws StoreReadException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(findSql);
+            stmt.setString(OWNER, ownerId);
             stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
             stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
             ResultSet rs = stmt.executeQuery();

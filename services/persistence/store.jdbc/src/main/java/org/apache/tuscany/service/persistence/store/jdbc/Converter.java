@@ -35,6 +35,13 @@ import org.apache.tuscany.service.persistence.store.StoreWriteException;
 public interface Converter {
 
     /**
+     * Returns the SQL statement to select a record for update
+     *
+     * @return the SQL statement to select a record for update
+     */
+    String getSelectUpdateSql();
+
+    /**
      * Returns the SQL statement to add a record
      *
      * @return the SQL statement to add a record
@@ -69,6 +76,8 @@ public interface Converter {
      */
     String getDeleteExpiredSql();
 
+    String getDeleteRecordSql();
+
     /**
      * Writes a new record to the underlying store using batch semantics. That is, the insert will be added as a batch
      * operation to the prepared statment. It is the responsibility of the client (i.e. the prepared statement "owner")
@@ -76,29 +85,51 @@ public interface Converter {
      * false.
      *
      * @param stmt
+     * @param ownerId
      * @param id
      * @param expiration
      * @param object
      * @throws StoreWriteException
      */
-    void insert(PreparedStatement stmt, UUID id, long expiration, Serializable object) throws StoreWriteException;
+    void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
+        throws StoreWriteException;
 
     /**
-     * 
      * @param stmt
+     * @param ownerId
      * @param id
      * @param object
      * @throws StoreWriteException
      */
-    void update(PreparedStatement stmt, UUID id, Serializable object) throws StoreWriteException;
+    void update(PreparedStatement stmt, String ownerId, UUID id, Serializable object) throws StoreWriteException;
+
+    /**
+     *
+     * @param stmt
+     * @param ownerId
+     * @param id
+     * @return
+     * @throws StoreWriteException
+     */
+    boolean findAndLock(PreparedStatement stmt, String ownerId, UUID id) throws StoreWriteException;
 
     /**
      * Reads a record from the underlying store. Note implementations must assume auto commit is false.
      *
-     * @param id
      * @param conn
+     * @param ownerId
+     * @param id
      * @return
      * @throws StoreReadException
      */
-    Object read(UUID id, Connection conn) throws StoreReadException;
+    Object read(Connection conn, String ownerId, UUID id) throws StoreReadException;
+
+    /**
+     * @param stmt
+     * @param ownerId
+     * @param id
+     * @throws StoreWriteException
+     */
+    void delete(PreparedStatement stmt, String ownerId, UUID id) throws StoreWriteException;
+
 }

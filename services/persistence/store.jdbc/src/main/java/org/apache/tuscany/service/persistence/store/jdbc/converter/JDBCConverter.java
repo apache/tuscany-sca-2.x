@@ -41,9 +41,10 @@ import org.apache.tuscany.service.persistence.store.StoreWriteException;
  */
 public class JDBCConverter extends AbstractConverter {
 
-    public void insert(PreparedStatement stmt, UUID id, long expiration, Serializable object)
+    public void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
         throws StoreWriteException {
         try {
+            stmt.setString(OWNER, ownerId);
             stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
             stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
             stmt.setLong(EXPIRATION, expiration);
@@ -57,14 +58,16 @@ public class JDBCConverter extends AbstractConverter {
         }
     }
 
-    public void update(PreparedStatement stmt, UUID id, Serializable object) throws StoreWriteException {
+    public void update(PreparedStatement stmt, String ownerId, UUID id, Serializable object)
+        throws StoreWriteException {
         throw new UnsupportedOperationException();
     }
 
-    public Object read(UUID id, Connection conn) throws StoreReadException {
+    public Object read(Connection conn, String ownerId, UUID id) throws StoreReadException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(findSql);
+            stmt.setString(OWNER, ownerId);
             stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
             stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
             ResultSet rs = stmt.executeQuery();
@@ -94,4 +97,5 @@ public class JDBCConverter extends AbstractConverter {
             }
         }
     }
+
 }
