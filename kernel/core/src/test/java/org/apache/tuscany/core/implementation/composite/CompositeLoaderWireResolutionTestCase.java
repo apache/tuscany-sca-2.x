@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.model.WireDefinition;
  *
  */
 public class CompositeLoaderWireResolutionTestCase extends TestCase {
-    private CompositeComponentType composite = null;
+    private CompositeComponentType composite;
     private CompositeLoader compositeLoader = new CompositeLoader(null, null);
     
     @SuppressWarnings("unchecked")
@@ -69,7 +69,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         JavaImplementation pojoImpl1 = new JavaImplementation();
         pojoImpl1.setComponentType(pojoComponentType1);
         
-        ComponentDefinition  component1 = new ComponentDefinition("Component1",pojoImpl1);
+        ComponentDefinition  component1 = new ComponentDefinition("Component1", pojoImpl1);
         composite.add(component1);
         
         PojoComponentType pojoComponentType2 = new PojoComponentType();
@@ -84,7 +84,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         JavaImplementation pojoImpl2 = new JavaImplementation();
         pojoImpl2.setComponentType(pojoComponentType2);
         
-        ComponentDefinition  component2 = new ComponentDefinition("Component2",pojoImpl2);
+        ComponentDefinition  component2 = new ComponentDefinition("Component2", pojoImpl2);
         composite.add(component2);
     }
     
@@ -104,7 +104,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2Component_valid() throws URISyntaxException {
+    public void testCompositeSvc2ComponentValid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
@@ -121,7 +121,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2ComponentQualified_valid() throws URISyntaxException {
+    public void testCompositeSvc2ComponentQualifiedValid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
@@ -139,7 +139,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2ComponentQualified_invalid() throws URISyntaxException {
+    public void testCompositeSvc2ComponentQualifiedInvalid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
@@ -157,7 +157,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2ComponentUnQualified_invalid() throws URISyntaxException {
+    public void testCompositeSvc2ComponentUnQualifiedInvalid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
@@ -175,7 +175,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testComponent2CompositeReference_valid() throws URISyntaxException {
+    public void testComponent2CompositeReferenceValid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component1"));
@@ -193,7 +193,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testComponent2CompositeReferenceQualified_valid() throws URISyntaxException {
+    public void testComponent2CompositeReferenceQualifiedValid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component2/pojoRef3"));
@@ -211,7 +211,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testComponent2CompositeReferenceUnQualified_invalid() throws URISyntaxException {
+    public void testComponent2CompositeReferenceUnQualifiedInvalid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component2"));
@@ -230,7 +230,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testComponent2ComponentQualifed_valid() throws URISyntaxException {
+    public void testComponent2ComponentQualifedValid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component1"));
@@ -249,7 +249,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
-    public void testComponent2ComponentUnQualifed_invalid() throws URISyntaxException {
+    public void testComponent2ComponentUnQualifedInvalid() throws URISyntaxException {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component1"));
