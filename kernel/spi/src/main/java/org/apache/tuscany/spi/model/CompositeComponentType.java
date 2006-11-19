@@ -37,7 +37,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
         new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private final Map<String, Include> includes = new HashMap<String, Include>();
-    private final Vector<WireDefinition> wires = new Vector<WireDefinition>();
+    private final List<WireDefinition> wires = new Vector<WireDefinition>();
 
     public String getName() {
         return name;
