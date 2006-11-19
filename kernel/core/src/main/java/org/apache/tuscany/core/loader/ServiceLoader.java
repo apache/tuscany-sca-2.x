@@ -45,15 +45,17 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Loads a service definition from an XML-based assembly file
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
+
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
 
-    @Constructor({"registry"})
-    public ServiceLoader(@Autowire LoaderRegistry registry) {
+    @Constructor( { "registry" })
+    public ServiceLoader(@Autowire
+    LoaderRegistry registry) {
         super(registry);
     }
 
@@ -61,10 +63,8 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return SERVICE;
     }
 
-    public ServiceDefinition load(CompositeComponent parent,
-                                  ModelObject object, XMLStreamReader reader,
-                                  DeploymentContext deploymentContext)
-        throws XMLStreamException, LoaderException {
+    public ServiceDefinition load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String target = null;
@@ -92,28 +92,23 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                 case END_ELEMENT:
                     if (SERVICE.equals(reader.getName())) {
                         if (binding != null) {
-                            /*if (target == null) {
-                                InvalidReferenceException e = new InvalidReferenceException("No target for service ");
-                                e.setIdentifier(name);
-                                throw e;
-                            }*/
-                        	URI targetURI = null;
-                        	if ( target != null ) {
-	                            try {
-	                                targetURI = new URI(target);
-	                            } catch (URISyntaxException e) {
-	                                InvalidReferenceException ire = new InvalidReferenceException(target);
-	                                ire.setIdentifier(name);
-	                                throw ire;
-	                            }
-                        	} 
+                            /*
+                             * if (target == null) { InvalidReferenceException e = new InvalidReferenceException("No target for service ");
+                             * e.setIdentifier(name); throw e; }
+                             */
+                            URI targetURI = null;
+                            if (target != null) {
+                                try {
+                                    targetURI = new URI(target);
+                                } catch (URISyntaxException e) {
+                                    InvalidReferenceException ire = new InvalidReferenceException(target);
+                                    ire.setIdentifier(name);
+                                    throw ire;
+                                }
+                            }
 
                             // FIXME need a way to specify "remotable" on a service
-                            return new BoundServiceDefinition<Binding>(name,
-                                                                       serviceContract,
-                                                                       false,
-                                                                       binding,
-                                                                       targetURI);
+                            return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding, targetURI);
                         } else if (target != null) {
                             URI targetURI;
                             try {
@@ -123,7 +118,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                                 ire.setIdentifier(name);
                                 throw ire;
                             }
-                            
+
                             return new BindlessServiceDefinition(name, serviceContract, false, targetURI);
                         } else {
                             // FIXME need a way to specify "remotable" on a service
