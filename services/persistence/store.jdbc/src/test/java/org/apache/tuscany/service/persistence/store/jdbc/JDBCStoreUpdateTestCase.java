@@ -55,8 +55,8 @@ public class JDBCStoreUpdateTestCase extends TestCase {
         store.appendRecord(owner2, id1, foo2, Store.NEVER);
         foo1.data = "testA";
         foo2.data = "test2A";
-        store.updateRecord(owner1, id1, foo1);
-        store.updateRecord(owner2, id1, foo2);
+        store.updateRecord(owner1, id1, foo1, Store.NEVER);
+        store.updateRecord(owner2, id1, foo2, Store.NEVER);
         Foo retFoo1 = (Foo) store.readRecord(owner1, id1);
         assertEquals("testA", retFoo1.data);
         Foo retFoo2 = (Foo) store.readRecord(owner2, id1);
@@ -72,7 +72,7 @@ public class JDBCStoreUpdateTestCase extends TestCase {
         UUID id = UUID.randomUUID();
         store.appendRecord(object, id, foo, NEVER);
         foo.data = "test2";
-        store.updateRecord(object, id, foo);
+        store.updateRecord(object, id, foo, Store.NEVER);
         Foo foo2 = (Foo) store.readRecord(object, id);
         assertEquals("test2", foo2.data);
     }

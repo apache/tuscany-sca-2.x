@@ -90,7 +90,7 @@ public class MemoryStore implements Store {
         map.put(id, new Record(object, expiration));
     }
 
-    public void updateRecord(SCAObject owner, UUID id, Object object) throws StoreWriteException {
+    public void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
         Map<UUID, Record> map = store.get(owner);
         if (map == null) {
             StoreWriteException e = new StoreWriteException("Record not found");

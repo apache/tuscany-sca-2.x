@@ -46,7 +46,7 @@ public interface Store {
      */
     void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
 
-    void updateRecord(SCAObject owner, UUID id, Object object) throws StoreWriteException;
+    void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
 
     /**
      * Returns the deserialized object in the store corresponding to the given id

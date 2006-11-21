@@ -143,7 +143,7 @@ public class JDBCStore implements Store {
         }
     }
 
-    public void updateRecord(SCAObject owner, UUID id, Object object) throws StoreWriteException {
+    public void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
             e.setIdentifier(object.getClass().getName());

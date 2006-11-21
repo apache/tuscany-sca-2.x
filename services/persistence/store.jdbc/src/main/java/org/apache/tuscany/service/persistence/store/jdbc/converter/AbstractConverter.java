@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -92,8 +91,7 @@ public abstract class AbstractConverter implements Converter {
             stmt.setString(OWNER, ownerId);
             stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
             stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
-            ResultSet rs = stmt.executeQuery();
-            return rs.next();
+            return stmt.executeQuery().next();
         } catch (SQLException e) {
             throw new StoreWriteException(e);
         }

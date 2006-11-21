@@ -18,21 +18,21 @@
  */
 package org.apache.tuscany.service.persistence.store.jdbc;
 
-import java.util.UUID;
-import java.sql.Statement;
-import java.sql.ResultSet;
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.component.SCAObject;
 
-import junit.framework.TestCase;
 import junit.framework.Assert;
-import org.easymock.EasyMock;
+import junit.framework.TestCase;
+import org.apache.tuscany.service.persistence.store.Store;
+import org.apache.tuscany.service.persistence.store.StoreMonitor;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.AbstractConverter;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
-import org.apache.tuscany.service.persistence.store.Store;
+import org.easymock.EasyMock;
 
 /**
  * Verifies store append operations using HSQLDB
