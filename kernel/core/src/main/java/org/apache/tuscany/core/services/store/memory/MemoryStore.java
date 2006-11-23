@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store.memory;
+package org.apache.tuscany.core.services.store.memory;
 
 import java.util.Map;
 import java.util.UUID;
@@ -31,13 +31,12 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.component.SCAObject;
-
-import org.apache.tuscany.api.annotation.Monitor;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
-
 import org.apache.tuscany.spi.services.store.StoreWriteException;
+
+import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * Implements a non-durable, non-transactional store using a simple in-memory map
@@ -139,14 +138,6 @@ public class MemoryStore implements Store {
 
     public void recover(RecoveryListener listener) {
         throw new UnsupportedOperationException();
-//        monitor.beginRecover();
-//        listener.onBegin();
-//        for (UUID id : store.keySet()) {
-//            monitor.recover(id);
-//            listener.onRecord(id);
-//        }
-//        listener.onEnd();
-//        monitor.endRecover();
     }
 
     private class Record {

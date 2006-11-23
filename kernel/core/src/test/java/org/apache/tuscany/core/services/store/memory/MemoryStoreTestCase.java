@@ -16,15 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store.memory;
+package org.apache.tuscany.core.services.store.memory;
 
 import java.util.UUID;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.services.store.memory.MemoryStore;
 import org.easymock.EasyMock;
 
 /**
