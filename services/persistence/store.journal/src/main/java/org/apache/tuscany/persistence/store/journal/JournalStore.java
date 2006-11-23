@@ -40,11 +40,14 @@ import static org.apache.tuscany.persistence.store.journal.SerializationHelper.p
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serialize;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeHeader;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
-import org.apache.tuscany.service.persistence.store.RecoveryListener;
-import org.apache.tuscany.service.persistence.store.Store;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
-import org.apache.tuscany.service.persistence.store.StoreReadException;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.RecoveryListener;
+import org.apache.tuscany.spi.services.store.Store;
+
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.StoreReadException;
+
+import org.apache.tuscany.spi.services.store.StoreWriteException;
+
 import org.objectweb.howl.log.Configuration;
 import org.objectweb.howl.log.InvalidFileSetException;
 import org.objectweb.howl.log.InvalidLogBufferException;

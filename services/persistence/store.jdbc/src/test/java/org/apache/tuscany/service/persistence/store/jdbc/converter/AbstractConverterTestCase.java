@@ -24,9 +24,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.UUID;
 
+import org.apache.tuscany.spi.services.store.StoreReadException;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.service.persistence.store.StoreReadException;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * @version $Rev$ $Date$

@@ -35,13 +35,16 @@ import org.osoa.sca.annotations.Resource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.services.store.RecoveryListener;
 
 import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.service.persistence.store.RecoveryListener;
-import org.apache.tuscany.service.persistence.store.Store;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
-import org.apache.tuscany.service.persistence.store.StoreReadException;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.Store;
+
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+
+import org.apache.tuscany.spi.services.store.StoreReadException;
+
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * A store implementation that uses a relational database to persist records transactionally.

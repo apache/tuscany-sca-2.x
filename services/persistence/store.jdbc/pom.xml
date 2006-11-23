@@ -31,12 +31,19 @@
     <description>Defines a JDBC-based persistent store.</description>
 
     <dependencies>
-		  <dependency>
-            <groupId>org.apache.tuscany.sca.services.persistence</groupId>
-            <artifactId>persistence-store</artifactId>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-api</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>

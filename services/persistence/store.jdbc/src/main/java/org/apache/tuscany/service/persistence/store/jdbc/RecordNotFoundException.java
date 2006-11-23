@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.service.persistence.store.jdbc;
 
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * @version $Rev$ $Date$

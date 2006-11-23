@@ -20,7 +20,7 @@ package org.apache.tuscany.persistence.store.journal;
 
 import java.io.IOException;
 
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 import org.objectweb.howl.log.Configuration;
 import org.objectweb.howl.log.LogClosedException;
 import org.objectweb.howl.log.LogFileOverflowException;

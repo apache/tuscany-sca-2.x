@@ -31,8 +31,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.tuscany.service.persistence.store.StoreReadException;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreReadException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * Performs writing and reading operations to a JDBC driver/database combination that supports Blobs

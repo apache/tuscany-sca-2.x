@@ -16,27 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store;
+package org.apache.tuscany.spi.services.store;
+
+import java.util.UUID;
 
 /**
- * Thrown when an error occurs reading from persistent storage
+ * Implementations receive callback events during a store recovery operation
  *
  * @version $Rev$ $Date$
  */
-public class StoreReadException extends StoreException {
+public interface RecoveryListener {
 
-    public StoreReadException() {
-    }
+    /**
+     * Signals the start of a recovery
+     */
+    void onBegin();
 
-    public StoreReadException(String message) {
-        super(message);
-    }
+    /**
+     * Received when a record is recovered
+     *
+     * @param id
+     */
+    void onRecord(UUID id);
 
-    public StoreReadException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public StoreReadException(Throwable cause) {
-        super(cause);
-    }
+    /**
+     * Signals the end of recovery
+     */
+    void onEnd();
 }

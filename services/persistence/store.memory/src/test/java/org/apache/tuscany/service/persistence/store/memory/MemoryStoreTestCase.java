@@ -23,8 +23,8 @@ import java.util.UUID;
 import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.service.persistence.store.Store;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.easymock.EasyMock;
 
 /**
