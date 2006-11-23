@@ -60,7 +60,6 @@
         <module>openjpa</module>
         <module>datasource</module>
         <module>store.jdbc</module>
-        <module>store.memory</module>
         <module>store.journal</module>
     </modules>
 </project>
