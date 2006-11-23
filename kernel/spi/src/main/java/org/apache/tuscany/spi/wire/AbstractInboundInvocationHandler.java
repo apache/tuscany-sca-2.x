@@ -59,7 +59,4 @@ public abstract class AbstractInboundInvocationHandler {
         }
     }
 
-    protected abstract Object getMessageId();
-
-    protected abstract Object getCorrelationId();
 }

@@ -49,8 +49,6 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
      */
     private Map<Method, ChainHolder> chains;
     private WorkContext context;
-    private Object messageId;
-    private Object correlationId;
 
     public JDKInboundInvocationHandler(Map<Method, InboundInvocationChain> invocationChains, WorkContext context) {
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
@@ -101,9 +99,7 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        messageId = context.getCurrentMessageId();
         context.setCurrentMessageId(null);
-        correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
         return invoke(chain, invoker, args);
     }
@@ -126,14 +122,6 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
             this.chain = config;
         }
 
-    }
-
-    protected Object getMessageId() {
-        return messageId;
-    }
-
-    protected Object getCorrelationId() {
-        return correlationId;
     }
 
 }

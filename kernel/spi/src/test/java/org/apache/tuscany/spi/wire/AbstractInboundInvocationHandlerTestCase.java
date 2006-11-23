@@ -25,13 +25,6 @@ public class AbstractInboundInvocationHandlerTestCase extends TestCase {
 
     private class InvocationHandler extends AbstractInboundInvocationHandler {
 
-        protected Object getMessageId() {
-            return new Object();
-        }
-
-        protected Object getCorrelationId() {
-            return new Object();
-        }
     }
 
     private class MockInterceptor implements Interceptor {
