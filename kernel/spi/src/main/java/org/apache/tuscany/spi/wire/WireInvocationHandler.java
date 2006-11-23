@@ -19,13 +19,14 @@
 package org.apache.tuscany.spi.wire;
 
 import java.lang.reflect.Method;
+import java.io.Serializable;
 
 /**
  * Implementations are responsible for dispatching an operation down an invocation chain
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface WireInvocationHandler {
+public interface WireInvocationHandler extends Serializable {
 
     Object invoke(Method method, Object[] args) throws Throwable;
 

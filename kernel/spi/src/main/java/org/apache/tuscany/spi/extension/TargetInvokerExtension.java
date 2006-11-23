@@ -54,7 +54,6 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
         try {
             Object messageId = msg.getMessageId();
             if (messageId != null) {
-                workContext.setCurrentMessageId(null);
                 workContext.setCurrentCorrelationId(messageId);
             }
             LinkedList<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
@@ -64,7 +63,6 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
             Object resp = invokeTarget(msg.getBody());
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
-            //monitor.executionError(e);
             msg.setBodyWithFault(e.getCause());
         }
         return msg;

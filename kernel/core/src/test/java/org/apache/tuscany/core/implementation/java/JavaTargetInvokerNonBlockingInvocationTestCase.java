@@ -70,7 +70,6 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         msg.setMessageId(id);
 
         WorkContext context = createMock(WorkContext.class);
-        context.setCurrentMessageId(null);
         context.setCurrentCorrelationId(id);
         replay(context);
         Method method = AsyncTarget.class.getMethod("invoke");

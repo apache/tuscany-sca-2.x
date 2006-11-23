@@ -44,8 +44,8 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
 public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHandler
     implements WireInvocationHandler, InvocationHandler {
 
-    private WorkContext context;
-    private InboundWire inboundWire;
+    private transient WorkContext context;
+    private transient InboundWire inboundWire;
 
     public JDKCallbackInvocationHandler(WorkContext context, InboundWire inboundWire) {
         this.context = context;

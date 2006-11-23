@@ -39,6 +39,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  */
 public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandler
     implements WireInvocationHandler, InvocationHandler {
+    private static final long serialVersionUID = -307902641125881043L;
 
     /*
      * an association of an operation to chain holder. The holder contains the invocation chain
@@ -99,7 +100,6 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        context.setCurrentMessageId(null);
         context.setCurrentCorrelationId(null);
         return invoke(chain, invoker, args);
     }
@@ -108,6 +108,8 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
     }
+
+
 
     /**
      * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from
