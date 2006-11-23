@@ -68,7 +68,6 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
         try {
             workScheduler.scheduleWork(new Runnable() {
                 public void run() {
-                    workContext.setCurrentMessageId(null);
                     workContext.setCurrentCorrelationId(null);
                     // if we got a conversation id, transfer it to new thread
                     if (conversationID != null) {

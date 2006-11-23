@@ -27,19 +27,15 @@ import java.util.LinkedList;
  */
 public interface WorkContext {
 
-    Object getCurrentMessageId();
-
-    void setCurrentMessageId(Object messageId);
-
     Object getCurrentCorrelationId();
 
     void setCurrentCorrelationId(Object correlationId);
-    
+
     /**
      * Returns the current chain of SCAObject addresses
      */
     LinkedList<Object> getCurrentCallbackRoutingChain();
-    
+
     /**
      * Sets the current stack of SCAObject addresses
      */

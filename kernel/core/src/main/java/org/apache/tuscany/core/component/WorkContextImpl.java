@@ -32,18 +32,11 @@ import org.apache.tuscany.spi.component.WorkContext;
  * @version $Rev$ $Date$
  */
 public class WorkContextImpl implements WorkContext {
-
     private static final Object REMOTE_CONTEXT = new Object();
-    private static final Object MESSAGE_ID = new Object();
     private static final Object CORRELATION_ID = new Object();
     private static final Object CALLBACK_ROUTING_CHAIN = new Object();
 
-    // TODO implement propagation strategy for creating new threads
-
-    //A map ( associated with the current thread) of scope identifiers keyed on the event context id type.
-    //The scope identifier may be a {@link ScopeIdentifier} or an opaque id
-
-    // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children 
+    // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children
     private ThreadLocal<Map<Object, Object>> workContext = new ThreadLocal<Map<Object, Object>>();
 
     // [rfeng] Session id requires InheritableThreadLocal
@@ -51,23 +44,6 @@ public class WorkContextImpl implements WorkContext {
 
     public WorkContextImpl() {
         super();
-    }
-
-    public Object getCurrentMessageId() {
-        Map<Object, Object> map = workContext.get();
-        if (map == null) {
-            return null;
-        }
-        return map.get(MESSAGE_ID);
-    }
-
-    public void setCurrentMessageId(Object messageId) {
-        Map<Object, Object> map = workContext.get();
-        if (map == null) {
-            map = new IdentityHashMap<Object, Object>();
-            workContext.set(map);
-        }
-        map.put(MESSAGE_ID, messageId);
     }
 
     public Object getCurrentCorrelationId() {
