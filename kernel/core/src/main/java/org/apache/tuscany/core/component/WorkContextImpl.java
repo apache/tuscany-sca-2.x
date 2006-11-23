@@ -22,6 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -35,6 +36,7 @@ public class WorkContextImpl implements WorkContext {
     private static final Object REMOTE_CONTEXT = new Object();
     private static final Object CORRELATION_ID = new Object();
     private static final Object CALLBACK_ROUTING_CHAIN = new Object();
+    private static final Object CURRENT_ATOMIC = new Object();
 
     // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children
     private ThreadLocal<Map<Object, Object>> workContext = new ThreadLocal<Map<Object, Object>>();
@@ -55,12 +57,21 @@ public class WorkContextImpl implements WorkContext {
     }
 
     public void setCurrentCorrelationId(Object correlationId) {
+        Map<Object, Object> map = getWorkContextMap();
+        map.put(CORRELATION_ID, correlationId);
+    }
+
+    public Object getCurrentAtomicComponent() {
         Map<Object, Object> map = workContext.get();
         if (map == null) {
-            map = new IdentityHashMap<Object, Object>();
-            workContext.set(map);
+            return null;
         }
-        map.put(CORRELATION_ID, correlationId);
+        return map.get(CURRENT_ATOMIC);
+    }
+
+    public void setCurrentAtomicComponent(AtomicComponent component) {
+        Map<Object, Object> map = getWorkContextMap();
+        map.put(CURRENT_ATOMIC, component);
     }
 
     @SuppressWarnings("unchecked")
@@ -73,11 +84,7 @@ public class WorkContextImpl implements WorkContext {
     }
 
     public void setCurrentCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
-        Map<Object, Object> map = workContext.get();
-        if (map == null) {
-            map = new IdentityHashMap<Object, Object>();
-            workContext.set(map);
-        }
+        Map<Object, Object> map = getWorkContextMap();
         map.put(CALLBACK_ROUTING_CHAIN, callbackRoutingChain);
     }
 
@@ -91,11 +98,7 @@ public class WorkContextImpl implements WorkContext {
 
 
     public void setRemoteComponent(CompositeComponent component) {
-        Map<Object, Object> map = workContext.get();
-        if (map == null) {
-            map = new IdentityHashMap<Object, Object>();
-            workContext.set(map);
-        }
+        Map<Object, Object> map = getWorkContextMap();
         map.put(REMOTE_CONTEXT, component);
     }
 
@@ -136,4 +139,12 @@ public class WorkContextImpl implements WorkContext {
         inheritableContext.remove();
     }
 
+    private Map<Object, Object> getWorkContextMap() {
+        Map<Object, Object> map = workContext.get();
+        if (map == null) {
+            map = new IdentityHashMap<Object, Object>();
+            workContext.set(map);
+        }
+        return map;
+    }
 }
