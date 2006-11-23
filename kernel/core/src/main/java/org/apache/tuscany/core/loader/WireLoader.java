@@ -45,11 +45,9 @@ import org.apache.tuscany.spi.model.WireDefinition;
  * @version $Rev: 465084 $ $Date: 2006-10-18 04:00:49 +0530 (Wed, 18 Oct 2006) $
  */
 public class WireLoader extends LoaderExtension<WireDefinition> {
-    public static final QName WIRE = new QName(XML_NAMESPACE_1_0, "wire");
-
-    public static final QName SOURCE_URI = new QName(XML_NAMESPACE_1_0, "source.uri");
-
-    public static final QName TARGET_URI = new QName(XML_NAMESPACE_1_0, "target.uri");
+    private static final QName WIRE = new QName(XML_NAMESPACE_1_0, "wire");
+    private static final QName SOURCE_URI = new QName(XML_NAMESPACE_1_0, "source.uri");
+    private static final QName TARGET_URI = new QName(XML_NAMESPACE_1_0, "target.uri");
 
     @Constructor({"registry"})
     public WireLoader(@Autowire LoaderRegistry registry) {
@@ -65,10 +63,10 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
                                XMLStreamReader reader,
                                DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert WIRE.equals(reader.getName());
-        WireDefinition wireDefn = null;
+        WireDefinition wireDefn;
         URI sourceURI = null;
         URI targetURI = null;
-        String uriString = null;
+        String uriString;
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
@@ -78,24 +76,41 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
                             if (uriString != null && uriString.trim().length() > 0) {
                                 sourceURI = new URI(uriString);
                             } else {
-                                throw new InvalidWireException("Source not defined "
-                                    + " inside 'Wire' definition in composite " + parent.getName());
+                                int line = reader.getLocation().getLineNumber();
+                                int col = reader.getLocation().getColumnNumber();
+                                InvalidWireException e = new InvalidWireException("Wire source not defined");
+                                e.setIdentifier(line + "," + col);
+                                e.addContextName(parent.getName());
+                                throw e;
                             }
                         } else if (reader.getName().equals(TARGET_URI)) {
                             uriString = reader.getElementText();
                             if (uriString != null && uriString.trim().length() > 0) {
                                 targetURI = new URI(uriString);
                             } else {
-                                throw new InvalidWireException("Target not defined "
-                                    + " inside 'Wire' definition in composite " + parent.getName());
+                                int line = reader.getLocation().getLineNumber();
+                                int col = reader.getLocation().getColumnNumber();
+                                InvalidWireException e = new InvalidWireException("Wire target not defined");
+                                e.setIdentifier(line + "," + col);
+                                e.addContextName(parent.getName());
+                                throw e;
                             }
                         } else {
-                            throw new InvalidWireException("Unrecognized Element " + reader.getName()
-                                + " inside 'Wire' definition in composite " + parent.getName());
+                            int line = reader.getLocation().getLineNumber();
+                            int col = reader.getLocation().getColumnNumber();
+                            QName name = reader.getName();
+                            InvalidWireException e = new InvalidWireException("Unrecognized element in wire '" + name);
+                            e.setIdentifier(line + "," + col);
+                            e.addContextName(parent.getName());
+                            throw e;
                         }
                     } catch (URISyntaxException e) {
-                        throw new InvalidWireException("Exception loading wire info from scdl due to problems "
-                            + "with source or target URIs - " + e);
+                        int line = reader.getLocation().getLineNumber();
+                        int col = reader.getLocation().getColumnNumber();
+                        InvalidWireException iwe = new InvalidWireException("Invalid wire uri", e);
+                        iwe.setIdentifier(line + "," + col);
+                        iwe.addContextName(parent.getName());
+                        throw iwe;
                     }
 
                     reader.next();
@@ -107,8 +122,12 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
                             wireDefn.setSource(sourceURI);
                             wireDefn.setTarget(targetURI);
                         } else {
-                            throw new InvalidWireException("Incomplete Wire Element Defintion " + " in composite "
-                                + parent.getName());
+                            int line = reader.getLocation().getLineNumber();
+                            int col = reader.getLocation().getColumnNumber();
+                            InvalidWireException e = new InvalidWireException("Incomplete wire definition");
+                            e.setIdentifier(line + "," + col);
+                            e.addContextName(parent.getName());
+                            throw e;
                         }
                         return wireDefn;
                     }
