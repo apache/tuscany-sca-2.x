@@ -18,10 +18,6 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
@@ -36,6 +32,7 @@ import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -44,10 +41,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 /**
  * @version $Rev$ $Date$
@@ -73,7 +71,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }
-    
+
     public void testConversational() throws Throwable {
         OutboundWire outboundWire = createMock(OutboundWire.class);
         Map<Operation<?>, OutboundInvocationChain> outboundChains =
@@ -101,49 +99,49 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         replay(outboundWire);
 
         Object convID = new Object();
-        wc.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convID);
+        wc.setIdentifier(Scope.CONVERSATIONAL, convID);
         invoker.setCurrentConversationID(convID);
-        
+
         outboundContract.setRemotable(true);
         invoker.setRemotableTest(true);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outboundWire, wc);
-        handler.invoke(Foo.class.getMethod("test", new Class[] {String.class}), new Object[] {"bar"});
-        Object currentConvID = wc.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER);
+        handler.invoke(Foo.class.getMethod("test", new Class[]{String.class}), new Object[]{"bar"});
+        Object currentConvID = wc.getIdentifier(Scope.CONVERSATIONAL);
         assertSame(convID, currentConvID);
-        
+
         outboundContract.setRemotable(false);
         invoker.setRemotableTest(false);
         JDKOutboundInvocationHandler handler2 = new JDKOutboundInvocationHandler(outboundWire, wc);
-        handler2.invoke(Foo.class.getMethod("test", new Class[] {String.class}), new Object[] {"bar"});
-        currentConvID = wc.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER);
+        handler2.invoke(Foo.class.getMethod("test", new Class[]{String.class}), new Object[]{"bar"});
+        currentConvID = wc.getIdentifier(Scope.CONVERSATIONAL);
         assertSame(convID, currentConvID);
     }
 
     private interface Foo {
         String test(String s);
     }
-    
+
     private class MockInvoker implements TargetInvoker {
-        
+
         private WorkContext wc;
         private Object currentConversationID;
         private boolean remotableTest;
-        
+
         public MockInvoker(WorkContext wc) {
             this.wc = wc;
         }
-        
+
         public void setCurrentConversationID(Object id) {
             currentConversationID = id;
         }
-        
+
         public void setRemotableTest(boolean remotableTest) {
             this.remotableTest = remotableTest;
         }
 
         public Object invokeTarget(final Object payload) throws InvocationTargetException {
             assertEquals("bar", Array.get(payload, 0));
-            Object convID = wc.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER);
+            Object convID = wc.getIdentifier(Scope.CONVERSATIONAL);
             if (remotableTest) {
                 assertNotSame(convID, currentConversationID);
             } else {

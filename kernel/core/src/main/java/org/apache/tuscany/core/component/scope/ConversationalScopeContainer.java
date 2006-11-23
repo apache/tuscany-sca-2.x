@@ -43,9 +43,7 @@ import org.osoa.sca.SessionEndedException;
  * @version $Rev: 452655 $ $Date: 2006-10-03 18:09:02 -0400 (Tue, 03 Oct 2006) $
  */
 public class ConversationalScopeContainer extends AbstractScopeContainer {
-
-    public static final Object CONVERSATIONAL_IDENTIFIER = new Object();
-    public static final long CONVERSATION_MAX_AGE = 10 * 1000;
+    private static final long CONVERSATION_MAX_AGE = 10 * 1000;
     
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
@@ -71,7 +69,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         checkInit();
         if (event instanceof ConversationStart) {
             Object key = ((ConversationStart) event).getId();
-            workContext.setIdentifier(CONVERSATIONAL_IDENTIFIER, key);
+            workContext.setIdentifier(Scope.CONVERSATIONAL, key);
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
                     getInstance(entry.getKey(), key);
@@ -105,7 +103,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     }
 
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
-        Object key = workContext.getIdentifier(CONVERSATIONAL_IDENTIFIER);
+        Object key = workContext.getIdentifier(Scope.CONVERSATIONAL);
         assert key != null : "Conversational session id not bound in work component";
         InstanceWrapper wrapper = getInstance(component, key);
         if (wrapper instanceof TimedoutInstanceWrapper) {

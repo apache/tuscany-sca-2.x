@@ -28,13 +28,12 @@ import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-
-import static org.apache.tuscany.core.component.scope.ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER;
 
 
 /**
@@ -133,16 +132,16 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
         if (contractIsConversational) {
             assert workContext != null : "Work context cannot be null for conversational invocation";
             // Check for a conv id on thread and remember it
-            convIdFromThread = workContext.getIdentifier(CONVERSATIONAL_IDENTIFIER);
+            convIdFromThread = workContext.getIdentifier(Scope.CONVERSATIONAL);
             if (contractIsRemotable) {
                 if (convIdForRemotableTarget == null) {
                     convIdForRemotableTarget = new org.apache.tuscany.spi.wire.MessageId();
                 }
                 // Always use the conv id for this target
-                workContext.setIdentifier(CONVERSATIONAL_IDENTIFIER, convIdForRemotableTarget);
+                workContext.setIdentifier(Scope.CONVERSATIONAL, convIdForRemotableTarget);
             } else if (convIdFromThread == null) {
                 Object newConvId = new org.apache.tuscany.spi.wire.MessageId();
-                workContext.setIdentifier(CONVERSATIONAL_IDENTIFIER, newConvId);
+                workContext.setIdentifier(Scope.CONVERSATIONAL, newConvId);
             }
         }
 
@@ -150,7 +149,7 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
 
         if (contractIsConversational && contractIsRemotable) {
             // Make sure we restore the remembered conv id to continue propagating
-            workContext.setIdentifier(CONVERSATIONAL_IDENTIFIER, convIdFromThread);
+            workContext.setIdentifier(Scope.CONVERSATIONAL, convIdFromThread);
         }
 
         return result;

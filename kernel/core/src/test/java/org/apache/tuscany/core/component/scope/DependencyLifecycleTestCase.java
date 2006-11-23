@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -112,7 +113,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         AtomicComponent targetComponent = contexts.get("target");
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(Scope.SESSION, session);
         OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         assertNotNull(source.getPojo());
         assertEquals(2, source.getNumberInstantiated());
@@ -135,7 +136,7 @@ public class DependencyLifecycleTestCase extends TestCase {
             scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(Scope.SESSION, session);
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
         OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);

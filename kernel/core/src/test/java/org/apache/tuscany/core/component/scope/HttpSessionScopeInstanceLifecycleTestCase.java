@@ -20,6 +20,7 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -62,7 +63,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         destroyOnlyContext.start();
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(Scope.SESSION, session);
         scope.onEvent(new HttpSessionStart(this, session));
         RequestScopeInitDestroyComponent initDestroy =
             (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
@@ -106,7 +107,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(Scope.SESSION, session);
         scope.onEvent(new HttpSessionStart(this, session));
         OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);
@@ -145,7 +146,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(Scope.SESSION, session);
         scope.onEvent(new HttpSessionStart(this, session));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);

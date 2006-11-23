@@ -30,6 +30,7 @@ import java.util.concurrent.FutureTask;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -96,7 +97,7 @@ public class ScopeReferenceTestCase extends TestCase {
             moduleScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         moduleScope.onEvent(new CompositeStart(this, null));
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
@@ -107,12 +108,12 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(Scope.SESSION, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = (Target) targetComponent.getServiceInstance();
@@ -124,7 +125,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("bar", source.getTarget().getString());
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
 
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         moduleScope.onEvent(new CompositeStop(this, null));
         sessionScope.stop();
         moduleScope.stop();
@@ -223,7 +224,7 @@ public class ScopeReferenceTestCase extends TestCase {
             sessionScope, members, "target", Target.class, TargetImpl.class, sessionScope);
 
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
@@ -233,12 +234,12 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getTarget().setString("foo");
         assertEquals("foo", target.getString());
 
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(Scope.SESSION, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Source source2 = (Source) sourceComponent.getServiceInstance();
@@ -251,7 +252,7 @@ public class ScopeReferenceTestCase extends TestCase {
         source2.getTarget().setString("baz");
         assertEquals("baz", source2.getTarget().getString());
         assertEquals("baz", target2.getString());
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
         sessionScope.stop();
     }
@@ -271,7 +272,7 @@ public class ScopeReferenceTestCase extends TestCase {
             sessionScope, members, "target", Target.class, TargetImpl.class, moduleScope);
         moduleScope.onEvent(new CompositeStart(this, null));
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
@@ -282,12 +283,12 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(Scope.SESSION, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = (Target) targetComponent.getServiceInstance();
@@ -298,7 +299,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("baz", source2.getTarget().getString());
         assertEquals("baz", target2.getString());
         assertEquals("baz", target.getString());
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
         moduleScope.stop();
         sessionScope.stop();
@@ -317,7 +318,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             sessionScope, members, "target", Target.class, TargetImpl.class, requestScope);
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         requestScope.onEvent(new RequestStart(this));
         AtomicComponent sourceComponent = contexts.get("source");
@@ -348,7 +349,7 @@ public class ScopeReferenceTestCase extends TestCase {
         future.get();
         assertEquals("foo", source.getTarget().getString());
         requestScope.onEvent(new RequestEnd(this));
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
         requestScope.stop();
         sessionScope.stop();
@@ -369,7 +370,7 @@ public class ScopeReferenceTestCase extends TestCase {
             sessionScope, members, "target", Target.class, TargetImpl.class, statelessScope);
 
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
 
         AtomicComponent sourceComponent = contexts.get("source");
@@ -386,7 +387,7 @@ public class ScopeReferenceTestCase extends TestCase {
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
 
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
         sessionScope.stop();
         statelessScope.stop();
@@ -496,7 +497,7 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.start();
 
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             requestScope, members, "target", Target.class, TargetImpl.class, sessionScope);
@@ -533,7 +534,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         requestScope.onEvent(new RequestEnd(this));
         requestScope.stop();
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
         sessionScope.stop();
     }
@@ -655,7 +656,7 @@ public class ScopeReferenceTestCase extends TestCase {
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             statelessScope, members, "target", Target.class, TargetImpl.class, sessionScope);
         Object session1 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
@@ -666,12 +667,12 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session1));
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(Scope.SESSION, session2);
         sessionScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = (Target) targetComponent.getServiceInstance();
@@ -683,7 +684,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("bar", source.getTarget().getString());
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
 
-        ctx.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        ctx.clearIdentifier(Scope.SESSION);
         sessionScope.stop();
         statelessScope.stop();
     }
@@ -714,7 +715,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         //second session
         Object session2 = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        ctx.setIdentifier(Scope.SESSION, session2);
         moduleScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = (Target) targetComponent.getServiceInstance();

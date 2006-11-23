@@ -28,6 +28,8 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.model.Scope;
+
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -59,7 +61,7 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         context.start();
 
         Object session = new Object();
-        ctx.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        ctx.setIdentifier(Scope.SESSION, session);
         scope.onEvent(new HttpSessionStart(this, session));
         Object instance = context.getServiceInstance();
         assertSame(instance, context.getServiceInstance());

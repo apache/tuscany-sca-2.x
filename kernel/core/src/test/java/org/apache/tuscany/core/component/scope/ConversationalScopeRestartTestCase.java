@@ -29,6 +29,7 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 
@@ -59,7 +60,7 @@ public class ConversationalScopeRestartTestCase extends TestCase {
         context.start();
 
         Object conversation = new Object();
-        ctx.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation);
+        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         Object instance = context.getServiceInstance();
         assertSame(instance, context.getServiceInstance());
