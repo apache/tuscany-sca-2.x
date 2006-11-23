@@ -20,6 +20,7 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -43,6 +44,21 @@ public class WorkContextTestCase extends TestCase {
     public void testNonSetRemoteComponent() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         assertNull(ctx.getRemoteComponent());
+    }
+
+    public void testSetCurrentAtomicComponent() throws Exception {
+        WorkContext ctx = new WorkContextImpl();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        AtomicComponent component2 = EasyMock.createNiceMock(AtomicComponent.class);
+        ctx.setCurrentAtomicComponent(component);
+        assertEquals(component, ctx.getCurrentAtomicComponent());
+        ctx.setCurrentAtomicComponent(component2);
+        assertEquals(component2, ctx.getCurrentAtomicComponent());
+    }
+
+    public void testNonSetCurrentAtomicComponent() throws Exception {
+        WorkContext ctx = new WorkContextImpl();
+        assertNull(ctx.getCurrentAtomicComponent());
     }
 
     public void testIndentifier() throws Exception {
@@ -89,7 +105,7 @@ public class WorkContextTestCase extends TestCase {
         assertNull(ctx.getIdentifier(this));
     }
 
-    public void testSetGetMessageIds() {
+    public void testSetGetCorrelationId() {
         WorkContext context = new WorkContextImpl();
         context.setCurrentCorrelationId("msg-005");
         assertEquals(context.getCurrentCorrelationId(), "msg-005");
@@ -97,7 +113,7 @@ public class WorkContextTestCase extends TestCase {
         assertNull(context.getCurrentCorrelationId());
     }
 
-    public void testSetGetMessageIdsInNewThread() throws InterruptedException {
+    public void testSetGetCorrelationIdInNewThread() throws InterruptedException {
         WorkContext context = new WorkContextImpl();
         context.setCurrentCorrelationId("msg-005");
         assertEquals(context.getCurrentCorrelationId(), "msg-005");
@@ -108,6 +124,30 @@ public class WorkContextTestCase extends TestCase {
         assertTrue(t.passed);
         context.setCurrentCorrelationId(null);
         assertNull(context.getCurrentCorrelationId());
+    }
+
+    public void testCurrentAtomicComponentDoesNotPropagateToChildThread() throws InterruptedException {
+        // NOTE should behaviour be to propagate?
+        WorkContext context = new WorkContextImpl();
+        context.setCurrentAtomicComponent(EasyMock.createNiceMock(AtomicComponent.class));
+        TestCurrentAtomicComponentChildThread t = new TestCurrentAtomicComponentChildThread(context);
+        t.start();
+        t.join();
+        assertTrue(t.passed);
+        context.setCurrentAtomicComponent(null);
+        assertNull(context.getCurrentAtomicComponent());
+    }
+
+    public void testCurrentRemoteComponentDoesNotPropagateToChildThread() throws InterruptedException {
+        // NOTE should behaviour be to propagate?
+        WorkContext context = new WorkContextImpl();
+        context.setRemoteComponent(EasyMock.createNiceMock(CompositeComponent.class));
+        TestCurrentRemoteComponentChildThread t = new TestCurrentRemoteComponentChildThread(context);
+        t.start();
+        t.join();
+        assertTrue(t.passed);
+        context.setRemoteComponent(null);
+        assertNull(context.getRemoteComponent());
     }
 
     private static final class ChildThread extends Thread {
@@ -121,7 +161,6 @@ public class WorkContextTestCase extends TestCase {
         @Override
         public void run() {
             try {
-                //assertNull(context.getCurrentMessageId());
                 assertNull(context.getCurrentCorrelationId());
                 assertEquals("002", context.getIdentifier("TX"));
             } catch (AssertionError e) {
@@ -130,5 +169,44 @@ public class WorkContextTestCase extends TestCase {
         }
 
     }
+
+    private static final class TestCurrentAtomicComponentChildThread extends Thread {
+        private WorkContext context;
+        private boolean passed = true;
+
+        private TestCurrentAtomicComponentChildThread(WorkContext context) {
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            try {
+                assertNull(context.getCurrentAtomicComponent());
+            } catch (AssertionError e) {
+                passed = false;
+            }
+        }
+
+    }
+
+    private static final class TestCurrentRemoteComponentChildThread extends Thread {
+        private WorkContext context;
+        private boolean passed = true;
+
+        private TestCurrentRemoteComponentChildThread(WorkContext context) {
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            try {
+                assertNull(context.getRemoteComponent());
+            } catch (AssertionError e) {
+                passed = false;
+            }
+        }
+
+    }
+
 
 }

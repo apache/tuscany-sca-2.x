@@ -32,6 +32,23 @@ public interface WorkContext {
     void setCurrentCorrelationId(Object correlationId);
 
     /**
+     * Returns the current atomic component as a request is processed or null if it is not being tracked. Note that the
+     * current atomic component is typically only tracked during persistence operations involving implementation
+     * instances
+     *
+     * @return the current atomic component as a request is processed or null
+     */
+    public Object getCurrentAtomicComponent();
+
+    /**
+     * Sets the current atomic component that is handling processing of a request. Note that in most cases it will not
+     * be necessary to track this in the rumtime
+     *
+     * @param component the current atomic component
+     */
+    public void setCurrentAtomicComponent(AtomicComponent component);
+
+    /**
      * Returns the current chain of SCAObject addresses
      */
     LinkedList<Object> getCurrentCallbackRoutingChain();
