@@ -63,7 +63,6 @@ import org.apache.tuscany.core.property.PropertyHelper;
  */
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     public static final QName COMPOSITE = new QName(XML_NAMESPACE_1_0, "composite");
-
     public static final String URI_DELIMITER = "/";
 
     private final ArtifactRepository artifactRepository;
@@ -144,11 +143,11 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     protected void resolveWires(CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
         throws InvalidWireException {
         List<WireDefinition> wireDefns = composite.getDeclaredWires();
-        String sourceSCAObjectName = null;
+        String sourceSCAObjectName;
         String componentReferenceName = null;
-        int index = -1;
-        ComponentDefinition componentDefinition = null;
-        ServiceDefinition serviceDefinition = null;
+        int index;
+        ComponentDefinition componentDefinition;
+        ServiceDefinition serviceDefinition;
 
         for (WireDefinition aWireDefn : wireDefns) {
 
@@ -238,7 +237,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         // if target is not a reference of the composite
         if (composite.getReferences().get(targetSCAObjectName) == null) {
             String componentServiceName = null;
-            int index = -1;
+            int index;
 
             // if target is qualified
             index = targetSCAObjectName.indexOf(URI_DELIMITER);

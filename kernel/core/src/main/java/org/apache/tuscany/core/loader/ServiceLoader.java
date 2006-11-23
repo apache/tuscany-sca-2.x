@@ -61,7 +61,9 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         return SERVICE;
     }
 
-    public ServiceDefinition load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public ServiceDefinition load(CompositeComponent parent,
+                                  ModelObject object,
+                                  XMLStreamReader reader,
                                   DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
@@ -72,7 +74,6 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
             int i = reader.next();
             switch (i) {
                 case START_ELEMENT:
-
                     // there is a reference already using this qname which doesn't seem appropriate.
                     if (REFERENCE.equals(reader.getName())) {
                         String text = reader.getElementText();
