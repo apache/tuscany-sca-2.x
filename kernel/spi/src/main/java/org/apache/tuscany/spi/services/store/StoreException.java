@@ -16,27 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.service.persistence.store;
+package org.apache.tuscany.spi.services.store;
+
+import org.apache.tuscany.api.TuscanyException;
 
 /**
- * Thrown when an error occurs writing to persistent storage
+ * Represents a generic exception thrown by a <code>Store</code>
  *
  * @version $Rev$ $Date$
  */
-public class StoreWriteException extends StoreException {
+public class StoreException extends TuscanyException {
 
-    public StoreWriteException() {
+    public StoreException() {
     }
 
-    public StoreWriteException(String message) {
+    public StoreException(String message) {
         super(message);
     }
 
-    public StoreWriteException(String message, Throwable cause) {
+    public StoreException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public StoreWriteException(Throwable cause) {
+    public StoreException(Throwable cause) {
         super(cause);
     }
 }

@@ -27,7 +27,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
+
 import org.apache.tuscany.service.persistence.store.jdbc.Converter;
 import org.apache.tuscany.service.persistence.store.jdbc.TCCLObjectInputStream;
 

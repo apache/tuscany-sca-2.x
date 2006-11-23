@@ -21,7 +21,7 @@ package org.apache.tuscany.persistence.store.journal;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import static org.apache.tuscany.service.persistence.store.Store.NEVER;
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
 import org.easymock.EasyMock;
 
 /**

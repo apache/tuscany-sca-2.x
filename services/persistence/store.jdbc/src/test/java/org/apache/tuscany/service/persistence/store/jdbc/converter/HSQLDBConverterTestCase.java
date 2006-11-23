@@ -24,8 +24,9 @@ import java.sql.PreparedStatement;
 import java.util.UUID;
 import javax.sql.DataSource;
 
+import org.apache.tuscany.spi.services.store.Store;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.service.persistence.store.Store;
 import org.apache.tuscany.service.persistence.store.jdbc.Converter;
 import static org.apache.tuscany.service.persistence.store.jdbc.TestUtils.cleanup;
 import static org.apache.tuscany.service.persistence.store.jdbc.TestUtils.createTables;

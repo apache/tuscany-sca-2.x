@@ -32,7 +32,7 @@ import org.apache.tuscany.persistence.store.journal.JournalStore;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serialize;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
 import org.apache.tuscany.persistence.store.journal.TestUtils;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * Runs a basic throughput tests on JournalStore operations

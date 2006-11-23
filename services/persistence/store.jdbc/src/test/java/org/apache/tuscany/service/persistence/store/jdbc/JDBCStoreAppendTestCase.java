@@ -25,11 +25,12 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.services.store.Store;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.service.persistence.store.Store;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+
 import org.apache.tuscany.service.persistence.store.jdbc.converter.AbstractConverter;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
 import org.easymock.EasyMock;

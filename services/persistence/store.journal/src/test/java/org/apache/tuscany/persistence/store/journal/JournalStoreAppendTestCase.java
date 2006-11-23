@@ -21,10 +21,11 @@ package org.apache.tuscany.persistence.store.journal;
 import java.util.UUID;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.services.store.Store;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.service.persistence.store.Store;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.objectweb.howl.log.LogEventListener;

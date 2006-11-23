@@ -24,7 +24,7 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeHeader;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
-import static org.apache.tuscany.service.persistence.store.Store.NEVER;
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
 import org.objectweb.howl.log.LogRecord;
 import org.objectweb.howl.log.Configuration;
 

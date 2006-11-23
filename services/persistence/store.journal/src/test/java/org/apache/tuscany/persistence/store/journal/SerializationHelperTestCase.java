@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import static org.apache.tuscany.service.persistence.store.Store.NEVER;
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
 
 /**
  * @version $Rev$ $Date$

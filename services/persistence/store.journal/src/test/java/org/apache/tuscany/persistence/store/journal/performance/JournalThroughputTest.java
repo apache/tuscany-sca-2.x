@@ -28,7 +28,7 @@ import java.io.IOException;
 import org.apache.tuscany.persistence.store.journal.Journal;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
 import org.apache.tuscany.persistence.store.journal.TestUtils;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * Runs a basic throughput tests on Journal operations

@@ -44,7 +44,7 @@ public class Record implements Comparable {
      * @param ownerId
      * @param id         the unique id of the record
      * @param object     the object to serialize
-     * @param expiration the expirary time, {@link org.apache.tuscany.service.persistence.store.Store.NEVER} if there is
+     * @param expiration the expirary time, {@link org.apache.tuscany.spi.services.store.Store.NEVER} if there is
      *                   no expiration
      * @param operation  an <code>INSERT</code> or <code>UPDATE</code> operation
      */

@@ -23,8 +23,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.UUID;
 
-import org.apache.tuscany.service.persistence.store.StoreReadException;
-import org.apache.tuscany.service.persistence.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreReadException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * Converters mediate the particularities of specific databases and JDBC drivers such as data types during read and
@@ -89,7 +89,7 @@ public interface Converter {
      * @param id
      * @param expiration
      * @param object
-     * @throws StoreWriteException
+     * @throws org.apache.tuscany.spi.services.store.StoreWriteException
      */
     void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
         throws StoreWriteException;

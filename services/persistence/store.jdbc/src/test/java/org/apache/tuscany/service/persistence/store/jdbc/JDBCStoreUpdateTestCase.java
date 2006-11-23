@@ -25,9 +25,9 @@ import javax.sql.DataSource;
 import org.apache.tuscany.spi.component.SCAObject;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.service.persistence.store.Store;
-import static org.apache.tuscany.service.persistence.store.Store.NEVER;
-import org.apache.tuscany.service.persistence.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.Store;
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConverter;
 import org.easymock.EasyMock;
 
