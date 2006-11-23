@@ -29,6 +29,7 @@ import org.apache.tuscany.core.mock.component.ConversationalScopeInitDestroyComp
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 
@@ -48,7 +49,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         Object conversation = new Object();
-        workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation);
+        workContext.setIdentifier(Scope.CONVERSATIONAL, conversation);
         ConversationalScopeInitDestroyComponent o1 =
             (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
@@ -69,14 +70,14 @@ public class BasicConversationalScopeTestCase extends TestCase {
         SystemAtomicComponent atomicContext = createContext(scopeContext);
 
         Object conversation1 = new Object();
-        workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation1);
+        workContext.setIdentifier(Scope.CONVERSATIONAL, conversation1);
         ConversationalScopeInitDestroyComponent o1 =
             (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
 
         Object conversation2 = new Object();
-        workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation2);
+        workContext.setIdentifier(Scope.CONVERSATIONAL, conversation2);
         ConversationalScopeInitDestroyComponent o2 =
             (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertNotSame(o1, o2);

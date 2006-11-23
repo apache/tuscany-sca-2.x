@@ -34,6 +34,7 @@ import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -121,7 +122,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         HttpSessionScopeContainer scope = new HttpSessionScopeContainer(workContext);
         scope.start();
         Object session1 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(Scope.SESSION, session1);
         scope.onEvent(new HttpSessionStart(this, session1));
 
         final OutboundWire wire = getWire(scope);
@@ -132,11 +133,11 @@ public class OutboundWireToJavaTestCase extends TestCase {
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
 
-        workContext.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(Scope.SESSION);
 
         //second session
         Object session2 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        workContext.setIdentifier(Scope.SESSION, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
         Target service2 = (Target) wireService.createProxy(wire);
@@ -148,9 +149,9 @@ public class OutboundWireToJavaTestCase extends TestCase {
         assertEquals("bar", target2.getString());
 
         scope.onEvent(new HttpSessionEnd(this, session2));
-        workContext.clearIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER);
+        workContext.clearIdentifier(Scope.SESSION);
 
-        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(Scope.SESSION, session1);
         assertEquals("foo", service.getString());
 
         scope.onEvent(new HttpSessionEnd(this, session1));

@@ -26,6 +26,8 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.model.Scope;
+
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -48,7 +50,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         Object session = new Object();
-        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session);
+        workContext.setIdentifier(Scope.SESSION, session);
         SessionScopeInitDestroyComponent o1 =
             (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
@@ -69,13 +71,13 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         SystemAtomicComponent atomicContext = createContext(scopeContext);
 
         Object session1 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session1);
+        workContext.setIdentifier(Scope.SESSION, session1);
         SessionScopeInitDestroyComponent o1 =
             (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
 
         Object session2 = new Object();
-        workContext.setIdentifier(HttpSessionScopeContainer.HTTP_IDENTIFIER, session2);
+        workContext.setIdentifier(Scope.SESSION, session2);
         SessionScopeInitDestroyComponent o2 =
             (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertNotSame(o1, o2);

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import static org.apache.tuscany.core.component.scope.HttpSessionScopeContainer.HTTP_IDENTIFIER;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,12 +124,12 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector, Eve
             if (event instanceof HttpRequestStart) {
                 Object key = ((HttpRequestStart) event).getId();
                 if (null != key) {
-                    workContext.setIdentifier(HTTP_IDENTIFIER, ((HttpRequestStart) event).getId());
+                    workContext.setIdentifier(Scope.SESSION, ((HttpRequestStart) event).getId());
                 } else { // new request with no session.
-                    workContext.clearIdentifier(HTTP_IDENTIFIER);
+                    workContext.clearIdentifier(Scope.SESSION);
                 }
             } else if (event instanceof HttpRequestEnded) {
-                workContext.clearIdentifier(HTTP_IDENTIFIER);
+                workContext.clearIdentifier(Scope.SESSION);
 
             }
 

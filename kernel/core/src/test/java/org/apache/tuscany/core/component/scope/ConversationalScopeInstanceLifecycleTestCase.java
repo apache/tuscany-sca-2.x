@@ -30,6 +30,7 @@ import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
 import org.apache.tuscany.core.mock.factories.MockFactory;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -62,7 +63,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         destroyOnlyContext.start();
 
         Object conversation = new Object();
-        ctx.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation);
+        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         ConversationalScopeInitDestroyComponent initDestroy =
             (ConversationalScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
@@ -106,7 +107,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object conversation = new Object();
-        ctx.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation);
+        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);
@@ -145,7 +146,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object conversation = new Object();
-        ctx.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversation);
+        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);

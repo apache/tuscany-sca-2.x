@@ -39,9 +39,6 @@ import org.apache.tuscany.core.component.event.HttpSessionStart;
  * @version $Rev$ $Date$
  */
 public class HttpSessionScopeContainer extends AbstractScopeContainer {
-
-    public static final Object HTTP_IDENTIFIER = new Object();
-
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
@@ -63,7 +60,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
         checkInit();
         if (event instanceof HttpSessionStart) {            
             Object key = ((HttpSessionStart) event).getId();
-            workContext.setIdentifier(HTTP_IDENTIFIER, key);
+            workContext.setIdentifier(Scope.SESSION, key);
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
                     
@@ -99,7 +96,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     }
 
     protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
-        Object key = workContext.getIdentifier(HTTP_IDENTIFIER);
+        Object key = workContext.getIdentifier(Scope.SESSION);
         assert key != null : "HTTP session key not bound in work component";
         return getInstance(component, key);
     }
