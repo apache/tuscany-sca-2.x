@@ -134,12 +134,12 @@ public class SimpleTypeMapperExtension extends XSDDataTypeConverter implements S
     public static final QName XSD_YEARMONTH = new QName(URI_2001_SCHEMA_XSD, "gYearMonth");
 
     private static final String[] XSD_TYPE_NAMES =
-        {"string", "boolean", "double", "float", "int", "integer", "long", "short", "byte", "decimal",
-         "base64Binary", "hexBinary", "anySimpleType", "anyType", "any", "QName", "dateTime", "date", "time",
-         "normalizedString", "token", "unsignedLong", "unsignedInt", "unsignedShort", "unsignedByte",
-         "positiveInteger", "negativeInteger", "nonNegativeInteger", "nonPositiveInteger", "gYearMonth",
-         "gMonthDay", "gYear", "gMonth", "gDay", "duration", "Name", "NCName", "NMTOKEN", "NMTOKENS",
-         "NOTATION", "ENTITY", "ENTITIES", "IDREF", "IDREFS", "anyURI", "language", "ID"};
+    {"string", "boolean", "double", "float", "int", "integer", "long", "short", "byte", "decimal",
+        "base64Binary", "hexBinary", "anySimpleType", "anyType", "any", "QName", "dateTime", "date", "time",
+        "normalizedString", "token", "unsignedLong", "unsignedInt", "unsignedShort", "unsignedByte",
+        "positiveInteger", "negativeInteger", "nonNegativeInteger", "nonPositiveInteger", "gYearMonth",
+        "gMonthDay", "gYear", "gMonth", "gDay", "duration", "Name", "NCName", "NMTOKEN", "NMTOKENS",
+        "NOTATION", "ENTITY", "ENTITIES", "IDREF", "IDREFS", "anyURI", "language", "ID"};
 
     static {
         for (String type : XSD_TYPE_NAMES) {

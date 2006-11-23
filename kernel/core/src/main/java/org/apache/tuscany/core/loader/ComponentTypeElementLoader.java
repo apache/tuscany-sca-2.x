@@ -54,6 +54,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
         return COMPONENT_TYPE;
     }
 
+    @SuppressWarnings("unchecked")
     public ComponentType load(CompositeComponent parent,
                               ModelObject object,
                               XMLStreamReader reader,

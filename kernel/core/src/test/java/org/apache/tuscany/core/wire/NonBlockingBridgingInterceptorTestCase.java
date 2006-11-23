@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.wire;
 
-import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -26,6 +25,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
 import junit.framework.TestCase;
+import static org.apache.tuscany.core.component.scope.ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expectLastCall;
@@ -53,10 +53,10 @@ public class NonBlockingBridgingInterceptorTestCase extends TestCase {
         replay(scheduler);
         WorkContext context = createMock(WorkContext.class);
         String convID = "convID";
-        EasyMock.expect(context.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER)).andReturn(convID);
+        EasyMock.expect(context.getIdentifier(CONVERSATIONAL_IDENTIFIER)).andReturn(convID);
         context.setCurrentMessageId(null);
         context.setCurrentCorrelationId(null);
-        context.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, convID);
+        context.setIdentifier(CONVERSATIONAL_IDENTIFIER, convID);
         EasyMock.replay(context);
         Message msg = new MessageImpl();
         Interceptor next = EasyMock.createMock(Interceptor.class);

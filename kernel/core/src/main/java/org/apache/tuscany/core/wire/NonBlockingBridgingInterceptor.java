@@ -25,12 +25,13 @@ import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
-import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import static org.apache.tuscany.core.component.scope.ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER;
 
 /**
  * Bridges interceptors in a non-blocking fashion between an {@link org.apache.tuscany.spi.wire.InboundInvocationChain}
@@ -63,7 +64,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
         final CompositeContext currentContext = CurrentCompositeContext.getContext();
         // Retrieve conversation id to transfer to new thread
         // Notice that we cannot clear the conversation id from the current thread
-        final Object conversationID = workContext.getIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER);
+        final Object conversationID = workContext.getIdentifier(CONVERSATIONAL_IDENTIFIER);
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
@@ -72,7 +73,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
                     workContext.setCurrentCorrelationId(null);
                     // if we got a conversation id, transfer it to new thread
                     if (conversationID != null) {
-                        workContext.setIdentifier(ConversationalScopeContainer.CONVERSATIONAL_IDENTIFIER, conversationID);
+                        workContext.setIdentifier(CONVERSATIONAL_IDENTIFIER, conversationID);
                     }
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
@@ -159,11 +160,11 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
         public void pushFromAddress(Object fromAddress) {
             throw new UnsupportedOperationException();
         }
-        
+
         public LinkedList<Object> getCallbackRoutingChain() {
             return null;
         }
-        
+
         public void setCallbackRoutingChain(LinkedList<Object> fromAddresses) {
             throw new UnsupportedOperationException();
         }
