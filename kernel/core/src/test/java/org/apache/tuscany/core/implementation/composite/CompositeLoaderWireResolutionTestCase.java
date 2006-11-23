@@ -22,9 +22,6 @@ package org.apache.tuscany.core.implementation.composite;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.InvalidWireException;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
@@ -35,14 +32,16 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.WireDefinition;
 
+import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.java.JavaImplementation;
+
 /**
  * This class tests the wire resolution function of the composite loader
- *
  */
 public class CompositeLoaderWireResolutionTestCase extends TestCase {
     private CompositeComponentType composite;
     private CompositeLoader compositeLoader = new CompositeLoader(null, null);
-    
+
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         composite = new CompositeComponentType();
@@ -51,16 +50,16 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         ServiceDefinition serviceDefn = new ServiceDefinition("compositeService1", null, true);
         BindlessServiceDefinition bindlessSvcDefn = new BindlessServiceDefinition("bindlessSvc", null, true, null);
         BoundServiceDefinition boundSvcDefn = new BoundServiceDefinition("boundSvc", null, true, null, null);
-        BoundServiceDefinition boundSvcDefnWithTarget = 
+        BoundServiceDefinition boundSvcDefnWithTarget =
             new BoundServiceDefinition("boundSvcWithTarget", null, true, null, new URI("orgTarget"));
         composite.add(serviceDefn);
         composite.add(boundSvcDefn);
         composite.add(bindlessSvcDefn);
         composite.add(boundSvcDefnWithTarget);
-        
+
         ReferenceDefinition compositeReference = new ReferenceDefinition("compositeReference", null);
         composite.add(compositeReference);
-        
+
         PojoComponentType pojoComponentType1 = new PojoComponentType();
         ServiceDefinition pojoSvc1 = new ServiceDefinition("pojoSvc1", null, false);
         pojoComponentType1.add(pojoSvc1);
@@ -68,10 +67,10 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         pojoComponentType1.add(pojoRef1);
         JavaImplementation pojoImpl1 = new JavaImplementation();
         pojoImpl1.setComponentType(pojoComponentType1);
-        
-        ComponentDefinition  component1 = new ComponentDefinition("Component1", pojoImpl1);
+
+        ComponentDefinition component1 = new ComponentDefinition("Component1", pojoImpl1);
         composite.add(component1);
-        
+
         PojoComponentType pojoComponentType2 = new PojoComponentType();
         ServiceDefinition pojoSvc2 = new ServiceDefinition("pojoSvc2", null, false);
         pojoComponentType2.add(pojoSvc2);
@@ -83,61 +82,40 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         pojoComponentType2.add(pojoRef3);
         JavaImplementation pojoImpl2 = new JavaImplementation();
         pojoImpl2.setComponentType(pojoComponentType2);
-        
-        ComponentDefinition  component2 = new ComponentDefinition("Component2", pojoImpl2);
+
+        ComponentDefinition component2 = new ComponentDefinition("Component2", pojoImpl2);
         composite.add(component2);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2CompositeReferenceWire() throws URISyntaxException {
+    public void testCompositeSvc2CompositeReferenceWire() throws Exception {
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
         wireDefn.setTarget(new URI("compositeReference"));
         composite.add(wireDefn);
-        try {
-            compositeLoader.resolveWires(composite);
-        } catch ( InvalidWireException e ) {
-            fail();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
-        }
+        compositeLoader.resolveWires(composite);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2ComponentValid() throws URISyntaxException {
+    public void testCompositeSvc2ComponentValid() throws Exception {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
         wireDefn.setTarget(new URI("Component1"));
         composite.add(wireDefn);
-        
-        try {
-            compositeLoader.resolveWires(composite);
-        } catch ( InvalidWireException e ) {
-            fail();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
-        }
+        compositeLoader.resolveWires(composite);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void testCompositeSvc2ComponentQualifiedValid() throws URISyntaxException {
+    public void testCompositeSvc2ComponentQualifiedValid() throws Exception {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("compositeService1"));
         wireDefn.setTarget(new URI("Component2/pojoSvc3"));
         composite.add(wireDefn);
-        
-        try {
-            compositeLoader.resolveWires(composite);
-        } catch ( InvalidWireException e ) {
-            fail();
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
-        }
+        compositeLoader.resolveWires(composite);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testCompositeSvc2ComponentQualifiedInvalid() throws URISyntaxException {
         //undefined source and targets
@@ -145,17 +123,14 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         wireDefn.setSource(new URI("compositeService1"));
         wireDefn.setTarget(new URI("Component2/pojoSvc5"));
         composite.add(wireDefn);
-        
         try {
             compositeLoader.resolveWires(composite);
             fail();
-        } catch ( InvalidWireException e ) {
-           //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
+        } catch (InvalidWireException e) {
+            // expected
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testCompositeSvc2ComponentUnQualifiedInvalid() throws URISyntaxException {
         //undefined source and targets
@@ -163,53 +138,34 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         wireDefn.setSource(new URI("compositeService1"));
         wireDefn.setTarget(new URI("Component2"));
         composite.add(wireDefn);
-        
         try {
             compositeLoader.resolveWires(composite);
             fail();
-        } catch ( InvalidWireException e ) {
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
+        } catch (InvalidWireException e) {
+            // expected
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void testComponent2CompositeReferenceValid() throws URISyntaxException {
+    public void testComponent2CompositeReferenceValid() throws Exception {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component1"));
         wireDefn.setTarget(new URI("compositeReference"));
         composite.add(wireDefn);
-        
-        try {
-            compositeLoader.resolveWires(composite);
-        } catch ( InvalidWireException e ) {
-            fail();
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
-        }
+        compositeLoader.resolveWires(composite);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void testComponent2CompositeReferenceQualifiedValid() throws URISyntaxException {
+    public void testComponent2CompositeReferenceQualifiedValid() throws Exception {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component2/pojoRef3"));
         wireDefn.setTarget(new URI("compositeReference"));
         composite.add(wireDefn);
-        
-        try {
-            compositeLoader.resolveWires(composite);
-        } catch ( InvalidWireException e ) {
-            fail();
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
-        }
+        compositeLoader.resolveWires(composite);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testComponent2CompositeReferenceUnQualifiedInvalid() throws URISyntaxException {
         //undefined source and targets
@@ -217,37 +173,25 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         wireDefn.setSource(new URI("Component2"));
         wireDefn.setTarget(new URI("compositeReference"));
         composite.add(wireDefn);
-        
+
         try {
             compositeLoader.resolveWires(composite);
             fail();
-        } catch ( InvalidWireException e ) {
-            
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
+        } catch (InvalidWireException e) {
+            // expected
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    public void testComponent2ComponentQualifedValid() throws URISyntaxException {
+    public void testComponent2ComponentQualifedValid() throws Exception {
         //undefined source and targets
         WireDefinition wireDefn = new WireDefinition();
         wireDefn.setSource(new URI("Component1"));
         wireDefn.setTarget(new URI("Component2/pojoSvc3"));
         composite.add(wireDefn);
-        
-        try {
-            compositeLoader.resolveWires(composite);
-            
-        } catch ( InvalidWireException e ) {
-            fail();
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
-        }
+        compositeLoader.resolveWires(composite);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testComponent2ComponentUnQualifedInvalid() throws URISyntaxException {
         //undefined source and targets
@@ -255,18 +199,14 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         wireDefn.setSource(new URI("Component1"));
         wireDefn.setTarget(new URI("Component2"));
         composite.add(wireDefn);
-        
         try {
             compositeLoader.resolveWires(composite);
             fail();
-        } catch ( InvalidWireException e ) {
-            
-            //e.printStackTrace();
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
+        } catch (InvalidWireException e) {
+            // expected
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public void testInvalidWireDefinitions() throws URISyntaxException {
         //undefined source and targets
@@ -274,26 +214,22 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         wireDefn.setSource(new URI("undefinedSource"));
         wireDefn.setTarget(new URI("compositeReference"));
         composite.add(wireDefn);
-        
+
         try {
             compositeLoader.resolveWires(composite);
             fail();
-        } catch ( InvalidWireException e ) {
-            
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
+        } catch (InvalidWireException e) {
+            // expected
         }
-        
+
         try {
             wireDefn.setSource(new URI("compositeService1"));
             wireDefn.setTarget(new URI("undefinedTarget"));
             composite.add(wireDefn);
             compositeLoader.resolveWires(composite);
             fail();
-        } catch ( InvalidWireException e ) {
-            
-        } finally {
-            composite.getDeclaredWires().remove(wireDefn);
+        } catch (InvalidWireException e) {
+            // expected
         }
     }
 }

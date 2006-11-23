@@ -120,7 +120,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
     }
 
     private interface Foo {
-        public String test(String s);
+        String test(String s);
     }
     
     private class MockInvoker implements TargetInvoker {

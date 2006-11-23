@@ -37,9 +37,7 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Source;
 
 public final class StAXHelper {
-
     private static final XMLInputFactory INPUT_FACTORY = XMLInputFactory.newInstance();
-
     private static final XMLOutputFactory OUTPUT_FACTORY = XMLOutputFactory.newInstance();
 
     private StAXHelper() {
@@ -492,10 +490,8 @@ public final class StAXHelper {
      * The XMLStreamSerializer pulls events from the XMLStreamReader and dumps into the XMLStreamWriter
      */
     public static class XMLStreamSerializer implements XMLStreamConstants {
-
         public static final String NAMESPACE_PREFIX = "ns";
-
-        private static int namespaceSuffix = 0;
+        private static int namespaceSuffix;
 
         /*
          * The behavior of the serializer is such that it returns when it

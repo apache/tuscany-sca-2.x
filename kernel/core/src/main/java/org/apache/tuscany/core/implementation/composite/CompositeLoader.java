@@ -18,19 +18,17 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
-
 import javax.xml.namespace.QName;
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.property.PropertyHelper;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
@@ -56,9 +54,11 @@ import org.apache.tuscany.spi.model.WireDefinition;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
 
+import org.apache.tuscany.core.property.PropertyHelper;
+
 /**
  * Loads a composite component definition from an XML-based assembly file
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
@@ -68,9 +68,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
 
     private final ArtifactRepository artifactRepository;
 
-    public CompositeLoader(@Autowire
-    LoaderRegistry registry, @Autowire
-    ArtifactRepository artifactRepository) {
+    public CompositeLoader(@Autowire LoaderRegistry registry, @Autowire ArtifactRepository artifactRepository) {
         super(registry);
         this.artifactRepository = artifactRepository;
     }
@@ -80,9 +78,9 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     }
 
     public CompositeComponentType load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
-            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+                                       DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
-                new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+            new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         composite.setName(reader.getAttributeValue(null, "name"));
         boolean done = false;
         while (!done) {
@@ -144,7 +142,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     }
 
     protected void resolveWires(CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
-            throws InvalidWireException {
+        throws InvalidWireException {
         List<WireDefinition> wireDefns = composite.getDeclaredWires();
         String sourceSCAObjectName = null;
         String componentReferenceName = null;
@@ -166,12 +164,13 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                     ((BoundServiceDefinition) serviceDefinition).setTarget(aWireDefn.getTarget());
                 } else {
                     BindlessServiceDefinition bindlessSvcDefn =
-                            new BindlessServiceDefinition(serviceDefinition.getName(), serviceDefinition
-                                    .getServiceContract(), false, aWireDefn.getTarget());
+                        new BindlessServiceDefinition(serviceDefinition.getName(), serviceDefinition
+                            .getServiceContract(), false, aWireDefn.getTarget());
                     composite.getDeclaredServices().put(sourceSCAObjectName, bindlessSvcDefn);
                 }
             } else {
-                if ((index = sourceSCAObjectName.indexOf(URI_DELIMITER)) != -1) {
+                index = sourceSCAObjectName.indexOf(URI_DELIMITER);
+                if (index != -1) {
                     componentReferenceName = sourceSCAObjectName.substring(index + 1);
                     sourceSCAObjectName = sourceSCAObjectName.substring(0, index);
                 }
@@ -179,11 +178,11 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                 componentDefinition = composite.getDeclaredComponents().get(sourceSCAObjectName);
                 if (componentDefinition != null) {
                     componentDefinition.add(createReferenceTarget(componentReferenceName, aWireDefn.getTarget(),
-                            componentDefinition));
+                        componentDefinition));
                 } else {
                     InvalidWireException le =
-                            new InvalidWireException("Unable to resolve wire source '" + sourceSCAObjectName
-                                    + "' in composite " + composite.getName());
+                        new InvalidWireException("Unable to resolve wire source '" + sourceSCAObjectName
+                            + "' in composite " + composite.getName());
                     le.addContextName("composite=" + composite.getName());
                     le.setIdentifier(sourceSCAObjectName);
                     throw le;
@@ -193,20 +192,20 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     }
 
     private ReferenceTarget createReferenceTarget(String componentReferenceName, URI target,
-            ComponentDefinition componentDefn) throws InvalidWireException {
+                                                  ComponentDefinition componentDefn) throws InvalidWireException {
         ComponentType componentType = componentDefn.getImplementation().getComponentType();
         if (componentReferenceName == null) {
             // if there is ambiguity in determining the source of the wire or
             // there is no reference to be wired
             if (componentType.getReferences().size() > 1 || componentType.getReferences().isEmpty()) {
                 InvalidWireException le =
-                        new InvalidWireException("Unable to determine unique component reference for wire...");
+                    new InvalidWireException("Unable to determine unique component reference for wire...");
                 le.addContextName("loading wire defintions for " + componentDefn.getName());
                 le.setIdentifier(componentDefn.getName() + "/?->" + target.toString());
                 throw le;
             } else {
                 componentReferenceName =
-                        ((ReferenceDefinition) componentType.getReferences().values().iterator().next()).getName();
+                    ((ReferenceDefinition) componentType.getReferences().values().iterator().next()).getName();
             }
         }
 
@@ -217,13 +216,13 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     }
 
     protected void verifyCompositeCompleteness(
-            CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
-            throws InvalidServiceException {
+        CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
+        throws InvalidServiceException {
         // check if all of the composites services have been wired
         for (ServiceDefinition svcDefn : composite.getDeclaredServices().values()) {
             if (svcDefn instanceof BoundServiceDefinition && ((BoundServiceDefinition) svcDefn).getTarget() == null) {
                 InvalidServiceException le =
-                        new InvalidServiceException("Composite service not wired to any target...");
+                    new InvalidServiceException("Composite service not wired to any target...");
                 le.addContextName("loading composite " + composite.getName());
                 le.setIdentifier(svcDefn.getName());
                 throw le;
@@ -232,8 +231,8 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     }
 
     private void validateTarget(URI target,
-            CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
-            throws InvalidWireException {
+                                CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
+        throws InvalidWireException {
         String targetSCAObjectName = target.toString();
 
         // if target is not a reference of the composite
@@ -242,7 +241,8 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             int index = -1;
 
             // if target is qualified
-            if ((index = targetSCAObjectName.indexOf(URI_DELIMITER)) != -1) {
+            index = targetSCAObjectName.indexOf(URI_DELIMITER);
+            if (index != -1) {
                 componentServiceName = targetSCAObjectName.substring(index + 1);
                 targetSCAObjectName = targetSCAObjectName.substring(0, index);
             }
@@ -252,21 +252,21 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             if (componentDefinition != null) {
                 if (componentServiceName == null) {
                     if (componentDefinition.getImplementation().getComponentType().getServices().size() > 1
-                            || componentDefinition.getImplementation().getComponentType().getServices().isEmpty()) {
+                        || componentDefinition.getImplementation().getComponentType().getServices().isEmpty()) {
                         InvalidWireException le =
-                                new InvalidWireException("Ambiguous target '" + componentDefinition.getName()
-                                        + "' for wire definitions in composite - " + composite.getName());
+                            new InvalidWireException("Ambiguous target '" + componentDefinition.getName()
+                                + "' for wire definitions in composite - " + composite.getName());
                         le.addContextName("loading composite " + composite.getName());
                         le.setIdentifier(componentDefinition.getName());
                         throw le;
                     }
                 } else {
                     if (componentDefinition.getImplementation().getComponentType().getServices().get(
-                            componentServiceName) == null) {
+                        componentServiceName) == null) {
                         InvalidWireException le =
-                                new InvalidWireException("Invalid target '" + targetSCAObjectName + "/"
-                                        + componentServiceName + "' for wire definitions in composite - "
-                                        + composite.getName());
+                            new InvalidWireException("Invalid target '" + targetSCAObjectName + "/"
+                                + componentServiceName + "' for wire definitions in composite - "
+                                + composite.getName());
                         le.addContextName("loading composite " + composite.getName());
                         le.setIdentifier(targetSCAObjectName + "/" + componentServiceName);
                         throw le;
@@ -274,8 +274,8 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                 }
             } else {
                 InvalidWireException le =
-                        new InvalidWireException("Invalid target '" + targetSCAObjectName
-                                + "' for wire definitions in composite - " + composite.getName());
+                    new InvalidWireException("Invalid target '" + targetSCAObjectName
+                        + "' for wire definitions in composite - " + composite.getName());
                 le.addContextName("loading composite " + composite.getName());
                 le.setIdentifier(targetSCAObjectName);
                 throw le;
