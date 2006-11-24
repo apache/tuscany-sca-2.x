@@ -59,8 +59,8 @@ public class JournalStoreAppendTestCase extends TestCase {
         journal.open();
         final UUID id = UUID.randomUUID();
         EasyMock.expect(journal.writeHeader(EasyMock.isA(byte[].class), EasyMock.eq(false)))
-            .andStubAnswer(new IAnswer() {
-                public Object answer() throws Throwable {
+            .andStubAnswer(new IAnswer<Long>() {
+                public Long answer() throws Throwable {
                     Header header = new Header();
                     header.setFields(new byte[][]{(byte[]) EasyMock.getCurrentArguments()[0]});
                     // deserialize the message to test the format is correct
@@ -77,10 +77,10 @@ public class JournalStoreAppendTestCase extends TestCase {
                 }
             });
         EasyMock.expect(journal.writeBlock(EasyMock.isA(byte[].class), EasyMock.isA(byte[].class), EasyMock.eq(true)))
-            .andStubAnswer(new IAnswer() {
-                public Object answer() throws Throwable {
+            .andStubAnswer(new IAnswer<Long>() {
+                public Long answer() throws Throwable {
                     byte[] payload = (byte[]) EasyMock.getCurrentArguments()[0];
-                    assertTrue("Block data incorrect", "test".equals(SerializationHelper.deserialize(payload)));
+                    assertTrue("Block data incorrect", "test".equals(SerializationHelper.deserialize(payload, null)));
                     return 1L;
                 }
             });

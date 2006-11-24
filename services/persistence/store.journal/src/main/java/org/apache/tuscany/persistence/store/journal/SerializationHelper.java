@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.WorkContext;
+
 /**
  * Utility methods for processing journal records
  *
@@ -54,10 +57,17 @@ public final class SerializationHelper {
     /**
      * Deserializes an object using the TCCL
      *
-     * @param bytes the serialized object byte array
+     * @param bytes       the serialized object byte array
+     * @param workContext the current work context
      */
-    public static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        return new TCCLObjectInputStream(new ByteArrayInputStream(bytes)).readObject();
+    public static Object deserialize(byte[] bytes, WorkContext workContext) throws IOException, ClassNotFoundException {
+        Object o = new TCCLObjectInputStream(new ByteArrayInputStream(bytes)).readObject();
+        if (o instanceof SCAExternalizable) {
+            SCAExternalizable externalizable = (SCAExternalizable) o;
+            externalizable.setWorkContext(workContext);
+            externalizable.reactivate();
+        }
+        return o;
     }
 
     /**
