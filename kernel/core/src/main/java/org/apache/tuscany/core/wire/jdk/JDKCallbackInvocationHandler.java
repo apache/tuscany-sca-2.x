@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ReactivationException;
-import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;

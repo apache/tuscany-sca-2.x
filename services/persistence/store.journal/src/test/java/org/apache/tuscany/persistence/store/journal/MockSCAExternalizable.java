@@ -24,7 +24,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.apache.tuscany.spi.ReactivationException;
-import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**

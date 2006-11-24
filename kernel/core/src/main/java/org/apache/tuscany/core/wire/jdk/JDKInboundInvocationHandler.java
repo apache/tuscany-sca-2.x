@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ReactivationException;
-import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi;
+package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.ReactivationException;
 
 /**
  * A serialization contract for runtime SCA artifacts. When an instance is deserialized, runtime services defined in
@@ -38,7 +38,8 @@ public interface SCAExternalizable {
     /**
      * Callback after all values have been set prior to making the instance available in the runtime
      *
-     * @throws ReactivationException
+     * @throws org.apache.tuscany.spi.ReactivationException
+     *
      */
     void reactivate() throws ReactivationException;
 }
