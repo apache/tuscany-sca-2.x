@@ -21,6 +21,7 @@ package org.apache.tuscany.core.services.store.memory;
 import java.util.UUID;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 
@@ -31,9 +32,10 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class MemoryStoreTestCase extends TestCase {
+    private StoreMonitor monitor;
 
     public void testEviction() throws Exception {
-        MemoryStore store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
+        MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
@@ -47,7 +49,7 @@ public class MemoryStoreTestCase extends TestCase {
     }
 
     public void testNoEviction() throws Exception {
-        MemoryStore store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
+        MemoryStore store = new MemoryStore(monitor);
         store.setReaperInterval(10);
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
@@ -60,5 +62,71 @@ public class MemoryStoreTestCase extends TestCase {
         store.destroy();
     }
 
+    public void testInsertRecord() throws Exception {
+        MemoryStore store = new MemoryStore(monitor);
+        store.setReaperInterval(10);
+        store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        UUID id = UUID.randomUUID();
+        Object value = new Object();
+        store.insertRecord(component, id, value, Store.NEVER);
+        store.destroy();
+    }
+
+    public void testInsertAlreadyExists() throws Exception {
+        MemoryStore store = new MemoryStore(monitor);
+        store.setReaperInterval(10);
+        store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        UUID id = UUID.randomUUID();
+        Object value = new Object();
+        store.insertRecord(component, id, value, Store.NEVER);
+        try {
+            store.insertRecord(component, id, value, Store.NEVER);
+            fail();
+        } catch (DuplicateRecordException e) {
+            //expected
+        }
+        store.destroy();
+    }
+
+    public void testUpdateRecord() throws Exception {
+        MemoryStore store = new MemoryStore(monitor);
+        store.setReaperInterval(10);
+        store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        UUID id = UUID.randomUUID();
+        Object value = new Object();
+        Object newValue = new Object();
+
+        store.insertRecord(component, id, value, Store.NEVER);
+        store.updateRecord(component, id, newValue, 1L);
+        assertEquals(newValue, store.readRecord(component, id));
+        store.destroy();
+    }
+
+    public void testDeleteRecord() throws Exception {
+        MemoryStore store = new MemoryStore(monitor);
+        store.setReaperInterval(10);
+        store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        UUID id = UUID.randomUUID();
+        Object value = new Object();
+
+        store.insertRecord(component, id, value, Store.NEVER);
+        store.removeRecord(component, id);
+        assertNull(store.readRecord(component, id));
+        store.destroy();
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        monitor = EasyMock.createNiceMock(StoreMonitor.class);
+        EasyMock.replay(monitor);
+    }
 
 }

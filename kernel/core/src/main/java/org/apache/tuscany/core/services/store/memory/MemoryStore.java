@@ -31,6 +31,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
@@ -86,6 +87,11 @@ public class MemoryStore implements Store {
         if (map == null) {
             map = new ConcurrentHashMap<UUID, Record>();
             store.put(owner, map);
+        }
+        if (map.containsKey(id)) {
+            DuplicateRecordException e = new DuplicateRecordException();
+            e.setIdentifier(owner.getCanonicalName());
+            throw e;
         }
         map.put(id, new Record(object, expiration));
     }
