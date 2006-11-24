@@ -18,11 +18,16 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
+import static org.apache.tuscany.persistence.store.journal.SerializationHelper.deserialize;
+
 import java.util.List;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 import static org.apache.tuscany.spi.services.store.Store.NEVER;
+import org.apache.tuscany.spi.component.WorkContext;
+
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -55,9 +60,16 @@ public class SerializationHelperTestCase extends TestCase {
         assertEquals("this is a test", new String(chunk));
     }
 
-    public void testSerializeDeserialize() throws Exception {
+    public void testSerializeDeserializeNonSCAExternalizable() throws Exception {
         byte[] bytes = SerializationHelper.serialize("foo");
-        assertEquals("foo", SerializationHelper.deserialize(bytes));
+        assertEquals("foo", deserialize(bytes, null));
+    }
+
+    public void testSerializeDeserializeSCAExternalizable() throws Exception {
+        byte[] bytes = SerializationHelper.serialize(new MockSCAExternalizable());
+        WorkContext context = EasyMock.createNiceMock(WorkContext.class);
+        MockSCAExternalizable externalized = (MockSCAExternalizable) deserialize(bytes, context);
+        assertTrue(externalized.isReactivated());
     }
 
     public void testDeserializeHeader() throws Exception {
@@ -78,5 +90,6 @@ public class SerializationHelperTestCase extends TestCase {
             fields = new byte[][]{bytes};
         }
     }
+
 
 }
