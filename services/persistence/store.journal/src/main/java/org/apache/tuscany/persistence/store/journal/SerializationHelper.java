@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 
 /**
