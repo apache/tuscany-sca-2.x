@@ -84,7 +84,7 @@ public class JournalStoreThroughputTest {
             }
         });
         for (int i = 0; i < SIZE; i++) {
-            threads[i] = new Thread(new AppendWorker(true));
+            threads[i] = new Thread(new InsertWorker(true));
         }
         now = System.currentTimeMillis();
         for (int i = 0; i < SIZE; i++) {
@@ -92,16 +92,16 @@ public class JournalStoreThroughputTest {
         }
     }
 
-    private class AppendWorker implements Runnable {
+    private class InsertWorker implements Runnable {
         boolean forced;
 
-        public AppendWorker(boolean forced) {
+        public InsertWorker(boolean forced) {
             this.forced = forced;
         }
 
         public void run() {
             try {
-                store.appendRecord(owner, id, object, expire);
+                store.insertRecord(owner, id, object, expire);
                 barrier.await();
             } catch (StoreWriteException e) {
                 e.printStackTrace();

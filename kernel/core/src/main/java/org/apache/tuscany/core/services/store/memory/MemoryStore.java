@@ -81,7 +81,7 @@ public class MemoryStore implements Store {
         monitor.stop("In-memory store stopped");
     }
 
-    public void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+    public void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
         Map<UUID, Record> map = store.get(owner);
         if (map == null) {
             map = new ConcurrentHashMap<UUID, Record>();

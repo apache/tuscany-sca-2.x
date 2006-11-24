@@ -33,7 +33,7 @@ import org.objectweb.howl.log.LogEventListener;
 /**
  * @version $Rev$ $Date$
  */
-public class JournalStoreAppendTestCase extends TestCase {
+public class JournalStoreInsertTestCase extends TestCase {
     @SuppressWarnings({"FieldCanBeLocal"})
     private JournalStore store;
     private SCAObject owner;
@@ -52,7 +52,7 @@ public class JournalStoreAppendTestCase extends TestCase {
         EasyMock.verify(journal);
     }
 
-    public void testAppendRecord() throws Exception {
+    public void testInsertRecord() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         Journal journal = EasyMock.createMock(Journal.class);
         journal.setLogEventListener(EasyMock.isA(LogEventListener.class));
@@ -89,7 +89,7 @@ public class JournalStoreAppendTestCase extends TestCase {
         store = new JournalStore(monitor, journal) {
         };
         store.init();
-        store.appendRecord(owner, id, "test", Store.NEVER);
+        store.insertRecord(owner, id, "test", Store.NEVER);
         store.destroy();
         EasyMock.verify(journal);
     }
@@ -98,7 +98,7 @@ public class JournalStoreAppendTestCase extends TestCase {
      * Verifies that a written record will be cached. This is verified by the fact that long-term storage is never
      * accessed.
      */
-    public void testAppendRecordCache() throws Exception {
+    public void testInsertRecordCache() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         Journal journal = EasyMock.createMock(Journal.class);
         journal.setLogEventListener(EasyMock.isA(LogEventListener.class));
@@ -112,7 +112,7 @@ public class JournalStoreAppendTestCase extends TestCase {
         store = new JournalStore(monitor, journal) {
         };
         store.init();
-        store.appendRecord(owner, id, "test", Store.NEVER);
+        store.insertRecord(owner, id, "test", Store.NEVER);
         assertEquals("test", store.readRecord(owner, id));
         store.destroy();
         EasyMock.verify(journal);

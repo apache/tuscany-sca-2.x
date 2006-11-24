@@ -363,7 +363,7 @@ public class JournalStore implements Store {
         }
     }
 
-    public void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+    public void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
         write(owner, id, object, expiration, Header.INSERT);
     }
 

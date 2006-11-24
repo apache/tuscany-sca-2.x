@@ -40,7 +40,7 @@ public class MemoryStoreTestCase extends TestCase {
         EasyMock.replay(component);
         UUID id = UUID.randomUUID();
         Object value = new Object();
-        store.appendRecord(component, id, value, 1);
+        store.insertRecord(component, id, value, 1);
         Thread.sleep(100);
         assertNull(store.readRecord(component, id));
         store.destroy();
@@ -54,7 +54,7 @@ public class MemoryStoreTestCase extends TestCase {
         EasyMock.replay(component);
         UUID id = UUID.randomUUID();
         Object value = new Object();
-        store.appendRecord(component, id, value, Store.NEVER);
+        store.insertRecord(component, id, value, Store.NEVER);
         Thread.sleep(100);
         assertNotNull(store.readRecord(component, id));
         store.destroy();
