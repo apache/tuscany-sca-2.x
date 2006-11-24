@@ -18,12 +18,19 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.tuscany.spi.ReactivationException;
+import org.apache.tuscany.spi.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
@@ -42,14 +49,21 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  * @version $Rev$ $Date$
  */
 public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHandler
-    implements WireInvocationHandler, InvocationHandler {
-
+    implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
     private transient WorkContext context;
-    private transient InboundWire inboundWire;
+    private transient InboundWire wire;
+    private String serviceName;
 
-    public JDKCallbackInvocationHandler(WorkContext context, InboundWire inboundWire) {
+    /**
+     * Constructor used for deserialization only
+     */
+    public JDKCallbackInvocationHandler() {
+    }
+
+    public JDKCallbackInvocationHandler(InboundWire wire, WorkContext context) {
         this.context = context;
-        this.inboundWire = inboundWire;
+        this.wire = wire;
+        this.serviceName = wire.getServiceName();
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -77,7 +91,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         }
         //TODO optimize as this is slow in local invocations
         Map<Operation<?>, OutboundInvocationChain> sourceCallbackInvocationChains =
-            inboundWire.getSourceCallbackInvocationChains(targetAddress);
+            wire.getSourceCallbackInvocationChains(targetAddress);
         Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
@@ -87,5 +101,25 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
 
     public Object invoke(Method method, Object[] args) throws Throwable {
         return invoke(null, method, args);
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(serviceName);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        serviceName = (String) in.readObject();
+    }
+
+    public void setWorkContext(WorkContext context) {
+        this.context = context;
+    }
+
+    public void reactivate() throws ReactivationException {
+        AtomicComponent owner = context.getCurrentAtomicComponent();
+        if (owner == null) {
+            throw new ReactivationException("Current atomic component not set on work context");
+        }
+        wire = owner.getInboundWires().get(serviceName);
     }
 }

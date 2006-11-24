@@ -18,15 +18,23 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.ReactivationException;
+import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.AbstractInboundInvocationHandler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
@@ -37,8 +45,8 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandler
-    implements WireInvocationHandler, InvocationHandler {
+public final class JDKInboundInvocationHandler extends AbstractInboundInvocationHandler
+    implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
     private static final long serialVersionUID = -307902641125881043L;
 
     /*
@@ -48,14 +56,23 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
      * to a target of greater scope since the target reference can be maintained by the invoker. When a target invoker
      * is not cacheable, the master associated with the wire chains will be used.
      */
-    private Map<Method, ChainHolder> chains;
-    private WorkContext context;
+    private transient Map<Method, ChainHolder> chains;
+    private transient WorkContext context;
+    private String serviceName;
 
-    public JDKInboundInvocationHandler(Map<Method, InboundInvocationChain> invocationChains, WorkContext context) {
-        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        for (Map.Entry<Method, InboundInvocationChain> entry : invocationChains.entrySet()) {
-            this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
-        }
+    /**
+     * Constructor used for deserialization only
+     */
+    public JDKInboundInvocationHandler() {
+    }
+
+    public JDKInboundInvocationHandler(InboundWire wire, WorkContext context) {
+        this.context = context;
+        this.serviceName = wire.getServiceName();
+        init(wire);
+    }
+
+    public void setWorkContext(WorkContext context) {
         this.context = context;
     }
 
@@ -109,7 +126,33 @@ public class JDKInboundInvocationHandler extends AbstractInboundInvocationHandle
         return invoke(null, method, args);
     }
 
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(serviceName);
+    }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        serviceName = (String) in.readObject();
+    }
+
+    public void reactivate() throws ReactivationException {
+        // TODO this method will be extremely slow - look to optimize
+        AtomicComponent owner = context.getCurrentAtomicComponent();
+        if (owner == null) {
+            throw new ReactivationException("Current atomic component not set on work context");
+        }
+        InboundWire wire = owner.getInboundWires().get(serviceName);
+        init(wire);
+    }
+
+    private void init(InboundWire wire) {
+        this.chains = new HashMap<Method, ChainHolder>();
+        Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
+        Method[] methods = interfaze.getMethods();
+        Map<Method, InboundInvocationChain> invocationChains = WireUtils.createInboundMapping(wire, methods);
+        for (Map.Entry<Method, InboundInvocationChain> entry : invocationChains.entrySet()) {
+            this.chains.put(entry.getKey(), new ChainHolder(entry.getValue()));
+        }
+    }
 
     /**
      * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from

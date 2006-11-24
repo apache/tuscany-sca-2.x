@@ -38,7 +38,7 @@ public interface WorkContext {
      *
      * @return the current atomic component as a request is processed or null
      */
-    public Object getCurrentAtomicComponent();
+    AtomicComponent getCurrentAtomicComponent();
 
     /**
      * Sets the current atomic component that is handling processing of a request. Note that in most cases it will not
@@ -46,7 +46,7 @@ public interface WorkContext {
      *
      * @param component the current atomic component
      */
-    public void setCurrentAtomicComponent(AtomicComponent component);
+    void setCurrentAtomicComponent(AtomicComponent component);
 
     /**
      * Returns the current chain of SCAObject addresses

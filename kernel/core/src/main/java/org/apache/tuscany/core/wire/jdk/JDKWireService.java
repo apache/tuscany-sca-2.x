@@ -18,9 +18,7 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
@@ -35,7 +33,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceNotFoundException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -89,9 +86,7 @@ public class JDKWireService extends WireServiceExtension {
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
             Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
-            Method[] methods = interfaze.getMethods();
-            Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
-            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, context);
+            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound, context);
             ClassLoader cl = interfaze.getClassLoader();
             //FIXME
             return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
@@ -111,7 +106,7 @@ public class JDKWireService extends WireServiceExtension {
     public Object createCallbackProxy(ServiceContract<?> contract, InboundWire wire) throws ProxyCreationException {
         Class<?> interfaze = contract.getCallbackClass();
         ClassLoader cl = interfaze.getClassLoader();
-        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(context, wire);
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, context);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
@@ -119,9 +114,7 @@ public class JDKWireService extends WireServiceExtension {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
-            Method[] methods = inbound.getServiceContract().getInterfaceClass().getMethods();
-            Map<Method, InboundInvocationChain> chains = createInboundMapping(inbound, methods);
-            return new JDKInboundInvocationHandler(chains, context);
+            return new JDKInboundInvocationHandler(inbound, context);
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
             return new JDKOutboundInvocationHandler(outbound, context);
@@ -133,7 +126,7 @@ public class JDKWireService extends WireServiceExtension {
     }
 
     public WireInvocationHandler createCallbackHandler(InboundWire wire) {
-        return new JDKCallbackInvocationHandler(context, wire);
+        return new JDKCallbackInvocationHandler(wire, context);
     }
 
     public OutboundInvocationChain createOutboundChain(Operation<?> operation) {
@@ -321,21 +314,5 @@ public class JDKWireService extends WireServiceExtension {
         service.setOutboundWire(outboundWire);
     }
 
-
-    private Map<Method, InboundInvocationChain> createInboundMapping(InboundWire wire, Method[] methods)
-        throws NoMethodForOperationException {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
-            Operation<?> operation = entry.getKey();
-            InboundInvocationChain chain = entry.getValue();
-            Method method = findMethod(operation, methods);
-            if (method == null) {
-                NoMethodForOperationException e = new NoMethodForOperationException();
-                e.setIdentifier(operation.getName());
-            }
-            chains.put(method, chain);
-        }
-        return chains;
-    }
 
 }

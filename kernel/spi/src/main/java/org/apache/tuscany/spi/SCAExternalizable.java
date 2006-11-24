@@ -6,27 +6,39 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.spi;
 
-import java.lang.reflect.Method;
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
- * Implementations are responsible for dispatching an operation down an invocation chain
+ * A serialization contract for runtime SCA artifacts. When an instance is deserialized, runtime services defined in
+ * this contract must be set before reactivating the instance
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface WireInvocationHandler {
+public interface SCAExternalizable {
 
-    Object invoke(Method method, Object[] args) throws Throwable;
+    /**
+     * Sets the current work context
+     *
+     * @param context the current work context
+     */
+    void setWorkContext(WorkContext context);
 
+    /**
+     * Callback after all values have been set prior to making the instance available in the runtime
+     *
+     * @throws ReactivationException
+     */
+    void reactivate() throws ReactivationException;
 }

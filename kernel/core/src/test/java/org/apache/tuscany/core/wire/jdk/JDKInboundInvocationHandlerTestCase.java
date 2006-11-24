@@ -20,24 +20,29 @@ package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.component.SimpleTarget;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.easymock.classextension.EasyMock;
 
@@ -52,7 +57,6 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
     private Operation operation;
 
     public void testInterceptorInvoke() throws Throwable {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
@@ -60,25 +64,24 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         chain.addInterceptor(new InvokerInterceptor());
         chain.setTargetInvoker(invoker);
         chain.prepare();
-        chains.put(echo, chain);
+        InboundWire wire = createWire(chain);
+
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
     }
-
 
     public void testDirectErrorInvoke() throws Throwable {
         InboundInvocationChain source = new InboundInvocationChainImpl(operation);
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
+        InboundWire wire = createWire(source);
 
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        chains.put(echo, source);
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         try {
             assertEquals("foo", handler.invoke(echo, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -91,20 +94,21 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         InboundInvocationChain source = new InboundInvocationChainImpl(operation);
         MockStaticInvoker invoker = new MockStaticInvoker(echo, new SimpleTargetImpl());
         source.setTargetInvoker(invoker);
+        InboundWire wire = createWire(source);
 
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        chains.put(echo, source);
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         assertEquals("foo", handler.invoke(echo, new Object[]{"foo"}));
     }
 
     public void testToString() {
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler =
-            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>(), workContext);
+        InboundWireImpl wire = new InboundWireImpl();
+        wire.setServiceContract(new ServiceContract<Foo>(Foo.class) {
+        });
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
@@ -112,8 +116,10 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
     public void testHashCode() {
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler =
-            new JDKInboundInvocationHandler(new HashMap<Method, InboundInvocationChain>(), workContext);
+        InboundWireImpl wire = new InboundWireImpl();
+        wire.setServiceContract(new ServiceContract<Foo>(Foo.class) {
+        });
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }
@@ -129,6 +135,23 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         }
         operation = contract.getOperations().get("echo");
         echo = SimpleTarget.class.getMethod("echo", String.class);
+    }
+
+
+    private InboundWire createWire(InboundInvocationChain chain) {
+        DataType<Type> type = new DataType<Type>(String.class, String.class);
+        List<DataType<Type>> types = new ArrayList<DataType<Type>>();
+        types.add(type);
+        DataType<List<DataType<Type>>> inputType =
+            new DataType<List<DataType<Type>>>(Object[].class, types);
+        Operation<Type> operation = new Operation<Type>("echo", inputType, null, null, false, null);
+        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+        chains.put(operation, chain);
+        InboundWire wire = new InboundWireImpl();
+        wire.addInvocationChains(chains);
+        wire.setServiceContract(new ServiceContract<SimpleTarget>(SimpleTarget.class) {
+        });
+        return wire;
     }
 
     private interface Foo {
