@@ -51,8 +51,8 @@ public class JDBCStoreUpdateTestCase extends TestCase {
         Foo foo1 = new Foo("test");
         UUID id1 = UUID.randomUUID();
         Foo foo2 = new Foo("test2");
-        store.appendRecord(owner1, id1, foo1, Store.NEVER);
-        store.appendRecord(owner2, id1, foo2, Store.NEVER);
+        store.insertRecord(owner1, id1, foo1, Store.NEVER);
+        store.insertRecord(owner2, id1, foo2, Store.NEVER);
         foo1.data = "testA";
         foo2.data = "test2A";
         store.updateRecord(owner1, id1, foo1, Store.NEVER);
@@ -70,7 +70,7 @@ public class JDBCStoreUpdateTestCase extends TestCase {
         EasyMock.replay(object);
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, NEVER);
+        store.insertRecord(object, id, foo, NEVER);
         foo.data = "test2";
         store.updateRecord(object, id, foo, Store.NEVER);
         Foo foo2 = (Foo) store.readRecord(object, id);

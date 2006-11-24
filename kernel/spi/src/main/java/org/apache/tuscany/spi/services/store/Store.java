@@ -44,7 +44,7 @@ public interface Store {
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException if an error occurs during the write operation
      */
-    void appendRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
+    void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
 
     void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
 

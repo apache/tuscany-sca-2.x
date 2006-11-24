@@ -55,7 +55,7 @@ public class JDBCStoreTestCase extends TestCase {
         EasyMock.replay(object);
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, NEVER);
+        store.insertRecord(object, id, foo, NEVER);
         Foo foo2 = (Foo) store.readRecord(object, id);
         assertEquals("test", foo2.data);
         store.removeRecord(object, id);
@@ -70,7 +70,7 @@ public class JDBCStoreTestCase extends TestCase {
         EasyMock.replay(object);
         Foo foo = new Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, System.currentTimeMillis() + 20);
+        store.insertRecord(object, id, foo, System.currentTimeMillis() + 20);
         Thread.sleep(100);
         assertNull(store.readRecord(object, id));
     }

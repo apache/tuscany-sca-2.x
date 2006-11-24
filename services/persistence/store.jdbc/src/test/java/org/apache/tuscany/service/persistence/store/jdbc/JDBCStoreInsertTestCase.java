@@ -36,22 +36,22 @@ import org.apache.tuscany.service.persistence.store.jdbc.converter.HSQLDBConvert
 import org.easymock.EasyMock;
 
 /**
- * Verifies store append operations using HSQLDB
+ * Verifies store insert operations using HSQLDB
  *
  * @version $Rev$ $Date$
  */
-public class JDBCStoreAppendTestCase extends TestCase {
+public class JDBCStoreInsertTestCase extends TestCase {
     private DataSource ds;
     private JDBCStore store;
 
-    public void testAppendMetaData() throws Exception {
+    public void testInsertMetaData() throws Exception {
         SCAObject object = EasyMock.createMock(SCAObject.class);
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
         store.init();
-        JDBCStoreAppendTestCase.Foo foo = new JDBCStoreAppendTestCase.Foo("test");
+        JDBCStoreInsertTestCase.Foo foo = new JDBCStoreInsertTestCase.Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, Store.NEVER);
+        store.insertRecord(object, id, foo, Store.NEVER);
         Statement stmt = ds.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(TestUtils.SELECT_SQL);
         rs.next();
@@ -60,36 +60,36 @@ public class JDBCStoreAppendTestCase extends TestCase {
         Assert.assertEquals(Store.NEVER, rs.getLong(AbstractConverter.EXPIRATION));
     }
 
-    public void testAppendRead() throws Exception {
+    public void testInsertRead() throws Exception {
         store.init();
         SCAObject object = EasyMock.createMock(SCAObject.class);
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
-        JDBCStoreAppendTestCase.Foo foo = new JDBCStoreAppendTestCase.Foo("test");
+        JDBCStoreInsertTestCase.Foo foo = new JDBCStoreInsertTestCase.Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, Store.NEVER);
-        JDBCStoreAppendTestCase.Foo foo2 = (JDBCStoreAppendTestCase.Foo) store.readRecord(object, id);
+        store.insertRecord(object, id, foo, Store.NEVER);
+        JDBCStoreInsertTestCase.Foo foo2 = (JDBCStoreInsertTestCase.Foo) store.readRecord(object, id);
         assertEquals("test", foo2.data);
     }
 
-    public void testAppendOverwriteRead() throws Exception {
+    public void testInsertOverwriteRead() throws Exception {
         store.init();
         SCAObject object = EasyMock.createMock(SCAObject.class);
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
-        JDBCStoreAppendTestCase.Foo foo = new JDBCStoreAppendTestCase.Foo("test");
+        JDBCStoreInsertTestCase.Foo foo = new JDBCStoreInsertTestCase.Foo("test");
         UUID id = UUID.randomUUID();
-        store.appendRecord(object, id, foo, Store.NEVER);
+        store.insertRecord(object, id, foo, Store.NEVER);
         foo.data = "test2";
-        store.appendRecord(object, id, foo, Store.NEVER);
-        JDBCStoreAppendTestCase.Foo foo2 = (JDBCStoreAppendTestCase.Foo) store.readRecord(object, id);
+        store.insertRecord(object, id, foo, Store.NEVER);
+        JDBCStoreInsertTestCase.Foo foo2 = (JDBCStoreInsertTestCase.Foo) store.readRecord(object, id);
         assertEquals("test2", foo2.data);
     }
 
     /**
-     * Verifies multiple resources belonging to different owners but sharing the same id are appended
+     * Verifies multiple resources belonging to different owners but sharing the same id are inserted
      */
-    public void testMultipleAppend() throws Exception {
+    public void testMultipleInsert() throws Exception {
         SCAObject owner1 = EasyMock.createMock(SCAObject.class);
         EasyMock.expect(owner1.getCanonicalName()).andReturn("baz").atLeastOnce();
         EasyMock.replay(owner1);
@@ -100,8 +100,8 @@ public class JDBCStoreAppendTestCase extends TestCase {
         Foo foo1 = new Foo("test");
         UUID id1 = UUID.randomUUID();
         Foo foo2 = new Foo("test2");
-        store.appendRecord(owner1, id1, foo1, Store.NEVER);
-        store.appendRecord(owner2, id1, foo2, Store.NEVER);
+        store.insertRecord(owner1, id1, foo1, Store.NEVER);
+        store.insertRecord(owner2, id1, foo2, Store.NEVER);
         Foo retFoo1 = (Foo) store.readRecord(owner1, id1);
         assertEquals("test", retFoo1.data);
         Foo retFoo2 = (Foo) store.readRecord(owner2, id1);
