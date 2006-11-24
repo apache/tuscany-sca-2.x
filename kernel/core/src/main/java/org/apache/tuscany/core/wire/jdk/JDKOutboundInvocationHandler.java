@@ -18,18 +18,28 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.ReactivationException;
+import org.apache.tuscany.spi.SCAExternalizable;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-import org.apache.tuscany.spi.model.InteractionScope;
+import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
+import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -42,8 +52,9 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
  *
  * @version $Rev$ $Date$
  */
-public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHandler
-    implements WireInvocationHandler, InvocationHandler {
+public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHandler
+    implements WireInvocationHandler, InvocationHandler, Externalizable, SCAExternalizable {
+    private static final long serialVersionUID = -6155278451964527325L;
 
     /*
      * an association of an operation to chain holder. The holder contains an invocation chain
@@ -52,41 +63,31 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
      * to a target of greater scope since the target reference can be maintained by the invoker. When a target invoker
      * is not cacheable, the master associated with the wire chains will be used.
      */
-    private Map<Method, ChainHolder> chains;
-    private Object fromAddress;
-    private boolean contractHasCallback;
-    private boolean contractIsRemotable;
-    private boolean contractIsConversational;
-    private Object convIdForRemotableTarget;
-    private Object convIdFromThread;
+    private transient Map<Method, ChainHolder> chains;
+    private transient WorkContext workContext;
+    private transient Object fromAddress;
+    private transient boolean contractHasCallback;
+    private transient boolean contractIsRemotable;
+    private transient boolean contractIsConversational;
+    private transient Object convIdForRemotableTarget;
+    private transient Object convIdFromThread;
+    private String referenceName;
 
-    private WorkContext workContext;
+    /**
+     * Constructor used for deserialization only
+     */
+    public JDKOutboundInvocationHandler() {
+    }
 
     public JDKOutboundInvocationHandler(OutboundWire wire) {
         this(wire, null);
+        referenceName = wire.getReferenceName();
     }
 
     public JDKOutboundInvocationHandler(OutboundWire wire, WorkContext workContext)
         throws NoMethodForOperationException {
-        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
-        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        this.fromAddress = (wire.getContainer() == null) ? null : wire.getContainer().getName();
-        Method[] methods = wire.getServiceContract().getInterfaceClass().getMethods();
-        this.contractHasCallback = wire.getServiceContract().getCallbackClass() != null;
-        // TODO optimize this
-        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
-            Operation operation = entry.getKey();
-            Method method = findMethod(operation, methods);
-            if (method == null) {
-                throw new NoMethodForOperationException(operation.getName());
-            }
-            this.chains.put(method, new ChainHolder(entry.getValue()));
-        }
-
         this.workContext = workContext;
-        this.contractIsConversational =
-            wire.getServiceContract().getInteractionScope().equals(InteractionScope.CONVERSATIONAL);
-        this.contractIsRemotable = wire.getServiceContract().isRemotable();
+        init(wire);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -135,12 +136,12 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
             convIdFromThread = workContext.getIdentifier(Scope.CONVERSATIONAL);
             if (contractIsRemotable) {
                 if (convIdForRemotableTarget == null) {
-                    convIdForRemotableTarget = new org.apache.tuscany.spi.wire.MessageId();
+                    convIdForRemotableTarget = new MessageId();
                 }
                 // Always use the conv id for this target
                 workContext.setIdentifier(Scope.CONVERSATIONAL, convIdForRemotableTarget);
             } else if (convIdFromThread == null) {
-                Object newConvId = new org.apache.tuscany.spi.wire.MessageId();
+                Object newConvId = new MessageId();
                 workContext.setIdentifier(Scope.CONVERSATIONAL, newConvId);
             }
         }
@@ -161,6 +162,60 @@ public class JDKOutboundInvocationHandler extends AbstractOutboundInvocationHand
 
     protected Object getFromAddress() {
         return contractHasCallback ? fromAddress : null;
+    }
+
+    public void setWorkContext(WorkContext context) {
+        workContext = context;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(referenceName);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        referenceName = (String) in.readObject();
+    }
+
+    public void reactivate() throws ReactivationException {
+        AtomicComponent owner = workContext.getCurrentAtomicComponent();
+        if (owner == null) {
+            throw new ReactivationException("Current atomic component not set on work context");
+        }
+        List<OutboundWire> wires = owner.getOutboundWires().get(referenceName);
+        if (wires == null) {
+            ReactivationException e = new ReactivationException("Reference wire not found");
+            e.setIdentifier(referenceName);
+            e.addContextName(owner.getName());
+            throw e;
+        }
+        // TODO handle multiplicity
+        OutboundWire wire = wires.get(0);
+        try {
+            init(wire);
+        } catch (NoMethodForOperationException e) {
+            throw new ReactivationException(e);
+        }
+    }
+
+    private void init(OutboundWire wire) {
+        ServiceContract contract = wire.getServiceContract();
+        this.referenceName = wire.getReferenceName();
+        this.fromAddress = (wire.getContainer() == null) ? null : wire.getContainer().getName();
+        this.contractIsConversational = contract.getInteractionScope().equals(CONVERSATIONAL);
+        this.contractIsRemotable = contract.isRemotable();
+        this.contractHasCallback = contract.getCallbackClass() != null;
+        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
+        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
+        // TODO optimize this
+        Method[] methods = contract.getInterfaceClass().getMethods();
+        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
+            Operation operation = entry.getKey();
+            Method method = findMethod(operation, methods);
+            if (method == null) {
+                throw new NoMethodForOperationException(operation.getName());
+            }
+            this.chains.put(method, new ChainHolder(entry.getValue()));
+        }
     }
 
     /**

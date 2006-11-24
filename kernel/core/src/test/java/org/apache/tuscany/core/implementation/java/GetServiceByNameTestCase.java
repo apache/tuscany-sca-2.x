@@ -61,7 +61,7 @@ public class GetServiceByNameTestCase extends TestCase {
 
         JavaServiceContract contract = new JavaServiceContract(Target.class);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).anyTimes();
-        expect(wire.getServiceName()).andReturn("Target");
+        expect(wire.getServiceName()).andReturn("Target").atLeastOnce();
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         expect(wire.getInvocationChains()).andReturn(chains);
         expect(wire.getCallbackReferenceName()).andReturn(null);

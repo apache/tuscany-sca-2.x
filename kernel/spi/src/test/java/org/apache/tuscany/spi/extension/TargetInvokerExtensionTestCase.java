@@ -34,6 +34,7 @@ import org.easymock.EasyMock;
  */
 public class TargetInvokerExtensionTestCase extends TestCase {
 
+    @SuppressWarnings("unchecked")
     public void testNonBlockingDispatch() {
         Object from = new Object();
         InboundWire wire = EasyMock.createMock(InboundWire.class);

@@ -35,7 +35,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
     public void testToString() {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new JavaServiceContract(Foo.class));
-        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(new WorkContextImpl(), wire);
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, new WorkContextImpl());
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
@@ -43,7 +43,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
     public void testHashCode() {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new JavaServiceContract(Foo.class));
-        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(new WorkContextImpl(), wire);
+        JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, new WorkContextImpl());
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }

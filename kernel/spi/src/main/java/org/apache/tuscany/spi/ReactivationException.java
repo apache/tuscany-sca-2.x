@@ -6,27 +6,38 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.spi;
 
-import java.lang.reflect.Method;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
- * Implementations are responsible for dispatching an operation down an invocation chain
+ * Raised when an error is encountered reactivating a serialized instance
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface WireInvocationHandler {
+public class ReactivationException extends TuscanyRuntimeException {
+    public ReactivationException() {
+    }
 
-    Object invoke(Method method, Object[] args) throws Throwable;
+    public ReactivationException(String message) {
+        super(message);
+    }
 
+    public ReactivationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ReactivationException(Throwable cause) {
+        super(cause);
+    }
 }

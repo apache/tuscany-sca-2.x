@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +30,9 @@ import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.mock.wire.MockStaticInvoker;
 import org.apache.tuscany.core.mock.wire.MockSyncInterceptor;
@@ -44,7 +45,6 @@ import org.easymock.classextension.EasyMock;
  * @version $Rev$ $Date$
  */
 public class InboundInvocationErrorTestCase extends TestCase {
-
     private Method checkedMethod;
     private Method runtimeMethod;
     private Operation checkedOperation;
@@ -79,15 +79,21 @@ public class InboundInvocationErrorTestCase extends TestCase {
     }
 
     public void testCheckedException() throws Exception {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        chains.put(checkedMethod, createChain(checkedMethod, checkedOperation));
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
+
+        Operation<Type> operation = new Operation<Type>("checkedException", null, null, null, false, null);
+        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+        chains.put(operation, createChain(checkedMethod, checkedOperation));
+        InboundWire wire = new InboundWireImpl();
+        wire.addInvocationChains(chains);
+        wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
+        });
+
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         try {
-            InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
-                .newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                    new Class[]{InboundInvocationErrorTestCase.TestBean.class}, handler);
+            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            TestBean proxy = (TestBean) Proxy.newProxyInstance(ccl, new Class[]{TestBean.class}, handler);
             proxy.checkedException();
         } catch (InboundInvocationErrorTestCase.TestException e) {
             return;
@@ -96,11 +102,18 @@ public class InboundInvocationErrorTestCase extends TestCase {
     }
 
     public void testRuntimeException() throws Exception {
-        Map<Method, InboundInvocationChain> chains = new HashMap<Method, InboundInvocationChain>();
-        chains.put(runtimeMethod, createChain(runtimeMethod, runtimeOperation));
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(chains, workContext);
+
+        Operation<Type> operation = new Operation<Type>("runtimeException", null, null, null, false, null);
+        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+        chains.put(operation, createChain(runtimeMethod, runtimeOperation));
+        InboundWire wire = new InboundWireImpl();
+        wire.addInvocationChains(chains);
+        wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
+        });
+
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
                 .newProxyInstance(Thread.currentThread().getContextClassLoader(),
@@ -113,7 +126,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
     }
 
     private InboundInvocationChain createChain(Method m, Operation operation) {
-        MockStaticInvoker invoker = new MockStaticInvoker(m, new InboundInvocationErrorTestCase.TestBeanImpl());
+        MockStaticInvoker invoker = new MockStaticInvoker(m, new TestBeanImpl());
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new MockSyncInterceptor());
         chain.setTargetInvoker(invoker);
@@ -124,20 +137,20 @@ public class InboundInvocationErrorTestCase extends TestCase {
 
     public interface TestBean {
 
-        void checkedException() throws InboundInvocationErrorTestCase.TestException;
+        void checkedException() throws TestException;
 
-        void runtimeException() throws InboundInvocationErrorTestCase.TestRuntimeException;
+        void runtimeException() throws TestRuntimeException;
 
     }
 
-    public class TestBeanImpl implements InboundInvocationErrorTestCase.TestBean {
+    public class TestBeanImpl implements TestBean {
 
         public void checkedException() throws InboundInvocationErrorTestCase.TestException {
-            throw new InboundInvocationErrorTestCase.TestException();
+            throw new TestException();
         }
 
-        public void runtimeException() throws InboundInvocationErrorTestCase.TestRuntimeException {
-            throw new InboundInvocationErrorTestCase.TestRuntimeException();
+        public void runtimeException() throws TestRuntimeException {
+            throw new TestRuntimeException();
         }
     }
 

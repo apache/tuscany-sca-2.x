@@ -70,6 +70,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
         protected Object getFromAddress() {
             return new Object();
         }
+
     }
 
     private class MockInterceptor implements Interceptor {
