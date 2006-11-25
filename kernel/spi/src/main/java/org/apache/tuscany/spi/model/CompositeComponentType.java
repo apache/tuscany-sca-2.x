@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * A specialization of component type for composite components.
@@ -37,7 +37,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     private final Map<String, ComponentDefinition<? extends Implementation<?>>> components =
         new HashMap<String, ComponentDefinition<? extends Implementation<?>>>();
     private final Map<String, Include> includes = new HashMap<String, Include>();
-    private final List<WireDefinition> wires = new Vector<WireDefinition>();
+    private final List<WireDefinition> wires = new ArrayList<WireDefinition>();
 
     public String getName() {
         return name;
@@ -111,7 +111,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     @SuppressWarnings("unchecked")
     public List<WireDefinition> getWires() {
         List<WireDefinition> view =
-                new Vector<WireDefinition>(wires);
+                new ArrayList<WireDefinition>(wires);
         for (Include i : includes.values()) {
             view.addAll(i.getIncluded().getWires());
         }
