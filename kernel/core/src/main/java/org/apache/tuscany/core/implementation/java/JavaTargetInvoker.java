@@ -99,6 +99,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
                 throw new InvalidConversationSequenceException(String.valueOf(sequence));
             }
         } else {
+            assert sequence == NONE;  // conversations are not cacheable
             if (target == null) {
                 target = component.getTargetInstance();
             }
