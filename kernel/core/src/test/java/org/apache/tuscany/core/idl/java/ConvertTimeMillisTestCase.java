@@ -71,8 +71,8 @@ public class ConvertTimeMillisTestCase extends TestCase {
     }
 
     public void testConvertYears() throws Exception {
-        assertEquals(315360000000L, registy.convertTimeMillis("10 years"));
-        assertEquals(315360000000L, registy.convertTimeMillis("10 YEARS"));
+        assertEquals(315569260000L, registy.convertTimeMillis("10 years"));
+        assertEquals(315569260000L, registy.convertTimeMillis("10 YEARS"));
         try {
             registy.convertTimeMillis("10years");
             fail();
