@@ -55,7 +55,6 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
     private final int initLevel;
 
 
-
     protected AtomicComponentExtension(String name,
                                        CompositeComponent parent,
                                        ScopeContainer scopeContainer,
@@ -133,6 +132,10 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
         assert wires != null && wires.size() > 0;
         referenceWires.put(wires.get(0).getReferenceName(), wires);
         onReferenceWires(multiplicityClass, wires);
+    }
+
+    public void destroyInstance() {
+        scopeContainer.remove(this);
     }
 
     protected void onReferenceWire(OutboundWire wire) {

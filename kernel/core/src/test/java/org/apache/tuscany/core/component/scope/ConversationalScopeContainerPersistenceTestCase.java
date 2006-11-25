@@ -21,7 +21,7 @@ package org.apache.tuscany.core.component.scope;
 import java.util.UUID;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.PersistentScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
@@ -37,7 +37,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
-    private PersistentScopeContainer container;
+    private ScopeContainer container;
     private WorkContext context;
 
     /**
@@ -99,7 +99,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         Foo foo = new Foo();
         container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
         assertEquals(foo, container.getInstance(component));
-        container.remove(component, id);
+        container.remove(component);
         try {
             container.getAssociatedInstance(component);
             fail();
@@ -120,7 +120,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         Foo foo = new Foo();
         container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
         assertEquals(foo, container.getInstance(component));
-        container.remove(component, id);
+        container.remove(component);
         Foo foo2 = (Foo) container.getInstance(component);
         assertNotNull(foo2);
         assertNotSame(foo, foo2);

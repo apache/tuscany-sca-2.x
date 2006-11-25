@@ -62,5 +62,6 @@ public interface AtomicComponent extends Component {
      */
     Object createInstance() throws ObjectCreationException;
 
+    void destroyInstance();
 
 }
