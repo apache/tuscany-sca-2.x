@@ -33,7 +33,6 @@ import org.apache.tuscany.spi.idl.WrapperInfo;
  */
 public class Operation<T> {
     public static final int NO_CONVERSATION = -1;
-    public static final int CONVERSATION_START = 0;
     public static final int CONVERSATION_CONTINUE = 1;
     public static final int CONVERSATION_END = 2;
 
@@ -76,7 +75,7 @@ public class Operation<T> {
      * @param nonBlocking if the operation is non-blocking
      * @param dataBinding the data-binding type required by the operation
      * @param sequence    the conversational attributes of the operation, {@link NO_CONVERSATION}, {@link
-     *                    CONVERSATION_START}, {@link CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     *                    CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      */
     public Operation(final String name,
                      final DataType<List<DataType<T>>> inputType,
@@ -200,7 +199,7 @@ public class Operation<T> {
 
     /**
      * Returns the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
-     * CONVERSATION_START}, {@link CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     * CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      *
      * @return the sequence the operation is called in a conversation
      */
@@ -209,8 +208,8 @@ public class Operation<T> {
     }
 
     /**
-     * Sets the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link CONVERSATION_START},
-     * {@link CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     * Sets the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
+     * CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      */
     public void setConversationSequence(int conversationSequence) {
         this.conversationSequence = conversationSequence;

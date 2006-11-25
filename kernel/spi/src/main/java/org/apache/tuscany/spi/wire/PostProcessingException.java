@@ -16,29 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.spi.wire;
+
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
- * Acts as a delegating <code>WirePostProcessor</code>, delegating post-processing of wires after policies have been
- * applied and source an targets have been matched but before they are connected.
+ * Denotes an error during post-processing of a wire
  *
  * @version $Rev$ $Date$
  */
-public interface WirePostProcessorRegistry extends WirePostProcessor {
+public class PostProcessingException extends BuilderException {
+    public PostProcessingException() {
+    }
 
+    public PostProcessingException(String message) {
+        super(message);
+    }
 
-    /**
-     * Registers a post-processor in the runtime
-     *
-     * @param processor the processor to register
-     */
-    void register(WirePostProcessor processor);
+    public PostProcessingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    /**
-     * De-registers a post-processor in the runtime
-     *
-     * @param processor the processor to de-register
-     */
-    void unregister(WirePostProcessor processor);
-
+    public PostProcessingException(Throwable cause) {
+        super(cause);
+    }
 }

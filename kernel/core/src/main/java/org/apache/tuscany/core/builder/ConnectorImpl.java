@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.builder.WirePostProcessorRegistry;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRuntimeException;

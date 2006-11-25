@@ -21,8 +21,8 @@ package org.apache.tuscany.core.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.builder.WirePostProcessor;
-import org.apache.tuscany.spi.builder.WirePostProcessorRegistry;
+import org.apache.tuscany.spi.wire.WirePostProcessor;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 

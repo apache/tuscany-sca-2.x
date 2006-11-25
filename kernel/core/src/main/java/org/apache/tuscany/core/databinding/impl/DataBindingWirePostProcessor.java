@@ -25,7 +25,7 @@ import java.util.Set;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.builder.WirePostProcessorExtension;
+import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;

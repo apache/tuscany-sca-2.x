@@ -21,7 +21,7 @@ package org.apache.tuscany.core.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.builder.WirePostProcessorRegistry;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;

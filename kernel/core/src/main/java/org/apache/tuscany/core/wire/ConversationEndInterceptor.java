@@ -16,26 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.core.wire;
+
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Denotes an error during post-processing of a wire
+ * Placed on an invocation chain for a service operation that ends a conversation.
  *
  * @version $Rev$ $Date$
  */
-public class PostProcessingException extends BuilderException {
-    public PostProcessingException() {
+public class ConversationEndInterceptor implements Interceptor {
+    private Interceptor next;
+
+    public Interceptor getNext() {
+        return next;
     }
 
-    public PostProcessingException(String message) {
-        super(message);
+    public void setNext(Interceptor next) {
+        this.next = next;
     }
 
-    public PostProcessingException(String message, Throwable cause) {
-        super(message, cause);
+    public boolean isOptimizable() {
+        return false;
     }
 
-    public PostProcessingException(Throwable cause) {
-        super(cause);
+    public Message invoke(Message msg) {
+        msg.setConversationSequence(TargetInvoker.END);
+        return next.invoke(msg);
     }
+
 }

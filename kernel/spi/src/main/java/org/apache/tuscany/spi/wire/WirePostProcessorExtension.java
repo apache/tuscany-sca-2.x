@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.spi.wire;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
