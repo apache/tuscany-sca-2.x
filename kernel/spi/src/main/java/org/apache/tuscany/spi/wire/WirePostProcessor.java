@@ -16,10 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.builder;
-
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
+package org.apache.tuscany.spi.wire;
 
 /**
  * Implementations are called after inbound and outbound wires are decorated with policy and before they are connected.

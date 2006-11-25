@@ -107,6 +107,28 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         }
     }
 
+    public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
+        String conversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
+        if (conversationID == null) {
+            TargetException e = new TargetException("Conversation id not set in context");
+            e.setIdentifier(component.getName());
+            throw e;
+        }
+        try {
+            workContext.setCurrentAtomicComponent(component);
+            Object instance = nonDurableStore.readRecord(component, conversationID);
+            if (instance != null) {
+                return instance;
+            } else {
+                throw new TargetNotFoundException(component.getName());
+            }
+        } catch (StoreReadException e) {
+            throw new TargetException(e);
+        } finally {
+            workContext.setCurrentAtomicComponent(null);
+        }
+    }
+    
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
         try {
@@ -130,28 +152,6 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
             nonDurableStore.removeRecord(component, id);
         } catch (StoreWriteException e) {
             throw new PersistenceException(e);
-        }
-    }
-
-    public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
-        String conversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
-        if (conversationID == null) {
-            TargetException e = new TargetException("Conversation id not set in context");
-            e.setIdentifier(component.getName());
-            throw e;
-        }
-        try {
-            workContext.setCurrentAtomicComponent(component);
-            Object instance = nonDurableStore.readRecord(component, conversationID);
-            if (instance != null) {
-                return instance;
-            } else {
-                throw new TargetNotFoundException(component.getName());
-            }
-        } catch (StoreReadException e) {
-            throw new TargetException(e);
-        } finally {
-            workContext.setCurrentAtomicComponent(null);
         }
     }
 
