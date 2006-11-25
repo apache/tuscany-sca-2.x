@@ -85,7 +85,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
 
     @Override
     public Object getInstance(AtomicComponent component) throws TargetException {
-        String conversationId = getconversationId(component);
+        String conversationId = getConversationId(component);
         try {
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
@@ -103,7 +103,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
     }
 
     public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
-        String conversationId = getconversationId(component);
+        String conversationId = getConversationId(component);
         try {
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
@@ -138,7 +138,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
     }
 
     public void remove(AtomicComponent component) throws PersistenceException {
-        String conversationId = getconversationId(component);
+        String conversationId = getConversationId(component);
         try {
             nonDurableStore.removeRecord(component, conversationId);
         } catch (StoreWriteException e) {
@@ -150,7 +150,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         throw new UnsupportedOperationException();
     }
 
-    private String getconversationId(AtomicComponent component) {
+    private String getConversationId(AtomicComponent component) {
         String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (conversationId == null) {
             TargetException e = new TargetException("Conversation id not set in context");
