@@ -21,7 +21,6 @@ package org.apache.tuscany.binding.axis2;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.HashMap;
-
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -29,24 +28,26 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
 
-import junit.framework.TestCase;
+import org.xml.sax.InputSource;
 
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.easymock.EasyMock;
-import org.xml.sax.InputSource;
 
 public class Axis2ReferenceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
         Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
-        Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
+        Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(null, operation);
         assertNotNull(targetInvoker);
     }
@@ -57,15 +58,16 @@ public class Axis2ReferenceTestCase extends TestCase {
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         contract.setCallbackClass(GreetingCallback.class);
-        Operation<Type> callbackOp = new Operation<Type>("sayHiCallback", null, null, null, true, null);
-        HashMap<String,Operation<Type>> callbackOps = new HashMap<String,Operation<Type>>();
+        Operation<Type> callbackOp =
+            new Operation<Type>("sayHiCallback", null, null, null, true, null, NO_CONVERSATION);
+        HashMap<String, Operation<Type>> callbackOps = new HashMap<String, Operation<Type>>();
         callbackOps.put("sayHiCallback", callbackOp);
         contract.setCallbackOperations(callbackOps);
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 
         axis2Reference.setInboundWire(inboundWire);
-        Operation operation = new Operation<Type>("sayHi", null, null, null, true, null);
+        Operation operation = new Operation<Type>("sayHi", null, null, null, true, null, NO_CONVERSATION);
         TargetInvoker asyncTargetInvoker = axis2Reference.createAsyncTargetInvoker(null, operation);
         assertNotNull(asyncTargetInvoker);
     }
@@ -93,9 +95,9 @@ public class Axis2ReferenceTestCase extends TestCase {
         ServiceContract<?> contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
         return new Axis2Reference(serviceName,
-                parent,
-                wireService,
-                wsBinding,
-                contract);
+            parent,
+            wireService,
+            wsBinding,
+            contract);
     }
 }

@@ -47,10 +47,18 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
     void register(AtomicComponent component);
 
     /**
-     * Returns an instance associated with the current component
+     * Returns an implementation instance associated with the current request context, creating one if necessary
      *
      * @throws TargetException
      */
     Object getInstance(AtomicComponent component) throws TargetException;
+
+    /**
+     * Returns an implementation instance associated with the current context. If no instance is found, a {@link
+     * TargetNotFoundException} is thrown
+     *
+     * @throws TargetException
+     */
+    Object getAssociatedInstance(AtomicComponent component) throws TargetException;
 
 }

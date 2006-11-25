@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.UUID;
 
 import org.apache.tuscany.spi.services.store.StoreReadException;
 
@@ -45,28 +44,28 @@ public class AbstractConverterTestCase extends TestCase {
 
     private class TestConverter extends AbstractConverter {
 
-        public void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
+        public void insert(PreparedStatement stmt, String ownerId, String id, long expiration, Serializable object)
             throws StoreWriteException {
 
         }
 
-        public void update(PreparedStatement stmt, String ownerId, UUID id, Serializable object)
+        public void update(PreparedStatement stmt, String ownerId, String id, Serializable object)
             throws StoreWriteException {
 
         }
 
         public boolean findAndLock(PreparedStatement stmt,
                                    String ownerId,
-                                   UUID id
+                                   String id
         ) throws StoreWriteException {
             return false;
         }
 
-        public Object read(Connection conn, String ownerId, UUID id) throws StoreReadException {
+        public Object read(Connection conn, String ownerId, String id) throws StoreReadException {
             return null;
         }
 
-        public void delete(PreparedStatement stmt, String ownerId, UUID id) throws StoreWriteException {
+        public void delete(PreparedStatement stmt, String ownerId, String id) throws StoreWriteException {
 
         }
 
@@ -81,6 +80,7 @@ public class AbstractConverterTestCase extends TestCase {
         }
     }
 
+    @SuppressWarnings({"SerializableHasSerializationMethods"})
     private static class Foo implements Serializable {
         private static final long serialVersionUID = -3774909621298751358L;
         private String data;

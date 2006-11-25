@@ -64,7 +64,11 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         checkInit();
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
+        // there never is a previously associated instance, return null
+        if (!create) {
+            return null;
+        }
         InstanceWrapper ctx = new InstanceWrapperImpl(component, component.createInstance());
         ctx.start();
         return ctx;

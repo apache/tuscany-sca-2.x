@@ -52,7 +52,7 @@ public class JavaTargetInvokerTestCase extends TestCase {
         scope.register(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null, null, null);
         invoker.setCacheable(false);
-        assertEquals("foo", invoker.invokeTarget("foo"));
+        assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE));
         scope.stop();
     }
 

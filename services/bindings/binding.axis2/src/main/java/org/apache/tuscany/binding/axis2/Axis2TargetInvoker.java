@@ -19,8 +19,11 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
-
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPBody;
@@ -32,9 +35,6 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * Axis2TargetInvoker uses an Axis2 OperationClient to invoke a remote web service
@@ -50,7 +50,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
     private ServiceClient serviceClient;
 
     public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options,
-            SOAPFactory soapFactory) {
+                              SOAPFactory soapFactory) {
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
@@ -59,12 +59,13 @@ public class Axis2TargetInvoker implements TargetInvoker {
 
     /**
      * Invoke a WS operation
-     * 
+     *
      * @param payload
+     * @param sequence
      * @return
      * @throws InvocationTargetException
      */
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
             Object[] args = (Object[]) payload;
             OperationClient operationClient = createOperationClient(args);
@@ -89,7 +90,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
                     body.addChild((OMElement) bc);
                 } else {
                     throw new IllegalArgumentException(
-                            "Can't handle mixed payloads betweem OMElements and other types.");
+                        "Can't handle mixed payloads betweem OMElements and other types.");
                 }
             }
         }
@@ -104,7 +105,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), NONE);
             msg.setBody(resp);
         } catch (Throwable e) {
             msg.setBodyWithFault(e);

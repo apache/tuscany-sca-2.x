@@ -44,7 +44,7 @@ public class JDBCStoreTestCase extends TestCase {
         SCAObject object = EasyMock.createMock(SCAObject.class);
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         assertNull(store.readRecord(object, id));
     }
 
@@ -54,7 +54,7 @@ public class JDBCStoreTestCase extends TestCase {
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
         Foo foo = new Foo("test");
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         store.insertRecord(object, id, foo, NEVER);
         Foo foo2 = (Foo) store.readRecord(object, id);
         assertEquals("test", foo2.data);
@@ -69,7 +69,7 @@ public class JDBCStoreTestCase extends TestCase {
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
         Foo foo = new Foo("test");
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         store.insertRecord(object, id, foo, System.currentTimeMillis() + 20);
         Thread.sleep(100);
         assertNull(store.readRecord(object, id));

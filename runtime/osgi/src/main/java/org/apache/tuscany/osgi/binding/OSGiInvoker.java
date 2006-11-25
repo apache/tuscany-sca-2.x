@@ -40,7 +40,7 @@ public class OSGiInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBody(e.getCause());
@@ -48,7 +48,7 @@ public class OSGiInvoker implements TargetInvoker {
         return msg;
     }
 
-    public Object invokeTarget(Object payload) throws InvocationTargetException {
+    public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
         try {
             return remoteMethod.invoke(proxy, (Object[]) payload);
         } catch (IllegalAccessException e) {

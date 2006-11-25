@@ -43,7 +43,7 @@ public class TestSocketInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());
@@ -56,7 +56,7 @@ public class TestSocketInvoker implements TargetInvoker {
     /**
      * Sends the payload over a socket
      */
-    public Object invokeTarget(final Object object) throws InvocationTargetException {
+    public Object invokeTarget(final Object object, final short sequence) throws InvocationTargetException {
         int argn;
         if (object == null) {
             argn = 0;

@@ -20,15 +20,16 @@ package org.apache.tuscany.container.javascript;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
-import org.apache.tuscany.spi.extension.TargetInvokerExtension;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.tuscany.spi.wire.InboundWire;
+
+import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
 
 /**
  * Dispatches to a JavaScript implementation instance
- * 
+ *
  * @version $$Rev$$ $$Date$$
  */
 public class JavaScriptInvoker extends TargetInvokerExtension {
@@ -37,7 +38,11 @@ public class JavaScriptInvoker extends TargetInvokerExtension {
 
     private String functionName;
 
-    public JavaScriptInvoker(String functionName, JavaScriptComponent context, InboundWire wire, WorkContext workContext, ExecutionMonitor monitor) {
+    public JavaScriptInvoker(String functionName,
+                             JavaScriptComponent context,
+                             InboundWire wire,
+                             WorkContext workContext,
+                             ExecutionMonitor monitor) {
         super(wire, workContext, monitor);
         this.functionName = functionName;
         this.context = context;
@@ -46,7 +51,7 @@ public class JavaScriptInvoker extends TargetInvokerExtension {
     /**
      * Invokes a function on a script instance
      */
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         RhinoScriptInstance target = context.getTargetInstance();
         return target.invokeFunction(functionName, (Object[]) payload);
     }

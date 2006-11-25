@@ -63,7 +63,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         destroyOnlyContext.start();
 
         Object conversation = new Object();
-        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
+        ctx.setIdentifier(Scope.CONVERSATION, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         ConversationalScopeInitDestroyComponent initDestroy =
             (ConversationalScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
@@ -107,7 +107,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object conversation = new Object();
-        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
+        ctx.setIdentifier(Scope.CONVERSATION, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);
@@ -146,7 +146,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(threeCtx);
 
         Object conversation = new Object();
-        ctx.setIdentifier(Scope.CONVERSATIONAL, conversation);
+        ctx.setIdentifier(Scope.CONVERSATION, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
         OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
         Assert.assertNotNull(one);

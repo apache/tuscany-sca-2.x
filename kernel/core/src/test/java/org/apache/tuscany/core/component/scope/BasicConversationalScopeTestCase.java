@@ -49,7 +49,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         Object conversation = new Object();
-        workContext.setIdentifier(Scope.CONVERSATIONAL, conversation);
+        workContext.setIdentifier(Scope.CONVERSATION, conversation);
         ConversationalScopeInitDestroyComponent o1 =
             (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
@@ -70,14 +70,14 @@ public class BasicConversationalScopeTestCase extends TestCase {
         SystemAtomicComponent atomicContext = createContext(scopeContext);
 
         Object conversation1 = new Object();
-        workContext.setIdentifier(Scope.CONVERSATIONAL, conversation1);
+        workContext.setIdentifier(Scope.CONVERSATION, conversation1);
         ConversationalScopeInitDestroyComponent o1 =
             (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
 
         Object conversation2 = new Object();
-        workContext.setIdentifier(Scope.CONVERSATIONAL, conversation2);
+        workContext.setIdentifier(Scope.CONVERSATION, conversation2);
         ConversationalScopeInitDestroyComponent o2 =
             (ConversationalScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
         assertNotSame(o1, o2);

@@ -43,7 +43,7 @@ public class HSQLDBConverterTestCase extends TestCase {
         Connection conn = ds.getConnection();
         conn.setAutoCommit(false);
         PreparedStatement stmt = conn.prepareStatement(converter.getInsertSql());
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Foo foo = new Foo();
         foo.data = "test";
         converter.insert(stmt, "foo", id, Store.NEVER, foo);
@@ -63,7 +63,7 @@ public class HSQLDBConverterTestCase extends TestCase {
     public void testNotFound() throws Exception {
         Connection conn = ds.getConnection();
         conn.setAutoCommit(false);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         assertNull(converter.read(conn, null, id));
         conn.commit();
         conn.close();
@@ -80,6 +80,7 @@ public class HSQLDBConverterTestCase extends TestCase {
         cleanup(ds);
     }
 
+    @SuppressWarnings({"SerializableHasSerializationMethods"})
     private static class Foo implements Serializable {
         private static final long serialVersionUID = -6119188073169441225L;
         private String data;

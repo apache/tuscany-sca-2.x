@@ -56,7 +56,7 @@ public class MockStaticInvoker implements TargetInvoker {
         return isCacheable();
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
             if (payload != null && !payload.getClass().isArray()) {
                 return operation.invoke(instance, payload);
@@ -70,7 +70,7 @@ public class MockStaticInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());

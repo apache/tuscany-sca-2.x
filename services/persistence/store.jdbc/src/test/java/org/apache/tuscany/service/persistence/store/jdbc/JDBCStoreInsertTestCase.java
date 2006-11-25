@@ -50,13 +50,12 @@ public class JDBCStoreInsertTestCase extends TestCase {
         EasyMock.replay(object);
         store.init();
         JDBCStoreInsertTestCase.Foo foo = new JDBCStoreInsertTestCase.Foo("test");
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         store.insertRecord(object, id, foo, Store.NEVER);
         Statement stmt = ds.getConnection().createStatement();
         ResultSet rs = stmt.executeQuery(TestUtils.SELECT_SQL);
         rs.next();
-        assertEquals(id.getMostSignificantBits(), rs.getLong(AbstractConverter.MOST_SIGNIFICANT_BITS));
-        assertEquals(id.getLeastSignificantBits(), rs.getLong(AbstractConverter.LEAST_SIGNIFICANT_BITS));
+        assertEquals(id, rs.getString(AbstractConverter.ID));
         Assert.assertEquals(Store.NEVER, rs.getLong(AbstractConverter.EXPIRATION));
     }
 
@@ -66,9 +65,9 @@ public class JDBCStoreInsertTestCase extends TestCase {
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
         JDBCStoreInsertTestCase.Foo foo = new JDBCStoreInsertTestCase.Foo("test");
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         store.insertRecord(object, id, foo, Store.NEVER);
-        JDBCStoreInsertTestCase.Foo foo2 = (JDBCStoreInsertTestCase.Foo) store.readRecord(object, id);
+        Foo foo2 = (Foo) store.readRecord(object, id);
         assertEquals("test", foo2.data);
     }
 
@@ -78,11 +77,11 @@ public class JDBCStoreInsertTestCase extends TestCase {
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
         JDBCStoreInsertTestCase.Foo foo = new JDBCStoreInsertTestCase.Foo("test");
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         store.insertRecord(object, id, foo, Store.NEVER);
         foo.data = "test2";
         store.insertRecord(object, id, foo, Store.NEVER);
-        JDBCStoreInsertTestCase.Foo foo2 = (JDBCStoreInsertTestCase.Foo) store.readRecord(object, id);
+        Foo foo2 = (Foo) store.readRecord(object, id);
         assertEquals("test2", foo2.data);
     }
 
@@ -98,7 +97,7 @@ public class JDBCStoreInsertTestCase extends TestCase {
         EasyMock.replay(owner2);
         store.init();
         Foo foo1 = new Foo("test");
-        UUID id1 = UUID.randomUUID();
+        String id1 = UUID.randomUUID().toString();
         Foo foo2 = new Foo("test2");
         store.insertRecord(owner1, id1, foo1, Store.NEVER);
         store.insertRecord(owner2, id1, foo2, Store.NEVER);

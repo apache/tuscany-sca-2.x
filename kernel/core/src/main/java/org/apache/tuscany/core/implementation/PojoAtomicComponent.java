@@ -121,6 +121,10 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         return scopeContainer.getInstance(this);
     }
 
+    public Object getAssociatedTargetInstance() throws TargetException {
+        return scopeContainer.getAssociatedInstance(this);
+    }
+
     public Object createInstance() throws ObjectCreationException {
         Object instance = instanceFactory.getInstance();
         // inject the instance with properties and references

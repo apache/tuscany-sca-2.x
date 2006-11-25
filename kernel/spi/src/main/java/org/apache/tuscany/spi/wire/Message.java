@@ -36,6 +36,7 @@ public interface Message {
      * Sets the body of the message.
      */
     void setBody(Object body);
+
     /**
      * Sets the target invoker to dispatch to when the message passes through the request side of the invocation chain
      */
@@ -55,12 +56,12 @@ public interface Message {
      * Adds the latest 'address' of the SCAObject where this message originated
      */
     void pushFromAddress(Object fromAddress);
-    
+
     /**
      * Returns the chain of SCAObject addresses
      */
     LinkedList<Object> getCallbackRoutingChain();
-    
+
     /**
      * Sets the chain of SCAObject addresses
      */
@@ -85,16 +86,35 @@ public interface Message {
      * Sets the correlation id of the message
      */
     void setCorrelationId(Object correlationId);
-    
+
     /**
      * Test if the message represents a fault/exception
+     *
      * @return true if the message body is a fault object, false is the body is a normal payload
      */
     boolean isFault();
 
     /**
      * Set the message body with a fault object. After this method is called, isFault() returns true.
+     *
      * @param fault The fault object represents an exception
      */
     void setBodyWithFault(Object fault);
+
+    /**
+     * Returns the conversational sequence the message is associated with, {@link TargetInvoker.NONE}, {@link
+     * TargetInvoker.START}, {@link TargetInvoker.CONTINUE}, or {@link TargetInvoker.END}
+     *
+     * @return the conversational sequence the message is associated with
+     */
+    short getConversationSequence();
+
+    /**
+     * Sets the conversational sequence the message is associated with,
+     *
+     * @param sequence {@link TargetInvoker.NONE}, {@link TargetInvoker.START}, {@link TargetInvoker.CONTINUE}, or
+     *                 {@link TargetInvoker.END}
+     */
+    void setConversationSequence(short sequence);
+
 }

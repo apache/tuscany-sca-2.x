@@ -44,8 +44,7 @@ public class Header {
     protected byte[][] fields;
     private short operation;
     private String ownerId;
-    private long mostSignificant;
-    private long leastSignificant;
+    private String id;
     private long expiration;
     private int numBlocks;
 
@@ -101,35 +100,19 @@ public class Header {
     }
 
     /**
-     * Returns the most significant bits of the record UUID
+     * Returns the record id
      *
-     * @return the most significant bits of the record UUID
+     * @return the record id
      */
-    public long getMostSignificant() {
-        return mostSignificant;
+    public String getId() {
+        return id;
     }
 
     /**
      * Sets the most significant bits of the record UUID
      */
-    public void setMostSignificant(long mostSignificant) {
-        this.mostSignificant = mostSignificant;
-    }
-
-    /**
-     * Returns the least significant bits of the record UUID
-     *
-     * @return the least significant bits of the record UUID
-     */
-    public long getLeastSignificant() {
-        return leastSignificant;
-    }
-
-    /**
-     * Sets the least significant bits of the record UUID
-     */
-    public void setLeastSignificant(long leastSignificant) {
-        this.leastSignificant = leastSignificant;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**

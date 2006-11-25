@@ -63,7 +63,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
         final CompositeContext currentContext = CurrentCompositeContext.getContext();
         // Retrieve conversation id to transfer to new thread
         // Notice that we cannot clear the conversation id from the current thread
-        final Object conversationID = workContext.getIdentifier(Scope.CONVERSATIONAL);
+        final Object conversationID = workContext.getIdentifier(Scope.CONVERSATION);
         // Schedule the invocation of the next interceptor in a new Work instance
         try {
             workScheduler.scheduleWork(new Runnable() {
@@ -71,7 +71,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
                     workContext.setCurrentCorrelationId(null);
                     // if we got a conversation id, transfer it to new thread
                     if (conversationID != null) {
-                        workContext.setIdentifier(Scope.CONVERSATIONAL, conversationID);
+                        workContext.setIdentifier(Scope.CONVERSATION, conversationID);
                     }
                     CompositeContext oldContext = CurrentCompositeContext.getContext();
                     try {
@@ -189,6 +189,14 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
 
         public void setBodyWithFault(Object fault) {
             throw new UnsupportedOperationException();
+        }
+
+        public short getConversationSequence() {
+            return TargetInvoker.NONE;
+        }
+
+        public void setConversationSequence(short sequence) {
+
         }
 
     }

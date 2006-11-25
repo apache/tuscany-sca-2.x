@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.Lifecycle;
 
 /**
  * Provides lifecycle management for an implementation instance associated with an {@link
- * org.apache.tuscany.spi.component.AtomicComponent} for use by the atomic context's associated {@link
+ * org.apache.tuscany.spi.component.AtomicComponent} for use by the atomic component's associated {@link
  * org.apache.tuscany.spi.component.ScopeContainer}
  *
  * @version $Rev$ $Date$

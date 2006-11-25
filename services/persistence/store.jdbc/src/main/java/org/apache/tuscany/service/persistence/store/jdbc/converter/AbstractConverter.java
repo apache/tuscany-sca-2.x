@@ -25,7 +25,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import org.apache.tuscany.spi.services.store.StoreWriteException;
 
@@ -39,24 +38,22 @@ import org.apache.tuscany.service.persistence.store.jdbc.TCCLObjectInputStream;
  */
 public abstract class AbstractConverter implements Converter {
     public static final int OWNER = 1;
-    public static final int MOST_SIGNIFICANT_BITS = 2;
-    public static final int LEAST_SIGNIFICANT_BITS = 3;
-    public static final int EXPIRATION = 4;
-    public static final int DATA = 5;
+    public static final int ID = 2;
+    public static final int EXPIRATION = 3;
+    public static final int DATA = 4;
     public static final int OBJECT_UPDATE = 1;
     public static final int OWNER_UPDATE = 2;
-    public static final int MOST_SIGNIFICANT_BITS_UPDATE = 3;
-    public static final int LEAST_SIGNIFICANT_BITS_UPDATE = 4;
+    public static final int ID_UPDATE = 3;
 
-    protected String findSql = "SELECT * FROM CONVERSATION_STATE WHERE OWNER = ? AND ID_1 = ? AND ID_2 = ?";
+    protected String findSql = "SELECT * FROM CONVERSATION_STATE WHERE OWNER = ? AND ID = ?";
     protected String insertSql =
-        "INSERT INTO CONVERSATION_STATE (OWNER, ID_1, ID_2, EXPIRATION, OBJECT) VALUES (?, ?, ?, ?, ?)";
-    protected String updateSql = "UPDATE CONVERSATION_STATE SET OBJECT = ? WHERE OWNER = ? AND ID_1 = ? AND ID_2 = ?";
+        "INSERT INTO CONVERSATION_STATE (OWNER, ID, EXPIRATION, OBJECT) VALUES (?, ?, ?, ?)";
+    protected String updateSql = "UPDATE CONVERSATION_STATE SET OBJECT = ? WHERE OWNER = ? AND ID = ?";
     protected String selectUpdateSql =
-        "SELECT ID_1 FROM CONVERSATION_STATE WHERE OWNER = ? AND ID_1 = ? AND ID_2 = ? FOR UPDATE";
-    protected String deleteSql = "DELETE FROM CONVERSATION_STATE WHERE ID_1 = ? AND ID_2 = ?";
+        "SELECT ID FROM CONVERSATION_STATE WHERE OWNER = ? AND ID = ? FOR UPDATE";
+    protected String deleteSql = "DELETE FROM CONVERSATION_STATE WHERE ID = ?";
     protected String deleteExpiredSql = "DELETE FROM CONVERSATION_STATE WHERE EXPIRATION <= ?";
-    protected String deleteRecordSql = "DELETE FROM CONVERSATION_STATE WHERE OWNER = ? AND ID_1 = ? AND ID_2 = ?";
+    protected String deleteRecordSql = "DELETE FROM CONVERSATION_STATE WHERE OWNER = ? AND ID = ?";
 
     public String getInsertSql() {
         return insertSql;
@@ -86,23 +83,21 @@ public abstract class AbstractConverter implements Converter {
         return deleteRecordSql;
     }
 
-    public boolean findAndLock(PreparedStatement stmt, String ownerId, UUID id)
+    public boolean findAndLock(PreparedStatement stmt, String ownerId, String id)
         throws StoreWriteException {
         try {
             stmt.setString(OWNER, ownerId);
-            stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
-            stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
+            stmt.setString(ID, id);
             return stmt.executeQuery().next();
         } catch (SQLException e) {
             throw new StoreWriteException(e);
         }
     }
 
-    public void delete(PreparedStatement stmt, String ownerId, UUID id) throws StoreWriteException {
+    public void delete(PreparedStatement stmt, String ownerId, String id) throws StoreWriteException {
         try {
             stmt.setString(OWNER, ownerId);
-            stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
-            stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
+            stmt.setString(ID, id);
         } catch (SQLException e) {
             throw new StoreWriteException(e);
         }

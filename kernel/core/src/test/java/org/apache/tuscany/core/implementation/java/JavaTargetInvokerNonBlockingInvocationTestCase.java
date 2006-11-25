@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
+import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -101,7 +102,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, wire, context, monitor);
-        Object ret = invoker.invokeTarget("foo");
+        Object ret = invoker.invokeTarget("foo", NONE);
         Assert.assertEquals("foo", ret);
     }
 
@@ -113,7 +114,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         JavaTargetInvoker invoker = new JavaTargetInvoker(arrayMethod, component, wire, context, monitor);
 
         String[] args = new String[]{"foo", "bar"};
-        Object ret = invoker.invokeTarget(new Object[]{args});
+        Object ret = invoker.invokeTarget(new Object[]{args}, NONE);
         String[] retA = (String[]) ret;
         Assert.assertNotNull(retA);
         Assert.assertEquals(2, retA.length);
@@ -127,7 +128,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, wire, context, monitor);
-        Object ret = invoker.invokeTarget(null);
+        Object ret = invoker.invokeTarget(null, NONE);
         String retS = (String) ret;
         Assert.assertEquals("foo", retS);
     }
@@ -138,7 +139,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, wire, context, monitor);
-        Object ret = invoker.invokeTarget(new Integer[]{1});
+        Object ret = invoker.invokeTarget(new Integer[]{1}, NONE);
         Integer retI = (Integer) ret;
         Assert.assertEquals(1, retI.intValue());
     }
@@ -150,7 +151,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(checkedMethod, component, wire, context, monitor);
         try {
-            invoker.invokeTarget(null);
+            invoker.invokeTarget(null, NONE);
         } catch (InvocationTargetException e) {
             if (e.getCause() != null && TestException.class.equals(e.getCause().getClass())) {
                 return;
@@ -168,7 +169,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(runtimeMethod, component, wire, context, monitor);
         try {
-            invoker.invokeTarget(null);
+            invoker.invokeTarget(null, NONE);
         } catch (InvocationTargetException e) {
             if (e.getCause() != null && e.getCause() instanceof TestRuntimeException) {
                 return;

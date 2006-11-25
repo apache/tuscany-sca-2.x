@@ -55,7 +55,7 @@ public class RubyInvoker extends TargetInvokerExtension {
     /**
      * Invokes a function on a script instance
      */
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         RubyScriptInstance target = context.getTargetInstance();
         return target.invokeFunction(functionName,
             (Object[]) payload,

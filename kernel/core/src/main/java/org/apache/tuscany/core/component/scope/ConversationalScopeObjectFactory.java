@@ -33,7 +33,7 @@ import org.osoa.sca.annotations.Init;
 public class ConversationalScopeObjectFactory implements ObjectFactory<ConversationalScopeContainer> {
     
     public ConversationalScopeObjectFactory(@Autowire ScopeRegistry registry) {
-        registry.registerFactory(Scope.CONVERSATIONAL, this);
+        registry.registerFactory(Scope.CONVERSATION, this);
     }
 
     @Init(eager = true)

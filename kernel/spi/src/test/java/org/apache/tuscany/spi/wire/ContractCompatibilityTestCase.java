@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -54,12 +55,12 @@ public class ContractCompatibilityTestCase extends TestCase {
 
     public void testBasic() throws Exception {
         ServiceContract<Type> source = new MockContract<Type>("FooContract");
-        Operation<Type> opSource1 = new Operation<Type>("op1", null, null, null, false, null);
+        Operation<Type> opSource1 = new Operation<Type>("op1", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
         ServiceContract<Type> target = new MockContract<Type>("FooContract");
-        Operation<Type> opSource2 = new Operation<Type>("op1", null, null, null, false, null);
+        Operation<Type> opSource2 = new Operation<Type>("op1", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opSource2);
         target.setOperations(targetOperations);
@@ -68,12 +69,12 @@ public class ContractCompatibilityTestCase extends TestCase {
 
     public void testBasicIncompatibleOperationNames() throws Exception {
         ServiceContract<Type> source = new MockContract<Type>("FooContract");
-        Operation<Type> opSource1 = new Operation<Type>("op1", null, null, null, false, null);
+        Operation<Type> opSource1 = new Operation<Type>("op1", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
         ServiceContract<Type> target = new MockContract<Type>("FooContract");
-        Operation<Type> opSource2 = new Operation<Type>("op2", null, null, null, false, null);
+        Operation<Type> opSource2 = new Operation<Type>("op2", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op2", opSource2);
         target.setOperations(targetOperations);
@@ -90,7 +91,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         List<DataType<Type>> sourceInputTypes = new ArrayList<DataType<Type>>();
         sourceInputTypes.add(new DataType<Type>(Object.class, Object.class));
         DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(String.class, sourceInputTypes);
-        Operation<Type> opSource1 = new Operation<Type>("op1", inputType, null, null, false, null);
+        Operation<Type> opSource1 = new Operation<Type>("op1", inputType, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
@@ -101,7 +102,8 @@ public class ContractCompatibilityTestCase extends TestCase {
         DataType<List<DataType<Type>>> targetInputType =
             new DataType<List<DataType<Type>>>(String.class, targetInputTypes);
 
-        Operation<Type> opTarget = new Operation<Type>("op1", targetInputType, null, null, false, null);
+        Operation<Type> opTarget =
+            new Operation<Type>("op1", targetInputType, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
@@ -114,7 +116,7 @@ public class ContractCompatibilityTestCase extends TestCase {
         List<DataType<Type>> sourceInputTypes = new ArrayList<DataType<Type>>();
         sourceInputTypes.add(new DataType<Type>(Integer.class, Integer.class));
         DataType<List<DataType<Type>>> inputType = new DataType<List<DataType<Type>>>(String.class, sourceInputTypes);
-        Operation<Type> opSource1 = new Operation<Type>("op1", inputType, null, null, false, null);
+        Operation<Type> opSource1 = new Operation<Type>("op1", inputType, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
@@ -125,7 +127,8 @@ public class ContractCompatibilityTestCase extends TestCase {
         DataType<List<DataType<Type>>> targetInputType =
             new DataType<List<DataType<Type>>>(String.class, targetInputTypes);
 
-        Operation<Type> opTarget = new Operation<Type>("op1", targetInputType, null, null, false, null);
+        Operation<Type> opTarget =
+            new Operation<Type>("op1", targetInputType, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
@@ -166,14 +169,16 @@ public class ContractCompatibilityTestCase extends TestCase {
     public void testOutputTypes() throws Exception {
         ServiceContract<Type> source = new MockContract<Type>("FooContract");
         DataType<Type> sourceOutputType = new DataType<Type>(String.class, String.class);
-        Operation<Type> opSource1 = new Operation<Type>("op1", null, sourceOutputType, null, false, null);
+        Operation<Type> opSource1 =
+            new Operation<Type>("op1", null, sourceOutputType, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
 
         ServiceContract<Type> target = new MockContract<Type>("FooContract");
         DataType<Type> targetOutputType = new DataType<Type>(String.class, String.class);
-        Operation<Type> opTarget = new Operation<Type>("op1", null, targetOutputType, null, false, null);
+        Operation<Type> opTarget =
+            new Operation<Type>("op1", null, targetOutputType, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
@@ -203,14 +208,16 @@ public class ContractCompatibilityTestCase extends TestCase {
     public void testIncompatibleOutputTypes() throws Exception {
         ServiceContract<Type> source = new MockContract<Type>("FooContract");
         DataType<Type> sourceOutputType = new DataType<Type>(String.class, String.class);
-        Operation<Type> opSource1 = new Operation<Type>("op1", null, sourceOutputType, null, false, null);
+        Operation<Type> opSource1 =
+            new Operation<Type>("op1", null, sourceOutputType, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
 
         ServiceContract<Type> target = new MockContract<Type>("FooContract");
         DataType<Type> targetOutputType = new DataType<Type>(Integer.class, Integer.class);
-        Operation<Type> opTarget = new Operation<Type>("op1", null, targetOutputType, null, false, null);
+        Operation<Type> opTarget =
+            new Operation<Type>("op1", null, targetOutputType, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
@@ -227,7 +234,8 @@ public class ContractCompatibilityTestCase extends TestCase {
         DataType<Type> sourceFaultType = new DataType<Type>(String.class, String.class);
         List<DataType<Type>> sourceFaultTypes = new ArrayList<DataType<Type>>();
         sourceFaultTypes.add(0, sourceFaultType);
-        Operation<Type> opSource1 = new Operation<Type>("op1", null, null, sourceFaultTypes, false, null);
+        Operation<Type> opSource1 =
+            new Operation<Type>("op1", null, null, sourceFaultTypes, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
@@ -237,7 +245,8 @@ public class ContractCompatibilityTestCase extends TestCase {
         List<DataType<Type>> targetFaultTypes = new ArrayList<DataType<Type>>();
         targetFaultTypes.add(0, targetFaultType);
 
-        Operation<Type> opTarget = new Operation<Type>("op1", null, null, targetFaultTypes, false, null);
+        Operation<Type> opTarget =
+            new Operation<Type>("op1", null, null, targetFaultTypes, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);
@@ -249,13 +258,14 @@ public class ContractCompatibilityTestCase extends TestCase {
         DataType<Type> sourceFaultType = new DataType<Type>(String.class, String.class);
         List<DataType<Type>> sourceFaultTypes = new ArrayList<DataType<Type>>();
         sourceFaultTypes.add(0, sourceFaultType);
-        Operation<Type> opSource1 = new Operation<Type>("op1", null, null, sourceFaultTypes, false, null);
+        Operation<Type> opSource1 =
+            new Operation<Type>("op1", null, null, sourceFaultTypes, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> sourceOperations = new HashMap<String, Operation<Type>>();
         sourceOperations.put("op1", opSource1);
         source.setOperations(sourceOperations);
 
         ServiceContract<Type> target = new MockContract<Type>("FooContract");
-        Operation<Type> opTarget = new Operation<Type>("op1", null, null, null, false, null);
+        Operation<Type> opTarget = new Operation<Type>("op1", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> targetOperations = new HashMap<String, Operation<Type>>();
         targetOperations.put("op1", opTarget);
         target.setOperations(targetOperations);

@@ -89,10 +89,13 @@ public class RequestScopeContainer extends AbstractScopeContainer {
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
         Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
         assert instanceContextMap != null : "Atomic component not registered";
         InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
+        if (ctx == null && !create) {
+            return null;
+        }
         if (ctx == null) {
             ctx = new InstanceWrapperImpl(component, component.createInstance());
             ctx.start();

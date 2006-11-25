@@ -25,7 +25,7 @@ public class Scope {
     public static final Scope STATELESS = new Scope("STATELESS");
     public static final Scope REQUEST = new Scope("REQUEST");
     public static final Scope SESSION = new Scope("SESSION");
-    public static final Scope CONVERSATIONAL = new Scope("CONVERSATIONAL");
+    public static final Scope CONVERSATION = new Scope("CONVERSATION");
     public static final Scope MODULE = new Scope("MODULE");
     public static final Scope COMPOSITE = new Scope("COMPOSITE");
     public static final Scope UNDEFINED = new Scope("UNDEFINED");
@@ -40,6 +40,7 @@ public class Scope {
         return scope;
     }
 
+    @SuppressWarnings({"StringEquality"})
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-import org.osoa.sca.SessionEndedException;
+import org.osoa.sca.ConversationEndedException;
 
 /**
  * A scope context which manages atomic component instances keyed on a conversation session
@@ -62,14 +62,14 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
     }
 
     public Scope getScope() {
-        return Scope.CONVERSATIONAL;
+        return Scope.CONVERSATION;
     }
 
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof ConversationStart) {
             Object key = ((ConversationStart) event).getId();
-            workContext.setIdentifier(Scope.CONVERSATIONAL, key);
+            workContext.setIdentifier(Scope.CONVERSATION, key);
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
                     getInstance(entry.getKey(), key);
@@ -102,12 +102,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer {
         component.addListener(this);
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
-        Object key = workContext.getIdentifier(Scope.CONVERSATIONAL);
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
+        Object key = workContext.getIdentifier(Scope.CONVERSATION);
         assert key != null : "Conversational session id not bound in work component";
         InstanceWrapper wrapper = getInstance(component, key);
         if (wrapper instanceof TimedoutInstanceWrapper) {
-            throw new TargetException(new SessionEndedException("Conversation has timed out"));
+            throw new TargetException(new ConversationEndedException("Conversation has timed out"));
         }
         
         return wrapper;

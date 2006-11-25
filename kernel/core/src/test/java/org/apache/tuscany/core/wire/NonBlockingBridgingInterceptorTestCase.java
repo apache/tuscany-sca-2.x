@@ -53,9 +53,9 @@ public class NonBlockingBridgingInterceptorTestCase extends TestCase {
         replay(scheduler);
         WorkContext context = createMock(WorkContext.class);
         String convID = "convID";
-        EasyMock.expect(context.getIdentifier(Scope.CONVERSATIONAL)).andReturn(convID);
+        EasyMock.expect(context.getIdentifier(Scope.CONVERSATION)).andReturn(convID);
         context.setCurrentCorrelationId(null);
-        context.setIdentifier(Scope.CONVERSATIONAL, convID);
+        context.setIdentifier(Scope.CONVERSATION, convID);
         EasyMock.replay(context);
         Message msg = new MessageImpl();
         Interceptor next = EasyMock.createMock(Interceptor.class);

@@ -58,7 +58,7 @@ public class ImplementationProcessorServiceTestCase extends TestCase {
 
     @Callback(Bar.class)
     @Remotable
-    @Scope("CONVERSATIONAL")
+    @Scope("CONVERSATION")
     public interface Foo {
 
     }

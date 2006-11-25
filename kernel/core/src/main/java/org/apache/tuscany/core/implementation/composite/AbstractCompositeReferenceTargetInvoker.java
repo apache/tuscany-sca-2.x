@@ -47,7 +47,7 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
         return isCacheable(); // we only need to check if the scopes are correct
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, short sequence) throws InvocationTargetException {
         throw new InvocationTargetException(new InvocationRuntimeException("Not allowed to invokeTarget with object"));
     }
 

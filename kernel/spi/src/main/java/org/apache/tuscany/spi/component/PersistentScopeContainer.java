@@ -34,7 +34,7 @@ public interface PersistentScopeContainer extends ScopeContainer {
      * @param expiration the expiration in milliseconds
      * @throws PersistenceException
      */
-    void persistNew(AtomicComponent component, Object id, Object instance, long expiration) throws PersistenceException;
+    void persistNew(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
 
     /**
      * Persists a component implementation instance, equivalent to an update operation
@@ -45,7 +45,7 @@ public interface PersistentScopeContainer extends ScopeContainer {
      * @param expiration the expiration in milliseconds
      * @throws PersistenceException
      */
-    void persist(AtomicComponent component, Object id, Object instance, long expiration) throws PersistenceException;
+    void persist(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
 
     /**
      * Removes a component implementation instance from persistent storage
@@ -54,14 +54,6 @@ public interface PersistentScopeContainer extends ScopeContainer {
      * @param id        the id associated with the instance
      * @throws PersistenceException
      */
-    void remove(AtomicComponent component, Object id) throws PersistenceException;
-
-    /**
-     * Returns a previously instance associated with the current component. If no instance is found, a {@link
-     * TargetNotFoundException} is thrown
-     *
-     * @throws TargetException
-     */
-    Object getPersistedInstance(AtomicComponent component) throws TargetException;
+    void remove(AtomicComponent component, String id) throws PersistenceException;
 
 }

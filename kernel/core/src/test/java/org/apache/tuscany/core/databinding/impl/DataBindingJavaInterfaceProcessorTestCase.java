@@ -19,6 +19,8 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,8 +55,8 @@ public class DataBindingJavaInterfaceProcessorTestCase extends TestCase {
         DataBindingJavaInterfaceProcessor processor = new DataBindingJavaInterfaceProcessor();
         JavaServiceContract contract = new JavaServiceContract(MockInterface.class);
         Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
-        Operation<Type> operation = new Operation<Type>("call", null, null, null, false, null);
-        Operation<Type> operation1 = new Operation<Type>("call1", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("call", null, null, null, false, null, NO_CONVERSATION);
+        Operation<Type> operation1 = new Operation<Type>("call1", null, null, null, false, null, NO_CONVERSATION);
         operations.put("call", operation);
         operations.put("call1", operation1);
         contract.setOperations(operations);

@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.services.store.memory;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,7 +45,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  */
 @Scope("MODULE")
 public class MemoryStore implements Store {
-    private Map<SCAObject, Map<UUID, Record>> store;
+    private Map<SCAObject, Map<String, Record>> store;
     // TODO integrate with a core threading scheme
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
@@ -54,7 +53,7 @@ public class MemoryStore implements Store {
 
     public MemoryStore(@Monitor StoreMonitor monitor) {
         this.monitor = monitor;
-        this.store = new ConcurrentHashMap<SCAObject, Map<UUID, Record>>();
+        this.store = new ConcurrentHashMap<SCAObject, Map<String, Record>>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -82,10 +81,10 @@ public class MemoryStore implements Store {
         monitor.stop("In-memory store stopped");
     }
 
-    public void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
-        Map<UUID, Record> map = store.get(owner);
+    public void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
+        Map<String, Record> map = store.get(owner);
         if (map == null) {
-            map = new ConcurrentHashMap<UUID, Record>();
+            map = new ConcurrentHashMap<String, Record>();
             store.put(owner, map);
         }
         if (map.containsKey(id)) {
@@ -96,24 +95,24 @@ public class MemoryStore implements Store {
         map.put(id, new Record(object, expiration));
     }
 
-    public void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
-        Map<UUID, Record> map = store.get(owner);
+    public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
+        Map<String, Record> map = store.get(owner);
         if (map == null) {
             StoreWriteException e = new StoreWriteException("Record not found");
-            e.setIdentifier(id.toString());
+            e.setIdentifier(id);
             throw e;
         }
         Record record = map.get(id);
         if (record == null) {
             StoreWriteException e = new StoreWriteException("Record not found");
-            e.setIdentifier(id.toString());
+            e.setIdentifier(id);
             throw e;
         }
         record.data = object;
     }
 
-    public Object readRecord(SCAObject owner, UUID id) {
-        Map<UUID, Record> map = store.get(owner);
+    public Object readRecord(SCAObject owner, String id) {
+        Map<String, Record> map = store.get(owner);
         if (map == null) {
             return null;
         }
@@ -128,8 +127,8 @@ public class MemoryStore implements Store {
         store.clear();
     }
 
-    public void removeRecord(SCAObject owner, UUID id) throws StoreWriteException {
-        Map<UUID, Record> map = store.get(owner);
+    public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
+        Map<String, Record> map = store.get(owner);
         if (map == null) {
             StoreWriteException e = new StoreWriteException("Owner not found");
             e.setIdentifier(owner.getCanonicalName());
@@ -137,7 +136,7 @@ public class MemoryStore implements Store {
         }
         if (map.remove(id) == null) {
             StoreWriteException e = new StoreWriteException("Record not found for owner " + owner.getCanonicalName());
-            e.setIdentifier(id.toString());
+            e.setIdentifier(id);
             throw e;
         }
     }
@@ -168,8 +167,8 @@ public class MemoryStore implements Store {
 
         public void run() {
             long now = System.currentTimeMillis();
-            for (Map<UUID, Record> map : store.values()) {
-                for (Map.Entry<UUID, Record> entry : map.entrySet()) {
+            for (Map<String, Record> map : store.values()) {
+                for (Map.Entry<String, Record> entry : map.entrySet()) {
                     final long expiration = entry.getValue().expiration;
                     if (expiration != NEVER && now >= expiration) {
                         map.remove(entry.getKey());

@@ -25,6 +25,7 @@ import org.apache.axis2.client.async.AsyncResult;
 import org.apache.axis2.client.async.Callback;
 import org.apache.axis2.context.MessageContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class Axis2ReferenceCallback extends Callback {
 
@@ -38,7 +39,7 @@ public class Axis2ReferenceCallback extends Callback {
         MessageContext responseMC = result.getResponseMessageContext();
         OMElement responseOM = responseMC.getEnvelope().getBody().getFirstElement();
         try {
-            targetInvoker.invokeTarget(new Object[] {responseOM});
+            targetInvoker.invokeTarget(new Object[] {responseOM}, TargetInvoker.NONE);
         } catch (InvocationTargetException e) {
             // FIXME what is the appropriate exception here?
             throw new InvocationRuntimeException(e);

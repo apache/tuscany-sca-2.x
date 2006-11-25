@@ -62,8 +62,9 @@ public class GroovyInvoker extends TargetInvokerExtension {
 
     /**
      * Dispatches to the the target.
+     * TODO support conversational dispatch
      */
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         GroovyObject target = component.getTargetInstance();
         Object[] args = (Object[]) payload;
         try {

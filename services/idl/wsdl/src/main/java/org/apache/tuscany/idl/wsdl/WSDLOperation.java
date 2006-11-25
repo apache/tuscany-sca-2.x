@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import javax.wsdl.Fault;
 import javax.wsdl.Input;
 import javax.wsdl.Message;
@@ -37,6 +36,7 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.idl.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
+
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaObject;
@@ -67,8 +67,8 @@ public class WSDLOperation {
     protected List<DataType<QName>> faultTypes;
 
     /**
-     * @param operation The WSDL4J operation
-     * @param dataBinding The default databinding
+     * @param operation      The WSDL4J operation
+     * @param dataBinding    The default databinding
      * @param schemaRegistry The XML Schema registry
      */
     public WSDLOperation(Operation operation, String dataBinding, XMLSchemaRegistry schemaRegistry) {
@@ -85,14 +85,14 @@ public class WSDLOperation {
 
     /**
      * Test if the operation qualifies wrapper style as defined by the JAX-WS 2.0 spec
-     * 
+     *
      * @return true if the operation qualifies wrapper style, otherwise false
      */
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                    Boolean.valueOf(wrapper.getInputChildElements() != null
-                            && (operation.getOutput() == null || wrapper.getOutputChildElements() != null));
+                Boolean.valueOf(wrapper.getInputChildElements() != null
+                    && (operation.getOutput() == null || wrapper.getOutputChildElements() != null));
         }
         return wrapperStyle.booleanValue();
     }
@@ -108,6 +108,7 @@ public class WSDLOperation {
     /**
      * @return
      * @throws InvalidServiceContractException
+     *
      */
     public DataType<List<DataType<QName>>> getInputType() throws InvalidServiceContractException {
         if (inputType == null) {
@@ -185,9 +186,13 @@ public class WSDLOperation {
     public org.apache.tuscany.spi.model.Operation<QName> getOperation() throws InvalidServiceContractException {
         if (operationModel == null) {
             boolean oneway = (operation.getOutput() == null);
-            operationModel =
-                    new org.apache.tuscany.spi.model.Operation<QName>(operation.getName(), getInputType(),
-                            getOutputType(), getFaultTypes(), oneway, dataBinding);
+            operationModel = new org.apache.tuscany.spi.model.Operation<QName>(operation.getName(),
+                getInputType(),
+                getOutputType(),
+                getFaultTypes(),
+                oneway,
+                dataBinding,
+                org.apache.tuscany.spi.model.Operation.NO_CONVERSATION);
             operationModel.setWrapperStyle(isWrapperStyle());
             // operationModel.setMetaData(WSDLOperation.class.getName(), this);
             if (isWrapperStyle()) {
@@ -271,19 +276,15 @@ public class WSDLOperation {
     /**
      * The "Wrapper Style" WSDL operation is defined by The Java API for XML-Based Web Services (JAX-WS) 2.0
      * specification, section 2.3.1.2 Wrapper Style.
-     * <p>
-     * A WSDL operation qualifies for wrapper style mapping only if the following criteria are met:
-     * <ul>
-     * <li>(i) The operation’s input and output messages (if present) each contain only a single part
-     * <li>(ii) The input message part refers to a global element declaration whose localname is equal to the operation
-     * name
-     * <li>(iii) The output message part refers to a global element declaration
-     * <li>(iv) The elements referred to by the input and output message parts (henceforth referred to as wrapper
-     * elements) are both complex types defined using the xsd:sequence compositor
-     * <li>(v) The wrapper elements only contain child elements, they must not contain other structures such as
-     * wildcards (element or attribute), xsd:choice, substitution groups (element references are not permitted) or
-     * attributes; furthermore, they must not be nillable.
-     * </ul>
+     * <p/>
+     * A WSDL operation qualifies for wrapper style mapping only if the following criteria are met: <ul> <li>(i) The
+     * operation’s input and output messages (if present) each contain only a single part <li>(ii) The input message
+     * part refers to a global element declaration whose localname is equal to the operation name <li>(iii) The output
+     * message part refers to a global element declaration <li>(iv) The elements referred to by the input and output
+     * message parts (henceforth referred to as wrapper elements) are both complex types defined using the xsd:sequence
+     * compositor <li>(v) The wrapper elements only contain child elements, they must not contain other structures such
+     * as wildcards (element or attribute), xsd:choice, substitution groups (element references are not permitted) or
+     * attributes; furthermore, they must not be nillable. </ul>
      */
     public class Wrapper {
         private XmlSchemaElement inputWrapperElement;
@@ -297,7 +298,7 @@ public class WSDLOperation {
         private DataType<List<DataType<QName>>> unwrappedInputType;
 
         private DataType<QName> unwrappedOutputType;
-        
+
         private transient WrapperInfo wrapperInfo;
 
         private List<XmlSchemaElement> getChildElements(XmlSchemaElement element) throws InvalidWSDLException {
@@ -351,7 +352,7 @@ public class WSDLOperation {
 
         /**
          * Return a list of child XSD elements under the wrapped request element
-         * 
+         *
          * @return a list of child XSD elements or null if if the request element is not wrapped
          */
         public List<XmlSchemaElement> getInputChildElements() throws InvalidWSDLException {
@@ -389,7 +390,7 @@ public class WSDLOperation {
 
         /**
          * Return a list of child XSD elements under the wrapped response element
-         * 
+         *
          * @return a list of child XSD elements or null if if the response element is not wrapped
          */
         public List<XmlSchemaElement> getOutputChildElements() throws InvalidWSDLException {
@@ -446,7 +447,7 @@ public class WSDLOperation {
                     childTypes.add(type);
                 }
                 unwrappedInputType =
-                        new DataType<List<DataType<QName>>>("idl:unwrapped.input", Object[].class, childTypes);
+                    new DataType<List<DataType<QName>>>("idl:unwrapped.input", Object[].class, childTypes);
             }
             return unwrappedInputType;
         }
@@ -482,7 +483,8 @@ public class WSDLOperation {
                     }
                 }
                 wrapperInfo =
-                        new WrapperInfo(in, out, inChildren, outChildren, getUnwrappedInputType(), getUnwrappedOutputType());
+                    new WrapperInfo(in, out, inChildren, outChildren, getUnwrappedInputType(),
+                        getUnwrappedOutputType());
             }
             return wrapperInfo;
         }

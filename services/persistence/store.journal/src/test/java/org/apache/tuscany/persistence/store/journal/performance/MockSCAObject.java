@@ -20,14 +20,14 @@ package org.apache.tuscany.persistence.store.journal.performance;
 
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.event.Event;
-import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.event.EventFilter;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $Rev$ $Date$

@@ -24,6 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.host.rmi.RMIHost;
@@ -40,7 +42,7 @@ public class RMIInvokerTestCase extends TestCase {
         });
         replay(host);
         RMIInvoker invoker = new RMIInvoker(host, null, null, null, method);
-        assertNotNull(invoker.invokeTarget(new Object[] {}));
+        assertNotNull(invoker.invokeTarget(new Object[] {}, TargetInvoker.NONE));
     }
 
 // TODO: these don't seem to work

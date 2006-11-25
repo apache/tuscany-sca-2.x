@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -46,7 +47,7 @@ public class ScriptComponentTestCase extends TestCase {
         config.setName("foo");
         config.setScopeContainer(container);
         ScriptComponent component = new ScriptComponent(config);
-        Operation<Type> operation = new Operation<Type>("hashCode", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("hashCode", null, null, null, false, null, NO_CONVERSATION);
         operation.setServiceContract(new Contract<Type>(List.class));
         TargetInvoker invoker = component.createTargetInvoker("hashCode", operation, null);
         assertNotNull(invoker);

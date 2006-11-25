@@ -18,15 +18,14 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import static org.apache.tuscany.persistence.store.journal.SerializationHelper.deserialize;
-
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.TestCase;
-import static org.apache.tuscany.spi.services.store.Store.NEVER;
 import org.apache.tuscany.spi.component.WorkContext;
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
 
+import junit.framework.TestCase;
+import static org.apache.tuscany.persistence.store.journal.SerializationHelper.deserialize;
 import org.easymock.EasyMock;
 
 /**
@@ -73,14 +72,13 @@ public class SerializationHelperTestCase extends TestCase {
     }
 
     public void testDeserializeHeader() throws Exception {
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         byte[] bytes = SerializationHelper.serializeHeader(Header.INSERT, 2, "foo", id, NEVER);
         Header header = SerializationHelper.deserializeHeader(new MockHeader(bytes));
         assertEquals(Header.INSERT, header.getOperation());
         assertEquals(2, header.getNumBlocks());
         assertEquals("foo", header.getOwnerId());
-        assertEquals(id.getMostSignificantBits(), header.getMostSignificant());
-        assertEquals(id.getLeastSignificantBits(), header.getLeastSignificant());
+        assertEquals(id, header.getId());
         assertEquals(NEVER, header.getExpiration());
     }
 

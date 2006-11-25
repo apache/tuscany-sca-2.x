@@ -40,7 +40,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Object value = new Object();
         store.insertRecord(component, id, value, 1);
         Thread.sleep(100);
@@ -54,7 +54,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Object value = new Object();
         store.insertRecord(component, id, value, Store.NEVER);
         Thread.sleep(100);
@@ -68,7 +68,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Object value = new Object();
         store.insertRecord(component, id, value, Store.NEVER);
         store.destroy();
@@ -80,7 +80,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Object value = new Object();
         store.insertRecord(component, id, value, Store.NEVER);
         try {
@@ -98,7 +98,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Object value = new Object();
         Object newValue = new Object();
 
@@ -114,7 +114,7 @@ public class MemoryStoreTestCase extends TestCase {
         store.init();
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         Object value = new Object();
 
         store.insertRecord(component, id, value, Store.NEVER);

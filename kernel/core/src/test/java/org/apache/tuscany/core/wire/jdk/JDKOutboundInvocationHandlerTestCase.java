@@ -100,21 +100,21 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         replay(outboundWire);
 
         Object convID = new Object();
-        wc.setIdentifier(Scope.CONVERSATIONAL, convID);
+        wc.setIdentifier(Scope.CONVERSATION, convID);
         invoker.setCurrentConversationID(convID);
 
         outboundContract.setRemotable(true);
         invoker.setRemotableTest(true);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outboundWire, wc);
         handler.invoke(Foo.class.getMethod("test", new Class[]{String.class}), new Object[]{"bar"});
-        Object currentConvID = wc.getIdentifier(Scope.CONVERSATIONAL);
+        Object currentConvID = wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);
 
         outboundContract.setRemotable(false);
         invoker.setRemotableTest(false);
         JDKOutboundInvocationHandler handler2 = new JDKOutboundInvocationHandler(outboundWire, wc);
         handler2.invoke(Foo.class.getMethod("test", new Class[]{String.class}), new Object[]{"bar"});
-        currentConvID = wc.getIdentifier(Scope.CONVERSATIONAL);
+        currentConvID = wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);
     }
 
@@ -140,9 +140,9 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
             this.remotableTest = remotableTest;
         }
 
-        public Object invokeTarget(final Object payload) throws InvocationTargetException {
+        public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
             assertEquals("bar", Array.get(payload, 0));
-            Object convID = wc.getIdentifier(Scope.CONVERSATIONAL);
+            Object convID = wc.getIdentifier(Scope.CONVERSATION);
             if (remotableTest) {
                 assertNotSame(convID, currentConversationID);
             } else {

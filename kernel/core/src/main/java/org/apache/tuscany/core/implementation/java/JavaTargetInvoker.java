@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
@@ -38,7 +39,6 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniqueP
  * @version $Rev$ $Date$
  */
 public class JavaTargetInvoker extends TargetInvokerExtension {
-
     protected Method operation;
     protected JavaAtomicComponent component;
     protected Object target;
@@ -54,9 +54,9 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         this.component = component;
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
-            Object instance = getInstance();
+            Object instance = getInstance(sequence);
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
                 Method newOperation = findClosestMatchingMethod(operation.getName(),
@@ -89,9 +89,15 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     /**
      * Resolves the target service instance or returns a cached one
      */
-    protected Object getInstance() throws TargetException {
+    protected Object getInstance(short sequence) throws TargetException {
         if (!cacheable) {
-            return component.getTargetInstance();
+            if (sequence == START || sequence == NONE) {
+                return component.getTargetInstance();
+            } else if (sequence == CONTINUE || sequence == END) {
+                return component.getAssociatedTargetInstance();
+            } else {
+                throw new InvalidConversationSequenceException(String.valueOf(sequence));
+            }
         } else {
             if (target == null) {
                 target = component.getTargetInstance();

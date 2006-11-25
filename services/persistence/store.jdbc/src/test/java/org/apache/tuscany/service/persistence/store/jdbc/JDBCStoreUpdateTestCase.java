@@ -49,7 +49,7 @@ public class JDBCStoreUpdateTestCase extends TestCase {
         EasyMock.replay(owner2);
         store.init();
         Foo foo1 = new Foo("test");
-        UUID id1 = UUID.randomUUID();
+        String id1 = UUID.randomUUID().toString();
         Foo foo2 = new Foo("test2");
         store.insertRecord(owner1, id1, foo1, Store.NEVER);
         store.insertRecord(owner2, id1, foo2, Store.NEVER);
@@ -69,7 +69,7 @@ public class JDBCStoreUpdateTestCase extends TestCase {
         EasyMock.expect(object.getCanonicalName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(object);
         Foo foo = new Foo("test");
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         store.insertRecord(object, id, foo, NEVER);
         foo.data = "test2";
         store.updateRecord(object, id, foo, Store.NEVER);

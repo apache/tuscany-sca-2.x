@@ -29,7 +29,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import org.apache.tuscany.spi.services.store.StoreReadException;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
@@ -41,12 +40,11 @@ import org.apache.tuscany.spi.services.store.StoreWriteException;
  */
 public class JDBCConverter extends AbstractConverter {
 
-    public void insert(PreparedStatement stmt, String ownerId, UUID id, long expiration, Serializable object)
+    public void insert(PreparedStatement stmt, String ownerId, String id, long expiration, Serializable object)
         throws StoreWriteException {
         try {
             stmt.setString(OWNER, ownerId);
-            stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
-            stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
+            stmt.setString(ID, id);
             stmt.setLong(EXPIRATION, expiration);
             byte[] data = serialize(object);
             InputStream in = new ByteArrayInputStream(data);
@@ -58,18 +56,17 @@ public class JDBCConverter extends AbstractConverter {
         }
     }
 
-    public void update(PreparedStatement stmt, String ownerId, UUID id, Serializable object)
+    public void update(PreparedStatement stmt, String ownerId, String id, Serializable object)
         throws StoreWriteException {
         throw new UnsupportedOperationException();
     }
 
-    public Object read(Connection conn, String ownerId, UUID id) throws StoreReadException {
+    public Object read(Connection conn, String ownerId, String id) throws StoreReadException {
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(findSql);
             stmt.setString(OWNER, ownerId);
-            stmt.setLong(MOST_SIGNIFICANT_BITS, id.getMostSignificantBits());
-            stmt.setLong(LEAST_SIGNIFICANT_BITS, id.getLeastSignificantBits());
+            stmt.setString(ID, id);
             ResultSet rs = stmt.executeQuery();
             rs.next();
             Blob blob = rs.getBlob(DATA);

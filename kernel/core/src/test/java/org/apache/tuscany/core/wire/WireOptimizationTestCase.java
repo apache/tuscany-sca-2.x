@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.wire;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.spi.model.Operation;
@@ -93,7 +95,7 @@ public class WireOptimizationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        operation = new Operation<Type>("foo", null, null, null, false, null);
+        operation = new Operation<Type>("foo", null, null, null, false, null, NO_CONVERSATION);
 
     }
 

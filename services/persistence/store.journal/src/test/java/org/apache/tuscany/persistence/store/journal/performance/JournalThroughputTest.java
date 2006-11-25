@@ -18,17 +18,18 @@
  */
 package org.apache.tuscany.persistence.store.journal.performance;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
-import java.io.IOException;
+
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 import org.apache.tuscany.persistence.store.journal.Journal;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
 import org.apache.tuscany.persistence.store.journal.TestUtils;
-import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * Runs a basic throughput tests on Journal operations
@@ -57,7 +58,7 @@ public class JournalThroughputTest {
         TestUtils.cleanupLog();
         journal = new Journal();
         journal.open();
-        recordId = serializeRecordId("foo", UUID.randomUUID());
+        recordId = serializeRecordId("foo", UUID.randomUUID().toString());
         bytes = "this is a test".getBytes();
         final Thread[] threads = new Thread[SIZE];
         barrier = new CyclicBarrier(SIZE, new Runnable() {
@@ -91,7 +92,7 @@ public class JournalThroughputTest {
         TestUtils.cleanupLog();
         journal = new Journal();
         journal.open();
-        recordId = serializeRecordId("foo", UUID.randomUUID());
+        recordId = serializeRecordId("foo", UUID.randomUUID().toString());
         bytes = "this is a test".getBytes();
         final Thread[] threads = new Thread[SIZE];
         barrier = new CyclicBarrier(SIZE, new Runnable() {

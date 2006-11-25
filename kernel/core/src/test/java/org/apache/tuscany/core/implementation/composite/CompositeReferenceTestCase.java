@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +45,7 @@ public class CompositeReferenceTestCase extends TestCase {
             null,
             null,
             serviceContract);
-        Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
+        Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
         EasyMock.replay(chain);
         Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
@@ -65,7 +67,7 @@ public class CompositeReferenceTestCase extends TestCase {
             null,
             null,
             serviceContract);
-        Operation operation = new Operation<Type>("sayHi", null, null, null, false, null);
+        Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker targetInvoker = compositeReference.createCallbackTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);
     }

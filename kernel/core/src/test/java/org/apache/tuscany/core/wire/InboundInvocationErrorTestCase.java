@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -82,7 +83,8 @@ public class InboundInvocationErrorTestCase extends TestCase {
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
 
-        Operation<Type> operation = new Operation<Type>("checkedException", null, null, null, false, null);
+        Operation<Type> operation =
+            new Operation<Type>("checkedException", null, null, null, false, null, NO_CONVERSATION);
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         chains.put(operation, createChain(checkedMethod, checkedOperation));
         InboundWire wire = new InboundWireImpl();
@@ -105,7 +107,8 @@ public class InboundInvocationErrorTestCase extends TestCase {
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
 
-        Operation<Type> operation = new Operation<Type>("runtimeException", null, null, null, false, null);
+        Operation<Type> operation =
+            new Operation<Type>("runtimeException", null, null, null, false, null, NO_CONVERSATION);
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         chains.put(operation, createChain(runtimeMethod, runtimeOperation));
         InboundWire wire = new InboundWireImpl();

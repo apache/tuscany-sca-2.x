@@ -50,7 +50,7 @@ public class SpringInvoker implements TargetInvoker {
         springContext = context;
     }
 
-    public Object invokeTarget(final Object object) throws InvocationTargetException {
+    public Object invokeTarget(final Object object, final short sequence) throws InvocationTargetException {
         if (bean == null) {
             try {
                 bean = springContext.getBean(beanName);
@@ -71,7 +71,7 @@ public class SpringInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());

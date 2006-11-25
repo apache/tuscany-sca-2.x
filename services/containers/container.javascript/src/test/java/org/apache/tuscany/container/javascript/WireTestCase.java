@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.javascript;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import static org.easymock.EasyMock.reportMatcher;
 
 import java.lang.reflect.Type;
@@ -123,9 +125,9 @@ public class WireTestCase extends TestCase {
             new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), services, null, scope,
                 ArtifactFactory.createWireService(), null, null);
         scope.register(context);
-        Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker invoker = context.createTargetInvoker(null, operation, null);
-        assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
+        assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}, TargetInvoker.NONE));
         scope.stop();
     }
 

@@ -45,15 +45,15 @@ public class JournalStoreOverflowTestCase extends TestCase {
         store.setMaxBlocksPerFile(3);
         store.init();
         long expire = System.currentTimeMillis() + 200;
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire);
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire);
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire);
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire);
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire);   //
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire);   //
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire);
         Thread.sleep(250);
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire + 20000);
-        store.insertRecord(owner, UUID.randomUUID(), "test", expire + 20000);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire + 20000);
+        store.insertRecord(owner, UUID.randomUUID().toString(), "test", expire + 20000);
         store.destroy();
     }
 

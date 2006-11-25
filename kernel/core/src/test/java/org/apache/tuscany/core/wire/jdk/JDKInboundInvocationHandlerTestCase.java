@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
@@ -144,7 +146,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         types.add(type);
         DataType<List<DataType<Type>>> inputType =
             new DataType<List<DataType<Type>>>(Object[].class, types);
-        Operation<Type> operation = new Operation<Type>("echo", inputType, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("echo", inputType, null, null, false, null, NO_CONVERSATION);
         Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         chains.put(operation, chain);
         InboundWire wire = new InboundWireImpl();

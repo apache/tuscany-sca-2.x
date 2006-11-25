@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.groovy;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,9 +146,9 @@ public class WireTestCase extends TestCase {
         configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
-        Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker invoker = component.createTargetInvoker(null, operation, null);
-        assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}));
+        assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}, TargetInvoker.NONE));
     }
 
 

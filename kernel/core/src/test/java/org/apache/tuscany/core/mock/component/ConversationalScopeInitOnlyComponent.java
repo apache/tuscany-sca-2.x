@@ -21,7 +21,7 @@ package org.apache.tuscany.core.mock.component;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
-@Scope("CONVERSATIONAL")
+@Scope("CONVERSATION")
 public class ConversationalScopeInitOnlyComponent
                 extends ConversationalScopeComponentImpl {
 

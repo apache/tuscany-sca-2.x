@@ -26,13 +26,13 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 import org.apache.tuscany.persistence.store.journal.JournalShutdownException;
 import org.apache.tuscany.persistence.store.journal.JournalStore;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serialize;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
 import org.apache.tuscany.persistence.store.journal.TestUtils;
-import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * Runs a basic throughput tests on JournalStore operations
@@ -47,7 +47,7 @@ public class JournalStoreThroughputTest {
     private JournalStore store;
     private long now;
     private SCAObject owner = new MockSCAObject();
-    private UUID id = UUID.randomUUID();
+    private String id = UUID.randomUUID().toString();
     private CountDownLatch latch = new CountDownLatch(1);
     private long expire = System.currentTimeMillis() + 10000;
     private Foo object = new Foo("this is a test", 1);
