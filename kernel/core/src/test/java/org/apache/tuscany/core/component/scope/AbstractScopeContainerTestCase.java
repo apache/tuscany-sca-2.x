@@ -103,7 +103,7 @@ public class AbstractScopeContainerTestCase extends TestCase {
             super(name, null);
         }
 
-        protected InstanceWrapper getInstanceWrapper(AtomicComponent component) {
+        protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) {
             return null;
         }
 

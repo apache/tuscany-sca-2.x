@@ -16,28 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.persistence.store.journal;
-
-import org.apache.tuscany.api.TuscanyException;
+package org.apache.tuscany.spi.component;
 
 /**
- * Denotes an error starting the journal
+ * Denotes an unknown operation sequence in a conversation
  *
  * @version $Rev$ $Date$
  */
-public class JournalIinitializationException extends TuscanyException {
-    public JournalIinitializationException() {
+public class InvalidConversationSequenceException extends TargetException {
+
+    public InvalidConversationSequenceException() {
     }
 
-    public JournalIinitializationException(String message) {
+    public InvalidConversationSequenceException(String message) {
         super(message);
     }
 
-    public JournalIinitializationException(String message, Throwable cause) {
+    public InvalidConversationSequenceException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public JournalIinitializationException(Throwable cause) {
+    public InvalidConversationSequenceException(Throwable cause) {
         super(cause);
     }
 }

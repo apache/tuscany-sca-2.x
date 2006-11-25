@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,20 +33,17 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.services.store.RecoveryListener;
+import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.StoreReadException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.partition;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serialize;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeHeader;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
-import org.apache.tuscany.spi.services.store.RecoveryListener;
-import org.apache.tuscany.spi.services.store.Store;
-
-import org.apache.tuscany.spi.services.store.StoreMonitor;
-import org.apache.tuscany.spi.services.store.StoreReadException;
-
-import org.apache.tuscany.spi.services.store.StoreWriteException;
-
 import org.objectweb.howl.log.Configuration;
 import org.objectweb.howl.log.InvalidFileSetException;
 import org.objectweb.howl.log.InvalidLogBufferException;
@@ -63,14 +59,14 @@ import org.objectweb.howl.log.LogRecordSizeException;
 /**
  * A journal-based store service that uses HOWL for reliable persistence and recovery of object instances. Insert,
  * update, and delete operations, as well as object instances, are written to a binary log. Delete operations are
- * written as a single header block as defined by {@link SerializationHelper#serializeHeader(short, int, String,
- * java.util.UUID, long)}. Insert and update operations are written using multiple blocks consisting of at least one
- * header and 1..n additional blocks containing the object byte array. If the byte array size is greater than the log
- * block size (the HOWL default is 4K), it must be partitioned into smaller units using {@link
- * SerializationHelper#partition(byte[], int)} and written across multiple blocks. The header contains the number of
- * ensuing blocks a record occupies. Since block writes to the log may be interleaved, blocks for a given record may not
- * be consecutive. In order to identify the record a block belongs to, the first byte array of written data for the
- * block contains the serialized owner id and UUID associated with the record.
+ * written as a single header block as defined by {@link SerializationHelper#serializeHeader(short, int, String, String,
+ * long)}. Insert and update operations are written using multiple blocks consisting of at least one header and 1..n
+ * additional blocks containing the object byte array. If the byte array size is greater than the log block size (the
+ * HOWL default is 4K), it must be partitioned into smaller units using {@link SerializationHelper#partition(byte[],
+ * int)} and written across multiple blocks. The header contains the number of ensuing blocks a record occupies. Since
+ * block writes to the log may be interleaved, blocks for a given record may not be consecutive. In order to identify
+ * the record a block belongs to, the first byte array of written data for the block contains the serialized owner id
+ * and UUID associated with the record.
  * <p/>
  * A cache of all active persisted instances is maintained in memory and is used for read operations. When an instance
  * is persisted, a log record is written and an entry is added to the cache containing the instance. When an instance is
@@ -363,15 +359,15 @@ public class JournalStore implements Store {
         }
     }
 
-    public void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+    public void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         write(owner, id, object, expiration, Header.INSERT);
     }
 
-    public void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+    public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         write(owner, id, object, expiration, Header.UPDATE);
     }
 
-    public Object readRecord(SCAObject owner, UUID id) throws StoreReadException {
+    public Object readRecord(SCAObject owner, String id) throws StoreReadException {
         RecordEntry record;
         RecordKey key = new RecordKey(id, owner.getCanonicalName());
         record = cache.get(key);
@@ -384,7 +380,7 @@ public class JournalStore implements Store {
         return record.getObject();
     }
 
-    public void removeRecord(SCAObject owner, UUID id) throws StoreWriteException {
+    public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
         try {
             journal.writeHeader(serializeHeader(Header.DELETE, 0, owner.getCanonicalName(), id, NEVER), true);
             RecordKey key = new RecordKey(id, owner.getCanonicalName());
@@ -414,7 +410,7 @@ public class JournalStore implements Store {
      * @param operation
      * @throws StoreWriteException
      */
-    private void write(SCAObject owner, UUID id, Object object, long expiration, short operation)
+    private void write(SCAObject owner, String id, Object object, long expiration, short operation)
         throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
@@ -533,7 +529,7 @@ public class JournalStore implements Store {
                         if (record.getExpiration() <= now) {
                             try {
                                 String ownerName = key.getOwnerName();
-                                UUID id = key.getId();
+                                String id = key.getId();
                                 byte[] header =
                                     SerializationHelper.serializeHeader(Header.DELETE, 0, ownerName, id, Store.NEVER);
                                 journal.writeHeader(header, false);

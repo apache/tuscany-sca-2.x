@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import java.util.UUID;
-
 import junit.framework.TestCase;
 
 /**
@@ -28,21 +26,21 @@ import junit.framework.TestCase;
 public class RecordKeyTestCase extends TestCase {
 
     public void testEquals() throws Exception {
-        UUID id = UUID.randomUUID();
+        String id = "bar";
         RecordKey key1 = new RecordKey(id, "foo");
         RecordKey key2 = new RecordKey(id, "foo");
         assertEquals(key1, key2);
     }
 
     public void testNotEqualsId() throws Exception {
-        UUID id = UUID.randomUUID();
+        String id = "bar";
         RecordKey key1 = new RecordKey(id, "foo");
-        RecordKey key2 = new RecordKey(UUID.randomUUID(), "foo");
+        RecordKey key2 = new RecordKey("baz", "foo");
         assertFalse(key1.equals(key2));
     }
 
     public void testNotEqualsOwner() throws Exception {
-        UUID id = UUID.randomUUID();
+        String id = "bar";
         RecordKey key1 = new RecordKey(id, "foo");
         RecordKey key2 = new RecordKey(id, "bar");
         assertFalse(key1.equals(key2));

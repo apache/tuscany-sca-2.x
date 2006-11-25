@@ -19,7 +19,6 @@
 package org.apache.tuscany.service.persistence.store.jdbc;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Represents a persistent object and its metadata.
@@ -33,7 +32,7 @@ public class Record implements Comparable {
     public static final int UPDATE = 1;
 
     private String ownerId;
-    private UUID id;
+    private String id;
     private Serializable object;
     private long expiration = JDBCStore.NEVER;
     private int operation;
@@ -44,11 +43,11 @@ public class Record implements Comparable {
      * @param ownerId
      * @param id         the unique id of the record
      * @param object     the object to serialize
-     * @param expiration the expirary time, {@link org.apache.tuscany.spi.services.store.Store.NEVER} if there is
-     *                   no expiration
+     * @param expiration the expirary time, {@link org.apache.tuscany.spi.services.store.Store.NEVER} if there is no
+     *                   expiration
      * @param operation  an <code>INSERT</code> or <code>UPDATE</code> operation
      */
-    public Record(String ownerId, UUID id, Serializable object, long expiration, int operation) {
+    public Record(String ownerId, String id, Serializable object, long expiration, int operation) {
         this.id = id;
         this.object = object;
         this.expiration = expiration;
@@ -61,7 +60,7 @@ public class Record implements Comparable {
      *
      * @return the unique object id
      */
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

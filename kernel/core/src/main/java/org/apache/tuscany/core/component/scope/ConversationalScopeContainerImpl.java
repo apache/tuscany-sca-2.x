@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -54,14 +53,14 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
     }
 
     public Scope getScope() {
-        return Scope.CONVERSATIONAL;
+        return Scope.CONVERSATION;
     }
 
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof ConversationStart) {
             Object key = ((ConversationStart) event).getId();
-            workContext.setIdentifier(Scope.CONVERSATIONAL, key);
+            workContext.setIdentifier(Scope.CONVERSATION, key);
         } else if (event instanceof ConversationEnd) {
             Object key = ((ConversationEnd) event).getId();
             workContext.clearIdentifier(key);
@@ -86,7 +85,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
 
     @Override
     public Object getInstance(AtomicComponent component) throws TargetException {
-        UUID conversationID = (UUID) workContext.getIdentifier(Scope.CONVERSATIONAL);
+        String conversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (conversationID == null) {
             TargetException e = new TargetException("Conversation id not set in context");
             e.setIdentifier(component.getName());
@@ -108,46 +107,34 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         }
     }
 
-    public void persistNew(AtomicComponent component, Object id, Object instance, long expiration)
+    public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
-        if (!(id instanceof UUID)) {
-            throw new PersistenceException("ID must be an instance of " + UUID.class.getName());
-        }
-        UUID uid = (UUID) id;
         try {
-            nonDurableStore.insertRecord(component, uid, instance, expiration);
+            nonDurableStore.insertRecord(component, id, instance, expiration);
         } catch (StoreWriteException e) {
             throw new PersistenceException(e);
         }
     }
 
-    public void persist(AtomicComponent component, Object id, Object instance, long expiration)
+    public void persist(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
-        if (!(id instanceof UUID)) {
-            throw new PersistenceException("ID must be an instance of " + UUID.class.getName());
-        }
-        UUID uid = (UUID) id;
         try {
-            nonDurableStore.updateRecord(component, uid, instance, expiration);
+            nonDurableStore.updateRecord(component, id, instance, expiration);
         } catch (StoreWriteException e) {
             throw new PersistenceException(e);
         }
     }
 
-    public void remove(AtomicComponent component, Object id) throws PersistenceException {
-        if (!(id instanceof UUID)) {
-            throw new PersistenceException("ID must be an instance of " + UUID.class.getName());
-        }
-        UUID uid = (UUID) id;
+    public void remove(AtomicComponent component, String id) throws PersistenceException {
         try {
-            nonDurableStore.removeRecord(component, uid);
+            nonDurableStore.removeRecord(component, id);
         } catch (StoreWriteException e) {
             throw new PersistenceException(e);
         }
     }
 
-    public Object getPersistedInstance(AtomicComponent component) throws TargetException {
-        UUID conversationID = (UUID) workContext.getIdentifier(Scope.CONVERSATIONAL);
+    public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
+        String conversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (conversationID == null) {
             TargetException e = new TargetException("Conversation id not set in context");
             e.setIdentifier(component.getName());
@@ -168,7 +155,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         }
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
         throw new UnsupportedOperationException();
     }
 

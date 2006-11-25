@@ -22,10 +22,9 @@ import java.util.UUID;
 
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.services.store.Store;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 
+import junit.framework.TestCase;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
 import org.objectweb.howl.log.LogEventListener;
@@ -57,7 +56,7 @@ public class JournalStoreInsertTestCase extends TestCase {
         Journal journal = EasyMock.createMock(Journal.class);
         journal.setLogEventListener(EasyMock.isA(LogEventListener.class));
         journal.open();
-        final UUID id = UUID.randomUUID();
+        final String id = UUID.randomUUID().toString();
         EasyMock.expect(journal.writeHeader(EasyMock.isA(byte[].class), EasyMock.eq(false)))
             .andStubAnswer(new IAnswer<Long>() {
                 public Long answer() throws Throwable {
@@ -68,9 +67,9 @@ public class JournalStoreInsertTestCase extends TestCase {
                     assertTrue("Operation not INSERT", Header.INSERT == header.getOperation());
                     assertTrue("Expiration incorrect", Store.NEVER == header.getExpiration());
                     assertTrue("Least significant id incorrect",
-                        id.getLeastSignificantBits() == header.getLeastSignificant());
+                        id.equals(header.getId()));
                     assertTrue("Most significant id incorrect",
-                        id.getMostSignificantBits() == header.getMostSignificant());
+                        id.equals(header.getId()));
                     assertTrue("Records incorrect", 1 == header.getNumBlocks());
                     assertTrue("Owner id incorrect", "foo".equals(header.getOwnerId()));
                     return 1L;
@@ -103,7 +102,7 @@ public class JournalStoreInsertTestCase extends TestCase {
         Journal journal = EasyMock.createMock(Journal.class);
         journal.setLogEventListener(EasyMock.isA(LogEventListener.class));
         journal.open();
-        final UUID id = UUID.randomUUID();
+        final String id = UUID.randomUUID().toString();
         EasyMock.expect(journal.writeHeader(EasyMock.isA(byte[].class), EasyMock.eq(false))).andReturn(1L);
         EasyMock.expect(journal.writeBlock(EasyMock.isA(byte[].class), EasyMock.isA(byte[].class), EasyMock.eq(true)))
             .andReturn(1L);

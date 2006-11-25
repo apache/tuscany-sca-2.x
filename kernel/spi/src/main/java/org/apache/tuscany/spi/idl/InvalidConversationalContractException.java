@@ -16,28 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.persistence.store.journal;
-
-import org.apache.tuscany.api.TuscanyException;
+package org.apache.tuscany.spi.idl;
 
 /**
- * Denotes an error starting the journal
+ * Denotes an invalid conversational interface definition
  *
  * @version $Rev$ $Date$
  */
-public class JournalIinitializationException extends TuscanyException {
-    public JournalIinitializationException() {
+public class InvalidConversationalContractException extends InvalidServiceContractException {
+
+    public InvalidConversationalContractException() {
     }
 
-    public JournalIinitializationException(String message) {
+    public InvalidConversationalContractException(String message) {
         super(message);
     }
 
-    public JournalIinitializationException(String message, Throwable cause) {
+    public InvalidConversationalContractException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public JournalIinitializationException(Throwable cause) {
+    public InvalidConversationalContractException(Throwable cause) {
         super(cause);
     }
 }

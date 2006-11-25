@@ -127,7 +127,7 @@ public class CeltixInvoker implements TargetInvoker {
      * @param args the Java object arguments to the WS operation
      * @return the response from the WS as a Java object
      */
-    public Object invokeTarget(final Object args) throws InvocationTargetException {
+    public Object invokeTarget(final Object args, final short sequence) throws InvocationTargetException {
         WSDLOperationInfo opInfo = wsdlCache.getOperationInfo(operationName);
         if (opInfo == null) {
             // REVISIT - really map the operation name to a WSDL operation
@@ -209,7 +209,7 @@ public class CeltixInvoker implements TargetInvoker {
 
     public Message invoke(Message msg) {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), TargetInvoker.NONE);
             msg.setBody(resp);
         } catch (Throwable e) {
             msg.setBodyWithFault(e);

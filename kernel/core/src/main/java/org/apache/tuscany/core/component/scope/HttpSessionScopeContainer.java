@@ -58,13 +58,13 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof HttpSessionStart) {            
+        if (event instanceof HttpSessionStart) {
             Object key = ((HttpSessionStart) event).getId();
             workContext.setIdentifier(Scope.SESSION, key);
             for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
                 if (entry.getKey().isEagerInit()) {
-                    
-                    getInstance(entry.getKey(), key);
+
+                    getInstance(entry.getKey(), key, true);
                 }
             }
         } else if (event instanceof HttpSessionEnd) {
@@ -95,15 +95,18 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
         Object key = workContext.getIdentifier(Scope.SESSION);
-        assert key != null : "HTTP session key not bound in work component";
-        return getInstance(component, key);
+        assert key != null : "HTTP session key not bound in work context";
+        return getInstance(component, key, create);
     }
 
-    private InstanceWrapper getInstance(AtomicComponent component, Object key) {
+    private InstanceWrapper getInstance(AtomicComponent component, Object key, boolean create) {
         Map<Object, InstanceWrapper> wrappers = contexts.get(component);
         InstanceWrapper ctx = wrappers.get(key);
+        if (ctx == null && !create) {
+            return null;
+        }
         if (ctx == null) {
             ctx = new InstanceWrapperImpl(component, component.createInstance());
             ctx.start();

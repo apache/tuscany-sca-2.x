@@ -26,13 +26,13 @@ import java.util.LinkedList;
  * @version $Rev $Date
  */
 public class MessageImpl implements Message {
-
     private Object body;
     private TargetInvoker invoker;
     private LinkedList<Object> callbackRoutingChain;
     private Object messageId;
     private Object correlationId;
     private boolean isFault;
+    private short conversationSequence;
 
     public MessageImpl() {
     }
@@ -68,11 +68,11 @@ public class MessageImpl implements Message {
     public LinkedList<Object> getCallbackRoutingChain() {
         return callbackRoutingChain;
     }
-    
+
     public void setCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
         this.callbackRoutingChain = callbackRoutingChain;
     }
-    
+
     public Object getMessageId() {
         return messageId;
     }
@@ -96,5 +96,21 @@ public class MessageImpl implements Message {
     public void setBodyWithFault(Object fault) {
         this.isFault = true;
         this.body = fault;
+    }
+
+    public TargetInvoker getInvoker() {
+        return invoker;
+    }
+
+    public void setInvoker(TargetInvoker invoker) {
+        this.invoker = invoker;
+    }
+
+    public short getConversationSequence() {
+        return conversationSequence;
+    }
+
+    public void setConversationSequence(short conversationSequence) {
+        this.conversationSequence = conversationSequence;
     }
 }

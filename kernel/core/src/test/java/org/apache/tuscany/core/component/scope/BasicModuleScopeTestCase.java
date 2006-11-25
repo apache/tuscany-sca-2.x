@@ -19,8 +19,9 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -45,18 +46,43 @@ public class BasicModuleScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         ModuleScopeContainer scopeContext = new ModuleScopeContainer(workContext);
         scopeContext.start();
-        SystemAtomicComponent atomicContext = createContext(scopeContext);
+        SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
         ModuleScopeInitDestroyComponent o1 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
         ModuleScopeInitDestroyComponent o2 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertEquals(o1, o2);
         scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
         scopeContext.stop();
+    }
+
+
+    public void testGetAssociatedInstance() throws Exception {
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContainer scopeContext = new ModuleScopeContainer(workContext);
+        scopeContext.start();
+        SystemAtomicComponent component = createComponent(scopeContext);
+        // start the request
+        scopeContext.getInstance(component);
+        scopeContext.getAssociatedInstance(component);
+    }
+
+    public void testGetAssociatedInstanceNonExistent() throws Exception {
+        WorkContext workContext = new WorkContextImpl();
+        ModuleScopeContainer scopeContext = new ModuleScopeContainer(workContext);
+        scopeContext.start();
+        SystemAtomicComponent component = createComponent(scopeContext);
+        // start the request
+        try {
+            scopeContext.getAssociatedInstance(component);
+            fail();
+        } catch (TargetNotFoundException e) {
+            // expected
+        }
     }
 
     public void testModuleIsolation() throws Exception {
@@ -64,15 +90,15 @@ public class BasicModuleScopeTestCase extends TestCase {
         ModuleScopeContainer scopeContext = new ModuleScopeContainer(workContext);
         scopeContext.start();
 
-        SystemAtomicComponent atomicContext = createContext(scopeContext);
+        SystemAtomicComponent component = createComponent(scopeContext);
 
         ModuleScopeInitDestroyComponent o1 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
 
         ModuleScopeInitDestroyComponent o2 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertSame(o1, o2);
         scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
@@ -93,7 +119,7 @@ public class BasicModuleScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
+    private SystemAtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(ModuleScopeInitDestroyComponent.class);

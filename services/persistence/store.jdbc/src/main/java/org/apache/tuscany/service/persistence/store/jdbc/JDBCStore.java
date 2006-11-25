@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -97,7 +96,7 @@ public class JDBCStore implements Store {
         monitor.stop("JDBC store stopped");
     }
 
-    public void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+    public void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
             e.setIdentifier(object.getClass().getName());
@@ -146,7 +145,7 @@ public class JDBCStore implements Store {
         }
     }
 
-    public void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException {
+    public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
             StoreWriteException e = new StoreWriteException("Type must implement serializable");
             e.setIdentifier(object.getClass().getName());
@@ -186,7 +185,7 @@ public class JDBCStore implements Store {
 
     }
 
-    public Object readRecord(SCAObject owner, UUID id) throws StoreReadException {
+    public Object readRecord(SCAObject owner, String id) throws StoreReadException {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
@@ -207,7 +206,7 @@ public class JDBCStore implements Store {
         }
     }
 
-    public void removeRecord(SCAObject owner, UUID id) throws StoreWriteException {
+    public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
         Connection conn = null;
         try {
             conn = dataSource.getConnection();

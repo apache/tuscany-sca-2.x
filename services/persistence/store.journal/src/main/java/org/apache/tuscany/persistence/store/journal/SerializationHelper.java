@@ -26,7 +26,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -113,7 +112,7 @@ public final class SerializationHelper {
      * @return a byte array containing the serialized header
      * @throws IOException
      */
-    public static byte[] serializeHeader(short operation, int numRecords, String ownerId, UUID id, long expiration)
+    public static byte[] serializeHeader(short operation, int numRecords, String ownerId, String id, long expiration)
         throws IOException {
         ByteArrayOutputStream stream = null;
         ObjectOutputStream ostream = null;
@@ -123,8 +122,7 @@ public final class SerializationHelper {
             ostream.writeShort(operation);
             ostream.writeInt(numRecords);
             ostream.writeObject(ownerId);
-            ostream.writeLong(id.getMostSignificantBits());
-            ostream.writeLong(id.getLeastSignificantBits());
+            ostream.writeObject(id);
             ostream.writeLong(expiration);
             ostream.flush();
             return stream.toByteArray();
@@ -150,11 +148,11 @@ public final class SerializationHelper {
      * Serializes a unique record id consisting of the owner id  and the record's UUID
      *
      * @param ownerId the id of the owner, typically an SCAObject canonical name
-     * @param id      the UUID associated with the record
+     * @param id      the id associated with the record
      * @return the serialized record byte array
      * @throws IOException
      */
-    public static byte[] serializeRecordId(String ownerId, UUID id)
+    public static byte[] serializeRecordId(String ownerId, String id)
         throws IOException {
         ByteArrayOutputStream stream = null;
         ObjectOutputStream ostream = null;
@@ -162,8 +160,7 @@ public final class SerializationHelper {
             stream = new ByteArrayOutputStream();
             ostream = new ObjectOutputStream(stream);
             ostream.writeObject(ownerId);
-            ostream.writeLong(id.getMostSignificantBits());
-            ostream.writeLong(id.getLeastSignificantBits());
+            ostream.writeObject(id);
             ostream.flush();
             return stream.toByteArray();
         } finally {
@@ -202,8 +199,7 @@ public final class SerializationHelper {
             header.setOperation(stream.readShort());
             header.setNumBlocks(stream.readInt());
             header.setOwnerId((String) stream.readObject());
-            header.setMostSignificant(stream.readLong());
-            header.setLeastSignificant(stream.readLong());
+            header.setId((String) stream.readObject());
             header.setExpiration(stream.readLong());
             return header;
         } finally {

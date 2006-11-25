@@ -39,7 +39,7 @@ public abstract class AbstractInboundInvocationHandler {
                 if (chain.getTargetInvoker() == null) {
                     throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
                 }
-                return chain.getTargetInvoker().invokeTarget(args);
+                return chain.getTargetInvoker().invokeTarget(args, TargetInvoker.NONE);
             } catch (InvocationTargetException e) {
                 // the cause was thrown by the target so throw it
                 throw e.getCause();

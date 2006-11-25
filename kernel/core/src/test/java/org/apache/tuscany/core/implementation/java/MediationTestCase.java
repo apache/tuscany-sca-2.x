@@ -20,6 +20,8 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
+import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
@@ -43,7 +45,7 @@ public class MediationTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(new SimpleTargetImpl());
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(hello, component, null, null, null);
-        Assert.assertEquals("foo", invoker.invokeTarget("foo"));
+        Assert.assertEquals("foo", invoker.invokeTarget("foo", NONE));
     }
 
     public interface Hello {

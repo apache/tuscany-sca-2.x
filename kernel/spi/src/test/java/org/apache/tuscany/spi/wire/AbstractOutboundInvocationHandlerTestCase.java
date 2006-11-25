@@ -38,7 +38,7 @@ public class AbstractOutboundInvocationHandlerTestCase extends TestCase {
 
     private class MockInvoker implements TargetInvoker {
 
-        public Object invokeTarget(final Object payload) throws InvocationTargetException {
+        public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
             assertEquals("foo", Array.get(payload, 0));
             return "response";
         }

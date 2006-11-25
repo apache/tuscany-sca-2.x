@@ -21,12 +21,13 @@ package org.apache.tuscany.persistence.store.journal;
 import java.io.ByteArrayOutputStream;
 import java.util.UUID;
 
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
+
 import junit.framework.TestCase;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeHeader;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.serializeRecordId;
-import static org.apache.tuscany.spi.services.store.Store.NEVER;
-import org.objectweb.howl.log.LogRecord;
 import org.objectweb.howl.log.Configuration;
+import org.objectweb.howl.log.LogRecord;
 
 /**
  * @version $Rev$ $Date$
@@ -35,7 +36,7 @@ public class JournalTestCase extends TestCase {
     private Journal journal;
 
     public void testWriteHeader() throws Exception {
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         long key = journal.writeHeader(serializeHeader(Header.INSERT, 10, "foo/bar", id, NEVER), false);
         LogRecord record = journal.get(null, key);
         Header header = new Header();
@@ -45,13 +46,12 @@ public class JournalTestCase extends TestCase {
         assertEquals(Header.INSERT, header.getOperation());
         assertEquals(10, header.getNumBlocks());
         assertEquals("foo/bar", header.getOwnerId());
-        assertEquals(id.getMostSignificantBits(), header.getMostSignificant());
-        assertEquals(id.getLeastSignificantBits(), header.getLeastSignificant());
+        assertEquals(id, header.getId());
         assertEquals(NEVER, header.getExpiration());
     }
 
     public void testWriteRecord() throws Exception {
-        byte[] recordId = serializeRecordId("foo", UUID.randomUUID());
+        byte[] recordId = serializeRecordId("foo", UUID.randomUUID().toString());
         long key = journal.writeBlock("this is a test".getBytes(), recordId, true);
         LogRecord record = journal.get(null, key);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

@@ -55,24 +55,24 @@ public class ModuleScopeRestartTestCase extends TestCase {
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
-        SystemAtomicComponent context = new SystemAtomicComponentImpl(configuration);
-        context.start();
+        SystemAtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.start();
 
         scope.onEvent(new CompositeStart(this, null));
-        Object instance = context.getServiceInstance();
-        assertSame(instance, context.getServiceInstance());
+        Object instance = component.getServiceInstance();
+        assertSame(instance, component.getServiceInstance());
 
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
-        context.stop();
+        component.stop();
 
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
-        context.start();
-        assertNotSame(instance, context.getServiceInstance());
+        component.start();
+        assertNotSame(instance, component.getServiceInstance());
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
-        context.stop();
+        component.stop();
     }
 
     public static class InitDestroyOnce {

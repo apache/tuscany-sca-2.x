@@ -51,8 +51,8 @@ public class ScopeProcessor extends ImplementationProcessorExtension {
             scope = Scope.MODULE;
         } else if ("SESSION".equals(name)) {
             scope = Scope.SESSION;
-        } else if ("CONVERSATIONAL".equals(name)) {
-            scope = Scope.CONVERSATIONAL;
+        } else if ("CONVERSATION".equals(name)) {
+            scope = Scope.CONVERSATION;
         } else if ("REQUEST".equals(name)) {
             scope = Scope.REQUEST;
         } else if ("COMPOSITE".equals(name)) {

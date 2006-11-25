@@ -36,7 +36,7 @@ public class ScriptTargetInvoker extends TargetInvokerExtension {
         this.component = component;
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         ScriptInstance target = (ScriptInstance) component.getTargetInstance();
         try {
             return target.invokeTarget(functionName, (Object[]) payload);

@@ -18,8 +18,9 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -36,7 +37,7 @@ import org.apache.tuscany.core.mock.factories.MockFactory;
 public class BasicStatelessScopeTestCase extends TestCase {
 
     /**
-     * Tests instance identity is properly maintained
+     * Verfies instance identity is properly maintained
      */
     public void testInstanceManagement() throws Exception {
         WorkContext ctx = new WorkContextImpl();
@@ -53,6 +54,23 @@ public class BasicStatelessScopeTestCase extends TestCase {
         StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(context2);
         Assert.assertNotNull(comp2);
         Assert.assertNotSame(comp1, comp2);
+        scope.stop();
+    }
+
+    public void testGetAssociatedInstance() throws Exception {
+        WorkContext ctx = new WorkContextImpl();
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
+        scope.start();
+        SystemAtomicComponent context1 =
+            MockFactory.createAtomicComponent("comp1", scope, StatelessComponentImpl.class);
+        scope.register(context1);
+        try {
+            // always throws an exception, which is the semantic for stateless implementations
+            scope.getAssociatedInstance(context1);
+            fail();
+        } catch (TargetNotFoundException e) {
+            // expected
+        }
         scope.stop();
     }
 

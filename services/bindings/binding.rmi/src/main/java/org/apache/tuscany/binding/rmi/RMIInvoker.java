@@ -20,9 +20,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+
 import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.host.rmi.RMIHostException;
-import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Invoke an RMI reference.
@@ -47,7 +48,7 @@ public class RMIInvoker extends TargetInvokerExtension {
         this.rmiHost = rmiHost;
     }
 
-    public Object invokeTarget(Object payload) throws InvocationTargetException {
+    public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
         try {
             if (proxy == null) {
                 proxy = rmiHost.findService(host, port, svcName);

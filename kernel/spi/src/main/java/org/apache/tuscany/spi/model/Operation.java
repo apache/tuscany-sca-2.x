@@ -32,28 +32,24 @@ import org.apache.tuscany.spi.idl.WrapperInfo;
  * @version $Rev$ $Date$
  */
 public class Operation<T> {
+    public static final int NO_CONVERSATION = -1;
+    public static final int CONVERSATION_START = 0;
+    public static final int CONVERSATION_CONTINUE = 1;
+    public static final int CONVERSATION_END = 2;
+
     private static final String NAME = Operation.class.getName();
-
     protected Map<String, Object> metaData;
-
     private final String name;
-
-    private final DataType<T> outputType;
-
-    private final DataType<List<DataType<T>>> inputType;
-
-    private final List<DataType<T>> faultTypes;
-
-    private boolean nonBlocking;
-
     private ServiceContract<T> contract;
-
-    private boolean callback;
-
+    private final DataType<T> outputType;
+    private final DataType<List<DataType<T>>> inputType;
+    private final List<DataType<T>> faultTypes;
     private String dataBinding;
-
     private boolean wrapperStyle;
     private WrapperInfo wrapper;
+    private boolean callback;
+    private boolean nonBlocking;
+    private int conversationSequence = NO_CONVERSATION;
 
     /**
      * Construct a minimally-specified operation
@@ -67,7 +63,7 @@ public class Operation<T> {
                      DataType<List<DataType<T>>> inputType,
                      DataType<T> outputType,
                      List<DataType<T>> faultTypes) {
-        this(name, inputType, outputType, faultTypes, false, null);
+        this(name, inputType, outputType, faultTypes, false, null, NO_CONVERSATION);
     }
 
     /**
@@ -79,13 +75,16 @@ public class Operation<T> {
      * @param faultTypes  the data type of faults raised by the operation
      * @param nonBlocking if the operation is non-blocking
      * @param dataBinding the data-binding type required by the operation
+     * @param sequence    the conversational attributes of the operation, {@link NO_CONVERSATION}, {@link
+     *                    CONVERSATION_START}, {@link CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
      */
     public Operation(final String name,
                      final DataType<List<DataType<T>>> inputType,
                      final DataType<T> outputType,
                      final List<DataType<T>> faultTypes,
                      boolean nonBlocking,
-                     String dataBinding) {
+                     String dataBinding,
+                     int sequence) {
         super();
         this.name = name;
         List<DataType<T>> types = Collections.emptyList();
@@ -94,6 +93,7 @@ public class Operation<T> {
         this.faultTypes = (faultTypes == null) ? types : faultTypes;
         this.nonBlocking = nonBlocking;
         this.dataBinding = dataBinding;
+        this.conversationSequence = sequence;
         // Register the operation with the types
         for (DataType<?> d : this.inputType.getLogical()) {
             d.setMetadata(NAME, this);
@@ -192,6 +192,31 @@ public class Operation<T> {
     }
 
     /**
+     * Sets if the operation is non-blocking
+     */
+    public void setNonBlocking(boolean nonBlocking) {
+        this.nonBlocking = nonBlocking;
+    }
+
+    /**
+     * Returns the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link
+     * CONVERSATION_START}, {@link CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     *
+     * @return the sequence the operation is called in a conversation
+     */
+    public int getConversationSequence() {
+        return conversationSequence;
+    }
+
+    /**
+     * Sets the sequence the operation is called in a conversation, {@link NO_CONVERSATION}, {@link CONVERSATION_START},
+     * {@link CONVERSATION_CONTINUE}, or {@link CONVERSATION_END}
+     */
+    public void setConversationSequence(int conversationSequence) {
+        this.conversationSequence = conversationSequence;
+    }
+
+    /**
      * Returns the data binding type specified for the operation or null.
      *
      * @return the data binding type specified for the operation or null.
@@ -234,13 +259,6 @@ public class Operation<T> {
         metaData.put(key, val);
     }
 
-    /**
-     * Sets if the operation is non-blocking
-     */
-    public void setNonBlocking(boolean nonBlocking) {
-        this.nonBlocking = nonBlocking;
-    }
-
     public String toString() {
         return name;
     }
@@ -273,6 +291,7 @@ public class Operation<T> {
             if (faultTypes.size() < operation.faultTypes.size()) {
                 return false;
             } else {
+                //noinspection ForLoopReplaceableByForEach
                 for (int i = 0; i < operation.faultTypes.size(); i++) {
                     if (!faultTypes.get(i).equals(operation.faultTypes.get(i))) {
                         return false;

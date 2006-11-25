@@ -20,8 +20,10 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
-
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.apache.tuscany.spi.wire.Message;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
@@ -29,8 +31,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
 
 public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
 
@@ -45,13 +45,14 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
         super(serviceClient, wsdlOperationName, options, soapFactory);
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         throw new InvocationTargetException(new InvocationRuntimeException("Operation not supported"));
     }
 
-    private Object invokeTarget(final Object payload, LinkedList<Object> callbackRoutingChain) throws InvocationTargetException {
+    private Object invokeTarget(final Object payload, LinkedList<Object> callbackRoutingChain)
+        throws InvocationTargetException {
         try {
-            Object[] args = (Object[])payload;
+            Object[] args = (Object[]) payload;
             OperationClient operationClient = createOperationClient(args);
             callbackInvoker.setCallbackRoutingChain(callbackRoutingChain);
             Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker);

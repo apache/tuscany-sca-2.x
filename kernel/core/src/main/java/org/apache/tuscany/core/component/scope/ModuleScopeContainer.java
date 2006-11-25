@@ -114,10 +114,13 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         instanceWrappers.put(component, EMPTY);
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
         checkInit();
         InstanceWrapper ctx = instanceWrappers.get(component);
         assert ctx != null : "Component not registered with scope: " + component;
+        if (ctx == EMPTY && !create) {
+            return null;
+        }
         if (ctx == EMPTY) {
             ctx = new InstanceWrapperImpl(component, component.createInstance());
             ctx.start();

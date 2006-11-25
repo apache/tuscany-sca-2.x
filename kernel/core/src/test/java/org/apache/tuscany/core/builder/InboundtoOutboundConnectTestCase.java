@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +62,12 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         OutboundInvocationChain outboundChain = setupOutbound(null);
         String[] val = new String[]{"foo"};
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
-        expect(invoker.invokeTarget(EasyMock.eq(val))).andReturn(val);
+        expect(invoker.invokeTarget(EasyMock.eq(val), EasyMock.eq(NONE))).andReturn(val);
         replay(invoker);
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
         inboundChain.prepare();
-        inboundChain.getTargetInvoker().invokeTarget(val);
+        inboundChain.getTargetInvoker().invokeTarget(val, NONE);
         verify(invoker);
     }
 

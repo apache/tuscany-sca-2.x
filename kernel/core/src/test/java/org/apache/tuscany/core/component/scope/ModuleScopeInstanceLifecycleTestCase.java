@@ -19,10 +19,9 @@
 package org.apache.tuscany.core.component.scope;
 
 
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
@@ -47,43 +46,43 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent initDestroyContext = MockFactory.createAtomicComponent("InitDestroy",
+        SystemAtomicComponent initDestroyComponent = MockFactory.createAtomicComponent("InitDestroy",
             scope,
             ModuleScopeInitDestroyComponent.class);
-        initDestroyContext.start();
+        initDestroyComponent.start();
 
-        SystemAtomicComponent initOnlyContext = MockFactory.createAtomicComponent("InitOnly",
+        SystemAtomicComponent initOnlyComponent = MockFactory.createAtomicComponent("InitOnly",
             scope,
             ModuleScopeInitOnlyComponent.class);
-        initOnlyContext.start();
+        initOnlyComponent.start();
 
-        SystemAtomicComponent destroyOnlyContext = MockFactory.createAtomicComponent("DestroyOnly",
+        SystemAtomicComponent destroyOnlyComponent = MockFactory.createAtomicComponent("DestroyOnly",
             scope,
             ModuleScopeDestroyOnlyComponent.class);
-        destroyOnlyContext.start();
+        destroyOnlyComponent.start();
 
         scope.onEvent(new CompositeStart(this, null));
         ModuleScopeInitDestroyComponent initDestroy =
-            (ModuleScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
-        Assert.assertNotNull(initDestroy);
+            (ModuleScopeInitDestroyComponent) scope.getInstance(initDestroyComponent);
+        assertNotNull(initDestroy);
 
-        ModuleScopeInitOnlyComponent initOnly = (ModuleScopeInitOnlyComponent) scope.getInstance(initOnlyContext);
-        Assert.assertNotNull(initOnly);
+        ModuleScopeInitOnlyComponent initOnly = (ModuleScopeInitOnlyComponent) scope.getInstance(initOnlyComponent);
+        assertNotNull(initOnly);
 
         ModuleScopeDestroyOnlyComponent destroyOnly =
-            (ModuleScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyContext);
-        Assert.assertNotNull(destroyOnly);
+            (ModuleScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyComponent);
+        assertNotNull(destroyOnly);
 
-        Assert.assertTrue(initDestroy.isInitialized());
-        Assert.assertTrue(initOnly.isInitialized());
-        Assert.assertFalse(initDestroy.isDestroyed());
-        Assert.assertFalse(destroyOnly.isDestroyed());
+        assertTrue(initDestroy.isInitialized());
+        assertTrue(initOnly.isInitialized());
+        assertFalse(initDestroy.isDestroyed());
+        assertFalse(destroyOnly.isDestroyed());
 
         // expire module
         scope.onEvent(new CompositeStop(this, null));
 
-        Assert.assertTrue(initDestroy.isDestroyed());
-        Assert.assertTrue(destroyOnly.isDestroyed());
+        assertTrue(initDestroy.isDestroyed());
+        assertTrue(destroyOnly.isDestroyed());
 
         scope.stop();
     }
@@ -93,38 +92,38 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockFactory.createAtomicComponent("one",
+        SystemAtomicComponent oneComponent = MockFactory.createAtomicComponent("one",
             scope,
             OrderedInitPojoImpl.class);
-        scope.register(oneCtx);
-        SystemAtomicComponent twoCtx = MockFactory.createAtomicComponent("two",
+        scope.register(oneComponent);
+        SystemAtomicComponent twoComponent = MockFactory.createAtomicComponent("two",
             scope,
             OrderedInitPojoImpl.class);
-        scope.register(twoCtx);
-        SystemAtomicComponent threeCtx = MockFactory.createAtomicComponent("three",
+        scope.register(twoComponent);
+        SystemAtomicComponent threeComponent = MockFactory.createAtomicComponent("three",
             scope,
             OrderedInitPojoImpl.class);
-        scope.register(threeCtx);
+        scope.register(threeComponent);
 
         scope.onEvent(new CompositeStart(this, null));
-        OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
-        Assert.assertNotNull(one);
-        Assert.assertEquals(1, one.getNumberInstantiated());
-        Assert.assertEquals(1, one.getInitOrder());
+        OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneComponent);
+        assertNotNull(one);
+        assertEquals(1, one.getNumberInstantiated());
+        assertEquals(1, one.getInitOrder());
 
-        OrderedInitPojo two = (OrderedInitPojo) scope.getInstance(twoCtx);
-        Assert.assertNotNull(two);
-        Assert.assertEquals(2, two.getNumberInstantiated());
-        Assert.assertEquals(2, two.getInitOrder());
+        OrderedInitPojo two = (OrderedInitPojo) scope.getInstance(twoComponent);
+        assertNotNull(two);
+        assertEquals(2, two.getNumberInstantiated());
+        assertEquals(2, two.getInitOrder());
 
-        OrderedInitPojo three = (OrderedInitPojo) scope.getInstance(threeCtx);
-        Assert.assertNotNull(three);
-        Assert.assertEquals(3, three.getNumberInstantiated());
-        Assert.assertEquals(3, three.getInitOrder());
+        OrderedInitPojo three = (OrderedInitPojo) scope.getInstance(threeComponent);
+        assertNotNull(three);
+        assertEquals(3, three.getNumberInstantiated());
+        assertEquals(3, three.getInitOrder());
 
         // expire module
         scope.onEvent(new CompositeStop(this, null));
-        Assert.assertEquals(0, one.getNumberInstantiated());
+        assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
 
@@ -133,32 +132,32 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx = MockFactory.createAtomicComponent("one",
+        SystemAtomicComponent oneComponent = MockFactory.createAtomicComponent("one",
             scope,
             OrderedEagerInitPojo.class);
-        scope.register(oneCtx);
-        SystemAtomicComponent twoCtx = MockFactory.createAtomicComponent("two",
+        scope.register(oneComponent);
+        SystemAtomicComponent twoComponent = MockFactory.createAtomicComponent("two",
             scope,
             OrderedEagerInitPojo.class);
-        scope.register(twoCtx);
-        SystemAtomicComponent threeCtx = MockFactory.createAtomicComponent("three",
+        scope.register(twoComponent);
+        SystemAtomicComponent threeComponent = MockFactory.createAtomicComponent("three",
             scope,
             OrderedEagerInitPojo.class);
-        scope.register(threeCtx);
+        scope.register(threeComponent);
 
         scope.onEvent(new CompositeStart(this, null));
-        OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
-        Assert.assertNotNull(one);
+        OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneComponent);
+        assertNotNull(one);
 
-        OrderedEagerInitPojo two = (OrderedEagerInitPojo) scope.getInstance(twoCtx);
-        Assert.assertNotNull(two);
+        OrderedEagerInitPojo two = (OrderedEagerInitPojo) scope.getInstance(twoComponent);
+        assertNotNull(two);
 
-        OrderedEagerInitPojo three = (OrderedEagerInitPojo) scope.getInstance(threeCtx);
-        Assert.assertNotNull(three);
+        OrderedEagerInitPojo three = (OrderedEagerInitPojo) scope.getInstance(threeComponent);
+        assertNotNull(three);
 
         // expire module
         scope.onEvent(new CompositeStop(this, null));
-        Assert.assertEquals(0, one.getNumberInstantiated());
+        assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
 

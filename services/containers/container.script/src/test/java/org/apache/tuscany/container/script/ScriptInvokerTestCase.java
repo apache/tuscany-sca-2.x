@@ -20,6 +20,8 @@ package org.apache.tuscany.container.script;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.spi.wire.TargetInvoker;
+
 import junit.framework.TestCase;
 import org.easymock.IAnswer;
 import org.easymock.classextension.EasyMock;
@@ -43,7 +45,7 @@ public class ScriptInvokerTestCase extends TestCase {
         EasyMock.expect(component.getTargetInstance()).andReturn(instance);
         EasyMock.replay(component);
         ScriptTargetInvoker invoker = new ScriptTargetInvoker("operation", component);
-        assertEquals("hello", invoker.invokeTarget(new Object[]{"petra"}));
+        assertEquals("hello", invoker.invokeTarget(new Object[]{"petra"}, TargetInvoker.NONE));
         EasyMock.verify(instance);
         EasyMock.verify(component);
     }
@@ -64,7 +66,7 @@ public class ScriptInvokerTestCase extends TestCase {
         EasyMock.replay(component);
         ScriptTargetInvoker invoker = new ScriptTargetInvoker("operation", component);
         try {
-            invoker.invokeTarget(new Object[]{"petra"});
+            invoker.invokeTarget(new Object[]{"petra"}, TargetInvoker.NONE);
             fail();
         } catch (InvocationTargetException e) {
             // expected

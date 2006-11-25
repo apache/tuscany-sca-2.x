@@ -52,7 +52,7 @@ public class CeltixInvokerTestCase extends TestCase {
 
         Object[] args = new Object[1];
         args[0] = new String("hello");
-        invoker.invokeTarget(args);
+        invoker.invokeTarget(args, CeltixInvoker.NONE);
 
         // Check the input object after processing is correct
         // Should be no change for input if only IN parameters involved
@@ -71,7 +71,7 @@ public class CeltixInvokerTestCase extends TestCase {
         Object[] args = new Object[1];
         String inputvalue = new String("hello");
         args[0] = inputvalue;
-        Object result = invoker.invokeTarget(args);
+        Object result = invoker.invokeTarget(args, CeltixInvoker.NONE);
 
         // Check the input object after processing is correct
         // input should be wrapped as Holder type if it is INOUT parameter

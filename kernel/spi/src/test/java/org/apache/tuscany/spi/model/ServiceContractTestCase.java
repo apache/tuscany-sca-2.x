@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.model;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.reflect.Type;
@@ -32,7 +34,7 @@ public class ServiceContractTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testAddOperation() throws Exception {
         ServiceContract<Type> contract = new TestContract();
-        Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> ops = new HashMap<String, Operation<Type>>();
         ops.put("foo", operation);
         contract.setOperations(ops);
@@ -42,7 +44,7 @@ public class ServiceContractTestCase extends TestCase {
 
     public void testAddCallbackOperation() throws Exception {
         ServiceContract<Type> contract = new TestContract();
-        Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null, NO_CONVERSATION);
         Map<String, Operation<Type>> ops = new HashMap<String, Operation<Type>>();
         ops.put("foo", operation);
         contract.setCallbackOperations(ops);

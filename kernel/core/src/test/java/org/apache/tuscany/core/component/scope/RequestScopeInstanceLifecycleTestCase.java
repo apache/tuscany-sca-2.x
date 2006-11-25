@@ -21,7 +21,6 @@ package org.apache.tuscany.core.component.scope;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.RequestEnd;
@@ -46,40 +45,40 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         RequestScopeContainer scope = new RequestScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent initDestroyContext = MockFactory
+        SystemAtomicComponent initDestroyComponent = MockFactory
             .createAtomicComponent("InitDestroy", scope, RequestScopeInitDestroyComponent.class);
-        initDestroyContext.start();
+        initDestroyComponent.start();
 
-        SystemAtomicComponent initOnlyContext =
+        SystemAtomicComponent initOnlyComponent =
             MockFactory.createAtomicComponent("InitOnly", scope, RequestScopeInitOnlyComponent.class);
-        initOnlyContext.start();
+        initOnlyComponent.start();
 
-        SystemAtomicComponent destroyOnlyContext = MockFactory
+        SystemAtomicComponent destroyOnlyComponent = MockFactory
             .createAtomicComponent("DestroyOnly", scope, RequestScopeDestroyOnlyComponent.class);
-        destroyOnlyContext.start();
+        destroyOnlyComponent.start();
 
         scope.onEvent(new RequestStart(this));
         RequestScopeInitDestroyComponent initDestroy =
-            (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyContext);
-        Assert.assertNotNull(initDestroy);
+            (RequestScopeInitDestroyComponent) scope.getInstance(initDestroyComponent);
+        assertNotNull(initDestroy);
 
-        RequestScopeInitOnlyComponent initOnly = (RequestScopeInitOnlyComponent) scope.getInstance(initOnlyContext);
-        Assert.assertNotNull(initOnly);
+        RequestScopeInitOnlyComponent initOnly = (RequestScopeInitOnlyComponent) scope.getInstance(initOnlyComponent);
+        assertNotNull(initOnly);
 
         RequestScopeDestroyOnlyComponent destroyOnly =
-            (RequestScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyContext);
-        Assert.assertNotNull(destroyOnly);
+            (RequestScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyComponent);
+        assertNotNull(destroyOnly);
 
-        Assert.assertTrue(initDestroy.isInitialized());
-        Assert.assertTrue(initOnly.isInitialized());
-        Assert.assertFalse(initDestroy.isDestroyed());
-        Assert.assertFalse(destroyOnly.isDestroyed());
+        assertTrue(initDestroy.isInitialized());
+        assertTrue(initOnly.isInitialized());
+        assertFalse(initDestroy.isDestroyed());
+        assertFalse(destroyOnly.isDestroyed());
 
         // expire module
         scope.onEvent(new RequestEnd(this));
 
-        Assert.assertTrue(initDestroy.isDestroyed());
-        Assert.assertTrue(destroyOnly.isDestroyed());
+        assertTrue(initDestroy.isDestroyed());
+        assertTrue(destroyOnly.isDestroyed());
 
         scope.stop();
     }
@@ -101,23 +100,23 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
 
         scope.onEvent(new RequestStart(this));
         OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneCtx);
-        Assert.assertNotNull(one);
-        Assert.assertEquals(1, one.getNumberInstantiated());
-        Assert.assertEquals(1, one.getInitOrder());
+        assertNotNull(one);
+        assertEquals(1, one.getNumberInstantiated());
+        assertEquals(1, one.getInitOrder());
 
         OrderedInitPojo two = (OrderedInitPojo) scope.getInstance(twoCtx);
-        Assert.assertNotNull(two);
-        Assert.assertEquals(2, two.getNumberInstantiated());
-        Assert.assertEquals(2, two.getInitOrder());
+        assertNotNull(two);
+        assertEquals(2, two.getNumberInstantiated());
+        assertEquals(2, two.getInitOrder());
 
         OrderedInitPojo three = (OrderedInitPojo) scope.getInstance(threeCtx);
-        Assert.assertNotNull(three);
-        Assert.assertEquals(3, three.getNumberInstantiated());
-        Assert.assertEquals(3, three.getInitOrder());
+        assertNotNull(three);
+        assertEquals(3, three.getNumberInstantiated());
+        assertEquals(3, three.getInitOrder());
 
         // expire module
         scope.onEvent(new RequestEnd(this));
-        Assert.assertEquals(0, one.getNumberInstantiated());
+        assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
 
@@ -126,29 +125,29 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         RequestScopeContainer scope = new RequestScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneCtx =
+        SystemAtomicComponent oneComponent =
             MockFactory.createAtomicComponent("one", scope, OrderedEagerInitPojo.class);
-        scope.register(oneCtx);
-        SystemAtomicComponent twoCtx =
+        scope.register(oneComponent);
+        SystemAtomicComponent twoComponent =
             MockFactory.createAtomicComponent("two", scope, OrderedEagerInitPojo.class);
-        scope.register(twoCtx);
-        SystemAtomicComponent threeCtx =
+        scope.register(twoComponent);
+        SystemAtomicComponent threeComponent =
             MockFactory.createAtomicComponent("three", scope, OrderedEagerInitPojo.class);
-        scope.register(threeCtx);
+        scope.register(threeComponent);
 
         scope.onEvent(new RequestStart(this));
-        OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneCtx);
-        Assert.assertNotNull(one);
+        OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneComponent);
+        assertNotNull(one);
 
-        OrderedEagerInitPojo two = (OrderedEagerInitPojo) scope.getInstance(twoCtx);
-        Assert.assertNotNull(two);
+        OrderedEagerInitPojo two = (OrderedEagerInitPojo) scope.getInstance(twoComponent);
+        assertNotNull(two);
 
-        OrderedEagerInitPojo three = (OrderedEagerInitPojo) scope.getInstance(threeCtx);
-        Assert.assertNotNull(three);
+        OrderedEagerInitPojo three = (OrderedEagerInitPojo) scope.getInstance(threeComponent);
+        assertNotNull(three);
 
         // expire module
         scope.onEvent(new RequestEnd(this));
-        Assert.assertEquals(0, one.getNumberInstantiated());
+        assertEquals(0, one.getNumberInstantiated());
         scope.stop();
     }
 

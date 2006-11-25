@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.services.store;
 
-import java.util.UUID;
-
 import org.apache.tuscany.spi.component.SCAObject;
 
 /**
@@ -38,30 +36,48 @@ public interface Store {
      * Adds the given record to the store. Implementations may choose different strategies for writing data such as
      * write-through or write-behind.
      *
-     * @param owner
+     * @param owner      the instance owner
      * @param id         the unique id of the record
      * @param object     the object representing the data to write
      * @param expiration the time in milliseconds when the entry expires
      * @throws StoreWriteException if an error occurs during the write operation
      */
-    void insertRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
+    void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException;
 
-    void updateRecord(SCAObject owner, UUID id, Object object, long expiration) throws StoreWriteException;
+    /**
+     * Updates a given record in the store, overwriting previous information.
+     *
+     * @param owner      the instance owner
+     * @param id         the unique id of the record
+     * @param object     the object representing the data to write
+     * @param expiration the time in milliseconds when the entry expires
+     * @throws StoreWriteException
+     */
+    void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException;
 
     /**
      * Returns the deserialized object in the store corresponding to the given id
      *
+     * @param owner the instance owner
+     * @param id    the unique id of the record
      * @return the deserialized object or null if one is not found
+     * @throws StoreReadException
      */
-    Object readRecord(SCAObject owner, UUID id) throws StoreReadException;
+    Object readRecord(SCAObject owner, String id) throws StoreReadException;
 
     /**
      * Removes a record from the store
+     *
+     * @param owner the instance owner
+     * @param id    the unique id of the record
+     * @throws StoreWriteException
      */
-    void removeRecord(SCAObject owner, UUID id) throws StoreWriteException;
+    void removeRecord(SCAObject owner, String id) throws StoreWriteException;
 
     /**
      * Removes all records from the store
+     *
+     * @throws StoreWriteException
      */
     void removeRecords() throws StoreWriteException;
 
@@ -69,6 +85,7 @@ public interface Store {
      * Initiates a recovery operation, for example during restart after a crash
      *
      * @param listener the listener to receive recovery callback events
+     * @throws StoreReadException
      */
     void recover(RecoveryListener listener) throws StoreReadException;
 

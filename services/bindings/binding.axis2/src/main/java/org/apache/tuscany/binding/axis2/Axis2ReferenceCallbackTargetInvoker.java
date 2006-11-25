@@ -28,23 +28,23 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
-    
+
     private Operation operation;
     private InboundWire inboundWire;
     private LinkedList<Object> callbackRoutingChain;
     private boolean cacheable;
     Axis2CallbackInvocationHandler invocationHandler;
-    
+
     public Axis2ReferenceCallbackTargetInvoker(Operation operation,
-            InboundWire inboundWire,
-            Axis2CallbackInvocationHandler invocationHandler) {
+                                               InboundWire inboundWire,
+                                               Axis2CallbackInvocationHandler invocationHandler) {
 
         this.operation = operation;
         this.inboundWire = inboundWire;
         this.invocationHandler = invocationHandler;
     }
 
-    public Object invokeTarget(final Object payload) throws InvocationTargetException {
+    public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         Object[] args;
         if (payload != null && !payload.getClass().isArray()) {
             args = new Object[]{payload};
@@ -53,15 +53,15 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         }
         try {
             return invocationHandler.invoke(operation, args, callbackRoutingChain);
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             t.printStackTrace();
             throw new InvocationTargetException(t);
         }
     }
-    
+
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
-            Object resp = invokeTarget(msg.getBody());
+            Object resp = invokeTarget(msg.getBody(), NONE);
             msg.setBody(resp);
         } catch (InvocationTargetException e) {
             msg.setBodyWithFault(e.getCause());
@@ -92,7 +92,7 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         invoker.invocationHandler = this.invocationHandler;
         return invoker;
     }
-    
+
     public void setCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
         this.callbackRoutingChain = callbackRoutingChain;
     }

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import java.util.UUID;
-
 /**
  * Used by the store cache to retrieve record entries
  *
@@ -27,15 +25,15 @@ import java.util.UUID;
  */
 public class RecordKey {
 
-    private UUID id;
+    private String id;
     private String ownerName;
 
-    public RecordKey(UUID id, String ownerName) {
+    public RecordKey(String id, String ownerName) {
         this.id = id;
         this.ownerName = ownerName;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

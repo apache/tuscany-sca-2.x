@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -77,7 +79,7 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
 
         wire = EasyMock.createMock(InboundWire.class);
         Map<Operation<?>, InboundInvocationChain> map = new HashMap<Operation<?>, InboundInvocationChain>();
-        Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null);
+        Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null, NO_CONVERSATION);
         map.put(operation, createChain(operation));
 
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();

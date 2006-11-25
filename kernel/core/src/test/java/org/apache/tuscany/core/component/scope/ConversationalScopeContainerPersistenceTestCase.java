@@ -44,8 +44,8 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
      * Verifies the scope container properly creates an instance
      */
     public void testNotYetPersistedInMemory() {
-        UUID id = UUID.randomUUID();
-        context.setIdentifier(Scope.CONVERSATIONAL, id);
+        String id = UUID.randomUUID().toString();
+        context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.createInstance()).andReturn(new Foo());
@@ -56,9 +56,9 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     }
 
     public void testPersistNewInMemory() throws Exception {
-        UUID id = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
-        context.setIdentifier(Scope.CONVERSATIONAL, id);
+        String id = UUID.randomUUID().toString();
+        String id2 = UUID.randomUUID().toString();
+        context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.replay(component);
@@ -68,14 +68,14 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
         assertEquals(foo, container.getInstance(component));
         container.persistNew(component, id2, foo2, System.currentTimeMillis() + 100000);
-        context.setIdentifier(Scope.CONVERSATIONAL, id2);
+        context.setIdentifier(Scope.CONVERSATION, id2);
         assertEquals(foo2, container.getInstance(component));
         EasyMock.verify(component);
     }
 
     public void testPersistInMemory() throws Exception {
-        UUID id = UUID.randomUUID();
-        context.setIdentifier(Scope.CONVERSATIONAL, id);
+        String id = UUID.randomUUID().toString();
+        context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.replay(component);
@@ -89,8 +89,8 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     }
 
     public void testRemoveInMemory() throws Exception {
-        UUID id = UUID.randomUUID();
-        context.setIdentifier(Scope.CONVERSATIONAL, id);
+        String id = UUID.randomUUID().toString();
+        context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
@@ -101,7 +101,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         assertEquals(foo, container.getInstance(component));
         container.remove(component, id);
         try {
-            container.getPersistedInstance(component);
+            container.getAssociatedInstance(component);
             fail();
         } catch (TargetNotFoundException e) {
             //expected
@@ -110,8 +110,8 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     }
 
     public void testRecreateAfterRemoveInMemory() throws Exception {
-        UUID id = UUID.randomUUID();
-        context.setIdentifier(Scope.CONVERSATIONAL, id);
+        String id = UUID.randomUUID().toString();
+        context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.createInstance()).andReturn(new Foo());
@@ -128,9 +128,9 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     }
 
     public void testGetPersistedInstance() throws Exception {
-        UUID id = UUID.randomUUID();
-        UUID id2 = UUID.randomUUID();
-        context.setIdentifier(Scope.CONVERSATIONAL, id);
+        String id = UUID.randomUUID().toString();
+        String id2 = UUID.randomUUID().toString();
+        context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         component.addListener(EasyMock.eq(container));
@@ -138,11 +138,11 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         container.register(component);
         Foo foo = new Foo();
         container.persistNew(component, id, foo, System.currentTimeMillis() + 100000);
-        assertEquals(foo, container.getPersistedInstance(component));
-        assertEquals(foo, container.getPersistedInstance(component));
-        context.setIdentifier(Scope.CONVERSATIONAL, id2);
+        assertEquals(foo, container.getAssociatedInstance(component));
+        assertEquals(foo, container.getAssociatedInstance(component));
+        context.setIdentifier(Scope.CONVERSATION, id2);
         try {
-            container.getPersistedInstance(component);
+            container.getAssociatedInstance(component);
             fail();
         } catch (TargetNotFoundException e) {
             //expected
@@ -162,7 +162,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
-        context.clearIdentifier(Scope.CONVERSATIONAL);
+        context.clearIdentifier(Scope.CONVERSATION);
         container.stop();
     }
 

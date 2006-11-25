@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -102,7 +103,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public Object getInstance(AtomicComponent component) throws TargetException {
-        InstanceWrapper ctx = getInstanceWrapper(component);
+        InstanceWrapper ctx = getInstanceWrapper(component, true);
         if (ctx != null) {
             if (ctx.getLifecycleState() == UNINITIALIZED) {
                 ctx.start();
@@ -110,6 +111,17 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
             return ctx.getInstance();
         }
         return null;
+    }
+
+    public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
+        InstanceWrapper ctx = getInstanceWrapper(component, false);
+        if (ctx != null) {
+            if (ctx.getLifecycleState() == UNINITIALIZED) {
+                ctx.start();
+            }
+            return ctx.getInstance();
+        }
+        throw new TargetNotFoundException(component.getName());
     }
 
     protected Map<EventFilter, List<RuntimeEventListener>> getListeners() {
@@ -133,5 +145,5 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         return "ScopeContainer [" + name + "] in state [" + super.toString() + ']';
     }
 
-    protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component);
+    protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create);
 }

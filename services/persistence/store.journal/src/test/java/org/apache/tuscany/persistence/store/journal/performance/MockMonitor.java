@@ -19,6 +19,7 @@
 package org.apache.tuscany.persistence.store.journal.performance;
 
 import org.apache.tuscany.spi.services.store.StoreMonitor;
+
 import org.apache.tuscany.api.annotation.LogLevel;
 
 /**

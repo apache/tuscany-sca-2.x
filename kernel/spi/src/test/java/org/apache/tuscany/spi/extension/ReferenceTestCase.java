@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +57,7 @@ public class ReferenceTestCase extends TestCase {
 
     public void testPrepare() throws Exception {
         InboundInvocationChain chain = createMock(InboundInvocationChain.class);
-        Operation<Type> operation = new Operation<Type>("test", null, null, null, false, null);
+        Operation<Type> operation = new Operation<Type>("test", null, null, null, false, null, NO_CONVERSATION);
         chain.setTargetInvoker(null);
         expectLastCall();
         chain.getOperation();

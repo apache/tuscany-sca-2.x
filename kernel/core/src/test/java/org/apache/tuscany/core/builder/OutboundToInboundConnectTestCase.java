@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -59,11 +60,11 @@ public class OutboundToInboundConnectTestCase extends TestCase {
         OutboundInvocationChain outboundChain = setupSource(null);
         String[] val = new String[]{"foo"};
         TargetInvoker invoker = createNiceMock(TargetInvoker.class);
-        expect(invoker.invokeTarget(EasyMock.eq(val))).andReturn(val);
+        expect(invoker.invokeTarget(EasyMock.eq(val), EasyMock.eq(NONE))).andReturn(val);
         replay(invoker);
         connector.connect(outboundChain, inboundChain, invoker, false);
         inboundChain.prepare();
-        assertEquals(val, outboundChain.getTargetInvoker().invokeTarget(val));
+        assertEquals(val, outboundChain.getTargetInvoker().invokeTarget(val, NONE));
         verify(invoker);
     }
 

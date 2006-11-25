@@ -19,15 +19,15 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.model.Scope;
-
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -47,20 +47,48 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
         scopeContext.start();
-        SystemAtomicComponent atomicContext = createContext(scopeContext);
+        SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
         SessionScopeInitDestroyComponent o1 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
         SessionScopeInitDestroyComponent o2 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertSame(o1, o2);
         scopeContext.onEvent(new HttpSessionEnd(this, session));
         assertTrue(o1.isDestroyed());
         scopeContext.stop();
+    }
+
+    public void testGetAssociatedInstance() throws Exception {
+        WorkContext workContext = new WorkContextImpl();
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
+        scopeContext.start();
+        SystemAtomicComponent component = createComponent(scopeContext);
+        // start the request
+        Object session = new Object();
+        workContext.setIdentifier(Scope.SESSION, session);
+        scopeContext.getInstance(component);
+        scopeContext.getAssociatedInstance(component);
+    }
+
+    public void testGetAssociatedInstanceNonExistent() throws Exception {
+        WorkContext workContext = new WorkContextImpl();
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
+        scopeContext.start();
+        SystemAtomicComponent component = createComponent(scopeContext);
+        // start the request
+        Object session = new Object();
+        workContext.setIdentifier(Scope.SESSION, session);
+        try {
+            scopeContext.getAssociatedInstance(component);
+            fail();
+        } catch (TargetNotFoundException e) {
+            // expected
+        }
     }
 
     public void testSessionIsolation() throws Exception {
@@ -68,18 +96,18 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
         scopeContext.start();
 
-        SystemAtomicComponent atomicContext = createContext(scopeContext);
+        SystemAtomicComponent component = createComponent(scopeContext);
 
         Object session1 = new Object();
         workContext.setIdentifier(Scope.SESSION, session1);
         SessionScopeInitDestroyComponent o1 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertTrue(o1.isInitialized());
 
         Object session2 = new Object();
         workContext.setIdentifier(Scope.SESSION, session2);
         SessionScopeInitDestroyComponent o2 =
-            (SessionScopeInitDestroyComponent) scopeContext.getInstance(atomicContext);
+            (SessionScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertNotSame(o1, o2);
 
         scopeContext.onEvent(new HttpSessionEnd(this, session1));
@@ -104,7 +132,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
+    private SystemAtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(SessionScopeInitDestroyComponent.class);

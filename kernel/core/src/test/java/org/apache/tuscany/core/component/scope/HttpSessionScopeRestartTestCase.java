@@ -57,26 +57,26 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
-        SystemAtomicComponent context = new SystemAtomicComponentImpl(configuration);
-        context.start();
+        SystemAtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.start();
 
         Object session = new Object();
         ctx.setIdentifier(Scope.SESSION, session);
         scope.onEvent(new HttpSessionStart(this, session));
-        Object instance = context.getServiceInstance();
-        assertSame(instance, context.getServiceInstance());
+        Object instance = component.getServiceInstance();
+        assertSame(instance, component.getServiceInstance());
 
         scope.onEvent(new HttpSessionEnd(this, session));
         scope.stop();
-        context.stop();
+        component.stop();
 
         scope.start();
         scope.onEvent(new HttpSessionStart(this, session));
-        context.start();
-        assertNotSame(instance, context.getServiceInstance());
+        component.start();
+        assertNotSame(instance, component.getServiceInstance());
         scope.onEvent(new HttpSessionEnd(this, session));
         scope.stop();
-        context.stop();
+        component.stop();
     }
 
     public static class InitDestroyOnce {

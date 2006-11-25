@@ -58,7 +58,7 @@ public class ScopeProcessorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitClass(parent, Conversation.class, type, null);
-        assertEquals(Scope.CONVERSATIONAL, type.getImplementationScope());
+        assertEquals(Scope.CONVERSATION, type.getImplementationScope());
     }
 
     public void testRequestScope() throws ProcessingException {
@@ -106,7 +106,7 @@ public class ScopeProcessorTestCase extends TestCase {
     private class Session {
     }
 
-    @org.osoa.sca.annotations.Scope("CONVERSATIONAL")
+    @org.osoa.sca.annotations.Scope("CONVERSATION")
     private class Conversation {
     }
 

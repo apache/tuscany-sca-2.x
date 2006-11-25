@@ -18,10 +18,9 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import java.util.UUID;
+import static org.apache.tuscany.spi.services.store.Store.NEVER;
 
 import junit.framework.TestCase;
-import static org.apache.tuscany.spi.services.store.Store.NEVER;
 import org.easymock.EasyMock;
 
 /**
@@ -31,9 +30,9 @@ public class LRUCacheTestCase extends TestCase {
 
     public void testEviction() {
         LRUCache cache = new LRUCache(2);
-        RecordKey key1 = new RecordKey(UUID.randomUUID(), "foo");
-        RecordKey key2 = new RecordKey(UUID.randomUUID(), "bar");
-        RecordKey key3 = new RecordKey(UUID.randomUUID(), "baz");
+        RecordKey key1 = new RecordKey("key1", "foo");
+        RecordKey key2 = new RecordKey("key2", "bar");
+        RecordKey key3 = new RecordKey("key3", "baz");
         RecordEntry entry1 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry2 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry3 = new RecordEntry("", Header.INSERT, null, NEVER);
@@ -48,9 +47,9 @@ public class LRUCacheTestCase extends TestCase {
 
     public void testPut() {
         LRUCache cache = new LRUCache(3);
-        RecordKey key1 = new RecordKey(UUID.randomUUID(), "foo");
-        RecordKey key2 = new RecordKey(UUID.randomUUID(), "bar");
-        RecordKey key3 = new RecordKey(UUID.randomUUID(), "baz");
+        RecordKey key1 = new RecordKey("key1", "foo");
+        RecordKey key2 = new RecordKey("key2", "bar");
+        RecordKey key3 = new RecordKey("key3", "baz");
         RecordEntry entry1 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry2 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry3 = new RecordEntry("", Header.INSERT, null, NEVER);
@@ -65,9 +64,9 @@ public class LRUCacheTestCase extends TestCase {
 
     public void testNotifyListenerOnEviction() {
         LRUCache cache = new LRUCache(2);
-        RecordKey key1 = new RecordKey(UUID.randomUUID(), "foo");
-        RecordKey key2 = new RecordKey(UUID.randomUUID(), "bar");
-        RecordKey key3 = new RecordKey(UUID.randomUUID(), "baz");
+        RecordKey key1 = new RecordKey("key1", "foo");
+        RecordKey key2 = new RecordKey("key2", "bar");
+        RecordKey key3 = new RecordKey("key3", "baz");
         RecordEntry entry1 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry2 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry3 = new RecordEntry("", Header.INSERT, null, NEVER);
@@ -84,9 +83,9 @@ public class LRUCacheTestCase extends TestCase {
 
     public void testRemoveListener() {
         LRUCache cache = new LRUCache(2);
-        RecordKey key1 = new RecordKey(UUID.randomUUID(), "foo");
-        RecordKey key2 = new RecordKey(UUID.randomUUID(), "bar");
-        RecordKey key3 = new RecordKey(UUID.randomUUID(), "baz");
+        RecordKey key1 = new RecordKey("key1", "foo");
+        RecordKey key2 = new RecordKey("key2", "bar");
+        RecordKey key3 = new RecordKey("key3", "baz");
         RecordEntry entry1 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry2 = new RecordEntry("", Header.INSERT, null, NEVER);
         RecordEntry entry3 = new RecordEntry("", Header.INSERT, null, NEVER);

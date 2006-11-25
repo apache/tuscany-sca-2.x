@@ -35,8 +35,8 @@ public class RecordEntry {
     /**
      * Creates a new cached record
      *
-     * @param object    the object to serialize
-     * @param operation an <code>INSERT</code> or <code>UPDATE</code> operation
+     * @param object     the object to serialize
+     * @param operation  an <code>INSERT</code> or <code>UPDATE</code> operation
      * @param journalKey the journal key for the block where the record is written
      */
     public RecordEntry(Serializable object, short operation, long[] journalKey, long expiration) {

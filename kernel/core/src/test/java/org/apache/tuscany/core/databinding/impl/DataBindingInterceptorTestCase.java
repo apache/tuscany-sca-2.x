@@ -19,17 +19,11 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -40,7 +34,14 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.OutboundWire;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
 
 /**
  * 
@@ -70,9 +71,9 @@ public class DataBindingInterceptorTestCase extends TestCase {
             new DataType<List<DataType<Class>>>("foo", Object[].class, types2);
 
         Operation<Class> operation1 =
-            new Operation<Class>("call", inputType1, type1, null, false, "xml:string");
+            new Operation<Class>("call", inputType1, type1, null, false, "xml:string", NO_CONVERSATION);
         Operation<Class> operation2 =
-            new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node");
+            new Operation<Class>("call", inputType2, type2, null, false, "org.w3c.dom.Node", NO_CONVERSATION);
 
         DataType<DataType> outputType1 =
             new DataType<DataType>("idl:output", Object.class, operation1.getOutputType());
@@ -89,20 +90,20 @@ public class DataBindingInterceptorTestCase extends TestCase {
 
         interceptor = new DataBindingInteceptor(outboundWire, operation1, inboundWire, operation2);
         Mediator mediator = createMock(Mediator.class);
-        Object[] source = new Object[] {"<foo>bar</foo>"};
+        Object[] source = new Object[]{"<foo>bar</foo>"};
         Foo foo = new Foo();
         foo.bar = "bar";
-        Object[] target = new Object[] {foo};
+        Object[] target = new Object[]{foo};
         expect(mediator.mediate(EasyMock.same(source),
-                                EasyMock.same(inputType1),
-                                EasyMock.same(inputType2),
-                                EasyMock.isA(Map.class))).andReturn(target);
+            EasyMock.same(inputType1),
+            EasyMock.same(inputType2),
+            EasyMock.isA(Map.class))).andReturn(target);
         // expect(mediator.mediate(target[0], type2,
         // type1)).andReturn(source[0]);
         expect(mediator.mediate(EasyMock.same(target[0]),
-                                EasyMock.eq(outputType2),
-                                EasyMock.eq(outputType1),
-                                EasyMock.isA(Map.class))).andReturn(source[0]);
+            EasyMock.eq(outputType2),
+            EasyMock.eq(outputType1),
+            EasyMock.isA(Map.class))).andReturn(source[0]);
         replay(mediator);
         interceptor.setMediator(mediator);
         Message msg = createMock(Message.class);
@@ -116,7 +117,7 @@ public class DataBindingInterceptorTestCase extends TestCase {
         replay(next);
         interceptor.setNext(next);
         interceptor.invoke(msg);
-        String result = (String)msg.getBody();
+        String result = (String) msg.getBody();
         Assert.assertEquals(source[0], result);
         EasyMock.verify(mediator, msg, next);
     }

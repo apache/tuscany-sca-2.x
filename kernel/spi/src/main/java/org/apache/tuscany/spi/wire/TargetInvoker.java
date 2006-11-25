@@ -27,14 +27,26 @@ import java.lang.reflect.InvocationTargetException;
  * @version $Rev$ $Date$
  */
 public interface TargetInvoker extends Cloneable {
+    /* indicates that no conversational sequence is associated with the message */
+    short NONE = 0;
+    /* indicates that the message initiates a conversation */
+    short START = 1;
+    /* indicates that the message continues a conversation */
+    short CONTINUE = 2;
+    /* indicates that the message ends a conversation */
+    short END = 3;
 
     /**
      * Invokes an operation on a target with the given payload. Used in optmized cases where messages do not need to be
      * flowed such as in non-proxied wires.
      *
+     * @param payload  the invocation payload, typically an array of parameters
+     * @param sequence if the invocation is part of a conversation, the sequence. Valid values are {@link NONE} for
+     *                 non-conversational, {@link START} to begin a conversation, {@link CONTINUE} to continue a
+     *                 conversation, or {@link END} to end a conversation
      * @throws InvocationTargetException
      */
-    Object invokeTarget(final Object payload) throws InvocationTargetException;
+    Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException;
 
     /**
      * Invokes an operation on a target with the given message

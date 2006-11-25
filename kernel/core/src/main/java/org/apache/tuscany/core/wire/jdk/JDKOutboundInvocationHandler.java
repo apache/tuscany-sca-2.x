@@ -133,16 +133,16 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         if (contractIsConversational) {
             assert workContext != null : "Work context cannot be null for conversational invocation";
             // Check for a conv id on thread and remember it
-            convIdFromThread = workContext.getIdentifier(Scope.CONVERSATIONAL);
+            convIdFromThread = workContext.getIdentifier(Scope.CONVERSATION);
             if (contractIsRemotable) {
                 if (convIdForRemotableTarget == null) {
                     convIdForRemotableTarget = new MessageId();
                 }
                 // Always use the conv id for this target
-                workContext.setIdentifier(Scope.CONVERSATIONAL, convIdForRemotableTarget);
+                workContext.setIdentifier(Scope.CONVERSATION, convIdForRemotableTarget);
             } else if (convIdFromThread == null) {
                 Object newConvId = new MessageId();
-                workContext.setIdentifier(Scope.CONVERSATIONAL, newConvId);
+                workContext.setIdentifier(Scope.CONVERSATION, newConvId);
             }
         }
 
@@ -150,7 +150,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
 
         if (contractIsConversational && contractIsRemotable) {
             // Make sure we restore the remembered conv id to continue propagating
-            workContext.setIdentifier(Scope.CONVERSATIONAL, convIdFromThread);
+            workContext.setIdentifier(Scope.CONVERSATION, convIdFromThread);
         }
 
         return result;

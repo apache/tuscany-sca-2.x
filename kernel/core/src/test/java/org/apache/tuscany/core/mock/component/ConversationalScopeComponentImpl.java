@@ -23,7 +23,7 @@ import org.osoa.sca.annotations.Scope;
 /**
  * @version $Rev: 430937 $ $Date: 2006-08-11 21:17:56 -0400 (Fri, 11 Aug 2006) $
  */
-@Scope("CONVERSATIONAL")
+@Scope("CONVERSATION")
 public class ConversationalScopeComponentImpl
             implements ConversationalScopeComponent {
 
