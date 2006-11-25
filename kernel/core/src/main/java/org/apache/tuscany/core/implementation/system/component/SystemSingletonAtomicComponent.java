@@ -92,6 +92,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         throw new UnsupportedOperationException();
     }
 
+    public void destroyInstance() {
+        throw new UnsupportedOperationException();
+    }
+
     public void addInboundWire(InboundWire wire) {
         throw new UnsupportedOperationException();
     }

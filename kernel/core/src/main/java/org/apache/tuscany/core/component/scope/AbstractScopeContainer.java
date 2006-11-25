@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -122,6 +123,21 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
             return ctx.getInstance();
         }
         throw new TargetNotFoundException(component.getName());
+    }
+
+    public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
+        throws PersistenceException {
+        throw new UnsupportedOperationException("Scope does not support persistence");
+
+    }
+
+    public void persist(AtomicComponent component, String id, Object instance, long expiration)
+        throws PersistenceException {
+        throw new UnsupportedOperationException("Scope does not support persistence");
+    }
+
+    public void remove(AtomicComponent component) throws PersistenceException {
+        throw new UnsupportedOperationException("Scope does not support persistence");
     }
 
     protected Map<EventFilter, List<RuntimeEventListener>> getListeners() {

@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PersistenceException;
-import org.apache.tuscany.spi.component.PersistentScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -42,7 +42,7 @@ import org.apache.tuscany.core.component.event.ConversationStart;
  *
  * @version $Rev$ $Date$
  */
-public class ConversationalScopeContainerImpl extends AbstractScopeContainer implements PersistentScopeContainer {
+public class ConversationalScopeContainerImpl extends AbstractScopeContainer implements ScopeContainer {
     private Store nonDurableStore;
     private Map<AtomicComponent, AtomicComponent> components;
 
@@ -85,15 +85,10 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
 
     @Override
     public Object getInstance(AtomicComponent component) throws TargetException {
-        String conversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
-        if (conversationID == null) {
-            TargetException e = new TargetException("Conversation id not set in context");
-            e.setIdentifier(component.getName());
-            throw e;
-        }
+        String conversationId = getconversationId(component);
         try {
             workContext.setCurrentAtomicComponent(component);
-            Object instance = nonDurableStore.readRecord(component, conversationID);
+            Object instance = nonDurableStore.readRecord(component, conversationId);
             if (instance != null) {
                 return instance;
             } else {
@@ -108,15 +103,10 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
     }
 
     public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
-        String conversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
-        if (conversationID == null) {
-            TargetException e = new TargetException("Conversation id not set in context");
-            e.setIdentifier(component.getName());
-            throw e;
-        }
+        String conversationId = getconversationId(component);
         try {
             workContext.setCurrentAtomicComponent(component);
-            Object instance = nonDurableStore.readRecord(component, conversationID);
+            Object instance = nonDurableStore.readRecord(component, conversationId);
             if (instance != null) {
                 return instance;
             } else {
@@ -128,7 +118,7 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
             workContext.setCurrentAtomicComponent(null);
         }
     }
-    
+
     public void persistNew(AtomicComponent component, String id, Object instance, long expiration)
         throws PersistenceException {
         try {
@@ -147,9 +137,10 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         }
     }
 
-    public void remove(AtomicComponent component, String id) throws PersistenceException {
+    public void remove(AtomicComponent component) throws PersistenceException {
+        String conversationId = getconversationId(component);
         try {
-            nonDurableStore.removeRecord(component, id);
+            nonDurableStore.removeRecord(component, conversationId);
         } catch (StoreWriteException e) {
             throw new PersistenceException(e);
         }
@@ -159,4 +150,13 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         throw new UnsupportedOperationException();
     }
 
+    private String getconversationId(AtomicComponent component) {
+        String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
+        if (conversationId == null) {
+            TargetException e = new TargetException("Conversation id not set in context");
+            e.setIdentifier(component.getName());
+            throw e;
+        }
+        return conversationId;
+    }
 }
