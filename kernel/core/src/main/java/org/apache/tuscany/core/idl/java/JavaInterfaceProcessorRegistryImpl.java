@@ -218,17 +218,17 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         i = expr.lastIndexOf(HOURS);
         if (i >= 0) {
             String units = expr.substring(0, i);
-            return Long.parseLong(units) * 60000 * 60;
+            return Long.parseLong(units) * 3600000;
         }
         i = expr.lastIndexOf(DAYS);
         if (i >= 0) {
             String units = expr.substring(0, i);
-            return Long.parseLong(units) * 60000 * 60 * 24;
+            return Long.parseLong(units) * 86400000;
         }
         i = expr.lastIndexOf(YEARS);
         if (i >= 0) {
             String units = expr.substring(0, i);
-            return Long.parseLong(units) * 60000 * 60 * 24 * 365;  // not really accurate but good enough
+            return Long.parseLong(units) * 31556926000L;
         }
         return Long.parseLong(expr) * 1000;  // assume seconds if no suffix specified
     }
