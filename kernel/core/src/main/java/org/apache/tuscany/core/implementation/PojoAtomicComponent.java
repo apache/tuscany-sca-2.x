@@ -71,7 +71,9 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             configuration.getWorkContext(),
             configuration.getScheduler(),
             configuration.getMonitor(),
-            configuration.getInitLevel());
+            configuration.getInitLevel(),
+            configuration.getMaxIdleTime(),
+            configuration.getMaxAge());
         assert configuration.getInstanceFactory() != null : "Object factory was null";
         initInvoker = configuration.getInitInvoker();
         destroyInvoker = configuration.getDestroyInvoker();

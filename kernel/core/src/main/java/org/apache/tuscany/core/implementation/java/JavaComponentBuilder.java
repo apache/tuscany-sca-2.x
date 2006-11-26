@@ -80,6 +80,11 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         } else {
             configuration.setInitLevel(componentType.getInitLevel());
         }
+        if (componentType.getMaxAge() >= 0) {
+            configuration.setMaxAge(componentType.getMaxAge());
+        } else if (componentType.getMaxIdleTime() >= 0) {
+            configuration.setMaxIdleTime(componentType.getMaxIdleTime());
+        }
         Method initMethod = componentType.getInitMethod();
         if (initMethod != null) {
             configuration.setInitInvoker(new MethodEventInvoker(initMethod));
@@ -151,6 +156,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
 
         for (JavaMappedService service : componentType.getServices().values()) {
+            configuration.addServiceInterface(service.getServiceContract().getInterfaceClass());
             // setup callback injection sites
             if (service.getCallbackReferenceName() != null) {
                 // Only if there is a callback reference in the service

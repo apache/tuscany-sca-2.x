@@ -68,6 +68,14 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return 0;
     }
 
+    public long getMaxIdleTime() {
+        return -1;
+    }
+
+    public long getMaxAge() {
+        return -1;
+    }
+
     public T getTargetInstance() throws TargetException {
         return instance;
     }
