@@ -60,5 +60,7 @@
     <component name="implementation.Resource">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ResourceProcessor"/>
     </component>
-
+    <component name="implementation.Conversation">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConversationProcessor"/>
+    </component>
 </composite>
