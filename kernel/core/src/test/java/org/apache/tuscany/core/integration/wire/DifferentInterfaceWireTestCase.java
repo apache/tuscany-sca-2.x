@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.java;
+package org.apache.tuscany.core.integration.wire;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -30,12 +30,12 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
-import org.apache.tuscany.core.implementation.java.mock.components.OtherTarget;
-import org.apache.tuscany.core.implementation.java.mock.components.OtherTargetImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.apache.tuscany.core.integration.mock.MockFactory;
+import org.apache.tuscany.core.mock.component.OtherTarget;
+import org.apache.tuscany.core.mock.component.OtherTargetImpl;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Source;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 

@@ -37,11 +37,10 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
+import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -90,10 +89,6 @@ public class JavaComponentBuilderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new RootDeploymentContext(null, null, createMock(), null);
-    }
-
-    private ScopeContainer createMock() {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();
@@ -115,7 +110,9 @@ public class JavaComponentBuilderTestCase extends TestCase {
             }
         }).anyTimes();
         EasyMock.replay(scope);
-        return scope;
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.expect(deploymentContext.getModuleScope()).andReturn(scope).atLeastOnce();
+        EasyMock.replay(deploymentContext);
     }
 
 }

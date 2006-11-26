@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.wire;
+package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
@@ -25,7 +25,8 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
+import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
+import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
@@ -34,11 +35,11 @@ import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.easymock.EasyMock;
 
 /**
- * Tests wiring from an system atomic context
+ * Tests reference wires are injected properly into system component instances
  *
  * @version $$Rev$$ $$Date$$
  */
-public class AtomicComponentWireInvocationTestCase extends TestCase {
+public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
 
     public void testWireResolution() throws NoSuchMethodException {
         ModuleScopeContainer scope = new ModuleScopeContainer(null);
@@ -54,13 +55,13 @@ public class AtomicComponentWireInvocationTestCase extends TestCase {
         configuration.addServiceInterface(Source.class);
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
         configuration.setName("source");
-        SystemAtomicComponent sourceContext = new SystemAtomicComponentImpl(configuration);
+        SystemAtomicComponent component = new SystemAtomicComponentImpl(configuration);
         QualifiedName qName = new QualifiedName("service");
         OutboundWire outboundWire = new SystemOutboundWireImpl("setTarget", qName, Target.class);
         outboundWire.setTargetWire(inboundWire);
-        sourceContext.addOutboundWire(outboundWire);
-        sourceContext.start();
-        assertSame(((Source) sourceContext.getServiceInstance()).getTarget(), target);
+        component.addOutboundWire(outboundWire);
+        component.start();
+        assertSame(((Source) component.getServiceInstance()).getTarget(), target);
         // wires should pass back direct ref
         EasyMock.verify(inboundWire);
     }

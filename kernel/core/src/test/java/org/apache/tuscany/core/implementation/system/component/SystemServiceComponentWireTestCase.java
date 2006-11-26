@@ -16,17 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.wire;
+package org.apache.tuscany.core.implementation.system.component;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.system.component.SystemService;
-import org.apache.tuscany.core.implementation.system.component.SystemServiceImpl;
+import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
+import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
+import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.easymock.EasyMock;
 
 /**
- * Verifies that a system context interacts correctly with configured, connected inbound and outbound system wires
+ * Verifies that a system component interacts correctly with configured, connected inbound and outbound system wires
  *
  * @version $$Rev$$ $$Date$$
  */

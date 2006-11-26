@@ -65,11 +65,17 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
                     operation = newOperation;
                 }
             }
+            Object ret;
             if (payload != null && !payload.getClass().isArray()) {
-                return operation.invoke(instance, payload);
+                ret = operation.invoke(instance, payload);
             } else {
-                return operation.invoke(instance, (Object[]) payload);
+                ret = operation.invoke(instance, (Object[]) payload);
             }
+            if (sequence == END) {
+                // if end conversation, remove resource
+                component.removeInstance();
+            }
+            return ret;
         } catch (IllegalAccessException e) {
             throw new InvocationRuntimeException(e);
         }

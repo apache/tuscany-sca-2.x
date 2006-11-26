@@ -65,6 +65,6 @@ public interface AtomicComponent extends Component {
     /**
      * Removes an implementation instance associated with the current invocation context
      */
-    void destroyInstance();
+    void removeInstance();
 
 }

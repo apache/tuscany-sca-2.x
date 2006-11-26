@@ -150,6 +150,9 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Returns the conversation id associated with the current invocation context
+     */
     private String getConversationId(AtomicComponent component) {
         String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (conversationId == null) {

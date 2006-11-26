@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.java.integration.component;
+package org.apache.tuscany.core.implementation.java.integration;
 
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -60,18 +60,18 @@ import static org.easymock.EasyMock.replay;
 import org.easymock.IAnswer;
 
 /**
- * Verifies callback integration scenarios.
+ * Verifies callback integration scenarios with Java components.
  *
  * @version $Rev$ $Date$
  */
 public class CallbackInvocationTestCase extends TestCase {
-
     private ScopeContainer container;
     private DeploymentContext context;
     private JavaComponentBuilder builder;
     private WireService wireService;
     private WorkScheduler scheduler;
     private WorkContext workContext;
+
     /**
      * Verifies callback wires are built and callback invocations are handled properly
      */
