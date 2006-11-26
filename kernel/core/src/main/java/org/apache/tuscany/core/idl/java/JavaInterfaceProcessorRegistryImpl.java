@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Callback;
-import org.osoa.sca.annotations.Conversation;
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
@@ -43,7 +42,6 @@ import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.CONVERSATION_END;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-import static org.apache.tuscany.spi.model.ServiceContract.UNDEFINED;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
 
@@ -56,11 +54,6 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
     public static final String IDL_INPUT = "idl:input";
 
     private static final String UNKNOWN_DATABINDING = null;
-    private static final String SECONDS = " SECONDS";
-    private static final String MINUTES = " MINUTES";
-    private static final String HOURS = " HOURS";
-    private static final String DAYS = " DAYS";
-    private static final String YEARS = " YEARS";
 
     private List<JavaInterfaceProcessor> processors = new ArrayList<JavaInterfaceProcessor>();
 
@@ -102,39 +95,6 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             conversational = true;
         } else {
             contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-        }
-        Conversation conversation = type.getAnnotation(Conversation.class);
-        if (conversation != null && !conversational) {
-            InvalidConversationalContractException e = new InvalidConversationalContractException(
-                "Service is marked with @Conversation but the scope is not @Scope(\"CONVERSATION\")");
-            e.setIdentifier(type.getName());
-            throw e;
-        } else if (conversation != null) {
-            long maxAge = UNDEFINED;
-            long maxIdleTime = UNDEFINED;
-            try {
-                String maxAgeVal = conversation.maxAge();
-                if (maxAgeVal != null && maxAgeVal.length() > 0) {
-                    maxAge = convertTimeMillis(maxAgeVal);
-                }
-            } catch (NumberFormatException e) {
-                InvalidConversationalContractException e2 =
-                    new InvalidConversationalContractException("Invalid maximum age", e);
-                e2.setIdentifier(type.getName());
-            }
-            try {
-                String maxIdleTimeVal = conversation.maxIdleTime();
-                if (maxIdleTimeVal != null && maxIdleTimeVal.length() > 0) {
-                    maxIdleTime = convertTimeMillis(maxIdleTimeVal);
-                }
-            } catch (NumberFormatException e) {
-                InvalidConversationalContractException e2 =
-                    new InvalidConversationalContractException("Invalid maximum idle time", e);
-                e2.setIdentifier(type.getName());
-            }
-
-            contract.setMaxAge(maxAge);
-            contract.setMaxIdleTime(maxIdleTime);
         }
         contract.setOperations(getOperations(type, remotable, conversational));
 
@@ -199,38 +159,6 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             operations.put(name, operation);
         }
         return operations;
-    }
-
-
-    protected long convertTimeMillis(String expr) throws NumberFormatException {
-        expr = expr.trim().toUpperCase();
-        int i = expr.lastIndexOf(SECONDS);
-        if (i >= 0) {
-            String units = expr.substring(0, i);
-            return Long.parseLong(units) * 1000;
-        }
-        i = expr.lastIndexOf(MINUTES);
-        if (i >= 0) {
-            String units = expr.substring(0, i);
-            return Long.parseLong(units) * 60000;
-        }
-
-        i = expr.lastIndexOf(HOURS);
-        if (i >= 0) {
-            String units = expr.substring(0, i);
-            return Long.parseLong(units) * 3600000;
-        }
-        i = expr.lastIndexOf(DAYS);
-        if (i >= 0) {
-            String units = expr.substring(0, i);
-            return Long.parseLong(units) * 86400000;
-        }
-        i = expr.lastIndexOf(YEARS);
-        if (i >= 0) {
-            String units = expr.substring(0, i);
-            return Long.parseLong(units) * 31556926000L;
-        }
-        return Long.parseLong(expr) * 1000;  // assume seconds if no suffix specified
     }
 
 }

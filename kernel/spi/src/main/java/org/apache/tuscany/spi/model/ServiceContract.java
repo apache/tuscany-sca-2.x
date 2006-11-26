@@ -28,8 +28,6 @@ import java.util.Map;
  * @version $Rev$ $Date$
  */
 public abstract class ServiceContract<T> extends ModelObject {
-    public static final long UNDEFINED = -1;
-
     protected InteractionScope interactionScope;
     protected boolean remotable;
     protected Class<?> interfaceClass;
@@ -40,8 +38,6 @@ public abstract class ServiceContract<T> extends ModelObject {
     protected Map<String, Operation<T>> callbackOperations;
     protected String dataBinding;
     protected Map<String, Object> metaData;
-    protected long maxIdleTime = UNDEFINED;
-    protected long maxAge = UNDEFINED;
 
     protected ServiceContract() {
     }
@@ -172,38 +168,6 @@ public abstract class ServiceContract<T> extends ModelObject {
 
     public void setDataBinding(String dataBinding) {
         this.dataBinding = dataBinding;
-    }
-
-    /**
-     * Returns the idle time allowed between operations in milliseconds if the service is conversational
-     *
-     * @return the idle time allowed between operations in milliseconds if the service is conversational
-     */
-    public long getMaxIdleTime() {
-        return maxIdleTime;
-    }
-
-    /**
-     * Sets the idle time allowed between operations in milliseconds if the service is conversational
-     */
-    public void setMaxIdleTime(long maxIdleTime) {
-        this.maxIdleTime = maxIdleTime;
-    }
-
-    /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the service is conversational
-     *
-     * @return the maximum age a conversation may remain active in milliseconds if the service is conversational
-     */
-    public long getMaxAge() {
-        return maxAge;
-    }
-
-    /**
-     * Sets the maximum age a conversation may remain active in milliseconds if the service is conversational
-     */
-    public void setMaxAge(long maxAge) {
-        this.maxAge = maxAge;
     }
 
     /**

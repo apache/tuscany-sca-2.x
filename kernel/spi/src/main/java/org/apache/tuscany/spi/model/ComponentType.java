@@ -22,31 +22,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>The definition of the configurable aspects of an implementation in terms of the services it exposes,
- * the services it references, and properties that can be used to configure it.</p>
- * <p>A service represents an addressable interface provided by the implementation. Such a service
- * may be the target of a wire from another component.</p>
- * <p>A reference represents a requirement that an implementation has on a service provided by another
- * component or by a resource outside the SCA system. Such a reference may be the source of a wire to another
- * component.</p>
- * <p>A property allows the behaviour of the implementation to be configured through externally set values.</p>
- * <p>A component type may also declare that it wishes to be initialized upon activation of the scope that
- * contains it and may specify an order relative to other eagerly initializing components. For example, an
- * implementation that pre-loads some form of cache could declare that it should be eagerly initialized at
- * the start of the scope so that the cache load occured on startup rather than first use.</p>
+ * <p>The definition of the configurable aspects of an implementation in terms of the services it exposes, the services
+ * it references, and properties that can be used to configure it.</p> <p>A service represents an addressable interface
+ * provided by the implementation. Such a service may be the target of a wire from another component.</p> <p>A reference
+ * represents a requirement that an implementation has on a service provided by another component or by a resource
+ * outside the SCA system. Such a reference may be the source of a wire to another component.</p> <p>A property allows
+ * the behaviour of the implementation to be configured through externally set values.</p> <p>A component type may also
+ * declare that it wishes to be initialized upon activation of the scope that contains it and may specify an order
+ * relative to other eagerly initializing components. For example, an implementation that pre-loads some form of cache
+ * could declare that it should be eagerly initialized at the start of the scope so that the cache load occured on
+ * startup rather than first use.</p>
  *
  * @version $Rev$ $Date$
  */
 public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>>
-        extends ModelObject {
+    extends ModelObject {
     private int initLevel;
+    private long maxAge = -1;
+    private long maxIdleTime = -1;
     private final Map<String, S> services = new HashMap<String, S>();
     private final Map<String, R> references = new HashMap<String, R>();
     private final Map<String, P> properties = new HashMap<String, P>();
 
     /**
-     * Returns the default initialization level for components of this type.
-     * A value greater than zero indicates that components should be eagerly initialized.
+     * Returns the default initialization level for components of this type. A value greater than zero indicates that
+     * components should be eagerly initialized.
      *
      * @return the default initialization level
      */
@@ -55,8 +55,8 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Sets the default initialization level for components of this type.
-     * A value greater than zero indicates that components should be eagerly initialized.
+     * Sets the default initialization level for components of this type. A value greater than zero indicates that
+     * components should be eagerly initialized.
      *
      * @param initLevel default initialization level for components of this type
      */
@@ -74,14 +74,46 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Obsolete method for indicating that this component should be eagerly initialized.
-     * If true, sets the init level to 50; if false, sets it to zero.
+     * Obsolete method for indicating that this component should be eagerly initialized. If true, sets the init level to
+     * 50; if false, sets it to zero.
      *
      * @param eagerInit flag indicating that this component should be eagerly initialized
      */
     @Deprecated
     public void setEagerInit(boolean eagerInit) {
         initLevel = eagerInit ? 50 : 0;
+    }
+
+    /**
+     * Returns the idle time allowed between operations in milliseconds if the service is conversational
+     *
+     * @return the idle time allowed between operations in milliseconds if the service is conversational
+     */
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    /**
+     * Sets the idle time allowed between operations in milliseconds if the service is conversational
+     */
+    public void setMaxIdleTime(long maxIdleTime) {
+        this.maxIdleTime = maxIdleTime;
+    }
+
+    /**
+     * Returns the maximum age a conversation may remain active in milliseconds if the service is conversational
+     *
+     * @return the maximum age a conversation may remain active in milliseconds if the service is conversational
+     */
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    /**
+     * Sets the maximum age a conversation may remain active in milliseconds if the service is conversational
+     */
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
     }
 
     /**
@@ -94,8 +126,7 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Add a service to those provided by the implementation.
-     * Any existing service with the same name is replaced.
+     * Add a service to those provided by the implementation. Any existing service with the same name is replaced.
      *
      * @param service a service provided by the implementation
      */
@@ -113,8 +144,8 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Add a reference to a service consumed by the implementation.
-     * Any existing reference with the same name is replaced.
+     * Add a reference to a service consumed by the implementation. Any existing reference with the same name is
+     * replaced.
      *
      * @param reference a reference to a service consumed by the implementation
      */
@@ -132,8 +163,8 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Add a property that can be used to configure the implementation.
-     * Any existing property with the same name is replaced.
+     * Add a property that can be used to configure the implementation. Any existing property with the same name is
+     * replaced.
      *
      * @param property a property that can be used to configure the implementation
      */

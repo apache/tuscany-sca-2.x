@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.idl.java;
 
-import org.osoa.sca.annotations.Conversation;
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
 
@@ -27,7 +26,6 @@ import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
 import static org.apache.tuscany.spi.model.InteractionScope.NONCONVERSATIONAL;
 import org.apache.tuscany.spi.model.Operation;
-import static org.apache.tuscany.spi.model.ServiceContract.UNDEFINED;
 
 import junit.framework.TestCase;
 
@@ -39,18 +37,11 @@ public class ConversationalIntrospectionTestCase extends TestCase {
 
     public void testServiceContractConversationalInformationIntrospection() throws Exception {
         JavaServiceContract contract = registry.introspect(Foo.class);
-        assertEquals(UNDEFINED, contract.getMaxAge());
-        assertEquals(UNDEFINED, contract.getMaxIdleTime());
         assertEquals(CONVERSATIONAL, contract.getInteractionScope());
         int seq = contract.getOperations().get("operation").getConversationSequence();
         assertEquals(Operation.CONVERSATION_CONTINUE, seq);
         seq = contract.getOperations().get("endOperation").getConversationSequence();
         assertEquals(Operation.CONVERSATION_END, seq);
-    }
-
-    public void testServiceContractConversationAnnotation() throws Exception {
-        JavaServiceContract contract = registry.introspect(FooConversation.class);
-        assertEquals(100000, contract.getMaxAge());
     }
 
     public void testBadServiceContract() throws Exception {
@@ -62,19 +53,8 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         }
     }
 
-    public void testBadConversationAnnotation() throws Exception {
-        try {
-            registry.introspect(BadFooConversation.class);
-            fail();
-        } catch (InvalidConversationalContractException e) {
-            //expected
-        }
-    }
-
     public void testNonConversationalInformationIntrospection() throws Exception {
         JavaServiceContract contract = registry.introspect(NonConversationalFoo.class);
-        assertEquals(UNDEFINED, contract.getMaxAge());
-        assertEquals(UNDEFINED, contract.getMaxIdleTime());
         assertEquals(NONCONVERSATIONAL, contract.getInteractionScope());
         int seq = contract.getOperations().get("operation").getConversationSequence();
         assertEquals(Operation.NO_CONVERSATION, seq);
@@ -88,21 +68,11 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         void endOperation();
     }
 
-    @Scope("CONVERSATION")
-    @Conversation(maxAge = "100")
-    private interface FooConversation {
-    }
-
-
     private interface BadFoo {
         void operation();
 
         @EndConversation
         void endOperation();
-    }
-
-    @Conversation(maxAge = "100")
-    private interface BadFooConversation {
     }
 
     private interface NonConversationalFoo {

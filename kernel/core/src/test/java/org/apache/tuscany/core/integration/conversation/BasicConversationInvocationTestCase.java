@@ -84,8 +84,8 @@ public class BasicConversationInvocationTestCase extends TestCase {
             }
         }
         // verify the instance was persisted
-        // continue the conversation
         assertEquals(targetInstance, store.readRecord(target, "12345A"));
+        // continue the conversation
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
             if ("operation2".equals(entry.getKey().getName())) {
                 MessageImpl msg = new MessageImpl();
