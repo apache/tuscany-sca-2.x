@@ -23,14 +23,14 @@ import java.lang.reflect.Modifier;
 
 import org.osoa.sca.annotations.Init;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes the {@link @Init} annotation on a component implementation and updates the component type with the
@@ -59,7 +59,10 @@ public class InitProcessor extends ImplementationProcessorExtension {
         if (Modifier.isProtected(method.getModifiers())) {
             method.setAccessible(true);
         }
-        type.setEagerInit(annotation.eager());
+        // TODO support init level specification
+        if (annotation.eager()) {
+            type.setInitLevel(50);
+        }
         type.setInitMethod(method);
     }
 }
