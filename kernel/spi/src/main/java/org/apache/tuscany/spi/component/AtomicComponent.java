@@ -41,6 +41,20 @@ public interface AtomicComponent extends Component {
     int getInitLevel();
 
     /**
+     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
+     *
+     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
+     */
+    long getMaxIdleTime();
+
+    /**
+     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational
+     *
+     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
+     */
+    long getMaxAge();
+
+    /**
      * Notifies the given instance of an initialization event
      *
      * @throws TargetException

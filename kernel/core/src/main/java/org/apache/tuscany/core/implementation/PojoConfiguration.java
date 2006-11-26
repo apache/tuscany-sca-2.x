@@ -60,6 +60,8 @@ public class PojoConfiguration {
     private WorkContext workContext;
     private WorkScheduler scheduler;
     private ExecutionMonitor monitor;
+    private long maxIdleTime = -1;
+    private long maxAge = -1;
 
     public String getName() {
         return name;
@@ -119,6 +121,22 @@ public class PojoConfiguration {
 
     public void setInitLevel(int initLevel) {
         this.initLevel = initLevel;
+    }
+
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    public void setMaxIdleTime(long maxIdleTime) {
+        this.maxIdleTime = maxIdleTime;
+    }
+
+    public long getMaxAge() {
+        return maxAge;
+    }
+
+    public void setMaxAge(long maxAge) {
+        this.maxAge = maxAge;
     }
 
     public EventInvoker<Object> getInitInvoker() {

@@ -85,32 +85,32 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Returns the idle time allowed between operations in milliseconds if the service is conversational
+     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
      *
-     * @return the idle time allowed between operations in milliseconds if the service is conversational
+     * @return the idle time allowed between operations in milliseconds if the implementation is conversational
      */
     public long getMaxIdleTime() {
         return maxIdleTime;
     }
 
     /**
-     * Sets the idle time allowed between operations in milliseconds if the service is conversational
+     * Sets the idle time allowed between operations in milliseconds if the implementation is conversational
      */
     public void setMaxIdleTime(long maxIdleTime) {
         this.maxIdleTime = maxIdleTime;
     }
 
     /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the service is conversational
+     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational
      *
-     * @return the maximum age a conversation may remain active in milliseconds if the service is conversational
+     * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
      */
     public long getMaxAge() {
         return maxAge;
     }
 
     /**
-     * Sets the maximum age a conversation may remain active in milliseconds if the service is conversational
+     * Sets the maximum age a conversation may remain active in milliseconds if the implementation is conversational
      */
     public void setMaxAge(long maxAge) {
         this.maxAge = maxAge;

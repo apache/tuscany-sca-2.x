@@ -53,7 +53,8 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
     protected WorkScheduler workScheduler;
     protected ExecutionMonitor monitor;
     private final int initLevel;
-
+    private final long maxIdleTime;
+    private final long maxAge;
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent parent,
@@ -63,13 +64,30 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
                                        WorkScheduler workScheduler,
                                        ExecutionMonitor monitor,
                                        int initLevel) {
+        this(name, parent, scopeContainer, wireService, workContext, workScheduler, monitor, initLevel, -1, -1);
+
+    }
+
+    protected AtomicComponentExtension(String name,
+                                       CompositeComponent parent,
+                                       ScopeContainer scopeContainer,
+                                       WireService wireService,
+                                       WorkContext workContext,
+                                       WorkScheduler workScheduler,
+                                       ExecutionMonitor monitor,
+                                       int initLevel,
+                                       long maxIdleTime,
+                                       long maxAge) {
         super(name, parent);
+        assert !(maxIdleTime >= 0 && maxAge >= 0);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
         this.monitor = monitor;
         this.initLevel = initLevel;
+        this.maxIdleTime = maxIdleTime;
+        this.maxAge = maxAge;
     }
 
     public Scope getScope() {
@@ -82,6 +100,14 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
 
     public boolean isEagerInit() {
         return initLevel > 0;
+    }
+
+    public long getMaxIdleTime() {
+        return maxIdleTime;
+    }
+
+    public long getMaxAge() {
+        return maxAge;
     }
 
     public void start() throws CoreRuntimeException {

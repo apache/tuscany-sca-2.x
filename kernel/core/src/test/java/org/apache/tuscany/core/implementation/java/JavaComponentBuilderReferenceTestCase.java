@@ -21,10 +21,12 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -35,6 +37,11 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
@@ -45,14 +52,17 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
-/**
+/**                 
  * @version $$Rev$$ $$Date$$
  */
-public class JavaComponentBuilderTestCase extends TestCase {
+public class JavaComponentBuilderReferenceTestCase extends TestCase {
     private DeploymentContext deploymentContext;
+    private WireService wireService;
+    private Constructor<SourceImpl> constructor;
+    private CompositeComponent parent;
+    private OutboundWire wire;
 
-    public void testBuild() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
+    public void testBuildReference() throws Exception {
 
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> sourceType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
@@ -61,34 +71,40 @@ public class JavaComponentBuilderTestCase extends TestCase {
         reference.setName("target");
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
         sourceType.add(reference);
-
-        ServiceContract<?> sourceContract = new JavaServiceContract(Source.class);
-        JavaMappedService sourceServiceDefinition = new JavaMappedService();
-        sourceServiceDefinition.setName("Source");
-        sourceServiceDefinition.setServiceContract(sourceContract);
-
-        sourceType.add(sourceServiceDefinition);
-        Constructor<SourceImpl> constructor = SourceImpl.class.getConstructor((Class[]) null);
+        ServiceContract<?> contract = new JavaServiceContract(Source.class);
+        JavaMappedService serviceDefinition = new JavaMappedService();
+        serviceDefinition.setName("Source");
+        serviceDefinition.setServiceContract(contract);
+        sourceType.add(serviceDefinition);
         sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
         JavaImplementation sourceImpl = new JavaImplementation();
         sourceImpl.setComponentType(sourceType);
         sourceImpl.setImplementationClass(SourceImpl.class);
-        ComponentDefinition<JavaImplementation> sourceComponentDefinition =
-            new ComponentDefinition<JavaImplementation>(sourceImpl);
+        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setWireService(new JDKWireService());
-        JavaAtomicComponent component =
-            (JavaAtomicComponent) builder.build(parent, sourceComponentDefinition, deploymentContext);
+        builder.setWireService(wireService);
+        JavaAtomicComponent component =  (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        component.addOutboundWire(wire);
         deploymentContext.getModuleScope().start();
         component.start();
+
         Source source = (Source) component.getServiceInstance();
-        assertNotNull(source);
+        assertNotNull(source.getTarget());
         component.stop();
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        wireService = new JDKWireService();
+        parent = new CompositeComponentImpl(null, null, null, null);
+        constructor = SourceImpl.class.getConstructor((Class[]) null);
+        createDeploymentContext();
+        createWire();
+    }
+
+
+    private void createDeploymentContext() {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();
@@ -113,6 +129,20 @@ public class JavaComponentBuilderTestCase extends TestCase {
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(deploymentContext.getModuleScope()).andReturn(scope).atLeastOnce();
         EasyMock.replay(deploymentContext);
+    }
+
+    private void createWire() {
+        SCAObject scaObject = EasyMock.createNiceMock(SCAObject.class);
+        Map<Operation<?>, OutboundInvocationChain> chains = Collections.emptyMap();
+        wire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
+        EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
+        JavaServiceContract targetContract = new JavaServiceContract(Target.class);
+        targetContract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        EasyMock.expect(wire.getServiceContract()).andReturn(targetContract).atLeastOnce();
+        EasyMock.expect(wire.getContainer()).andReturn(scaObject).atLeastOnce();
+        EasyMock.replay(wire);
+
     }
 
 }
