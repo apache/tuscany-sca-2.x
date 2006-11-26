@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.mock.factories;
+package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,15 +31,8 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
@@ -47,9 +40,6 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -59,37 +49,17 @@ public final class MockFactory {
     private MockFactory() {
     }
 
-    public static Map<String, AtomicComponent> createWiredComponents(String source,
-                                                                     Class<?> sourceClass,
-                                                                     ScopeContainer sourceScopeContainer,
-                                                                     String target,
-                                                                     Class<?> targetClass,
-                                                                     ScopeContainer targetScopeContainer)
-        throws NoSuchMethodException {
-        List<Class<?>> sourceClasses = new ArrayList<Class<?>>();
-        sourceClasses.add(sourceClass);
-        return createWiredComponents(source, sourceClasses, sourceClass, sourceScopeContainer, target, targetClass,
-            targetScopeContainer);
-    }
-
-    /**
-     * Creates source and target {@link AtomicComponent}s whose instances are wired together. The wiring algorithm
-     * searches for the first method on the source with a single parameter type matching an interface implemented by the
-     * target.
-     *
-     * @throws NoSuchMethodException
-     */
     @SuppressWarnings("unchecked")
     public static Map<String, AtomicComponent> createWiredComponents(String source,
-                                                                     List<Class<?>> sourceInterfaces,
                                                                      Class<?> sourceClass,
                                                                      ScopeContainer sourceScopeContainer,
                                                                      String target,
                                                                      Class<?> targetClass,
                                                                      ScopeContainer targetScopeContainer)
         throws NoSuchMethodException {
-
-        Map<String, AtomicComponent> contexts = new HashMap<String, AtomicComponent>();
+        List<Class<?>> sourceInterfaces = new ArrayList<Class<?>>();
+        sourceInterfaces.add(sourceClass);
+        Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         SystemAtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
         PojoConfiguration sourceConfig = new PojoConfiguration();
         sourceConfig.getServiceInterfaces().addAll(sourceInterfaces);
@@ -124,16 +94,15 @@ public final class MockFactory {
 
         sourceConfig.addReferenceSite(setter.getName(), setter);
         sourceConfig.setName(source);
-        SystemAtomicComponent sourceCtx = new SystemAtomicComponentImpl(sourceConfig);
+        SystemAtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
         QualifiedName targetName = new QualifiedName(target);
         SystemOutboundWire wire = new SystemOutboundWireImpl(setter.getName(), targetName, targetClass);
         InboundWire inboundWire = new SystemInboundWireImpl(targetName.getPortName(), targetClass, targetComponent);
         wire.setTargetWire(inboundWire);
-
-        sourceCtx.addOutboundWire(wire);
-        contexts.put(source, sourceCtx);
-        contexts.put(target, targetComponent);
-        return contexts;
+        sourceComponent.addOutboundWire(wire);
+        components.put(source, sourceComponent);
+        components.put(target, targetComponent);
+        return components;
     }
 
     @SuppressWarnings("unchecked")
@@ -156,31 +125,6 @@ public final class MockFactory {
         }
         configuration.setName(name);
         return new SystemAtomicComponentImpl(configuration);
-    }
-
-    public static <T> InboundWire createTargetWireFactory(String serviceName, Class<T> interfaze)
-        throws InvalidServiceContractException {
-        InboundWire wire = new InboundWireImpl();
-        wire.setServiceName(serviceName);
-        JavaServiceContract contract = new JavaServiceContract(interfaze);
-        wire.setServiceContract(contract);
-        wire.addInvocationChains(createInboundChains(interfaze));
-        return wire;
-    }
-
-    public static Map<Operation<?>, InboundInvocationChain> createInboundChains(Class<?> interfaze)
-        throws InvalidServiceContractException {
-        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
-        Map<Operation<?>, InboundInvocationChain> invocations = new HashMap<Operation<?>, InboundInvocationChain>();
-        ServiceContract<?> contract = registry.introspect(interfaze);
-
-        for (Operation<?> operation : contract.getOperations().values()) {
-            InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-            // add tail interceptor
-            chain.addInterceptor(new InvokerInterceptor());
-            invocations.put(operation, chain);
-        }
-        return invocations;
     }
 
 }

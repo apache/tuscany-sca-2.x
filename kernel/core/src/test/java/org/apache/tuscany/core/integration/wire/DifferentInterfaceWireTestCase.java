@@ -58,11 +58,13 @@ public class DifferentInterfaceWireTestCase extends TestCase {
                 SourceImpl.class,
                 Target.class,
                 scope,
+                null,
                 members,
                 "target",
                 OtherTarget.class,
                 OtherTargetImpl.class,
-                scope);
+                scope,
+                null);
         AtomicComponent sourceComponent = contexts.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();
         Target target = source.getTarget();
@@ -78,10 +80,16 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         members.put("target", m);
         ScopeContainer scope = createMock();
         scope.start();
-        Map<String, AtomicComponent> contexts =
-            MockFactory.createWiredMultiplicity("source", SourceImpl.class, Target.class, scope,
-                "target", OtherTarget.class, OtherTargetImpl.class, members, scope);
-        AtomicComponent sourceComponent = contexts.get("source");
+        Map<String, AtomicComponent> components = MockFactory.createWiredMultiplicity("source",
+                SourceImpl.class,
+                Target.class,
+                scope,
+                "target",
+                OtherTarget.class,
+                OtherTargetImpl.class,
+                members,
+                scope);
+        AtomicComponent sourceComponent = components.get("source");
         Source source = (Source) sourceComponent.getServiceInstance();
         List<Target> targets = source.getTargets();
         assertEquals(1, targets.size());

@@ -29,6 +29,9 @@ public class OrderedInitPojoImpl implements OrderedInitPojo {
     private static int numberInstantied;
     private int initOrder;
 
+    public OrderedInitPojoImpl() {
+    }
+
     @Init
     public void init() {
         synchronized (LOCK) {

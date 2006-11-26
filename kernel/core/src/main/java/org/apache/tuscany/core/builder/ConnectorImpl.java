@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRuntimeException;
@@ -47,6 +46,7 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.implementation.composite.CompositeReference;
@@ -204,7 +204,7 @@ public class ConnectorImpl implements Connector {
      * @param targetWire  the target wire to connect to
      * @param optimizable true if the wire connection can be optimized
      */
-    void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable) {
+    public void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable) {
         SCAObject source = sourceWire.getContainer();
         SCAObject target = targetWire.getContainer();
         ServiceContract contract = sourceWire.getServiceContract();

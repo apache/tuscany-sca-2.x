@@ -38,7 +38,6 @@ import org.apache.tuscany.core.mock.component.SessionScopeInitDestroyComponent;
  * @version $$Rev$$ $$Date$$
  */
 public class BasicHttpSessionScopeTestCase extends TestCase {
-
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private PojoObjectFactory<?> factory;

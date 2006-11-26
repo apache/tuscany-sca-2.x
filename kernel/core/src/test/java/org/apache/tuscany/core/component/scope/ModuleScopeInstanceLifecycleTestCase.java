@@ -26,13 +26,10 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.mock.component.ModuleScopeDestroyOnlyComponent;
-import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
-import org.apache.tuscany.core.mock.component.ModuleScopeInitOnlyComponent;
-import org.apache.tuscany.core.mock.component.OrderedEagerInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
-import org.apache.tuscany.core.mock.factories.MockFactory;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 
 /**
  * Lifecycle unit tests for the module scope container
@@ -41,68 +38,66 @@ import org.apache.tuscany.core.mock.factories.MockFactory;
  */
 public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
+    /**
+     * Verify init and stop by scope container on an atomic component
+     *
+     * @throws Exception
+     */
     public void testInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
-
-        SystemAtomicComponent initDestroyComponent = MockFactory.createAtomicComponent("InitDestroy",
-            scope,
-            ModuleScopeInitDestroyComponent.class);
-        initDestroyComponent.start();
-
-        SystemAtomicComponent initOnlyComponent = MockFactory.createAtomicComponent("InitOnly",
-            scope,
-            ModuleScopeInitOnlyComponent.class);
-        initOnlyComponent.start();
-
-        SystemAtomicComponent destroyOnlyComponent = MockFactory.createAtomicComponent("DestroyOnly",
-            scope,
-            ModuleScopeDestroyOnlyComponent.class);
-        destroyOnlyComponent.start();
-
+        Foo comp = new Foo();
+        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(component.createInstance()).andReturn(comp);
+        EasyMock.expect(component.getInitLevel()).andReturn(1).atLeastOnce();
+        component.init(EasyMock.eq(comp));
+        component.destroy(EasyMock.eq(comp));
+        EasyMock.replay(component);
+        scope.register(component);
         scope.onEvent(new CompositeStart(this, null));
-        ModuleScopeInitDestroyComponent initDestroy =
-            (ModuleScopeInitDestroyComponent) scope.getInstance(initDestroyComponent);
-        assertNotNull(initDestroy);
-
-        ModuleScopeInitOnlyComponent initOnly = (ModuleScopeInitOnlyComponent) scope.getInstance(initOnlyComponent);
-        assertNotNull(initOnly);
-
-        ModuleScopeDestroyOnlyComponent destroyOnly =
-            (ModuleScopeDestroyOnlyComponent) scope.getInstance(destroyOnlyComponent);
-        assertNotNull(destroyOnly);
-
-        assertTrue(initDestroy.isInitialized());
-        assertTrue(initOnly.isInitialized());
-        assertFalse(initDestroy.isDestroyed());
-        assertFalse(destroyOnly.isDestroyed());
-
+        assertNotNull(scope.getInstance(component));
         // expire module
         scope.onEvent(new CompositeStop(this, null));
-
-        assertTrue(initDestroy.isDestroyed());
-        assertTrue(destroyOnly.isDestroyed());
-
         scope.stop();
+        EasyMock.verify(component);
     }
+
+    /**
+     * Verify init and stop by scope container on an atomic component when set to eager initialize
+     *
+     * @throws Exception
+     */
+    public void testEagerInitDestroy() throws Exception {
+        WorkContext ctx = new WorkContextImpl();
+        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
+        scope.start();
+        Foo comp = new Foo();
+        SystemAtomicComponent initDestroyComponent = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(initDestroyComponent.createInstance()).andReturn(comp);
+        EasyMock.expect(initDestroyComponent.getInitLevel()).andReturn(1).atLeastOnce();
+        initDestroyComponent.init(EasyMock.eq(comp));
+        initDestroyComponent.destroy(EasyMock.eq(comp));
+        EasyMock.replay(initDestroyComponent);
+        scope.register(initDestroyComponent);
+        scope.onEvent(new CompositeStart(this, null));
+        // expire module
+        scope.onEvent(new CompositeStop(this, null));
+        scope.stop();
+        EasyMock.verify(initDestroyComponent);
+    }
+
 
     public void testDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneComponent = MockFactory.createAtomicComponent("one",
-            scope,
-            OrderedInitPojoImpl.class);
+        SystemAtomicComponent oneComponent = createComponent(0);
         scope.register(oneComponent);
-        SystemAtomicComponent twoComponent = MockFactory.createAtomicComponent("two",
-            scope,
-            OrderedInitPojoImpl.class);
+        SystemAtomicComponent twoComponent = createComponent(0);
         scope.register(twoComponent);
-        SystemAtomicComponent threeComponent = MockFactory.createAtomicComponent("three",
-            scope,
-            OrderedInitPojoImpl.class);
+        SystemAtomicComponent threeComponent = createComponent(0);
         scope.register(threeComponent);
 
         scope.onEvent(new CompositeStart(this, null));
@@ -125,6 +120,9 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         scope.onEvent(new CompositeStop(this, null));
         assertEquals(0, one.getNumberInstantiated());
         scope.stop();
+        EasyMock.verify(oneComponent);
+        EasyMock.verify(twoComponent);
+        EasyMock.verify(threeComponent);
     }
 
     public void testEagerInitDestroyOrder() throws Exception {
@@ -132,33 +130,62 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
         scope.start();
 
-        SystemAtomicComponent oneComponent = MockFactory.createAtomicComponent("one",
-            scope,
-            OrderedEagerInitPojo.class);
+        SystemAtomicComponent oneComponent = createComponent(1);
         scope.register(oneComponent);
-        SystemAtomicComponent twoComponent = MockFactory.createAtomicComponent("two",
-            scope,
-            OrderedEagerInitPojo.class);
+        SystemAtomicComponent twoComponent = createComponent(1);
         scope.register(twoComponent);
-        SystemAtomicComponent threeComponent = MockFactory.createAtomicComponent("three",
-            scope,
-            OrderedEagerInitPojo.class);
+        SystemAtomicComponent threeComponent = createComponent(1);
         scope.register(threeComponent);
 
         scope.onEvent(new CompositeStart(this, null));
-        OrderedEagerInitPojo one = (OrderedEagerInitPojo) scope.getInstance(oneComponent);
+        OrderedInitPojo one = (OrderedInitPojo) scope.getInstance(oneComponent);
         assertNotNull(one);
 
-        OrderedEagerInitPojo two = (OrderedEagerInitPojo) scope.getInstance(twoComponent);
+        OrderedInitPojo two = (OrderedInitPojo) scope.getInstance(twoComponent);
         assertNotNull(two);
 
-        OrderedEagerInitPojo three = (OrderedEagerInitPojo) scope.getInstance(threeComponent);
+        OrderedInitPojo three = (OrderedInitPojo) scope.getInstance(threeComponent);
         assertNotNull(three);
 
         // expire module
         scope.onEvent(new CompositeStop(this, null));
         assertEquals(0, one.getNumberInstantiated());
         scope.stop();
+        EasyMock.verify(oneComponent);
+        EasyMock.verify(twoComponent);
+        EasyMock.verify(threeComponent);
     }
 
+    @SuppressWarnings("unchecked")
+    private SystemAtomicComponent createComponent(int init) {
+        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                return new OrderedInitPojoImpl();
+            }
+        });
+        EasyMock.expect(component.getInitLevel()).andReturn(init).atLeastOnce();
+        component.init(EasyMock.isA(OrderedInitPojoImpl.class));
+        EasyMock.expectLastCall().andAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                OrderedInitPojoImpl pojo = (OrderedInitPojoImpl) EasyMock.getCurrentArguments()[0];
+                pojo.init();
+                return null;
+            }
+        });
+        component.destroy(EasyMock.isA(OrderedInitPojoImpl.class));
+        EasyMock.expectLastCall().andAnswer(new IAnswer() {
+            public Object answer() throws Throwable {
+                OrderedInitPojoImpl pojo = (OrderedInitPojoImpl) EasyMock.getCurrentArguments()[0];
+                pojo.destroy();
+                return null;
+            }
+        });
+        EasyMock.replay(component);
+        return component;
+    }
+
+    private class Foo {
+
+    }
 }
