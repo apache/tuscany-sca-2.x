@@ -51,6 +51,8 @@ import org.apache.tuscany.core.wire.ConversationWirePostProcessor;
 import org.easymock.classextension.EasyMock;
 
 /**
+ * Provides fine-grained integration-level testing for conversational invocation sequences using a partial runtime
+ *
  * @version $Rev$ $Date$
  */
 public class BasicConversationInvocationTestCase extends TestCase {
@@ -59,10 +61,21 @@ public class BasicConversationInvocationTestCase extends TestCase {
     private WorkContext workContext;
     private ConnectorImpl connector;
     private OutboundWire owire;
+    private JavaAtomicComponent target;
     private Foo targetInstance;
 
+
+    /**
+     * Verifies start, continue and end conversation invocations are processed properly. Checks that a target instance
+     * is properly instantiated and persisted in the store. Additionally verifies that invocations are dispatched to a
+     * target instance, and that start, continue, and end operations are performed correctly. Finally, verfies that the
+     * target instance is removed from the store when the conversation ends.
+     *
+     * @throws Exception
+     */
     public void testConversationStartContinueEnd() throws Exception {
         workContext.setIdentifier(CONVERSATION, "12345A");
+        // start the conversation
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
             if ("operation1".equals(entry.getKey().getName())) {
                 MessageImpl msg = new MessageImpl();
@@ -70,6 +83,9 @@ public class BasicConversationInvocationTestCase extends TestCase {
                 entry.getValue().getHeadInterceptor().invoke(msg);
             }
         }
+        // verify the instance was persisted
+        // continue the conversation
+        assertEquals(targetInstance, store.readRecord(target, "12345A"));
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
             if ("operation2".equals(entry.getKey().getName())) {
                 MessageImpl msg = new MessageImpl();
@@ -77,6 +93,9 @@ public class BasicConversationInvocationTestCase extends TestCase {
                 entry.getValue().getHeadInterceptor().invoke(msg);
             }
         }
+        // verify the instance was persisted
+        assertEquals(targetInstance, store.readRecord(target, "12345A"));
+        // end the conversation
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
             if ("end".equals(entry.getKey().getName())) {
                 MessageImpl msg = new MessageImpl();
@@ -85,9 +104,9 @@ public class BasicConversationInvocationTestCase extends TestCase {
             }
         }
         workContext.clearIdentifier(CONVERSATION);
-
-        // start, continue, end
         EasyMock.verify(targetInstance);
+        // verify the store has removed the instance
+        assertNull(store.readRecord(target, "12345A"));
     }
 
 
@@ -100,7 +119,7 @@ public class BasicConversationInvocationTestCase extends TestCase {
         targetInstance.end();
         EasyMock.replay(targetInstance);
         // create target component mock
-        JavaAtomicComponent target = createAtomicComponent();
+        target = createAtomicComponent();
         // create source component mock
         JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(source.getName()).andReturn("source");
