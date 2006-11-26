@@ -63,7 +63,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     public void testLifecycleBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        type.setEagerInit(true);
+        type.setInitLevel(50);
         Method initMethod = FooImpl.class.getMethod("init");
         initMethod.setAccessible(true);
         type.setInitMethod(initMethod);
@@ -92,7 +92,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     public void testPropertyBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        type.setEagerInit(true);
+        type.setInitLevel(50);
         Method initMethod = FooImpl.class.getMethod("init");
         initMethod.setAccessible(true);
         type.setInitMethod(initMethod);

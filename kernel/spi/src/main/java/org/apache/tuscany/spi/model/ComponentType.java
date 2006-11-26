@@ -74,17 +74,6 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
     }
 
     /**
-     * Obsolete method for indicating that this component should be eagerly initialized. If true, sets the init level to
-     * 50; if false, sets it to zero.
-     *
-     * @param eagerInit flag indicating that this component should be eagerly initialized
-     */
-    @Deprecated
-    public void setEagerInit(boolean eagerInit) {
-        initLevel = eagerInit ? 50 : 0;
-    }
-
-    /**
      * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
      *
      * @return the idle time allowed between operations in milliseconds if the implementation is conversational
