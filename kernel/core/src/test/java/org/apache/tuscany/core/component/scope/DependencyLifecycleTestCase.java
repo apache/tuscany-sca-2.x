@@ -35,7 +35,6 @@ import org.apache.tuscany.core.mock.component.OrderedDependentPojo;
 import org.apache.tuscany.core.mock.component.OrderedDependentPojoImpl;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
 import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
-import org.apache.tuscany.core.mock.factories.MockFactory;
 
 /**
  * Tests dependencies are initalized and destroyed in the proper order (i.e. LIFO)

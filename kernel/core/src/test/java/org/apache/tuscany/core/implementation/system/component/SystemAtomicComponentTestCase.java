@@ -35,6 +35,7 @@ import org.easymock.EasyMock;
 public class SystemAtomicComponentTestCase extends TestCase {
 
     private EventInvoker<Object> initInvoker;
+    private EventInvoker<Object> destroyInvoker;
 
     public void testDefaultCreationAndInit() throws Exception {
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
@@ -47,6 +48,19 @@ public class SystemAtomicComponentTestCase extends TestCase {
         Foo foo = (Foo) component.createInstance();
         component.init(foo);
         assertTrue(foo.initialized);
+    }
+
+    public void testDestroy() throws Exception {
+        PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
+        PojoConfiguration configuration = new PojoConfiguration();
+        configuration.addServiceInterface(Foo.class);
+        configuration.setInstanceFactory(factory);
+        configuration.setDestroyInvoker(destroyInvoker);
+        configuration.setName("foo");
+        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
+        Foo foo = (Foo) component.createInstance();
+        component.destroy(foo);
+        assertTrue(foo.destroyed);
     }
 
     public void testReferenceAndPropertyConstructor() throws Exception {
@@ -75,6 +89,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         initInvoker = new MethodEventInvoker<Object>(Foo.class.getMethod("init"));
+        destroyInvoker = new MethodEventInvoker<Object>(Foo.class.getMethod("destroy"));
     }
 
     protected void tearDown() throws Exception {
@@ -82,11 +97,15 @@ public class SystemAtomicComponentTestCase extends TestCase {
     }
 
     public static class Foo {
-
         private boolean initialized;
+        private boolean destroyed;
 
         public void init() {
             initialized = true;
+        }
+
+        public void destroy() {
+            destroyed = true;
         }
     }
 

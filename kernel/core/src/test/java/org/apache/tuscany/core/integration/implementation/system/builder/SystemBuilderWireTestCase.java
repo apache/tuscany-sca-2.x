@@ -44,7 +44,6 @@ import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.Target;
-import org.apache.tuscany.core.mock.factories.MockComponentFactory;
 
 /**
  * Validates that system builders and the default connector create properly wired contexts
