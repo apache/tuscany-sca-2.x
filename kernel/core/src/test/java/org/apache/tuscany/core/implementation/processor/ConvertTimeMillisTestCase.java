@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.idl.java;
+package org.apache.tuscany.core.implementation.processor;
 
 import junit.framework.TestCase;
 
@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class ConvertTimeMillisTestCase extends TestCase {
-    private MockRegistry registy;
+    private MockProcessor registy;
 
     public void testConvertSeconds() throws Exception {
         assertEquals(10000L, registy.convertTimeMillis("10 seconds"));
@@ -97,10 +97,10 @@ public class ConvertTimeMillisTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        registy = new MockRegistry();
+        registy = new MockProcessor();
     }
 
-    private class MockRegistry extends JavaInterfaceProcessorRegistryImpl {
+    private class MockProcessor extends ConversationProcessor {
 
         @Override
         protected long convertTimeMillis(String expr) throws NumberFormatException {
