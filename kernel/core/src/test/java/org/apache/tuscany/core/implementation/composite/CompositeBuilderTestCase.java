@@ -51,12 +51,12 @@ import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
-import org.apache.tuscany.core.implementation.java.mock.components.OtherTarget;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.mock.component.OtherTarget;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 

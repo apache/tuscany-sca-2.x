@@ -92,7 +92,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         throw new UnsupportedOperationException();
     }
 
-    public void destroyInstance() {
+    public void removeInstance() {
         throw new UnsupportedOperationException();
     }
 

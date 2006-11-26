@@ -30,6 +30,9 @@ import org.easymock.classextension.EasyMock;
  */
 public class JavaTargetInvokerSequenceTestCase extends TestCase {
 
+    /**
+     * Verifies an invocation marked as non-conversational has an existing or new instance returned
+     */
     public void testNoSequence() throws Exception {
         Foo foo = EasyMock.createMock(Foo.class);
         foo.invoke();
@@ -45,6 +48,9 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
+    /**
+     * Verifies that an invocation marked as starting a conversation has a new instance returned
+     */
     public void testStartSequence() throws Exception {
         Foo foo = EasyMock.createMock(Foo.class);
         foo.invoke();
@@ -60,6 +66,9 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
+    /**
+     * Verifies that an invocation marked as continuing a conversation has an associated instance returned
+     */
     public void testContinueSequence() throws Exception {
         Foo foo = EasyMock.createMock(Foo.class);
         foo.invoke();
@@ -75,12 +84,17 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
+    /**
+     * Verifies that an invocation marked as ending a conversation has an associated instance returned and it is removed
+     * following the dispatch to the instance
+     */
     public void testEndSequence() throws Exception {
         Foo foo = EasyMock.createMock(Foo.class);
         foo.invoke();
         EasyMock.replay(foo);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
+        component.removeInstance();
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null, null);
         Message msg = new MessageImpl();

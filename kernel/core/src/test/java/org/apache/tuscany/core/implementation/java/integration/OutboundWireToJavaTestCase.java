@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.java.integration.component;
+package org.apache.tuscany.core.implementation.java.integration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,17 +56,17 @@ import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.easymock.EasyMock;
 
 /**
- * Validates wiring from a service context to Java atomic contexts by scope
+ * Validates wiring from a wire to Java atomic component by scope
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -160,7 +160,6 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToModuleScope() throws Exception {
-
         ModuleScopeContainer scope = new ModuleScopeContainer(workContext);
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
@@ -178,9 +177,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
                                                               InvalidServiceContractException {
         ConnectorImpl connector = new ConnectorImpl();
-
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
@@ -209,7 +206,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         return outboundWire;
     }
 
-    public static <T> OutboundWire createOutboundWire(QualifiedName targetName, Class<T> interfaze)
+    private static <T> OutboundWire createOutboundWire(QualifiedName targetName, Class<T> interfaze)
         throws InvalidServiceContractException {
         OutboundWire wire = new OutboundWireImpl();
         JavaServiceContract contract = new JavaServiceContract(interfaze);

@@ -40,7 +40,7 @@ public class ConversationWirePostProcessor extends WirePostProcessorExtension {
         if (!InteractionScope.CONVERSATIONAL.equals(source.getServiceContract().getInteractionScope())) {
             return;
         }
-        // the sequence interceptor is shared across all chans for a service
+        // the sequence interceptor is shared across all chains for a service
         ConversationSequenceInterceptor sequenceInterceptor = new ConversationSequenceInterceptor();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : source.getInvocationChains().entrySet()) {
             int sequence = entry.getKey().getConversationSequence();

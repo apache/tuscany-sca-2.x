@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.java.integration.component;
+package org.apache.tuscany.core.integration.scope;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -44,12 +44,12 @@ import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
+import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
+import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Source;
 
 /**
  * Tests scoping is properly handled for service references

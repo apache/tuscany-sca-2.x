@@ -30,8 +30,6 @@ import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
@@ -70,5 +68,14 @@ public class GetServiceByNameTestCase extends TestCase {
         component.prepare();
         component.start();
         assertTrue(component.getServiceInstance("Target") instanceof Target);
+    }
+
+    private interface Target {
+
+    }
+
+    private static class TargetImpl implements Target {
+        public TargetImpl() {
+        }
     }
 }

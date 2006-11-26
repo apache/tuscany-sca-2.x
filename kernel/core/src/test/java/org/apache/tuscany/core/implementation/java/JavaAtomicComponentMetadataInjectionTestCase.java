@@ -28,8 +28,10 @@ import junit.framework.TestCase;
 public class JavaAtomicComponentMetadataInjectionTestCase extends TestCase {
 
     public void testComponentNameSet() throws Exception {
+        // TODO implement
     }
 
     public void testModuleContextSet() throws Exception {
+        // TODO implement
     }
 }

@@ -22,8 +22,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Scope;
 
 @Scope("CONVERSATION")
-public class ConversationalScopeDestroyOnlyComponent
-            extends ConversationalScopeComponentImpl {
+public class ConversationalScopeDestroyOnlyComponent extends ConversationalScopeComponentImpl {
 
     boolean destroyed;
 

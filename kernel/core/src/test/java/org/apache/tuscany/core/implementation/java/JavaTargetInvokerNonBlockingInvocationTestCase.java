@@ -28,14 +28,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import static org.apache.tuscany.core.implementation.java.mock.MockFactory.createJavaComponent;
-import org.apache.tuscany.core.implementation.java.mock.components.AsyncTarget;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -58,27 +51,30 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
     }
 
     public void testInvoke() throws Exception {
-        AsyncTarget target = createMock(AsyncTarget.class);
+        AsyncTarget target = EasyMock.createMock(AsyncTarget.class);
         target.invoke();
-        expectLastCall().once();
-        replay(target);
-        JavaAtomicComponent component = createJavaComponent(target);
-        ExecutionMonitor monitor = createMock(ExecutionMonitor.class);
-        replay(monitor);
+        EasyMock.expectLastCall().once();
+        EasyMock.replay(target);
+        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
+        EasyMock.expect(component.getTargetInstance()).andReturn(target);
+        EasyMock.replay(component);
+        ExecutionMonitor monitor = EasyMock.createMock(ExecutionMonitor.class);
+        EasyMock.replay(monitor);
 
         Message msg = new MessageImpl();
         Object id = new Object();
         msg.setMessageId(id);
 
-        WorkContext context = createMock(WorkContext.class);
+        WorkContext context = EasyMock.createMock(WorkContext.class);
         context.setCurrentCorrelationId(id);
-        replay(context);
+        EasyMock.replay(context);
         Method method = AsyncTarget.class.getMethod("invoke");
         method.setAccessible(true);
-        InboundWire wire = createMock(InboundWire.class);
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
         JavaTargetInvoker invoker = new JavaTargetInvoker(method, component, wire, context, monitor);
         invoker.invoke(msg);
-        verify(target);
+        EasyMock.verify(target);
+        EasyMock.verify(component);
     }
 
     public void setUp() throws Exception {
@@ -103,7 +99,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, wire, context, monitor);
         Object ret = invoker.invokeTarget("foo", NONE);
-        Assert.assertEquals("foo", ret);
+        assertEquals("foo", ret);
     }
 
     public void testArrayInvoke() throws Throwable {
@@ -116,10 +112,10 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         String[] args = new String[]{"foo", "bar"};
         Object ret = invoker.invokeTarget(new Object[]{args}, NONE);
         String[] retA = (String[]) ret;
-        Assert.assertNotNull(retA);
-        Assert.assertEquals(2, retA.length);
-        Assert.assertEquals("foo", retA[0]);
-        Assert.assertEquals("bar", retA[1]);
+        assertNotNull(retA);
+        assertEquals(2, retA.length);
+        assertEquals("foo", retA[0]);
+        assertEquals("bar", retA[1]);
     }
 
     public void testNullInvoke() throws Throwable {
@@ -130,7 +126,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, wire, context, monitor);
         Object ret = invoker.invokeTarget(null, NONE);
         String retS = (String) ret;
-        Assert.assertEquals("foo", retS);
+        assertEquals("foo", retS);
     }
 
     public void testPrimitiveInvoke() throws Throwable {
@@ -141,7 +137,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, wire, context, monitor);
         Object ret = invoker.invokeTarget(new Integer[]{1}, NONE);
         Integer retI = (Integer) ret;
-        Assert.assertEquals(1, retI.intValue());
+        assertEquals(1, retI.intValue());
     }
 
     public void testInvokeCheckedException() throws Throwable {
@@ -181,15 +177,15 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
     private class TestBean {
 
         public String echo(String msg) throws Exception {
-            Assert.assertEquals("foo", msg);
+            assertEquals("foo", msg);
             return msg;
         }
 
         public String[] arrayEcho(String[] msg) throws Exception {
-            Assert.assertNotNull(msg);
-            Assert.assertEquals(2, msg.length);
-            Assert.assertEquals("foo", msg[0]);
-            Assert.assertEquals("bar", msg[1]);
+            assertNotNull(msg);
+            assertEquals(2, msg.length);
+            assertEquals("foo", msg[0]);
+            assertEquals("bar", msg[1]);
             return msg;
         }
 
@@ -215,4 +211,9 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
 
     public class TestRuntimeException extends RuntimeException {
     }
+
+    public interface AsyncTarget {
+        void invoke();
+    }
+
 }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.java.mock.components;
+package org.apache.tuscany.core.mock.component;
 
 import org.osoa.sca.annotations.OneWay;
 

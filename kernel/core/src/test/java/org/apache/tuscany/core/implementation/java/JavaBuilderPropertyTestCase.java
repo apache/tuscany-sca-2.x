@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.integration.implementation.java.builder;
+package org.apache.tuscany.core.implementation.java;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -32,22 +33,15 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
-import org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory;
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
-import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.easymock.EasyMock;
 
 /**
- * Verifies that the system builder handles configured properties correctly
+ * Verifies that the java component builder handles configured properties correctly
  *
  * @version $Rev$ $Date$
  */
 public class JavaBuilderPropertyTestCase extends TestCase {
-
     private DeploymentContext deploymentContext;
     private CompositeComponent parent;
     private ScopeRegistry registry;
@@ -78,10 +72,14 @@ public class JavaBuilderPropertyTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        deploymentContext = new RootDeploymentContext(null, null, null, null);
+        deploymentContext = EasyMock.createMock(DeploymentContext.class);
+        EasyMock.replay(deploymentContext);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        registry = new ScopeRegistryImpl(new WorkContextImpl());
-        new StatelessScopeObjectFactory(registry);
+        ScopeContainer mockContainer = EasyMock.createNiceMock(ScopeContainer.class);
+        EasyMock.replay(mockContainer);
+        registry = EasyMock.createMock(ScopeRegistry.class);
+        EasyMock.expect(registry.getScopeContainer(EasyMock.isA(Scope.class))).andReturn(mockContainer);
+        EasyMock.replay(registry);
     }
 
     private static class Foo {

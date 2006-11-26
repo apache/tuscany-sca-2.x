@@ -134,7 +134,7 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
         onReferenceWires(multiplicityClass, wires);
     }
 
-    public void destroyInstance() {
+    public void removeInstance() {
         scopeContainer.remove(this);
     }
 

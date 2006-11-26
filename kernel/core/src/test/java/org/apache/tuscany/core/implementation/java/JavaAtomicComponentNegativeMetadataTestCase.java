@@ -34,16 +34,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
      * <strong>NB:</strong> the test assumes an error with a message containing "@ComponentName" is generated
      */
     public void testBadNameType() throws Exception {
-//        CompositeComponent mc = new CompositeComponentImpl();
-//        mc.setName("mc");
-//        try {
-//            MockFactory.createPojoContext("BadNamePojo", BadNamePojo.class, Scope.MODULE, mc);
-//        } catch (NoSuchMethodException e) {
-//            if (e.getMessage().indexOf("@ComponentName") < 0) {
-//                throw e;
-//            }
-//        }
-//
+        // TODO implement
     }
 
     /**
@@ -52,16 +43,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
      * <strong>NB:</strong> the test assumes an error with a message containing "@Context" is generated
      */
     public void testContextType() throws Exception {
-//        CompositeComponent mc = new CompositeComponentImpl();
-//        mc.setName("mc");
-//        try {
-//            MockFactory.createPojoContext("BadContextPojo", BadContextPojo.class, Scope.MODULE, mc);
-//        } catch (NoSuchMethodException e) {
-//            if (e.getMessage().indexOf("@SCAObject") < 0) {
-//                throw e;
-//            }
-//        }
-//
+        // TODO implement
     }
 
 }

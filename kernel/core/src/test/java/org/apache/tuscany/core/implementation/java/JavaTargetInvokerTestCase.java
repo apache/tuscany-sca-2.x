@@ -20,40 +20,24 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
-
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.core.implementation.java.mock.MockFactory;
+import org.easymock.classextension.EasyMock;
 
 public class JavaTargetInvokerTestCase extends TestCase {
-
-    private Method echoMethod;
-
-    public JavaTargetInvokerTestCase() {
-        super();
-    }
 
     public JavaTargetInvokerTestCase(String arg0) {
         super(arg0);
     }
 
-    public void setUp() throws Exception {
-        echoMethod = Echo.class.getDeclaredMethod("echo", String.class);
-        Assert.assertNotNull(echoMethod);
-    }
-
-    public void testScopedInvoke() throws Exception {
-        ScopeContainer scope = new ModuleScopeContainer(null);
-        scope.start();
-        JavaAtomicComponent component =
-            MockFactory.createJavaComponent("foo", scope, Echo.class);
-        scope.register(component);
+    public void testInvoke() throws Exception {
+        Method echoMethod = Echo.class.getDeclaredMethod("echo", String.class);
+        JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
+        EasyMock.expect(component.getTargetInstance()).andReturn(new Echo());
+        EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, null, null, null);
         invoker.setCacheable(false);
         assertEquals("foo", invoker.invokeTarget("foo", JavaTargetInvoker.NONE));
-        scope.stop();
+        EasyMock.verify(component);
     }
 
     public static class Echo {

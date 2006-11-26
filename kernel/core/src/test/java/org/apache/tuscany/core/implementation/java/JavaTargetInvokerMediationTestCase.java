@@ -22,9 +22,7 @@ import java.lang.reflect.Method;
 
 import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.mock.component.SimpleTargetImpl;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -32,7 +30,7 @@ import org.easymock.classextension.EasyMock;
  *
  * @version $Rev$ $Date$
  */
-public class MediationTestCase extends TestCase {
+public class JavaTargetInvokerMediationTestCase extends TestCase {
 
     private Method hello;
 
@@ -41,16 +39,21 @@ public class MediationTestCase extends TestCase {
     }
 
     public void testMediation() throws Exception {
+        Target target = EasyMock.createMock(Target.class);
+        EasyMock.expect(target.hello("foo")).andReturn("foo");
+        EasyMock.replay(target);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(component.getTargetInstance()).andReturn(new SimpleTargetImpl());
+        EasyMock.expect(component.getTargetInstance()).andReturn(target);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(hello, component, null, null, null);
-        Assert.assertEquals("foo", invoker.invokeTarget("foo", NONE));
+        assertEquals("foo", invoker.invokeTarget("foo", NONE));
     }
 
     public interface Hello {
-
         String hello(String message) throws Exception;
+    }
 
+    private interface Target {
+        String hello(String message);
     }
 }

@@ -21,12 +21,14 @@ package org.apache.tuscany.spi.extension;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -58,9 +60,22 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         ext.getInboundWire(null);
     }
 
+    public void testRemoveInstance() throws Exception {
+        ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
+        container.remove(EasyMock.isA(AtomicComponentExtension.class));
+        EasyMock.replay(container);
+        TestExtension ext = new TestExtension(container);
+        ext.removeInstance();
+        EasyMock.verify(container);
+    }
+
     private class TestExtension extends AtomicComponentExtension {
         public TestExtension() {
             super(null, null, null, null, null, null, null, 0);
+        }
+
+        public TestExtension(ScopeContainer scopeContainer) {
+            super(null, null, scopeContainer, null, null, null, null, 0);
         }
 
         public Object getServiceInstance() throws TargetException {

@@ -16,23 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.java.mock.components;
+package org.apache.tuscany.core.mock.component;
 
 /**
- * Mock system component implementation used in wiring tests
+ * Implementations are used in wiring tests
  *
  * @version $Rev$ $Date$
  */
-public class TargetImpl implements Target {
+public interface OtherTarget {
 
-    private String theString;
+    String getString();
 
-    public String getString() {
-        return theString;
-    }
-
-    public void setString(String val) {
-        theString = val;
-    }
-
+    void setString(String val);
 }

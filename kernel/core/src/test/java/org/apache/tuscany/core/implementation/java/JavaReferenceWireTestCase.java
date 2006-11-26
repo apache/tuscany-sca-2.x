@@ -32,10 +32,6 @@ import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.java.mock.components.Source;
-import org.apache.tuscany.core.implementation.java.mock.components.SourceImpl;
-import org.apache.tuscany.core.implementation.java.mock.components.Target;
-import org.apache.tuscany.core.implementation.java.mock.components.TargetImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -108,5 +104,47 @@ public class JavaReferenceWireTestCase extends TestCase {
         }).anyTimes();
         EasyMock.replay(scope);
         return scope;
+    }
+
+    private interface Source {
+        Target getTarget();
+    }
+
+    private static class SourceImpl implements Source {
+        private Target target;
+
+        public SourceImpl() {
+        }
+
+        public Target getTarget() {
+            return target;
+        }
+
+        public void setTarget(Target target) {
+            this.target = target;
+        }
+    }
+
+    private interface Target {
+
+        String getString();
+
+        void setString(String val);
+    }
+
+    private static class TargetImpl implements Target {
+        private String string;
+
+        public TargetImpl() {
+        }
+
+        public String getString() {
+            return string;
+        }
+
+        public void setString(String string) {
+            this.string = string;
+        }
+
     }
 }
