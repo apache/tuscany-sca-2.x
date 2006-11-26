@@ -92,11 +92,19 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
             if (instance != null) {
                 return instance;
             } else {
-                // TODO do we persist after we create?
-                return component.createInstance();
+                Object o = component.createInstance();
+                // FIXME support expirations
+                nonDurableStore.insertRecord(component, conversationId, o, Store.NEVER);
+                return o;
             }
         } catch (StoreReadException e) {
-            throw new TargetException(e);
+            TargetException e2 = new TargetException(e);
+            e2.setIdentifier(component.getName());
+            throw e2;
+        } catch (StoreWriteException e) {
+            TargetException e2 = new TargetException(e);
+            e2.setIdentifier(component.getName());
+            throw e2;
         } finally {
             workContext.setCurrentAtomicComponent(null);
         }
