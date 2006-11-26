@@ -198,10 +198,38 @@ public final class MockFactory {
         return components;
     }
 
-    public static <T> InboundWire createTargetWire(String serviceName, Class<T> interfaze)
+    public static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
         return createInboundWire(serviceName, interfaze, null);
     }
+
+    public static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
+        throws InvalidServiceContractException {
+        InboundWire wire = new InboundWireImpl();
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
+        wire.setServiceContract(contract);
+        wire.setServiceName(serviceName);
+        wire.addInvocationChains(createInboundChains(interfaze, interceptor));
+        return wire;
+    }
+
+    public static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze)
+        throws InvalidServiceContractException {
+        return createOutboundWire(refName, interfaze, null);
+    }
+
+    public static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze, Interceptor interceptor)
+        throws InvalidServiceContractException {
+
+        OutboundWire wire = new OutboundWireImpl();
+        wire.setReferenceName(refName);
+        Map<Operation<?>, OutboundInvocationChain> outboundChains = createOutboundChains(interfaze, interceptor);
+        wire.addInvocationChains(outboundChains);
+        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
+        wire.setServiceContract(contract);
+        return wire;
+    }
+
 
     @SuppressWarnings("unchecked")
     private static <T> JavaAtomicComponent createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
@@ -214,28 +242,6 @@ public final class MockFactory {
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(name);
         return new JavaAtomicComponent(configuration);
-    }
-
-    private static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze, Interceptor interceptor)
-        throws InvalidServiceContractException {
-        InboundWire wire = new InboundWireImpl();
-        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        wire.setServiceContract(contract);
-        wire.setServiceName(serviceName);
-        wire.addInvocationChains(createInboundChains(interfaze, interceptor));
-        return wire;
-    }
-
-    private static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze, Interceptor interceptor)
-        throws InvalidServiceContractException {
-
-        OutboundWire wire = new OutboundWireImpl();
-        wire.setReferenceName(refName);
-        Map<Operation<?>, OutboundInvocationChain> outboundChains = createOutboundChains(interfaze, interceptor);
-        wire.addInvocationChains(outboundChains);
-        ServiceContract<?> contract = REGISTRY.introspect(interfaze);
-        wire.setServiceContract(contract);
-        return wire;
     }
 
     private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze,
