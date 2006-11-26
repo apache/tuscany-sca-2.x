@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  * @version $Rev$ $Date$
  */
 public class ConvertTimeMillisTestCase extends TestCase {
-    MockRegistry registy;
+    private MockRegistry registy;
 
     public void testConvertSeconds() throws Exception {
         assertEquals(10000L, registy.convertTimeMillis("10 seconds"));
