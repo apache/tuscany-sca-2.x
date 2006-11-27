@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.apache.tuscany.spi.ReactivationException;
+import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.AtomicComponent;

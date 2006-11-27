@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.ReactivationException;
-
 /**
  * A serialization contract for runtime SCA artifacts. When an instance is deserialized, runtime services defined in
  * this contract must be set before reactivating the instance
@@ -38,7 +36,7 @@ public interface SCAExternalizable {
     /**
      * Callback after all values have been set prior to making the instance available in the runtime
      *
-     * @throws org.apache.tuscany.spi.ReactivationException
+     * @throws org.apache.tuscany.spi.component.ReactivationException
      *
      */
     void reactivate() throws ReactivationException;
