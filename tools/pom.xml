@@ -132,4 +132,48 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>target/sdo-source</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>        
+            <plugin>
+                <groupId>org.apache.tuscany.sdo</groupId>
+                <artifactId>tuscany-sdo-plugin</artifactId>
+                <version>1.0-incubator-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>generate-sdo</id>
+                        <phase>generate-test-sources</phase>
+                        <configuration>
+                            <schemaFile>${basedir}/src/test/resources/CreditScoreDocLit.wsdl</schemaFile>
+                            <javaPackage>org.example.creditscore.doclit</javaPackage>
+                            <noNotification>true</noNotification>
+                            <noContainer>true</noContainer>
+                            <noUnsettable>true</noUnsettable>
+                        </configuration>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
