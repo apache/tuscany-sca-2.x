@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi;
+package org.apache.tuscany.spi.component;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
