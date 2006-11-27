@@ -50,11 +50,28 @@ public class MemoryStore implements Store {
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
     private StoreMonitor monitor;
+    private long defaultExpirationOffset = 600000; // 10 minutes
 
     public MemoryStore(@Monitor StoreMonitor monitor) {
         this.monitor = monitor;
         this.store = new ConcurrentHashMap<SCAObject, Map<String, Record>>();
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    /**
+     * Returns the maximum default expiration offset for records in the store
+     * @return the maximum default expiration offset for records in the store
+     */
+    @Property
+    public long getExpirationOffset() {
+        return defaultExpirationOffset;
+    }
+
+    /**
+     * Sets the maximum default expiration offset for records in the store
+     */
+    public void setDefaultExpirationOffset(long defaultExpirationOffset) {
+        this.defaultExpirationOffset = defaultExpirationOffset;
     }
 
     /**

@@ -34,9 +34,6 @@ import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreReadException;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
 
-import org.apache.tuscany.core.component.event.ConversationEnd;
-import org.apache.tuscany.core.component.event.ConversationStart;
-
 /**
  * A scope context which manages atomic component instances keyed on a conversation id
  *
@@ -58,13 +55,6 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof ConversationStart) {
-            Object key = ((ConversationStart) event).getId();
-            workContext.setIdentifier(Scope.CONVERSATION, key);
-        } else if (event instanceof ConversationEnd) {
-            Object key = ((ConversationEnd) event).getId();
-            workContext.clearIdentifier(key);
-        }
     }
 
     public synchronized void start() {
@@ -90,11 +80,16 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
             if (instance != null) {
+                if (component.getMaxIdleTime() > 0) {
+                    // update expiration
+                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
+                    nonDurableStore.updateRecord(component, conversationId, instance, expire);
+                }
                 return instance;
             } else {
                 Object o = component.createInstance();
-                // FIXME support expirations
-                nonDurableStore.insertRecord(component, conversationId, o, Store.NEVER);
+                long expire = calculateExpiration(component);
+                nonDurableStore.insertRecord(component, conversationId, o, expire);
                 return o;
             }
         } catch (StoreReadException e) {
@@ -116,11 +111,18 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
             if (instance != null) {
+                if (component.getMaxIdleTime() > 0) {
+                    // update expiration
+                    long expire = System.currentTimeMillis() + component.getMaxIdleTime();
+                    nonDurableStore.updateRecord(component, conversationId, instance, expire);
+                }
                 return instance;
             } else {
                 throw new TargetNotFoundException(component.getName());
             }
         } catch (StoreReadException e) {
+            throw new TargetException(e);
+        } catch (StoreWriteException e) {
             throw new TargetException(e);
         } finally {
             workContext.setCurrentAtomicComponent(null);
@@ -169,5 +171,17 @@ public class ConversationalScopeContainerImpl extends AbstractScopeContainer imp
             throw e;
         }
         return conversationId;
+    }
+
+    private long calculateExpiration(AtomicComponent component) {
+        if (component.getMaxAge() > 0) {
+            long now = System.currentTimeMillis();
+            return now + component.getMaxAge();
+        } else if (component.getMaxIdleTime() > 0) {
+            long now = System.currentTimeMillis();
+            return now + component.getMaxIdleTime();
+        } else {
+            return Store.DEFAULT_EXPIRATION_OFFSET;
+        }
     }
 }

@@ -58,6 +58,7 @@ public class JDBCStore implements Store {
     @SuppressWarnings({"FieldCanBeLocal"})
     private ScheduledExecutorService scheduler;
     private long reaperInterval = 300000;
+    private long defaultExpirationOffset = 600000; // 10 minutes
 
     //private
     public JDBCStore(@Resource(mappedName = "StoreDS") DataSource dataSource,
@@ -66,6 +67,22 @@ public class JDBCStore implements Store {
         this.dataSource = dataSource;
         this.converter = converter;
         this.monitor = monitor;
+    }
+
+    /**
+     * Returns the maximum default expiration offset for records in the store
+     * @return the maximum default expiration offset for records in the store
+     */
+    @Property
+    public long getExpirationOffset() {
+        return defaultExpirationOffset;
+    }
+
+    /**
+     * Sets the maximum default expiration offset for records in the store
+     */
+    public void setDefaultExpirationOffset(long defaultExpirationOffset) {
+        this.defaultExpirationOffset = defaultExpirationOffset;
     }
 
     /**

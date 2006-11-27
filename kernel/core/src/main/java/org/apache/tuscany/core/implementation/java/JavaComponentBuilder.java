@@ -80,9 +80,9 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         } else {
             configuration.setInitLevel(componentType.getInitLevel());
         }
-        if (componentType.getMaxAge() >= 0) {
+        if (componentType.getMaxAge() > 0) {
             configuration.setMaxAge(componentType.getMaxAge());
-        } else if (componentType.getMaxIdleTime() >= 0) {
+        } else if (componentType.getMaxIdleTime() > 0) {
             configuration.setMaxIdleTime(componentType.getMaxIdleTime());
         }
         Method initMethod = componentType.getInitMethod();

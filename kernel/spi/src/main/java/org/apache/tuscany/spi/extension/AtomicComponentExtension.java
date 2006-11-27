@@ -79,7 +79,7 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
                                        long maxIdleTime,
                                        long maxAge) {
         super(name, parent);
-        assert !(maxIdleTime >= 0 && maxAge >= 0);
+        assert !(maxIdleTime > 0 && maxAge > 0);
         this.scopeContainer = scopeContainer;
         this.wireService = wireService;
         this.workContext = workContext;
