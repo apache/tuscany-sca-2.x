@@ -49,6 +49,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
         EasyMock.expect(component.createInstance()).andReturn(new Foo());
+        EasyMock.expect(component.getMaxAge()).andReturn(600000L).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
         assertTrue(container.getInstance(component) instanceof Foo);
@@ -61,6 +62,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
+        EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
         Foo foo = new Foo();
@@ -78,6 +80,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
+        EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
         Foo foo = new Foo();
@@ -93,6 +96,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
+        EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(component);
         container.register(component);
@@ -114,6 +118,8 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.eq(container));
+        EasyMock.expect(component.getMaxAge()).andReturn(600000L).atLeastOnce();
+        EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         EasyMock.expect(component.createInstance()).andReturn(new Foo());
         EasyMock.replay(component);
         container.register(component);
@@ -133,6 +139,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(component.getMaxIdleTime()).andReturn(-1L).atLeastOnce();
         component.addListener(EasyMock.eq(container));
         EasyMock.replay(component);
         container.register(component);

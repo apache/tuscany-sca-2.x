@@ -93,7 +93,7 @@ public class JournalStore implements Store {
     private ScheduledExecutorService scheduler;
     private StoreMonitor monitor;
     private Journal journal;
-
+    private long defaultExpirationOffset = 600000; // 10 minutes
     private long reaperInterval = 1000;
     private int blockSize = 4096;  // 4k standard for HOWL
 
@@ -140,6 +140,22 @@ public class JournalStore implements Store {
 
     public int getBlockSize() {
         return blockSize;
+    }
+
+    /**
+     * Returns the maximum default expiration offset for records in the store
+     * @return the maximum default expiration offset for records in the store
+     */
+    @Property
+    public long getExpirationOffset() {
+        return defaultExpirationOffset;
+    }
+
+    /**
+     * Sets the maximum default expiration offset for records in the store
+     */
+    public void setDefaultExpirationOffset(long defaultExpirationOffset) {
+        this.defaultExpirationOffset = defaultExpirationOffset;
     }
 
     @Property

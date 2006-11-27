@@ -56,6 +56,13 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         assertEquals(100, component.getMaxIdleTime());
     }
 
+    public void testNoMaxAgeNoMaxIdleTime() throws Exception {
+        JavaComponentBuilder builder = new JavaComponentBuilder();
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        assertEquals(-1, component.getMaxAge());
+        assertEquals(-1, component.getMaxIdleTime());
+    }
+
     public void testScope() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);

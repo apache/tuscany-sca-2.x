@@ -29,8 +29,11 @@ import org.apache.tuscany.spi.component.SCAObject;
  */
 public interface Store {
 
+    /* Used to indicate an the default expiration offset for records for the store */
+    long DEFAULT_EXPIRATION_OFFSET = -1;
+
     /* Used to indicate an entry should not expire */
-    long NEVER = -1;
+    long NEVER = -2;
 
     /**
      * Adds the given record to the store. Implementations may choose different strategies for writing data such as
