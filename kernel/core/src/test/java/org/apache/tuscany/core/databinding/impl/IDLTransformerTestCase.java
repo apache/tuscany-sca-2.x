@@ -72,8 +72,6 @@ public class IDLTransformerTestCase extends TestCase {
             + "  </items>"
             + "</order1>";
 
-    private static final String OPERATION_KEY = org.apache.tuscany.spi.model.Operation.class.getName();
-
     private static final String URI_ORDER_XSD = "http://example.com/order.xsd";
 
     /**
@@ -113,7 +111,7 @@ public class IDLTransformerTestCase extends TestCase {
                                                               null);
         op.setDataBinding(DOMDataBinding.NAME);
 
-        inputType0.setMetadata(OPERATION_KEY, op);
+        inputType0.setOperation(op);
         op.setWrapperStyle(true);
         ElementInfo inputElement =
             new ElementInfo(new QName(URI_ORDER_XSD, "checkOrderStatus"), new TypeInfo(null, false, null));
@@ -131,9 +129,9 @@ public class IDLTransformerTestCase extends TestCase {
         orderType.setMetadata(ElementInfo.class.getName(), order);
         flagType.setMetadata(ElementInfo.class.getName(), flag);
 
-        customerIdType.setMetadata(OPERATION_KEY, op);
-        orderType.setMetadata(OPERATION_KEY, op);
-        flagType.setMetadata(OPERATION_KEY, op);
+        customerIdType.setOperation(op);
+        orderType.setOperation(op);
+        flagType.setOperation(op);
 
         List<ElementInfo> inputElements = new ArrayList<ElementInfo>();
         inputElements.add(customerId);
@@ -144,7 +142,7 @@ public class IDLTransformerTestCase extends TestCase {
             new ElementInfo(new QName("", "status"), SimpleTypeMapperExtension.XSD_SIMPLE_TYPES.get("string"));
 
         statusType.setMetadata(ElementInfo.class.getName(), statusElement);
-        statusType.setMetadata(OPERATION_KEY, op);
+        statusType.setOperation(op);
 
         List<ElementInfo> outputElements = new ArrayList<ElementInfo>();
         outputElements.add(statusElement);
@@ -154,7 +152,7 @@ public class IDLTransformerTestCase extends TestCase {
                                                                                                null));
 
         responseType.setMetadata(ElementInfo.class.getName(), inputElement);
-        responseType.setMetadata(OPERATION_KEY, op);
+        responseType.setOperation(op);
 
         WrapperInfo wrapperInfo =
             new WrapperInfo(inputElement, outputElement, inputElements, outputElements, inputType, statusType);
@@ -196,7 +194,7 @@ public class IDLTransformerTestCase extends TestCase {
         TransformationContext context1 = new TransformationContextImpl();
         DataType<DataType> sourceType =
             new DataType<DataType>("idl:output", Object.class, op.getOutputType());
-        sourceType.setMetadata(OPERATION_KEY, op.getOutputType().getMetadata(OPERATION_KEY));
+        sourceType.setOperation(op.getOutputType().getOperation());
 
         context1.setSourceDataType(sourceType);
         DataType<DataType> targetType =

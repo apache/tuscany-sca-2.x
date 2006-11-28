@@ -109,7 +109,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
     @SuppressWarnings("unchecked")
     public Object[] transform(Object[] source, TransformationContext context) {
         DataType<List<DataType<?>>> sourceType = context.getSourceDataType();
-        Operation<?> sourceOp = (Operation<?>)sourceType.getMetadata(Operation.class.getName());
+        Operation<?> sourceOp = (Operation<?>)sourceType.getOperation();
         boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
 
         WrapperHandler sourceWrapperHandler = null;
@@ -118,7 +118,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         }
 
         DataType<List<DataType<QName>>> targetType = context.getTargetDataType();
-        Operation<?> targetOp = (Operation<?>)targetType.getMetadata(Operation.class.getName());
+        Operation<?> targetOp = (Operation<?>)targetType.getOperation();
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
         if (targetWrapped) {

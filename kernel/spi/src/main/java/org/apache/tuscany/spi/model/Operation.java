@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,13 +32,12 @@ import org.apache.tuscany.spi.idl.WrapperInfo;
  *
  * @version $Rev$ $Date$
  */
-public class Operation<T> {
+public class Operation<T> extends ModelObject implements Cloneable {
     public static final int NO_CONVERSATION = -1;
     public static final int CONVERSATION_CONTINUE = 1;
     public static final int CONVERSATION_END = 2;
 
-    private static final String NAME = Operation.class.getName();
-    protected Map<String, Object> metaData;
+    protected HashMap<String, Object> metaData;
     private final String name;
     private ServiceContract<T> contract;
     private final DataType<T> outputType;
@@ -94,12 +94,13 @@ public class Operation<T> {
         this.dataBinding = dataBinding;
         this.conversationSequence = sequence;
         // Register the operation with the types
+        this.inputType.setOperation(this);
         for (DataType<?> d : this.inputType.getLogical()) {
-            d.setMetadata(NAME, this);
+            d.setOperation(this);
         }
-        this.outputType.setMetadata(NAME, this);
+        this.outputType.setOperation(this);
         for (DataType<?> d : this.faultTypes) {
-            d.setMetadata(NAME, this);
+            d.setOperation(this);
         }
     }
 
@@ -363,6 +364,39 @@ public class Operation<T> {
      */
     public void setWrapperStyle(boolean wrapperStyle) {
         this.wrapperStyle = wrapperStyle;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        final List<DataType<T>> clonedFaultTypes = new ArrayList<DataType<T>>(this.faultTypes.size());
+        for (DataType<T> t : this.faultTypes) {
+            clonedFaultTypes.add((DataType<T>)t.clone());
+        }
+
+        List<DataType<T>> clonedTypes = new ArrayList<DataType<T>>();
+        for (DataType<T> t : inputType.getLogical()) {
+            DataType<T> type = (DataType<T>)t.clone();
+            clonedTypes.add(type);
+        }
+
+        DataType<List<DataType<T>>> clonedInputType =
+            new DataType<List<DataType<T>>>(inputType.getPhysical(), clonedTypes);
+        clonedInputType.setDataBinding(inputType.getDataBinding());
+
+        Operation<T> copy =
+            new Operation<T>(name, clonedInputType, (DataType<T>)outputType.clone(), clonedFaultTypes, nonBlocking,
+                             dataBinding, conversationSequence);
+
+        copy.callback = this.callback;
+        copy.contract = this.contract;
+        copy.wrapper = this.wrapper;
+        copy.wrapperStyle = this.wrapperStyle;
+
+        if (this.metaData != null) {
+            copy.metaData = (HashMap)this.metaData.clone();
+        }
+        return copy;
     }
 
 

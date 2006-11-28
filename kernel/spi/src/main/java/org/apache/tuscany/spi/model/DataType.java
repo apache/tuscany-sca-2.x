@@ -34,14 +34,16 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public class DataType<L> extends ModelObject {
+public class DataType<L> extends ModelObject implements Cloneable {
     private String dataBinding = Object.class.getName();
 
     private final Type physical;
 
     private final L logical;
 
-    private final Map<String, Object> metadata = new HashMap<String, Object>();
+    private HashMap<String, Object> metadata = new HashMap<String, Object>();
+    
+    private Operation operation;
 
     /**
      * Construct a data type specifying the physical and logical types.
@@ -122,7 +124,7 @@ public class DataType<L> extends ModelObject {
     public String getDataBinding() {
         if (dataBinding == null) {
             // databinding is not set at the DataType level, check the operation
-            Operation<?> operation = (Operation<?>) getMetadata(Operation.class.getName());
+            Operation<?> operation = (Operation<?>) getOperation();
             if (operation != null) {
                 return operation.getDataBinding();
             }
@@ -218,6 +220,22 @@ public class DataType<L> extends ModelObject {
         StringBuffer sb = new StringBuffer();
         sb.append(physical).append(" ").append(dataBinding).append(" ").append(logical);
         return sb.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        DataType<L> copy = (DataType<L>)super.clone();
+        copy.metadata = (HashMap<String, Object>)this.metadata.clone();
+        return copy;
+    }
+
+    public Operation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
     }
 
 }

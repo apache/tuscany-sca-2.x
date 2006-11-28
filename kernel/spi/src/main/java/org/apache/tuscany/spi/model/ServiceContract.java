@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * @version $Rev$ $Date$
  */
-public abstract class ServiceContract<T> extends ModelObject {
+public abstract class ServiceContract<T> extends ModelObject implements Cloneable {
     protected InteractionScope interactionScope;
     protected boolean remotable;
     protected Class<?> interfaceClass;
@@ -37,7 +37,7 @@ public abstract class ServiceContract<T> extends ModelObject {
     protected Map<String, Operation<T>> operations;
     protected Map<String, Operation<T>> callbackOperations;
     protected String dataBinding;
-    protected Map<String, Object> metaData;
+    protected HashMap<String, Object> metaData;
 
     protected ServiceContract() {
     }
@@ -242,5 +242,33 @@ public abstract class ServiceContract<T> extends ModelObject {
             return super.toString();
         }
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        ServiceContract<T> copy = (ServiceContract<T>)super.clone();
+
+        if (operations != null) {
+            Map<String, Operation<T>> clonedOperations = new HashMap<String, Operation<T>>();
+            for (Operation<T> o : operations.values()) {
+                clonedOperations.put(o.getName(), o);
+            }
+            copy.setOperations(clonedOperations);
+        }
+
+        if (callbackOperations != null) {
+            Map<String, Operation<T>> clonedCallbackOperations = new HashMap<String, Operation<T>>();
+            for (Operation<T> o : callbackOperations.values()) {
+                clonedCallbackOperations.put(o.getName(), (Operation<T>)o.clone());
+            }
+            copy.setCallbackOperations(clonedCallbackOperations);
+        }
+        
+        if (this.metaData != null) {
+            copy.metaData = (HashMap)this.metaData.clone();
+        }
+        
+        return copy;
     }
 }

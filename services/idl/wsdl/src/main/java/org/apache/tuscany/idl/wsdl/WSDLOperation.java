@@ -50,7 +50,6 @@ import org.apache.ws.commons.schema.XmlSchemaType;
  * Metadata for a WSDL operation
  */
 public class WSDLOperation {
-    private static final String OPERATION_KEY = org.apache.tuscany.spi.model.Operation.class.getName();
 
     protected XMLSchemaRegistry schemaRegistry;
 
@@ -199,16 +198,16 @@ public class WSDLOperation {
                 operationModel.setWrapper(getWrapper().getWrapperInfo());
                 // Register the operation with the types
                 for (DataType<?> d : wrapper.getUnwrappedInputType().getLogical()) {
-                    d.setMetadata(OPERATION_KEY, operationModel);
+                    d.setOperation(operationModel);
                 }
                 if (wrapper.getUnwrappedOutputType() != null) {
-                    wrapper.getUnwrappedOutputType().setMetadata(OPERATION_KEY, operationModel);
+                    wrapper.getUnwrappedOutputType().setOperation(operationModel);
                 }
             }
         }
-        inputType.setMetadata(OPERATION_KEY, operationModel);
+        inputType.setOperation(operationModel);
         if (outputType != null) {
-            outputType.setMetadata(OPERATION_KEY, operationModel);
+            outputType.setOperation(operationModel);
         }
         return operationModel;
     }
