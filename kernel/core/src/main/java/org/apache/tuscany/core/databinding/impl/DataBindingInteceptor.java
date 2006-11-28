@@ -79,12 +79,10 @@ public class DataBindingInteceptor implements Interceptor {
             DataType<DataType> targetType =
                 new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
 
-            targetType.setMetadata(Operation.class.getName(), targetOperation.getOutputType().getMetadata(
-                Operation.class.getName()));
+            targetType.setOperation(targetOperation.getOutputType().getOperation());
             DataType<DataType> sourceType =
                 new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
-            sourceType.setMetadata(Operation.class.getName(), sourceOperation.getOutputType().getMetadata(
-                Operation.class.getName()));
+            sourceType.setOperation(sourceOperation.getOutputType().getOperation());
 
             result = transform(result, targetType, sourceType);
             resultMsg.setBody(result);

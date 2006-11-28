@@ -129,7 +129,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
     public Object transform(Object response, TransformationContext context) {
         try {
             DataType<DataType> sourceType = context.getSourceDataType();
-            Operation<?> sourceOp = (Operation<?>)sourceType.getMetadata(Operation.class.getName());
+            Operation<?> sourceOp = (Operation<?>)sourceType.getOperation();
             boolean sourceWrapped = sourceOp != null && sourceOp.isWrapperStyle();
             WrapperHandler sourceWrapperHandler = null;
             if (sourceWrapped) {
@@ -137,7 +137,7 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
             }
 
             DataType<DataType> targetType = context.getTargetDataType();
-            Operation<?> targetOp = (Operation<?>)targetType.getMetadata(Operation.class.getName());
+            Operation<?> targetOp = (Operation<?>)targetType.getOperation();
             boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
             WrapperHandler targetWrapperHandler = null;
             if (targetWrapped) {

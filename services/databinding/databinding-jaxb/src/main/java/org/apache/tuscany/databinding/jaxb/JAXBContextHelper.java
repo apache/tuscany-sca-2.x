@@ -51,7 +51,7 @@ public class JAXBContextHelper {
         DataType<?> bindingContext = source ? tContext.getSourceDataType() : tContext.getTargetDataType();
         String contextPath = (String)bindingContext.getMetadata(JAXB_CONTEXT_PATH);
         if (contextPath == null) {
-            Operation op = (Operation)bindingContext.getMetadata(Operation.class.getName());
+            Operation op = (Operation)bindingContext.getOperation();
             contextPath = op != null ? (String)op.getMetaData().get(JAXB_CONTEXT_PATH) : null;
         }
         JAXBContext context = null;

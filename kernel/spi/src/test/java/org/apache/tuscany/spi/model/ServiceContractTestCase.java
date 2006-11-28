@@ -51,6 +51,23 @@ public class ServiceContractTestCase extends TestCase {
         assertEquals(contract, operation.getServiceContract());
         assertTrue(operation.isCallback());
     }
+    
+    @SuppressWarnings("unchecked")
+    public void testClone() throws Exception {
+        ServiceContract<Type> contract = new TestContract();
+        Operation<Type> operation = new Operation<Type>("foo", null, null, null, false, null, NO_CONVERSATION);
+        Map<String, Operation<Type>> ops = new HashMap<String, Operation<Type>>();
+        ops.put("foo", operation);
+        contract.setOperations(ops);        
+
+        operation = new Operation<Type>("bar", null, null, null, false, null, NO_CONVERSATION);
+        Map<String, Operation<Type>> callbackOps = new HashMap<String, Operation<Type>>();
+        ops.put("bar", operation);
+        contract.setCallbackOperations(callbackOps);
+        
+        ServiceContract<Type> copy = (ServiceContract<Type>) contract.clone();
+        assertEquals(contract, copy);
+    }
 
 
     private class TestContract extends ServiceContract<Type> {
