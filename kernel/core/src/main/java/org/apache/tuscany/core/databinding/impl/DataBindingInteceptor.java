@@ -91,10 +91,6 @@ public class DataBindingInteceptor implements Interceptor {
     }
 
     private Object transform(Object source, DataType sourceType, DataType targetType) {
-        if (source == null) {
-            // Shortcut for null value
-            return null;
-        }
         if (sourceType == targetType || (sourceType != null && sourceType.equals(targetType))) {
             return source;
         }
