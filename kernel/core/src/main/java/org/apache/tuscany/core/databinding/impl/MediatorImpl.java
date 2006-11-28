@@ -67,10 +67,6 @@ public class MediatorImpl implements Mediator {
                           DataType sourceDataType,
                           DataType targetDataType,
                           Map<Class<?>, Object> metadata) {
-        if (source == null) {
-            // Shortcut for null value
-            return null;
-        }
         if (sourceDataType == null) {
             sourceDataType = dataBindingRegistry.introspectType(source);
         }
