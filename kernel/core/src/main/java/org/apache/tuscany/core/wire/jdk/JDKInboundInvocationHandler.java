@@ -146,6 +146,7 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
 
     private void init(InboundWire wire) {
         this.chains = new HashMap<Method, ChainHolder>();
+        // FIXME: TUSCANY-862 we cannot assume there is a Java interface class
         Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
         Method[] methods = interfaze.getMethods();
         Map<Method, InboundInvocationChain> invocationChains = WireUtils.createInboundMapping(wire, methods);
