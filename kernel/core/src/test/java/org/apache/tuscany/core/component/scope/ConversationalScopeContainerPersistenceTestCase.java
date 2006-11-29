@@ -163,7 +163,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
         StoreMonitor mock = EasyMock.createNiceMock(StoreMonitor.class);
         EasyMock.replay(mock);
         Store store = new MemoryStore(mock);
-        container = new ConversationalScopeContainerImpl(store, context);
+        container = new ConversationalScopeContainer(store, context);
         container.start();
     }
 

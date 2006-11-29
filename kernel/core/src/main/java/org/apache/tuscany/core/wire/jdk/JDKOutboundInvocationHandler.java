@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
-import org.apache.tuscany.spi.wire.MessageId;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -69,8 +68,8 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     private transient boolean contractHasCallback;
     private transient boolean contractIsRemotable;
     private transient boolean contractIsConversational;
-    private transient Object convIdForRemotableTarget;
-    private transient Object convIdFromThread;
+    private transient String convIdForRemotableTarget;
+    private transient String convIdFromThread;
     private String referenceName;
 
     /**
@@ -133,15 +132,15 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         if (contractIsConversational) {
             assert workContext != null : "Work context cannot be null for conversational invocation";
             // Check for a conv id on thread and remember it
-            convIdFromThread = workContext.getIdentifier(Scope.CONVERSATION);
+            convIdFromThread = (String)workContext.getIdentifier(Scope.CONVERSATION);
             if (contractIsRemotable) {
                 if (convIdForRemotableTarget == null) {
-                    convIdForRemotableTarget = new MessageId();
+                    convIdForRemotableTarget = createConversationID();
                 }
                 // Always use the conv id for this target
                 workContext.setIdentifier(Scope.CONVERSATION, convIdForRemotableTarget);
             } else if (convIdFromThread == null) {
-                Object newConvId = new MessageId();
+                String newConvId = createConversationID();
                 workContext.setIdentifier(Scope.CONVERSATION, newConvId);
             }
         }
@@ -216,6 +215,11 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             }
             this.chains.put(method, new ChainHolder(entry.getValue()));
         }
+    }
+    
+    // TODO Temporary fix to return a string with a timestamp
+    private String createConversationID() {
+        return new Long(System.currentTimeMillis()).toString();
     }
 
     /**
