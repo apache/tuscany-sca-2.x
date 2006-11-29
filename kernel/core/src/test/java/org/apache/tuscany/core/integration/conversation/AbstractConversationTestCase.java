@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.builder.WirePostProcessorRegistryImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ConversationalScopeContainerImpl;
+import org.apache.tuscany.core.component.scope.ConversationalScopeContainer;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.services.store.memory.MemoryStore;
 import org.apache.tuscany.core.wire.ConversationWirePostProcessor;
@@ -54,7 +54,7 @@ public abstract class AbstractConversationTestCase extends TestCase {
         processor.init();
         connector = new ConnectorImpl(null, processorRegistry, null, workContext);
         store = new MemoryStore(EasyMock.createNiceMock(StoreMonitor.class));
-        container = new ConversationalScopeContainerImpl(store, workContext);
+        container = new ConversationalScopeContainer(store, workContext);
 
     }
 

@@ -63,4 +63,7 @@
     <component name="implementation.Conversation">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConversationProcessor"/>
     </component>
+    <component name="implementation.ConversationWirePostProcessor">
+        <system:implementation.system class="org.apache.tuscany.core.wire.ConversationWirePostProcessor"/>
+    </component>
 </composite>

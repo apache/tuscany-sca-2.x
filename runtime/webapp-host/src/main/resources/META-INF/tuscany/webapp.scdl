@@ -46,6 +46,11 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ScopeRegistryImpl"/>
     </component>
 
+    <!-- Store infrastructure -->
+    <component name="store">
+        <system:implementation.system class="org.apache.tuscany.core.services.store.memory.MemoryStore"/>
+    </component>
+
     <!-- Resource host registry -->
     <component name="resourceHostRegistry">
         <system:implementation.system class="org.apache.tuscany.core.services.host.DelegatingResourceHostRegistry"/>

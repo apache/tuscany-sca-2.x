@@ -23,6 +23,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.store.Store;
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -32,8 +33,11 @@ import org.osoa.sca.annotations.Init;
  */
 public class ConversationalScopeObjectFactory implements ObjectFactory<ConversationalScopeContainer> {
     
-    public ConversationalScopeObjectFactory(@Autowire ScopeRegistry registry) {
+    private Store store;
+    
+    public ConversationalScopeObjectFactory(@Autowire ScopeRegistry registry, @Autowire Store store) {
         registry.registerFactory(Scope.CONVERSATION, this);
+        this.store = store;
     }
 
     @Init(eager = true)
@@ -42,6 +46,6 @@ public class ConversationalScopeObjectFactory implements ObjectFactory<Conversat
 
 
     public ConversationalScopeContainer getInstance() throws ObjectCreationException {
-        return new ConversationalScopeContainer();
+        return new ConversationalScopeContainer(store, null);
     }
 }
