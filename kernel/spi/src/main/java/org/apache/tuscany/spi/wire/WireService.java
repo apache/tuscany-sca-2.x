@@ -35,6 +35,15 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 
 public interface WireService {
+    /**
+     * Create a proxy for the supplied wire that implements the supplied interface.
+     *
+     * @param interfaze the interface that the proxy class must implement
+     * @param wire the wire to connect the proxy to
+     * @return a proxy that allows invocation of the wire
+     * @throws ProxyCreationException if there was a problem creating the proxy
+     */
+    <T> T createProxy(Class<T> interfaze, InboundWire wire) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the given wire

@@ -81,6 +81,12 @@ public class JDKWireService extends WireServiceExtension {
     public void init() {
     }
 
+    public <T> T createProxy(Class<T> interfaze, InboundWire wire) throws ProxyCreationException {
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, context);
+        ClassLoader cl = interfaze.getClassLoader();
+        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
+    }
+
     public Object createProxy(RuntimeWire wire) throws ProxyCreationException {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {

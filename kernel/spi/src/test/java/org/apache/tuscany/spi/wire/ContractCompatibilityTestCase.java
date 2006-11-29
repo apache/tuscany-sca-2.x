@@ -344,6 +344,10 @@ public class ContractCompatibilityTestCase extends TestCase {
             super(null, null);
         }
 
+        public <T> T createProxy(Class<T> interfaze, InboundWire wire) throws ProxyCreationException {
+            throw new UnsupportedOperationException();
+        }
+
         public Object createProxy(RuntimeWire wire) throws ProxyCreationException {
             throw new UnsupportedOperationException();
         }
