@@ -62,15 +62,14 @@ public class MemoryStore implements Store {
      * Returns the maximum default expiration offset for records in the store
      * @return the maximum default expiration offset for records in the store
      */
-    // TODO setting this property causes IllegalPropertyException to be thrown
-    //@Property
-    public long getExpirationOffset() {
+    public long getDefaultExpirationOffset() {
         return defaultExpirationOffset;
     }
 
     /**
      * Sets the maximum default expiration offset for records in the store
      */
+    @Property
     public void setDefaultExpirationOffset(long defaultExpirationOffset) {
         this.defaultExpirationOffset = defaultExpirationOffset;
     }
