@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -99,7 +100,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         expect(outboundWire.getServiceContract()).andReturn(outboundContract).anyTimes();
         replay(outboundWire);
 
-        String convID = new Long(System.currentTimeMillis()).toString();
+        String convID = UUID.randomUUID().toString();
         wc.setIdentifier(Scope.CONVERSATION, convID);
         invoker.setCurrentConversationID(convID);
 

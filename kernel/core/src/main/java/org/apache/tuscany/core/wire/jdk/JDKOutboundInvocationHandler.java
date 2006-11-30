@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
@@ -217,9 +218,9 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         }
     }
     
-    // TODO Temporary fix to return a string with a timestamp
+    // TODO Temporary fix to return a string with a UUID
     private String createConversationID() {
-        return new Long(System.currentTimeMillis()).toString();
+        return UUID.randomUUID().toString();
     }
 
     /**
