@@ -38,18 +38,6 @@
     <!-- definition of repositories where the parent pom can be found -->
     <repositories>
         <repository>
-            <id>apache.maven.m1</id>
-            <name>Apache Maven1 Repository</name>
-            <url>http://www.apache.org/dist/java-repository</url>
-            <layout>legacy</layout>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>apache.snapshots</id>
             <name>Apache Snapshot Repository</name>
             <url>http://people.apache.org/repo/m2-snapshot-repository</url>
@@ -168,7 +156,7 @@
 
             <!-- Woden implementation -->
             <dependency>
-                <groupId>org.apache.woden</groupId>
+                <groupId>incubator-woden</groupId>
                 <artifactId>woden</artifactId>
                 <version>1.0.0M6</version>
                 <scope>compile</scope>
