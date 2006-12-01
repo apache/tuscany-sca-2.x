@@ -71,37 +71,35 @@ public class Axis2Reference<T> extends ReferenceExtension {
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         Axis2TargetInvoker invoker;
         try {
-            boolean isOneWay = operation.isNonBlocking();
-            invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
-        } catch (AxisFault e) {
-            throw new Axis2BindingRunTimeException(e);
-        }
-        return invoker;
-    }
-
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
-        Axis2AsyncTargetInvoker invoker;
-        try {
-            // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
-            // as parameters.
-            invoker =
-                (Axis2AsyncTargetInvoker)createOperationInvoker(serviceClient,
-                                                                operation,
-                                                                wsPortMetaData,
-                                                                true,
-                                                                false);
-            // FIXME: This makes the (BIG) assumption that there is only one
-            // callback method
-            // Relaxing this assumption, however, does not seem to be trivial,
-            // it may depend on knowledge
-            // of what actual callback method was invoked by the service at the
-            // other end
-            Operation callbackOperation = findCallbackOperation();
-            Axis2CallbackInvocationHandler invocationHandler =
-                new Axis2CallbackInvocationHandler(inboundWire);
-            Axis2ReferenceCallbackTargetInvoker callbackInvoker =
-                new Axis2ReferenceCallbackTargetInvoker(callbackOperation, inboundWire, invocationHandler);
-            invoker.setCallbackTargetInvoker(callbackInvoker);
+            boolean operationHasCallback = contract.getCallbackName() != null;
+            if (operationHasCallback) {
+                // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
+                // as parameters.
+                Axis2AsyncTargetInvoker asyncInvoker =
+                    (Axis2AsyncTargetInvoker)createOperationInvoker(serviceClient,
+                                                                    operation,
+                                                                    wsPortMetaData,
+                                                                    true,
+                                                                    false);
+                // FIXME: This makes the (BIG) assumption that there is only one
+                // callback method
+                // Relaxing this assumption, however, does not seem to be trivial,
+                // it may depend on knowledge
+                // of what actual callback method was invoked by the service at the
+                // other end
+                Operation callbackOperation = findCallbackOperation();
+                Axis2CallbackInvocationHandler invocationHandler =
+                    new Axis2CallbackInvocationHandler(inboundWire);
+                Axis2ReferenceCallbackTargetInvoker callbackInvoker =
+                    new Axis2ReferenceCallbackTargetInvoker(callbackOperation, inboundWire, invocationHandler);
+                asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
+                
+                invoker = asyncInvoker;
+            }
+            else {
+                boolean isOneWay = operation.isNonBlocking();
+                invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
+            }
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }

@@ -47,9 +47,11 @@ public class Axis2ReferenceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
         Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
+        ServiceContract contract = new JavaServiceContract();
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
-        TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(null, operation);
+        TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(contract, operation);
         assertNotNull(targetInvoker);
+        assertFalse(targetInvoker instanceof Axis2AsyncTargetInvoker);
     }
 
     public void testAsyncTargetInvoker() throws Exception {
@@ -57,6 +59,7 @@ public class Axis2ReferenceTestCase extends TestCase {
         //Create a mocked InboundWire, make the call of ServiceExtension.getInterface() returns a Class
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
+        contract.setCallbackName("");
         contract.setCallbackClass(GreetingCallback.class);
         Operation<Type> callbackOp =
             new Operation<Type>("sayHiCallback", null, null, null, true, null, NO_CONVERSATION);
@@ -68,8 +71,9 @@ public class Axis2ReferenceTestCase extends TestCase {
 
         axis2Reference.setInboundWire(inboundWire);
         Operation operation = new Operation<Type>("sayHi", null, null, null, true, null, NO_CONVERSATION);
-        TargetInvoker asyncTargetInvoker = axis2Reference.createAsyncTargetInvoker(null, operation);
+        TargetInvoker asyncTargetInvoker = axis2Reference.createTargetInvoker(contract, operation);
         assertNotNull(asyncTargetInvoker);
+        assertTrue(asyncTargetInvoker instanceof Axis2AsyncTargetInvoker);
     }
 
     private Axis2Reference createAxis2Reference(String webAppName, String serviceName) throws Exception {

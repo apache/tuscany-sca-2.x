@@ -243,13 +243,7 @@ public class ConnectorImpl implements Connector {
                 invoker = component.createTargetInvoker(portName, inboundOperation, targetWire);
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
-                if (!(reference instanceof CompositeReference) && operationHasCallback) {
-                    // Notice that for bound references we only use async target invokers for callback operations
-                    invoker = reference.createAsyncTargetInvoker(sourceWire, inboundOperation);
-                } else {
-                    ServiceContract targetContract = targetWire.getServiceContract();
-                    invoker = reference.createTargetInvoker(targetContract, inboundOperation);
-                }
+                invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundOperation);
             } else if (target instanceof CompositeService) {
                 CompositeService compServ = (CompositeService) target;
                 invoker = compServ.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());

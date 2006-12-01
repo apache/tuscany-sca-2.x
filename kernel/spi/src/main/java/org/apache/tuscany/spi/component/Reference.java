@@ -79,14 +79,6 @@ public interface Reference extends SCAObject {
     TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation);
 
     /**
-     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which issues a non-blocking dispatch
-     *
-     * @param wire      the outbound wire of the invocation source, used for callbacks
-     * @param operation the operation to invoke
-     */
-    TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation);
-    
-    /**
      * Get the ServiceContract for the binding
      * @return
      */
