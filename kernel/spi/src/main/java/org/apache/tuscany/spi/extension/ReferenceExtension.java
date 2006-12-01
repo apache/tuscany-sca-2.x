@@ -89,10 +89,6 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
-        throw new UnsupportedOperationException();
-    }
-
     public ServiceContract<?> getBindingServiceContract() {
         return bindingServiceContract;
     }
