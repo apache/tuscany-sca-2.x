@@ -18,9 +18,13 @@
  */
 package org.apache.tuscany.service.persistence.common;
 
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.persistence.PersistenceProperty;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -69,7 +73,7 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
             emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
             parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
         }
-        ObjectFactory factory = new EmObjectFactory(emf);
+        ObjectFactory factory = new EmObjectFactory(emf, annotation);
         property.setDefaultValueFactory(factory);
 
     }
@@ -77,16 +81,28 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
     private class EmObjectFactory implements ObjectFactory<EntityManager> {
         
         private EntityManagerFactory emf;
+        private PersistenceContext annotation;
 
-        public EmObjectFactory(EntityManagerFactory emf) {
+        public EmObjectFactory(EntityManagerFactory emf, PersistenceContext annotation) {
             this.emf = emf;
+            this.annotation = annotation;
         }
 
         public EntityManager getInstance() {
-            // TODO This needs to be proxied
-            EntityManager em = emf.createEntityManager();
-            em.joinTransaction();
-            return em;
+            
+            PersistenceContextType type = annotation.type();
+            if(type == PersistenceContextType.TRANSACTION) {
+                // TODO This needs to be proxied
+                Properties props = new Properties();
+                for(PersistenceProperty property : annotation.properties()) {
+                    props.put(property.name(), property.value());
+                }
+                EntityManager em = emf.createEntityManager(props);
+                em.joinTransaction();
+                return em;
+            } else {
+                throw new UnsupportedOperationException("Extended persistence contexts not supported");
+            }
         }
         
     }
