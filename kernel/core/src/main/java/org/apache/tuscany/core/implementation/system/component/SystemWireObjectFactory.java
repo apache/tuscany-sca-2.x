@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetException;
 
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 
@@ -37,7 +38,11 @@ public class SystemWireObjectFactory implements ObjectFactory {
     }
 
     public Object getInstance() throws ObjectCreationException {
-        return wire.getTargetService();
+        try {
+            return wire.getTargetService();
+        } catch (TargetException e) {
+            throw new ObjectCreationException(e);
+        }
     }
 
 }
