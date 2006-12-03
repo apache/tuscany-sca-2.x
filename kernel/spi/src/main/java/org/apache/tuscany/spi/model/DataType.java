@@ -41,8 +41,8 @@ public class DataType<L> extends ModelObject implements Cloneable {
 
     private final L logical;
 
-    private HashMap<String, Object> metadata = new HashMap<String, Object>();
-    
+    private Map<String, Object> metadata = new HashMap<String, Object>();
+
     private Operation operation;
 
     /**
@@ -225,8 +225,9 @@ public class DataType<L> extends ModelObject implements Cloneable {
     @SuppressWarnings("unchecked")
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        DataType<L> copy = (DataType<L>)super.clone();
-        copy.metadata = (HashMap<String, Object>)this.metadata.clone();
+        DataType<L> copy = (DataType<L>) super.clone();
+        assert this.metadata instanceof HashMap;
+        copy.metadata = (HashMap<String, Object>) ((HashMap) this.metadata).clone();
         return copy;
     }
 

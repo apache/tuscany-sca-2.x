@@ -37,7 +37,7 @@ public abstract class ServiceContract<T> extends ModelObject implements Cloneabl
     protected Map<String, Operation<T>> operations;
     protected Map<String, Operation<T>> callbackOperations;
     protected String dataBinding;
-    protected HashMap<String, Object> metaData;
+    protected Map<String, Object> metaData;
 
     protected ServiceContract() {
     }
@@ -247,7 +247,7 @@ public abstract class ServiceContract<T> extends ModelObject implements Cloneabl
     @SuppressWarnings("unchecked")
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        ServiceContract<T> copy = (ServiceContract<T>)super.clone();
+        ServiceContract<T> copy = (ServiceContract<T>) super.clone();
 
         if (operations != null) {
             Map<String, Operation<T>> clonedOperations = new HashMap<String, Operation<T>>();
@@ -260,15 +260,16 @@ public abstract class ServiceContract<T> extends ModelObject implements Cloneabl
         if (callbackOperations != null) {
             Map<String, Operation<T>> clonedCallbackOperations = new HashMap<String, Operation<T>>();
             for (Operation<T> o : callbackOperations.values()) {
-                clonedCallbackOperations.put(o.getName(), (Operation<T>)o.clone());
+                clonedCallbackOperations.put(o.getName(), (Operation<T>) o.clone());
             }
             copy.setCallbackOperations(clonedCallbackOperations);
         }
-        
+
         if (this.metaData != null) {
-            copy.metaData = (HashMap)this.metaData.clone();
+            assert this.metaData instanceof HashMap;
+            copy.metaData = (HashMap) ((HashMap) this.metaData).clone();
         }
-        
+
         return copy;
     }
 }
