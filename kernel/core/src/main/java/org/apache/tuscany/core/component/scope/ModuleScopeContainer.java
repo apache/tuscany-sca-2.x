@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -132,7 +132,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
-    private void eagerInitComponents() throws CoreRuntimeException {
+    private void eagerInitComponents() throws ObjectCreationException {
         List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
         Collections.sort(componentList, COMPARATOR);
         // start each group
@@ -144,7 +144,12 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
             // the instance could have been created from a depth-first traversal
             InstanceWrapper ctx = instanceWrappers.get(component);
             if (ctx == EMPTY) {
-                ctx = new InstanceWrapperImpl(component, component.createInstance());
+                try {
+                    ctx = new InstanceWrapperImpl(component, component.createInstance());
+                } catch (ObjectCreationException e) {
+                    e.addContextName(component.getName());
+                    throw e;
+                }
                 ctx.start();
                 instanceWrappers.put(component, ctx);
                 destroyQueue.add(ctx);
