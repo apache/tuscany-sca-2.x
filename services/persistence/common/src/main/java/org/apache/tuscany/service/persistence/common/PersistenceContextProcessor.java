@@ -83,6 +83,7 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
         }
 
         public EntityManager getInstance() {
+            // TODO This needs to be proxied
             EntityManager em = emf.createEntityManager();
             em.joinTransaction();
             return em;
