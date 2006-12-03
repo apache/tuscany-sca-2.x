@@ -107,7 +107,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             inboundContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
             inboundContract.setDataBinding(OM_DATA_BINDING);
             inboundContract.setCallbackName(serviceDefinition.getServiceContract().getCallbackName());
-
+            inboundContract.setInteractionScope(serviceDefinition.getServiceContract().getInteractionScope());
             try {
                 wireService.checkCompatibility(inboundContract, outboundContract, true);
             } catch (IncompatibleServiceContractException e) {
