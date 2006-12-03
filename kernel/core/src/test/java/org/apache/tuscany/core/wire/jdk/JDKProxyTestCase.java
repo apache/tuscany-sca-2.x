@@ -18,16 +18,17 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import java.util.HashMap;
 import java.lang.reflect.Proxy;
-
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -36,7 +37,7 @@ public class JDKProxyTestCase extends TestCase {
     private JDKWireService wireService;
     private JavaServiceContract serviceContract;
     private InboundWire inboundWire;
-    private HashMap<Operation<?>,InboundInvocationChain> chains;
+    private Map<Operation<?>, InboundInvocationChain> chains;
 
     public void testCreateProxy() {
         EasyMock.expect(inboundWire.getServiceName()).andReturn("service");

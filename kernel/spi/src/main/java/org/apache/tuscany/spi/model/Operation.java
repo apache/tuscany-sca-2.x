@@ -37,7 +37,7 @@ public class Operation<T> extends ModelObject implements Cloneable {
     public static final int CONVERSATION_CONTINUE = 1;
     public static final int CONVERSATION_END = 2;
 
-    protected HashMap<String, Object> metaData;
+    protected Map<String, Object> metaData;
     private final String name;
     private ServiceContract<T> contract;
     private final DataType<T> outputType;
@@ -366,17 +366,17 @@ public class Operation<T> extends ModelObject implements Cloneable {
         this.wrapperStyle = wrapperStyle;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "CloneDoesntCallSuperClone"})
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Operation<T> clone() throws CloneNotSupportedException {
         final List<DataType<T>> clonedFaultTypes = new ArrayList<DataType<T>>(this.faultTypes.size());
         for (DataType<T> t : this.faultTypes) {
-            clonedFaultTypes.add((DataType<T>)t.clone());
+            clonedFaultTypes.add((DataType<T>) t.clone());
         }
 
         List<DataType<T>> clonedTypes = new ArrayList<DataType<T>>();
         for (DataType<T> t : inputType.getLogical()) {
-            DataType<T> type = (DataType<T>)t.clone();
+            DataType<T> type = (DataType<T>) t.clone();
             clonedTypes.add(type);
         }
 
@@ -384,9 +384,15 @@ public class Operation<T> extends ModelObject implements Cloneable {
             new DataType<List<DataType<T>>>(inputType.getPhysical(), clonedTypes);
         clonedInputType.setDataBinding(inputType.getDataBinding());
 
+        DataType<T> outputType = (DataType<T>) this.outputType.clone();
         Operation<T> copy =
-            new Operation<T>(name, clonedInputType, (DataType<T>)outputType.clone(), clonedFaultTypes, nonBlocking,
-                             dataBinding, conversationSequence);
+            new Operation<T>(name,
+                clonedInputType,
+                outputType,
+                clonedFaultTypes,
+                nonBlocking,
+                dataBinding,
+                conversationSequence);
 
         copy.callback = this.callback;
         copy.contract = this.contract;
@@ -394,7 +400,8 @@ public class Operation<T> extends ModelObject implements Cloneable {
         copy.wrapperStyle = this.wrapperStyle;
 
         if (this.metaData != null) {
-            copy.metaData = (HashMap)this.metaData.clone();
+            assert this.metaData instanceof HashMap;
+            copy.metaData = (HashMap) ((HashMap) this.metaData).clone();
         }
         return copy;
     }

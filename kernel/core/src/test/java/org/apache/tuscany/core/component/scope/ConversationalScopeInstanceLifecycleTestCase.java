@@ -75,7 +75,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.stop();
     }
 
-    public void _testDestroyOrder() throws Exception {
+    public void txestDestroyOrder() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         monitor.start(EasyMock.isA(String.class));
         monitor.stop(EasyMock.isA(String.class));
@@ -117,7 +117,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         EasyMock.verify(threeComponent);
     }
 
-    public void _testEagerInitDestroyOrder() throws Exception {
+    public void txestEagerInitDestroyOrder() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         monitor.start(EasyMock.isA(String.class));
         monitor.stop(EasyMock.isA(String.class));
