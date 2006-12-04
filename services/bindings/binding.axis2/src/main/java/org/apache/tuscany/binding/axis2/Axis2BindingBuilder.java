@@ -155,6 +155,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             
             // Set the default databinding
             outboundContract.setDataBinding(OM_DATA_BINDING);
+            //FIXME ... need to figure out how to specify scope on wsdl.
+            outboundContract.setInteractionScope(inboundContract.getInteractionScope());         
             
             try {
                 wireService.checkCompatibility(inboundContract, outboundContract, true);
