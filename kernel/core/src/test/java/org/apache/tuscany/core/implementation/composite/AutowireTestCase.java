@@ -43,7 +43,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to an system atomic component
      */
     public void testSystemAtomicAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -99,7 +99,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a system service which is wired to an atomic component.
      */
     public void testSystemServiceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -174,7 +174,7 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a system reference
      */
     public void testSystemReferenceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
         Source refSource = new SourceImpl();

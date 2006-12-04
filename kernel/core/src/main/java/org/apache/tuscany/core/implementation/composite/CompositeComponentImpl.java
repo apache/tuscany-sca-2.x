@@ -34,6 +34,14 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
     private String uri;
     private boolean systemComposite;
 
+    /**
+     * Constructor specifying property values
+     *
+     * @param name           the name of this Component
+     * @param parent         this component's parent
+     * @param connector      the connector to use for wires
+     * @param propertyValues this composite's Property values
+     */
     public CompositeComponentImpl(String name,
                                   CompositeComponent parent,
                                   Connector connector,
@@ -41,6 +49,14 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
         this(name, null, parent, connector, propertyValues);
     }
 
+    /**
+     * Constructor specifying if the composite is a system composite
+     *
+     * @param name            the name of this Component
+     * @param parent          this component's parent
+     * @param connector       the connector to use for wires
+     * @param systemComposite true if the composite is a system composite
+     */
     public CompositeComponentImpl(String name,
                                   CompositeComponent parent,
                                   Connector connector,
@@ -54,7 +70,7 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
      * @param name           the name of this Component
      * @param uri            the unique identifier for this component
      * @param parent         this component's parent
-     * @param connector
+     * @param connector      the connector to use for wires
      * @param propertyValues this composite's Property values
      */
     public CompositeComponentImpl(String name,
@@ -72,7 +88,7 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
      * @param name            the name of this Component
      * @param uri             the unique identifier for this component
      * @param parent          this component's parent
-     * @param connector
+     * @param connector       the connector to use for wires
      * @param propertyValues  this composite's Property values
      * @param systemComposite true if the composite is a system composite
      */

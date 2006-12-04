@@ -40,7 +40,7 @@ import org.easymock.EasyMock;
 public class CompositeComponentResolutionTestCase extends TestCase {
 
     public void testSystemComponentResolution() throws NoSuchMethodException {
-        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
@@ -60,7 +60,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
     }
 
     public void testLocateSystemService() throws NoSuchMethodException {
-        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
@@ -137,7 +137,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
     }
 
     public void testSystemGetService() throws NoSuchMethodException {
-        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
         parent.start();
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("source").atLeastOnce();
