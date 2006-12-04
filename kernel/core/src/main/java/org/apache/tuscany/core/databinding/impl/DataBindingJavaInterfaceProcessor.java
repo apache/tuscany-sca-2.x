@@ -21,6 +21,8 @@ package org.apache.tuscany.core.databinding.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,8 +49,9 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
     private static final String SIMPLE_JAVA_OBJECTS = "java.lang.Object";
 
     private static final Class[] SIMPLE_JAVA_TYPES =
-    {Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class,
-        Date.class, Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class};
+        {Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Date.class,
+         Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class, BigInteger.class,
+         BigDecimal.class};
 
     private static final Set<Class> SIMPLE_TYPE_SET = new HashSet<Class>(Arrays.asList(SIMPLE_JAVA_TYPES));
 
