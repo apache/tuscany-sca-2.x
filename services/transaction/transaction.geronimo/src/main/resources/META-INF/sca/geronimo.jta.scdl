@@ -24,6 +24,12 @@
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
            name="org.apache.tuscany.transaction.geronimo.JTAExtension">
 
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.transaction</group>
+        <name>geronimo</name>
+        <version>1.0-incubator-SNAPSHOT</version>
+    </dependency>
+
     <component name="TransactionLogService">
         <system:implementation.system
             class="org.apache.tuscany.transaction.geronimo.jta.GeronimoTransactionLogService"/>
@@ -31,6 +37,10 @@
 
     <component name="XidFactory">
         <system:implementation.system class="org.apache.geronimo.transaction.manager.XidFactoryImpl"/>
+    </component>
+
+    <component name="XATerminator">
+        <system:implementation.system class="org.apache.tuscany.transaction.geronimo.jta.XATerminatorService"/>
     </component>
 
     <component name="TransactionManager">
