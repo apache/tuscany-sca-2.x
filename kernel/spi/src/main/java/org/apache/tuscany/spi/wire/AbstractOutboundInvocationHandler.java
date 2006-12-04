@@ -21,6 +21,8 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Operation;
 
 /**
  * Base class for performing invocations on an outbound chain. Subclasses are responsible for retrieving and supplying
@@ -29,6 +31,8 @@ import java.util.LinkedList;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractOutboundInvocationHandler {
+    
+    private boolean conversationStarted = false;
 
     protected Object invoke(OutboundInvocationChain chain,
                             TargetInvoker invoker,
@@ -65,6 +69,19 @@ public abstract class AbstractOutboundInvocationHandler {
             }
             if (callbackRoutingChain != null) {
                 msg.setCallbackRoutingChain(callbackRoutingChain);
+            }
+            if (InteractionScope.CONVERSATIONAL.equals(chain.getOperation().getServiceContract().getInteractionScope())) {
+                int sequence = chain.getOperation().getConversationSequence();
+                if (sequence == Operation.CONVERSATION_END) {
+                    msg.setConversationSequence(TargetInvoker.END);
+                } else if (sequence == Operation.CONVERSATION_CONTINUE) {
+                    if (conversationStarted) {
+                        msg.setConversationSequence(TargetInvoker.CONTINUE);
+                    } else {
+                        conversationStarted = true;
+                        msg.setConversationSequence(TargetInvoker.START);
+                    }
+                }
             }
             msg.setBody(args);
             // dispatch the wire down the chain and get the response
