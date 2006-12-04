@@ -32,12 +32,20 @@ import org.apache.tuscany.spi.component.CompositeComponent;
  */
 public class CompositeComponentImpl extends AbstractCompositeComponent {
     private String uri;
+    private boolean systemComposite;
 
     public CompositeComponentImpl(String name,
                                   CompositeComponent parent,
                                   Connector connector,
                                   Map<String, Document> propertyValues) {
         this(name, null, parent, connector, propertyValues);
+    }
+
+    public CompositeComponentImpl(String name,
+                                  CompositeComponent parent,
+                                  Connector connector,
+                                  boolean systemComposite) {
+        this(name, null, parent, connector, null, systemComposite);
     }
 
     /**
@@ -58,8 +66,33 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
         this.uri = uri;
     }
 
+    /**
+     * Constructor specifying name and URI.
+     *
+     * @param name            the name of this Component
+     * @param uri             the unique identifier for this component
+     * @param parent          this component's parent
+     * @param connector
+     * @param propertyValues  this composite's Property values
+     * @param systemComposite true if the composite is a system composite
+     */
+    public CompositeComponentImpl(String name,
+                                  String uri,
+                                  CompositeComponent parent,
+                                  Connector connector,
+                                  Map<String, Document> propertyValues,
+                                  boolean systemComposite) {
+        super(name, parent, connector, propertyValues);
+        this.uri = uri;
+        this.systemComposite = systemComposite;
+    }
+
     public String getURI() {
         return uri;
+    }
+
+    public boolean isSystem() {
+        return systemComposite;
     }
 
 }

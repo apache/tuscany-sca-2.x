@@ -79,16 +79,16 @@ public class LauncherImpl implements Launcher {
 
         // create and start the core runtime
         runtime = bootstrapper.createRuntime();
-        runtime.start(); // REVIEW: is this redundant w/ the composite.start() call below?
+        runtime.start();
 
         // initialize the runtime info
         CompositeComponent parent = runtime.getSystemComponent();
         RuntimeInfo runtimeInfo = new LauncherRuntimeInfo(getInstallDirectory(), getApplicationRootDirectory(), true);
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
-        // registory the monitor factory
+        // register the monitor factory
         parent.registerJavaObject("MonitorFactory", MonitorFactory.class, monitor);
-
+        parent.start();
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
         moduleImplementation.setScdlLocation(systemScdl);
@@ -104,6 +104,7 @@ public class LauncherImpl implements Launcher {
         composite.start();
 
         deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
+        runtime.getRootComponent().start();
     }
 
     /**

@@ -94,7 +94,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
 
         // create the composite component
         String name = componentDefinition.getName();
-        CompositeComponent component = new CompositeComponentImpl(name, parent, connector, null);
+        CompositeComponent component = new CompositeComponentImpl(name, parent, connector, true);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
             component.register(builderRegistry.build(component, childComponentDefinition, deploymentContext));
         }
