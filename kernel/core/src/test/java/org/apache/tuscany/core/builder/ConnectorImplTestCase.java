@@ -301,6 +301,42 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(chain);
     }
 
+    public void testConnectTargetNotFound() {
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getName()).andReturn("parent");
+        parent.getChild(EasyMock.isA(String.class));
+        EasyMock.expectLastCall().andReturn(null);
+        EasyMock.replay(parent);
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract).anyTimes();
+        EasyMock.expect(outboundWire.getTargetName()).andReturn(new QualifiedName("target/FooService")).anyTimes();
+        EasyMock.expect(outboundWire.getInvocationChains()).andReturn(null).anyTimes();
+        EasyMock.expect(outboundWire.getReferenceName()).andReturn("nothtere");
+        outboundWire.getTargetCallbackInvocationChains();
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap());
+        EasyMock.replay(outboundWire);
+        Map<String, List<OutboundWire>> outboundWires = new HashMap<String, List<OutboundWire>>();
+        List<OutboundWire> list = new ArrayList<OutboundWire>();
+        list.add(outboundWire);
+        outboundWires.put("fooService", list);
+
+        // create the source
+        AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(source.getOutboundWires()).andReturn(outboundWires);
+        EasyMock.expect(source.isSystem()).andReturn(false);
+        EasyMock.expect(source.getName()).andReturn("foo");
+        EasyMock.expect(source.getParent()).andReturn(parent);
+        EasyMock.replay(source);
+        try {
+            connector.connect(source);
+            fail();
+        } catch (ReferenceTargetNotFoundException e) {
+            // expected
+        }
+
+        EasyMock.verify(source);
+    }
+
     public void testOutboundToInboundOptimization() {
         InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(inboundWire.getContainer()).andReturn(null);
