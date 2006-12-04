@@ -418,6 +418,11 @@ public class ConnectorImpl implements Connector {
             }
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(sourceWire, targetWire, optimizable);
+        } else if (target == null) {
+            String name = sourceWire.getReferenceName();
+            ReferenceTargetNotFoundException e = new ReferenceTargetNotFoundException(name);
+            e.setIdentifier(targetName.getQualifiedName());
+            throw e;
         } else {
             String name = sourceWire.getReferenceName();
             BuilderConfigException e = new BuilderConfigException("Invalid target type for reference " + name);
