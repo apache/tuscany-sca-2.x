@@ -74,4 +74,24 @@ public class DefaultRuntime extends CompositeComponentImpl implements RuntimeCom
     public Deployer getDeployer() {
         return systemComponent.resolveExternalInstance(Deployer.class);
     }
+
+    public void start() {
+        super.start();
+        if (rootComponent != null) {
+            rootComponent.start();
+        }
+        if (systemComponent != null) {
+            systemComponent.start();
+        }
+    }
+
+    public void stop() {
+        if (rootComponent != null) {
+            rootComponent.stop();
+        }
+        if (systemComponent != null) {
+            systemComponent.stop();
+        }
+        super.stop();
+    }
 }
