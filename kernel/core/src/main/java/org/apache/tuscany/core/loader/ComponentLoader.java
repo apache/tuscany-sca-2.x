@@ -47,6 +47,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingImplementationException;
 import org.apache.tuscany.spi.loader.MissingMustOverridePropertyException;
+import org.apache.tuscany.spi.loader.MissingReferenceException;
 import org.apache.tuscany.spi.loader.NotOverridablePropertyException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
@@ -57,6 +58,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -82,34 +84,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
     public ComponentLoader(@Autowire LoaderRegistry registry, @Autowire PropertyObjectFactory propertyFactory) {
         super(registry);
         this.propertyFactory = propertyFactory;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void populatePropertyValues(ComponentDefinition<Implementation<?>> componentDefinition)
-        throws MissingMustOverridePropertyException {
-        ComponentType componentType = componentDefinition.getImplementation().getComponentType();
-        if (componentType != null) {
-            Map<String, Property<?>> properties = componentType.getProperties();
-            Map<String, PropertyValue<?>> propertyValues = componentDefinition.getPropertyValues();
-
-            for (Property<?> aProperty : properties.values()) {
-                if (propertyValues.get(aProperty.getName()) == null) {
-                    if (aProperty.getOverride() == OverrideOptions.MUST) {
-                        throw new MissingMustOverridePropertyException(aProperty.getName());
-                    } else if (aProperty.getDefaultValue() != null) {
-                        //} else {
-                        PropertyValue propertyValue = new PropertyValue();
-                        propertyValue.setName(aProperty.getName());
-                        propertyValue.setValue(aProperty.getDefaultValue());
-                        // propertyValue.setValueFactory(aProperty.getDefaultValueFactory());
-                        propertyValue.setValueFactory(new SimplePropertyObjectFactory(aProperty,
-                            propertyValue
-                                .getValue()));
-                        propertyValues.put(aProperty.getName(), propertyValue);
-                    }
-                }
-            }
-        }
     }
 
     public QName getXMLType() {
@@ -164,7 +138,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                 .getImplementation() instanceof SystemImplementation)) {
                                 populatePropertyValues(componentDefinition);
                             }
-
+                            validate(componentDefinition);
                             return componentDefinition;
                         }
                         break;
@@ -231,7 +205,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String text = reader.getElementText();
         String target = text != null ? text.trim() : null;
 
-        
+
         if (name == null || target == null) {
             InvalidReferenceException le = new InvalidReferenceException();
             le.setIdentifier(target);
@@ -250,4 +224,52 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         componentDefinition.add(referenceTarget);
     }
 
+    @SuppressWarnings("unchecked")
+    protected void populatePropertyValues(ComponentDefinition<Implementation<?>> componentDefinition)
+        throws MissingMustOverridePropertyException {
+        ComponentType componentType = componentDefinition.getImplementation().getComponentType();
+        if (componentType != null) {
+            Map<String, Property<?>> properties = componentType.getProperties();
+            Map<String, PropertyValue<?>> propertyValues = componentDefinition.getPropertyValues();
+
+            for (Property<?> aProperty : properties.values()) {
+                if (propertyValues.get(aProperty.getName()) == null) {
+                    if (aProperty.getOverride() == OverrideOptions.MUST) {
+                        throw new MissingMustOverridePropertyException(aProperty.getName());
+                    } else if (aProperty.getDefaultValue() != null) {
+                        //} else {
+                        PropertyValue propertyValue = new PropertyValue();
+                        propertyValue.setName(aProperty.getName());
+                        propertyValue.setValue(aProperty.getDefaultValue());
+                        // propertyValue.setValueFactory(aProperty.getDefaultValueFactory());
+                        propertyValue.setValueFactory(new SimplePropertyObjectFactory(aProperty,
+                            propertyValue
+                                .getValue()));
+                        propertyValues.put(aProperty.getName(), propertyValue);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Validates a component definition, ensuring all component type configuration elements are satisfied
+     */
+    protected void validate(ComponentDefinition<Implementation<?>> definition) throws LoaderException {
+        // validate refererences
+        Implementation<?> implementation = definition.getImplementation();
+        ComponentType<?, ?, ?> type = implementation.getComponentType();
+        if (type == null) {
+            return;
+        }
+        for (ReferenceDefinition referenceDef : type.getReferences().values()) {
+            if (referenceDef.isAutowire() || !referenceDef.isRequired()) {
+                continue;
+            }
+            String name = referenceDef.getName();
+            if (!definition.getReferenceTargets().containsKey(name)) {
+                throw new MissingReferenceException(name);
+            }
+        }
+    }
 }
