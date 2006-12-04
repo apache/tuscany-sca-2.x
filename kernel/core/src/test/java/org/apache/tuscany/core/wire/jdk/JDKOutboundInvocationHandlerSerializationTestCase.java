@@ -84,6 +84,10 @@ public class JDKOutboundInvocationHandlerSerializationTestCase extends TestCase 
         wire = EasyMock.createMock(OutboundWire.class);
         Map<Operation<?>, OutboundInvocationChain> map = new HashMap<Operation<?>, OutboundInvocationChain>();
         Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null, NO_CONVERSATION);
+        ServiceContract<Object> opContract = new ServiceContract<Object>() {};
+        contract.setInterfaceClass(Foo.class);
+        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
+        operation.setServiceContract(opContract);
         map.put(operation, createChain(operation));
         EasyMock.expect(wire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
