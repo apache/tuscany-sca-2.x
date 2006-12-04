@@ -74,6 +74,7 @@ public abstract class AbstractOutboundInvocationHandler {
                 int sequence = chain.getOperation().getConversationSequence();
                 if (sequence == Operation.CONVERSATION_END) {
                     msg.setConversationSequence(TargetInvoker.END);
+                    conversationStarted = false;
                 } else if (sequence == Operation.CONVERSATION_CONTINUE) {
                     if (conversationStarted) {
                         msg.setConversationSequence(TargetInvoker.CONTINUE);
