@@ -64,7 +64,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         Connector connector = new ConnectorImpl();
         SystemComponentBuilder builder = new SystemComponentBuilder();
 
-        CompositeComponent parent = new CompositeComponentImpl(null, null, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, connector, true);
 
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
         ComponentDefinition<SystemImplementation> sourceComponentDefinition =
@@ -100,8 +100,8 @@ public class SystemBuilderWireTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        CompositeComponent grandParent = new CompositeComponentImpl("grandparent", null, null, null);
-        CompositeComponent parent = new CompositeComponentImpl("parent", grandParent, null, null);
+        CompositeComponent grandParent = new CompositeComponentImpl("grandparent", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl("parent", grandParent, null, true);
 
         // create a context in the grandparent that the reference will be autowired to
         ComponentDefinition<SystemImplementation> targetComponentDefinition = MockComponentFactory.createTarget();
@@ -145,7 +145,7 @@ public class SystemBuilderWireTestCase extends TestCase {
         SystemComponentBuilder builder = new SystemComponentBuilder();
         SystemBindingBuilder bindingBuilder = new SystemBindingBuilder();
 
-        CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(null, null, null, true);
 
         BoundServiceDefinition<SystemBinding> serviceDefinition = MockComponentFactory.createBoundService();
         ComponentDefinition<SystemImplementation> componentDefinition = MockComponentFactory.createTarget();

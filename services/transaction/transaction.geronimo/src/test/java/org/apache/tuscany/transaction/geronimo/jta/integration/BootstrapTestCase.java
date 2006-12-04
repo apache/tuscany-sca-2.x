@@ -49,8 +49,8 @@ public class BootstrapTestCase extends SCATestCase {
         super.setUp();
         RuntimeComponent runtime = (RuntimeComponent) component.getParent().getParent();
         CompositeComponent systemComposite = runtime.getSystemComponent();
-        CompositeComponent topLevelComposite = (CompositeComponent) systemComposite.getChild(TUSCANY_SYSTEM);
-        jtaComposite = (CompositeComponent) topLevelComposite.getChild("geronimo.jta");
+        CompositeComponent topLevelComposite = (CompositeComponent) systemComposite.getSystemChild(TUSCANY_SYSTEM);
+        jtaComposite = (CompositeComponent) topLevelComposite.getSystemChild("geronimo.jta");
     }
 
     protected void tearDown() throws Exception {
