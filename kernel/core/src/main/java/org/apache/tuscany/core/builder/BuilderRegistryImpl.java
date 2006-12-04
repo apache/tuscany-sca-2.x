@@ -159,7 +159,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             // wireService.createWires((Service) object, boundServiceDefinition);
             String path = boundServiceDefinition.getTarget().getPath();
             ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
-            wireService.createWires((Service)object, path, contract);
+            wireService.createWires((Service) object, path, contract);
         }
         return object;
     }
@@ -185,7 +185,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         if (wireService != null) {
             String path = serviceDefinition.getTarget().getPath();
             ServiceContract<?> contract = serviceDefinition.getServiceContract();
-            wireService.createWires((Service)object, path, contract);
+            wireService.createWires((Service) object, path, contract);
         }
         return object;
     }
@@ -199,4 +199,5 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
         return object;
     }
+
 }
