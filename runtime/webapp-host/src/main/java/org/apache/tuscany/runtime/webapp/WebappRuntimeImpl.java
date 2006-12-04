@@ -134,7 +134,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             if (getApplicationScdl() == null) {
                 throw new TuscanyInitException("Could not find application SCDL");
             }
-
+            runtime.getRootComponent().start();
             application = deployApplicationScdl(deployer,
                 runtime.getRootComponent(),
                 getApplicationName(),
