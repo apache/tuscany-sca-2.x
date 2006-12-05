@@ -21,15 +21,22 @@ package org.apache.tuscany.binding.axis2;
 import java.lang.reflect.InvocationTargetException;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.AddressingConstants;
+import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.OperationClient;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
@@ -49,12 +56,15 @@ public class Axis2TargetInvoker implements TargetInvoker {
 
     private ServiceClient serviceClient;
 
+    private WorkContext workContext;
+
     public Axis2TargetInvoker(ServiceClient serviceClient, QName wsdlOperationName, Options options,
-                              SOAPFactory soapFactory) {
+                              SOAPFactory soapFactory, WorkContext workContext) {
         this.wsdlOperationName = wsdlOperationName;
         this.options = options;
         this.soapFactory = soapFactory;
         this.serviceClient = serviceClient;
+        this.workContext = workContext;
     }
 
     /**
@@ -98,6 +108,26 @@ public class Axis2TargetInvoker implements TargetInvoker {
         requestMC.setEnvelope(env);
         // Axis2 operationClients can not be shared so create a new one for each request
         OperationClient operationClient = serviceClient.createClient(wsdlOperationName);
+        
+        
+        if(workContext != null){
+            String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
+            if(conversationId != null && conversationId.length()!=0){
+                EndpointReference fromEPR= new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
+                fromEPR.addReferenceParameter(WebServiceBinding.CONVERSATION_ID_REFPARM_QN, conversationId);
+                options.setFrom(fromEPR);
+                requestMC.setFrom(fromEPR); //who knows why two ways ?
+            
+                //For now do this the brute force method. Need to figure out how to do axis addressing .. configure mar in flow.
+                SOAPEnvelope sev = requestMC.getEnvelope();
+                SOAPHeader sh = sev.getHeader();
+                OMElement el= fromEPR.toOM(AddressingConstants.Final.WSA_NAMESPACE,AddressingConstants.WSA_FROM,AddressingConstants.WSA_DEFAULT_PREFIX);
+                sh.addChild(el);
+            }
+
+        }
+
+                
         operationClient.setOptions(options);
         operationClient.addMessageContext(requestMC);
         return operationClient;

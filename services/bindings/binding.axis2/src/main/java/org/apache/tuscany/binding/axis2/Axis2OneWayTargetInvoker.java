@@ -21,6 +21,7 @@ package org.apache.tuscany.binding.axis2;
 import java.lang.reflect.InvocationTargetException;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 
@@ -38,9 +39,9 @@ public class Axis2OneWayTargetInvoker extends Axis2TargetInvoker {
     public Axis2OneWayTargetInvoker(ServiceClient serviceClient,
                                     QName wsdlOperationName,
                                     Options options,
-                                    SOAPFactory soapFactory) {
+                                    SOAPFactory soapFactory, WorkContext workContext) {
 
-        super(serviceClient, wsdlOperationName, options, soapFactory);
+        super(serviceClient, wsdlOperationName, options, soapFactory, workContext);
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {

@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 
@@ -41,8 +42,8 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
     public Axis2AsyncTargetInvoker(ServiceClient serviceClient,
                                    QName wsdlOperationName,
                                    Options options,
-                                   SOAPFactory soapFactory) {
-        super(serviceClient, wsdlOperationName, options, soapFactory);
+                                   SOAPFactory soapFactory, WorkContext workContext) {
+        super(serviceClient, wsdlOperationName, options, soapFactory, workContext);
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
