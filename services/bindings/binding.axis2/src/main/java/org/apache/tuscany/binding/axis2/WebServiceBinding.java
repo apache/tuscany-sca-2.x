@@ -22,7 +22,10 @@ package org.apache.tuscany.binding.axis2;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.model.Binding;
+import org.osoa.sca.Version;
 
 /**
  * Represents a Celtix binding configuration in an assembly
@@ -30,7 +33,7 @@ import org.apache.tuscany.spi.model.Binding;
  * @version $Rev$ $Date$
  */
 public class WebServiceBinding extends Binding {
-
+    public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Version.XML_NAMESPACE_1_0,"conversationID");
     private Definition definition;
     private Port port;
     private Service service;

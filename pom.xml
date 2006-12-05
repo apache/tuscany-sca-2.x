@@ -140,6 +140,16 @@
                 <scope>compile</scope>
             </dependency>
 
+<!--
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>addressing</artifactId>
+                <version>${axis2Version}</version>
+                <package>mar</package>
+                <scope>compile</scope>
+            </dependency>
+            -->
+
             <!-- AXIOM Implementation -->
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>

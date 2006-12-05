@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -55,6 +56,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     private ConfigurationContext configContext;
 
     private InterfaceWSDLIntrospector introspector;
+    
+    private WorkContext workContext;
 
     public Axis2BindingBuilder() {
         initAxis();
@@ -72,6 +75,14 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     public void setIntrospector(InterfaceWSDLIntrospector introspector) {
         this.introspector = introspector;
     }
+    
+    @Autowire
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
+    }
+    
+    
+    
 
     @SuppressWarnings("unchecked")
     public Service build(
@@ -165,7 +176,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             
             Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding,
-                    inboundContract);
+                    inboundContract, workContext);
             reference.setBindingServiceContract(outboundContract);
             
             return reference;
@@ -199,4 +210,5 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
         }
     }
+
 }

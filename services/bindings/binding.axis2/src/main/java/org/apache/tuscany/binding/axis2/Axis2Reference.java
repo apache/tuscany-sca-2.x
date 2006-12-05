@@ -36,6 +36,7 @@ import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -50,14 +51,16 @@ public class Axis2Reference<T> extends ReferenceExtension {
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
+    private WorkContext workContext;
 
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
                           CompositeComponent parent,
                           WireService wireService,
                           WebServiceBinding wsBinding,
-                          ServiceContract contract) {
+                          ServiceContract contract, WorkContext workContext) {
         super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
+        this.workContext = workContext;
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
             wsPortMetaData =
@@ -166,11 +169,11 @@ public class Axis2Reference<T> extends ReferenceExtension {
         Axis2TargetInvoker invoker;
         if (hasCallback) {
             invoker =
-                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
+                new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else if (isOneWay) {
-            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
+            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else {
-            invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory);
+            invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         }
 
         return invoker;
