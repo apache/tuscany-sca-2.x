@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -34,6 +32,7 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
@@ -84,7 +83,8 @@ public class JDKOutboundInvocationHandlerSerializationTestCase extends TestCase 
         wire = EasyMock.createMock(OutboundWire.class);
         Map<Operation<?>, OutboundInvocationChain> map = new HashMap<Operation<?>, OutboundInvocationChain>();
         Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null, NO_CONVERSATION);
-        ServiceContract<Object> opContract = new ServiceContract<Object>() {};
+        ServiceContract<Object> opContract = new ServiceContract<Object>() {
+        };
         contract.setInterfaceClass(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         operation.setServiceContract(opContract);

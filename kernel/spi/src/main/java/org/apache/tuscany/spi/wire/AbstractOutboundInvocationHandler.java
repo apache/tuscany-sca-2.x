@@ -23,6 +23,7 @@ import java.util.LinkedList;
 
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * Base class for performing invocations on an outbound chain. Subclasses are responsible for retrieving and supplying
@@ -31,8 +32,7 @@ import org.apache.tuscany.spi.model.Operation;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractOutboundInvocationHandler {
-    
-    private boolean conversationStarted = false;
+    private boolean conversationStarted;
 
     protected Object invoke(OutboundInvocationChain chain,
                             TargetInvoker invoker,
@@ -70,7 +70,9 @@ public abstract class AbstractOutboundInvocationHandler {
             if (callbackRoutingChain != null) {
                 msg.setCallbackRoutingChain(callbackRoutingChain);
             }
-            if (InteractionScope.CONVERSATIONAL.equals(chain.getOperation().getServiceContract().getInteractionScope())) {
+            Operation operation = chain.getOperation();
+            ServiceContract contract = operation.getServiceContract();
+            if (InteractionScope.CONVERSATIONAL.equals(contract.getInteractionScope())) {
                 int sequence = chain.getOperation().getConversationSequence();
                 if (sequence == Operation.CONVERSATION_END) {
                     msg.setConversationSequence(TargetInvoker.END);
