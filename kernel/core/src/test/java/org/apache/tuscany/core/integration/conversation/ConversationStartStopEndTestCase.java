@@ -19,24 +19,22 @@
 package org.apache.tuscany.core.integration.conversation;
 
 import java.lang.reflect.Constructor;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Scope.CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.integration.mock.MockFactory;
+import org.apache.tuscany.core.wire.jdk.JDKOutboundInvocationHandler;
 import org.easymock.classextension.EasyMock;
 
 /**
@@ -50,37 +48,23 @@ import org.easymock.classextension.EasyMock;
 public class ConversationStartStopEndTestCase extends AbstractConversationTestCase {
     private OutboundWire owire;
     private Foo targetInstance;
+    private JDKOutboundInvocationHandler handler;
+    private Method operation1;
+    private Method operation2;
+    private Method endOperation;
 
-    public void testConversationStartContinueEnd() throws Exception {
+    public void testConversationStartContinueEnd() throws Throwable {
         workContext.setIdentifier(CONVERSATION, "12345A");
         // start the conversation
-        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
-            if ("operation1".equals(entry.getKey().getName())) {
-                MessageImpl msg = new MessageImpl();
-                msg.setTargetInvoker(entry.getValue().getTargetInvoker());
-                entry.getValue().getHeadInterceptor().invoke(msg);
-            }
-        }
+        handler.invoke(operation1, null);
         // verify the instance was persisted
         assertEquals(targetInstance, store.readRecord(target, "12345A"));
         // continue the conversation
-        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
-            if ("operation2".equals(entry.getKey().getName())) {
-                MessageImpl msg = new MessageImpl();
-                msg.setTargetInvoker(entry.getValue().getTargetInvoker());
-                entry.getValue().getHeadInterceptor().invoke(msg);
-            }
-        }
+        handler.invoke(operation2, null);
         // verify the instance was persisted
         assertEquals(targetInstance, store.readRecord(target, "12345A"));
         // end the conversation
-        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : owire.getInvocationChains().entrySet()) {
-            if ("end".equals(entry.getKey().getName())) {
-                MessageImpl msg = new MessageImpl();
-                msg.setTargetInvoker(entry.getValue().getTargetInvoker());
-                entry.getValue().getHeadInterceptor().invoke(msg);
-            }
-        }
+        handler.invoke(endOperation, null);
         workContext.clearIdentifier(CONVERSATION);
         EasyMock.verify(targetInstance);
         // verify the store has removed the instance
@@ -101,7 +85,7 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
         target = createAtomicComponent();
         // create source component mock
         JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
-        EasyMock.expect(source.getName()).andReturn("source");
+        EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
         EasyMock.replay(source);
 
         owire = MockFactory.createOutboundWire("foo", Foo.class);
@@ -110,6 +94,10 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
         InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
         iwire.setContainer(target);
         connector.connect(owire, iwire, false);
+        handler = new JDKOutboundInvocationHandler(owire, workContext);
+        operation1 = Foo.class.getMethod("operation1");
+        operation2 = Foo.class.getMethod("operation2");
+        endOperation = Foo.class.getMethod("end");
     }
 
     protected void tearDown() throws Exception {
