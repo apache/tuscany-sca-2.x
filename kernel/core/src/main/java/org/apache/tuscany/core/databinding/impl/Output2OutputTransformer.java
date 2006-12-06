@@ -149,11 +149,13 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                 WrapperInfo wrapper = targetOp.getWrapper();
                 Object targetWrapper =
                     targetWrapperHandler.create(wrapper.getOutputWrapperElement(), context);
-                if (response == null) {
+
+                List<ElementInfo> childElements = wrapper.getOutputChildElements();
+                if (childElements.isEmpty()) {
+                    // void output
                     return targetWrapper;
                 }
-
-                ElementInfo argElement = wrapper.getOutputChildElements().get(0);
+                ElementInfo argElement = childElements.get(0);
                 DataType<QName> argType = wrapper.getUnwrappedOutputType();
                 Object child = response;
                 child = mediator.mediate(response, sourceType.getLogical(), argType, context.getMetadata());
@@ -163,6 +165,10 @@ public class Output2OutputTransformer extends TransformerExtension<Object, Objec
                 // Wrapped to Unwrapped
                 Object sourceWrapper = response;
                 List<ElementInfo> childElements = sourceOp.getWrapper().getOutputChildElements();
+                if (childElements.isEmpty()) {
+                    // The void output
+                    return null;
+                }
                 ElementInfo childElement = childElements.get(0);
 
                 targetWrapperHandler = getWapperHandler(targetType.getLogical().getDataBinding());
