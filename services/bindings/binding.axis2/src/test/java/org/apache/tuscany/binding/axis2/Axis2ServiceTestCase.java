@@ -35,6 +35,7 @@ import org.xml.sax.InputSource;
 
 import org.apache.axis2.context.ConfigurationContext;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -120,7 +121,7 @@ public class Axis2ServiceTestCase extends TestCase {
                 wireService,
                 wsBinding,
                 tomcatHost,
-                configurationContext);
+                configurationContext, new WorkContextImpl());
         axis2Service.setInboundWire(inboundWire);
         axis2Service.setOutboundWire(outboundWire);
 

@@ -47,8 +47,9 @@ public class Axis2ServiceInMessageReceiver extends AbstractInMessageReceiver {
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
+            String conversationID = axis2Service.isConversational() ?  Axis2Service.getConversationID(inMC) : null;
 
-            axis2Service.invokeTarget(operation, args, null);
+            axis2Service.invokeTarget(operation, args, null, conversationID);
 
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();

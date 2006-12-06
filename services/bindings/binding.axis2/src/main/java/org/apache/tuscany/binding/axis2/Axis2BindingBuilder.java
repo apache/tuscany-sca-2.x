@@ -126,7 +126,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             
             Service service = new Axis2Service(serviceDefinition.getName(), outboundContract, parent, wireService, wsBinding,
-                    servletHost, configContext);
+                    servletHost, configContext, workContext);
             service.setBindingServiceContract(inboundContract);
             
             return service;
