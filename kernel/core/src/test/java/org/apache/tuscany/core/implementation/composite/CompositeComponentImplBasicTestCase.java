@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.List;
 
-import org.apache.tuscany.spi.component.ComponentNotFoundException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.IllegalTargetException;
 import org.apache.tuscany.spi.component.Reference;
@@ -78,7 +77,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         try {
             composite.getService("bar");
             fail();
-        } catch (ComponentNotFoundException e) {
+        } catch (TargetNotFoundException e) {
             // expected
         }
     }
@@ -90,7 +89,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         try {
             composite.getService("foo");
             fail();
-        } catch (ComponentNotFoundException e) {
+        } catch (TargetNotFoundException e) {
             // expected
         }
     }

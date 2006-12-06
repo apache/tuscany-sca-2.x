@@ -86,16 +86,16 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     /**
      * Returns the service associated with the given name
      *
-     * @throws ComponentNotFoundException
+     * @throws TargetNotFoundException
      */
-    Service getService(String name) throws ComponentNotFoundException;
+    Service getService(String name) throws TargetNotFoundException;
 
     /**
      * Returns the system service associated with the given name
      *
-     * @throws ComponentNotFoundException
+     * @throws TargetNotFoundException
      */
-    Service getSystemService(String name) throws ComponentNotFoundException;
+    Service getSystemService(String name) throws TargetNotFoundException;
 
     /**
      * Returns a system service associated with the given name

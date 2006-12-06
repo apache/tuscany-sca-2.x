@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -234,7 +233,7 @@ public class ConnectorImpl implements Connector {
             boolean isOneWayOperation = operation.isNonBlocking();
             boolean operationHasCallback = contract.getCallbackName() != null;
             if (isOneWayOperation && operationHasCallback) {
-                throw new ComponentRuntimeException("Operation cannot be marked one-way and have a callback");
+                throw new BuilderConfigException("Operation cannot be marked one-way and have a callback");
             }
             TargetInvoker invoker = null;
             if (target instanceof Component) {

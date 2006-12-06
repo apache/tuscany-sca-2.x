@@ -33,7 +33,6 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.AutowireResolutionException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.ComponentNotFoundException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.IllegalTargetException;
@@ -204,7 +203,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public InboundWire getInboundWire(String serviceName) {
         SCAObject object = children.get(serviceName);
         if (!(object instanceof Service)) {
-            throw new ComponentNotFoundException(serviceName);
+            throw new TargetNotFoundException(serviceName);
         }
         return ((Service) object).getInboundWire();
     }
@@ -222,12 +221,12 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public Service getService(String name) {
         SCAObject ctx = children.get(name);
         if (ctx == null) {
-            ComponentNotFoundException e = new ComponentNotFoundException("Service not found");
+            TargetNotFoundException e = new TargetNotFoundException("Service not found");
             e.setIdentifier(name);
             e.addContextName(getName());
             throw e;
         } else if (!(ctx instanceof Service)) {
-            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service");
+            TargetNotFoundException e = new TargetNotFoundException("SCAObject not a service");
             e.setIdentifier(name);
             e.addContextName(getName());
             throw e;
@@ -246,12 +245,12 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public Service getSystemService(String name) {
         SCAObject ctx = systemChildren.get(name);
         if (ctx == null) {
-            ComponentNotFoundException e = new ComponentNotFoundException("Service not found");
+            TargetNotFoundException e = new TargetNotFoundException("Service not found");
             e.setIdentifier(name);
             e.addContextName(getName());
             throw e;
         } else if (!(ctx instanceof Service)) {
-            ComponentNotFoundException e = new ComponentNotFoundException("SCAObject not a service");
+            TargetNotFoundException e = new TargetNotFoundException("SCAObject not a service");
             e.setIdentifier(name);
             e.addContextName(getName());
             throw e;
