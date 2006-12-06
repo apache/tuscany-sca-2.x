@@ -21,6 +21,7 @@ package org.apache.tuscany.binding.axis2;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -29,6 +30,7 @@ import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.ConfigurationContext;
@@ -44,8 +46,11 @@ import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
@@ -74,13 +79,17 @@ public class Axis2Service extends ServiceExtension {
 
     private String serviceName;
 
+    private WorkContext workContext;
+    
+    private Boolean conversational= null;
+
     public Axis2Service(String theName,
                         ServiceContract<?> serviceContract,
                         CompositeComponent parent,
                         WireService wireService,
                         WebServiceBinding binding,
                         ServletHost servletHost,
-                        ConfigurationContext configContext) {
+                        ConfigurationContext configContext, WorkContext workContext) {
 
         super(theName, serviceContract.getInterfaceClass(), parent, wireService);
 
@@ -89,6 +98,7 @@ public class Axis2Service extends ServiceExtension {
         this.servletHost = servletHost;
         this.configContext = configContext;
         this.serviceName = theName;
+        this.workContext = workContext;
     }
 
     public void start() {
@@ -170,45 +180,59 @@ public class Axis2Service extends ServiceExtension {
         return axisService;
     }
 
-    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId)
+    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId, String conversationID)
         throws InvocationTargetException {
         InvocationChain chain = inboundWire.getInvocationChains().get(op);
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        if (headInterceptor == null) {
-            try {
-                // short-circuit the dispatch and invoke the target directly
-                if (chain.getTargetInvoker() == null) {
-                    throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
-                }
-                return chain.getTargetInvoker().invokeTarget(args, TargetInvoker.NONE);
-            } catch (InvocationTargetException e) {
-                // the cause was thrown by the target so throw it
-                throw e;
-            }
+        String oldConversationID= (String) workContext.getIdentifier(Scope.CONVERSATION);
+        if(isConversational() && conversationID != null){
+            workContext.setIdentifier(Scope.CONVERSATION, conversationID);
         } else {
+            workContext.clearIdentifier(Scope.CONVERSATION);
+        }
+        try {
+            if (headInterceptor == null) {
+                try {
+                    // short-circuit the dispatch and invoke the target directly
+                    if (chain.getTargetInvoker() == null) {
+                        throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
+                    }
+                    return chain.getTargetInvoker().invokeTarget(args, TargetInvoker.NONE);
+                } catch (InvocationTargetException e) {
+                    // the cause was thrown by the target so throw it
+                    throw e;
+                }
+            } else {
 
-            Message msg = new MessageImpl();
-            msg.setTargetInvoker(chain.getTargetInvoker());
-            msg.pushFromAddress(getFromAddress());
-            if (messageId != null) {
-                msg.setMessageId(messageId);
+                Message msg = new MessageImpl();
+                msg.setTargetInvoker(chain.getTargetInvoker());
+                msg.pushFromAddress(getFromAddress());
+                if (messageId != null) {
+                    msg.setMessageId(messageId);
+                }
+                msg.setBody(args);
+                Message resp;
+                // dispatch the wire down the chain and get the response
+                // TODO http://issues.apache.org/jira/browse/TUSCANY-777
+                ClassLoader oldtccl = Thread.currentThread().getContextClassLoader();
+                try {
+                    Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+                    resp = headInterceptor.invoke(msg);
+                } finally {
+                    Thread.currentThread().setContextClassLoader(oldtccl);
+                }
+                Object body = resp.getBody();
+                if (resp.isFault()) {
+                    throw new InvocationTargetException((Throwable)body);
+                }
+                return body;
             }
-            msg.setBody(args);
-            Message resp;
-            // dispatch the wire down the chain and get the response
-            // TODO http://issues.apache.org/jira/browse/TUSCANY-777
-            ClassLoader oldtccl = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-                resp = headInterceptor.invoke(msg);
-            } finally {
-                Thread.currentThread().setContextClassLoader(oldtccl);
-            }
-            Object body = resp.getBody();
-            if (resp.isFault()) {
-                throw new InvocationTargetException((Throwable)body);
-            }
-            return body;
+        } finally {
+           if(null != oldConversationID){
+               workContext.setIdentifier(Scope.CONVERSATION, conversationID);
+           }else{
+               workContext.clearIdentifier(Scope.CONVERSATION);
+           }
         }
     }
 
@@ -256,6 +280,31 @@ public class Axis2Service extends ServiceExtension {
         this.invCtxMap.remove(msgId);
     }
 
+    /**
+     * @param inMC
+     * @return
+     */
+    protected static String getConversationID(MessageContext inMC) {
+        String conversationID= null;
+        Iterator i = inMC.getEnvelope().getHeader().getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing","From"));
+        for(; i.hasNext();){
+            Object a= i.next();
+            if(a instanceof OMElement){
+                OMElement ao= (OMElement) a;
+                for(Iterator rpI= ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters")); rpI.hasNext();){
+                    OMElement rpE= (OMElement)rpI.next();
+                    for(Iterator cidI= rpE.getChildrenWithName(WebServiceBinding.CONVERSATION_ID_REFPARM_QN); cidI.hasNext();){
+                        OMElement cidE= (OMElement) cidI.next(); 
+                        conversationID= cidE.getText();
+                    }
+                }
+    
+            }
+    
+        }
+        return conversationID;
+    }
+
     protected class InvocationContext {
         public MessageContext inMessageContext;
 
@@ -274,5 +323,17 @@ public class Axis2Service extends ServiceExtension {
             this.soapFactory = soapFactory;
             this.doneSignal = doneSignal;
         }
+    }
+
+    WorkContext getWorkContext() {
+        return workContext;
+    }
+
+    boolean isConversational() {
+        if(conversational == null){
+            conversational=  serviceContract.getInteractionScope()== InteractionScope.CONVERSATIONAL;
+
+        }
+        return conversational;
     }
 }
