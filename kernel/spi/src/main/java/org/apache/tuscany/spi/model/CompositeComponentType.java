@@ -91,7 +91,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     /**
      * Get all components including the ones are from included composites
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public Map<String, ComponentDefinition<? extends Implementation<?>>> getComponents() {
@@ -106,7 +105,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
     
     /**
      * Get all wires including the ones are from included composites
-     * @return 
      */
     @SuppressWarnings("unchecked")
     public List<WireDefinition> getWires() {
@@ -120,7 +118,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
     
     /**
      * Get declared properties in this composite type, included doesn't count
-     * @return
      */
     public Map<String, P> getDeclaredProperties() {
         return super.getProperties();
@@ -128,7 +125,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     /**
      * Get declared references in this composite type, included doesn't count
-     * @return
      */
     public Map<String, R> getDeclaredReferences() {
         return super.getReferences();
@@ -136,7 +132,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     /**
      * Get declared services in this composite type, included doesn't count
-     * @return
      */
     public Map<String, S> getDeclaredServices() {
         return super.getServices();
@@ -144,7 +139,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
     /**
      * Get declared components in this composite type, included doesn't count
-     * @return
      */
     public Map<String, ComponentDefinition<? extends Implementation<?>>> getDeclaredComponents() {
         return components;
@@ -152,7 +146,6 @@ public class CompositeComponentType<S extends ServiceDefinition,
     
     /**
      * Get declared wires in this composite type, included doesn't count
-     * @return
      */
     public List<WireDefinition> getDeclaredWires() {
         return wires;

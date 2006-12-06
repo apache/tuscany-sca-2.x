@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ComponentNotFoundException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
@@ -130,7 +130,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         try {
             parent.getSystemService("source");
             fail();
-        } catch (ComponentNotFoundException e) {
+        } catch (TargetNotFoundException e) {
             // expected
         }
         EasyMock.verify(service);
@@ -150,7 +150,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         try {
             parent.getService("source");
             fail();
-        } catch (ComponentNotFoundException e) {
+        } catch (TargetNotFoundException e) {
             // expected
         }
         EasyMock.verify(service);
