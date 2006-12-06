@@ -74,7 +74,7 @@ public class DataBindingInteceptor implements Interceptor {
             // We need to figure out what fault type it is and then transform it back the source fault type
             // throw new InvocationRuntimeException((Throwable) result);
             return resultMsg;
-        } else if (result != null) {
+        } else {
             // FIXME: Should we fix the Operation model so that getOutputType returns DataType<DataType<T>>?
             DataType<DataType> targetType =
                 new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());

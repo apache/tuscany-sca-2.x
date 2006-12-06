@@ -114,7 +114,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
 
         WrapperHandler sourceWrapperHandler = null;
         if (sourceWrapped) {
-            sourceWrapperHandler = getWapperHandler(sourceType.getLogical().get(0).getDataBinding(), true);
+            sourceWrapperHandler = getWapperHandler(sourceType.getOperation().getDataBinding(), true);
         }
 
         DataType<List<DataType<QName>>> targetType = context.getTargetDataType();
@@ -122,7 +122,7 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
         boolean targetWrapped = targetOp != null && targetOp.isWrapperStyle();
         WrapperHandler targetWrapperHandler = null;
         if (targetWrapped) {
-            targetWrapperHandler = getWapperHandler(targetType.getLogical().get(0).getDataBinding(), true);
+            targetWrapperHandler = getWapperHandler(targetType.getOperation().getDataBinding(), true);
         }
 
         if ((!sourceWrapped) && targetWrapped) {
@@ -160,13 +160,13 @@ public class Input2InputTransformer extends TransformerExtension<Object[], Objec
             List<ElementInfo> childElements = sourceOp.getWrapper().getInputChildElements();
             Object[] target = new Object[childElements.size()];
 
-            targetWrapperHandler = getWapperHandler(targetType.getLogical().get(0).getDataBinding(), false);
+            targetWrapperHandler = getWapperHandler(targetType.getOperation().getDataBinding(), false);
             if (targetWrapperHandler != null) {
                 ElementInfo wrapperElement = sourceOp.getWrapper().getInputWrapperElement();
                 // Object targetWrapper =
                 // targetWrapperHandler.create(wrapperElement, context);
                 DataType<QName> targetWrapperType =
-                    new DataType<QName>(targetType.getLogical().get(0).getDataBinding(), Object.class,
+                    new DataType<QName>(targetType.getOperation().getDataBinding(), Object.class,
                                         wrapperElement.getQName());
                 Object targetWrapper =
                     mediator.mediate(sourceWrapper,
