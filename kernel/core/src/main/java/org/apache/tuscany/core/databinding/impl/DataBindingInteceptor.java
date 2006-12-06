@@ -75,6 +75,10 @@ public class DataBindingInteceptor implements Interceptor {
             // throw new InvocationRuntimeException((Throwable) result);
             return resultMsg;
         } else {
+            if (sourceOperation.isNonBlocking()) {
+                // Not to reset the message body
+                return resultMsg;
+            }
             // FIXME: Should we fix the Operation model so that getOutputType returns DataType<DataType<T>>?
             DataType<DataType> targetType =
                 new DataType<DataType>("idl:output", Object.class, targetOperation.getOutputType());
@@ -84,8 +88,10 @@ public class DataBindingInteceptor implements Interceptor {
                 new DataType<DataType>("idl:output", Object.class, sourceOperation.getOutputType());
             sourceType.setOperation(sourceOperation.getOutputType().getOperation());
 
-            result = transform(result, targetType, sourceType);
-            resultMsg.setBody(result);
+            Object newResult = transform(result, targetType, sourceType);
+            if (newResult != result) {
+                resultMsg.setBody(newResult);
+            }
         }
         return resultMsg;
     }

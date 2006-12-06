@@ -128,7 +128,9 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
         }
 
         public void setBody(Object body) {
-            throw new UnsupportedOperationException();
+            if (body != null) {
+                throw new UnsupportedOperationException();
+            }
         }
 
         public void setTargetInvoker(TargetInvoker invoker) {
