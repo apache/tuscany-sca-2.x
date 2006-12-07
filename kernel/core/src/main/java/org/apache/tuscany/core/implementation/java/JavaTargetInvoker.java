@@ -70,8 +70,9 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         try {
             Object instance = getInstance(sequence);
             if (callbackClass != null && !callbackClass.isInstance(instance)) {
-                throw new NoRegisteredCallbackException("Instance is does not implement callback: "
-                                                        + callbackClass.toString());
+                throw new InvocationTargetException(
+                        new NoRegisteredCallbackException("Instance is does not implement callback: "
+                                                        + callbackClass.toString()));
             }
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
