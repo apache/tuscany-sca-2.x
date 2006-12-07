@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.osoa.sca.NoRegisteredCallbackException;
 import org.osoa.sca.annotations.Callback;
 
 import org.apache.tuscany.spi.builder.Connector;
@@ -104,6 +105,34 @@ public class CallbackInvocationTestCase extends TestCase {
     }
 
     /**
+     * Verifies exception is thrown when callback is not implemented
+     */
+    public void testCallbackNotRegistered() throws Exception {
+        ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
+        JavaAtomicComponent fooComponent =
+            (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+        wireService.createWires(fooComponent, targetDefinition);
+        container.register(fooComponent);
+
+        CompositeComponent parent = createMock(CompositeComponent.class);
+        parent.getChild(isA(String.class));
+        expectLastCall().andReturn(fooComponent).anyTimes();
+        replay(parent);
+
+        ComponentDefinition<JavaImplementation> sourceDefinition = createPlainSource("fooPlainClient");
+        JavaAtomicComponent clientComponent =
+            (JavaAtomicComponent) builder.build(parent, sourceDefinition, context);
+        wireService.createWires(clientComponent, sourceDefinition);
+        container.register(clientComponent);
+
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler , workContext);
+
+        connector.connect(clientComponent);
+        FooPlainClient client = (FooPlainClient) clientComponent.getServiceInstance();
+        client.invoke();
+    }
+
+    /**
      * Verifies a callback in response to an invocation from two different client components is routed back to the
      * appropriate client.
      */
@@ -164,7 +193,7 @@ public class CallbackInvocationTestCase extends TestCase {
     }
 
     private ComponentDefinition<JavaImplementation> createSource(String name)
-        throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
+    throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
         ConstructorDefinition<FooClient> ctorDef =
             new ConstructorDefinition<FooClient>(FooClient.class.getConstructor());
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -189,10 +218,37 @@ public class CallbackInvocationTestCase extends TestCase {
         return def;
     }
 
+    private ComponentDefinition<JavaImplementation> createPlainSource(String name)
+    throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
+        ConstructorDefinition<FooPlainClient> ctorDef =
+            new ConstructorDefinition<FooPlainClient>(FooPlainClient.class.getConstructor());
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        type.setConstructorDefinition(ctorDef);
+        type.setImplementationScope(Scope.MODULE);
+        Method method = FooPlainClient.class.getMethod("setFoo", Foo.class);
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        ServiceContract<?> contract = registry.introspect(Foo.class);
+        contract.setCallbackClass(FooCallback.class);
+        contract.setCallbackName("callback");
+        JavaMappedReference mappedReference = new JavaMappedReference("foo", contract, method);
+        type.getReferences().put("foo", mappedReference);
+        ReferenceTarget refTarget = new ReferenceTarget();
+        refTarget.setReferenceName("foo");
+        refTarget.getTargets().add(new URI("foo"));
+        JavaImplementation impl = new JavaImplementation();
+        impl.setComponentType(type);
+        impl.setImplementationClass(FooPlainClient.class);
+        ComponentDefinition<JavaImplementation> def = new ComponentDefinition<JavaImplementation>(name, impl);
+        def.getReferenceTargets().put("foo", refTarget);
+        return def;
+    }
+
     @Callback(FooCallback.class)
     public static interface Foo {
         void call();
         void callMultiCallback();
+        void callFromPlain();
     }
 
     public static class FooImpl implements Foo {
@@ -213,6 +269,17 @@ public class CallbackInvocationTestCase extends TestCase {
         public void callMultiCallback() {
             callback.multiCallback();
             callback.multiCallback();
+        }
+
+        public void callFromPlain() {
+            try {
+                callback.callback();
+                fail();
+            } catch (NoRegisteredCallbackException e) {
+                // expected
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -252,6 +319,30 @@ public class CallbackInvocationTestCase extends TestCase {
     public interface FooCallback {
         void callback();
         void multiCallback();
+    }
+
+    public static class FooPlainClient /* implements FooCallback */ { // do NOT implement the callback
+
+        private Foo foo;
+
+        public FooPlainClient() {
+        }
+
+        public void setFoo(Foo foo) {
+            this.foo = foo;
+        }
+
+        public void invoke() {
+            foo.callFromPlain();
+        }
+        
+        public void callback() {
+            
+        }
+        
+        public void multiCallback() {
+            
+        }
     }
 
     protected void setUp() throws Exception {

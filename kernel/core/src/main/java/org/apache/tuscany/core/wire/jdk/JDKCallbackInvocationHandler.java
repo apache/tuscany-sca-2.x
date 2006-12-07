@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.osoa.sca.NoRegisteredCallbackException;
 
 
 /**
@@ -94,7 +96,16 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        return invoke(chain, invoker, args, correlationId, callbackRoutingChain);
+        
+        try {
+            return invoke(chain, invoker, args, correlationId, callbackRoutingChain);
+        } catch(InvocationTargetException e) {
+            Throwable t = e.getCause();
+            if (t instanceof NoRegisteredCallbackException) {
+                throw t;
+            }
+            throw e;
+        }
     }
 
 
