@@ -67,6 +67,7 @@
             <plugin>
                 <groupId>org.apache.felix.plugins</groupId>
                 <artifactId>maven-osgi-plugin</artifactId>
+                <version>0.8.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
                     <ignorePackage>com.sun.msv.grammar, com.sun.msv.grammar.trex, com.sun.msv.reader,
