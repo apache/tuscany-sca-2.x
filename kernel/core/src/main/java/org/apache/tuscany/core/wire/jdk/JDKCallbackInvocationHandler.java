@@ -80,8 +80,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         }
         Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-        LinkedList<Object> callbackRoutingChain = context.getCurrentCallbackRoutingChain();
-        context.setCurrentCallbackRoutingChain(null);
+        LinkedList<Object> callbackRoutingChain = (LinkedList<Object>)context.getCurrentCallbackRoutingChain().clone();
         if (callbackRoutingChain == null) {
             throw new AssertionError("Missing stack of from addresses");
         }

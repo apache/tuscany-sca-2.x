@@ -99,6 +99,8 @@ public class CallbackInvocationTestCase extends TestCase {
         FooClient client = (FooClient) clientComponent.getServiceInstance();
         client.invoke();
         assertTrue(client.invoked);
+        client.invokeMultiCallback();
+        assertTrue(client.count == 2);
     }
 
     /**
@@ -190,6 +192,7 @@ public class CallbackInvocationTestCase extends TestCase {
     @Callback(FooCallback.class)
     public static interface Foo {
         void call();
+        void callMultiCallback();
     }
 
     public static class FooImpl implements Foo {
@@ -206,12 +209,18 @@ public class CallbackInvocationTestCase extends TestCase {
         public void call() {
             callback.callback();
         }
+        
+        public void callMultiCallback() {
+            callback.multiCallback();
+            callback.multiCallback();
+        }
     }
 
     public static class FooClient implements FooCallback {
 
         private Foo foo;
         private boolean invoked;
+        private int count;
 
         public FooClient() {
         }
@@ -226,14 +235,23 @@ public class CallbackInvocationTestCase extends TestCase {
             }
             invoked = true;
         }
+        
+        public void multiCallback() {
+            count++;
+        }
 
         public void invoke() {
             foo.call();
+        }
+
+        public void invokeMultiCallback() {
+            foo.callMultiCallback();
         }
     }
 
     public interface FooCallback {
         void callback();
+        void multiCallback();
     }
 
     protected void setUp() throws Exception {

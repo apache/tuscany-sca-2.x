@@ -56,9 +56,11 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
             if (messageId != null) {
                 workContext.setCurrentCorrelationId(messageId);
             }
-            LinkedList<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
-            if (callbackRoutingChain != null) {
-                workContext.setCurrentCallbackRoutingChain(callbackRoutingChain);
+            if (wire != null) {
+                LinkedList<Object> callbackRoutingChain = msg.getCallbackRoutingChain();
+                if (callbackRoutingChain != null) {
+                    workContext.setCurrentCallbackRoutingChain(callbackRoutingChain);
+                }
             }
             Object resp = invokeTarget(msg.getBody(), msg.getConversationSequence());
             msg.setBody(resp);
