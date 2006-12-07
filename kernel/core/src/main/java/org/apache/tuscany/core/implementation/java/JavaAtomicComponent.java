@@ -75,14 +75,16 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
         Method[] methods;
+        Class callbackClass = null;
         if (operation.isCallback()) {
-            methods = operation.getServiceContract().getCallbackClass().getMethods();
+            callbackClass = operation.getServiceContract().getCallbackClass(); 
+            methods = callbackClass.getMethods();
 
         } else {
             methods = operation.getServiceContract().getInterfaceClass().getMethods();
         }
         Method method = findMethod(operation, methods);
-        return new JavaTargetInvoker(method, this, callbackWire, workContext, monitor);
+        return new JavaTargetInvoker(method, this, callbackWire, callbackClass, workContext, monitor);
     }
 
     protected void onServiceWire(InboundWire wire) {
