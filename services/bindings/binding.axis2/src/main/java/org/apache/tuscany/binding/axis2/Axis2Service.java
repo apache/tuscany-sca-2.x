@@ -20,9 +20,12 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import javax.wsdl.Definition;
@@ -60,6 +63,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 import org.osoa.sca.annotations.Destroy;
 
+// org.apache.tuscany.spi.model
 /**
  * An implementation of a {@link ServiceExtension} configured with the Axis2
  * binding
@@ -82,6 +86,8 @@ public class Axis2Service extends ServiceExtension {
     private WorkContext workContext;
     
     private Boolean conversational= null;
+    
+    private Set<String> seenConversations= Collections.synchronizedSet( new HashSet<String>());
 
     public Axis2Service(String theName,
                         ServiceContract<?> serviceContract,
@@ -192,16 +198,12 @@ public class Axis2Service extends ServiceExtension {
         }
         try {
             if (headInterceptor == null) {
-                try {
-                    // short-circuit the dispatch and invoke the target directly
-                    if (chain.getTargetInvoker() == null) {
-                        throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
-                    }
-                    return chain.getTargetInvoker().invokeTarget(args, TargetInvoker.NONE);
-                } catch (InvocationTargetException e) {
-                    // the cause was thrown by the target so throw it
-                    throw e;
+                // short-circuit the dispatch and invoke the target directly
+                TargetInvoker targetInvoker = chain.getTargetInvoker();
+                if (targetInvoker == null) {
+                    throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
                 }
+                return targetInvoker.invokeTarget(args, TargetInvoker.NONE);
             } else {
 
                 Message msg = new MessageImpl();
@@ -212,6 +214,29 @@ public class Axis2Service extends ServiceExtension {
                 }
                 msg.setBody(args);
                 Message resp;
+                
+                if(isConversational()){
+                    
+                    
+                    int opSeq = op.getConversationSequence();
+                    if(opSeq == org.apache.tuscany.spi.model.Operation.CONVERSATION_END){
+                        assert seenConversations.contains(conversationID) : "End of conversation called when no conversation existed";
+                        msg.setConversationSequence(TargetInvoker.END);
+                        seenConversations.remove(conversationID); //if a fault occurs does the conversation end?
+                           //how do I know if a component called locally another opeation that ended this conversation?
+                        
+                    } else {
+                        boolean ec = seenConversations.contains(conversationID);
+                        if(ec){
+                          
+                            msg.setConversationSequence(TargetInvoker.CONTINUE);
+                        }else{
+                            seenConversations.add(conversationID);
+                            msg.setConversationSequence(TargetInvoker.START);
+                        }
+                    }
+                    
+                }
                 // dispatch the wire down the chain and get the response
                 // TODO http://issues.apache.org/jira/browse/TUSCANY-777
                 ClassLoader oldtccl = Thread.currentThread().getContextClassLoader();
