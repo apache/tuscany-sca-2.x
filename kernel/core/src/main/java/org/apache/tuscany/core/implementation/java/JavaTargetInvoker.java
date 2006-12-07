@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
+import org.osoa.sca.NoRegisteredCallbackException;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
@@ -42,21 +43,36 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     protected Method operation;
     protected JavaAtomicComponent component;
     protected Object target;
+    protected Class callbackClass;
 
     public JavaTargetInvoker(Method operation,
                              JavaAtomicComponent component,
                              InboundWire wire,
+                             Class callbackClass,
                              WorkContext context,
                              ExecutionMonitor monitor) {
         super(wire, context, monitor);
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
+        this.callbackClass = callbackClass;
+    }
+    
+    public JavaTargetInvoker(Method operation,
+                             JavaAtomicComponent component,
+                             InboundWire callbackWire,
+                             WorkContext context,
+                             ExecutionMonitor monitor) {
+        this(operation, component, callbackWire, null, context, monitor);
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
         try {
             Object instance = getInstance(sequence);
+            if (callbackClass != null && !callbackClass.isInstance(instance)) {
+                throw new NoRegisteredCallbackException("Instance is does not implement callback: "
+                                                        + callbackClass.toString());
+            }
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
                 Method newOperation = findClosestMatchingMethod(operation.getName(),
