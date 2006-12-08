@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceDefinition,  P extends Property<?>>
     extends ComponentType<S, R, P> {
 
+    private boolean allowsPassByReference = false;
     private Scope implementationScope = Scope.UNDEFINED;
     private ConstructorDefinition<?> constructorDefinition;
     private Method initMethod;
@@ -104,6 +105,14 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
 
     public void add(Resource resource) {
         resources.put(resource.getName(), resource);
+    }
+
+    public boolean isAllowsPassByReference() {
+        return allowsPassByReference;
+    }
+
+    public void setAllowsPassByReference(boolean allowsPassByReference) {
+        this.allowsPassByReference = allowsPassByReference;
     }
 
 }

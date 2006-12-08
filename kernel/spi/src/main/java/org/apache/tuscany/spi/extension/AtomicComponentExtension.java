@@ -55,6 +55,15 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
     private final int initLevel;
     private final long maxIdleTime;
     private final long maxAge;
+    private boolean allowsPassByReference = false;
+
+    public boolean isAllowsPassByReference() {
+        return allowsPassByReference;
+    }
+
+    public void setAllowsPassByReference(boolean allowsPassByReference) {
+        this.allowsPassByReference = allowsPassByReference;
+    }
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent parent,
