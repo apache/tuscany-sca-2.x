@@ -163,6 +163,9 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 configuration.addCallbackSite(service.getCallbackReferenceName(), service.getCallbackMember());
             }
         }
+        
+        component.setAllowsPassByReference(componentType.isAllowsPassByReference());
+        
         return component;
     }
 

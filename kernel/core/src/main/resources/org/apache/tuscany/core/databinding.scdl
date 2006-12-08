@@ -27,6 +27,10 @@
     <component name="databinding.javaInterfaceProcessor">
         <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingJavaInterfaceProcessor" />
     </component>
+    
+    <component name="databinding.passByValueWirePostProcessor" >
+        <system:implementation.system class="org.apache.tuscany.core.databinding.impl.PassByValueWirePostProcessor" />
+    </component>
 
     <!-- DataBinding registry -->
     <component name="databinding.registry">

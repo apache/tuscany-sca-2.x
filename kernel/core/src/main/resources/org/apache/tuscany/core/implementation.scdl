@@ -42,6 +42,9 @@
     <component name="implementation.Scope">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ScopeProcessor"/>
     </component>
+    <component name="implementation.AllowsPassByReference">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.AllowsPassByReferenceProcessor"/>
+    </component>
     <component name="implementation.Property">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.PropertyProcessor"/>
     </component>
