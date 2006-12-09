@@ -7,7 +7,7 @@ import org.apache.tuscany.spi.component.Service;
 
 import org.apache.tuscany.container.spring.impl.SpringCompositeComponent;
 import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.test.Bootstrapper;
+import org.apache.tuscany.test.SCATestCase;
 
 /**
  * Bootstraps a simple scenario where a service can invoke a Spring bean. This test case is intended to be temporary and
@@ -17,7 +17,7 @@ import org.apache.tuscany.test.Bootstrapper;
  *
  * @version $Rev$ $Date$
  */
-public class BootstrapTestCase extends Bootstrapper {
+public class BootstrapTestCase extends SCATestCase {
 
     private CompositeContext context;
 
@@ -31,6 +31,7 @@ public class BootstrapTestCase extends Bootstrapper {
 
     protected void setUp() throws Exception {
         addExtension("spring.extension", getClass().getClassLoader().getResource("META-INF/sca/spring.system.scdl"));
+        setApplicationSCDL(getClass().getClassLoader().getResource("META-INF/sca/default.scdl"));
         super.setUp();
         context = CurrentCompositeContext.getContext();
     }

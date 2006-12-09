@@ -18,14 +18,40 @@
  */
 package org.apache.tuscany.container.spring.model;
 
-import org.apache.tuscany.spi.model.ServiceContract;
-
 /**
+ * Represents a <code>sca:service<code> declaration in an application context. Used as component type metadata for a
+ * Spring composite
+ *
  * @version $Rev$ $Date$
  */
-public class SpringServiceContract extends ServiceContract {
+public class ServiceDeclaration {
+    private String name;
+    private Class<?> serviceType;
+    private String target;
 
-    public SpringServiceContract(String interfaceName) {
-        super(interfaceName);
+    /**
+     * Constructor
+     *
+     * @param name        the service name
+     * @param serviceType the service contract type
+     * @param target      the name of the target the service is wired to
+     */
+    public ServiceDeclaration(String name, Class<?> serviceType, String target) {
+        this.name = name;
+        this.serviceType = serviceType;
+        this.target = target;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Class<?> getClazz() {
+        return serviceType;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
 }

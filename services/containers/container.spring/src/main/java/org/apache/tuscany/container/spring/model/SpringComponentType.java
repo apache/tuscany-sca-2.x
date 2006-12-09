@@ -21,12 +21,10 @@ package org.apache.tuscany.container.spring.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Component type information for a Spring composite component implementation type. A component type is associated with
@@ -34,53 +32,13 @@ import org.springframework.context.support.AbstractApplicationContext;
  *
  * @version $Rev$ $Date$
  */
-public class SpringComponentType<S extends ServiceDefinition,
-    R extends ReferenceDefinition,
-    P extends Property<?>> extends CompositeComponentType<S, R, P> {
-
-    private AbstractApplicationContext applicationContext;
-    private Map<String, Class<?>> serviceTypes = new HashMap<String, Class<?>>();
+public class SpringComponentType<P extends Property<?>>
+    extends CompositeComponentType<BoundServiceDefinition, BoundReferenceDefinition, P> {
+    private Map<String, ServiceDeclaration> serviceDeclarations = new HashMap<String, ServiceDeclaration>();
+    private Map<String, ReferenceDeclaration> referenceDeclarations = new HashMap<String, ReferenceDeclaration>();
     private boolean exposeAllBeans;
 
-    public SpringComponentType(AbstractApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
     public SpringComponentType() {
-    }
-
-    // FIXME andyp@bea.com -- this is a component type it should NOT contain bean instances!
-
-    /**
-     * Returns the application context for the component type
-     */
-    public AbstractApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    public void setApplicationContext(AbstractApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
-
-    /**
-     * Returns a collection of service types defined by <code>sca:service</code> elements in a Spring configuration.
-     * Service types define beans that can be targets of services defined in the SCDL Spring composite declaration. For
-     * each service type, there must be a corresponding service definition as part of the Spring composite declaration
-     * per the SCA specification.
-     */
-    public Map<String, Class<?>> getServiceTypes() {
-        return serviceTypes;
-    }
-
-    /**
-     * Adds a service type to the component declaration defined by <code>sca:service</code> elements in a Spring
-     * configuration.
-     *
-     * @param name the name of the service
-     * @param type the interface type of the target bean
-     */
-    public void addServiceType(String name, Class<?> type) {
-        this.serviceTypes.put(name, type);
     }
 
     /**
@@ -96,6 +54,38 @@ public class SpringComponentType<S extends ServiceDefinition,
      */
     public void setExposeAllBeans(boolean exposeAllBeans) {
         this.exposeAllBeans = exposeAllBeans;
+    }
+
+    /**
+     * Returns the service declarations for the composite
+     *
+     * @return Returns the service declarations for the composite
+     */
+    public Map<String, ServiceDeclaration> getServiceDeclarations() {
+        return serviceDeclarations;
+    }
+
+    /**
+     * Adds a service declaration for the composite
+     */
+    public void addServiceDeclaration(ServiceDeclaration declaration) {
+        serviceDeclarations.put(declaration.getName(), declaration);
+    }
+
+    /**
+     * Returns the reference declarations for the composite
+     *
+     * @return Returns the reference declarations for the composite
+     */
+    public Map<String, ReferenceDeclaration> getReferenceDeclarations() {
+        return referenceDeclarations;
+    }
+
+    /**
+     * Adds a service declarations for the composite
+     */
+    public void addReferenceDeclaration(ReferenceDeclaration declaration) {
+        referenceDeclarations.put(declaration.getName(), declaration);
     }
 
 }

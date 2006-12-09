@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
+import java.net.URL;
+
 import org.apache.tuscany.spi.component.Reference;
 
 import junit.framework.TestCase;
@@ -26,11 +28,8 @@ import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 /**
  * Verifies wiring from a Spring bean to an SCA composite reference
@@ -40,29 +39,20 @@ import org.springframework.context.support.StaticApplicationContext;
 public class ReferenceInvocationTestCase extends TestCase {
 
     public void testInvocation() throws Exception {
-        AbstractApplicationContext ctx = createSpringContext();
-        SpringCompositeComponent parent = new SpringCompositeComponent("spring", ctx, null, null, null);
-        parent.start();
+        URL url = getClass().getClassLoader().getResource("META-INF/sca/testReferenceContext.xml");
+        Resource resource = new UrlResource(url);
+        SpringCompositeComponent parent = new SpringCompositeComponent("spring", resource, null, null, null);
         TestBean referenceTarget = new TestBeanImpl();
         Reference reference = createMock(Reference.class);
         expect(reference.getName()).andReturn("bar").anyTimes();
         expect(reference.isSystem()).andReturn(false).atLeastOnce();
         expect(reference.getInterface()).andStubReturn(TestBean.class);
         expect(reference.getServiceInstance()).andStubReturn(referenceTarget);
+        reference.start();
         replay(reference);
         parent.register(reference);
-        ctx.getBean("foo");
+        parent.start();
+        parent.locateService(TestBean.class, "testBean");
     }
 
-    private AbstractApplicationContext createSpringContext() {
-        StaticApplicationContext beanFactory = new StaticApplicationContext();
-        RootBeanDefinition definition = new RootBeanDefinition(TestBeanImpl.class);
-        //REVIEW we need to figure out how to handle eager init components
-        definition.setLazyInit(true);
-        RuntimeBeanReference ref = new RuntimeBeanReference("bar");
-        PropertyValue val = new PropertyValue("bean", ref);
-        definition.getPropertyValues().addPropertyValue(val);
-        beanFactory.registerBeanDefinition("foo", definition);
-        return beanFactory;
-    }
 }

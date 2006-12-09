@@ -93,17 +93,29 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
         // create the constructor arg array
         for (int i = 0; i < size; i++) {
             ObjectFactory<?> objectFactory = initializerFactories[i];
+            if (objectFactory == null) {
+                ObjectCallbackException e =
+                    new ObjectCallbackException("Null object factory for constructor parameter [" + i + "]");
+                e.setIdentifier(ctr.getName());
+                throw e;
+            }
             initargs[i] = objectFactory.getInstance();
         }
         try {
             ctr.setAccessible(true);
             return ctr.newInstance(initargs);
+        } catch (IllegalArgumentException e) {
+            String name = ctr.getName();
+            throw new ObjectCreationException("Exception thrown by constructor [" + name + "]", e);
         } catch (InstantiationException e) {
-            throw new AssertionError("Class is not instantiable [" + ctr.getDeclaringClass().getName() + "]");
+            String name = ctr.getDeclaringClass().getName();
+            throw new AssertionError("Class is not instantiable [" + name + "]");
         } catch (IllegalAccessException e) {
-            throw new AssertionError("Constructor is not accessible [" + ctr + "]");
+            String name = ctr.getName();
+            throw new AssertionError("Constructor is not accessible [" + name + "]");
         } catch (InvocationTargetException e) {
-            throw new ObjectCreationException("Exception thrown by constructor [" + ctr + "]", e);
+            String name = ctr.getName();
+            throw new ObjectCreationException("Exception thrown by constructor [" + name + "]", e);
         }
     }
 }

@@ -35,9 +35,10 @@ import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
+import org.apache.tuscany.container.spring.context.SCAApplicationContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -59,27 +60,46 @@ import org.springframework.core.io.Resource;
 public class SpringCompositeComponent extends CompositeComponentExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private AbstractApplicationContext springContext;
+    private Resource resource;
 
     /**
      * Creates a new composite
      *
      * @param name           the name of the SCA composite
-     * @param springContext  the pre-instantiated Spring applicaiton context
+     * @param resource       a resource pointing to the application context
      * @param parent         the SCA composite parent
      * @param connector      the connector to use for wiring children
      * @param propertyValues the values of this composite's Properties
      */
     public SpringCompositeComponent(String name,
-                                    AbstractApplicationContext springContext,
+                                    Resource resource,
                                     CompositeComponent parent,
                                     Connector connector,
                                     Map<String, Document> propertyValues) {
         super(name, parent, connector, propertyValues);
-        SCAApplicationContext scaApplicationContext = new SCAApplicationContext();
+        this.resource = resource;
+    }
+
+    /**
+     * Creates a new composite
+     *
+     * @param name           the name of the SCA composite
+     * @param context
+     * @param parent         the SCA composite parent
+     * @param connector      the connector to use for wiring children
+     * @param propertyValues the values of this composite's Properties
+     */
+    public SpringCompositeComponent(String name,
+                                    AbstractApplicationContext context,
+                                    CompositeComponent parent,
+                                    Connector connector,
+                                    Map<String, Document> propertyValues) {
+        super(name, parent, connector, propertyValues);
+        this.springContext = context;
+        SCAParentApplicationContext scaApplicationContext = new SCAParentApplicationContext();
         springContext.setParent(scaApplicationContext);
         // REVIEW we need to refresh to pick up the parent but this is not optimal
         springContext.refresh();
-        this.springContext = springContext;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
@@ -88,7 +108,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         Method method = findMethod(operation, methods);
         // FIXME test m == null
         // Treat the serviceName as the Spring bean name to look up
-        return new SpringInvoker(targetName, method, springContext);
+        return new SpringInvoker(targetName, method, this);
     }
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
@@ -108,7 +128,11 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         for (SCAObject child : children.values()) {
             child.start();
         }
-        springContext.start();
+        if (springContext == null) {
+            SCAParentApplicationContext scaApplicationContext = new SCAParentApplicationContext();
+            springContext = new SCAApplicationContext(scaApplicationContext, resource);
+            springContext.start();
+        }
     }
 
     public void stop() {
@@ -125,12 +149,13 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
      * interface since the return types for {@link org.springframework.context.ApplicationContext#getParent()} and
      * {@link org.apache.tuscany.spi.component.CompositeComponent#getParent()} clash
      */
-    private class SCAApplicationContext implements ApplicationContext {
+    private class SCAParentApplicationContext implements ApplicationContext {
 
         public Object getBean(String name) throws BeansException {
             return getBean(name, null);
         }
 
+        @SuppressWarnings("unchecked")
         public Object getBean(String name, Class requiredType) throws BeansException {
             SCAObject object = children.get(name);   // keep cast due to compiler error
             if (object == null) {
@@ -157,6 +182,10 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
 
         public boolean isSingleton(String name) throws NoSuchBeanDefinitionException {
             return children.get(name) != null;
+        }
+
+        public boolean isTypeMatch(String name, Class targetType) throws NoSuchBeanDefinitionException {
+            throw new UnsupportedOperationException();
         }
 
         public Class getType(String name) throws NoSuchBeanDefinitionException {

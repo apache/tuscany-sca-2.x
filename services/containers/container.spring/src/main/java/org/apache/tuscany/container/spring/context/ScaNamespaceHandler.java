@@ -15,29 +15,21 @@
  *
  * Created on 10-Apr-2006 by Adrian Colyer
  */
-package org.springframework.sca.config;
+package org.apache.tuscany.container.spring.context;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * Handler for the &lt;sca:&gt; namespace. Handles: <ul> <li>&lt;sca:composite module="xxxxx"/&gt;</li>
- * <li>&lt;sca:reference name="xxx" type="yyy" default-service="zzz"/&gt;</li> <li>&lt;sca:property name="xxx"
- * type="yyy"/&gt;</li> <li>&lt;sca:service name="xxx" type="yyyy" target="zzz"/&gt; </ul>
- *
- * @author Adrian Colyer
- * @since 2.0
+ * Handler for the &lt;sca:&gt; namespace in an application context
  */
 public class ScaNamespaceHandler extends NamespaceHandlerSupport {
 
     public ScaNamespaceHandler() {
-        // FIXME JFM
         init();
     }
 
     public final void init() {
-        registerBeanDefinitionParser("composite", new ScaCompositeBeanDefinitionParser());
         registerBeanDefinitionParser("reference", new ScaReferenceBeanDefinitionParser());
-        registerBeanDefinitionParser("property", new ScaPropertyBeanDefinitionParser());
         registerBeanDefinitionParser("service", new ScaServiceBeanDefinitionParser());
     }
 

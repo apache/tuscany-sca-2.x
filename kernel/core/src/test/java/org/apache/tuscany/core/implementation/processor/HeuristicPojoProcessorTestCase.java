@@ -27,6 +27,7 @@ import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Service;
 
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
@@ -197,6 +198,29 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         assertNotNull(type.getReferences().get("otherRef"));
     }
 
+    public void testSetDataTypes() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor<PropertyIntTypeOnConstructor> ctor = PropertyIntTypeOnConstructor.class.getConstructor(int.class);
+        type.setConstructorDefinition(new ConstructorDefinition<PropertyIntTypeOnConstructor>(ctor));
+        processor.visitEnd(null, ProtectedRemotableRefMethodImpl.class, type, null);
+        org.apache.tuscany.spi.model.Property<?> foo = type.getProperties().get("foo");
+        assertEquals(int.class, foo.getJavaType());
+        assertEquals(SimpleTypeMapperExtension.XSD_INT, foo.getXmlType());
+    }
+
+    private static class PropertyIntTypeOnConstructor {
+        private int foo;
+
+        public PropertyIntTypeOnConstructor(@Property(name = "foo") int foo) {
+            this.foo = foo;
+        }
+
+        public int getFoo() {
+            return foo;
+        }
+    }
+
     private interface PropertyInterface {
         void setString1(String val);
     }
@@ -225,8 +249,11 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
 
     private interface HeuristicServiceInterface {
         void fooOperation(String ref);
+
         void setInvalid1(); // No parameter
+
         void setInvalid2(String str, int i); // More than one parameter
+
         String setInvalid3(String str); // return should be void
     }
 
@@ -251,6 +278,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         public void fooOperation(String ref) {
 
         }
+
         public void setInvalid1() {
         }
 
