@@ -125,7 +125,7 @@ public class WSDL2JavaGenerator {
         DataObjectUtil.initRuntime();
         EPackage.Registry packageRegistry = new EPackageRegistryImpl(EPackage.Registry.INSTANCE);
         ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(packageRegistry);
-        XSDHelper xsdHelper = new XSDHelperImpl(extendedMetaData);
+        XSDHelper xsdHelper = new XSDHelperImpl(extendedMetaData, null);
 
         try {
             
