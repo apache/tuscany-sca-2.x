@@ -64,15 +64,13 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
     void stopRequest();
 
     /**
-     * httpRequestStarted  request has been started with sessid id
-     * @param session id.
+     * Request has been started with the given session id
      */
     void httpRequestStarted(Object id);
-    
+
     /**
-     * httpRequestEnded  request has been ended with sessid id
-     * @param session id.
+     * Request has been ended with the given session id
      */
-    
+
     void httpRequestEnded(Object id);
 }

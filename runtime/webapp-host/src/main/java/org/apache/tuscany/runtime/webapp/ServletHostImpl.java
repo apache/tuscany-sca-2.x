@@ -51,29 +51,26 @@ import org.osoa.sca.annotations.Service;
  */
 @Service(ServletHost.class)
 public class ServletHostImpl implements ServletHost, ServletRequestInjector, EventPublisher {
-
     protected Map<String, Servlet> servlets;
+    protected ScopeRegistry registry;
+    protected WorkContext workContext;
 
     public ServletHostImpl() {
         this.servlets = new HashMap<String, Servlet>();
     }
-
-    @Init(eager = true)
-    public void init() {
-    }
-
-    protected ScopeRegistry registry = null;
 
     @Autowire(required = false)
     public void setSessionScopeContainer(ScopeRegistry registry) {
         this.registry = registry;
     }
 
-    WorkContext workContext = null;
-
     @Autowire(required = false)
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
+    }
+
+    @Init(eager = true)
+    public void init() {
     }
 
     public void service(ServletRequest req, ServletResponse resp) throws ServletException, IOException {

@@ -76,17 +76,14 @@ public class TuscanyContextListener implements ServletContextListener {
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);
         } catch (TuscanyRuntimeException e) {
             servletContext.log(e.getMessage(), e);
-            // TODO: Dump the stack trace so that we can see from the Tomcat console
             e.printStackTrace();
             throw e;
         } catch (MalformedURLException e) {
             servletContext.log(e.getMessage(), e);
-            // TODO: Dump the stack trace so that we can see from the Tomcat console
             e.printStackTrace();
             throw new TuscanyInitException(e);
         } catch (Throwable e) {
             servletContext.log(e.getMessage(), e);
-            // TODO: Dump the stack trace so that we can see from the Tomcat console
             e.printStackTrace();
             throw new TuscanyInitException(e);
         }
@@ -102,7 +99,6 @@ public class TuscanyContextListener implements ServletContextListener {
         if (runtime == null) {
             return;
         }
-
         servletContext.removeAttribute(RUNTIME_ATTRIBUTE);
         runtime.destroy();
     }

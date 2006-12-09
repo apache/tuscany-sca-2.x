@@ -18,10 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.xml.stream.XMLInputFactory;
@@ -44,7 +41,6 @@ import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
-import org.apache.tuscany.core.monitor.MonitorFactoryUtil;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
@@ -148,14 +144,14 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             String path = servletContext.getInitParameter(Constants.CURRENT_COMPOSITE_PATH_PARAM);
             if (path != null) {
                 StringTokenizer tokenizer = new StringTokenizer(path, "/");
-                while(tokenizer.hasMoreTokens()) {
+                while (tokenizer.hasMoreTokens()) {
                     SCAObject o = current.getChild(tokenizer.nextToken());
-                    if (!(o instanceof CompositeComponent)){
+                    if (!(o instanceof CompositeComponent)) {
                         ServletLauncherInitException e = new ServletLauncherInitException("Invalid context path");
                         e.setIdentifier(path);
                         throw e;
                     }
-                    current = (CompositeComponent)o;
+                    current = (CompositeComponent) o;
                 }
             }
             context = new CompositeContextImpl(current);
@@ -230,22 +226,22 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
      *
      * @param loggingLevel
      */
-    private MonitorFactory getMonitorFactory(String loggingLevel) {
-        String factoryName = "org.apache.tuscany.core.monitor.NullMonitorFactory";
-        Map<String, Object> props = null;
-        if (loggingLevel != null) {
-            factoryName = "org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory";
-            props = new HashMap<String, Object>();
-            Level level = Level.SEVERE;
-            try {
-                level = Level.parse(loggingLevel);
-            } catch (IllegalArgumentException e) {
-                // ignore bad loggingLevel
-            }
-            props.put("bundleName", "SystemMessages");
-            props.put("defaultLevel", level);
-        }
-
-        return MonitorFactoryUtil.createMonitorFactory(factoryName, props);
-    }
+//    private MonitorFactory getMonitorFactory(String loggingLevel) {
+//        String factoryName = "org.apache.tuscany.core.monitor.NullMonitorFactory";
+//        Map<String, Object> props = null;
+//        if (loggingLevel != null) {
+//            factoryName = "org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory";
+//            props = new HashMap<String, Object>();
+//            Level level = Level.SEVERE;
+//            try {
+//                level = Level.parse(loggingLevel);
+//            } catch (IllegalArgumentException e) {
+//                // ignore bad loggingLevel
+//            }
+//            props.put("bundleName", "SystemMessages");
+//            props.put("defaultLevel", level);
+//        }
+//
+//        return MonitorFactoryUtil.createMonitorFactory(factoryName, props);
+//    }
 }

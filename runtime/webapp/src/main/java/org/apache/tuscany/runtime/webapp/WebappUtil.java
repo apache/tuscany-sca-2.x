@@ -25,25 +25,25 @@ import java.net.URL;
  * @version $Rev$ $Date$
  */
 public interface WebappUtil {
+
+    String getApplicationName();
+
+    WebappRuntime getRuntime(ClassLoader bootClassLoader) throws TuscanyInitException;
+
     /**
-     * Return the classloader that should be used to boot the Tuscany runtime.
-     * This will be a child of the web application's ClassLoader.
+     * Return the classloader that should be used to boot the Tuscany runtime. This will be a child of the web
+     * application's ClassLoader.
      *
      * @param webappClassLoader the web application's classloader
      * @return a classloader that can be used to load the Tuscany runtime classes
      */
-    ClassLoader getBootClassLoader(ClassLoader webappClassLoader);
+    ClassLoader getBootClassLoader(ClassLoader webappClassLoader) throws InvalidResourcePath;
 
-    WebappRuntime getRuntime(ClassLoader bootClassLoader);
+    URL getSystemScdl(ClassLoader bootClassLoader) throws InvalidResourcePath;
 
-    URL getSystemScdl(ClassLoader bootClassLoader);
+    URL getApplicationScdl(ClassLoader bootClassLoader) throws InvalidResourcePath;
 
-    String getApplicationName();
-
-    URL getApplicationScdl(ClassLoader bootClassLoader);
-
-    URL getScdlURL(String path, ClassLoader classLoader)
-        throws MalformedURLException;
+    URL getScdlURL(String path, ClassLoader classLoader) throws MalformedURLException;
 
     /**
      * Return a init parameter from the servlet context or provide a default.
