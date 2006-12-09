@@ -19,25 +19,12 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
-import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -49,11 +36,18 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 
 /**
- * Testcase for testing if the PassByValueWireProcessor adds the PassByValueInterceptor to the invocation chains and also ensure that the outbound and
- * inbound chain of interceptors are linked after this insertion
+ * Testcase for testing if the PassByValueWireProcessor adds the PassByValueInterceptor to the invocation chains and
+ * also ensure that the outbound and inbound chain of interceptors are linked after this insertion
  */
 public class PassByValueWirePostProcessorTestCase extends TestCase {
     private PassByValueWirePostProcessor processor;
@@ -73,16 +67,16 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         ServiceContract<Type> serviceContract = new JavaServiceContract(null);
         serviceContract.setRemotable(true);
         Map<Operation<?>, InboundInvocationChain> inChainsMap =
-                new Hashtable<Operation<?>, InboundInvocationChain>();
+            new Hashtable<Operation<?>, InboundInvocationChain>();
 
-        Operation<?> operation1 = new Operation("testMethod", null, null, null);
-        InboundInvocationChainImpl inChain = new InboundInvocationChainImpl(operation1);  
+        Operation<?> operation1 = new Operation<Type>("testMethod", null, null, null);
+        InboundInvocationChainImpl inChain = new InboundInvocationChainImpl(operation1);
         inChainsMap.put(operation1, inChain);
-        
+
         AtomicComponentExtension componentExtn = new FooComponent();
 
         Map<Operation<?>, OutboundInvocationChain> outChainsMap =
-                new Hashtable<Operation<?>, OutboundInvocationChain>();
+            new Hashtable<Operation<?>, OutboundInvocationChain>();
         OutboundInvocationChainImpl outChain = new OutboundInvocationChainImpl(operation1);
         outChainsMap.put(operation1, outChain);
 
@@ -92,7 +86,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         expect(inboundWire.getInvocationChains()).andReturn(inChainsMap);
         expect(outboundWire.getServiceContract()).andReturn(serviceContract).times(2);
         expect(outboundWire.getInvocationChains()).andReturn(outChainsMap).times(2);
-        
+
         Interceptor inInterceptor = createMock(Interceptor.class);
         Interceptor outInterceptor = createMock(Interceptor.class);
         inChain.addInterceptor(0, inInterceptor);
@@ -104,12 +98,12 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
 
         assertEquals(true, inChain.getHeadInterceptor() instanceof PassByValueInterceptor);
         assertEquals(true,
-                outChain.getTailInterceptor().getNext() instanceof PassByValueInterceptor);
+            outChain.getTailInterceptor().getNext() instanceof PassByValueInterceptor);
         assertEquals(true, outChain.getTailInterceptor().getNext().equals(
-                inChain.getHeadInterceptor()));
+            inChain.getHeadInterceptor()));
 
     }
-    
+
     public void testProcessExclusionOfInterceptorWhenAllowsPassByReference() {
         InboundWire inboundWire = createMock(InboundWire.class);
         OutboundWire outboundWire = createMock(OutboundWire.class);
@@ -117,18 +111,18 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         ServiceContract<Type> serviceContract = new JavaServiceContract(null);
         serviceContract.setRemotable(true);
         Map<Operation<?>, InboundInvocationChain> inChainsMap =
-                new Hashtable<Operation<?>, InboundInvocationChain>();
+            new Hashtable<Operation<?>, InboundInvocationChain>();
 
-        Operation<?> operation1 = new Operation("testMethod", null, null, null);
-        InboundInvocationChainImpl inChain = new InboundInvocationChainImpl(operation1); 
+        Operation<?> operation1 = new Operation<Type>("testMethod", null, null, null);
+        InboundInvocationChainImpl inChain = new InboundInvocationChainImpl(operation1);
         inChainsMap.put(operation1, inChain);
-        
+
         AtomicComponentExtension componentExtn = new FooComponent();
         componentExtn.setAllowsPassByReference(true);
-        
+
 
         Map<Operation<?>, OutboundInvocationChain> outChainsMap =
-                new Hashtable<Operation<?>, OutboundInvocationChain>();
+            new Hashtable<Operation<?>, OutboundInvocationChain>();
         OutboundInvocationChainImpl outChain = new OutboundInvocationChainImpl(operation1);
         outChainsMap.put(operation1, outChain);
 
@@ -138,7 +132,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         expect(inboundWire.getInvocationChains()).andReturn(inChainsMap);
         expect(outboundWire.getServiceContract()).andReturn(serviceContract).times(2);
         expect(outboundWire.getInvocationChains()).andReturn(outChainsMap).times(2);
-        
+
         Interceptor inInterceptor = createMock(Interceptor.class);
         Interceptor outInterceptor = createMock(Interceptor.class);
         inChain.addInterceptor(0, inInterceptor);
@@ -150,17 +144,17 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
 
         assertEquals(false, inChain.getHeadInterceptor() instanceof PassByValueInterceptor);
         assertEquals(false,
-                outChain.getTailInterceptor().getNext() instanceof PassByValueInterceptor);
+            outChain.getTailInterceptor().getNext() instanceof PassByValueInterceptor);
         assertEquals(true, outChain.getTailInterceptor().getNext().equals(
-                inChain.getHeadInterceptor()));
+            inChain.getHeadInterceptor()));
     }
-    
+
     private class FooComponent extends AtomicComponentExtension {
 
         public FooComponent() {
-            super(null,null,null, null, null, null, null, 0);
+            super(null, null, null, null, null, null, null, 0);
         }
-        
+
         public Object createInstance() throws ObjectCreationException {
             // TODO Auto-generated method stub
             return null;
@@ -185,6 +179,6 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
             // TODO Auto-generated method stub
             return null;
         }
-        
+
     }
 }

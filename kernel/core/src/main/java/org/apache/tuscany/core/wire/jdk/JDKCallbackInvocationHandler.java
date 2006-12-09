@@ -28,10 +28,12 @@ import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.osoa.sca.NoRegisteredCallbackException;
+
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findOperation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
@@ -39,7 +41,6 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.osoa.sca.NoRegisteredCallbackException;
 
 
 /**
@@ -82,7 +83,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         }
         Object correlationId = context.getCurrentCorrelationId();
         context.setCurrentCorrelationId(null);
-        LinkedList<Object> callbackRoutingChain = (LinkedList<Object>)context.getCurrentCallbackRoutingChain().clone();
+        LinkedList<Object> callbackRoutingChain = (LinkedList<Object>) context.getCurrentCallbackRoutingChain().clone();
         if (callbackRoutingChain == null) {
             throw new AssertionError("Missing stack of from addresses");
         }
@@ -96,10 +97,10 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         Operation operation = findOperation(method, sourceCallbackInvocationChains.keySet());
         OutboundInvocationChain chain = sourceCallbackInvocationChains.get(operation);
         TargetInvoker invoker = chain.getTargetInvoker();
-        
+
         try {
             return invoke(chain, invoker, args, correlationId, callbackRoutingChain);
-        } catch(InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (t instanceof NoRegisteredCallbackException) {
                 throw t;

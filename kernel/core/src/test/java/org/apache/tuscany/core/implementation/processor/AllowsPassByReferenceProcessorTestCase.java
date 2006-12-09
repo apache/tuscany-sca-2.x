@@ -18,19 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import static org.apache.tuscany.spi.model.OverrideOptions.MUST;
-import junit.framework.TestCase;
+import org.osoa.sca.annotations.AllowsPassByReference;
 
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
-import org.apache.tuscany.spi.implementation.java.IllegalPropertyException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.OverrideOptions;
-import org.osoa.sca.annotations.AllowsPassByReference;
-import org.osoa.sca.annotations.Property;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev: 452761 $ $Date: 2006-10-04 12:03:20 +0530 (Wed, 04 Oct 2006) $
@@ -43,7 +38,7 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
     public void testClassAnnotation() throws Exception {
         processor.visitClass(null, Foo.class, type, null);
         assertEquals(true, type.isAllowsPassByReference());
-        
+
         processor.visitClass(null, Bar.class, type, null);
         assertEquals(false, type.isAllowsPassByReference());
     }
@@ -51,7 +46,6 @@ public class AllowsPassByReferenceProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        JavaInterfaceProcessorRegistryImpl registry = new JavaInterfaceProcessorRegistryImpl();
         processor = new AllowsPassByReferenceProcessor();
     }
 

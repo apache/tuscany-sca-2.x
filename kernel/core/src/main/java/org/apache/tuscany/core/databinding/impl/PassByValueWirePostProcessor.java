@@ -31,69 +31,72 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
 
 /**
- * This processor is responsible for enforcing the pass-by-value semantics required of Remotable interfaces.  
- * This is done by adding a pass-by-value interceptor to the inbound invocation chain of a target if
- * the target interface is Remotable.
+ * This processor is responsible for enforcing the pass-by-value semantics required of Remotable interfaces. This is
+ * done by adding a pass-by-value interceptor to the inbound invocation chain of a target if the target interface is
+ * Remotable.
  */
 public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
-    
+
 
     public PassByValueWirePostProcessor() {
         super();
-        
+
     }
 
     public void process(OutboundWire source, InboundWire target) {
-        Interceptor tailInterceptor = null;
-        PassByValueInterceptor passByValueInterceptor = null;
-        Operation<?> targetOperation = null;
-        Operation<?> sourceOperation = null;
+        Interceptor tailInterceptor;
+        PassByValueInterceptor passByValueInterceptor;
+        Operation<?> targetOperation;
+        Operation<?> sourceOperation;
         boolean allowsPassByReference = false;
-        if ( target.getContainer() instanceof AtomicComponentExtension ) {
-            allowsPassByReference = 
-                ((AtomicComponentExtension)target.getContainer()).isAllowsPassByReference();
+        if (target.getContainer() instanceof AtomicComponentExtension) {
+            allowsPassByReference =
+                ((AtomicComponentExtension) target.getContainer()).isAllowsPassByReference();
         }
-        if ( target.getServiceContract().isRemotable() &&
-                !allowsPassByReference ) {
+        if (target.getServiceContract().isRemotable()
+            && !allowsPassByReference) {
             Map<Operation<?>, InboundInvocationChain> chains = target.getInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
                 passByValueInterceptor = new PassByValueInterceptor();
                 targetOperation = entry.getKey();
-                sourceOperation = 
+                sourceOperation =
                     getSourceOperation(source.getInvocationChains().keySet(), targetOperation.getName());
-               
+
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor = source.getInvocationChains().get(sourceOperation).getTailInterceptor();
-                if ( tailInterceptor != null ) {
+                if (tailInterceptor != null) {
                     tailInterceptor.setNext(passByValueInterceptor);
                 }
             }
         }
-        
+
         // Check if there's a callback
         Map callbackOperations = source.getServiceContract().getCallbackOperations();
         allowsPassByReference = false;
-        if ( source.getContainer() instanceof AtomicComponentExtension ) {
-            allowsPassByReference = 
-                ((AtomicComponentExtension)source.getContainer()).isAllowsPassByReference();
+        if (source.getContainer() instanceof AtomicComponentExtension) {
+            allowsPassByReference =
+                ((AtomicComponentExtension) source.getContainer()).isAllowsPassByReference();
         }
-        
-        if ( source.getServiceContract().isRemotable() && !allowsPassByReference ) {
-            if (callbackOperations != null && !callbackOperations.isEmpty()) {
-                Object targetAddress = source.getContainer().getName();
-                Map<Operation<?>, InboundInvocationChain> callbackChains = source.getTargetCallbackInvocationChains();
-                for (Map.Entry<Operation<?>, InboundInvocationChain> entry : callbackChains.entrySet()) {
-                    passByValueInterceptor = new PassByValueInterceptor();
-                    targetOperation = entry.getKey();
-                    sourceOperation = 
-                        getSourceOperation(target.getSourceCallbackInvocationChains(targetAddress).keySet(), targetOperation.getName());
-                    
-                    entry.getValue().addInterceptor(0, passByValueInterceptor);
-                    tailInterceptor = 
-                        target.getSourceCallbackInvocationChains(targetAddress).get(sourceOperation).getTailInterceptor();
-                    if ( tailInterceptor != null ) {
-                        tailInterceptor.setNext(passByValueInterceptor);
-                    }
+
+        if (source.getServiceContract().isRemotable()
+            && !allowsPassByReference
+            && callbackOperations != null
+            && !callbackOperations.isEmpty()) {
+            Object targetAddress = source.getContainer().getName();
+            Map<Operation<?>, InboundInvocationChain> callbackChains = source.getTargetCallbackInvocationChains();
+            for (Map.Entry<Operation<?>, InboundInvocationChain> entry : callbackChains.entrySet()) {
+                passByValueInterceptor = new PassByValueInterceptor();
+                targetOperation = entry.getKey();
+                sourceOperation =
+                    getSourceOperation(target.getSourceCallbackInvocationChains(targetAddress).keySet(),
+                        targetOperation.getName());
+
+                entry.getValue().addInterceptor(0, passByValueInterceptor);
+                tailInterceptor =
+                    target.getSourceCallbackInvocationChains(targetAddress).get(sourceOperation)
+                        .getTailInterceptor();
+                if (tailInterceptor != null) {
+                    tailInterceptor.setNext(passByValueInterceptor);
                 }
             }
         }
@@ -102,7 +105,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
     public void process(InboundWire source, OutboundWire target) {
         //to be done if required.. 
     }
-    
+
     private Operation getSourceOperation(Set<Operation<?>> operations, String operationName) {
         for (Operation<?> op : operations) {
             if (op.getName().equals(operationName)) {

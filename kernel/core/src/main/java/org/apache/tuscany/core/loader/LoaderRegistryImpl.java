@@ -33,6 +33,7 @@ import org.osoa.sca.annotations.Init;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.ComponentTypeLoader;
+import org.apache.tuscany.spi.loader.InvalidConfigurationException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
@@ -136,7 +137,8 @@ public class LoaderRegistryImpl implements LoaderRegistry {
             sfe.setResourceURI(url.toString());
             throw sfe;
         } catch (XMLStreamException e) {
-            LoaderException sfe = new LoaderException(e);
+            InvalidConfigurationException sfe = new InvalidConfigurationException("Invalid or missing resource", e);
+            sfe.setIdentifier(url.toString());
             sfe.setResourceURI(url.toString());
             throw sfe;
         }
