@@ -52,9 +52,6 @@ public final class Constants {
      */
     static final String ONLINE_PARAM = "tuscany.online";
 
-
-
-
     /**
      * Context attribute to which the Tuscany runtime for this servlet context is stored.
      */

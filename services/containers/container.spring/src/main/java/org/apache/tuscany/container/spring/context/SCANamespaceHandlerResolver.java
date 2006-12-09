@@ -16,19 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring.config;
-
-import org.apache.tuscany.spi.model.CompositeComponentType;
+package org.apache.tuscany.container.spring.context;
 
 import org.springframework.beans.factory.xml.DefaultNamespaceHandlerResolver;
 import org.springframework.beans.factory.xml.NamespaceHandler;
-import org.springframework.sca.config.ScaNamespaceHandler;
 
 /**
- * Overrides the default Spring namespace resolver to automatically register {@link SCANamespaceHandler} instead of
+ * Overrides the default Spring namespace resolver to automatically register {@link ScaNamespaceHandler} instead of
  * requiring a value to be supplied in a Spring configuration
- * <p/>
- * TODO: Figure out how to activate this impl
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -38,14 +33,12 @@ public class SCANamespaceHandlerResolver extends DefaultNamespaceHandlerResolver
 
     private ScaNamespaceHandler handler;
 
-    public SCANamespaceHandlerResolver(ClassLoader classLoader, CompositeComponentType componentType) {
+    public SCANamespaceHandlerResolver(ClassLoader classLoader) {
         super(classLoader);
         handler = new ScaNamespaceHandler(/*componentType*/);
     }
 
-    public SCANamespaceHandlerResolver(String handlerMappingsLocation,
-                                       ClassLoader classLoader,
-                                       CompositeComponentType componentType) {
+    public SCANamespaceHandlerResolver(String handlerMappingsLocation, ClassLoader classLoader) {
         super(classLoader, handlerMappingsLocation);
         handler = new ScaNamespaceHandler(/*componentType*/);
     }

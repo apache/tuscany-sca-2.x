@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.container.spring.impl;
+package org.apache.tuscany.container.spring.loader;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
@@ -48,6 +49,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.runtime.webapp.WebappRuntimeInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -57,9 +59,7 @@ import org.springframework.core.io.UrlResource;
 public class SpringImplementationLoader extends LoaderExtension<SpringImplementation> {
     private static final QName IMPLEMENTATION_SPRING = new QName("http://www.osoa.org/xmlns/sca/1.0",
         "implementation.spring");
-
-    private static final String APPLICATION_CONTEXT = "application-context.xml";
-
+    private static final String APPLICATION_CONTEXT = "applicationContext.xml";
     private static final QName SERVICE_ELEMENT = new QName(XML_NAMESPACE_1_0, "service");
     private static final QName REFERENCE_ELEMENT = new QName(XML_NAMESPACE_1_0, "reference");
 
@@ -81,15 +81,13 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         throws XMLStreamException, LoaderException {
 
         String locationAttr = reader.getAttributeValue(null, "location");
-        if (locationAttr == null && !contextProvided()) {
+        if (locationAttr == null) {
             throw new MissingResourceException("No location supplied");
         }
 
         SpringImplementation implementation = new SpringImplementation();
         ClassLoader classLoader = deploymentContext.getClassLoader();
-        if (!contextProvided()) {
-            implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
-        }
+        implementation.setApplicationResource(getApplicationContextResource(locationAttr, classLoader));
         registry.loadComponentType(parent, implementation, deploymentContext);
         SpringComponentType type = implementation.getComponentType();
         while (true) {
@@ -101,7 +99,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                             (BoundServiceDefinition) registry.load(parent, null, reader, deploymentContext);
                         if (!type.isExposeAllBeans()) {
                             String name = service.getName();
-                            if (!type.getServiceTypes().containsKey(name)) {
+                            if (!type.getServiceDeclarations().containsKey(name)) {
                                 LoaderException e = new LoaderException("No service defined in Spring context for ");
                                 e.setIdentifier(name);
                                 throw e;
@@ -133,7 +131,16 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
         }
         if (!locationFile.exists()) {
             // FIXME hack
-            URL url = cl.getResource(locationAttr);
+            URL url;
+            if (runtimeInfo instanceof WebappRuntimeInfo) {
+                try {
+                    url = ((WebappRuntimeInfo) runtimeInfo).getServletContext().getResource(locationAttr);
+                } catch (MalformedURLException e) {
+                    throw new LoaderException(e);
+                }
+            } else {
+                url = cl.getResource(locationAttr);
+            }
             if (url != null) {
                 return new UrlResource(url);
             }
@@ -188,10 +195,9 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                 throw new MissingResourceException(locationAttr, e);
             }
         }
-        throw new MissingResourceException(APPLICATION_CONTEXT);
-    }
 
-    private boolean contextProvided() {
-        return runtimeInfo instanceof SpringRuntimeInfo;
+        throw new
+
+            MissingResourceException(APPLICATION_CONTEXT);
     }
 }

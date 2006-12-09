@@ -22,12 +22,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Dispatches to an operation on a Spring bean. Since Spring manages bean lifecycle and scope through resolution in the
@@ -36,7 +36,7 @@ import org.springframework.context.ApplicationContext;
  * @version $$Rev$$ $$Date$$
  */
 public class SpringInvoker implements TargetInvoker {
-    private ApplicationContext springContext;
+    private SpringCompositeComponent component;
     // default to true since Spring handles resolution
     private boolean cacheable = true;
     private String beanName;
@@ -44,16 +44,19 @@ public class SpringInvoker implements TargetInvoker {
     // caching is thread-safe since Spring handles resolution
     private Object bean;
 
-    public SpringInvoker(String beanName, Method method, ApplicationContext context) {
+    public SpringInvoker(String beanName, Method method, SpringCompositeComponent component) {
         this.beanName = beanName;
         this.method = method;
-        springContext = context;
+        this.component = component;
     }
 
     public Object invokeTarget(final Object object, final short sequence) throws InvocationTargetException {
         if (bean == null) {
             try {
-                bean = springContext.getBean(beanName);
+                bean = component.locateService(Object.class, beanName);
+                if (bean == null) {
+                    throw new TargetNotFoundException(beanName);
+                }
             } catch (BeansException e) {
                 throw new TargetException(e);
             }

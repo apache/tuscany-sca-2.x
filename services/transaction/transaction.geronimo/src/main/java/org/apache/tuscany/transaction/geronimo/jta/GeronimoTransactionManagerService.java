@@ -39,6 +39,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.geronimo.transaction.ExtendedTransactionManager;
 import org.apache.geronimo.transaction.manager.TransactionManagerImpl;
 import org.apache.geronimo.transaction.manager.XidFactoryImpl;
+import org.apache.geronimo.transaction.manager.XidImporter;
 import org.apache.tuscany.transaction.geronimo.TransactionServiceShutdownException;
 
 /**
@@ -101,6 +102,10 @@ public class GeronimoTransactionManagerService implements TransactionManager, Ex
 
     public ExtendedTransactionManager getTransactionManager() {
         return transactionManager;
+    }
+
+    public XidImporter getXidImporter() {
+        return (XidImporter)transactionManager;
     }
 
     public int getStatus() throws SystemException {

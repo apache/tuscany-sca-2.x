@@ -22,12 +22,7 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import org.springframework.context.ApplicationContext;
+import org.easymock.classextension.EasyMock;
 
 /**
  * Verifies a simple invocation on a Spring bean
@@ -40,19 +35,19 @@ public class SpringInvocationTestCase extends TestCase {
      * Verifies the invoker can resolve a bean in an application context and call a method l
      */
     public void testInvocation() throws Exception {
-        TestBean bean = createMock(TestBean.class);
+        TestBean bean = EasyMock.createMock(TestBean.class);
         bean.test("bar");
-        expectLastCall();
-        replay(bean);
-        ApplicationContext context = createMock(ApplicationContext.class);
-        expect(context.getBean("foo")).andReturn(bean);
-        replay(context);
+        EasyMock.expectLastCall();
+        EasyMock.replay(bean);
+        SpringCompositeComponent context = EasyMock.createMock(SpringCompositeComponent.class);
+        EasyMock.expect(context.locateService(Object.class, "foo")).andReturn(bean);
+        EasyMock.replay(context);
         SpringInvoker invoker = new SpringInvoker("foo", TestBean.class.getMethod("test", String.class), context);
         Message msg = new MessageImpl();
         msg.setBody(new String[]{"bar"});
         invoker.invoke(msg);
-        verify(context);
-        verify(bean);
+        EasyMock.verify(context);
+        EasyMock.verify(bean);
     }
 
 

@@ -40,10 +40,15 @@ public class MethodEventInvoker<T> implements EventInvoker<T> {
     public void invokeEvent(T instance) throws ObjectCallbackException {
         try {
             method.invoke(instance, (Object[]) null);
+        } catch (IllegalArgumentException e) {
+            String name = method.getName();
+            throw new ObjectCallbackException("Exception thrown by callback method [" + name + "]", e.getCause());
         } catch (IllegalAccessException e) {
-            throw new AssertionError("Method is not accessible [" + method + "]");
+            String name = method.getName();
+            throw new AssertionError("Method is not accessible [" + name + "]");
         } catch (InvocationTargetException e) {
-            throw new ObjectCallbackException("Exception thrown by callback method [" + method + "]", e.getCause());
+            String name = method.getName();
+            throw new ObjectCallbackException("Exception thrown by callback method [" + name + "]", e.getCause());
         }
     }
 

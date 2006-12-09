@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -70,6 +71,30 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         assertEquals("foo", foo.getTest());
     }
 
+    public void testIntPropertyHandling() throws Exception {
+        JavaComponentBuilder builder = new JavaComponentBuilder();
+        builder.setScopeRegistry(registry);
+        PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> type =
+            new PojoComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
+        JavaMappedProperty<Integer> property = new JavaMappedProperty<Integer>();
+        property.setName("test");
+        property.setDefaultValueFactory(new SingletonObjectFactory<Integer>(1));
+        property.setMember(JavaBuilderPropertyTestCase.FooInt.class.getMethod("setTest", Integer.TYPE));
+        type.add(property);
+        type.setConstructorDefinition(new ConstructorDefinition<FooInt>(FooInt.class.getConstructor((Class[]) null)));
+        type.setImplementationScope(Scope.STATELESS);
+        JavaImplementation impl = new JavaImplementation();
+        impl.setComponentType(type);
+        impl.setImplementationClass(Foo.class);
+        ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
+        ObjectFactory<Integer> defaultValueFactory = property.getDefaultValueFactory();
+        PropertyValue<Integer> propertyValue = new PropertyValue<Integer>(property.getName(), defaultValueFactory);
+        definition.getPropertyValues().put(property.getName(), propertyValue);
+        AtomicComponent component = builder.build(parent, definition, deploymentContext);
+        FooInt foo = (FooInt) component.createInstance();
+        assertEquals(1, foo.getTest());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
@@ -93,6 +118,21 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         }
 
         public void setTest(String test) {
+            this.test = test;
+        }
+    }
+
+    private static class FooInt {
+        private int test;
+
+        public FooInt() {
+        }
+
+        public int getTest() {
+            return test;
+        }
+
+        public void setTest(int test) {
             this.test = test;
         }
     }

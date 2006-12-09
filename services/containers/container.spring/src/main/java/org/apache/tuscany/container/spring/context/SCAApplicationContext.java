@@ -16,53 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.container.spring.config;
+package org.apache.tuscany.container.spring.context;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.sca.ScaAdapterAware;
-import org.springframework.sca.ScaAdapterPostProcessor;
-
-import org.apache.tuscany.container.spring.impl.SpringScaAdapter;
-import org.apache.tuscany.container.spring.model.SpringComponentType;
 
 /**
- * @author Andy Piper
- * @since 2.1
+ * An <code>ApplicationContext</code> specialization that registers namespace handlers for SCA elements
+ *
+ * @version $Rev$ $Date$
  */
-public class ScaApplicationContext extends AbstractXmlApplicationContext {
+public class SCAApplicationContext extends AbstractXmlApplicationContext {
     public static final String APP_CONTEXT_PROP = "org.springframework.sca.application.context";
     private Resource appXml;
-    private SpringComponentType componentType;
 
-    public ScaApplicationContext(Resource appXml, SpringComponentType componentType) {
-        this(null, appXml, componentType);
-    }
-
-    public ScaApplicationContext(ApplicationContext parent, Resource appXml, SpringComponentType componentType) {
+    public SCAApplicationContext(ApplicationContext parent, Resource appXml) {
         super(parent);
         this.appXml = appXml;
-        this.componentType = componentType;
         refresh();
     }
 
     protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
-        // beanDefinitionReader.setEntityResolver(null);
-        beanDefinitionReader
-                .setNamespaceHandlerResolver(new SCANamespaceHandlerResolver(getClassLoader(), componentType));
+        ClassLoader cl = getClassLoader();
+        beanDefinitionReader.setNamespaceHandlerResolver(new SCANamespaceHandlerResolver(cl));
     }
 
     protected Resource[] getConfigResources() {
         return new Resource[]{appXml};
-    }
-
-    protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        super.postProcessBeanFactory(beanFactory);
-        beanFactory.addBeanPostProcessor(new ScaAdapterPostProcessor(new SpringScaAdapter(componentType)));
-        beanFactory.ignoreDependencyInterface(ScaAdapterAware.class);
     }
 }

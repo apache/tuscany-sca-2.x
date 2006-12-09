@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sca="http://www.springframework.org/schema/sca"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/sca http://www.springframework.org/schema/sca/spring-sca.xsd">
+
+    <bean id="testBean" class="org.apache.tuscany.container.spring.mock.TestBeanImpl">
+        <property name="bean" ref="testReference"/>
+    </bean>
+
+    <sca:reference name="testReference" type="org.apache.tuscany.container.spring.mock.TestBean"/>
+
+</beans>

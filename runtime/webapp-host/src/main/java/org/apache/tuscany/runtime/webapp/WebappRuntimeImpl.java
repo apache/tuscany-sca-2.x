@@ -20,11 +20,20 @@ package org.apache.tuscany.runtime.webapp;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.xml.stream.XMLInputFactory;
+
+import org.osoa.sca.SCA;
+
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.event.EventPublisher;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -40,12 +49,6 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.event.EventPublisher;
-import org.osoa.sca.SCA;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -141,8 +144,21 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                 getApplicationScdl(),
                 getHostClassLoader());
             application.start();
-
-            context = new CompositeContextImpl(application);
+            CompositeComponent current = application;
+            String path = servletContext.getInitParameter(Constants.CURRENT_COMPOSITE_PATH_PARAM);
+            if (path != null) {
+                StringTokenizer tokenizer = new StringTokenizer(path, "/");
+                while(tokenizer.hasMoreTokens()) {
+                    SCAObject o = current.getChild(tokenizer.nextToken());
+                    if (!(o instanceof CompositeComponent)){
+                        ServletLauncherInitException e = new ServletLauncherInitException("Invalid context path");
+                        e.setIdentifier(path);
+                        throw e;
+                    }
+                    current = (CompositeComponent)o;
+                }
+            }
+            context = new CompositeContextImpl(current);
         } catch (Exception e) {
             throw new ServletLauncherInitException(e);
         }
@@ -179,25 +195,25 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     public void sessionCreated(HttpSessionEvent event) {
         HttpSessionStart startSession = new HttpSessionStart(this, event.getSession().getId());
         application.publish(startSession);
-        ((EventPublisher)requestInjector).publish(startSession);
+        ((EventPublisher) requestInjector).publish(startSession);
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
         HttpSessionEnd endSession = new HttpSessionEnd(this, event.getSession().getId());
         application.publish(endSession);
-        ((EventPublisher)requestInjector).publish(endSession);
+        ((EventPublisher) requestInjector).publish(endSession);
     }
-    
+
     public void httpRequestStarted(Object sessionid) {
         HttpRequestStart httpRequestStart = new HttpRequestStart(this, sessionid);
         application.publish(httpRequestStart);
-        ((EventPublisher)requestInjector).publish(httpRequestStart);
+        ((EventPublisher) requestInjector).publish(httpRequestStart);
     }
-    
+
     public void httpRequestEnded(Object sessionid) {
         HttpRequestEnded httpRequestEnded = new HttpRequestEnded(this, sessionid);
         application.publish(httpRequestEnded);
-        ((EventPublisher)requestInjector).publish(httpRequestEnded);
+        ((EventPublisher) requestInjector).publish(httpRequestEnded);
     }
 
 

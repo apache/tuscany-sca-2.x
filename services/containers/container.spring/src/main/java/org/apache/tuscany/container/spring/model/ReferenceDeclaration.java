@@ -16,26 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.container.spring.webapp;
-
-import java.io.File;
-import javax.servlet.ServletContext;
-
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
-
-import org.apache.tuscany.container.spring.impl.SpringRuntimeInfo;
-import org.apache.tuscany.runtime.webapp.WebappRuntimeInfo;
+package org.apache.tuscany.container.spring.model;
 
 /**
- * @author Andy Piper
+ * Represents a <code>sca:reference<code> declaration in an application context. Used as component type metadata for a
+ * Spring composite
+ *
+ * @version $Rev$ $Date$
  */
-public class SpringWebappRuntimeInfo extends SpringRuntimeInfo implements WebappRuntimeInfo {
-    public SpringWebappRuntimeInfo(File appRootDir, XmlWebApplicationContext applicationContext) {
-        super(appRootDir, applicationContext);
+public class ReferenceDeclaration {
+    private String name;
+    private Class<?> serviceType;
+
+    public ReferenceDeclaration(String name, Class<?> serviceType) {
+        this.name = name;
+        this.serviceType = serviceType;
     }
 
-    public ServletContext getServletContext() {
-        return ((WebApplicationContext) getApplicationContext()).getServletContext();
+    public String getName() {
+        return name;
+    }
+
+    public Class<?> getServiceType() {
+        return serviceType;
     }
 }

@@ -30,7 +30,9 @@ import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Resource;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
+import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
@@ -53,6 +55,7 @@ import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getBaseName;
  */
 public class ImplementationProcessorServiceImpl implements ImplementationProcessorService {
     private JavaInterfaceProcessorRegistry registry;
+    private SimpleTypeMapperExtension typeMapper = new SimpleTypeMapperExtension();
 
     public ImplementationProcessorServiceImpl(@Autowire JavaInterfaceProcessorRegistry registry) {
         this.registry = registry;
@@ -266,6 +269,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         // the param is marked as a property
         Property propAnnot = (Property) annot;
         JavaMappedProperty<T> property = new JavaMappedProperty<T>();
+        property.setJavaType(param);
         String name = propAnnot.name();
         if (name == null || name.length() == 0) {
             if (constructorNames.length < pos + 1 || constructorNames[pos] == null
@@ -284,7 +288,15 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         property.setName(name);
         property.setOverride(OverrideOptions.valueOf(propAnnot.override().toUpperCase()));
 
-        property.setXmlType(QName.valueOf(propAnnot.xmlType()));
+        String xmlType = propAnnot.xmlType();
+        if (xmlType != null && xmlType.length() != 0) {
+            property.setXmlType(QName.valueOf(xmlType));
+        } else {
+            TypeInfo typeInfo = typeMapper.getXMLType(property.getJavaType());
+            if (typeInfo != null) {
+                property.setXmlType(typeInfo.getQName());
+            }
+        }
         property.setJavaType(param);
         type.getProperties().put(name, property);
         addName(explicitNames, pos, name);

@@ -12,17 +12,25 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Created on 10-Apr-2006 by Adrian Colyer
  */
+package org.apache.tuscany.container.spring.context;
 
-package org.springframework.sca.metadata;
+import org.w3c.dom.Element;
+
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.springframework.beans.factory.xml.ParserContext;
 
 /**
- * Source of ServiceMetadata by name
- *
- * @author Rod Johnson
+ * Parser for the &lt;sca:reference&gt; element
  */
-public interface DeploymentMetadata {
+public class ScaReferenceBeanDefinitionParser implements BeanDefinitionParser {
 
-    ServiceMetadata getServiceMetadata(String serviceName) throws NoSuchServiceException;
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+        // do nothing, this is handled by Tuscany
+        return null;
+    }
 
 }

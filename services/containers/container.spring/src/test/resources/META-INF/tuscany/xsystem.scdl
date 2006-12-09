@@ -17,24 +17,21 @@
  * specific language governing permissions and limitations
  * under the License.    
  -->
-<!--
-    Spring implementation extension configuration for the launcher environment.
--->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-
-           name="org.apache.tuscany.launcher.SpringImplementation">
-
-    <component name="spring.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.loader.SpringImplementationLoader"/>
-    </component>
-
-    <component name="spring.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.loader.SpringXMLComponentTypeLoader"/>
-    </component>
-
-    <component name="spring.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.spring.impl.SpringCompositeBuilder"/>
-    </component>
+           name="spring.test">
+ <!--
+    <component name="Spring">
+        <implementation.spring location="META-INF/sca/application-context.xml">
+            <service name="fooService">
+                <binding.test/>
+                <interface.java class="org.apache.tuscany.container.spring.mock.TestBean"/>
+                <reference>testBean</reference>
+            </service>
+            <reference name="testReference">
+                <interface.java class="org.apache.tuscany.container.spring.mock.TestBean"/>
+                <binding.test/>
+            </reference>
+        </implementation.spring>
+    </component>  -->
 
 </composite>

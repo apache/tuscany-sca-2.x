@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.container.spring.model;
 
-import org.apache.tuscany.spi.model.Binding;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Property;
 
@@ -31,19 +28,14 @@ import org.springframework.core.io.Resource;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SpringImplementation extends Implementation<SpringComponentType<BoundServiceDefinition<? extends Binding>,
-    BoundReferenceDefinition<? extends Binding>, ? extends Property>> {
-
+public class SpringImplementation extends Implementation<SpringComponentType<Property<?>>> {
     private String location;
     private Resource applicationResource;
 
     public SpringImplementation() {
     }
 
-    public SpringImplementation(SpringComponentType<
-        BoundServiceDefinition<? extends Binding>,
-        BoundReferenceDefinition<? extends Binding>,
-        ? extends Property> componentType) {
+    public SpringImplementation(SpringComponentType<Property<?>> componentType) {
         super(componentType);
     }
 

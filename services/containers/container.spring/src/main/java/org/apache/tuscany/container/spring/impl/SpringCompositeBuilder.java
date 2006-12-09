@@ -30,13 +30,13 @@ import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 
+import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.core.io.Resource;
 
 /**
  * Creates a {@link org.apache.tuscany.container.spring.impl.SpringCompositeComponent} from an assembly model
@@ -45,19 +45,17 @@ import org.springframework.context.support.AbstractApplicationContext;
  */
 public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImplementation> {
 
+    @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<SpringImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
-        AbstractApplicationContext applicationContext = implementation.getComponentType().getApplicationContext();
-        SpringCompositeComponent component =
-            new SpringCompositeComponent(name, applicationContext, parent, connector, null);
-        CompositeComponentType<BoundServiceDefinition<? extends Binding>,
-            BoundReferenceDefinition<? extends Binding>,
-            ? extends Property> componentType = implementation.getComponentType();
+        Resource resource = implementation.getApplicationResource();
+        SpringCompositeComponent component = new SpringCompositeComponent(name, resource, parent, connector, null);
+        SpringComponentType<Property<?>> componentType = implementation.getComponentType();
 
-        // We still need to set the target invoker as opposed to having the connector do it since the
+        // We need to set the target invoker as opposed to having the connector do it since the
         // Spring context is "opaque" to the wiring fabric. In other words, the Spring context does not expose
         // its beans as SCA components to the connector to wire the services to
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
