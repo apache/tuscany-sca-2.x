@@ -45,7 +45,7 @@ public class BootstrapTestCase extends SCATestCase {
 
     protected void setUp() throws Exception {
         addExtension("geronimo.jta", getClass().getClassLoader().getResource("META-INF/sca/geronimo.jta.scdl"));
-        setApplicationSCDL(getClass().getClassLoader().getResource("META-INF/sca/empty.scdl"));
+        setApplicationSCDL(getClass().getClassLoader().getResource("META-INF/sca/test.scdl"));
         super.setUp();
         RuntimeComponent runtime = (RuntimeComponent) component.getParent().getParent();
         CompositeComponent systemComposite = runtime.getSystemComponent();
