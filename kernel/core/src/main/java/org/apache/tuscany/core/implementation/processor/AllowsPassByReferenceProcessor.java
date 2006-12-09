@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import org.osoa.sca.annotations.AllowsPassByReference;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
@@ -26,10 +28,9 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.model.Scope;
 
 /**
- * Processes the {@link Scope} annotation and updates the component type with the corresponding implmentation scope
+ * Processes {@link AllowsPassByReference} on an implementation
  *
  * @version $Rev: 479093 $ $Date: 2006-11-25 12:34:41 +0530 (Sat, 25 Nov 2006) $
  */
@@ -39,13 +40,12 @@ public class AllowsPassByReferenceProcessor extends ImplementationProcessorExten
                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                DeploymentContext context)
         throws ProcessingException {
-        org.osoa.sca.annotations.AllowsPassByReference annotation = 
-            clazz.getAnnotation(org.osoa.sca.annotations.AllowsPassByReference.class);
+        AllowsPassByReference annotation = clazz.getAnnotation(AllowsPassByReference.class);
         if (annotation != null) {
             type.setAllowsPassByReference(true);
         } else {
             type.setAllowsPassByReference(false);
         }
-            
+
     }
 }

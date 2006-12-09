@@ -94,7 +94,7 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler , workContext);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
 
         connector.connect(clientComponent);
         FooClient client = (FooClient) clientComponent.getServiceInstance();
@@ -125,7 +125,7 @@ public class CallbackInvocationTestCase extends TestCase {
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
-        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler , workContext);
+        Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
 
         connector.connect(clientComponent);
         FooPlainClient client = (FooPlainClient) clientComponent.getServiceInstance();
@@ -193,7 +193,7 @@ public class CallbackInvocationTestCase extends TestCase {
     }
 
     private ComponentDefinition<JavaImplementation> createSource(String name)
-    throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
+        throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
         ConstructorDefinition<FooClient> ctorDef =
             new ConstructorDefinition<FooClient>(FooClient.class.getConstructor());
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -219,7 +219,7 @@ public class CallbackInvocationTestCase extends TestCase {
     }
 
     private ComponentDefinition<JavaImplementation> createPlainSource(String name)
-    throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
+        throws NoSuchMethodException, URISyntaxException, InvalidServiceContractException {
         ConstructorDefinition<FooPlainClient> ctorDef =
             new ConstructorDefinition<FooPlainClient>(FooPlainClient.class.getConstructor());
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -247,7 +247,9 @@ public class CallbackInvocationTestCase extends TestCase {
     @Callback(FooCallback.class)
     public static interface Foo {
         void call();
+
         void callMultiCallback();
+
         void callFromPlain();
     }
 
@@ -265,7 +267,7 @@ public class CallbackInvocationTestCase extends TestCase {
         public void call() {
             callback.callback();
         }
-        
+
         public void callMultiCallback() {
             callback.multiCallback();
             callback.multiCallback();
@@ -302,7 +304,7 @@ public class CallbackInvocationTestCase extends TestCase {
             }
             invoked = true;
         }
-        
+
         public void multiCallback() {
             count++;
         }
@@ -318,6 +320,7 @@ public class CallbackInvocationTestCase extends TestCase {
 
     public interface FooCallback {
         void callback();
+
         void multiCallback();
     }
 
@@ -335,13 +338,13 @@ public class CallbackInvocationTestCase extends TestCase {
         public void invoke() {
             foo.callFromPlain();
         }
-        
+
         public void callback() {
-            
+
         }
-        
+
         public void multiCallback() {
-            
+
         }
     }
 

@@ -26,14 +26,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
+
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * An interceptor to enforce pass-by-value semantics for remotable interfaces
@@ -47,7 +46,7 @@ public class PassByValueInterceptor implements Interceptor {
 
     public Message invoke(Message msg) {
         Object obj = msg.getBody();
-        msg.setBody(copy((Object[])obj));
+        msg.setBody(copy((Object[]) obj));
         Message result = next.invoke(msg);
         if (!result.isFault()) {
             result.setBody(copy(result.getBody()));
@@ -91,7 +90,7 @@ public class PassByValueInterceptor implements Interceptor {
             return null;
         }
         final Class cls = arg.getClass();
-        if ( JavaIntrospectionHelper.isImmutable(cls))  {
+        if (JavaIntrospectionHelper.isImmutable(cls)) {
             // Immutable classes
             return arg;
         }
@@ -109,8 +108,7 @@ public class PassByValueInterceptor implements Interceptor {
                     @Override
                     protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
                         try {
-                            Class<?> resolvedCls = Class.forName(desc.getName(), false, cls.getClassLoader());
-                            return resolvedCls;
+                            return Class.forName(desc.getName(), false, cls.getClassLoader());
                         } catch (ClassNotFoundException e) {
                             return super.resolveClass(desc);
                         }
