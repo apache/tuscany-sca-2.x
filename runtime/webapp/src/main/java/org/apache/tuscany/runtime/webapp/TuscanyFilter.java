@@ -38,7 +38,6 @@ import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
  * @version $Rev$ $Date$
  */
 public class TuscanyFilter implements Filter {
-
     private SCA context;
     private WebappRuntime runtime;
 

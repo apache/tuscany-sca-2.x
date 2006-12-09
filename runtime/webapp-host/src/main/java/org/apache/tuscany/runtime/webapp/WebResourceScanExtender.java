@@ -18,18 +18,17 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Set;
-
 import javax.servlet.ServletContext;
 
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
-import org.apache.tuscany.runtime.webapp.WebappRuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
+
+import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
 
 /**
  * @version $Rev$ $Date$

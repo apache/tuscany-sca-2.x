@@ -36,7 +36,6 @@ import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
  * TODO a better URL mapping scheme out to be implemented that corresponds to the SCA specification
  */
 public class TuscanyServlet extends HttpServlet {
-
     private static final long serialVersionUID = 1L;
 
     private ServletRequestInjector requestInjector;
