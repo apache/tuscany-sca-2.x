@@ -61,6 +61,8 @@
         <module>databinding</module>
         <module>bindings</module>
         <module>maven</module>
+        <module>persistence</module>
+        <module>transaction</module>
 <!--
         <module>transports/http.jetty</module>
 -->
