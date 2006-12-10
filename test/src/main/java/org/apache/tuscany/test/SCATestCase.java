@@ -46,11 +46,12 @@ public abstract class SCATestCase extends TestCase {
     private CompositeContextImpl context;
     private Map<String, URL> extensions = new HashMap<String, URL>();
     private URL applicationSCDL;
-
+    private LauncherImpl launcher;
+    
     protected void setUp() throws Exception {
         super.setUp();
         ClassLoader cl = getClass().getClassLoader();
-        LauncherImpl launcher = new LauncherImpl();
+        launcher = new LauncherImpl();
         launcher.setApplicationLoader(cl);
         CompositeComponent composite = launcher.bootRuntime(cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH),
                                                             new NullMonitorFactory());
@@ -132,6 +133,7 @@ public abstract class SCATestCase extends TestCase {
     protected void tearDown() throws Exception {
         context.stop();
         component.stop();
+        launcher.shutdownRuntime();
         super.tearDown();
     }
 }
