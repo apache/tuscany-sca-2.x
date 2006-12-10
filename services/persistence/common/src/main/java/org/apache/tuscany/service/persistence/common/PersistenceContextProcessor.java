@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.service.persistence.common;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.Properties;
 
 import javax.persistence.EntityManager;
@@ -25,6 +27,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceProperty;
+import javax.transaction.TransactionManager;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -40,6 +43,10 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
  *
  */
 public class PersistenceContextProcessor extends AbstractPropertyProcessor<PersistenceContext> {
+    
+    /** Transaction Manager */
+    @Autowire
+    private TransactionManager transactionManager;
 
     /** Persistence unit builder */
     private PersistenceUnitBuilder builder = new DefaultPersistenceUnitBuilder();
@@ -92,17 +99,21 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
             
             PersistenceContextType type = annotation.type();
             if(type == PersistenceContextType.TRANSACTION) {
-                // TODO This needs to be proxied
+                
                 Properties props = new Properties();
                 for(PersistenceProperty property : annotation.properties()) {
                     props.put(property.name(), property.value());
                 }
-                EntityManager em = emf.createEntityManager(props);
-                em.joinTransaction();
+                
+                Class[] interfaces = new Class[] {EntityManager.class};
+                InvocationHandler handler = new EntityManagerProxy(props, emf, transactionManager);
+                EntityManager em = (EntityManager)Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, handler);
                 return em;
+                
             } else {
                 throw new UnsupportedOperationException("Extended persistence contexts not supported");
             }
+            
         }
         
     }
