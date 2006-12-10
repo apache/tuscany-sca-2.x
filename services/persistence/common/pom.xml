@@ -56,6 +56,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.tuscany.sca.services.transaction</groupId>
+            <artifactId>tuscany-transaction-geronimo</artifactId>
+            <version>${sca.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-api</artifactId>
             <version>${sca.version}</version>
