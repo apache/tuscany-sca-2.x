@@ -24,6 +24,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.easymock.EasyMock;
 
 /**
@@ -39,7 +40,7 @@ public class SystemServiceComponentWireTestCase extends TestCase {
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
         EasyMock.replay(outboundWire);
         SystemInboundWire wire = new SystemInboundWireImpl("Target", Target.class);
-        SystemService serviceContext = new SystemServiceImpl("service", null);
+        SystemService serviceContext = new SystemServiceImpl("service", null, new JavaServiceContract());
         serviceContext.setInboundWire(wire);
         serviceContext.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);
