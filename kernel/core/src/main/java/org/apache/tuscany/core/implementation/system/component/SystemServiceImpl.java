@@ -43,9 +43,11 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
 
     protected SystemInboundWire inboundWire;
     protected SystemOutboundWire outboundWire;
+    protected ServiceContract<?> serviceContract;
 
-    public SystemServiceImpl(String name, CompositeComponent parent) throws CoreRuntimeException {
+    public SystemServiceImpl(String name, CompositeComponent parent, ServiceContract<?> serviceContract) throws CoreRuntimeException {
         super(name, parent);
+        this.serviceContract = serviceContract;
     }
 
     public Scope getScope() {
@@ -89,7 +91,7 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
     }
 
     public ServiceContract<?> getBindingServiceContract() {
-        throw new UnsupportedOperationException();
+        return serviceContract;
     }
 
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {

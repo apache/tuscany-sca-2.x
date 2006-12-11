@@ -24,6 +24,8 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.BindingBuilderExtension;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -45,23 +47,24 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
+public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding> implements BindingBuilder<SystemBinding> {
 
     public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> boundServiceDefinition,
                                DeploymentContext deploymentContext) {
-        Class<?> interfaze = boundServiceDefinition.getServiceContract().getInterfaceClass();
+        
         QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
         Component target = (Component) parent.getSystemChild(targetName.getPartName());
         if (target == null) {
             throw new BuilderConfigException("Target not found: [" + targetName + ']');
         }
+        Class<?> interfaze = target.getServiceInterfaces().get(0);
         String name = boundServiceDefinition.getName();
         InboundWire inboundWire =
             new SystemInboundWireImpl(name, interfaze, target);
         SystemOutboundWire outboundWire =
             new SystemOutboundWireImpl(name, targetName, interfaze);
-        SystemService service = new SystemServiceImpl(boundServiceDefinition.getName(), parent);
+        SystemService service = new SystemServiceImpl(boundServiceDefinition.getName(), parent, new JavaServiceContract(interfaze));
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         return service;
@@ -82,4 +85,10 @@ public class SystemBindingBuilder implements BindingBuilder<SystemBinding> {
         reference.setOutboundWire(outboundWire);
         return reference;
     }
+
+	@Override
+	protected Class<SystemBinding> getBindingType() {
+		// TODO Auto-generated method stub
+		return SystemBinding.class;
+	}
 }
