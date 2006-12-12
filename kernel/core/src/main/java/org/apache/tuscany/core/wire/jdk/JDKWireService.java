@@ -21,9 +21,9 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -33,6 +33,8 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceNotFoundException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -54,6 +56,7 @@ import org.apache.tuscany.spi.wire.WireServiceExtension;
 
 import org.apache.tuscany.core.implementation.composite.CompositeReference;
 import org.apache.tuscany.core.implementation.composite.CompositeService;
+import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -72,7 +75,7 @@ public class JDKWireService extends WireServiceExtension {
         super(null, null);
     }
 
-    @Constructor({"workContext", "policyregisty"})
+    @Constructor
     public JDKWireService(@Autowire WorkContext context, @Autowire PolicyBuilderRegistry policyRegistry) {
         super(context, policyRegistry);
     }
@@ -143,6 +146,54 @@ public class JDKWireService extends WireServiceExtension {
         return new InboundInvocationChainImpl(operation);
     }
 
+    public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
+        //TODO multiplicity
+        if (reference.getTargets().size() != 1) {
+            throw new UnsupportedOperationException();
+        }
+        ServiceContract<?> contract = def.getServiceContract();
+        OutboundWire wire = new OutboundWireImpl();
+        QualifiedName qName = new QualifiedName(reference.getTargets().get(0).toString());
+        wire.setTargetName(qName);
+        wire.setServiceContract(contract);
+        wire.setReferenceName(reference.getReferenceName());
+        for (Operation<?> operation : contract.getOperations().values()) {
+            //TODO handle policy
+            OutboundInvocationChain chain = createOutboundChain(operation);
+            wire.addInvocationChain(operation, chain);
+
+        }
+        if (contract.getCallbackName() != null) {
+            wire.setCallbackInterface(contract.getCallbackClass());
+            for (Operation<?> operation : contract.getCallbackOperations().values()) {
+                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
+                // TODO handle policy
+                //TODO statement below could be cleaner
+                callbackTargetChain.addInterceptor(new InvokerInterceptor());
+                wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
+            }
+        }
+        return wire;
+    }
+
+    public InboundWire createWire(ServiceDefinition service) {
+        InboundWire wire = new InboundWireImpl();
+        ServiceContract<?> contract = service.getServiceContract();
+        wire.setServiceContract(contract);
+        wire.setServiceName(service.getName());
+        for (Operation<?> operation : contract.getOperations().values()) {
+            InboundInvocationChain chain = createInboundChain(operation);
+            // TODO handle policy
+            //TODO statement below could be cleaner
+            chain.addInterceptor(new InvokerInterceptor());
+            wire.addInvocationChain(operation, chain);
+        }
+        if (contract.getCallbackName() != null) {
+            wire.setCallbackReferenceName(service.getCallbackReferenceName());
+        }
+        return wire;
+    }
+
     public void createWires(Component component, ComponentDefinition<?> definition) {
         Implementation<?> implementation = definition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
@@ -154,6 +205,12 @@ public class JDKWireService extends WireServiceExtension {
                 // by CompositeBuilder and thus its children, in particular composite services,
                 // have been registered
                 CompositeComponent compositeComponent = (CompositeComponent) component;
+                if (service instanceof BoundServiceDefinition) {
+                    Binding binding = ((BoundServiceDefinition) service).getBinding();
+                    if (binding instanceof SystemBinding) {
+                        continue;
+                    }
+                }
                 Service serviceChild = (Service) compositeComponent.getChild(service.getName());
                 assert serviceChild != null;
                 if (serviceChild instanceof CompositeService) {
@@ -227,54 +284,6 @@ public class JDKWireService extends WireServiceExtension {
         reference.setOutboundWire(outboundWire);
     }
 
-    public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
-        //TODO multiplicity
-        if (reference.getTargets().size() != 1) {
-            throw new UnsupportedOperationException();
-        }
-        ServiceContract<?> contract = def.getServiceContract();
-        OutboundWire wire = new OutboundWireImpl();
-        QualifiedName qName = new QualifiedName(reference.getTargets().get(0).toString());
-        wire.setTargetName(qName);
-        wire.setServiceContract(contract);
-        wire.setReferenceName(reference.getReferenceName());
-        for (Operation<?> operation : contract.getOperations().values()) {
-            //TODO handle policy
-            OutboundInvocationChain chain = createOutboundChain(operation);
-            wire.addInvocationChain(operation, chain);
-
-        }
-        if (contract.getCallbackName() != null) {
-            wire.setCallbackInterface(contract.getCallbackClass());
-            for (Operation<?> operation : contract.getCallbackOperations().values()) {
-                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                // TODO handle policy
-                //TODO statement below could be cleaner
-                callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
-            }
-        }
-        return wire;
-    }
-
-    public InboundWire createWire(ServiceDefinition service) {
-        InboundWire wire = new InboundWireImpl();
-        ServiceContract<?> contract = service.getServiceContract();
-        wire.setServiceContract(contract);
-        wire.setServiceName(service.getName());
-        for (Operation<?> operation : contract.getOperations().values()) {
-            InboundInvocationChain chain = createInboundChain(operation);
-            // TODO handle policy
-            //TODO statement below could be cleaner
-            chain.addInterceptor(new InvokerInterceptor());
-            wire.addInvocationChain(operation, chain);
-        }
-        if (contract.getCallbackName() != null) {
-            wire.setCallbackReferenceName(service.getCallbackReferenceName());
-        }
-        return wire;
-    }
-
     public void createWires(Service service, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
 
@@ -305,8 +314,8 @@ public class JDKWireService extends WireServiceExtension {
             outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-// TODO handle policy
-//TODO statement below could be cleaner
+                // TODO handle policy
+                //TODO statement below could be cleaner
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
                 outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
             }

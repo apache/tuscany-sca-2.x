@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -27,18 +27,19 @@ import javax.xml.stream.XMLStreamReader;
 import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Constructor;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.MissingResourceException;
+import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.loader.MissingIncludeException;
-import org.apache.tuscany.spi.model.Include;
+import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.apache.tuscany.spi.model.CompositeComponentType;
+import org.apache.tuscany.spi.model.Include;
 import org.apache.tuscany.spi.model.ModelObject;
-import org.apache.tuscany.spi.annotation.Autowire;
+
 import org.apache.tuscany.core.deployer.ChildDeploymentContext;
 
 /**
@@ -86,13 +87,19 @@ public class IncludeLoader extends LoaderExtension<Include> {
                 throw mre;
             }
         } else {
-            MissingIncludeException mie = new MissingIncludeException();
+            MissingIncludeException mie = new MissingIncludeException("No SCDL location or resource specified");
             mie.setIdentifier(name);
             throw mie;
         }
 
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url);
-        CompositeComponentType composite = loadFromSidefile(parent, url, childContext);
+        CompositeComponentType composite;
+        try {
+            composite = loadFromSidefile(parent, url, childContext);
+        } catch (LoaderException e) {
+            e.addContextName(name);
+            throw e;
+        }
 
         Include include = new Include();
         include.setName(name);

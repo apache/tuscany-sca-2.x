@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -29,8 +30,9 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.services.artifact.Artifact;
 
 /**
  * Loader for handling <dependency> elements.
@@ -55,7 +57,8 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
     }
 
     public Dependency load(CompositeComponent parent,
-                           ModelObject object, XMLStreamReader reader,
+                           ModelObject object,
+                           XMLStreamReader reader,
                            DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
 
@@ -73,6 +76,13 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
                 artifact.setClassifier(text);
             } else if (TYPE.equals(name)) {
                 artifact.setType(text);
+            } else {
+                Location location = reader.getLocation();
+                int line = location.getLineNumber();
+                int col = location.getColumnNumber();
+                UnrecognizedElementException e = new UnrecognizedElementException(name);
+                e.setIdentifier(line + "," + col);
+                throw e;
             }
         }
         Dependency dependency = new Dependency();

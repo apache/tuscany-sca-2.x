@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.builder.NoRegisteredBuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -50,6 +51,8 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.implementation.system.component.SystemService;
 
 /**
  * The default builder registry in the runtime
@@ -100,29 +103,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <I extends Implementation<?>> Component build(CompositeComponent parent,
-                                                         ComponentDefinition<I> componentDefinition,
-                                                         DeploymentContext deploymentContext) {
-        Class<?> implClass = componentDefinition.getImplementation().getClass();
-        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
-        if (componentBuilder == null) {
-            BuilderConfigException e = new BuilderConfigException("No builder registered for implementation");
-            e.setIdentifier(implClass.getName());
-            e.addContextName(componentDefinition.getName());
-            throw e;
-        }
-
-        Component component = componentBuilder.build(parent, componentDefinition, deploymentContext);
-        ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
-        assert componentType != null : "Component type must be set";
-        // create wires for the component
-        if (wireService != null && !(component instanceof SystemAtomicComponent)) {
-            wireService.createWires(component, componentDefinition);
-        }
-        return component;
-    }
-
-    @SuppressWarnings("unchecked")
     public <B extends Binding> void register(BindingBuilder<B> builder) {
         Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {
@@ -149,14 +129,39 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
+    public <I extends Implementation<?>> Component build(CompositeComponent parent,
+                                                         ComponentDefinition<I> componentDefinition,
+                                                         DeploymentContext deploymentContext) {
+        Class<?> implClass = componentDefinition.getImplementation().getClass();
+        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
+        if (componentBuilder == null) {
+            BuilderConfigException e = new BuilderConfigException("No builder registered for implementation");
+            e.setIdentifier(implClass.getName());
+            e.addContextName(componentDefinition.getName());
+            throw e;
+        }
+
+        Component component = componentBuilder.build(parent, componentDefinition, deploymentContext);
+        ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
+        assert componentType != null : "Component type must be set";
+        // create wires for the component
+        if (wireService != null && !(component instanceof SystemAtomicComponent)) {
+            wireService.createWires(component, componentDefinition);
+        }
+        return component;
+    }
+
+    @SuppressWarnings("unchecked")
     public <B extends Binding> SCAObject build(CompositeComponent parent,
                                                BoundServiceDefinition<B> boundServiceDefinition,
                                                DeploymentContext deploymentContext) {
         Class<?> bindingClass = boundServiceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
+        if (bindingBuilder == null) {
+            throw new NoRegisteredBuilderException(bindingClass.getName());
+        }
         SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
-        if (wireService != null) {
-            // wireService.createWires((Service) object, boundServiceDefinition);
+        if (wireService != null && !(object instanceof SystemService)) {
             String path = boundServiceDefinition.getTarget().getPath();
             ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
             wireService.createWires((Service) object, path, contract);

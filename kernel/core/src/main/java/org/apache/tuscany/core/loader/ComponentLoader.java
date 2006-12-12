@@ -237,14 +237,11 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                     if (aProperty.getOverride() == OverrideOptions.MUST) {
                         throw new MissingMustOverridePropertyException(aProperty.getName());
                     } else if (aProperty.getDefaultValue() != null) {
-                        //} else {
                         PropertyValue propertyValue = new PropertyValue();
                         propertyValue.setName(aProperty.getName());
                         propertyValue.setValue(aProperty.getDefaultValue());
-                        // propertyValue.setValueFactory(aProperty.getDefaultValueFactory());
                         propertyValue.setValueFactory(new SimplePropertyObjectFactory(aProperty,
-                            propertyValue
-                                .getValue()));
+                            propertyValue.getValue()));
                         propertyValues.put(aProperty.getName(), propertyValue);
                     }
                 }

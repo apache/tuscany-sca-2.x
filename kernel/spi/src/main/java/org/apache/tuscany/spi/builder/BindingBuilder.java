@@ -35,10 +35,10 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public interface BindingBuilder<B extends Binding> {
     Service build(CompositeComponent parent,
-                    BoundServiceDefinition<B> boundServiceDefinition,
-                    DeploymentContext deploymentContext);
+                  BoundServiceDefinition<B> boundServiceDefinition,
+                  DeploymentContext deploymentContext) throws BuilderException;
 
     Reference build(CompositeComponent parent,
                     BoundReferenceDefinition<B> boundReferenceDefinition,
-                    DeploymentContext deploymentContext);
+                    DeploymentContext deploymentContext) throws BuilderException;
 }

@@ -98,10 +98,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
             component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
         }
-
-        // HACK: [rfeng] We need a better way to propagate model extensions to SCAObject.
         component.getExtensions().putAll(componentType.getExtensions());
-
         return component;
     }
 

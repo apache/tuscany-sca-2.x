@@ -43,40 +43,39 @@ public interface Builder {
      * @param componentDefinition the component definition as parsed from an SCA assembly
      * @param deploymentContext   the current deployment context
      * @return a newly created component
+     * @throws BuilderException
      */
     <I extends Implementation<?>> Component build(CompositeComponent parent,
-                                                     ComponentDefinition<I> componentDefinition,
-                                                     DeploymentContext deploymentContext);
+                                                  ComponentDefinition<I> componentDefinition,
+                                                  DeploymentContext deploymentContext) throws BuilderException;
 
     /**
      * TODO: JavaDoc this when we know if we will still register Services as contexts
      */
     <B extends Binding> SCAObject build(CompositeComponent parent,
                                         BoundServiceDefinition<B> boundServiceDefinition,
-                                        DeploymentContext deploymentContext);
+                                        DeploymentContext deploymentContext) throws BuilderException;
 
     /**
      * TODO: JavaDoc this when we know if we will still register References as contexts
      */
     <B extends Binding> SCAObject build(CompositeComponent parent,
                                         BoundReferenceDefinition<B> boundReferenceDefinition,
-                                        DeploymentContext deploymentContext);
+                                        DeploymentContext deploymentContext) throws BuilderException;
 
     /**
-     * TODO: Make sure that this method belongs here
-     * Allow a builder registry to provide building of bindless services via
-     * appropriate registered builder
+     * TODO: Make sure that this method belongs here Allow a builder registry to provide building of bindless services
+     * via appropriate registered builder
      */
     SCAObject build(CompositeComponent parent,
-                                       BindlessServiceDefinition serviceDefinition,
-                                       DeploymentContext deploymentContext);
+                    BindlessServiceDefinition serviceDefinition,
+                    DeploymentContext deploymentContext) throws BuilderException;
 
     /**
-     * TODO: Make sure that this method belongs here
-     * Allow a builder registry to provide building of targetless references via
-     * appropriate registered builder
+     * TODO: Make sure that this method belongs here Allow a builder registry to provide building of targetless
+     * references via appropriate registered builder
      */
     SCAObject build(CompositeComponent parent,
-                                       ReferenceDefinition referenceDefinition,
-                                       DeploymentContext deploymentContext);
+                    ReferenceDefinition referenceDefinition,
+                    DeploymentContext deploymentContext) throws BuilderException;
 }

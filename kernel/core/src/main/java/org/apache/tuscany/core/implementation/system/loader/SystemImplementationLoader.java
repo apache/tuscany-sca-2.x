@@ -19,20 +19,22 @@
 package org.apache.tuscany.core.implementation.system.loader;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Constructor;
-
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.LoaderUtil;
-import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
+
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 
 /**
  * Loads information for a system implementation
@@ -43,15 +45,13 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
     public static final QName SYSTEM_IMPLEMENTATION =
         new QName("http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT", "implementation.system");
 
-    @Constructor({"registry"})
     public SystemImplementationLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
     public SystemImplementation load(CompositeComponent parent,
                                      ModelObject object, XMLStreamReader reader,
-                                     DeploymentContext deploymentContext
-    )
+                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert SYSTEM_IMPLEMENTATION.equals(reader.getName());
         SystemImplementation implementation = new SystemImplementation();
@@ -59,8 +59,20 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         Class<?> implementationClass = LoaderUtil.loadClass(implClass, deploymentContext.getClassLoader());
         implementation.setImplementationClass(implementationClass);
         registry.loadComponentType(parent, implementation, deploymentContext);
-        LoaderUtil.skipToEndElement(reader);
-        return implementation;
+        while (true) {
+            int code = reader.next();
+            if (code == XMLStreamConstants.START_ELEMENT) {
+                Location location = reader.getLocation();
+                int line = location.getLineNumber();
+                int col = location.getColumnNumber();
+                UnrecognizedElementException e = new UnrecognizedElementException(reader.getName());
+                e.setIdentifier(line + "," + col);
+                throw e;
+
+            } else if (code == XMLStreamConstants.END_ELEMENT) {
+                return implementation;
+            }
+        }
     }
 
     public QName getXMLType() {

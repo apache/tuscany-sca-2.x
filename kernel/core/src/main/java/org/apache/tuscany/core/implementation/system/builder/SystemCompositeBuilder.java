@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.Binding;
@@ -52,16 +54,12 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         this.connector = connector;
     }
 
-    protected Class<SystemCompositeImplementation> getImplementationType() {
-        return SystemCompositeImplementation.class;
-    }
-
+    @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<SystemCompositeImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderConfigException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
-
         // create lists of all components and services in this composite
         List<ComponentDefinition<? extends Implementation<?>>> allComponents =
             new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
@@ -77,32 +75,39 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
             }
         }
 
-        /*
-        // add in components and services from included composites
-        for (Include include : componentType.getIncludes().values()) {
-            CompositeComponentType<?, ?, ?> included = include.getIncluded();
-            allComponents.addAll(included.getComponents().values());
-            for (ServiceDefinition serviceDefinition : included.getServices().values()) {
-                if (serviceDefinition instanceof BoundServiceDefinition) {
-                    BoundServiceDefinition<? extends Binding> boundService =
-                        (BoundServiceDefinition<? extends Binding>) serviceDefinition;
-                    allBoundServices.add(boundService);
-                }
-            }
-        }
-        */
-
         // create the composite component
         String name = componentDefinition.getName();
         CompositeComponent component = new CompositeComponentImpl(name, parent, connector, true);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
-            component.register(builderRegistry.build(component, childComponentDefinition, deploymentContext));
+            Component child;
+            try {
+                child = builderRegistry.build(component, childComponentDefinition, deploymentContext);
+            } catch (BuilderException e) {
+                e.addContextName(component.getName());
+                e.addContextName(name);
+                e.addContextName(parent.getName());
+                throw e;
+            }
+            component.register(child);
         }
 
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
-            component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
+            SCAObject object;
+            try {
+                object = builderRegistry.build(component, serviceDefinition, deploymentContext);
+            } catch (BuilderException e) {
+                e.addContextName(serviceDefinition.getName());
+                e.addContextName(name);
+                e.addContextName(parent.getName());
+                throw e;
+            }
+            component.register(object);
         }
         return component;
+    }
+
+    protected Class<SystemCompositeImplementation> getImplementationType() {
+        return SystemCompositeImplementation.class;
     }
 
 }

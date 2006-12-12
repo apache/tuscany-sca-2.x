@@ -18,16 +18,20 @@
  */
 package org.apache.tuscany.core.implementation.system.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BindingBuilder;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.builder.InvalidTargetTypeException;
+import org.apache.tuscany.spi.builder.MissingTargetException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.core.implementation.system.component.SystemReference;
@@ -47,48 +51,60 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding> implements BindingBuilder<SystemBinding> {
+public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding>
+    implements BindingBuilder<SystemBinding> {
 
     public SystemService build(CompositeComponent parent,
-                               BoundServiceDefinition<SystemBinding> boundServiceDefinition,
+                               BoundServiceDefinition<SystemBinding> definition,
                                DeploymentContext deploymentContext) {
-        
-        QualifiedName targetName = new QualifiedName(boundServiceDefinition.getTarget().getPath());
-        Component target = (Component) parent.getSystemChild(targetName.getPartName());
-        if (target == null) {
-            throw new BuilderConfigException("Target not found: [" + targetName + ']');
+
+        URI uri = definition.getTarget();
+        if (uri == null) {
+            MissingTargetException e = new MissingTargetException("Target URI not specified");
+            e.setIdentifier(definition.getName());
+            throw e;
         }
-        Class<?> interfaze = target.getServiceInterfaces().get(0);
-        String name = boundServiceDefinition.getName();
-        InboundWire inboundWire =
-            new SystemInboundWireImpl(name, interfaze, target);
-        SystemOutboundWire outboundWire =
-            new SystemOutboundWireImpl(name, targetName, interfaze);
-        SystemService service = new SystemServiceImpl(boundServiceDefinition.getName(), parent, new JavaServiceContract(interfaze));
+        QualifiedName targetName = new QualifiedName(uri.getPath());
+        SCAObject target = parent.getSystemChild(targetName.getPartName());
+        if (target == null) {
+            MissingTargetException e = new MissingTargetException(targetName.toString());
+            e.setIdentifier(definition.getName());
+            throw e;
+        } else if (!(target instanceof SystemAtomicComponent)) {
+            InvalidTargetTypeException e = new InvalidTargetTypeException(targetName.toString());
+            e.setIdentifier(definition.getName());
+            throw e;
+        }
+        SystemAtomicComponent atomicComponent = (SystemAtomicComponent) target;
+        Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
+        String name = definition.getName();
+        InboundWire inboundWire = new SystemInboundWireImpl(name, interfaze, atomicComponent);
+        SystemOutboundWire outboundWire = new SystemOutboundWireImpl(name, targetName, interfaze);
+        ServiceContract<?> contract = definition.getServiceContract();
+        SystemService service = new SystemServiceImpl(definition.getName(), parent, contract);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         return service;
     }
 
     public SystemReference build(CompositeComponent parent,
-                                 BoundReferenceDefinition<SystemBinding> boundReferenceDefinition,
+                                 BoundReferenceDefinition<SystemBinding> definition,
                                  DeploymentContext deploymentContext) {
         CompositeComponent autowireComponent = parent.getParent();
-        Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
-        String name = boundReferenceDefinition.getName();
+        Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
+        String name = definition.getName();
         SystemReferenceImpl reference = new SystemReferenceImpl(name, interfaze, parent);
         SystemInboundWire inboundWire = new SystemInboundWireImpl(name, interfaze);
-        String refName = boundReferenceDefinition.getName();
-        boolean required = boundReferenceDefinition.isRequired();
+        String refName = definition.getName();
+        boolean required = definition.isRequired();
         SystemOutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze, autowireComponent, required);
         reference.setInboundWire(inboundWire);
         reference.setOutboundWire(outboundWire);
         return reference;
     }
 
-	@Override
-	protected Class<SystemBinding> getBindingType() {
-		// TODO Auto-generated method stub
-		return SystemBinding.class;
-	}
+    @Override
+    protected Class<SystemBinding> getBindingType() {
+        return SystemBinding.class;
+    }
 }
