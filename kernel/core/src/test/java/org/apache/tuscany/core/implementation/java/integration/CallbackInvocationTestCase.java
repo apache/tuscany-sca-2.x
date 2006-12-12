@@ -129,7 +129,12 @@ public class CallbackInvocationTestCase extends TestCase {
 
         connector.connect(clientComponent);
         FooPlainClient client = (FooPlainClient) clientComponent.getServiceInstance();
-        client.invoke();
+        try {
+            client.invoke();
+            fail();
+        } catch (NoRegisteredCallbackException e) {
+            // expected
+        }
     }
 
     /**

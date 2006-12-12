@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
@@ -44,6 +46,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.osoa.sca.NoRegisteredCallbackException;
 
 
 /**
@@ -66,7 +69,10 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     private transient Map<Method, ChainHolder> chains;
     private transient WorkContext workContext;
     private transient Object fromAddress;
+    private transient boolean wireContainerIsAtomicComponent;
     private transient boolean contractHasCallback;
+    private transient boolean callbackIsImplemented;
+    private transient String callbackClassName;
     private transient boolean contractIsRemotable;
     private transient boolean contractIsConversational;
     private transient String convIdForRemotableTarget;
@@ -128,6 +134,11 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         } else {
             assert chain != null;
             invoker = chain.getTargetInvoker();
+        }
+        
+        if(wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {
+            throw new NoRegisteredCallbackException("Instance is does not implement callback: "
+                                                    + callbackClassName);
         }
 
         if (contractIsConversational) {
@@ -200,10 +211,22 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     private void init(OutboundWire wire) {
         ServiceContract contract = wire.getServiceContract();
         this.referenceName = wire.getReferenceName();
-        this.fromAddress = (wire.getContainer() == null) ? null : wire.getContainer().getName();
+        SCAObject wireContainer = wire.getContainer();
+        this.fromAddress = (wireContainer == null) ? null : wireContainer.getName();
         this.contractIsConversational = contract.getInteractionScope().equals(CONVERSATIONAL);
         this.contractIsRemotable = contract.isRemotable();
         this.contractHasCallback = contract.getCallbackClass() != null;
+        if (contractHasCallback) {
+            this.callbackClassName = contract.getCallbackClass().getName();
+        } else {
+            this.callbackClassName = null;
+        }
+        this.wireContainerIsAtomicComponent = wireContainer != null && wireContainer instanceof PojoAtomicComponent;
+        if (wireContainerIsAtomicComponent && contractHasCallback) {
+            this.callbackIsImplemented = ((PojoAtomicComponent)wireContainer).implementsCallback(contract.getCallbackClass());
+        } else {
+            this.callbackIsImplemented = false;
+        }
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         // TODO optimize this
