@@ -59,8 +59,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
 
     public ReferenceDefinition load(CompositeComponent parent,
                                     ModelObject object, XMLStreamReader reader,
-                                    DeploymentContext deploymentContext
-    )
+                                    DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert REFERENCE.equals(reader.getName());
 

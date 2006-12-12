@@ -45,7 +45,8 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
     protected SystemOutboundWire outboundWire;
     protected ServiceContract<?> serviceContract;
 
-    public SystemServiceImpl(String name, CompositeComponent parent, ServiceContract<?> serviceContract) throws CoreRuntimeException {
+    public SystemServiceImpl(String name, CompositeComponent parent, ServiceContract<?> serviceContract)
+        throws CoreRuntimeException {
         super(name, parent);
         this.serviceContract = serviceContract;
     }

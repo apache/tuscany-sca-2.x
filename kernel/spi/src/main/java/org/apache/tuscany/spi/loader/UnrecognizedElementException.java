@@ -37,7 +37,6 @@ public class UnrecognizedElementException extends LoaderException {
      */
     public UnrecognizedElementException(QName element) {
         super(element.toString());
-        setIdentifier(getMessage());
         this.element = element;
     }
 

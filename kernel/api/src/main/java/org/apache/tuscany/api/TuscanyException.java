@@ -119,8 +119,9 @@ public abstract class TuscanyException extends Exception {
             return super.getMessage();
         }
         StringBuilder b = new StringBuilder(256);
-        b.append(super.getMessage());
-
+        if (super.getMessage() != null) {
+            b.append(super.getMessage());
+        }
         if (identifier != null) {
             b.append(" [").append(identifier).append(']');
         }

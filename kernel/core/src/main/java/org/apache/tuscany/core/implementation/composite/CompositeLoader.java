@@ -76,7 +76,9 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         return COMPOSITE;
     }
 
-    public CompositeComponentType load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public CompositeComponentType load(CompositeComponent parent,
+                                       ModelObject object,
+                                       XMLStreamReader reader,
                                        DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
