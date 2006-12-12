@@ -62,6 +62,7 @@ public class PojoConfiguration {
     private ExecutionMonitor monitor;
     private long maxIdleTime = -1;
     private long maxAge = -1;
+    private Class implementationClass;
 
     public String getName() {
         return name;
@@ -225,5 +226,13 @@ public class PojoConfiguration {
 
     public void setMonitor(ExecutionMonitor monitor) {
         this.monitor = monitor;
+    }
+
+    public Class getImplementationClass() {
+        return implementationClass;
+    }
+
+    public void setImplementationClass(Class implementationClass) {
+        this.implementationClass = implementationClass;
     }
 }

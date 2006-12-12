@@ -97,6 +97,8 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);
         configuration.setScheduler(workScheduler);
+        
+        configuration.setImplementationClass(definition.getImplementation().getImplementationClass());
 
         // setup property injection sites
         for (JavaMappedProperty<?> property : componentType.getProperties().values()) {

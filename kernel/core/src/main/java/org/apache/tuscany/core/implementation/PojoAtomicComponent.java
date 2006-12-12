@@ -62,6 +62,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected Map<String, Member> propertySites;
     protected Map<String, Member> callbackSites;
     protected List<Injector<Object>> injectors;
+    protected Class implementationClass;
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(),
@@ -89,6 +90,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             : new HashMap<String, Member>();
         callbackSites = configuration.getCallbackSite() != null ? configuration.getCallbackSite()
             : new HashMap<String, Member>();
+        implementationClass = configuration.getImplementationClass();
     }
 
     public List<Class<?>> getServiceInterfaces() {
@@ -248,4 +250,14 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     protected abstract ObjectFactory<?> createWireFactory(RuntimeWire wire);
 
+    public boolean implementsCallback(Class callbackClass) {
+        Class<?>[] implementedInterfaces = implementationClass.getInterfaces();
+        for (int i = 0; i < implementedInterfaces.length; i++) {
+            if (implementedInterfaces[i].isAssignableFrom(callbackClass)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
