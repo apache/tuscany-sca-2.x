@@ -29,10 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.tuscany.core.implementation.PojoAtomicComponent;
+import org.osoa.sca.NoRegisteredCallbackException;
+
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -46,7 +47,8 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.osoa.sca.NoRegisteredCallbackException;
+
+import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 
 
 /**
@@ -135,16 +137,16 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             assert chain != null;
             invoker = chain.getTargetInvoker();
         }
-        
-        if(wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {
+
+        if (wireContainerIsAtomicComponent && contractHasCallback && !callbackIsImplemented) {
             throw new NoRegisteredCallbackException("Instance is does not implement callback: "
-                                                    + callbackClassName);
+                + callbackClassName);
         }
 
         if (contractIsConversational) {
             assert workContext != null : "Work context cannot be null for conversational invocation";
             // Check for a conv id on thread and remember it
-            convIdFromThread = (String)workContext.getIdentifier(Scope.CONVERSATION);
+            convIdFromThread = (String) workContext.getIdentifier(Scope.CONVERSATION);
             if (contractIsRemotable) {
                 if (convIdForRemotableTarget == null) {
                     convIdForRemotableTarget = createConversationID();
@@ -221,9 +223,10 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         } else {
             this.callbackClassName = null;
         }
-        this.wireContainerIsAtomicComponent = wireContainer != null && wireContainer instanceof PojoAtomicComponent;
+        this.wireContainerIsAtomicComponent = wireContainer instanceof PojoAtomicComponent;
         if (wireContainerIsAtomicComponent && contractHasCallback) {
-            this.callbackIsImplemented = ((PojoAtomicComponent)wireContainer).implementsCallback(contract.getCallbackClass());
+            this.callbackIsImplemented =
+                ((PojoAtomicComponent) wireContainer).implementsCallback(contract.getCallbackClass());
         } else {
             this.callbackIsImplemented = false;
         }
@@ -240,7 +243,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             this.chains.put(method, new ChainHolder(entry.getValue()));
         }
     }
-    
+
     // TODO Temporary fix to return a string with a UUID
     private String createConversationID() {
         return UUID.randomUUID().toString();
