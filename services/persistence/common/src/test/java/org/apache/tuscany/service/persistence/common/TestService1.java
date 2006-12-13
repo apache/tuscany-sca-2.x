@@ -5,11 +5,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.TransactionManager;
 
+import org.osoa.sca.annotations.Resource;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 
 public class TestService1 {
     
-    @Autowire 
+    @Resource
     protected TransactionManager tx;
     
     @PersistenceUnit(unitName="test")

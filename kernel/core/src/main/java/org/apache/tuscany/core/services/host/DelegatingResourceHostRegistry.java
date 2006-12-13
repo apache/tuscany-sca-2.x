@@ -23,9 +23,6 @@ import java.util.Map;
 
 import org.osoa.sca.annotations.Service;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.host.ResourceHostRegistry;
 import org.apache.tuscany.spi.host.ResourceResolutionException;
@@ -41,29 +38,39 @@ import org.apache.tuscany.spi.host.ResourceResolutionException;
 @Service(interfaces = {ResourceHost.class, ResourceHostRegistry.class})
 public class DelegatingResourceHostRegistry implements ResourceHost, ResourceHostRegistry {
     private static final String SCA_PREFIX = "SCA://";
-    private static final String SCA_LOCALHOST_PREFIX = "SCA://localhost/";
     private Map<String, ResourceHost> resourceHosts = new HashMap<String, ResourceHost>();
-    private CompositeComponent parent;
+    private Map<Class<?>, Object> systemResources = new HashMap<Class<?>, Object>();
+    private Map<Key, Object> mappedSystemResources = new HashMap<Key, Object>();
 
-    /**
-     * Creates a new delegating registry.
-     *
-     * @param parent the composite to resolve SCA resources against
-     */
-    public DelegatingResourceHostRegistry(@Autowire CompositeComponent parent) {
-        this.parent = parent;
+    public DelegatingResourceHostRegistry() {
     }
 
-    public void register(String uri, ResourceHost host) {
+    public void registerResourceHost(String uri, ResourceHost host) {
         resourceHosts.put(uri, host);
     }
 
-    public void unregister(String uri) {
+    public void unregisterResourceHost(String uri) {
         resourceHosts.remove(uri);
     }
 
+    public void registerResource(Class<?> type, Object resource) {
+        systemResources.put(type, resource);
+    }
+
+    public void registerResource(Class<?> type, String name, Object resource) {
+        mappedSystemResources.put(new Key(type, name), resource);
+    }
+
+    public void unregisterResource(Class<?> type, String name) {
+        mappedSystemResources.remove(new Key(type, name));
+    }
+
+    public void unregisterResource(Class<?> type) {
+        systemResources.remove(type);
+    }
+
     public <T> T resolveResource(Class<T> type) throws ResourceResolutionException {
-        T instance = parent.resolveSystemExternalInstance(type);
+        T instance = type.cast(systemResources.get(type));
         if (instance == null) {
             for (ResourceHost host : resourceHosts.values()) {
                 instance = host.resolveResource(type);
@@ -73,30 +80,16 @@ public class DelegatingResourceHostRegistry implements ResourceHost, ResourceHos
             }
         }
         return instance;
-
     }
 
     public <T> T resolveResource(Class<T> type, String mappedName) throws ResourceResolutionException {
         if (mappedName.startsWith(SCA_PREFIX)) {
-            String name;
-            if (mappedName.startsWith(SCA_LOCALHOST_PREFIX)) {
-                name = mappedName.substring(SCA_LOCALHOST_PREFIX.length());
-            } else {
-                name = mappedName.substring(SCA_PREFIX.length());
-            }
-            // resolve against the composite
-            SCAObject child = parent.getSystemChild(name);
-            // only expose services
-            if (child instanceof org.apache.tuscany.spi.component.Service) {
-                return type.cast(child.getServiceInstance());
-            }
-            return null;
+            String name = mappedName.substring(SCA_PREFIX.length());
+            return type.cast(mappedSystemResources.get(new Key(type, name)));
         } else {
             int pos = mappedName.indexOf("://");
             if (pos == -1) {
-                ResourceResolutionException e = new ResourceResolutionException("Invalid resource URI");
-                e.setIdentifier(mappedName);
-                throw e;
+                return type.cast(mappedSystemResources.get(new Key(type, mappedName)));
             }
             String uri = mappedName.substring(0, pos + 3);
             ResourceHost host = resourceHosts.get(uri);
@@ -106,6 +99,46 @@ public class DelegatingResourceHostRegistry implements ResourceHost, ResourceHos
                 throw e;
             }
             return host.resolveResource(type, mappedName);
+        }
+    }
+
+    private class Key {
+        private Class<?> clazz;
+        private String name;
+
+        public Key(Class<?> clazz, String name) {
+            this.clazz = clazz;
+            this.name = name;
+        }
+
+        public Key(Class<?> clazz) {
+            this.clazz = clazz;
+        }
+
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Key key = (Key) o;
+
+            if (clazz != null ? !clazz.equals(key.clazz) : key.clazz != null) {
+                return false;
+            }
+            if (name != null ? !name.equals(key.name) : key.name != null) {
+                return false;
+            }
+            return true;
+        }
+
+        public int hashCode() {
+            int result;
+            result = clazz != null ? clazz.hashCode() : 0;
+            result = 31 * result + (name != null ? name.hashCode() : 0);
+            return result;
         }
     }
 }

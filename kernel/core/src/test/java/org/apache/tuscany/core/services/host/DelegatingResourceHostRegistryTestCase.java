@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.core.services.host;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.host.ResourceResolutionException;
 
@@ -32,73 +29,39 @@ import org.easymock.EasyMock;
  */
 public class DelegatingResourceHostRegistryTestCase extends TestCase {
 
+    public void testResolveByType() throws Exception {
+        Object ret = new Object();
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResource(Object.class, ret);
+        assertEquals(ret, registry.resolveResource(Object.class));
+    }
+
     public void testResolveByUri() throws Exception {
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.expect(host.resolveResource(String.class, "Foo://foo")).andReturn("result");
         EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
         assertEquals("result", registry.resolveResource(String.class, "Foo://foo"));
         EasyMock.verify(host);
     }
 
     public void testResolveBySCAUri() throws Exception {
-        Service child = EasyMock.createMock(Service.class);
-        EasyMock.expect(child.getServiceInstance()).andReturn("result");
-        EasyMock.replay(child);
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getSystemChild("foo")).andReturn(child);
-        EasyMock.replay(parent);
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
-        assertEquals("result", registry.resolveResource(String.class, "SCA://foo"));
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
+        Object ret = new Object();
+        registry.registerResource(Object.class, "foo", ret);
+        assertEquals(ret, registry.resolveResource(Object.class, "SCA://foo"));
         EasyMock.verify(host);
     }
-
-
-    /**
-     * Tests system components not exposed as services are not visible
-     */
-    public void testResolveNonService() throws Exception {
-        SCAObject child = EasyMock.createMock(SCAObject.class);
-        EasyMock.expect(child.getServiceInstance()).andReturn("result");
-        EasyMock.replay(child);
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getSystemChild("foo")).andReturn(child);
-        EasyMock.replay(parent);
-        ResourceHost host = EasyMock.createMock(ResourceHost.class);
-        EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
-        assertNull(registry.resolveResource(String.class, "SCA://foo"));
-        EasyMock.verify(host);
-    }
-
-    public void testResolveBySCALocalHostUri() throws Exception {
-        Service child = EasyMock.createMock(Service.class);
-        EasyMock.expect(child.getServiceInstance()).andReturn("result");
-        EasyMock.replay(child);
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getSystemChild("foo")).andReturn(child);
-        EasyMock.replay(parent);
-        ResourceHost host = EasyMock.createMock(ResourceHost.class);
-        EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
-        assertEquals("result", registry.resolveResource(String.class, "SCA://localhost/foo"));
-        EasyMock.verify(host);
-    }
-
 
     public void testResolveByUriNotFound() throws Exception {
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
         try {
             assertEquals("result", registry.resolveResource(String.class, "Bar://bar"));
             fail();
@@ -108,13 +71,12 @@ public class DelegatingResourceHostRegistryTestCase extends TestCase {
         EasyMock.verify(host);
     }
 
-    public void testUnregister() throws Exception {
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
+    public void testUnregisterHost() throws Exception {
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
-        registry.unregister("Foo://");
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
+        registry.unregisterResourceHost("Foo://");
         try {
             registry.resolveResource(String.class, "Foo://foo");
             fail();
@@ -124,16 +86,60 @@ public class DelegatingResourceHostRegistryTestCase extends TestCase {
         EasyMock.verify(host);
     }
 
+    public void testUnregisterResource() throws Exception {
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResource(Object.class, new Object());
+        registry.unregisterResource(Object.class);
+        assertNull(registry.resolveResource(Object.class));
+    }
+
+    public void testUnregisterMappedResource() throws Exception {
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResource(Object.class, "foo", new Object());
+        registry.registerResource(Object.class, new Object());
+        registry.unregisterResource(Object.class);
+        assertNull(registry.resolveResource(Object.class));
+        assertNotNull(registry.resolveResource(Object.class, "foo"));
+        registry.unregisterResource(Object.class, "foo");
+        assertNull(registry.resolveResource(Object.class));
+    }
+
+    public void testReolvedByTypeToMappedResource() throws Exception {
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResource(Object.class, "foo", new Object());
+        assertNull(registry.resolveResource(Object.class));
+    }
+
     public void testDelegatingResolveResource() throws Exception {
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemExternalInstance(String.class)).andReturn(null);
-        EasyMock.replay(parent);
+        Object ret = new Object();
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
-        EasyMock.expect(host.resolveResource(String.class)).andReturn("result");
+        EasyMock.expect(host.resolveResource(Object.class)).andReturn(ret);
         EasyMock.replay(host);
-        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry(parent);
-        registry.register("Foo://", host);
-        assertEquals("result", registry.resolveResource(String.class));
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
+        assertEquals(ret, registry.resolveResource(Object.class));
+        EasyMock.verify(host);
+    }
+
+    public void testDelegatingResolveResourceByTypeandName() throws Exception {
+        Object ret = new Object();
+        ResourceHost host = EasyMock.createMock(ResourceHost.class);
+        EasyMock.expect(host.resolveResource(EasyMock.eq(Object.class), EasyMock.eq("Foo://bar"))).andReturn(ret);
+        EasyMock.replay(host);
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
+        assertEquals(ret, registry.resolveResource(Object.class, "Foo://bar"));
+        EasyMock.verify(host);
+    }
+
+    public void testResolveLocalResourceFirst() throws Exception {
+        Object local = new Object();
+        ResourceHost host = EasyMock.createMock(ResourceHost.class);
+        EasyMock.replay(host);
+        DelegatingResourceHostRegistry registry = new DelegatingResourceHostRegistry();
+        registry.registerResourceHost("Foo://", host);
+        registry.registerResource(Object.class, local);
+        assertEquals(local, registry.resolveResource(Object.class));
         EasyMock.verify(host);
     }
 

@@ -24,6 +24,8 @@ import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.Transaction;
 
+import org.apache.tuscany.spi.host.ResourceHostRegistry;
+
 import junit.framework.TestCase;
 import org.apache.geronimo.transaction.manager.XidFactoryImpl;
 import org.apache.tuscany.host.RuntimeInfo;
@@ -114,11 +116,13 @@ public class GeronimoTransactionManagerServiceTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.cleanupLog();
+        ResourceHostRegistry registry = EasyMock.createNiceMock(ResourceHostRegistry.class);
+        EasyMock.replay(registry);
         RuntimeInfo info = EasyMock.createMock(RuntimeInfo.class);
         EasyMock.expect(info.getInstallDirectory()).andReturn(new File("."));
         EasyMock.replay(info);
         GeronimoTransactionLogService logService = new GeronimoTransactionLogService(info, new XidFactoryImpl());
-        service = new GeronimoTransactionManagerService(logService);
+        service = new GeronimoTransactionManagerService(registry, logService);
         service.init();
     }
 

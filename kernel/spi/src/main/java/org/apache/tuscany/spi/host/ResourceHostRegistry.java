@@ -19,7 +19,7 @@
 package org.apache.tuscany.spi.host;
 
 /**
- * Implementations manage a registry of resource hosts in the runtime
+ * Implementations manage a registry of resources and resource hosts in the runtime
  *
  * @version $Rev$ $Date$
  */
@@ -30,10 +30,43 @@ public interface ResourceHostRegistry {
      * @param uri  the uri prefix the host resolves resources for
      * @param host the resource host
      */
-    void register(String uri, ResourceHost host);
+    void registerResourceHost(String uri, ResourceHost host);
 
     /**
-     * Removes a host registered for the given uri prefix
+     * Removes a resource host registered for the given uri prefix
      */
-    void unregister(String uri);
+    void unregisterResourceHost(String uri);
+
+    /**
+     * Register a resource by type
+     *
+     * @param type     the type of the resource
+     * @param resource the resource
+     */
+    void registerResource(Class<?> type, Object resource);
+
+    /**
+     * Register a resource by type and name
+     *
+     * @param type     the type of the resource
+     * @param name     the mapped resource name
+     * @param resource the resource
+     */
+    void registerResource(Class<?> type, String name, Object resource);
+
+    /**
+     * Unregister a resource
+     *
+     * @param type the type the resource was registered with
+     * @param name the mapped name the resource was registered with
+     */
+    void unregisterResource(Class<?> type, String name);
+
+    /**
+     * Unregister a resource
+     *
+     * @param type the type the resource was registered with
+     */
+    void unregisterResource(Class<?> type);
+
 }

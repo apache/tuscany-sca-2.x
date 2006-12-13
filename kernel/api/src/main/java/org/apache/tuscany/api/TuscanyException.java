@@ -125,12 +125,16 @@ public abstract class TuscanyException extends Exception {
         if (identifier != null) {
             b.append(" [").append(identifier).append(']');
         }
+        return appendContextStack(b).toString();
+    }
+
+    protected StringBuilder appendContextStack(StringBuilder b) {
         if (contextStack != null) {
             b.append("\nContext stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
                 b.append('[').append(contextStack.get(i)).append(']');
             }
         }
-        return b.toString();
+        return b;
     }
 }
