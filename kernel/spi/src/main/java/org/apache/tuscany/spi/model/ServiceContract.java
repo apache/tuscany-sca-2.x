@@ -246,7 +246,7 @@ public abstract class ServiceContract<T> extends ModelObject implements Cloneabl
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         ServiceContract<T> copy = (ServiceContract<T>) super.clone();
 
         if (operations != null) {

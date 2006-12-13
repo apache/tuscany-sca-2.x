@@ -224,7 +224,7 @@ public class DataType<L> extends ModelObject implements Cloneable {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         DataType<L> copy = (DataType<L>) super.clone();
         assert this.metadata instanceof HashMap;
         copy.metadata = (HashMap<String, Object>) ((HashMap) this.metadata).clone();
