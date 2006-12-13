@@ -39,7 +39,7 @@ public class PolicySetLoaderTestCase extends TestCase {
     public void testLoader() throws Exception {
         PolicySetLoader loader = new PolicySetLoader(null);
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        XMLStreamReader reader = factory.createXMLStreamReader(this.getClass().getResourceAsStream("testPolicy.scdl"));
+        XMLStreamReader reader = factory.createXMLStreamReader(this.getClass().getResourceAsStream("TestPolicy.scdl"));
         while (true) {
             int state = reader.next();
             if (START_ELEMENT == state && reader.getName().equals(POLICYSET)) {
