@@ -368,7 +368,7 @@ public class Operation<T> extends ModelObject implements Cloneable {
 
     @SuppressWarnings({"unchecked", "CloneDoesntCallSuperClone"})
     @Override
-    protected Operation<T> clone() throws CloneNotSupportedException {
+    public Operation<T> clone() throws CloneNotSupportedException {
         final List<DataType<T>> clonedFaultTypes = new ArrayList<DataType<T>>(this.faultTypes.size());
         for (DataType<T> t : this.faultTypes) {
             clonedFaultTypes.add((DataType<T>) t.clone());
