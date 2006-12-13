@@ -35,6 +35,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.host.ResourceHostRegistry;
 
 import org.apache.geronimo.transaction.ExtendedTransactionManager;
 import org.apache.geronimo.transaction.manager.TransactionManagerImpl;
@@ -50,11 +51,14 @@ import org.apache.tuscany.transaction.geronimo.TransactionServiceShutdownExcepti
  */
 @Service(interfaces = {TransactionManager.class, ExtendedTransactionManager.class})
 public class GeronimoTransactionManagerService implements TransactionManager, ExtendedTransactionManager {
+    private ResourceHostRegistry hostRegistry;
     private ExtendedTransactionManager transactionManager;
     private GeronimoTransactionLogService logService;
     private int timeout = 250;
 
-    public GeronimoTransactionManagerService(@Autowire GeronimoTransactionLogService logService) {
+    public GeronimoTransactionManagerService(@Autowire ResourceHostRegistry hostRegistry,
+                                             @Autowire GeronimoTransactionLogService logService) {
+        this.hostRegistry = hostRegistry;
         this.logService = logService;
     }
 
@@ -75,16 +79,17 @@ public class GeronimoTransactionManagerService implements TransactionManager, Ex
         this.timeout = timeout;
     }
 
-    @Init
+    @Init(eager = true)
     public void init() throws XAException {
         XidFactoryImpl factory = new XidFactoryImpl();
         // FIXME fix passing in null ResourceManagers for recovery
         transactionManager = new TransactionManagerImpl(timeout, factory, logService.getLog(), null);
+        hostRegistry.registerResource(TransactionManager.class, this);
     }
-
 
     @Destroy
     public void destroy() throws TransactionServiceShutdownException {
+        hostRegistry.unregisterResource(TransactionManager.class);
     }
 
     public void begin() throws NotSupportedException, SystemException {
@@ -105,7 +110,7 @@ public class GeronimoTransactionManagerService implements TransactionManager, Ex
     }
 
     public XidImporter getXidImporter() {
-        return (XidImporter)transactionManager;
+        return (XidImporter) transactionManager;
     }
 
     public int getStatus() throws SystemException {
