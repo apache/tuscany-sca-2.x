@@ -40,6 +40,7 @@
         <module>binding.axis2</module>
         <module>binding.jsonrpc</module>
         <module>binding.rmi</module>
+        <module>binding.jms</module>
     </modules>
 
 </project>
