@@ -152,7 +152,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         //FIXME throw an error if no injection site found
     }
 
-    public void addResourceFactory(String name, ResourceObjectFactory<?> factory) {
+    public void addResourceFactory(String name, ObjectFactory<?> factory) {
         Member member = resourceSites.get(name);
         if (member instanceof Field) {
             injectors.add(new FieldInjector<Object>((Field) member, factory));
