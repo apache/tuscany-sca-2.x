@@ -21,13 +21,12 @@ package org.apache.tuscany.host.rmi;
 import org.apache.tuscany.api.TuscanyException;
 
 /**
- * This exception will relate to situations where the end applicaition's
- * input is the cause of the exception
+ * This exception will relate to situations where the end applicaition's input is the cause of the exception
  *
+ * @version $Rev$ $Date$
  */
 public class RMIHostException extends TuscanyException {
-    
-    private static final long serialVersionUID = -1L;
+    private static final long serialVersionUID = 8031031440259175970L;
 
     public RMIHostException() {
     }
@@ -35,7 +34,7 @@ public class RMIHostException extends TuscanyException {
     public RMIHostException(String message) {
         super(message);
     }
-    
+
     public RMIHostException(Throwable e) {
         super(e);
     }

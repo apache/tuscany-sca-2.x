@@ -26,18 +26,11 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalInitException extends ProcessingException {
-    public IllegalInitException() {
-    }
-
     public IllegalInitException(String message) {
         super(message);
     }
 
-    public IllegalInitException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalInitException(Throwable cause) {
-        super(cause);
+    public IllegalInitException(String message, String identifier) {
+        super(message, identifier);
     }
 }

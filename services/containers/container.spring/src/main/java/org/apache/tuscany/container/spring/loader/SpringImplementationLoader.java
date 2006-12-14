@@ -100,9 +100,7 @@ public class SpringImplementationLoader extends LoaderExtension<SpringImplementa
                         if (!type.isExposeAllBeans()) {
                             String name = service.getName();
                             if (!type.getServiceDeclarations().containsKey(name)) {
-                                LoaderException e = new LoaderException("No service defined in Spring context for ");
-                                e.setIdentifier(name);
-                                throw e;
+                                throw new LoaderException("No service defined in Spring context for ", name);
                             }
                         }
                         type.getDeclaredServices().put(service.getName(), service);

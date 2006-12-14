@@ -52,15 +52,11 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         }
 
         if (!Void.TYPE.equals(method.getReturnType())) {
-            IllegalPropertyException ipe = new IllegalPropertyException("Method does not have void return type");
-            ipe.setIdentifier(method.toString());
-            throw ipe;
+            throw new IllegalPropertyException("Method does not have void return type", method.toString());
         }
         Class[] paramTypes = method.getParameterTypes();
         if (paramTypes.length != 1) {
-            IllegalPropertyException ipe = new IllegalPropertyException("Method must have 1 parameter");
-            ipe.setIdentifier(method.toString());
-            throw ipe;
+            throw new IllegalPropertyException("Method must have a single parameter", method.toString());
         }
         Class<?> javaType = paramTypes[0];
 

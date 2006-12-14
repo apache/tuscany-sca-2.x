@@ -54,20 +54,15 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
             // implicitly assume conversation
             type.setImplementationScope(org.apache.tuscany.spi.model.Scope.CONVERSATION);
         } else if (scope != null && !"CONVERSATION".equals(scope.value().toUpperCase())) {
-            InvalidConversationalImplementation e = new InvalidConversationalImplementation(
-                "Service is marked with @Conversation but the scope is not @Scope(\"CONVERSATION\")");
-            e.setIdentifier(clazz.getName());
-            throw e;
+            throw new InvalidConversationalImplementation(
+                "Service is marked with @Conversation but the scope is not @Scope(\"CONVERSATION\")", clazz.getName());
         } else if (conversation != null) {
             long maxAge;
             long maxIdleTime;
             String maxAgeVal = conversation.maxAge();
             String maxIdleTimeVal = conversation.maxIdleTime();
             if (maxAgeVal.length() > 0 && maxIdleTimeVal.length() > 0) {
-                InvalidConversationalImplementation e =
-                    new InvalidConversationalImplementation("Max idle time and age both specified");
-                e.setIdentifier(clazz.getName());
-                throw e;
+                throw new InvalidConversationalImplementation("Max idle time and age both specified", clazz.getName());
             }
             try {
                 if (maxAgeVal.length() > 0) {
@@ -75,10 +70,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
                     type.setMaxAge(maxAge);
                 }
             } catch (NumberFormatException e) {
-                InvalidConversationalImplementation e2 =
-                    new InvalidConversationalImplementation("Invalid maximum age", e);
-                e2.setIdentifier(clazz.getName());
-                throw e2;
+                throw new InvalidConversationalImplementation("Invalid maximum age", clazz.getName(), e);
             }
             try {
                 if (maxIdleTimeVal.length() > 0) {
@@ -86,10 +78,7 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
                     type.setMaxIdleTime(maxIdleTime);
                 }
             } catch (NumberFormatException e) {
-                InvalidConversationalImplementation e2 =
-                    new InvalidConversationalImplementation("Invalid maximum idle time", e);
-                e2.setIdentifier(clazz.getName());
-                throw e2;
+                throw new InvalidConversationalImplementation("Invalid maximum idle time", clazz.getName(), e);
             }
         }
 

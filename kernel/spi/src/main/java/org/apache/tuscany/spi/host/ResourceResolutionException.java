@@ -24,18 +24,9 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class ResourceResolutionException extends TuscanyException {
-    public ResourceResolutionException() {
+
+    public ResourceResolutionException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public ResourceResolutionException(String message) {
-        super(message);
-    }
-
-    public ResourceResolutionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ResourceResolutionException(Throwable cause) {
-        super(cause);
-    }
 }

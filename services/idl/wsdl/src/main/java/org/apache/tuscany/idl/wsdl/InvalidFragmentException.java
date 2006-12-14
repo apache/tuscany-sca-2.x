@@ -22,18 +22,9 @@ package org.apache.tuscany.idl.wsdl;
  * @version $Rev$ $Date$
  */
 public class InvalidFragmentException extends WSDLLoaderException {
-    public InvalidFragmentException() {
-    }
 
     public InvalidFragmentException(String message) {
         super(message);
     }
 
-    public InvalidFragmentException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidFragmentException(Throwable cause) {
-        super(cause);
-    }
 }

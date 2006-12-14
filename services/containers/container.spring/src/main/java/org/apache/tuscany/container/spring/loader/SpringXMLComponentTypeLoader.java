@@ -95,10 +95,7 @@ public class SpringXMLComponentTypeLoader extends ComponentTypeLoaderExtension<S
                             try {
                                 serviceType = cl.loadClass(reader.getAttributeValue(SCA_NS, "type"));
                             } catch (ClassNotFoundException e) {
-                                MissingResourceException e2 =
-                                    new MissingResourceException("Error loading service class", e);
-                                e2.setIdentifier(name);
-                                throw e2;
+                                throw new MissingResourceException("Error loading service class", name, e);
                             }
                             String target = reader.getAttributeValue(SCA_NS, "target");
                             type.addServiceDeclaration(new ServiceDeclaration(name, serviceType, target));
@@ -108,10 +105,7 @@ public class SpringXMLComponentTypeLoader extends ComponentTypeLoaderExtension<S
                             try {
                                 serviceType = cl.loadClass(reader.getAttributeValue(SCA_NS, "type"));
                             } catch (ClassNotFoundException e) {
-                                MissingResourceException e2 =
-                                    new MissingResourceException("Error loading service class", e);
-                                e2.setIdentifier(name);
-                                throw e2;
+                                throw new MissingResourceException("Error loading service class", name, e);
                             }
                             type.addReferenceDeclaration(new ReferenceDeclaration(name, serviceType));
                         }

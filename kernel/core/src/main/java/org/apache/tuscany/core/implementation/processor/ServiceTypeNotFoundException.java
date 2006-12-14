@@ -26,18 +26,9 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class ServiceTypeNotFoundException extends ProcessingException {
-    public ServiceTypeNotFoundException() {
-    }
 
     public ServiceTypeNotFoundException(String message) {
         super(message);
     }
 
-    public ServiceTypeNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ServiceTypeNotFoundException(Throwable cause) {
-        super(cause);
-    }
 }

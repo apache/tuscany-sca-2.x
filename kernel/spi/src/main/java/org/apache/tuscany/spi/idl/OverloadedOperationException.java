@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.idl;
 
+import java.lang.reflect.Method;
+
 /**
  * Exception thrown to indicate that a service contract specification contains an overloaded method.
  *
@@ -25,19 +27,15 @@ package org.apache.tuscany.spi.idl;
  */
 public class OverloadedOperationException extends InvalidServiceContractException {
     private static final long serialVersionUID = -4658711318608885638L;
+    private final Method operation;
 
-    public OverloadedOperationException() {
+    public OverloadedOperationException(Method operation) {
+        super(null, operation.getDeclaringClass().getName());
+        this.operation = operation;
     }
 
-    public OverloadedOperationException(String message) {
-        super(message);
+    public Method getOperation() {
+        return operation;
     }
 
-    public OverloadedOperationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public OverloadedOperationException(Throwable cause) {
-        super(cause);
-    }
 }

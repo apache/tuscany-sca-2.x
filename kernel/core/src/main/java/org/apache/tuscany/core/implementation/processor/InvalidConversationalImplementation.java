@@ -26,18 +26,20 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidConversationalImplementation extends ProcessingException {
-    public InvalidConversationalImplementation() {
-    }
 
     public InvalidConversationalImplementation(String message) {
         super(message);
+    }
+
+    public InvalidConversationalImplementation(String message, String identifier) {
+        super(message, identifier);
     }
 
     public InvalidConversationalImplementation(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidConversationalImplementation(Throwable cause) {
-        super(cause);
+    public InvalidConversationalImplementation(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 }

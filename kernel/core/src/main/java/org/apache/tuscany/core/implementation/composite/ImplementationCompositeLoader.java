@@ -82,9 +82,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
             try {
                 impl.setScdlLocation(new URL(deploymentContext.getScdlLocation(), scdlLocation));
             } catch (MalformedURLException e) {
-                InvalidValueException ive = new InvalidValueException(scdlLocation, e);
-                ive.setIdentifier(name);
-                throw ive;
+                throw new InvalidValueException(scdlLocation, name, e);
             }
             impl.setClassLoader(deploymentContext.getClassLoader());
         } else if (jarLocation != null) {
@@ -92,9 +90,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
             try {
                 jarUrl = new URL(deploymentContext.getScdlLocation(), jarLocation);
             } catch (MalformedURLException e) {
-                InvalidValueException ive = new InvalidValueException(jarLocation, e);
-                ive.setIdentifier(name);
-                throw ive;
+                throw new InvalidValueException(jarLocation, name, e);
             }
             try {
                 impl.setScdlLocation(new URL("jar:" + jarUrl.toExternalForm() + "!/META-INF/sca/default.scdl"));
@@ -110,9 +106,7 @@ public class ImplementationCompositeLoader extends LoaderExtension<CompositeImpl
             artifact.setType("jar");
             artifactRepository.resolve(artifact);
             if (artifact.getUrl() == null) {
-                MissingResourceException mre = new MissingResourceException(artifact.toString());
-                mre.setIdentifier(name);
-                throw mre;
+                throw new MissingResourceException(artifact.toString(), name);
             }
             try {
                 impl.setScdlLocation(new URL("jar:" + artifact.getUrl() + "!/META-INF/sca/default.scdl"));

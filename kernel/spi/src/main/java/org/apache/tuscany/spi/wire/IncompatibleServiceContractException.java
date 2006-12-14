@@ -19,36 +19,55 @@
 
 package org.apache.tuscany.spi.wire;
 
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Operation;
+
 /**
  * Denotes imcompatible service contracts for a wire
+ *
+ * @version $Rev$ $Date$
  */
 public class IncompatibleServiceContractException extends WireException {
-
     private static final long serialVersionUID = 5127478601823295587L;
+    private final ServiceContract<?> source;
+    private final ServiceContract<?> target;
+    private final Operation<?> sourceOperation;
+    private final Operation<?> targetOperation;
 
-    public IncompatibleServiceContractException() {
+    public IncompatibleServiceContractException(String message, ServiceContract<?> source, ServiceContract<?> target) {
+        super(message, null);
+        this.source = source;
+        this.target = target;
+        this.sourceOperation = null;
+        this.targetOperation = null;
     }
 
-    /**
-     * @param message
-     */
-    public IncompatibleServiceContractException(String message) {
-        super(message);
+
+    public IncompatibleServiceContractException(String message,
+                                                ServiceContract<?> source,
+                                                ServiceContract<?> target,
+                                                Operation<?> sourceOperation, Operation<?> targetOperation) {
+        super(message, null);
+        this.source = source;
+        this.target = target;
+        this.sourceOperation = sourceOperation;
+        this.targetOperation = targetOperation;
     }
 
-    /**
-     * @param message
-     * @param cause
-     */
-    public IncompatibleServiceContractException(String message, Throwable cause) {
-        super(message, cause);
+    public ServiceContract<?> getTarget() {
+        return target;
     }
 
-    /**
-     * @param cause
-     */
-    public IncompatibleServiceContractException(Throwable cause) {
-        super(cause);
+    public ServiceContract<?> getSource() {
+        return source;
     }
 
+
+    public Operation<?> getSourceOperation() {
+        return sourceOperation;
+    }
+
+    public Operation<?> getTargetOperation() {
+        return targetOperation;
+    }
 }

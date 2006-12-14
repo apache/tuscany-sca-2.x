@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -85,7 +84,6 @@ public class StAXLoaderRegistryImplTestCase extends TestCase {
 
     public void testUnsuccessfulDispatch() throws LoaderException, XMLStreamException {
         EasyMock.expect(mockReader.getName()).andReturn(name);
-        EasyMock.expect(mockReader.getLocation()).andReturn(new MockLocation());
         EasyMock.replay(mockReader);
         mockMonitor.elementLoad(EasyMock.eq(name));
         EasyMock.replay(mockMonitor);
@@ -131,26 +129,4 @@ public class StAXLoaderRegistryImplTestCase extends TestCase {
         };
     }
 
-    private class MockLocation implements Location {
-
-        public int getLineNumber() {
-            return 0;
-        }
-
-        public int getColumnNumber() {
-            return 0;
-        }
-
-        public int getCharacterOffset() {
-            return 0;
-        }
-
-        public String getPublicId() {
-            return null;
-        }
-
-        public String getSystemId() {
-            return null;
-        }
-    }
 }

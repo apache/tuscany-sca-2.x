@@ -31,6 +31,10 @@ public abstract class WSDLLoaderException extends TuscanyException {
         super(message);
     }
 
+    protected WSDLLoaderException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     protected WSDLLoaderException(String message, Throwable cause) {
         super(message, cause);
     }

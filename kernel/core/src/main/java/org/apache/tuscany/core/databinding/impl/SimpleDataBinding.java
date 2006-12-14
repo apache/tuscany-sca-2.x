@@ -51,8 +51,7 @@ public class SimpleDataBinding extends DataBindingExtension {
             try {
                 return Class.forName(className, false, classLoader);
             } catch (ClassNotFoundException e1) {
-                MissingResourceException mre = new MissingResourceException(className, e1);
-                throw mre;
+                throw new MissingResourceException(className, e1);
             }
         }
     }

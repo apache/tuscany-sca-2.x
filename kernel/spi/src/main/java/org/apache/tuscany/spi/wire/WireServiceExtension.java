@@ -57,31 +57,19 @@ public abstract class WireServiceExtension implements WireService {
             return;
         }
         if (source.isRemotable() != target.isRemotable()) {
-            IncompatibleServiceContractException ex =
-                new IncompatibleServiceContractException("The remotable settings don't match");
-            ex.setIdentifier(source.toString() + "," + target.toString());
-            throw ex;
+            throw new IncompatibleServiceContractException("Remotable settings do not match", source, target);
         }
         if (source.getInteractionScope() != target.getInteractionScope()) {
-            IncompatibleServiceContractException ex =
-                new IncompatibleServiceContractException("The interaction scopes don't match");
-            ex.setIdentifier(source.toString() + "," + target.toString());
-            throw ex;
+            throw new IncompatibleServiceContractException("Interaction scopes settings do not match", source, target);
         }
 
         for (Operation<?> operation : source.getOperations().values()) {
             Operation<?> targetOperation = target.getOperations().get(operation.getName());
             if (targetOperation == null) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("Operation not found on target");
-                ex.setIdentifier(operation.getName());
-                throw ex;
+                throw new IncompatibleServiceContractException("Operation not found on target", source, target);
             }
             if (!operation.equals(targetOperation)) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("Target operation is not compatible");
-                ex.setIdentifier(operation.getServiceContract().toString() + ":" + operation.getName());
-                throw ex;
+                throw new IncompatibleServiceContractException("Target operations are not compatible", source, target);
             }
         }
 
@@ -92,16 +80,18 @@ public abstract class WireServiceExtension implements WireService {
         for (Operation<?> operation : source.getCallbackOperations().values()) {
             Operation<?> targetOperation = target.getCallbackOperations().get(operation.getName());
             if (targetOperation == null) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("Callback operation not found on target");
-                ex.setIdentifier(operation.getName());
-                throw ex;
+                throw new IncompatibleServiceContractException("Callback operation not found on target",
+                    source,
+                    target,
+                    null,
+                    targetOperation);
             }
             if (!operation.equals(targetOperation)) {
-                IncompatibleServiceContractException ex =
-                    new IncompatibleServiceContractException("Target callback operation is not compatible");
-                ex.setIdentifier(operation.getName());
-                throw ex;
+                throw new IncompatibleServiceContractException("Target callback operation is not compatible",
+                    source,
+                    target,
+                    operation,
+                    targetOperation);
             }
         }
     }

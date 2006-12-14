@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateDestructorException extends ProcessingException {
-    public DuplicateDestructorException() {
-    }
 
     public DuplicateDestructorException(String message) {
         super(message);
     }
 
-    public DuplicateDestructorException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateDestructorException(Throwable cause) {
-        super(cause);
+    public DuplicateDestructorException(String message, String identifier) {
+        super(message, identifier);
     }
 }

@@ -96,9 +96,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                                 try {
                                     targetURI = new URI(target);
                                 } catch (URISyntaxException e) {
-                                    InvalidReferenceException ire = new InvalidReferenceException(target);
-                                    ire.setIdentifier(name);
-                                    throw ire;
+                                    throw new InvalidReferenceException(target, name);
                                 }
                             }
 
@@ -110,9 +108,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                             try {
                                 targetURI = new URI(target);
                             } catch (URISyntaxException e) {
-                                InvalidReferenceException ire = new InvalidReferenceException(target);
-                                ire.setIdentifier(name);
-                                throw ire;
+                                throw new InvalidReferenceException(target, name);
                             }
                             return new BindlessServiceDefinition(name, serviceContract, false, targetURI);
                         } else {

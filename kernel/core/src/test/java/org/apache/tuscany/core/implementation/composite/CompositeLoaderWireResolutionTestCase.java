@@ -39,6 +39,8 @@ import org.apache.tuscany.core.implementation.java.JavaImplementation;
 
 /**
  * This class tests the wire resolution function of the composite loader
+ *
+ * @version $Rev$ $Date$
  */
 public class CompositeLoaderWireResolutionTestCase extends TestCase {
     private CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType;

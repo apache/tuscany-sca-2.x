@@ -24,18 +24,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidInjectionSite extends ProcessingException {
-    public InvalidInjectionSite() {
-    }
 
     public InvalidInjectionSite(String message) {
         super(message);
     }
 
-    public InvalidInjectionSite(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidInjectionSite(Throwable cause) {
-        super(cause);
+    public InvalidInjectionSite(String message, String identifier) {
+        super(message, identifier);
     }
 }

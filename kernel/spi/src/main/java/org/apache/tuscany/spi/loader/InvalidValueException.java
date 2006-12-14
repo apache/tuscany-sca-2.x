@@ -26,9 +26,6 @@ package org.apache.tuscany.spi.loader;
  */
 public class InvalidValueException extends LoaderException {
 
-    public InvalidValueException() {
-    }
-
     public InvalidValueException(String message) {
         super(message);
     }
@@ -37,7 +34,7 @@ public class InvalidValueException extends LoaderException {
         super(message, cause);
     }
 
-    public InvalidValueException(Throwable cause) {
-        super(cause);
+    public InvalidValueException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 }

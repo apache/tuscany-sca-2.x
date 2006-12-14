@@ -22,18 +22,13 @@ package org.apache.tuscany.idl.wsdl;
  * @version $Rev$ $Date$
  */
 public class UnresolveableResourceException extends WSDLLoaderException {
-    public UnresolveableResourceException() {
-    }
 
     public UnresolveableResourceException(String message) {
         super(message);
     }
 
-    public UnresolveableResourceException(String message, Throwable cause) {
-        super(message, cause);
+    public UnresolveableResourceException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public UnresolveableResourceException(Throwable cause) {
-        super(cause);
-    }
 }

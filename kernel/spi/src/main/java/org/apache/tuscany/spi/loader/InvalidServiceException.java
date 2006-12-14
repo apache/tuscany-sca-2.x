@@ -22,19 +22,9 @@ package org.apache.tuscany.spi.loader;
  * @version $Rev: 430937 $ $Date: 2006-08-12 06:47:56 +0530 (Sat, 12 Aug 2006) $
  */
 public class InvalidServiceException extends LoaderException {
-    
-    public InvalidServiceException() {
+
+    public InvalidServiceException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public InvalidServiceException(String message) {
-        super(message);
-    }
-
-    public InvalidServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidServiceException(Throwable cause) {
-        super(cause);
-    }
 }

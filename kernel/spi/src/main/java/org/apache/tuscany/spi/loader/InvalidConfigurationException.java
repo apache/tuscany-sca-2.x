@@ -24,18 +24,13 @@ package org.apache.tuscany.spi.loader;
  * @version $Rev$ $Date$
  */
 public class InvalidConfigurationException extends LoaderException {
-    public InvalidConfigurationException() {
-    }
 
     public InvalidConfigurationException(String message) {
         super(message);
     }
 
-    public InvalidConfigurationException(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidConfigurationException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
-    public InvalidConfigurationException(Throwable cause) {
-        super(cause);
-    }
 }

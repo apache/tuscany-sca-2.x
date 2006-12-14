@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateResourceException extends ProcessingException {
-    public DuplicateResourceException() {
-    }
 
     public DuplicateResourceException(String message) {
         super(message);
     }
 
-    public DuplicateResourceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateResourceException(Throwable cause) {
-        super(cause);
+    public DuplicateResourceException(String message, String identifier) {
+        super(message, identifier);
     }
 }

@@ -27,18 +27,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidServiceType extends ProcessingException {
-    public InvalidServiceType() {
-    }
 
-    public InvalidServiceType(String message) {
-        super(message);
-    }
-
-    public InvalidServiceType(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidServiceType(Throwable cause) {
-        super(cause);
+    public InvalidServiceType(String message, String identifier) {
+        super(message, identifier);
     }
 }

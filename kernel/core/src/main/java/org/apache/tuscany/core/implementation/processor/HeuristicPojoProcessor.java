@@ -76,7 +76,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         this.implService = service;
     }
 
-    public <T>  void visitEnd(
+    public <T> void visitEnd(
         CompositeComponent parent,
         Class<T> clazz,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
@@ -198,9 +198,7 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
             // no definition, heuristically determine constructor
             Constructor[] constructors = clazz.getConstructors();
             if (constructors.length == 0) {
-                NoConstructorException e = new NoConstructorException("No public constructor for class");
-                e.setIdentifier(clazz.getName());
-                throw e;
+                throw new NoConstructorException("No public constructor for class", clazz.getName());
             } else if (constructors.length == 1) {
                 constructor = constructors[0];
             } else {
@@ -314,10 +312,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         for (JavaMappedProperty<?> property : props.values()) {
             if (property.getJavaType().equals(type)) {
                 if (name != null) {
-                    AmbiguousConstructorException e =
-                        new AmbiguousConstructorException("Ambiguous property or reference for constructor type");
-                    e.setIdentifier(type.getName());
-                    throw e;
+                    throw new AmbiguousConstructorException("Ambiguous property or reference for constructor type",
+                        type.getName());
                 }
                 name = property.getName();
                 // do not break since ambiguities must be checked, i.e. more than one prop or ref of the same type
@@ -326,10 +322,8 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         for (JavaMappedReference reference : refs.values()) {
             if (reference.getServiceContract().getInterfaceClass().equals(type)) {
                 if (name != null) {
-                    AmbiguousConstructorException e =
-                        new AmbiguousConstructorException("Ambiguous property or reference for constructor type");
-                    e.setIdentifier(type.getName());
-                    throw e;
+                    throw new AmbiguousConstructorException("Ambiguous property or reference for constructor type",
+                        type.getName());
                 }
                 name = reference.getName();
                 // do not break since ambiguities must be checked, i.e. more than one prop or ref of the same type

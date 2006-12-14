@@ -76,41 +76,21 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
                             if (uriString != null && uriString.trim().length() > 0) {
                                 sourceURI = new URI(uriString);
                             } else {
-                                int line = reader.getLocation().getLineNumber();
-                                int col = reader.getLocation().getColumnNumber();
-                                InvalidWireException e = new InvalidWireException("Wire source not defined");
-                                e.setIdentifier(line + "," + col);
-                                e.addContextName(parent.getName());
-                                throw e;
+                                throw new InvalidWireException("Wire source not defined");
                             }
                         } else if (reader.getName().equals(TARGET_URI)) {
                             uriString = reader.getElementText();
                             if (uriString != null && uriString.trim().length() > 0) {
                                 targetURI = new URI(uriString);
                             } else {
-                                int line = reader.getLocation().getLineNumber();
-                                int col = reader.getLocation().getColumnNumber();
-                                InvalidWireException e = new InvalidWireException("Wire target not defined");
-                                e.setIdentifier(line + "," + col);
-                                e.addContextName(parent.getName());
-                                throw e;
+                                throw new InvalidWireException("Wire target not defined");
                             }
                         } else {
-                            int line = reader.getLocation().getLineNumber();
-                            int col = reader.getLocation().getColumnNumber();
                             QName name = reader.getName();
-                            InvalidWireException e = new InvalidWireException("Unrecognized element in wire '" + name);
-                            e.setIdentifier(line + "," + col);
-                            e.addContextName(parent.getName());
-                            throw e;
+                            throw new InvalidWireException("Unrecognized element in wire ", name.toString());
                         }
                     } catch (URISyntaxException e) {
-                        int line = reader.getLocation().getLineNumber();
-                        int col = reader.getLocation().getColumnNumber();
-                        InvalidWireException iwe = new InvalidWireException("Invalid wire uri", e);
-                        iwe.setIdentifier(line + "," + col);
-                        iwe.addContextName(parent.getName());
-                        throw iwe;
+                        throw new InvalidWireException("Invalid wire uri", e);
                     }
 
                     reader.next();
@@ -122,12 +102,7 @@ public class WireLoader extends LoaderExtension<WireDefinition> {
                             wireDefn.setSource(sourceURI);
                             wireDefn.setTarget(targetURI);
                         } else {
-                            int line = reader.getLocation().getLineNumber();
-                            int col = reader.getLocation().getColumnNumber();
-                            InvalidWireException e = new InvalidWireException("Incomplete wire definition");
-                            e.setIdentifier(line + "," + col);
-                            e.addContextName(parent.getName());
-                            throw e;
+                            throw new InvalidWireException("Incomplete wire definition");
                         }
                         return wireDefn;
                     }

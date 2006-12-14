@@ -26,18 +26,24 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public abstract class LaunchException extends TuscanyException {
-    public LaunchException() {
-    }
 
-    public LaunchException(String message) {
+    protected LaunchException(String message) {
         super(message);
     }
 
-    public LaunchException(String message, Throwable cause) {
+    protected LaunchException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    protected LaunchException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
+    protected LaunchException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public LaunchException(Throwable cause) {
+    protected LaunchException(Throwable cause) {
         super(cause);
     }
 }

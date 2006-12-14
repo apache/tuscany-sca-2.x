@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalDestructorException extends ProcessingException {
-    public IllegalDestructorException() {
-    }
 
     public IllegalDestructorException(String message) {
         super(message);
     }
 
-    public IllegalDestructorException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalDestructorException(Throwable cause) {
-        super(cause);
+    public IllegalDestructorException(String message, String identifier) {
+        super(message, identifier);
     }
 }

@@ -23,15 +23,14 @@ import java.lang.reflect.Modifier;
 
 import org.osoa.sca.annotations.Destroy;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes the {@link @Destroy} annotation on a component implementation and updates the component type with the
@@ -50,9 +49,7 @@ public class DestroyProcessor extends ImplementationProcessorExtension {
             return;
         }
         if (method.getParameterTypes().length != 0) {
-            IllegalDestructorException e = new IllegalDestructorException("Destructor must not have argments");
-            e.setIdentifier(method.toString());
-            throw e;
+            throw new IllegalDestructorException("Destructor must not have argments", method.toString());
         }
         if (type.getDestroyMethod() != null) {
             throw new DuplicateDestructorException("More than one destructor found on implementation");

@@ -77,10 +77,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             contract.setCallbackClass(callbackClass);
             contract.setCallbackName(getBaseName(callbackClass));
         } else if (callback != null && Void.class.equals(callback.value())) {
-            IllegalCallbackException e = new IllegalCallbackException(
-                "Callback annotation must specify an interface on service type");
-            e.setIdentifier(interfaze.getName());
-            throw e;
+            throw new IllegalCallbackException("No callback interface specified on annotation", interfaze.getName());
         }
     }
 
@@ -232,13 +229,12 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             }
         } else if (pos < constructorNames.length && constructorNames[pos] != null
             && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException("Name specified by @Constructor does not match autowire name at "
-                + (pos + 1));
+            String paramNum = String.valueOf(pos + 1);
+            throw new InvalidConstructorException("Name specified by @Constructor does not match autowire name",
+                paramNum);
         }
         reference.setName(name);
-
         reference.setRequired(autowireAnnot.required());
-
         ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);
@@ -279,8 +275,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             name = constructorNames[pos];
         } else if (pos < constructorNames.length && constructorNames[pos] != null
             && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException("Name specified by @Constructor does not match property name at "
-                + (pos + 1));
+            String paramNum = String.valueOf(pos + 1);
+            throw new InvalidConstructorException("Name specified by @Constructor does not match property name",
+                paramNum);
         }
         if (type.getProperties().get(name) != null) {
             throw new DuplicatePropertyException(name);
@@ -335,8 +332,9 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             name = constructorNames[pos];
         } else if (pos < constructorNames.length && constructorNames[pos] != null
             && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException("Name specified by @Constructor does not match reference name at "
-                + (pos + 1));
+            String paramNum = String.valueOf(pos + 1);
+            throw new InvalidConstructorException("Name specified by @Constructor does not match reference name",
+                paramNum);
         }
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);
@@ -379,13 +377,15 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         if (name == null || name.length() == 0) {
             if (constructorNames.length < pos + 1 || constructorNames[pos] == null
                 || constructorNames[pos].length() == 0) {
-                throw new InvalidResourceException("No name specified for resource parameter " + (pos + 1));
+                String paramNum = String.valueOf(pos + 1);
+                throw new InvalidResourceException("No name specified for resource parameter", paramNum);
             }
             name = constructorNames[pos];
         } else if (pos < constructorNames.length && constructorNames[pos] != null
             && constructorNames[pos].length() != 0 && !name.equals(constructorNames[pos])) {
-            throw new InvalidConstructorException("Name specified by @Constructor does not match resource name at "
-                + (pos + 1));
+            String paramNum = String.valueOf(pos + 1);
+            throw new InvalidConstructorException("Name specified by @Constructor does not match resource name",
+                paramNum);
         }
         if (type.getResources().get(name) != null) {
             throw new DuplicateResourceException(name);

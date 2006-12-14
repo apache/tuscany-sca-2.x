@@ -28,18 +28,11 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class DuplicateConstructorException extends ProcessingException {
 
-    public DuplicateConstructorException() {
-    }
-
     public DuplicateConstructorException(String message) {
         super(message);
     }
 
-    public DuplicateConstructorException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateConstructorException(Throwable cause) {
-        super(cause);
+    public DuplicateConstructorException(String message, String identifier) {
+        super(message, identifier);
     }
 }

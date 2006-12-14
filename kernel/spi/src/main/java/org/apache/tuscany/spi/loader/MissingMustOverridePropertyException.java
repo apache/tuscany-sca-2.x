@@ -22,18 +22,9 @@ package org.apache.tuscany.spi.loader;
  * @version $Rev$ $Date$
  */
 public class MissingMustOverridePropertyException extends LoaderException {
+
     public MissingMustOverridePropertyException(String name) {
         super(name);
     }
 
-    public MissingMustOverridePropertyException() {
-    }
-
-    public MissingMustOverridePropertyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MissingMustOverridePropertyException(Throwable cause) {
-        super(cause);
-    }
 }

@@ -29,7 +29,6 @@ import junit.framework.TestCase;
 public class TuscanyExceptionTestCase extends TestCase {
     private static final Throwable CAUSE = new Throwable("Cause");
     private static final String MESSAGE = "Message";
-    private static final String IDENTIFIER = "IDENTIFIER";
     private static final String CONTEXT1 = "CONTEXT1";
     private static final String CONTEXT2 = "CONTEXT2";
 
@@ -43,7 +42,7 @@ public class TuscanyExceptionTestCase extends TestCase {
 
     public void testMessageConstructor() {
         TuscanyException ex = new DummyException(MESSAGE);
-        assertSame(MESSAGE, ex.getMessage());
+        assertEquals(MESSAGE, ex.getMessage());
         assertNull(ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
@@ -52,24 +51,17 @@ public class TuscanyExceptionTestCase extends TestCase {
     public void testThrowableConstructor() {
         TuscanyException ex = new DummyException(CAUSE);
         assertEquals(CAUSE.getClass().getName() + ": " + CAUSE.getMessage(), ex.getMessage());
-        assertSame(CAUSE, ex.getCause());
+        assertEquals(CAUSE, ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
     }
 
     public void testMessageThrowableConstructor() {
         TuscanyException ex = new DummyException(MESSAGE, CAUSE);
-        assertSame(MESSAGE, ex.getMessage());
-        assertSame(CAUSE, ex.getCause());
+        assertEquals(MESSAGE, ex.getMessage());
+        assertEquals(CAUSE, ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
-    }
-
-    public void testIdentifier() {
-        TuscanyException ex = new DummyException(MESSAGE);
-        ex.setIdentifier(IDENTIFIER);
-        assertSame(IDENTIFIER, ex.getIdentifier());
-        assertEquals(MESSAGE + " [" + IDENTIFIER + ']', ex.getMessage());
     }
 
     public void testContextStack() {
@@ -93,11 +85,35 @@ public class TuscanyExceptionTestCase extends TestCase {
 
     public void testContextMessageWithIdentifier() {
         TuscanyException ex = new DummyException(MESSAGE);
-        ex.setIdentifier(IDENTIFIER);
         ex.addContextName(CONTEXT1);
         ex.addContextName(CONTEXT2);
-        assertEquals("Message [IDENTIFIER]\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
+        assertEquals("Message\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
     }
+
+    public void testAddContext() throws Exception {
+        TuscanyException e = new DummyException();
+        e.addContextName("foo");
+        e.addContextName("bar");
+        assertEquals("foo", e.returnContextNames().get(0));
+        assertEquals("bar", e.returnContextNames().get(1));
+    }
+
+    public void testEmptyContext() throws Exception {
+        TuscanyException e = new DummyException();
+        assertEquals(0, e.returnContextNames().size());
+    }
+
+    public void testGetMessage() throws Exception {
+        TuscanyException e = new DummyException();
+        e.getMessage();
+    }
+
+    public void testFullMessage() throws Exception {
+        TuscanyException e = new DummyException("message", "foo");
+        e.addContextName("foo");
+        e.getMessage();
+    }
+
 
     public static class DummyException extends TuscanyException {
         public DummyException() {
@@ -105,6 +121,11 @@ public class TuscanyExceptionTestCase extends TestCase {
 
         public DummyException(String message) {
             super(message);
+        }
+
+
+        public DummyException(String message, String identifier) {
+            super(message, identifier);
         }
 
         public DummyException(String message, Throwable cause) {

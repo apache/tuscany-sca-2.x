@@ -26,15 +26,7 @@ package org.apache.tuscany.spi.loader;
 public class MissingIncludeException extends LoaderException {
     private static final long serialVersionUID = -2917278473974880124L;
 
-    /**
-     * Default constructor.
-     */
-    public MissingIncludeException() {
-        super();
-    }
-
-
-    public MissingIncludeException(String message) {
-        super(message);
+    public MissingIncludeException(String message, String identifier) {
+        super(message, identifier);
     }
 }

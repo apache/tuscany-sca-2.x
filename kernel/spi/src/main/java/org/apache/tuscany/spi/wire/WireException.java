@@ -22,23 +22,13 @@ import org.apache.tuscany.api.TuscanyException;
 
 /**
  * Denotes a top-level exception dealing with a wire
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class WireException extends TuscanyException {
 
-    public WireException() {
-        super();
-    }
-
-    public WireException(String message) {
-        super(message);
-    }
-
-    public WireException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public WireException(Throwable cause) {
-        super(cause);
+    protected WireException(String message, String identifier) {
+        super(message, identifier);
     }
 
 }

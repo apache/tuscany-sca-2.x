@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalReferenceException extends ProcessingException {
-    public IllegalReferenceException() {
-    }
 
     public IllegalReferenceException(String message) {
         super(message);
     }
 
-    public IllegalReferenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalReferenceException(Throwable cause) {
-        super(cause);
+    public IllegalReferenceException(String message, String identifier) {
+        super(message, identifier);
     }
 }

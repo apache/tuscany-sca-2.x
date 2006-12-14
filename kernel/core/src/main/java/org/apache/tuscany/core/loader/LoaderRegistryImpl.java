@@ -27,7 +27,6 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.Location;
 
 import org.osoa.sca.annotations.Init;
 
@@ -91,12 +90,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         monitor.elementLoad(name);
         StAXElementLoader<? extends ModelObject> loader = loaders.get(name);
         if (loader == null) {
-            Location location = reader.getLocation();
-            int line = location.getLineNumber();
-            int col = location.getColumnNumber();
-            UnrecognizedElementException e = new UnrecognizedElementException(name);
-            e.setIdentifier(line + "," + col);
-            throw e;
+            throw new UnrecognizedElementException(name);
         }
         return loader.load(parent, object, reader, deploymentContext);
     }
@@ -122,10 +116,6 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                     } else {
                         UnrecognizedElementException e = new UnrecognizedElementException(name);
                         e.setResourceURI(url.toString());
-                        Location location = reader.getLocation();
-                        int line = location.getLineNumber();
-                        int col = location.getColumnNumber();
-                        e.setIdentifier(line + "," + col);
                         throw e;
                     }
                 } finally {
@@ -147,10 +137,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
             sfe.setResourceURI(url.toString());
             throw sfe;
         } catch (XMLStreamException e) {
-            InvalidConfigurationException sfe = new InvalidConfigurationException("Invalid or missing resource", e);
-            sfe.setIdentifier(url.toString());
-            sfe.setResourceURI(url.toString());
-            throw sfe;
+            throw new InvalidConfigurationException("Invalid or missing resource", url.toString(), e);
         }
     }
 

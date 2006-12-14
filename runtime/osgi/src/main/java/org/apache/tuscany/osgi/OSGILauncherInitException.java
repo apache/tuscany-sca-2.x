@@ -24,16 +24,6 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class OSGILauncherInitException extends TuscanyException {
-    public OSGILauncherInitException() {
-    }
-
-    public OSGILauncherInitException(String string) {
-        super(string);
-    }
-
-    public OSGILauncherInitException(String string, Throwable throwable) {
-        super(string, throwable);
-    }
 
     public OSGILauncherInitException(Throwable throwable) {
         super(throwable);

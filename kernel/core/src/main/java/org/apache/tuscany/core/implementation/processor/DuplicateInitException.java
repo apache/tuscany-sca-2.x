@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateInitException extends ProcessingException {
-    public DuplicateInitException() {
-    }
 
     public DuplicateInitException(String message) {
         super(message);
     }
 
-    public DuplicateInitException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateInitException(Throwable cause) {
-        super(cause);
+    public DuplicateInitException(String message, String identifier) {
+        super(message, identifier);
     }
 }

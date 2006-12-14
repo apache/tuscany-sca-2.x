@@ -27,18 +27,7 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class InvalidResourceException extends ProcessingException {
 
-    public InvalidResourceException() {
-    }
-
-    public InvalidResourceException(String message) {
-        super(message);
-    }
-
-    public InvalidResourceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidResourceException(Throwable cause) {
-        super(cause);
+    public InvalidResourceException(String message, String identifier) {
+        super(message, identifier);
     }
 }

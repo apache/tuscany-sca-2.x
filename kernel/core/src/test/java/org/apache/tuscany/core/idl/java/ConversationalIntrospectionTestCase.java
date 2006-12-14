@@ -21,7 +21,7 @@ package org.apache.tuscany.core.idl.java;
 import org.osoa.sca.annotations.EndConversation;
 import org.osoa.sca.annotations.Scope;
 
-import org.apache.tuscany.spi.idl.InvalidConversationalContractException;
+import org.apache.tuscany.spi.idl.InvalidConversationalOperationException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
 import static org.apache.tuscany.spi.model.InteractionScope.NONCONVERSATIONAL;
@@ -48,7 +48,7 @@ public class ConversationalIntrospectionTestCase extends TestCase {
         try {
             registry.introspect(BadFoo.class);
             fail();
-        } catch (InvalidConversationalContractException e) {
+        } catch (InvalidConversationalOperationException e) {
             //expected
         }
     }

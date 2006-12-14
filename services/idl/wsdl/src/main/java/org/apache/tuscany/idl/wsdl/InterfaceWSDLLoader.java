@@ -21,7 +21,6 @@ package org.apache.tuscany.idl.wsdl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.wsdl.PortType;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
@@ -46,7 +45,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 
 /**
  * Loads a WSDL interface definition from an XML-based assembly file
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class InterfaceWSDLLoader extends LoaderExtension {
@@ -60,7 +59,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
 
     private InterfaceWSDLIntrospector introspector;
 
-    @Constructor ({ "registry", "wsdlRegistry", "introspector" })
+    @Constructor({"registry", "wsdlRegistry", "introspector"})
     public InterfaceWSDLLoader(@Autowire LoaderRegistry registry,
                                @Autowire WSDLDefinitionRegistry wsdlRegistry,
                                @Autowire InterfaceWSDLIntrospector introspector) {
@@ -108,13 +107,9 @@ public class InterfaceWSDLLoader extends LoaderExtension {
             try {
                 wsdlRegistry.loadDefinition(wsdlLocation, deploymentContext.getClassLoader());
             } catch (IOException e) {
-                LoaderException le = new LoaderException(e);
-                le.setIdentifier(wsdlLocation);
-                throw le;
+                throw new LoaderException(wsdlLocation, e);
             } catch (WSDLException e) {
-                LoaderException le = new LoaderException(e);
-                le.setIdentifier(wsdlLocation);
-                throw le;
+                throw new LoaderException(wsdlLocation, e);
             }
         }
 
@@ -135,9 +130,7 @@ public class InterfaceWSDLLoader extends LoaderExtension {
             contract.getExtensions().putAll(extensions);
             return contract;
         } catch (InvalidServiceContractException e) {
-            LoaderException le = new LoaderException(e);
-            le.setIdentifier(wsdlLocation);
-            throw le;
+            throw new LoaderException(wsdlLocation, e);
         }
     }
 

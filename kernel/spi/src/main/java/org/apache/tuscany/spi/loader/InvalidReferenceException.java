@@ -24,15 +24,12 @@ package org.apache.tuscany.spi.loader;
 public class InvalidReferenceException extends LoaderException {
     private static final long serialVersionUID = -4346666572527197558L;
 
-    public InvalidReferenceException() {
-    }
-
     public InvalidReferenceException(String message) {
         super(message);
     }
 
-    public InvalidReferenceException(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidReferenceException(String message, String identifier) {
+        super(message, identifier);
     }
 
     public InvalidReferenceException(Throwable cause) {

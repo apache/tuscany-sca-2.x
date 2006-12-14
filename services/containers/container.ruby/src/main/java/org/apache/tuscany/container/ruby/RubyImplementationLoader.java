@@ -96,9 +96,7 @@ public class RubyImplementationLoader extends LoaderExtension<RubyImplementation
         try {
             is = url.openStream();
         } catch (IOException e) {
-            MissingResourceException mre = new MissingResourceException(resource, e);
-            mre.setIdentifier(resource);
-            throw mre;
+            throw new MissingResourceException(resource, e);
         }
         try {
             Reader reader = new InputStreamReader(is, "UTF-8");
@@ -112,9 +110,7 @@ public class RubyImplementationLoader extends LoaderExtension<RubyImplementation
             }
             return source.toString();
         } catch (IOException e) {
-            LoaderException le = new LoaderException(e);
-            le.setIdentifier(resource);
-            throw le;
+            throw new LoaderException(resource, e);
         } finally {
             try {
                 is.close();
