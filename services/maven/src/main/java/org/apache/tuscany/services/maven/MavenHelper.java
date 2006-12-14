@@ -39,6 +39,8 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.settings.MavenSettingsBuilder;
+import org.apache.maven.settings.Settings;
 import org.apache.tuscany.spi.services.artifact.Artifact;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DefaultClassRealm;
@@ -55,7 +57,7 @@ import org.codehaus.plexus.embed.Embedder;
 public class MavenHelper {
 
     /** Local repository */
-    private static final File LOCAL_REPO = new File(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
+//    private static final File LOCAL_REPO = new File(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository");
 
     /** Remote repository URLs */
     private final String[] remoteRepositoryUrls;
@@ -209,7 +211,7 @@ public class MavenHelper {
         }
 
     }
-
+    
     /*
      * Sets up local and remote repositories.
      */
@@ -225,7 +227,11 @@ public class MavenHelper {
             ArtifactRepositoryPolicy snapshotsPolicy = new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
             ArtifactRepositoryPolicy releasesPolicy = new ArtifactRepositoryPolicy(true, updatePolicy, ArtifactRepositoryPolicy.CHECKSUM_POLICY_WARN);
 
-            localRepository = artifactRepositoryFactory.createArtifactRepository("local", LOCAL_REPO.toURL().toExternalForm(), layout,
+            MavenSettingsBuilder settingsBuilder = (MavenSettingsBuilder)embedder.lookup(MavenSettingsBuilder.ROLE);
+            Settings settings = settingsBuilder.buildSettings();
+            String localRepo = settings.getLocalRepository();
+            
+            localRepository = artifactRepositoryFactory.createArtifactRepository("local", new File(localRepo).toURL().toString(), layout,
                     snapshotsPolicy, releasesPolicy);
 
             if (!online) {
@@ -240,9 +246,7 @@ public class MavenHelper {
                         releasesPolicy));
             }
 
-        } catch (MalformedURLException ex) {
-            throw new TuscanyDependencyException(ex);
-        } catch (ComponentLookupException ex) {
+        } catch (Exception ex) {
             throw new TuscanyDependencyException(ex);
         }
 
