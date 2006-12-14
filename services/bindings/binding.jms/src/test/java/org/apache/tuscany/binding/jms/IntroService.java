@@ -19,6 +19,5 @@
 package org.apache.tuscany.binding.jms;
 
 public interface IntroService {
-
-	public String greet(String name);
+    public String greet(String name);
 }

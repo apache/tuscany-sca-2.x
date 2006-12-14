@@ -22,15 +22,15 @@ import org.osoa.sca.annotations.Reference;
 
 public class IntroServiceImpl implements IntroService {
 
-	private GreetingService extService;
-	
-	@Reference
+    private GreetingService extService;
+
+    @Reference
     public void setExtService(GreetingService extService) {
         this.extService = extService;
     }
-	
-	public String greet(String name) {
-		return extService.greet(name);
-	}
+
+    public String greet(String name) {
+        return extService.greet(name);
+    }
 
 }
