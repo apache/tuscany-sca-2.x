@@ -62,8 +62,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
     @SuppressWarnings("unchecked")
     public AtomicComponent build(CompositeComponent parent,
                                  ComponentDefinition<JavaImplementation> definition,
-                                 DeploymentContext deployment)
-        throws BuilderConfigException {
+                                 DeploymentContext deployment) throws BuilderConfigException {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             definition.getImplementation().getComponentType();
 
@@ -97,7 +96,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);
         configuration.setScheduler(workScheduler);
-        
+
         configuration.setImplementationClass(definition.getImplementation().getImplementationClass());
 
         // setup property injection sites
@@ -142,18 +141,24 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         // handle resources
         for (Resource resource : componentType.getResources().values()) {
-            String name = resource.getName();
-            boolean optional = resource.isOptional();
-            Class<Object> type = (Class<Object>) resource.getType();
-            ResourceObjectFactory<Object> factory;
-            String mappedName = resource.getMappedName();
-            if (mappedName == null) {
-                // by type
-                factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+
+            ObjectFactory<?> objectFactory = resource.getObjectFactory();
+            if (objectFactory != null) {
+                component.addResourceFactory(resource.getName(), objectFactory);
             } else {
-                factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+                String name = resource.getName();
+                boolean optional = resource.isOptional();
+                Class<Object> type = (Class<Object>)resource.getType();
+                ResourceObjectFactory<Object> factory;
+                String mappedName = resource.getMappedName();
+                if (mappedName == null) {
+                    // by type
+                    factory = new ResourceObjectFactory<Object>(type, optional, parent, host);
+                } else {
+                    factory = new ResourceObjectFactory<Object>(type, mappedName, optional, parent, host);
+                }
+                component.addResourceFactory(name, factory);
             }
-            component.addResourceFactory(name, factory);
 
         }
 
@@ -165,9 +170,9 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 configuration.addCallbackSite(service.getCallbackReferenceName(), service.getCallbackMember());
             }
         }
-        
+
         component.setAllowsPassByReference(componentType.isAllowsPassByReference());
-        
+
         return component;
     }
 
