@@ -66,8 +66,7 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
     }
 
     public void testIdentifier() {
-        TuscanyRuntimeException ex = new DummyException(MESSAGE);
-        ex.setIdentifier(IDENTIFIER);
+        TuscanyRuntimeException ex = new DummyException(MESSAGE, IDENTIFIER);
         assertSame(IDENTIFIER, ex.getIdentifier());
         assertEquals(MESSAGE + " [" + IDENTIFIER + ']', ex.getMessage());
     }
@@ -92,8 +91,7 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
 
 
     public void testContextMessageWithIdentifier() {
-        TuscanyRuntimeException ex = new DummyException(MESSAGE);
-        ex.setIdentifier(IDENTIFIER);
+        TuscanyRuntimeException ex = new DummyException(MESSAGE, IDENTIFIER);
         ex.addContextName(CONTEXT1);
         ex.addContextName(CONTEXT2);
         assertEquals("Message [IDENTIFIER]\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
@@ -105,6 +103,10 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
 
         public DummyException(String message) {
             super(message);
+        }
+
+        public DummyException(String message, String identifier) {
+            super(message, identifier);
         }
 
         public DummyException(String message, Throwable cause) {

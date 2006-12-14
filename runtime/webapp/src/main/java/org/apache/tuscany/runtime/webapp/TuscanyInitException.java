@@ -30,8 +30,16 @@ public class TuscanyInitException extends TuscanyRuntimeException {
         super(string);
     }
 
+    public TuscanyInitException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public TuscanyInitException(String string, Throwable throwable) {
         super(string, throwable);
+    }
+
+    public TuscanyInitException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public TuscanyInitException(Throwable throwable) {

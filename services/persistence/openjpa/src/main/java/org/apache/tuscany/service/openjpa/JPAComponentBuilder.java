@@ -45,10 +45,8 @@ public class JPAComponentBuilder extends ComponentBuilderExtension {
         ComponentType<?, ?, ?> type = definition.getImplementation().getComponentType();
         Property<?> persistenceUnit = type.getProperties().get(PERSISTENCE_UNIT);
         if (persistenceUnit == null) {
-            BuilderConfigException e =
-                new BuilderConfigException("Persistence Unit not specified in JPA import in composite");
-            e.setIdentifier(parent.getName());
-            throw e;
+            throw new BuilderConfigException("Persistence Unit not specified in JPA import in composite",
+                parent.getName());
         }
 //        Property<?> configProps = type.getProperties().get(PERSISTENCE_UNIT);
         return null;

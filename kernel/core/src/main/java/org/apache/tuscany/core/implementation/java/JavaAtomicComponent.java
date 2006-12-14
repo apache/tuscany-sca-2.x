@@ -110,9 +110,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
             ObjectFactory<?> factory = new CallbackWireObjectFactory(contract, wireService, inboundWire);
             return new MethodInjector<Object>(method, factory);
         } else {
-            InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
-            e.setIdentifier(member.getName());
-            throw e;
+            throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
     }
 

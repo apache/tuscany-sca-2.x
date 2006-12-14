@@ -112,9 +112,7 @@ public class JavaScriptComponent extends AtomicComponentExtension {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
-            TargetException e = new TargetException("ServiceDefinition not found"); // TODO better error message
-            e.setIdentifier(service);
-            throw e;
+            throw new TargetException("ServiceDefinition not found", service);
         }
         return wireService.createProxy(wire);
     }

@@ -35,8 +35,16 @@ public class ComponentRuntimeException extends CoreRuntimeException {
         super(message);
     }
 
+    public ComponentRuntimeException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public ComponentRuntimeException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public ComponentRuntimeException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public ComponentRuntimeException(Throwable cause) {

@@ -60,20 +60,14 @@ public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding>
 
         URI uri = definition.getTarget();
         if (uri == null) {
-            MissingTargetException e = new MissingTargetException("Target URI not specified");
-            e.setIdentifier(definition.getName());
-            throw e;
+            throw new MissingTargetException("Target URI not specified", definition.getName());
         }
         QualifiedName targetName = new QualifiedName(uri.getPath());
         SCAObject target = parent.getSystemChild(targetName.getPartName());
         if (target == null) {
-            MissingTargetException e = new MissingTargetException(targetName.toString());
-            e.setIdentifier(definition.getName());
-            throw e;
+            throw new MissingTargetException(targetName.toString());
         } else if (!(target instanceof SystemAtomicComponent)) {
-            InvalidTargetTypeException e = new InvalidTargetTypeException(targetName.toString());
-            e.setIdentifier(definition.getName());
-            throw e;
+            throw new InvalidTargetTypeException(targetName.toString());
         }
         SystemAtomicComponent atomicComponent = (SystemAtomicComponent) target;
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();

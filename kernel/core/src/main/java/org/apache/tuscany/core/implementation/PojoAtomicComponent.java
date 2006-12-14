@@ -102,9 +102,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             try {
                 initInvoker.invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                TargetException t = new TargetException("Error initializing component instance", e);
-                t.setIdentifier(getName());
-                throw t;
+                throw new TargetException("Error initializing component instance", getName(), e);
             }
         }
     }
@@ -114,9 +112,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             try {
                 destroyInvoker.invokeEvent(instance);
             } catch (ObjectCallbackException e) {
-                TargetException t = new TargetException("Error destroying component instance", e);
-                t.setIdentifier(getName());
-                throw t;
+                throw new InvalidAccessorException("Error destroying component instance", getName());
             }
         }
     }
@@ -214,9 +210,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         } else if (member instanceof Method) {
             return new MethodInjector<Object>((Method) member, factory);
         } else {
-            InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
-            e.setIdentifier(member.getName());
-            throw e;
+            throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
     }
 
@@ -242,9 +236,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                 return new MethodInjector<Object>(method, new ListMultiplicityObjectFactory(factories));
             }
         } else {
-            InvalidAccessorException e = new InvalidAccessorException("Member must be a field or method");
-            e.setIdentifier(member.getName());
-            throw e;
+            throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
     }
 

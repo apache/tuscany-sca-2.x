@@ -134,19 +134,12 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public void register(SCAObject child) {
         if (child.isSystem()) {
             if (systemChildren.get(child.getName()) != null) {
-                DuplicateNameException e =
-                    new DuplicateNameException("A system child is already registered with the name");
-                e.setIdentifier(child.getName());
-                e.addContextName(getName());
-                throw e;
+                throw new DuplicateNameException("A system child is already registered with the name", child.getName());
             }
             systemChildren.put(child.getName(), child);
         } else {
             if (children.get(child.getName()) != null) {
-                DuplicateNameException e = new DuplicateNameException("A child is already registered with the name");
-                e.setIdentifier(child.getName());
-                e.addContextName(getName());
-                throw e;
+                throw new DuplicateNameException("A child is already registered with the name", child.getName());
             }
             children.put(child.getName(), child);
         }
@@ -221,15 +214,9 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public Service getService(String name) {
         SCAObject ctx = children.get(name);
         if (ctx == null) {
-            TargetNotFoundException e = new TargetNotFoundException("Service not found");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
+            throw new TargetNotFoundException("Service not found", name);
         } else if (!(ctx instanceof Service)) {
-            TargetNotFoundException e = new TargetNotFoundException("SCAObject not a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
+            throw new TargetNotFoundException("Target not a service", name);
         }
         return (Service) ctx;
     }
@@ -245,15 +232,9 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     public Service getSystemService(String name) {
         SCAObject ctx = systemChildren.get(name);
         if (ctx == null) {
-            TargetNotFoundException e = new TargetNotFoundException("Service not found");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
+            throw new TargetNotFoundException("Service not found", name);
         } else if (!(ctx instanceof Service)) {
-            TargetNotFoundException e = new TargetNotFoundException("SCAObject not a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
+            throw new TargetNotFoundException("Target not a service");
         }
         return (Service) ctx;
     }
@@ -287,10 +268,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         } else if (context instanceof Service) {
             return context.getServiceInstance();
         } else {
-            IllegalTargetException e = new IllegalTargetException("Target must be a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
+            throw new IllegalTargetException("Target must be a service", name);
         }
     }
 
@@ -303,10 +281,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         } else if (target instanceof Service) {
             return target.getServiceInstance();
         } else {
-            IllegalTargetException e = new IllegalTargetException("Target must be a service");
-            e.setIdentifier(name);
-            e.addContextName(getName());
-            throw e;
+            throw new IllegalTargetException("Target must be a service", name);
         }
     }
 
@@ -331,8 +306,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
                     return instanceInterface.cast(context.getServiceInstance());
                 } else {
                     IllegalTargetException e = new IllegalTargetException("Autowire target must be a system "
-                        + "service, atomic component, or reference");
-                    e.setIdentifier(instanceInterface.getName());
+                        + "service, atomic component, or reference", instanceInterface.getName());
                     e.addContextName(getName());
                     throw e;
                 }
@@ -368,8 +342,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
                     return instanceInterface.cast(context.getServiceInstance());
                 } else {
                     IllegalTargetException e = new IllegalTargetException("Autowire target must be a system "
-                        + "service, atomic component, or reference");
-                    e.setIdentifier(instanceInterface.getName());
+                        + "service, atomic component, or reference", instanceInterface.getName());
                     e.addContextName(getName());
                     throw e;
                 }

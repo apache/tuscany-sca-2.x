@@ -35,8 +35,17 @@ public abstract class BuilderException extends CoreRuntimeException {
         super(message);
     }
 
+
+    protected BuilderException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public BuilderException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    protected BuilderException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public BuilderException(Throwable cause) {

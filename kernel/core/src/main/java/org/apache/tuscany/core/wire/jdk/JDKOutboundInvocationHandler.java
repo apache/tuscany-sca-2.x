@@ -112,9 +112,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
                 return hashCode();
                 // TODO beter hash algorithm
             }
-            TargetException e = new TargetException("Operation not configured");
-            e.setIdentifier(method.getName());
-            throw e;
+            throw new TargetException("Operation not configured", method.getName());
         }
         OutboundInvocationChain chain = holder.chain;
         TargetInvoker invoker;
@@ -122,9 +120,8 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         if (holder.cachedInvoker == null) {
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
-                TargetException e = new TargetException("No target invoker configured for operation");
-                e.setIdentifier(chain.getOperation().getName());
-                throw e;
+                String name = chain.getOperation().getName();
+                throw new TargetException("No target invoker configured for operation", name);
             }
             if (chain.getTargetInvoker().isCacheable()) {
                 // clone and store the invoker locally
@@ -196,10 +193,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         }
         List<OutboundWire> wires = owner.getOutboundWires().get(referenceName);
         if (wires == null) {
-            ReactivationException e = new ReactivationException("Reference wire not found");
-            e.setIdentifier(referenceName);
-            e.addContextName(owner.getName());
-            throw e;
+            throw new ReactivationException("Reference wire not found", referenceName, owner.getName());
         }
         // TODO handle multiplicity
         OutboundWire wire = wires.get(0);

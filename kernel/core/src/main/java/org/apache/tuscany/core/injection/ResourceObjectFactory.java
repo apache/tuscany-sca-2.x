@@ -98,9 +98,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
                     instance = resolveInstance();
                 }
                 if (instance == null && !optional) {
-                    ResourceNotFoundException e = new ResourceNotFoundException("No resource found matching type");
-                    e.setIdentifier(type.getName());
-                    throw e;
+                    throw new ResourceNotFoundException("No resource found matching type", type.getName());
                 }
                 return instance;
             } else {
@@ -109,9 +107,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
                     instance = type.cast(child.getServiceInstance());
                 }
                 if (instance == null && !optional) {
-                    ResourceNotFoundException e = new ResourceNotFoundException("No resource found for URI");
-                    e.setIdentifier(mappedName);
-                    throw e;
+                    throw new ResourceNotFoundException("No resource found for URI", mappedName);
                 }
                 return instance;
             }

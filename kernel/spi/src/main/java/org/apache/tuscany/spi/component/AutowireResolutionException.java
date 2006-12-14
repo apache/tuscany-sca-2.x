@@ -25,10 +25,6 @@ package org.apache.tuscany.spi.component;
  */
 public class AutowireResolutionException extends TargetException {
 
-    public AutowireResolutionException() {
-        super();
-    }
-
     public AutowireResolutionException(String message) {
         super(message);
     }

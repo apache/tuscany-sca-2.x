@@ -24,16 +24,8 @@ package org.apache.tuscany.runtime.webapp;
  * @version $Rev$ $Date$
  */
 public class InvalidResourcePath extends TuscanyInitException {
-    public InvalidResourcePath(String string) {
 
-        super(string);
-    }
-
-    public InvalidResourcePath(String string, Throwable throwable) {
-        super(string, throwable);
-    }
-
-    public InvalidResourcePath(Throwable throwable) {
-        super(throwable);
+    public InvalidResourcePath(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 }

@@ -22,13 +22,14 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
  * Exception thrown in case of an artifact error.
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class TuscanyDependencyException extends TuscanyRuntimeException {
 
     /**
      * Initializes the cause.
+     *
      * @param cause Cause of the exception.
      */
     public TuscanyDependencyException(Throwable cause) {
@@ -37,10 +38,21 @@ public class TuscanyDependencyException extends TuscanyRuntimeException {
 
     /**
      * Initializes the message.
+     *
      * @param message Message of the exception.
      */
     public TuscanyDependencyException(String message) {
         super(message);
     }
 
+
+    /**
+     * Initializes the message.
+     *
+     * @param message    Message of the exception.
+     * @param identifier an identifier for the exeption.
+     */
+    public TuscanyDependencyException(String message, String identifier) {
+        super(message, identifier);
+    }
 }

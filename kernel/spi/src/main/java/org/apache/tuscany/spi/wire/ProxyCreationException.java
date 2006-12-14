@@ -33,8 +33,16 @@ public class ProxyCreationException extends TuscanyRuntimeException {
         super(message);
     }
 
+    public ProxyCreationException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public ProxyCreationException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public ProxyCreationException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public ProxyCreationException(Throwable cause) {

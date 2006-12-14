@@ -35,8 +35,16 @@ public class ScopeRuntimeException extends CoreRuntimeException {
         super(message);
     }
 
+    public ScopeRuntimeException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public ScopeRuntimeException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public ScopeRuntimeException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public ScopeRuntimeException(Throwable cause) {

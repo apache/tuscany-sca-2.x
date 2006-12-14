@@ -27,16 +27,22 @@ import org.apache.tuscany.spi.CoreRuntimeException;
  */
 public class TargetException extends CoreRuntimeException {
 
-    public TargetException() {
-        super();
-    }
-
     public TargetException(String message) {
         super(message);
     }
 
+
+    public TargetException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public TargetException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+
+    public TargetException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public TargetException(Throwable cause) {

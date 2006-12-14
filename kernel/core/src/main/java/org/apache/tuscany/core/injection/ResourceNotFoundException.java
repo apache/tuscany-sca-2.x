@@ -26,18 +26,9 @@ import org.apache.tuscany.spi.ObjectCreationException;
  * @version $Rev$ $Date$
  */
 public class ResourceNotFoundException extends ObjectCreationException {
-    public ResourceNotFoundException() {
+
+    public ResourceNotFoundException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public ResourceNotFoundException(String message) {
-        super(message);
-    }
-
-    public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ResourceNotFoundException(Throwable cause) {
-        super(cause);
-    }
 }

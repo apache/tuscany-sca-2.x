@@ -33,6 +33,10 @@ public class ObjectCallbackException extends InjectionRuntimeException {
         super(message);
     }
 
+    public ObjectCallbackException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public ObjectCallbackException(String message, Throwable cause) {
         super(message, cause);
     }

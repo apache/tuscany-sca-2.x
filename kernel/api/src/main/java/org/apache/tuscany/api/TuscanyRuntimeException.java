@@ -30,7 +30,7 @@ import java.util.List;
 public abstract class TuscanyRuntimeException extends RuntimeException {
     private static final long serialVersionUID = -759677431966121786L;
     private List<String> contextStack;
-    private String identifier;
+    private final String identifier;
 
     /**
      * Override constructor from RuntimeException.
@@ -39,6 +39,7 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public TuscanyRuntimeException() {
         super();
+        this.identifier = null;
     }
 
     /**
@@ -49,6 +50,20 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public TuscanyRuntimeException(String message) {
         super(message);
+        this.identifier = null;
+    }
+
+
+    /**
+     * Override constructor from Exception.
+     *
+     * @param message    passed to Exception
+     * @param identifier additional error information referred to in the error message
+     * @see Exception
+     */
+    protected TuscanyRuntimeException(String message, String identifier) {
+        super(message);
+        this.identifier = identifier;
     }
 
     /**
@@ -60,6 +75,21 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public TuscanyRuntimeException(String message, Throwable cause) {
         super(message, cause);
+        this.identifier = null;
+    }
+
+
+    /**
+     * Override constructor from Exception.
+     *
+     * @param message    passed to Exception
+     * @param identifier additional error information referred to in the error message
+     * @param cause      passed to RuntimeException
+     * @see Exception
+     */
+    protected TuscanyRuntimeException(String message, String identifier, Throwable cause) {
+        super(message, cause);
+        this.identifier = identifier;
     }
 
     /**
@@ -70,6 +100,7 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public TuscanyRuntimeException(Throwable cause) {
         super(cause);
+        this.identifier = null;
     }
 
     /**
@@ -104,15 +135,6 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
      */
     public String getIdentifier() {
         return identifier;
-    }
-
-    /**
-     * Sets an additional error information referred to in the error message.
-     *
-     * @param identifier additional error information
-     */
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
     }
 
     public String getMessage() {

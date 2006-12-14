@@ -26,18 +26,22 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
  * @version $Rev$ $Date$
  */
 public class ReactivationException extends TuscanyRuntimeException {
-    public ReactivationException() {
-    }
+    private String owner;
 
     public ReactivationException(String message) {
         super(message);
     }
 
-    public ReactivationException(String message, Throwable cause) {
-        super(message, cause);
+    public ReactivationException(String message, String identifier, String ower) {
+        super(message, identifier);
+        this.owner = ower;
     }
 
     public ReactivationException(Throwable cause) {
         super(cause);
+    }
+
+    public String getOwner() {
+        return owner;
     }
 }

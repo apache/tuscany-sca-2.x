@@ -135,10 +135,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         if (componentBuilder == null) {
-            BuilderConfigException e = new BuilderConfigException("No builder registered for implementation");
-            e.setIdentifier(implClass.getName());
-            e.addContextName(componentDefinition.getName());
-            throw e;
+            String name = implClass.getName();
+            throw new BuilderConfigException("No builder registered for implementation", name);
         }
 
         Component component = componentBuilder.build(parent, componentDefinition, deploymentContext);
