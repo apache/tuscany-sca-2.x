@@ -24,6 +24,7 @@ import javax.persistence.PersistenceUnit;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
@@ -62,12 +63,16 @@ public class PersistenceUnitProcessor extends AbstractPropertyProcessor<Persiste
     protected <T> void initProperty(JavaMappedProperty<T> property, PersistenceUnit annotation, CompositeComponent parent, DeploymentContext context) {
 
         String unitName = annotation.unitName();
-        EntityManagerFactory emf = (EntityManagerFactory) parent.getSystemChild(unitName);
-
-        if (emf == null) {
-            emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
-            parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
+        
+        SystemAtomicComponent component = (SystemAtomicComponent) parent.getSystemChild(unitName); 
+        EntityManagerFactory emf; 
+        if (component == null) { 
+        	emf = builder.newEntityManagerFactory(unitName, context.getClassLoader()); 
+        	parent.registerJavaObject(unitName, EntityManagerFactory.class, emf); 
+        } else { 
+        	emf = (EntityManagerFactory) component.getTargetInstance(); 
         }
+        
         ObjectFactory factory = new EmfObjectFactory(emf);
         property.setDefaultValueFactory(factory);
 
