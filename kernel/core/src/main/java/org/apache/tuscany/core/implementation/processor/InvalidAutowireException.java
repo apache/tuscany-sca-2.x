@@ -27,18 +27,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class InvalidAutowireException extends ProcessingException {
 
-    public InvalidAutowireException() {
-    }
-
     public InvalidAutowireException(String message) {
         super(message);
     }
 
-    public InvalidAutowireException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidAutowireException(Throwable cause) {
-        super(cause);
-    }
 }

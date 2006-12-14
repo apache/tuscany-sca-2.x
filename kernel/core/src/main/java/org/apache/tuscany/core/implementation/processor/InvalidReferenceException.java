@@ -27,9 +27,6 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class InvalidReferenceException extends ProcessingException {
 
-    public InvalidReferenceException() {
-    }
-
     public InvalidReferenceException(String message) {
         super(message);
     }

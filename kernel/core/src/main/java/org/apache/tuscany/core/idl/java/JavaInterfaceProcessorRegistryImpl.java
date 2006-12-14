@@ -31,7 +31,7 @@ import org.osoa.sca.annotations.OneWay;
 import org.osoa.sca.annotations.Remotable;
 import org.osoa.sca.annotations.Scope;
 
-import org.apache.tuscany.spi.idl.InvalidConversationalContractException;
+import org.apache.tuscany.spi.idl.InvalidConversationalOperationException;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.OverloadedOperationException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessor;
@@ -74,9 +74,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         if (callback != null && !Void.class.equals(callback.value())) {
             callbackClass = callback.value();
         } else if (callback != null && Void.class.equals(callback.value())) {
-            IllegalCallbackException e = new IllegalCallbackException("No callback interface specified on annotation");
-            e.setIdentifier(type.getName());
-            throw e;
+            throw new IllegalCallbackException("No callback interface specified on annotation", type.getName());
         }
         return introspect(type, callbackClass);
     }
@@ -117,7 +115,7 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
         for (Method method : methods) {
             String name = method.getName();
             if (remotable && operations.containsKey(name)) {
-                throw new OverloadedOperationException(method.toString());
+                throw new OverloadedOperationException(method);
             }
 
             Type returnType = method.getGenericReturnType();
@@ -127,10 +125,10 @@ public class JavaInterfaceProcessorRegistryImpl implements JavaInterfaceProcesso
             int conversationSequence = NO_CONVERSATION;
             if (method.isAnnotationPresent(EndConversation.class)) {
                 if (!conversational) {
-                    InvalidConversationalContractException e = new InvalidConversationalContractException(
-                        "Method is marked as end conversation but contract is not conversational");
-                    e.setIdentifier(method.getDeclaringClass().getName() + "." + method.getName());
-                    throw e;
+                    throw new InvalidConversationalOperationException(
+                        "Method is marked as end conversation but contract is not conversational",
+                        method.getDeclaringClass().getName(),
+                        method);
                 }
                 conversationSequence = CONVERSATION_END;
             } else if (conversational) {

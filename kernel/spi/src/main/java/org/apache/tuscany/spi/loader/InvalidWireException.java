@@ -30,6 +30,11 @@ public class InvalidWireException extends LoaderException {
         super(message);
     }
 
+
+    public InvalidWireException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public InvalidWireException(String message, Throwable cause) {
         super(message, cause);
     }

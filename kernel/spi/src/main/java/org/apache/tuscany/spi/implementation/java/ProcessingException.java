@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.implementation.java;
 
+import java.lang.reflect.Member;
+
 import org.apache.tuscany.spi.loader.LoaderException;
 
 /**
@@ -26,11 +28,21 @@ import org.apache.tuscany.spi.loader.LoaderException;
  * @version $Rev$ $Date$
  */
 public class ProcessingException extends LoaderException {
+    private Member member;
+
     public ProcessingException() {
     }
 
     public ProcessingException(String message) {
         super(message);
+    }
+
+    public ProcessingException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    public ProcessingException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public ProcessingException(String message, Throwable cause) {
@@ -40,4 +52,14 @@ public class ProcessingException extends LoaderException {
     public ProcessingException(Throwable cause) {
         super(cause);
     }
+
+
+    public Member getMemberName() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
 }

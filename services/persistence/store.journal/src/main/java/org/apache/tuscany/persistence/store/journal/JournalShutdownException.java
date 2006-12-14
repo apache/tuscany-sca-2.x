@@ -27,17 +27,6 @@ import org.apache.tuscany.api.TuscanyException;
  */
 public class JournalShutdownException extends TuscanyException {
 
-    public JournalShutdownException() {
-    }
-
-    public JournalShutdownException(String message) {
-        super(message);
-    }
-
-    public JournalShutdownException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public JournalShutdownException(Throwable cause) {
         super(cause);
     }

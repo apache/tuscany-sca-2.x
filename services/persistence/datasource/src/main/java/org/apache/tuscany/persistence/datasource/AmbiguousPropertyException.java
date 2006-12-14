@@ -34,11 +34,7 @@ public class AmbiguousPropertyException extends LoaderException {
         super(message);
     }
 
-    public AmbiguousPropertyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public AmbiguousPropertyException(Throwable cause) {
-        super(cause);
+    public AmbiguousPropertyException(String message, String identifier) {
+        super(message, identifier);
     }
 }

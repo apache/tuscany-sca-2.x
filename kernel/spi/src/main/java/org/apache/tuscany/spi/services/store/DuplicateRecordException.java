@@ -25,18 +25,7 @@ package org.apache.tuscany.spi.services.store;
  */
 public class DuplicateRecordException extends StoreWriteException {
 
-    public DuplicateRecordException() {
-    }
-
-    public DuplicateRecordException(String message) {
-        super(message);
-    }
-
-    public DuplicateRecordException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateRecordException(Throwable cause) {
-        super(cause);
+    public DuplicateRecordException(String owner, String identifier) {
+        super(null, owner, identifier);
     }
 }

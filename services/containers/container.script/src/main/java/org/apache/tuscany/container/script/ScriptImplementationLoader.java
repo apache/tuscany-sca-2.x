@@ -44,6 +44,8 @@ import org.apache.tuscany.spi.model.ModelObject;
  * Loader for handling implementation.script elements.
  * <p/>
  * <implementation.script script="path/foo.py" class="myclass">
+ *
+ * @version $Rev$ $Date$
  */
 public class ScriptImplementationLoader extends LoaderExtension<ScriptImplementation> {
 
@@ -96,9 +98,7 @@ public class ScriptImplementationLoader extends LoaderExtension<ScriptImplementa
         try {
             is = url.openStream();
         } catch (IOException e) {
-            MissingResourceException mre = new MissingResourceException(resource, e);
-            mre.setIdentifier(resource);
-            throw mre;
+            throw new MissingResourceException(resource, e);
         }
         try {
             Reader reader = new InputStreamReader(is, "UTF-8");
@@ -110,9 +110,7 @@ public class ScriptImplementationLoader extends LoaderExtension<ScriptImplementa
             }
             return source.toString();
         } catch (IOException e) {
-            LoaderException le = new LoaderException(e);
-            le.setIdentifier(resource);
-            throw le;
+            throw new LoaderException(resource, e);
         } finally {
             try {
                 is.close();

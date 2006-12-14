@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.implementation.system.loader;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -62,13 +61,7 @@ public class SystemImplementationLoader extends LoaderExtension<SystemImplementa
         while (true) {
             int code = reader.next();
             if (code == XMLStreamConstants.START_ELEMENT) {
-                Location location = reader.getLocation();
-                int line = location.getLineNumber();
-                int col = location.getColumnNumber();
-                UnrecognizedElementException e = new UnrecognizedElementException(reader.getName());
-                e.setIdentifier(line + "," + col);
-                throw e;
-
+                throw new UnrecognizedElementException(reader.getName());
             } else if (code == XMLStreamConstants.END_ELEMENT) {
                 return implementation;
             }

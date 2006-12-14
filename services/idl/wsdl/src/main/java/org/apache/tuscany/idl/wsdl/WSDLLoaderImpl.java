@@ -130,9 +130,7 @@ public class WSDLLoaderImpl implements WSDLLoader {
 
     public String getNamespace(URI iri) throws UnresolveableResourceException {
         if (!iri.isAbsolute()) {
-            UnresolveableResourceException ure = new UnresolveableResourceException("no namespace defined in " + iri);
-            ure.setIdentifier(iri.toString());
-            throw ure;
+            throw new UnresolveableResourceException("No namespace defined in", iri.toString());
         }
         StringBuilder s = new StringBuilder();
         s.append(iri.getScheme());

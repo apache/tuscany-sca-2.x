@@ -26,18 +26,13 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class DuplicateReferenceException extends ProcessingException {
-    public DuplicateReferenceException() {
-    }
 
     public DuplicateReferenceException(String message) {
         super(message);
     }
 
-    public DuplicateReferenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public DuplicateReferenceException(Throwable cause) {
-        super(cause);
+    public DuplicateReferenceException(String message, String identifier) {
+        super(message, identifier);
     }
 }

@@ -46,9 +46,7 @@ public class ScriptComponentTypeLoader extends ComponentTypeLoaderExtension<Scri
         URL resource = implementation.getClassLoader().getResource(sideFile);
         ScriptComponentType componentType;
         if (resource == null) {
-            MissingSideFileException e = new MissingSideFileException("Component type side file not found");
-            e.setIdentifier(sideFile);
-            throw e;
+            throw new MissingSideFileException("Component type side file not found", sideFile);
             // TODO: or else implement introspection
         } else {
             componentType = loadFromSidefile(parent, resource, deploymentContext);

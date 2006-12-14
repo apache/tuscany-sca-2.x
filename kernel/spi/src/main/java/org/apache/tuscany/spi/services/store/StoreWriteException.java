@@ -25,15 +25,16 @@ package org.apache.tuscany.spi.services.store;
  */
 public class StoreWriteException extends StoreException {
 
-    public StoreWriteException() {
+    public StoreWriteException(String message, String owner, String identifier) {
+        super(message, owner, identifier);
     }
 
-    public StoreWriteException(String message) {
-        super(message);
+    public StoreWriteException(String message, String owner, String identifier, Throwable cause) {
+        super(message, owner, identifier, cause);
     }
 
-    public StoreWriteException(String message, Throwable cause) {
-        super(message, cause);
+    public StoreWriteException(String message, String owner, Throwable cause) {
+        super(message, owner, cause);
     }
 
     public StoreWriteException(Throwable cause) {

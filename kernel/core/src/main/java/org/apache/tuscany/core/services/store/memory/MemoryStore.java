@@ -60,6 +60,7 @@ public class MemoryStore implements Store {
 
     /**
      * Returns the maximum default expiration offset for records in the store
+     *
      * @return the maximum default expiration offset for records in the store
      */
     public long getDefaultExpirationOffset() {
@@ -105,9 +106,7 @@ public class MemoryStore implements Store {
             store.put(owner, map);
         }
         if (map.containsKey(id)) {
-            DuplicateRecordException e = new DuplicateRecordException();
-            e.setIdentifier(owner.getCanonicalName());
-            throw e;
+            throw new DuplicateRecordException(owner.getCanonicalName(), id);
         }
         map.put(id, new Record(object, expiration));
     }
@@ -115,15 +114,11 @@ public class MemoryStore implements Store {
     public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            StoreWriteException e = new StoreWriteException("Record not found");
-            e.setIdentifier(id);
-            throw e;
+            throw new StoreWriteException("Record not found", owner.getCanonicalName(), id);
         }
         Record record = map.get(id);
         if (record == null) {
-            StoreWriteException e = new StoreWriteException("Record not found");
-            e.setIdentifier(id);
-            throw e;
+            throw new StoreWriteException("Record not found", owner.getCanonicalName(), id);
         }
         record.data = object;
     }
@@ -147,14 +142,10 @@ public class MemoryStore implements Store {
     public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            StoreWriteException e = new StoreWriteException("Owner not found");
-            e.setIdentifier(owner.getCanonicalName());
-            throw e;
+            throw new StoreWriteException("Owner not found", owner.getCanonicalName(), id);
         }
         if (map.remove(id) == null) {
-            StoreWriteException e = new StoreWriteException("Record not found for owner " + owner.getCanonicalName());
-            e.setIdentifier(id);
-            throw e;
+            throw new StoreWriteException("Owner not found", owner.getCanonicalName(), id);
         }
     }
 

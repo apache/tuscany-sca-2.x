@@ -94,9 +94,7 @@ public class DelegatingResourceHostRegistry implements ResourceHost, ResourceHos
             String uri = mappedName.substring(0, pos + 3);
             ResourceHost host = resourceHosts.get(uri);
             if (host == null) {
-                ResourceResolutionException e = new ResourceResolutionException("No resource host for URI");
-                e.setIdentifier(uri);
-                throw e;
+                throw new ResourceResolutionException("No resource host for URI", uri);
             }
             return host.resolveResource(type, mappedName);
         }

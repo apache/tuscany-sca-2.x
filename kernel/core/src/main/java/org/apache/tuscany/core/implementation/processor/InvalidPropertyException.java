@@ -27,18 +27,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  */
 public class InvalidPropertyException extends ProcessingException {
 
-    public InvalidPropertyException() {
-    }
-
     public InvalidPropertyException(String message) {
         super(message);
     }
 
-    public InvalidPropertyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidPropertyException(Throwable cause) {
-        super(cause);
-    }
 }

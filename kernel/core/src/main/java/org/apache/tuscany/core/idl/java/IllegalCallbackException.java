@@ -27,18 +27,8 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
  */
 
 public class IllegalCallbackException extends InvalidServiceContractException {
-    public IllegalCallbackException() {
-    }
 
-    public IllegalCallbackException(String message) {
-        super(message);
-    }
-
-    public IllegalCallbackException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalCallbackException(Throwable cause) {
-        super(cause);
+    public IllegalCallbackException(String message, String identifier) {
+        super(message, identifier);
     }
 }

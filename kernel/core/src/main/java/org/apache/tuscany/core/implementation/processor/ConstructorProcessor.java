@@ -49,18 +49,16 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         this.service = service;
     }
 
-    public <T>  void visitClass(CompositeComponent parent, Class<T> clazz,
-                                PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                                DeploymentContext context) throws ProcessingException {
+    public <T> void visitClass(CompositeComponent parent, Class<T> clazz,
+                               PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                               DeploymentContext context) throws ProcessingException {
         Constructor[] ctors = clazz.getConstructors();
         boolean found = false;
         for (Constructor constructor : ctors) {
             if (constructor.getAnnotation(org.osoa.sca.annotations.Constructor.class) != null) {
                 if (found) {
-                    DuplicateConstructorException e =
-                        new DuplicateConstructorException("Multiple constructors marked with @Constructor");
-                    e.setIdentifier(constructor.getDeclaringClass().getName());
-                    throw e;
+                    String name = constructor.getDeclaringClass().getName();
+                    throw new DuplicateConstructorException("Multiple constructors marked with @Constructor", name);
                 }
                 found = true;
             }
@@ -78,10 +76,8 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
         }
         ConstructorDefinition<?> definition = type.getConstructorDefinition();
         if (definition != null && !definition.getConstructor().equals(constructor)) {
-            DuplicateConstructorException e =
-                new DuplicateConstructorException("Multiple constructor definitions found");
-            e.setIdentifier(constructor.getDeclaringClass().getName());
-            throw e;
+            String name = constructor.getDeclaringClass().getName();
+            throw new DuplicateConstructorException("Multiple constructor definitions found", name);
         } else if (definition == null) {
             definition = new ConstructorDefinition(constructor);
         }
@@ -98,7 +94,7 @@ public class ConstructorProcessor extends ImplementationProcessorExtension {
                     service.addName(injectionNames, i, name);
                 }
             } catch (ProcessingException e) {
-                e.setIdentifier(constructor.toString());
+                e.setMember(constructor);
                 throw e;
             }
         }

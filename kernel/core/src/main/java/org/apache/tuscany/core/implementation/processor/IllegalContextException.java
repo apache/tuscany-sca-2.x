@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalContextException extends ProcessingException {
-    public IllegalContextException() {
-    }
 
     public IllegalContextException(String message) {
         super(message);
     }
 
-    public IllegalContextException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalContextException(Throwable cause) {
-        super(cause);
+    public IllegalContextException(String message, String identifier) {
+        super(message, identifier);
     }
 }

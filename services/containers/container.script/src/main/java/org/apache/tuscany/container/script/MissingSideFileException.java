@@ -24,18 +24,9 @@ import org.apache.tuscany.spi.loader.LoaderException;
  * @version $Rev$ $Date$
  */
 public class MissingSideFileException extends LoaderException {
-    public MissingSideFileException() {
+
+    public MissingSideFileException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public MissingSideFileException(String message) {
-        super(message);
-    }
-
-    public MissingSideFileException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MissingSideFileException(Throwable cause) {
-        super(cause);
-    }
 }

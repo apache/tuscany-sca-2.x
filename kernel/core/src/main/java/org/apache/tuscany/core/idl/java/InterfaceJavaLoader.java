@@ -102,9 +102,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         try {
             serviceContract = interfaceRegsitry.introspect(interfaceClass, callbackClass);
         } catch (InvalidServiceContractException e) {
-            LoaderException le = new LoaderException(e);
-            le.setIdentifier(interfaceClass.getName());
-            throw le;
+            throw new LoaderException(interfaceClass.getName(), e);
         }
 
         // Set databinding from the SCDL extension <databinding>

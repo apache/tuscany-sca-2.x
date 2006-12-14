@@ -24,6 +24,7 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public abstract class InvalidServiceContractException extends TuscanyException {
+
     public InvalidServiceContractException() {
     }
 
@@ -31,8 +32,16 @@ public abstract class InvalidServiceContractException extends TuscanyException {
         super(message);
     }
 
+    protected InvalidServiceContractException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public InvalidServiceContractException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    protected InvalidServiceContractException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public InvalidServiceContractException(Throwable cause) {

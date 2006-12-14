@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -77,12 +76,7 @@ public class DependencyLoader extends LoaderExtension<Dependency> {
             } else if (TYPE.equals(name)) {
                 artifact.setType(text);
             } else {
-                Location location = reader.getLocation();
-                int line = location.getLineNumber();
-                int col = location.getColumnNumber();
-                UnrecognizedElementException e = new UnrecognizedElementException(name);
-                e.setIdentifier(line + "," + col);
-                throw e;
+                throw new UnrecognizedElementException(name);
             }
         }
         Dependency dependency = new Dependency();

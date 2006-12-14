@@ -75,21 +75,15 @@ public class IncludeLoader extends LoaderExtension<Include> {
             try {
                 url = new URL(deploymentContext.getScdlLocation(), scdlLocation);
             } catch (MalformedURLException e) {
-                MissingResourceException mre = new MissingResourceException(scdlLocation, e);
-                mre.setIdentifier(name);
-                throw mre;
+                throw new MissingResourceException(scdlLocation, name, e);
             }
         } else if (scdlResource != null) {
             url = cl.getResource(scdlResource);
             if (url == null) {
-                MissingResourceException mre = new MissingResourceException(scdlResource);
-                mre.setIdentifier(name);
-                throw mre;
+                throw new MissingResourceException(scdlResource, name);
             }
         } else {
-            MissingIncludeException mie = new MissingIncludeException("No SCDL location or resource specified");
-            mie.setIdentifier(name);
-            throw mie;
+            throw new MissingIncludeException("No SCDL location or resource specified", name);
         }
 
         DeploymentContext childContext = new ChildDeploymentContext(deploymentContext, cl, url);

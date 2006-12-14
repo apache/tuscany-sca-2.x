@@ -59,11 +59,11 @@ import org.objectweb.howl.log.LogRecordSizeException;
 /**
  * A journal-based store service that uses HOWL for reliable persistence and recovery of object instances. Insert,
  * update, and delete operations, as well as object instances, are written to a binary log. Delete operations are
- * written as a single header block as defined by {@link SerializationHelper#serializeHeader(short, int, String, String,
- * long)}. Insert and update operations are written using multiple blocks consisting of at least one header and 1..n
+ * written as a single header block as defined by {@link SerializationHelper#serializeHeader(short,int,String,String,
+ *long)}. Insert and update operations are written using multiple blocks consisting of at least one header and 1..n
  * additional blocks containing the object byte array. If the byte array size is greater than the log block size (the
  * HOWL default is 4K), it must be partitioned into smaller units using {@link SerializationHelper#partition(byte[],
- * int)} and written across multiple blocks. The header contains the number of ensuing blocks a record occupies. Since
+ *int)} and written across multiple blocks. The header contains the number of ensuing blocks a record occupies. Since
  * block writes to the log may be interleaved, blocks for a given record may not be consecutive. In order to identify
  * the record a block belongs to, the first byte array of written data for the block contains the serialized owner id
  * and UUID associated with the record.
@@ -144,6 +144,7 @@ public class JournalStore implements Store {
 
     /**
      * Returns the maximum default expiration offset for records in the store
+     *
      * @return the maximum default expiration offset for records in the store
      */
     @Property
@@ -429,9 +430,8 @@ public class JournalStore implements Store {
     private void write(SCAObject owner, String id, Object object, long expiration, short operation)
         throws StoreWriteException {
         if (!(object instanceof Serializable)) {
-            StoreWriteException e = new StoreWriteException("Type must implement serializable");
-            e.setIdentifier(object.getClass().getName());
-            throw e;
+            String name = object.getClass().getName();
+            throw new StoreWriteException("Type must implement serializable", name, id);
         }
         Serializable serializable = (Serializable) object;
         String canonicalName = owner.getCanonicalName();

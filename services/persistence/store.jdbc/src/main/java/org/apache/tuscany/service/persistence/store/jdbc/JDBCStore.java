@@ -35,15 +35,12 @@ import org.osoa.sca.annotations.Resource;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
+import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+import org.apache.tuscany.spi.services.store.StoreReadException;
+import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 import org.apache.tuscany.api.annotation.Monitor;
-import org.apache.tuscany.spi.services.store.Store;
-
-import org.apache.tuscany.spi.services.store.StoreMonitor;
-
-import org.apache.tuscany.spi.services.store.StoreReadException;
-
-import org.apache.tuscany.spi.services.store.StoreWriteException;
 
 /**
  * A store implementation that uses a relational database to persist records transactionally.
@@ -61,7 +58,7 @@ public class JDBCStore implements Store {
     private long defaultExpirationOffset = 600000; // 10 minutes
 
     //private
-    public JDBCStore(@Resource(mappedName = "StoreDS") DataSource dataSource,
+    public JDBCStore(@Resource(mappedName = "StoreDS")DataSource dataSource,
                      @Autowire Converter converter,
                      @Monitor StoreMonitor monitor) {
         this.dataSource = dataSource;
@@ -71,6 +68,7 @@ public class JDBCStore implements Store {
 
     /**
      * Returns the maximum default expiration offset for records in the store
+     *
      * @return the maximum default expiration offset for records in the store
      */
     @Property
@@ -115,9 +113,7 @@ public class JDBCStore implements Store {
 
     public void insertRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
-            StoreWriteException e = new StoreWriteException("Type must implement serializable");
-            e.setIdentifier(object.getClass().getName());
-            throw e;
+            throw new NonSerializableTypeException("Type must implement serializable", owner.getCanonicalName(), id);
         }
         Serializable serializable = (Serializable) object;
         String canonicalName = owner.getCanonicalName();
@@ -151,10 +147,10 @@ public class JDBCStore implements Store {
                 } catch (SQLException e2) {
                     monitor.error(e2);
                 }
-                throw new StoreWriteException(e);
+                throw new StoreWriteException(owner.getCanonicalName(), id, e);
             }
         } catch (SQLException e) {
-            throw new StoreWriteException(e);
+            throw new StoreWriteException(owner.getCanonicalName(), id, e);
         } finally {
             close(insertStmt);
             close(updateStmt);
@@ -164,9 +160,7 @@ public class JDBCStore implements Store {
 
     public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         if (!(object instanceof Serializable)) {
-            StoreWriteException e = new StoreWriteException("Type must implement serializable");
-            e.setIdentifier(object.getClass().getName());
-            throw e;
+            throw new NonSerializableTypeException("Type must implement serializable", owner.getCanonicalName(), id);
         }
         Serializable serializable = (Serializable) object;
         String canonicalName = owner.getCanonicalName();
@@ -190,10 +184,10 @@ public class JDBCStore implements Store {
                 } catch (SQLException e2) {
                     monitor.error(e2);
                 }
-                throw new StoreWriteException(e);
+                throw new StoreWriteException(owner.getCanonicalName(), id, e);
             }
         } catch (SQLException e) {
-            throw new StoreWriteException(e);
+            throw new StoreWriteException(owner.getCanonicalName(), id, e);
         } finally {
             close(insertStmt);
             close(updateStmt);
@@ -217,7 +211,7 @@ public class JDBCStore implements Store {
             } catch (SQLException e2) {
                 monitor.error(e2);
             }
-            throw new StoreReadException(e);
+            throw new StoreReadException(owner.getName(), id, e);
         } finally {
             close(conn);
         }
@@ -239,7 +233,7 @@ public class JDBCStore implements Store {
             } catch (SQLException e2) {
                 monitor.error(e2);
             }
-            throw new StoreWriteException(e);
+            throw new StoreWriteException(owner.getCanonicalName(), id, e);
         } finally {
             close(conn);
         }

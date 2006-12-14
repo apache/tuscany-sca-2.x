@@ -24,18 +24,9 @@ package org.apache.tuscany.spi.loader;
  * @version $Rev$ $Date$
  */
 public class MissingReferenceException extends LoaderException {
-    public MissingReferenceException() {
-    }
 
     public MissingReferenceException(String message) {
         super(message);
     }
 
-    public MissingReferenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public MissingReferenceException(Throwable cause) {
-        super(cause);
-    }
 }

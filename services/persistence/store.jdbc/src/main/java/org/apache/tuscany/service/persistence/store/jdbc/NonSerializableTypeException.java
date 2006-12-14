@@ -23,19 +23,9 @@ import org.apache.tuscany.spi.services.store.StoreWriteException;
 /**
  * @version $Rev$ $Date$
  */
-public class RecordNotFoundException extends StoreWriteException {
-    public RecordNotFoundException() {
-    }
+public class NonSerializableTypeException extends StoreWriteException {
 
-    public RecordNotFoundException(String message) {
-        super(message);
-    }
-
-    public RecordNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public RecordNotFoundException(Throwable cause) {
-        super(cause);
+    public NonSerializableTypeException(String message, String owner, String identifier) {
+        super(message, owner, identifier);
     }
 }

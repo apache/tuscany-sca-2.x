@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalResourceException extends ProcessingException {
-    public IllegalResourceException() {
-    }
 
     public IllegalResourceException(String message) {
         super(message);
     }
 
-    public IllegalResourceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalResourceException(Throwable cause) {
-        super(cause);
+    public IllegalResourceException(String message, String identifier) {
+        super(message, identifier);
     }
 }

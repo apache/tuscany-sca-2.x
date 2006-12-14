@@ -35,20 +35,20 @@ public class RMIHostExceptionTestCase extends TestCase {
 
     public void testMessageConstructor() {
         Exception ex = new RMIHostException(MESSAGE);
-        assertSame(MESSAGE, ex.getMessage());
+        assertEquals(MESSAGE, ex.getMessage());
         assertNull(ex.getCause());
     }
 
     public void testThrowableConstructor() {
         Exception ex = new RMIHostException(CAUSE);
         assertEquals(CAUSE.getClass().getName() + ": " + CAUSE.getMessage(), ex.getMessage());
-        assertSame(CAUSE, ex.getCause());
+        assertEquals(CAUSE, ex.getCause());
     }
 
     public void testMessageThrowableConstructor() {
         Exception ex = new RMIHostException(MESSAGE, CAUSE);
-        assertSame(MESSAGE, ex.getMessage());
-        assertSame(CAUSE, ex.getCause());
+        assertEquals(MESSAGE, ex.getMessage());
+        assertEquals(CAUSE, ex.getCause());
     }
 
 }

@@ -24,18 +24,12 @@ package org.apache.tuscany.spi.implementation.java;
  * @version $Rev$ $Date$
  */
 public class DuplicatePropertyException extends ProcessingException {
-    public DuplicatePropertyException() {
-    }
 
     public DuplicatePropertyException(String message) {
         super(message);
     }
 
-    public DuplicatePropertyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicatePropertyException(Throwable cause) {
-        super(cause);
+    public DuplicatePropertyException(String message, String identifier) {
+        super(message, identifier);
     }
 }

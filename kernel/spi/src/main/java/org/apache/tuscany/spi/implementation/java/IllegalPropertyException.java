@@ -24,18 +24,13 @@ package org.apache.tuscany.spi.implementation.java;
  * @version $Rev$ $Date$
  */
 public class IllegalPropertyException extends ProcessingException {
-    public IllegalPropertyException() {
-    }
 
     public IllegalPropertyException(String message) {
         super(message);
     }
 
-    public IllegalPropertyException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
-    public IllegalPropertyException(Throwable cause) {
-        super(cause);
+    public IllegalPropertyException(String message, String identifier) {
+        super(message, identifier);
     }
 }

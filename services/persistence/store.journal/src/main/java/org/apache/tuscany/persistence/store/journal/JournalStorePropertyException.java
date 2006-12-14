@@ -27,17 +27,6 @@ import org.apache.tuscany.api.TuscanyException;
  */
 public class JournalStorePropertyException extends TuscanyException {
 
-    public JournalStorePropertyException() {
-    }
-
-    public JournalStorePropertyException(String message) {
-        super(message);
-    }
-
-    public JournalStorePropertyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public JournalStorePropertyException(Throwable cause) {
         super(cause);
     }

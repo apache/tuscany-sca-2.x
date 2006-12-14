@@ -51,9 +51,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             return;
         }
         if (method.getParameterTypes().length != 1) {
-            IllegalContextException e = new IllegalContextException("Context setter must have one parameter");
-            e.setIdentifier(method.toString());
-            throw e;
+            throw new IllegalContextException("Context setter must have one parameter", method.toString());
         }
         Class<?> paramType = method.getParameterTypes()[0];
         if (CompositeContext.class.equals(paramType)) {

@@ -30,15 +30,7 @@ public class NoConstructorException extends ProcessingException {
     public NoConstructorException() {
     }
 
-    public NoConstructorException(String message) {
-        super(message);
-    }
-
-    public NoConstructorException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoConstructorException(Throwable cause) {
-        super(cause);
+    public NoConstructorException(String message, String identifier) {
+        super(message, identifier);
     }
 }

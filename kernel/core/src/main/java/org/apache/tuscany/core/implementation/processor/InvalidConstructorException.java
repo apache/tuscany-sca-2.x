@@ -27,18 +27,13 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class InvalidConstructorException extends ProcessingException {
-    public InvalidConstructorException() {
-    }
 
     public InvalidConstructorException(String message) {
         super(message);
     }
 
-    public InvalidConstructorException(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidConstructorException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public InvalidConstructorException(Throwable cause) {
-        super(cause);
-    }
 }

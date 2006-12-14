@@ -112,10 +112,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                     try {
                         componentDefinition.setInitLevel(Integer.valueOf(initLevel));
                     } catch (NumberFormatException e) {
-                        InvalidValueException ive = new InvalidValueException(initLevel, e);
-                        ive.setIdentifier("initValue");
-                        ive.addContextName(name);
-                        throw ive;
+                        throw new InvalidValueException(initLevel, "initValue", e);
                     }
                 }
             }
@@ -206,10 +203,10 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String target = text != null ? text.trim() : null;
 
 
-        if (name == null || target == null) {
-            InvalidReferenceException le = new InvalidReferenceException();
-            le.setIdentifier(target);
-            throw le;
+        if (name == null) {
+            throw new InvalidReferenceException("No name specified");
+        } else if (target == null) {
+            throw new InvalidReferenceException("No target specified", name);
         }
 
         ReferenceTarget referenceTarget = new ReferenceTarget();
@@ -217,9 +214,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         try {
             referenceTarget.addTarget(new URI(target));
         } catch (URISyntaxException e) {
-            InvalidReferenceException le = new InvalidReferenceException(e);
-            le.setIdentifier(target);
-            throw le;
+            throw new InvalidReferenceException(e);
         }
         componentDefinition.add(referenceTarget);
     }

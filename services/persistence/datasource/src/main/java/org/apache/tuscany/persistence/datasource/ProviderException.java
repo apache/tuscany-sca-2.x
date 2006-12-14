@@ -26,18 +26,8 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class ProviderException extends TuscanyException {
-    public ProviderException() {
-    }
 
-    public ProviderException(String message) {
-        super(message);
-    }
-
-    public ProviderException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ProviderException(Throwable cause) {
-        super(cause);
+    public ProviderException(String message, String identifier) {
+        super(message, identifier);
     }
 }

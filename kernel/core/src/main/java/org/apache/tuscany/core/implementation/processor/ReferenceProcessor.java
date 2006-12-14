@@ -64,9 +64,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
             return; //Not a reference or autowire annotation.
         }
         if (method.getParameterTypes().length != 1) {
-            IllegalReferenceException e = new IllegalReferenceException("Setter must have one parameter");
-            e.setIdentifier(method.toString());
-            throw e;
+            throw new IllegalReferenceException("Setter must have one parameter", method.toString());
         }
         //process autowire required first let reference override. or if conflicting should this fault?
         boolean required = false;

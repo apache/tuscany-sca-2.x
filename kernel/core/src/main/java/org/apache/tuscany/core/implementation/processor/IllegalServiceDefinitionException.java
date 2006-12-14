@@ -26,18 +26,12 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class IllegalServiceDefinitionException extends ProcessingException {
-    public IllegalServiceDefinitionException() {
-    }
 
     public IllegalServiceDefinitionException(String message) {
         super(message);
     }
 
-    public IllegalServiceDefinitionException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public IllegalServiceDefinitionException(Throwable cause) {
-        super(cause);
+    public IllegalServiceDefinitionException(String message, String identifier) {
+        super(message, identifier);
     }
 }

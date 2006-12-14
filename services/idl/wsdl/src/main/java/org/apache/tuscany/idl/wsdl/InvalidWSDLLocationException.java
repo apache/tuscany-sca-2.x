@@ -22,15 +22,9 @@ package org.apache.tuscany.idl.wsdl;
  * @version $Rev$ $Date$
  */
 public class InvalidWSDLLocationException extends WSDLLoaderException {
-    public InvalidWSDLLocationException() {
-    }
 
     public InvalidWSDLLocationException(String message) {
         super(message);
-    }
-
-    public InvalidWSDLLocationException(String message, Throwable cause) {
-        super(message, cause);
     }
 
     public InvalidWSDLLocationException(Throwable cause) {

@@ -25,18 +25,17 @@ package org.apache.tuscany.spi.services.store;
  */
 public class StoreReadException extends StoreException {
 
-    public StoreReadException() {
-    }
-
-    public StoreReadException(String message) {
-        super(message);
-    }
-
-    public StoreReadException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public StoreReadException(Throwable cause) {
         super(cause);
     }
+
+    public StoreReadException(String message, String owner, String identifier) {
+        super(message, owner, identifier);
+    }
+
+    public StoreReadException(String owner, String identifier, Throwable throwable) {
+        super(owner, identifier, throwable);
+    }
+
+
 }

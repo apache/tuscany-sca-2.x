@@ -48,22 +48,17 @@ import org.apache.ws.commons.schema.XmlSchemaType;
 
 /**
  * Metadata for a WSDL operation
+ *
+ * @version $Rev$ $Date$
  */
 public class WSDLOperation {
-
     protected XMLSchemaRegistry schemaRegistry;
-
     protected Operation operation;
-
-    private String dataBinding;
-
     protected org.apache.tuscany.spi.model.Operation<QName> operationModel;
-
     protected DataType<List<DataType<QName>>> inputType;
-
     protected DataType<QName> outputType;
-
     protected List<DataType<QName>> faultTypes;
+    private String dataBinding;
 
     /**
      * @param operation      The WSDL4J operation
@@ -90,10 +85,10 @@ public class WSDLOperation {
     public boolean isWrapperStyle() throws InvalidWSDLException {
         if (wrapperStyle == null) {
             wrapperStyle =
-                Boolean.valueOf(wrapper.getInputChildElements() != null
-                    && (operation.getOutput() == null || wrapper.getOutputChildElements() != null));
+                wrapper.getInputChildElements() != null
+                    && (operation.getOutput() == null || wrapper.getOutputChildElements() != null);
         }
-        return wrapperStyle.booleanValue();
+        return wrapperStyle;
     }
 
     public Wrapper getWrapper() throws InvalidWSDLException {
@@ -228,7 +223,7 @@ public class WSDLOperation {
             if (elementName != null) {
                 element = schemaRegistry.getElement(elementName);
                 if (element == null) {
-                    throw new InvalidWSDLException("Element cannot be resolved: " + elementName);
+                    throw new InvalidWSDLException("Element cannot be resolved", elementName.toString());
                 }
             } else {
                 // Create an faked XSD element to host the metadata
@@ -239,7 +234,7 @@ public class WSDLOperation {
                 if (typeName != null) {
                     XmlSchemaType type = schemaRegistry.getType(typeName);
                     if (type == null) {
-                        throw new InvalidWSDLException("Type cannot be resolved: " + typeName);
+                        throw new InvalidWSDLException("Type cannot be resolved", typeName.toString());
                     }
                     element.setSchemaType(type);
                     element.setSchemaTypeName(type.getQName());
@@ -306,10 +301,8 @@ public class WSDLOperation {
             }
             XmlSchemaType type = element.getSchemaType();
             if (type == null) {
-                InvalidWSDLException ex =
-                    new InvalidWSDLException("The XML schema element doesn't have a type");
-                ex.addContextName("element: " + element.getQName());
-                throw ex;
+                String qName = element.getQName().toString();
+                throw new InvalidWSDLException("The XML schema element does not have a type", qName);
             }
             if (!(type instanceof XmlSchemaComplexType)) {
                 // Has to be a complexType
@@ -375,10 +368,8 @@ public class WSDLOperation {
                 }
                 inputWrapperElement = schemaRegistry.getElement(elementName);
                 if (inputWrapperElement == null) {
-                    InvalidWSDLException ex =
-                        new InvalidWSDLException("The element is not declared in a XML schema");
-                    ex.addContextName("element: " + elementName);
-                    throw ex;
+                    throw new InvalidWSDLException("The element is not declared in a XML schema",
+                        elementName.toString());
                 }
                 inputElements = getChildElements(inputWrapperElement);
                 return inputElements;
@@ -406,10 +397,7 @@ public class WSDLOperation {
                 Part part = (Part) parts.iterator().next();
                 QName elementName = part.getElementName();
                 if (elementName == null) {
-                    InvalidWSDLException ex =
-                        new InvalidWSDLException("The element is not declared in the XML schema");
-                    ex.addContextName("element: " + elementName);
-                    throw ex;
+                    throw new InvalidWSDLException("The element is not declared in the XML schema", part.getName());
                 }
                 outputWrapperElement = schemaRegistry.getElement(elementName);
                 if (outputWrapperElement == null) {

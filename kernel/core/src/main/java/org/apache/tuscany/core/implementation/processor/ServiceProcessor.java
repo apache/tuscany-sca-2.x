@@ -87,9 +87,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
         }
         for (Class<?> interfaze : interfaces) {
             if (!interfaze.isInterface()) {
-                InvalidServiceType e = new InvalidServiceType("Service must be an interface");
-                e.setIdentifier(interfaze.getName());
-                throw e;
+                throw new InvalidServiceType("Service must be an interface", interfaze.getName());
             }
             JavaMappedService service;
             try {
@@ -112,10 +110,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
             return;
         }
         if (method.getParameterTypes().length != 1) {
-            IllegalCallbackReferenceException e =
-                new IllegalCallbackReferenceException("Setter must have one parameter");
-            e.setIdentifier(method.toString());
-            throw e;
+            throw new IllegalCallbackReferenceException("Setter must have one parameter", method.toString());
         }
         String name = toPropertyName(method.getName());
         JavaMappedService callbackService = null;

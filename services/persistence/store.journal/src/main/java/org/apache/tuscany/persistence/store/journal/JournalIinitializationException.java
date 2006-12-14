@@ -26,16 +26,6 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class JournalIinitializationException extends TuscanyException {
-    public JournalIinitializationException() {
-    }
-
-    public JournalIinitializationException(String message) {
-        super(message);
-    }
-
-    public JournalIinitializationException(String message, Throwable cause) {
-        super(message, cause);
-    }
 
     public JournalIinitializationException(Throwable cause) {
         super(cause);

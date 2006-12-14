@@ -16,42 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.idl.wsdl;
 
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
 /**
  * An exception to indicate some WSDL styles that we don't support
+ *
+ * @version $Rev$ $Date$
  */
 public class NotSupportedWSDLException extends InvalidServiceContractException {
 
-    /**
-     * 
-     */
-    public NotSupportedWSDLException() {
-    }
-
-    /**
-     * @param message
-     */
     public NotSupportedWSDLException(String message) {
         super(message);
     }
 
-    /**
-     * @param message
-     * @param cause
-     */
-    public NotSupportedWSDLException(String message, Throwable cause) {
-        super(message, cause);
+    public NotSupportedWSDLException(String message, String identifier) {
+        super(message, identifier);
     }
-
-    /**
-     * @param cause
-     */
-    public NotSupportedWSDLException(Throwable cause) {
-        super(cause);
-    }
-
 }

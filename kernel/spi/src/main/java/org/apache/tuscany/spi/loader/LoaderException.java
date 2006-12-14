@@ -28,7 +28,10 @@ import org.apache.tuscany.api.TuscanyException;
  */
 public class LoaderException extends TuscanyException {
     private static final long serialVersionUID = -7459051598906813461L;
+    private static final int UNDEFINED = -1;
     private String resourceURI;
+    private int line = UNDEFINED;
+    private int col = UNDEFINED;
 
     public LoaderException() {
     }
@@ -37,8 +40,16 @@ public class LoaderException extends TuscanyException {
         super(message);
     }
 
+    public LoaderException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public LoaderException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public LoaderException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public LoaderException(Throwable cause) {
@@ -63,4 +74,19 @@ public class LoaderException extends TuscanyException {
         this.resourceURI = resourceURI;
     }
 
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
+    }
 }

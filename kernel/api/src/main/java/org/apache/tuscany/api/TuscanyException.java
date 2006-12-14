@@ -29,7 +29,7 @@ import java.util.List;
 public abstract class TuscanyException extends Exception {
     private static final long serialVersionUID = -7847121698339635268L;
     private List<String> contextStack;
-    private String identifier;
+    private final String identifier;
 
     /**
      * Override constructor from Exception.
@@ -38,6 +38,7 @@ public abstract class TuscanyException extends Exception {
      */
     public TuscanyException() {
         super();
+        this.identifier = null;
     }
 
     /**
@@ -48,6 +49,19 @@ public abstract class TuscanyException extends Exception {
      */
     public TuscanyException(String message) {
         super(message);
+        this.identifier = null;
+    }
+
+    /**
+     * Override constructor from Exception.
+     *
+     * @param message    passed to Exception
+     * @param identifier additional error information referred to in the error message
+     * @see Exception
+     */
+    public TuscanyException(String message, String identifier) {
+        super(message);
+        this.identifier = identifier;
     }
 
     /**
@@ -59,6 +73,20 @@ public abstract class TuscanyException extends Exception {
      */
     public TuscanyException(String message, Throwable cause) {
         super(message, cause);
+        this.identifier = null;
+    }
+
+    /**
+     * Override constructor from Exception.
+     *
+     * @param message    passed to Exception
+     * @param identifier additional error information referred to in the error message
+     * @param cause      passed to Exception
+     * @see Exception
+     */
+    public TuscanyException(String message, String identifier, Throwable cause) {
+        super(message, cause);
+        this.identifier = identifier;
     }
 
     /**
@@ -69,6 +97,7 @@ public abstract class TuscanyException extends Exception {
      */
     public TuscanyException(Throwable cause) {
         super(cause);
+        this.identifier = null;
     }
 
     /**
@@ -105,30 +134,33 @@ public abstract class TuscanyException extends Exception {
         return identifier;
     }
 
-    /**
-     * Sets an additional error information referred to in the error message.
-     *
-     * @param identifier additional error information
-     */
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public String getMessage() {
+        StringBuilder b = new StringBuilder(256);
+        appendContextStack(appendBaseMessage(b));
+        if (b.length() < 1) {
+            return null;
+        } else {
+            return b.toString();
+        }
     }
 
-    public String getMessage() {
+    public StringBuilder appendBaseMessage(StringBuilder b) {
         if (identifier == null && contextStack == null) {
-            return super.getMessage();
+            if (super.getMessage() == null) {
+                return b;
+            }
+            return b.append(super.getMessage());
         }
-        StringBuilder b = new StringBuilder(256);
         if (super.getMessage() != null) {
             b.append(super.getMessage());
         }
         if (identifier != null) {
             b.append(" [").append(identifier).append(']');
         }
-        return appendContextStack(b).toString();
+        return b;
     }
 
-    protected StringBuilder appendContextStack(StringBuilder b) {
+    public StringBuilder appendContextStack(StringBuilder b) {
         if (contextStack != null) {
             b.append("\nContext stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {

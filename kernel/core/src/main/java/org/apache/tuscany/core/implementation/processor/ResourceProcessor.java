@@ -54,9 +54,7 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
             return;
         }
         if (method.getParameterTypes().length != 1) {
-            IllegalResourceException e = new IllegalResourceException("Resource setter must have one parameter");
-            e.setIdentifier(method.toString());
-            throw e;
+            throw new IllegalResourceException("Resource setter must have one parameter", method.toString());
         }
         String name = annotation.name();
         if (name.length() < 1) {

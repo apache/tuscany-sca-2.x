@@ -49,9 +49,7 @@ public class InitProcessor extends ImplementationProcessorExtension {
             return;
         }
         if (method.getParameterTypes().length != 0) {
-            IllegalInitException e = new IllegalInitException("Initializer must not have argments");
-            e.setIdentifier(method.toString());
-            throw e;
+            throw new IllegalInitException("Initializer must not have argments", method.toString());
         }
         if (type.getInitMethod() != null) {
             throw new DuplicateInitException("More than one initializer found on implementaton");

@@ -23,35 +23,12 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 
 /**
  * An exception to indicate the WSDL definition is invalid
+ *
+ * @version $Rev$ $Date$
  */
 public class InvalidWSDLException extends InvalidServiceContractException {
 
-    /**
-     * 
-     */
-    public InvalidWSDLException() {
+    public InvalidWSDLException(String message, String identifier) {
+        super(message, identifier);
     }
-
-    /**
-     * @param message
-     */
-    public InvalidWSDLException(String message) {
-        super(message);
-    }
-
-    /**
-     * @param message
-     * @param cause
-     */
-    public InvalidWSDLException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    /**
-     * @param cause
-     */
-    public InvalidWSDLException(Throwable cause) {
-        super(cause);
-    }
-
 }

@@ -53,14 +53,11 @@ public class EntityManagerProcessor extends AbstractPropertyProcessor<Persistenc
         return name;
     }
 
-    protected <T>JavaMappedProperty<T> createProperty(String name,
-                                                      Class<T> javaType,
-                                                      Member member) throws ProcessingException {
+    protected <T> JavaMappedProperty<T> createProperty(String name,
+                                                       Class<T> javaType,
+                                                       Member member) throws ProcessingException {
         if (!EntityManager.class.equals(javaType)) {
-            InvalidInjectionSite e =
-                new InvalidInjectionSite("Injection site must by of type " + EntityManager.class.getName());
-            e.setIdentifier(name);
-            throw e;
+            throw new InvalidInjectionSite("Injection site must by of type " + EntityManager.class.getName(), name);
         }
         return super.createProperty(name, javaType, member);
     }

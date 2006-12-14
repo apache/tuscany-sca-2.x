@@ -26,18 +26,16 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
  * @version $Rev$ $Date$
  */
 public class AmbiguousConstructorException extends ProcessingException {
-    public AmbiguousConstructorException() {
-    }
 
     public AmbiguousConstructorException(String message) {
         super(message);
     }
 
-    public AmbiguousConstructorException(String message, Throwable cause) {
-        super(message, cause);
+    public AmbiguousConstructorException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public AmbiguousConstructorException(Throwable cause) {
-        super(cause);
+    public AmbiguousConstructorException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 }
