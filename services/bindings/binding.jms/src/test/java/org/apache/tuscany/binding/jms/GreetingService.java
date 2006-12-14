@@ -22,6 +22,5 @@ import org.osoa.sca.annotations.Remotable;
 
 @Remotable
 public interface GreetingService {
-
-	String greet(String name);
+    String greet(String name);
 }

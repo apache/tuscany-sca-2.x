@@ -20,8 +20,8 @@ package org.apache.tuscany.binding.jms;
 
 public class GreetingServiceImpl implements GreetingService {
 
-	public String greet(String name) {
-		return "Hello " +  name;
-	}
+    public String greet(String name) {
+        return "Hello " + name;
+    }
 
 }

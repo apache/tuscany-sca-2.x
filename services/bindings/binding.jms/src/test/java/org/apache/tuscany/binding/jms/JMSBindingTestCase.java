@@ -25,47 +25,45 @@ import org.apache.tuscany.test.SCATestCase;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
-public class JMSBindingTestCase extends SCATestCase{
+public class JMSBindingTestCase extends SCATestCase {
 
-	private IntroService introService;
-	private BrokerContainer broker;
-	
+    private IntroService introService;
+    private BrokerContainer broker;
+
     public void testJMSBinding() {
-    	String reply = introService.greet("Rajith");
-    	assertEquals("Hello Rajith",reply);
+        String reply = introService.greet("Rajith");
+        assertEquals("Hello Rajith", reply);
     }
-	
-	protected void setUp() throws Exception {
-		startBroker();
+
+    protected void setUp() throws Exception {
+        startBroker();
         setApplicationSCDL(IntroService.class, "META-INF/sca/default.scdl");
         addExtension("jms.binding", getClass().getClassLoader().getResource("META-INF/sca/jms.system.scdl"));
         super.setUp();
         CompositeContext context = CurrentCompositeContext.getContext();
         introService = context.locateService(IntroService.class, "IntroServiceComponent");
     }
-	
-	
-	
-	protected void tearDown() throws Exception {		
-		super.tearDown();
-		broker.stop();
-	}
 
-	public static void main(String[] args){
-		JMSBindingTestCase test = new JMSBindingTestCase();
-		try {
-			test.setUp();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		test.testJMSBinding();
-	}
-	
-	private void startBroker() throws Exception{
-		broker = new BrokerContainerImpl("JMS Binding Test");
+    protected void tearDown() throws Exception {
+        super.tearDown();
+        broker.stop();
+    }
+
+    public static void main(String[] args) {
+        JMSBindingTestCase test = new JMSBindingTestCase();
+        try {
+            test.setUp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        test.testJMSBinding();
+    }
+
+    private void startBroker() throws Exception {
+        broker = new BrokerContainerImpl("JMS Binding Test");
         // configure the broker
-		broker.addConnector("tcp://localhost:61616");
-		broker.setPersistenceAdapter(new VMPersistenceAdapter());
-		broker.start();
-	}
+        broker.addConnector("tcp://localhost:61616");
+        broker.setPersistenceAdapter(new VMPersistenceAdapter());
+        broker.start();
+    }
 }
