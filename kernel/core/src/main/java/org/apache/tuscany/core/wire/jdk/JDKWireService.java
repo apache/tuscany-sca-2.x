@@ -21,9 +21,9 @@ package org.apache.tuscany.core.wire.jdk;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -106,9 +106,7 @@ public class JDKWireService extends WireServiceExtension {
             ClassLoader cl = interfaze.getClassLoader();
             return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
         } else {
-            ProxyCreationException e = new ProxyCreationException("Invalid wire type");
-            e.setIdentifier(wire.getClass().getName());
-            throw e;
+            throw new ProxyCreationException("Invalid wire type", wire.getClass().getName());
         }
     }
 
@@ -128,9 +126,7 @@ public class JDKWireService extends WireServiceExtension {
             OutboundWire outbound = (OutboundWire) wire;
             return new JDKOutboundInvocationHandler(outbound, context);
         } else {
-            ProxyCreationException e = new ProxyCreationException("Invalid wire type");
-            e.setIdentifier(wire.getClass().getName());
-            throw e;
+            throw new ProxyCreationException("Invalid wire type", wire.getClass().getName());
         }
     }
 

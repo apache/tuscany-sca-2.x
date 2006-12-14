@@ -79,9 +79,7 @@ public class ScriptComponent extends AtomicComponentExtension {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
-            TargetException e = new TargetException("Service not found"); // TODO better error message
-            e.setIdentifier(service);
-            throw e;
+            throw new TargetException("Service not found", service); // TODO better error message
         }
         return wireService.createProxy(wire);
     }

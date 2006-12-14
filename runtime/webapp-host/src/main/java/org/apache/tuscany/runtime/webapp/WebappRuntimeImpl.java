@@ -52,7 +52,7 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  * <p/>
  * The bootstrapper launches the runtime, booting system extensions and applications, according to the servlet
  * parameters defined in {@link Constants}. When the runtime is instantiated, it is placed in the servlet context with
- * the attribute {@link Constants.RUNTIME_ATTRIBUTE}. The runtime implements {@link WebappRuntime} so that filters and
+ * the attribute {@link Constants.RUNTIME_PARAM}. The runtime implements {@link WebappRuntime} so that filters and
  * servlets loaded in the parent web app classloader may pass events and requests to it.
  * <p/>
  * By default, the top-most application composite component will be returned when "non-managed" web application code
@@ -147,9 +147,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                 while (tokenizer.hasMoreTokens()) {
                     SCAObject o = current.getChild(tokenizer.nextToken());
                     if (!(o instanceof CompositeComponent)) {
-                        ServletLauncherInitException e = new ServletLauncherInitException("Invalid context path");
-                        e.setIdentifier(path);
-                        throw e;
+                        throw new ServletLauncherInitException("Invalid context path", path);
                     }
                     current = (CompositeComponent) o;
                 }

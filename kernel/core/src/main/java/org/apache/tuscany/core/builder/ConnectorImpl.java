@@ -184,9 +184,9 @@ public class ConnectorImpl implements Connector {
             // match wire chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
             if (outboundChain == null) {
-                BuilderConfigException e = new BuilderConfigException("Incompatible source and target interfaces");
-                e.setIdentifier(sourceWire.getServiceName());
-                throw e;
+                // FIXME JFM
+                String serviceName = sourceWire.getServiceName();
+                throw new BuilderConfigException("Incompatible source and target interfaces", serviceName);
             }
             connect(inboundChain, outboundChain);
         }
@@ -224,10 +224,9 @@ public class ConnectorImpl implements Connector {
             Operation<?> operation = outboundChain.getOperation();
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
-                BuilderConfigException e =
-                    new BuilderConfigException("Incompatible source and target interfaces for reference");
-                e.setIdentifier(sourceWire.getReferenceName());
-                throw e;
+                String name = sourceWire.getReferenceName();
+                // FIXME JFM
+                throw new BuilderConfigException("Incompatible source and target interfaces for reference", name);
             }
             Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
@@ -276,10 +275,10 @@ public class ConnectorImpl implements Connector {
             Operation<?> operation = inboundChain.getOperation();
             if (sourceCallbackChains != null && sourceCallbackChains.get(operation) != null) {
                 String name = operation.getName();
-                BuilderConfigException e =
-                    new BuilderConfigException("Source callback chain should not exist for operation [" + name + "]");
-                e.setIdentifier(sourceWire.getReferenceName());
-                throw e;
+                // FIXME JFM
+                String refName = sourceWire.getReferenceName();
+                throw new BuilderConfigException("Source callback chain should not exist for operation [" + name + "]",
+                    refName);
             }
 
             Operation targetOp =
@@ -322,9 +321,8 @@ public class ConnectorImpl implements Connector {
                  boolean nonBlocking) {
         Interceptor head = targetChain.getHeadInterceptor();
         if (head == null) {
-            BuilderConfigException e = new BuilderConfigException("No interceptor for operation");
-            e.setIdentifier(targetChain.getOperation().getName());
-            throw e;
+            String name = targetChain.getOperation().getName();
+            throw new BuilderConfigException("No interceptor for operation", name);
         }
         if (nonBlocking) {
             sourceChain.setTargetInterceptor(new NonBlockingBridgingInterceptor(scheduler, workContext, head));
@@ -363,9 +361,9 @@ public class ConnectorImpl implements Connector {
             InboundWire targetWire = targetComponent.getInboundWire(targetName.getPortName());
             if (targetWire == null) {
                 String refName = sourceWire.getReferenceName();
-                BuilderConfigException e = new BuilderConfigException("No target service for reference " + refName);
-                e.setIdentifier(targetName.getPortName());
-                throw e;
+                // FIXME JFM
+                throw new BuilderConfigException("No target service for reference " + refName,
+                    targetName.getPortName());
             }
             checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
@@ -419,14 +417,12 @@ public class ConnectorImpl implements Connector {
             connect(sourceWire, targetWire, optimizable);
         } else if (target == null) {
             String name = sourceWire.getReferenceName();
-            ReferenceTargetNotFoundException e = new ReferenceTargetNotFoundException(name);
-            e.setIdentifier(targetName.getQualifiedName());
-            throw e;
+            throw new ReferenceTargetNotFoundException(name, targetName.getQualifiedName());
         } else {
             String name = sourceWire.getReferenceName();
-            BuilderConfigException e = new BuilderConfigException("Invalid target type for reference " + name);
-            e.setIdentifier(targetName.getQualifiedName());
-            throw e;
+            // FIXME JFM
+            throw new BuilderConfigException("Invalid target type for reference " + name,
+                targetName.getQualifiedName());
         }
     }
 

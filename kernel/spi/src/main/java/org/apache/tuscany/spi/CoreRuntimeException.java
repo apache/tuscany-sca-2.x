@@ -35,8 +35,18 @@ public abstract class CoreRuntimeException extends TuscanyRuntimeException {
         super(message);
     }
 
+
+    protected CoreRuntimeException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public CoreRuntimeException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+
+    protected CoreRuntimeException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public CoreRuntimeException(Throwable cause) {

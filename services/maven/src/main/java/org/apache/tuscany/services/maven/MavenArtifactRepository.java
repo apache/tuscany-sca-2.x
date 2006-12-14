@@ -20,28 +20,35 @@ package org.apache.tuscany.services.maven;
 
 import java.util.Collection;
 
-import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.services.artifact.Artifact;
-import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
-import org.apache.tuscany.host.RuntimeInfo;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.services.artifact.Artifact;
+import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+
+import org.apache.tuscany.host.RuntimeInfo;
+
 /**
  * Artifact repository used for resolving artifacts.
- *
- * This is used by the composite loader for resolving artifacts transitively. The repository uses the Maven API for resolving dependencies and hence
- * expects the artifacts to be stored in a structure similar to the Maven repository layout. The repository first looks within the deployed unit (WAR
- * for example), before resorting to a local and set of remote Maven repositories.
+ * <p/>
+ * This is used by the composite loader for resolving artifacts transitively. The repository uses the Maven API for
+ * resolving dependencies and hence expects the artifacts to be stored in a structure similar to the Maven repository
+ * layout. The repository first looks within the deployed unit (WAR for example), before resorting to a local and set of
+ * remote Maven repositories.
  *
  * @version $Rev$ $Date$
  */
 public class MavenArtifactRepository implements ArtifactRepository {
 
-    /** Maven helper */
+    /**
+     * Maven helper
+     */
     private MavenHelper mavenHelper;
-    
-    /** WAR repository helper */
+
+    /**
+     * WAR repository helper
+     */
     private WarRepositoryHelper warRepositoryHelper;
 
     /**
@@ -56,29 +63,25 @@ public class MavenArtifactRepository implements ArtifactRepository {
     }
 
     /**
-     * Resolve an artifact. This ensures that the information associated with an artifact is fully populated; Specifically, after this operation the
-     * URL should contain a location where the artifact can be obtained.
+     * Resolve an artifact. This ensures that the information associated with an artifact is fully populated;
+     * Specifically, after this operation the URL should contain a location where the artifact can be obtained.
      *
-     * @param artifact
-     *            the artifact to be resolved
+     * @param rootArtifact the artifact to be resolved
      */
     public void resolve(Artifact rootArtifact) {
-        if(warRepositoryHelper.resolveTransitively(rootArtifact)) {
-            return;
-        } 
-        if(mavenHelper.resolveTransitively(rootArtifact)) {
+        if (warRepositoryHelper.resolveTransitively(rootArtifact)) {
             return;
         }
-        TuscanyDependencyException tde = new TuscanyDependencyException("Unable to resolve artifact: " + rootArtifact);
-        tde.setIdentifier(rootArtifact.toString());
-        throw tde;
+        if (mavenHelper.resolveTransitively(rootArtifact)) {
+            return;
+        }
+        throw new TuscanyDependencyException("Unable to resolve artifact", rootArtifact.toString());
     }
 
     /**
      * Resolve a collection of Artifacts.
      *
-     * @param artifacts
-     *            a collection of artifacts to be resolved
+     * @param artifacts a collection of artifacts to be resolved
      * @see #resolve(Artifact)
      */
     public void resolve(Collection<? extends Artifact> artifacts) {
@@ -89,7 +92,6 @@ public class MavenArtifactRepository implements ArtifactRepository {
 
     /**
      * Destroy method.
-     *
      */
     @Destroy
     public void destroy() {

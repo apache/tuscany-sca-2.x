@@ -93,13 +93,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 return o;
             }
         } catch (StoreReadException e) {
-            TargetException e2 = new TargetException(e);
-            e2.setIdentifier(component.getName());
-            throw e2;
+            throw new TargetException(e);
         } catch (StoreWriteException e) {
-            TargetException e2 = new TargetException(e);
-            e2.setIdentifier(component.getName());
-            throw e2;
+            throw new TargetException(e);
         } finally {
             workContext.setCurrentAtomicComponent(null);
         }
@@ -166,9 +162,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     private String getConversationId(AtomicComponent component) {
         String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (conversationId == null) {
-            TargetException e = new TargetException("Conversation id not set in context");
-            e.setIdentifier(component.getName());
-            throw e;
+            throw new TargetException("Conversation id not set in context", component.getName());
         }
         return conversationId;
     }

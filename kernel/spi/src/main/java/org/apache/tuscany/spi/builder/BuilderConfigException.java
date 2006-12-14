@@ -33,6 +33,10 @@ public class BuilderConfigException extends BuilderException {
         super(message);
     }
 
+    public BuilderConfigException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public BuilderConfigException(String message, Throwable cause) {
         super(message, cause);
     }

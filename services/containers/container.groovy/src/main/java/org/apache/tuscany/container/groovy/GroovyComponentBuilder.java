@@ -80,9 +80,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
             // REVIEW JFM can we cache the class?
             groovyClass = groovyClassLoader.parseClass(script);
         } catch (CompilationFailedException e) {
-            BuilderConfigException bce = new BuilderConfigException(e);
-            bce.setIdentifier(name);
-            throw bce;
+            throw new BuilderConfigException(name, e);
         }
         // TODO deal with init and destroy
 

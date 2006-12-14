@@ -25,18 +25,12 @@ package org.apache.tuscany.spi.builder;
  */
 public class MissingTargetException extends BuilderConfigException {
 
-    public MissingTargetException() {
-    }
-
     public MissingTargetException(String message) {
         super(message);
     }
 
-    public MissingTargetException(String message, Throwable cause) {
-        super(message, cause);
+    public MissingTargetException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public MissingTargetException(Throwable cause) {
-        super(cause);
-    }
 }

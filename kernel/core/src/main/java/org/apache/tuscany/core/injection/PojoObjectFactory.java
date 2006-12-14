@@ -94,10 +94,9 @@ public class PojoObjectFactory<T> implements ObjectFactory<T> {
         for (int i = 0; i < size; i++) {
             ObjectFactory<?> objectFactory = initializerFactories[i];
             if (objectFactory == null) {
-                ObjectCallbackException e =
-                    new ObjectCallbackException("Null object factory for constructor parameter [" + i + "]");
-                e.setIdentifier(ctr.getName());
-                throw e;
+                // FIXME JFM
+                String name = ctr.getName();
+                throw new ObjectCallbackException("Null object factory for constructor parameter [" + i + "]", name);
             }
             initargs[i] = objectFactory.getInstance();
         }

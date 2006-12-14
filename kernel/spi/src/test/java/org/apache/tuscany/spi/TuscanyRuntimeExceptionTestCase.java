@@ -28,8 +28,7 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
 public class TuscanyRuntimeExceptionTestCase extends TestCase {
 
     public void testIdentifier() throws Exception {
-        TuscanyRuntimeException e = new TestException();
-        e.setIdentifier("foo");
+        TuscanyRuntimeException e = new TestException("bar", "foo");
         assertEquals("foo", e.getIdentifier());
     }
 
@@ -53,7 +52,6 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
 
     public void testFullMessage() throws Exception {
         TuscanyRuntimeException e = new TestException();
-        e.setIdentifier("foo");
         e.addContextName("foo");
         e.getMessage();
     }
@@ -61,5 +59,11 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
 
     private class TestException extends TuscanyRuntimeException {
 
+        public TestException() {
+        }
+
+        public TestException(String message, String identifier) {
+            super(message, identifier);
+        }
     }
 }

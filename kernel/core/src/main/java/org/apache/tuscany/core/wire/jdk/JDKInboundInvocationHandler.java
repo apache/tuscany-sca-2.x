@@ -93,18 +93,15 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
                 return hashCode();
                 // TODO beter hash algorithm
             }
-            TargetException e = new TargetException("Operation not configured");
-            e.setIdentifier(method.getName());
-            throw e;
+            throw new TargetException("Operation not configured", method.getName());
         }
         InboundInvocationChain chain = holder.chain;
         TargetInvoker invoker;
         if (holder.cachedInvoker == null) {
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
-                TargetException e = new TargetException("No target invoker configured for operation");
-                e.setIdentifier(chain.getOperation().getName());
-                throw e;
+                String name = chain.getOperation().getName();
+                throw new TargetException("No target invoker configured for operation", name);
             }
             if (chain.getTargetInvoker().isCacheable()) {
                 // clone and store the invoker locally

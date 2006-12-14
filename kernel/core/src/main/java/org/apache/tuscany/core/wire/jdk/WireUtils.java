@@ -53,8 +53,7 @@ public final class WireUtils {
             InboundInvocationChain chain = entry.getValue();
             Method method = findMethod(operation, methods);
             if (method == null) {
-                NoMethodForOperationException e = new NoMethodForOperationException();
-                e.setIdentifier(operation.getName());
+                throw new NoMethodForOperationException(operation.getName());
             }
             chains.put(method, chain);
         }

@@ -60,9 +60,7 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
                     String name = property.getName();
                     JavaMappedProperty mappedProperty = (JavaMappedProperty) type.getProperties().get(name);
                     if (mappedProperty == null) {
-                        MissingPropertyException e = new MissingPropertyException();
-                        e.setIdentifier(name);
-                        throw e;
+                        throw new MissingPropertyException(name);
                     }
                     Injector injector = new Injector((Method) mappedProperty.getMember(), factory);
                     injectors.add(injector);

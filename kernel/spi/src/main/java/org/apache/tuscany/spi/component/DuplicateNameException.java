@@ -25,20 +25,12 @@ package org.apache.tuscany.spi.component;
  */
 public class DuplicateNameException extends ComponentRuntimeException {
 
-    public DuplicateNameException() {
-        super();
-    }
-
     public DuplicateNameException(String message) {
         super(message);
     }
 
-    public DuplicateNameException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateNameException(Throwable cause) {
-        super(cause);
+    public DuplicateNameException(String message, String identifier) {
+        super(message, identifier);
     }
 
 }

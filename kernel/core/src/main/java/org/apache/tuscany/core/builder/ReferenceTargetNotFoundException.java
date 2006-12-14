@@ -26,18 +26,14 @@ import org.apache.tuscany.spi.builder.BuilderConfigException;
  * @version $Rev$ $Date$
  */
 public class ReferenceTargetNotFoundException extends BuilderConfigException {
-    public ReferenceTargetNotFoundException() {
-    }
 
     public ReferenceTargetNotFoundException(String message) {
         super(message);
     }
 
-    public ReferenceTargetNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+    public ReferenceTargetNotFoundException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public ReferenceTargetNotFoundException(Throwable cause) {
-        super(cause);
-    }
+
 }

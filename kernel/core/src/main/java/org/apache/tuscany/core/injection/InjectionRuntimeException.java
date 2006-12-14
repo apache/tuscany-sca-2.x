@@ -35,8 +35,17 @@ public abstract class InjectionRuntimeException extends TuscanyRuntimeException 
         super(message);
     }
 
+
+    protected InjectionRuntimeException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public InjectionRuntimeException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    protected InjectionRuntimeException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 
     public InjectionRuntimeException(Throwable cause) {

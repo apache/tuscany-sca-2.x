@@ -69,9 +69,7 @@ public class WebappUtilImpl implements WebappUtil {
             try {
                 urls[i++] = servletContext.getResource((String) path);
             } catch (MalformedURLException e) {
-                InvalidResourcePath ie = new InvalidResourcePath(APPLICATION_SCDL_PATH_PARAM, e);
-                ie.setIdentifier(path.toString());
-                throw ie;
+                throw new InvalidResourcePath(APPLICATION_SCDL_PATH_PARAM, path.toString(),  e);
             }
         }
         return new URLClassLoader(urls, webappClassLoader);
@@ -82,9 +80,7 @@ public class WebappUtilImpl implements WebappUtil {
         try {
             return getScdlURL(path, bootClassLoader);
         } catch (MalformedURLException e) {
-            InvalidResourcePath ie = new InvalidResourcePath(SYSTEM_SCDL_PATH_PARAM, e);
-            ie.setIdentifier(path);
-            throw ie;
+            throw new InvalidResourcePath(SYSTEM_SCDL_PATH_PARAM, path, e);
         }
     }
 
@@ -101,9 +97,7 @@ public class WebappUtilImpl implements WebappUtil {
         try {
             return getScdlURL(path, bootClassLoader);
         } catch (MalformedURLException e) {
-            InvalidResourcePath ie = new InvalidResourcePath(APPLICATION_SCDL_PATH_PARAM, e);
-            ie.setIdentifier(path);
-            throw ie;
+            throw new InvalidResourcePath(APPLICATION_SCDL_PATH_PARAM, path, e);
         }
     }
 

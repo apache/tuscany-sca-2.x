@@ -34,6 +34,10 @@ public class ServletLauncherInitException extends TuscanyRuntimeException {
         super(message);
     }
 
+    public ServletLauncherInitException(String message, String identifier) {
+        super(message, identifier);
+    }
+
     public ServletLauncherInitException(String message, Throwable cause) {
         super(message, cause);
     }

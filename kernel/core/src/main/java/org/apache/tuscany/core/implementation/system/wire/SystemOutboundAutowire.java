@@ -83,9 +83,7 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
         Class<?> interfaze = serviceContract.getInterfaceClass();
         Object service = component.resolveSystemInstance(interfaze);
         if (service == null && required) {
-            TargetNotFoundException e = new TargetNotFoundException("Autowire target not found");
-            e.setIdentifier(interfaze.getName());
-            throw e;
+            throw new TargetNotFoundException("Autowire target not found", interfaze.getName());
         }
         return service;
     }
