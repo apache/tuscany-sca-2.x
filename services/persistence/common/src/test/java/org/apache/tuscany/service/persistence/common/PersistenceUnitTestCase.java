@@ -20,7 +20,7 @@ public class PersistenceUnitTestCase extends SCATestCase {
         
         JavaAtomicComponent cmp = (JavaAtomicComponent)component.getChild("TestService1");
         TestService1 testService1 = (TestService1) cmp.getServiceInstance();
-//        testService1.testMethod();
+        testService1.testMethod();
     }
 
     protected void tearDown() throws Exception {
