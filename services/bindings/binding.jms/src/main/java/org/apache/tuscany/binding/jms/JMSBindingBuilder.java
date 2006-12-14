@@ -53,7 +53,12 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
     	JMSBinding jmsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
         
-        ServiceContract serviceContract =  serviceDefinition.getServiceContract();
+        ServiceContract serviceContract;
+		try {
+			serviceContract = (ServiceContract)serviceDefinition.getServiceContract().clone();
+		} catch (CloneNotSupportedException e) {
+			throw new JMSBindingRuntimeException("Couldn't clone the Service Contract",e);
+		}
         serviceContract.setDataBinding(OM_DATA_BINDING);
         
         JMSResourceFactory jmsResourceFactory;
@@ -79,7 +84,12 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
     	
         String name = referenceDefinition.getName();
         Class<?> interfaze = referenceDefinition.getServiceContract().getInterfaceClass();
-        ServiceContract serviceContract = referenceDefinition.getServiceContract();
+        ServiceContract serviceContract;
+		try {
+			serviceContract = (ServiceContract)referenceDefinition.getServiceContract().clone();
+		} catch (CloneNotSupportedException e) {
+			throw new JMSBindingRuntimeException("Couldn't clone the Service Contract",e);
+		}
         serviceContract.setDataBinding(OM_DATA_BINDING);
         
         JMSBinding jmsBinding = referenceDefinition.getBinding();

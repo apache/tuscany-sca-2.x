@@ -56,7 +56,7 @@ public class JMSTargetInvoker implements TargetInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
         	Object[] args = (Object[])msg.getBody();
-            Object resp = invokeTarget(args[0]);
+            Object resp = invokeTarget(args[0],(short)0);
             msg.setBody(resp);
         } catch (Exception e) {
             msg.setBody(e.getCause());
@@ -64,7 +64,7 @@ public class JMSTargetInvoker implements TargetInvoker {
         return msg;
     }
 
-    public Object invokeTarget(Object payload)throws InvocationTargetException {
+    public Object invokeTarget(Object payload,final short sequence)throws InvocationTargetException {
         try {
             
         	return sendReceiveMessage(payload);
