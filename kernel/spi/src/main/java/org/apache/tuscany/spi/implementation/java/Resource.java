@@ -20,9 +20,11 @@ package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Member;
 
+import org.apache.tuscany.spi.ObjectFactory;
+
 /**
  * A resource dependency declared by a Java component implementation
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class Resource {
@@ -32,10 +34,11 @@ public class Resource {
     private boolean optional;
     private Member member;
     private Class<?> type;
+    private ObjectFactory<?> objectFactory;
 
     /**
      * The name of the resource
-     *
+     * 
      * @return the name of the resource
      */
     public String getName() {
@@ -44,7 +47,7 @@ public class Resource {
 
     /**
      * Sets the name of the resource
-     *
+     * 
      * @param name the name of the resource
      */
     public void setName(String name) {
@@ -53,7 +56,7 @@ public class Resource {
 
     /**
      * Returns the URI of the resource
-     *
+     * 
      * @return the URI of the resource
      */
     public String getMappedName() {
@@ -69,7 +72,7 @@ public class Resource {
 
     /**
      * If true, the resource is optional
-     *
+     * 
      * @return true if the resource is optional
      */
     public boolean isOptional() {
@@ -85,7 +88,7 @@ public class Resource {
 
     /**
      * Returns the Member that this resource is mapped to.
-     *
+     * 
      * @return the Member that this resource is mapped to
      */
     public Member getMember() {
@@ -94,7 +97,7 @@ public class Resource {
 
     /**
      * Sets the Member that this resource is mapped to
-     *
+     * 
      * @param member the Member that this resource is mapped to
      */
     public void setMember(Member member) {
@@ -103,7 +106,7 @@ public class Resource {
 
     /**
      * Returns the resource type
-     *
+     * 
      * @return the resource type
      */
     public Class<?> getType() {
@@ -115,5 +118,21 @@ public class Resource {
      */
     public void setType(Class<?> type) {
         this.type = type;
+    }
+
+    /**
+     * Returns the obeject factory
+     * 
+     * @return the object factory
+     */
+    public ObjectFactory<?> getObjectFactory() {
+        return objectFactory;
+    }
+
+    /**
+     * Sets the object factory
+     */
+    public void setObjectFactory(ObjectFactory<?> objectFactory) {
+        this.objectFactory = objectFactory;
     }
 }
