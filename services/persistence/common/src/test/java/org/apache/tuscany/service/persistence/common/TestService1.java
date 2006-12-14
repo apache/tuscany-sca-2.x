@@ -15,7 +15,7 @@ public class TestService1 {
     protected TransactionManager tx;
     
     @PersistenceUnit(unitName="test")
-    private EntityManagerFactory emf;
+    protected EntityManagerFactory emf;
     
     public void testMethod() throws Exception {
         

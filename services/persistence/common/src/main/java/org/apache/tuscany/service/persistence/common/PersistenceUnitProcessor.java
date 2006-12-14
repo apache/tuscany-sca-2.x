@@ -18,68 +18,64 @@
  */
 package org.apache.tuscany.service.persistence.common;
 
+import java.lang.reflect.Field;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
+import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.Resource;
 
 /**
  * Annotation processor for injecting <code>PersistenceUnit</code> 
  * annotations on properties.
  *
  */
-public class PersistenceUnitProcessor extends AbstractPropertyProcessor<PersistenceUnit> {
+public class PersistenceUnitProcessor extends ImplementationProcessorExtension {
 
     /** Persistence unit builder */
     private PersistenceUnitBuilder builder = new DefaultPersistenceUnitBuilder();
 
-    /**
-     * Injects the implementation processor service.
-     * @param service Implementation processor service.
-     */
-    public PersistenceUnitProcessor(@Autowire ImplementationProcessorService service) {
-        super(PersistenceUnit.class, service);
-    }
+    public void visitField(CompositeComponent parent,
+                           Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
 
-    /**
-     * Defaults to the field name.
-     */
-    @Override
-    protected String getName(PersistenceUnit persistenceUnit) {
-        return null;
-    }
-
-    /**
-     * Initializes the property.
-     */
-    @SuppressWarnings("unchecked")
-    protected <T> void initProperty(JavaMappedProperty<T> property, PersistenceUnit annotation, CompositeComponent parent, DeploymentContext context) {
-
+        PersistenceUnit annotation = field.getAnnotation(PersistenceUnit.class);
+        if (annotation == null) {
+            return;
+        }
         String unitName = annotation.unitName();
-        
-        SystemAtomicComponent component = (SystemAtomicComponent) parent.getSystemChild(unitName); 
-        EntityManagerFactory emf; 
-        if (component == null) { 
-        	emf = builder.newEntityManagerFactory(unitName, context.getClassLoader()); 
-        	parent.registerJavaObject(unitName, EntityManagerFactory.class, emf); 
-        } else { 
-        	emf = (EntityManagerFactory) component.getTargetInstance(); 
+
+        SystemAtomicComponent component = (SystemAtomicComponent)parent.getSystemChild(unitName);
+        EntityManagerFactory emf;
+        if (component == null) {
+            emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
+            parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
+        } else {
+            emf = (EntityManagerFactory)component.getTargetInstance();
         }
         
         ObjectFactory factory = new EmfObjectFactory(emf);
-        property.setDefaultValueFactory(factory);
-
+        Resource resource = new Resource();
+        resource.setObjectFactory(factory);
+        resource.setMember(field);
+        resource.setType(field.getType());
+        resource.setName(unitName);
+        type.add(resource);
     }
 
     private class EmfObjectFactory implements ObjectFactory<EntityManagerFactory> {
-        
+
         private EntityManagerFactory emf;
 
         public EmfObjectFactory(EntityManagerFactory emf) {
@@ -89,7 +85,7 @@ public class PersistenceUnitProcessor extends AbstractPropertyProcessor<Persiste
         public EntityManagerFactory getInstance() {
             return emf;
         }
-        
+
     }
 
 }
