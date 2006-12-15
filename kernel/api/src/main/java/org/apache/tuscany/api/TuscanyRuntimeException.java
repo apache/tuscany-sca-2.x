@@ -137,22 +137,30 @@ public abstract class TuscanyRuntimeException extends RuntimeException {
         return identifier;
     }
 
-    public String getMessage() {
+    public StringBuilder appendBaseMessage(StringBuilder b) {
         if (identifier == null && contextStack == null) {
-            return super.getMessage();
+            if (super.getMessage() == null) {
+                return b;
+            }
+            return b.append(super.getMessage());
         }
-        StringBuilder b = new StringBuilder(256);
-        b.append(super.getMessage());
-
+        if (super.getMessage() != null) {
+            b.append(super.getMessage());
+        }
         if (identifier != null) {
             b.append(" [").append(identifier).append(']');
         }
+        return b;
+    }
+
+    public StringBuilder appendContextStack(StringBuilder b) {
         if (contextStack != null) {
-            b.append("\nContext stack trace: ");
+            b.append("Context stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
                 b.append('[').append(contextStack.get(i)).append(']');
             }
         }
-        return b.toString();
+        return b;
     }
+
 }

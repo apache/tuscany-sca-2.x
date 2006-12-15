@@ -153,10 +153,13 @@ public class JavaLoggingTestCase extends TestCase {
     public static interface Monitor {
         void eventNotToLog();
 
+        @LogLevel("INFO")
         void eventWithNoArgs();
 
+        @LogLevel("INFO")
         void eventWithOneArg(String msg);
 
+        @LogLevel("WARNING")
         void eventWithThrowable(Exception e);
 
         @LogLevel("INFO")

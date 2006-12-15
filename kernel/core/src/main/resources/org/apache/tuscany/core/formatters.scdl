@@ -1,4 +1,5 @@
-/*
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -15,32 +16,18 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- */
-package org.apache.tuscany.spi.loader;
+-->
+<!--
+    Formatter configurations for JDK logging.
+    
+    $Rev: 476250 $ $Date: 2006-11-17 10:56:22 -0800 (Fri, 17 Nov 2006) $
+-->
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+           xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
+           name="org.apache.tuscany.core.Formatters">
 
-import javax.xml.namespace.QName;
+    <component name="LoaderExceptionFormatter">
+        <system:implementation.system class="org.apache.tuscany.core.loader.LoaderExceptionFormatter"/>
+    </component>
 
-/**
- * Exception that indicates an element was encountered that could not be handled.
- *
- * @version $Rev$ $Date$
- */
-public class UnrecognizedElementException extends LoaderException {
-    private static final long serialVersionUID = 2549543622209829032L;
-    private final QName element;
-
-    /**
-     * Constructor that indicates which resource could not be found. The supplied parameter is also returned as the
-     * message.
-     *
-     * @param element the element that could not be handled
-     */
-    public UnrecognizedElementException(QName element) {
-        super("Unrecognized element", element.toString());
-        this.element = element;
-    }
-
-    public QName getElement() {
-        return element;
-    }
-}
+</composite>

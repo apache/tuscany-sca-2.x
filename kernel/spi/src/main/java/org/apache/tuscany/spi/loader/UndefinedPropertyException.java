@@ -23,6 +23,6 @@ package org.apache.tuscany.spi.loader;
  */
 public class UndefinedPropertyException extends LoaderException {
     public UndefinedPropertyException(String name) {
-        super(name);
+        super("Property not found on implementation", name);
     }
 }

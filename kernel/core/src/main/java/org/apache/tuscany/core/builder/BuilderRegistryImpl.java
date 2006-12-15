@@ -29,7 +29,6 @@ import org.osoa.sca.annotations.Scope;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BindlessBuilder;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.NoRegisteredBuilderException;
@@ -136,7 +135,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         if (componentBuilder == null) {
             String name = implClass.getName();
-            throw new BuilderConfigException("No builder registered for implementation", name);
+            throw new BuilderNotFoundException("No builder registered for implementation", name);
         }
 
         Component component = componentBuilder.build(parent, componentDefinition, deploymentContext);

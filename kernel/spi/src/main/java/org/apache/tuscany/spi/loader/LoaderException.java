@@ -27,11 +27,11 @@ import org.apache.tuscany.api.TuscanyException;
  * @version $Rev$ $Date$
  */
 public class LoaderException extends TuscanyException {
+    public static final int UNDEFINED = -1;
     private static final long serialVersionUID = -7459051598906813461L;
-    private static final int UNDEFINED = -1;
     private String resourceURI;
     private int line = UNDEFINED;
-    private int col = UNDEFINED;
+    private int column = UNDEFINED;
 
     public LoaderException() {
     }
@@ -82,11 +82,11 @@ public class LoaderException extends TuscanyException {
         this.line = line;
     }
 
-    public int getCol() {
-        return col;
+    public int getColumn() {
+        return column;
     }
 
-    public void setCol(int col) {
-        this.col = col;
+    public void setColumn(int column) {
+        this.column = column;
     }
 }

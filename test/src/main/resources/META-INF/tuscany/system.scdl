@@ -95,30 +95,6 @@
         <system:implementation.system class="org.apache.tuscany.core.component.scope.ConversationalScopeObjectFactory"/>
     </component>
 
-    <!-- include loader configuration -->
-    <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
-
-    <!-- include implementation processor configuration -->
-    <include name="org.apache.tuscany.launcher.Implementation" scdlResource="org/apache/tuscany/core/implementation.scdl"/>
-
-    <!-- Java interface definition language -->
-    <include name="org.apache.tuscany.launcher.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl"/>
-
-    <!-- include omposite implementation type -->
-    <include name="org.apache.tuscany.launcher.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
-
-    <!-- System implementation type -->
-    <include name="org.apache.tuscany.launcher.SystemImplementation" scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
-
-    <!-- Java implementation type -->
-    <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
-
-    <!-- Data Binding -->
-    <include name="org.apache.tuscany.launcher.DataBinding" scdlResource="org/apache/tuscany/core/databinding.scdl"/>
-
-    <!-- System implementation type -->
-    <include name="org.apache.tuscany.test.TestBindingImplementation" scdlLocation="test.binding.system.scdl"/>
-
     <!-- service for resolving artifacts against the user's local Maven repository -->
     <component name="artifactRepository">
         <system:implementation.system class="org.apache.tuscany.core.services.artifact.LocalMavenRepository"/>
@@ -147,5 +123,32 @@
     <component name="wireLoader">
         <system:implementation.system class="org.apache.tuscany.core.loader.WireLoader"/>
     </component>
+
+    <!-- include loader configuration -->
+    <include name="org.apache.tuscany.launcher.Loader" scdlResource="org/apache/tuscany/core/loader.scdl"/>
+
+    <!-- include implementation processor configuration -->
+    <include name="org.apache.tuscany.launcher.Implementation" scdlResource="org/apache/tuscany/core/implementation.scdl"/>
+
+    <!-- Java interface definition language -->
+    <include name="org.apache.tuscany.launcher.InterfaceJava" scdlResource="org/apache/tuscany/core/interfaceJava.scdl"/>
+
+    <!-- include omposite implementation type -->
+    <include name="org.apache.tuscany.launcher.Composite" scdlResource="org/apache/tuscany/core/composite.scdl"/>
+
+    <!-- System implementation type -->
+    <include name="org.apache.tuscany.launcher.SystemImplementation" scdlResource="org/apache/tuscany/core/systemImplementation.scdl"/>
+
+    <!-- Java implementation type -->
+    <include name="org.apache.tuscany.launcher.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
+
+    <!-- Data Binding -->
+    <include name="org.apache.tuscany.launcher.DataBinding" scdlResource="org/apache/tuscany/core/databinding.scdl"/>
+
+    <!-- System implementation type -->
+    <include name="org.apache.tuscany.test.TestBindingImplementation" scdlLocation="test.binding.system.scdl"/>
+
+    <!-- Logging formatters -->
+    <include name="org.apache.tuscany.launcher.Formatters" scdlResource="org/apache/tuscany/core/formatters.scdl"/>
 
 </composite>

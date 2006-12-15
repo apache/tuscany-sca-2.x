@@ -123,7 +123,7 @@ public abstract class TuscanyException extends Exception {
             contextStack = new ArrayList<String>();
         }
         contextStack.add(name);
-    }
+    }                       
 
     /**
      * Returns a string representing additional error information referred to in the error message.
@@ -132,16 +132,6 @@ public abstract class TuscanyException extends Exception {
      */
     public String getIdentifier() {
         return identifier;
-    }
-
-    public String getMessage() {
-        StringBuilder b = new StringBuilder(256);
-        appendContextStack(appendBaseMessage(b));
-        if (b.length() < 1) {
-            return null;
-        } else {
-            return b.toString();
-        }
     }
 
     public StringBuilder appendBaseMessage(StringBuilder b) {
@@ -162,7 +152,7 @@ public abstract class TuscanyException extends Exception {
 
     public StringBuilder appendContextStack(StringBuilder b) {
         if (contextStack != null) {
-            b.append("\nContext stack trace: ");
+            b.append("Context stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
                 b.append('[').append(contextStack.get(i)).append(']');
             }
