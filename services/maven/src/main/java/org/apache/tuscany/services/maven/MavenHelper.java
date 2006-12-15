@@ -270,10 +270,11 @@ public class MavenHelper {
             for (Object obj : result.getArtifacts()) {
                 org.apache.maven.artifact.Artifact depArtifact = (org.apache.maven.artifact.Artifact) obj;
                 Artifact artifact = new Artifact();
-                artifact.setName(mavenRootArtifact.getArtifactId());
-                artifact.setGroup(mavenRootArtifact.getGroupId());
-                artifact.setType(mavenRootArtifact.getType());
-                artifact.setClassifier(mavenRootArtifact.getClassifier());
+                artifact.setName(depArtifact.getArtifactId());
+                artifact.setGroup(depArtifact.getGroupId());
+                artifact.setType(depArtifact.getType());
+                artifact.setVersion(depArtifact.getVersion());
+                artifact.setClassifier(depArtifact.getClassifier());
                 artifact.setUrl(depArtifact.getFile().toURL());
                 rootArtifact.addDependency(artifact);
             }
