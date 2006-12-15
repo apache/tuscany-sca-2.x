@@ -111,11 +111,6 @@
     <!-- Java implementation type -->
     <include name="org.apache.tuscany.core.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
-    <!-- service for resolving artifacts using Maven repositories -->
-    <component name="artifactRepository">
-        <system:implementation.system class="org.apache.tuscany.sca.plugin.itest.MavenEmbeddedArtifactRepository"/>
-    </component>
-
     <!-- WorkScheduler service -->
     <component name="workManager">
         <system:implementation.system
@@ -133,6 +128,11 @@
 
     <component name="propertyFactory">
         <system:implementation.system class="org.apache.tuscany.core.property.PropertyObjectFactoryImpl"/>
+    </component>
+
+    <!-- Store infrastructure -->
+    <component name="store">
+        <system:implementation.system class="org.apache.tuscany.core.services.store.memory.MemoryStore"/>
     </component>
 
 </composite>

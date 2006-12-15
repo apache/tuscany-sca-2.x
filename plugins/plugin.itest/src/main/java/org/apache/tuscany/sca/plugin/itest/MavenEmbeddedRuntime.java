@@ -18,21 +18,32 @@
  */
 package org.apache.tuscany.sca.plugin.itest;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.stream.XMLInputFactory;
 
-import org.osoa.sca.SCA;
-
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.launcher.CompositeContextImpl;
+import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.sca.plugin.itest.TuscanyStartMojo.MavenEmbeddedArtifactRepository;
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.CompositeClassLoader;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+import org.osoa.sca.SCA;
 
 /**
  * @version $Rev$ $Date$
@@ -43,6 +54,13 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
     private CompositeComponent systemComponent;
     private CompositeComponent tuscanySystem;
     private CompositeComponent application;
+    
+    private ArtifactRepository artifactRepository;
+    private Map extensions = new HashMap();
+
+    public void addExtension(String extensionName, URL extentionSCDL) {
+        extensions.put(extensionName, extentionSCDL);
+    }    
 
     public void initialize() {
         ClassLoader bootClassLoader = getClass().getClassLoader();
@@ -66,6 +84,9 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
 
         // register the monitor factory provided by the host
         systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+        systemComponent.registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
+                                           ArtifactRepository.class,
+                                           artifactRepository);
 
         systemComponent.start();
 
@@ -82,6 +103,10 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
             // switch to the system deployer
             deployer = (Deployer) tuscanySystem.getSystemChild("deployer").getServiceInstance();
 
+            for (Object extensionName : extensions.keySet()) {
+                deployExtension(tuscanySystem, deployer, (String) extensionName, (URL) extensions.get(extensionName));
+            }
+            
             application = deployApplicationScdl(deployer,
                 runtime.getRootComponent(),
                 getApplicationName(),
@@ -95,6 +120,27 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
             e.printStackTrace();
         }
     }
+    
+    protected void deployExtension(CompositeComponent composite, Deployer deployer, String extensionName, URL url)
+        throws LoaderException {
+        SystemCompositeImplementation implementation = new SystemCompositeImplementation();
+        URL scdlLocation;
+        try {
+            scdlLocation = new URL("jar:" + url.toExternalForm() + "!/META-INF/sca/default.scdl");
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        implementation.setScdlLocation(scdlLocation);
+        implementation.setClassLoader(new CompositeClassLoader(new URL[] {url}, getClass().getClassLoader()));
+
+        ComponentDefinition<SystemCompositeImplementation> definition =
+            new ComponentDefinition<SystemCompositeImplementation>(extensionName, implementation);
+
+        Component component = deployer.deploy(composite, definition);
+
+        component.start();
+    }    
 
     public void destroy() {
         context = null;
@@ -118,6 +164,10 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
 
     public SCA getContext() {
         return context;
+    }
+
+    public void setArtifactRepository(ArtifactRepository artifactRepository) {
+        this.artifactRepository = artifactRepository;
     }
 
 }
