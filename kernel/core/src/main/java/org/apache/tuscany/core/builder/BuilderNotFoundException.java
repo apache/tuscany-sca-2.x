@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class BuilderNotFoundException extends BuilderConfigException {
+public class BuilderNotFoundException extends BuilderException {
 
     public BuilderNotFoundException(String message, String identifier) {
         super(message, identifier);
