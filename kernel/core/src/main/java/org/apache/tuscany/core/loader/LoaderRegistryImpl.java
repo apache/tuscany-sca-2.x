@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -118,6 +119,11 @@ public class LoaderRegistryImpl implements LoaderRegistry {
                         e.setResourceURI(url.toString());
                         throw e;
                     }
+                } catch (LoaderException e) {
+                    Location location = reader.getLocation();
+                    e.setLine(location.getLineNumber());
+                    e.setColumn(location.getColumnNumber());
+                    throw e;
                 } finally {
                     try {
                         reader.close();

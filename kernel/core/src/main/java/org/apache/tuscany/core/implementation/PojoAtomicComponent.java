@@ -43,7 +43,6 @@ import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.injection.ResourceObjectFactory;
 
 /**
  * Base implementation of an {@link org.apache.tuscany.spi.component.AtomicComponent} whose type is a Java class
@@ -244,8 +243,8 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public boolean implementsCallback(Class callbackClass) {
         Class<?>[] implementedInterfaces = implementationClass.getInterfaces();
-        for (int i = 0; i < implementedInterfaces.length; i++) {
-            if (implementedInterfaces[i].isAssignableFrom(callbackClass)) {
+        for (Class<?> implementedInterface : implementedInterfaces) {
+            if (implementedInterface.isAssignableFrom(callbackClass)) {
                 return true;
             }
         }

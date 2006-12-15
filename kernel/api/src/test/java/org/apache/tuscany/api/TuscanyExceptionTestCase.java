@@ -28,6 +28,7 @@ import junit.framework.TestCase;
  */
 public class TuscanyExceptionTestCase extends TestCase {
     private static final Throwable CAUSE = new Throwable("Cause");
+    private static final String IDENTIFIER = "IDENTIFIER";
     private static final String MESSAGE = "Message";
     private static final String CONTEXT1 = "CONTEXT1";
     private static final String CONTEXT2 = "CONTEXT2";
@@ -46,6 +47,18 @@ public class TuscanyExceptionTestCase extends TestCase {
         assertNull(ex.getCause());
         assertNull(ex.getIdentifier());
         assertTrue(ex.returnContextNames().isEmpty());
+    }
+
+    public void testAppendBaseMessage() {
+        TuscanyException ex = new DummyException(MESSAGE, IDENTIFIER);
+        StringBuilder b = new StringBuilder();
+        assertEquals("Message [IDENTIFIER]", ex.appendBaseMessage(b).toString());
+    }
+
+    public void testAppendBaseMessageNoIdentifier() {
+        TuscanyException ex = new DummyException(MESSAGE);
+        StringBuilder b = new StringBuilder();
+        assertEquals("Message", ex.appendBaseMessage(b).toString());
     }
 
     public void testThrowableConstructor() {
@@ -75,19 +88,12 @@ public class TuscanyExceptionTestCase extends TestCase {
         assertEquals(contexts, ex.returnContextNames());
     }
 
-    public void testContextMessageWithNoIdentifier() {
+    public void testAppendContextMessage() {
         TuscanyException ex = new DummyException(MESSAGE);
         ex.addContextName(CONTEXT1);
         ex.addContextName(CONTEXT2);
-        assertEquals("Message\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
-    }
-
-
-    public void testContextMessageWithIdentifier() {
-        TuscanyException ex = new DummyException(MESSAGE);
-        ex.addContextName(CONTEXT1);
-        ex.addContextName(CONTEXT2);
-        assertEquals("Message\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
+        StringBuilder b = new StringBuilder();
+        assertEquals("Context stack trace: [CONTEXT2][CONTEXT1]", ex.appendContextStack(b).toString());
     }
 
     public void testAddContext() throws Exception {
@@ -116,6 +122,7 @@ public class TuscanyExceptionTestCase extends TestCase {
 
 
     public static class DummyException extends TuscanyException {
+
         public DummyException() {
         }
 

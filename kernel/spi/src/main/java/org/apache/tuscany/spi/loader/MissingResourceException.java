@@ -34,7 +34,7 @@ public class MissingResourceException extends LoaderException {
      * @param resource the resource that could not be found
      */
     public MissingResourceException(String resource) {
-        super(resource);
+        super("Missing resource", resource);
     }
 
     public MissingResourceException(String message, String identifier) {
@@ -46,12 +46,21 @@ public class MissingResourceException extends LoaderException {
      * message.
      *
      * @param resource the resource that could not be found
+     * @param cause    the error thrown resolving the resource
      */
     public MissingResourceException(String resource, Throwable cause) {
-        super(resource, cause);
+        super("Missing resource", resource, cause);
     }
 
 
+    /**
+     * Constructor that indicates which resource could not be found. The supplied parameter is also returned as the
+     * message.
+     *
+     * @param message    the message set on the exception
+     * @param identifier the resource that could not be found
+     * @param cause      the error thrown resolving the resource
+     */
     public MissingResourceException(String message, String identifier, Throwable cause) {
         super(message, identifier, cause);
     }

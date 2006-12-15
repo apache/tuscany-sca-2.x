@@ -24,17 +24,19 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
-import org.apache.tuscany.core.launcher.LauncherImpl;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.deployer.DeploymentMonitor;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.launcher.CompositeContextImpl;
+import org.apache.tuscany.core.launcher.LauncherImpl;
+import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
+import org.apache.tuscany.host.MonitorFactory;
 
 /**
  * Base class for JUnit tests that want to run in an SCA client environment.
@@ -47,17 +49,27 @@ public abstract class SCATestCase extends TestCase {
     private Map<String, URL> extensions = new HashMap<String, URL>();
     private URL applicationSCDL;
     private LauncherImpl launcher;
-    
+    private MonitorFactory monitorFactory;
+
     protected void setUp() throws Exception {
         super.setUp();
+        if (monitorFactory == null) {
+            monitorFactory = new JavaLoggingMonitorFactory();
+        }
         ClassLoader cl = getClass().getClassLoader();
         launcher = new LauncherImpl();
         launcher.setApplicationLoader(cl);
-        CompositeComponent composite = launcher.bootRuntime(cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH),
-                                                            new NullMonitorFactory());
+        URL scdl = cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH);
+        CompositeComponent composite = launcher.bootRuntime(scdl, monitorFactory);
 
-        for (String extensionName : extensions.keySet()) {
-            deployExtension(composite, extensionName, extensions.get(extensionName));
+        try {
+            for (String extensionName : extensions.keySet()) {
+                deployExtension(composite, extensionName, extensions.get(extensionName));
+            }
+        } catch (LoaderException e) {
+            DeploymentMonitor monitor = monitorFactory.getMonitor(DeploymentMonitor.class);
+            monitor.deploymentError(e);
+            throw e;
         }
 
         if (applicationSCDL == null) {
@@ -77,8 +89,8 @@ public abstract class SCATestCase extends TestCase {
     }
 
     /**
-     * Set the application scdl based on the classpath entry for a class.
-     * Normally this will be a class in the production code associated with this test case.
+     * Set the application scdl based on the classpath entry for a class. Normally this will be a class in the
+     * production code associated with this test case.
      *
      * @param aClass a Class from which to determine the resource base url
      * @param path   location of the application SCDL relative to the base class
@@ -96,6 +108,16 @@ public abstract class SCATestCase extends TestCase {
         extensions.put(extensionName, extentionSCDL);
     }
 
+
+    /**
+     * Sets the monitor factory to use
+     *
+     * @param monitorFactory the monitor factory to use
+     */
+    protected void setMonitorFactory(MonitorFactory monitorFactory) {
+        this.monitorFactory = monitorFactory;
+    }
+
     protected void deployExtension(CompositeComponent composite, String extensionName, URL scdlURL)
         throws LoaderException {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
@@ -107,7 +129,6 @@ public abstract class SCATestCase extends TestCase {
 
         Deployer deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
         Component component = deployer.deploy(composite, definition);
-
         component.start();
     }
 

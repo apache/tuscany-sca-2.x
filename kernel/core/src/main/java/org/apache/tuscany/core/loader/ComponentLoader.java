@@ -51,6 +51,8 @@ import org.apache.tuscany.spi.loader.MissingReferenceException;
 import org.apache.tuscany.spi.loader.NotOverridablePropertyException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
+import org.apache.tuscany.spi.loader.UndefinedReferenceException;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -125,6 +127,8 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                             loadProperty(reader, deploymentContext, componentDefinition);
                         } else if (REFERENCE.equals(qname)) {
                             loadReference(reader, deploymentContext, componentDefinition);
+                        } else {
+                            throw new UnrecognizedElementException(qname);
                         }
                         reader.next();
                         break;
@@ -208,7 +212,11 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         } else if (target == null) {
             throw new InvalidReferenceException("No target specified", name);
         }
-
+        Implementation<?> impl = componentDefinition.getImplementation();
+        ComponentType<?, ?, ?> componentType = impl.getComponentType();
+        if (!componentType.getReferences().containsKey(name)) {
+            throw new UndefinedReferenceException("name");
+        }
         ReferenceTarget referenceTarget = new ReferenceTarget();
         referenceTarget.setReferenceName(name);
         try {

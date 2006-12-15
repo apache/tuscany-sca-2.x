@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -131,6 +132,36 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.verify(reader);
     }
 
+    public void testUnrecognizedElement() throws LoaderException, XMLStreamException {
+        EasyMock.expect(mockReader.getName()).andReturn(COMPONENT);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
+            .andReturn(NAME);
+        EasyMock.expect(mockReader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("initLevel")))
+            .andReturn(null);
+        EasyMock.expect(mockReader.getAttributeValue(EasyMock.isA(String.class), EasyMock.isA(String.class)))
+            .andReturn(null);
+        EasyMock.expect(mockReader.nextTag()).andReturn(0);
+        EasyMock.expect(mockReader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
+        EasyMock.expect(mockReader.getName()).andReturn(new QName("foo", "bar"));
+        EasyMock.replay(mockReader);
+        mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(Implementation.class),
+            EasyMock.isA(DeploymentContext.class));
+
+        EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
+            (ModelObject) isNull(),
+            EasyMock.eq(mockReader),
+            EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
+        EasyMock.replay(mockRegistry);
+        try {
+            loader.load(EasyMock.createNiceMock(CompositeComponent.class),
+                null, mockReader,
+                EasyMock.createNiceMock(DeploymentContext.class));
+            fail();
+        } catch (UnrecognizedElementException e) {
+            // expected
+        }
+    }
 
     protected void setUp() throws Exception {
         super.setUp();

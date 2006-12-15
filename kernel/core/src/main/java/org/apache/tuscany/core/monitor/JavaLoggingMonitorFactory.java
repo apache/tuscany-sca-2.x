@@ -22,7 +22,9 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
@@ -33,8 +35,12 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.api.annotation.LogLevel;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.monitor.ExceptionFormatter;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
  * A factory for monitors that forwards events to a {@link java.util.logging.Logger Java Logging (JSR47) Logger}.
@@ -42,11 +48,13 @@ import org.apache.tuscany.host.MonitorFactory;
  * @version $Rev$ $Date$
  * @see java.util.logging
  */
-public class JavaLoggingMonitorFactory implements MonitorFactory {
+@Service(interfaces = {MonitorFactory.class, FormatterRegistry.class})
+public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegistry {
     private String bundleName;
     private Level defaultLevel;
     private Map<String, Level> levels;
-
+    private List<ExceptionFormatter> formatters = new ArrayList<ExceptionFormatter>();
+    private ExceptionFormatter defaultFormatter = new DefaultExceptionFormatter();
     private Map<Class<?>, WeakReference<?>> proxies = new WeakHashMap<Class<?>, WeakReference<?>>();
 
     /**
@@ -115,20 +123,22 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         return proxy;
     }
 
-    private <T>T getCachedMonitor(Class<T> monitorInterface) {
+    private <T> T getCachedMonitor(Class<T> monitorInterface) {
         WeakReference<?> ref = proxies.get(monitorInterface);
         return (ref != null) ? monitorInterface.cast(ref.get()) : null;
     }
 
-    private <T>T createMonitor(Class<T> monitorInterface, String bundleName) {
+    private <T> T createMonitor(Class<T> monitorInterface, String bundleName) {
         String className = monitorInterface.getName();
         Logger logger = Logger.getLogger(className);
         Method[] methods = monitorInterface.getMethods();
         Map<String, Level> levels = new HashMap<String, Level>(methods.length);
         for (Method method : methods) {
             String key = className + '#' + method.getName();
-            Level level = this.levels.get(key);
-
+            Level level = null;
+            if (this.levels != null) {
+                this.levels.get(key);
+            }
             // if not specified the in config properties, look for an annotation on the method
             if (level == null) {
                 LogLevel annotation = method.getAnnotation(LogLevel.class);
@@ -149,12 +159,12 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
 
         ResourceBundle bundle = locateBundle(monitorInterface, bundleName);
 
-        InvocationHandler handler = new LoggingHandler(logger, levels, bundle);
+        InvocationHandler handler = new LoggingHandler(logger, levels, bundle, formatters, defaultFormatter);
         return monitorInterface
             .cast(Proxy.newProxyInstance(monitorInterface.getClassLoader(), new Class<?>[]{monitorInterface}, handler));
     }
 
-    private static <T>ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName) {
+    private static <T> ResourceBundle locateBundle(Class<T> monitorInterface, String bundleName) {
         Locale locale = Locale.getDefault();
         ClassLoader cl = monitorInterface.getClassLoader();
         String packageName = monitorInterface.getPackage().getName();
@@ -177,15 +187,31 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
         }
     }
 
+    public void register(ExceptionFormatter formatter) {
+        formatters.add(formatter);
+    }
+
+    public void unregister(ExceptionFormatter formatter) {
+        formatters.remove(formatter);
+    }
+
     private static final class LoggingHandler implements InvocationHandler {
         private final Logger logger;
         private final Map<String, Level> methodLevels;
         private final ResourceBundle bundle;
+        private List<ExceptionFormatter> formatters = new ArrayList<ExceptionFormatter>();
+        private ExceptionFormatter defaultFormatter = new DefaultExceptionFormatter();
 
-        public LoggingHandler(Logger logger, Map<String, Level> methodLevels, ResourceBundle bundle) {
+        public LoggingHandler(Logger logger,
+                              Map<String, Level> methodLevels,
+                              ResourceBundle bundle,
+                              List<ExceptionFormatter> formatters,
+                              ExceptionFormatter defaultFormatter) {
             this.logger = logger;
             this.methodLevels = methodLevels;
             this.bundle = bundle;
+            this.formatters = formatters;
+            this.defaultFormatter = defaultFormatter;
         }
 
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -204,7 +230,19 @@ public class JavaLoggingMonitorFactory implements MonitorFactory {
                 if (args != null) {
                     for (Object o : args) {
                         if (o instanceof Throwable) {
-                            logRecord.setThrown((Throwable) o);
+                            Throwable e = (Throwable) o;
+                            ExceptionFormatter formatter = null;
+                            for (ExceptionFormatter candidate : formatters) {
+                                if (candidate.canFormat(e.getClass())) {
+                                    formatter = candidate;
+                                    break;
+                                }
+                            }
+                            if (formatter != null) {
+                                formatter.write(logRecord, e);
+                            } else {
+                                defaultFormatter.write(logRecord, e);
+                            }
                             break;
                         }
                     }

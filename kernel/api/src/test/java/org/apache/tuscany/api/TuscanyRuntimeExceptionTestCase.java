@@ -67,8 +67,7 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
 
     public void testIdentifier() {
         TuscanyRuntimeException ex = new DummyException(MESSAGE, IDENTIFIER);
-        assertSame(IDENTIFIER, ex.getIdentifier());
-        assertEquals(MESSAGE + " [" + IDENTIFIER + ']', ex.getMessage());
+        assertEquals(IDENTIFIER, ex.getIdentifier());
     }
 
     public void testContextStack() {
@@ -82,19 +81,24 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
         assertEquals(contexts, ex.returnContextNames());
     }
 
-    public void testContextMessageWithNoIdentifier() {
+    public void testAppendContextMessage() {
         TuscanyRuntimeException ex = new DummyException(MESSAGE);
         ex.addContextName(CONTEXT1);
         ex.addContextName(CONTEXT2);
-        assertEquals("Message\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
+        StringBuilder b = new StringBuilder();
+        assertEquals("Context stack trace: [CONTEXT2][CONTEXT1]", ex.appendContextStack(b).toString());
     }
 
-
-    public void testContextMessageWithIdentifier() {
+    public void testAppendBaseMessage() {
         TuscanyRuntimeException ex = new DummyException(MESSAGE, IDENTIFIER);
-        ex.addContextName(CONTEXT1);
-        ex.addContextName(CONTEXT2);
-        assertEquals("Message [IDENTIFIER]\nContext stack trace: [CONTEXT2][CONTEXT1]", ex.getMessage());
+        StringBuilder b = new StringBuilder();
+        assertEquals("Message [IDENTIFIER]", ex.appendBaseMessage(b).toString());
+    }
+
+    public void testAppendBaseMessageNoIdentifier() {
+        TuscanyRuntimeException ex = new DummyException(MESSAGE);
+        StringBuilder b = new StringBuilder();
+        assertEquals("Message", ex.appendBaseMessage(b).toString());
     }
 
     public static class DummyException extends TuscanyRuntimeException {

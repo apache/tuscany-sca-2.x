@@ -82,7 +82,7 @@ public class JavaScriptImplementationLoaderTestCase extends TestCase {
             mockLoader.load(parent, null, reader, deploymentContext);
             fail();
         } catch (MissingResourceException e) {
-            assertEquals("foo.groovy", e.getMessage());
+            assertEquals("foo.groovy", e.getIdentifier());
         }
         verify(reader);
         verify(deploymentContext);
