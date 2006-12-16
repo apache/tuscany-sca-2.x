@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -175,7 +176,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
-                                                              InvalidServiceContractException {
+                                                              InvalidServiceContractException, WiringException {
         ConnectorImpl connector = new ConnectorImpl();
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         PojoConfiguration configuration = new PojoConfiguration();

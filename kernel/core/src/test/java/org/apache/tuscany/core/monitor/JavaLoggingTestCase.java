@@ -86,21 +86,6 @@ public class JavaLoggingTestCase extends TestCase {
     }
 
     /**
-     * Test a Throwable is logged when passed to an event.
-     */
-    public void testEventWithThrowable() {
-        Exception e = new Exception();
-        Monitor mon = factory.getMonitor(Monitor.class);
-        mon.eventWithThrowable(e);
-        assertEquals(1, HANDLER.logs.size());
-        LogRecord record = HANDLER.logs.get(0);
-        assertEquals(Level.WARNING, record.getLevel());
-        assertEquals(LOGGER.getName(), record.getLoggerName());
-        assertEquals(Monitor.class.getName() + "#eventWithThrowable", record.getMessage());
-        assertSame(e, record.getThrown());
-    }
-
-    /**
      * Test the argument is logged.
      */
     public void testEventWithOneArg() {

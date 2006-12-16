@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.monitor;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -200,7 +202,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
         private final Map<String, Level> methodLevels;
         private final ResourceBundle bundle;
         private List<ExceptionFormatter> formatters = new ArrayList<ExceptionFormatter>();
-        private ExceptionFormatter defaultFormatter = new DefaultExceptionFormatter();
+        private ExceptionFormatter defaultFormatter;
 
         public LoggingHandler(Logger logger,
                               Map<String, Level> methodLevels,
@@ -238,11 +240,16 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
                                     break;
                                 }
                             }
+                            StringWriter writer = new StringWriter();
+                            PrintWriter pw = new PrintWriter(writer);
                             if (formatter != null) {
-                                formatter.write(logRecord, e);
+                                formatter.write(pw, e);
                             } else {
-                                defaultFormatter.write(logRecord, e);
+                                defaultFormatter.write(pw, e);
                             }
+                            format(pw, e);
+                            pw.close();
+                            logRecord.setMessage(writer.toString());
                             break;
                         }
                     }
@@ -252,5 +259,63 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
             }
             return null;
         }
+
+        private void format(PrintWriter writer, Throwable throwable) {
+            writer.println(throwable.getClass().getName());
+            StackTraceElement[] trace = throwable.getStackTrace();
+            for (StackTraceElement aTrace : trace) {
+                writer.println("\tat " + aTrace);
+            }
+            Throwable ourCause = throwable.getCause();
+
+            if (ourCause != null) {
+                printStackTraceAsCause(writer, ourCause, trace);
+            }
+        }
+
+        private void printStackTraceAsCause(PrintWriter pw,
+                                            Throwable throwable,
+                                            StackTraceElement[] causedTrace) {
+
+            // Compute number of frames in common between this and caused
+            StackTraceElement[] trace = throwable.getStackTrace();
+            int m = trace.length - 1;
+            int n = causedTrace.length - 1;
+            while (m >= 0 && n >= 0 && trace[m].equals(causedTrace[n])) {
+                m--;
+                n--;
+            }
+            int framesInCommon = trace.length - 1 - m;
+
+            pw.println("Caused by: " + throwable.getClass().getName());
+
+            ExceptionFormatter formatter = null;
+            for (ExceptionFormatter candidate : formatters) {
+                if (candidate.canFormat(throwable.getClass())) {
+                    formatter = candidate;
+                    break;
+                }
+            }
+            if (formatter != null) {
+                formatter.write(pw, throwable);
+            } else {
+                defaultFormatter.write(pw, throwable);
+            }
+
+
+            for (int i = 0; i <= m; i++) {
+                pw.println("\tat " + trace[i]);
+            }
+            if (framesInCommon != 0) {
+                pw.println("\t... " + framesInCommon + " more");
+            }
+
+            // Recurse if we have a cause
+            Throwable ourCause = throwable.getCause();
+            if (ourCause != null) {
+                printStackTraceAsCause(pw, ourCause, trace);
+            }
+        }
+
     }
 }

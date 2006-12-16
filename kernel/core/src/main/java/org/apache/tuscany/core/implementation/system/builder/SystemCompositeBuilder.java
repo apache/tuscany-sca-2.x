@@ -21,7 +21,6 @@ package org.apache.tuscany.core.implementation.system.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
@@ -57,7 +56,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
     @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<SystemCompositeImplementation> componentDefinition,
-                           DeploymentContext deploymentContext) throws BuilderConfigException {
+                           DeploymentContext deploymentContext) throws BuilderException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
         // create lists of all components and services in this composite

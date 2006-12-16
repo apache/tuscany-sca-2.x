@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.apache.tuscany.spi.loader.LoaderException;
 
@@ -32,11 +32,12 @@ public class LoaderExceptionFormatterTestCase extends TestCase {
 
     public void testLog() {
         LoaderExceptionFormatter formatter = new LoaderExceptionFormatter();
-        LogRecord record = new LogRecord(Level.SEVERE, "message");
         LoaderException e = new LoaderException("test");
-        formatter.write(record, e);
-        assertEquals(e, record.getThrown());
-        assertTrue(!"message".equals(record.getMessage()));
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        formatter.write(pw, e);
+        pw.close();
+        assertTrue(!"message".equals(writer.toString()));
     }
 
 

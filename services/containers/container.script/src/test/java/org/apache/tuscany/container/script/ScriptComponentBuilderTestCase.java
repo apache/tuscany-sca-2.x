@@ -43,7 +43,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testBuild() {
+    public void testBuild() throws Exception {
         ScriptComponentBuilder builder = new ScriptComponentBuilder();
         DeploymentContext deploymentContext = createMock(DeploymentContext.class);
         final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
@@ -84,7 +84,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testBuildModuleScope() {
+    public void testBuildModuleScope() throws Exception {
         ScriptComponentBuilder builder = new ScriptComponentBuilder();
         DeploymentContext deploymentContext = createMock(DeploymentContext.class);
         final ScopeContainer scopeContainer = createMock(ScopeContainer.class);

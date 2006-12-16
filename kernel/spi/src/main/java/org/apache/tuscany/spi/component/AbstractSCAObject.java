@@ -116,7 +116,7 @@ public abstract class AbstractSCAObject extends AbstractLifecycle implements SCA
         return listeners;
     }
 
-    public void prepare() {
+    public void prepare() throws PrepareException {
 
     }
 

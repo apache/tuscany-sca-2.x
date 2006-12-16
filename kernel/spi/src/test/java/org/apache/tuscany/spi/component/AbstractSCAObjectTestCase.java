@@ -84,7 +84,7 @@ public class AbstractSCAObjectTestCase extends TestCase {
     }
 
 
-    public void testToPrepare() {
+    public void testToPrepare() throws Exception {
         SCAObject object = new TestSCAObject("foo", null);
         object.prepare();
     }

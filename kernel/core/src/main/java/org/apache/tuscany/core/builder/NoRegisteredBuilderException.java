@@ -16,21 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.core.builder;
+
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
- * Denotes a missing wire target in an assembly
+ * Raised when a builder cannot be found for a SCDL entry type
  *
  * @version $Rev$ $Date$
  */
-public class MissingTargetException extends BuilderConfigException {
+public class NoRegisteredBuilderException extends BuilderException {
 
-    public MissingTargetException(String message) {
-        super(message);
+    public NoRegisteredBuilderException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public MissingTargetException(String message, String identifier) {
-        super(message, identifier);
+    public NoRegisteredBuilderException(String message) {
+        super(message);
     }
 
 }

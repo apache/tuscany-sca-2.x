@@ -20,6 +20,7 @@ package org.apache.tuscany.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.PrintWriter;
 
 /**
  * The root checked exception for the Tuscany runtime.
@@ -134,29 +135,29 @@ public abstract class TuscanyException extends Exception {
         return identifier;
     }
 
-    public StringBuilder appendBaseMessage(StringBuilder b) {
+    public PrintWriter appendBaseMessage(PrintWriter writer) {
         if (identifier == null && contextStack == null) {
             if (super.getMessage() == null) {
-                return b;
+                return writer;
             }
-            return b.append(super.getMessage());
+            return writer.append(super.getMessage());
         }
         if (super.getMessage() != null) {
-            b.append(super.getMessage());
+            writer.append(super.getMessage());
         }
         if (identifier != null) {
-            b.append(" [").append(identifier).append(']');
+            writer.append(" [").append(identifier).append(']');
         }
-        return b;
+        return writer;
     }
 
-    public StringBuilder appendContextStack(StringBuilder b) {
+    public PrintWriter appendContextStack(PrintWriter writer) {
         if (contextStack != null) {
-            b.append("Context stack trace: ");
+            writer.append("\nContext stack trace: ");
             for (int i = contextStack.size() - 1; i >= 0; i--) {
-                b.append('[').append(contextStack.get(i)).append(']');
+                writer.append('[').append(contextStack.get(i)).append(']');
             }
         }
-        return b;
+        return writer;
     }
 }

@@ -27,10 +27,12 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 /**
  * @version $Rev$ $Date$
@@ -101,13 +103,20 @@ public class AbstractExtensionDeployer {
         // ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
         try {
             // Thread.currentThread().setContextClassLoader(extensionCL);
-            Component component = deployer.deploy(parent, definition);
-            component.start();
+            Component component = null;
+            try {
+                component = deployer.deploy(parent, definition);
+                component.start();
+            } catch (BuilderException e) {
+                // FIXME JFM handle the exception
+                e.printStackTrace();
+            } catch (ComponentException e) {
+                // FIXME handle the exception
+                e.printStackTrace();
+            }
         } catch (LoaderException e) {
             // FIXME handle the exception
             e.printStackTrace();
-        } finally {
-            // Thread.currentThread().setContextClassLoader(contextCL);
         }
     }
 }

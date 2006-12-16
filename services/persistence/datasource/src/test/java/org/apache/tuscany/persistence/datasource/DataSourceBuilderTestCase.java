@@ -38,7 +38,7 @@ import org.easymock.EasyMock;
  */
 public class DataSourceBuilderTestCase extends TestCase {
 
-    public void testBuild() {
+    public void testBuild() throws Exception {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.replay(parent);
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);

@@ -34,9 +34,9 @@ public interface Connector {
      * chains.
      *
      * @param source the source, i.e. a <code>Service</code>, <code>Component</code>, or <code>Reference</code>
-     * @throws BuilderConfigException
+     * @throws WiringException
      */
-    void connect(SCAObject source) throws BuilderConfigException;
+    void connect(SCAObject source) throws WiringException;
 
     /**
      * Bridges the invocation chains associated with an inbound and outbound wire.
@@ -44,9 +44,9 @@ public interface Connector {
      * @param inbound     the wire to bridge from
      * @param outbound    the target wire
      * @param optimizable if the bridge may be optimized
-     * @throws BuilderConfigException
+     * @throws WiringException
      */
     void connect(InboundWire inbound, OutboundWire outbound, boolean optimizable)
-        throws BuilderConfigException;
+        throws WiringException;
 
 }

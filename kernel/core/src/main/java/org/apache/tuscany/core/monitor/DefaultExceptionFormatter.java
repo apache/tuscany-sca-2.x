@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.monitor;
 
-import java.util.logging.LogRecord;
+import java.io.PrintWriter;
 
 import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.api.TuscanyRuntimeException;
@@ -31,29 +31,24 @@ import org.apache.tuscany.host.monitor.ExceptionFormatter;
  */
 public class DefaultExceptionFormatter implements ExceptionFormatter {
 
+    public DefaultExceptionFormatter() {
+    }
+
     public boolean canFormat(Class<?> type) {
         return Throwable.class.isAssignableFrom(type);
     }
 
-    public LogRecord write(LogRecord record, Throwable exception) {
+    public PrintWriter write(PrintWriter writer, Throwable exception) {
         if (exception instanceof TuscanyException) {
             TuscanyException e = (TuscanyException) exception;
-            StringBuilder b = new StringBuilder(256);
-            e.appendContextStack(e.appendBaseMessage(b));
-            if (b.length() >= 1) {
-                record.setMessage(b.toString());
-            }
+            e.appendContextStack(e.appendBaseMessage(writer));
         } else if (exception instanceof TuscanyRuntimeException) {
             TuscanyRuntimeException e = (TuscanyRuntimeException) exception;
-            StringBuilder b = new StringBuilder(256);
-            e.appendContextStack(e.appendBaseMessage(b));
-            if (b.length() >= 1) {
-                record.setMessage(b.toString());
-            }
-        } else {
-            record.setThrown(exception);
+            e.appendContextStack(e.appendBaseMessage(writer));
         }
-        record.setThrown(exception);
-        return record;
+        writer.append("\n");
+        return writer;
     }
+
+
 }

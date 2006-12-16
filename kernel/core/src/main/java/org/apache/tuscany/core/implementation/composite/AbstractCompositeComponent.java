@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-import org.apache.tuscany.core.component.ComponentInitException;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.implementation.system.component.SystemSingletonAtomicComponent;
@@ -63,7 +63,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     /**
      * @param name           the name of the SCA composite
      * @param parent         the SCA composite parent
-     * @param connector
+     * @param connector      the connector for fusing wires
      * @param propertyValues the values of this composite's Properties
      */
     public AbstractCompositeComponent(String name,
@@ -82,6 +82,11 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
         throws ObjectRegistrationException {
         register(new SystemSingletonAtomicComponent<S, I>(name, this, service, instance));
+    }
+
+    public <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
+        throws ObjectRegistrationException {
+        register(new SystemSingletonAtomicComponent<S, I>(name, this, services, instance));
     }
 
     public void start() {

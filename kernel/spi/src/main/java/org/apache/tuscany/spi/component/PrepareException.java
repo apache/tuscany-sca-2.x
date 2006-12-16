@@ -16,27 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.host.monitor;
+package org.apache.tuscany.spi.component;
 
 /**
- * A registry for exception formatters
+ * Denotes an exception preparing a component
  *
  * @version $Rev$ $Date$
  */
-public interface FormatterRegistry {
+public class PrepareException extends ComponentException {
 
-    /**
-     * Registers the given formatter
-     *
-     * @param formatter the formatter to register
-     */
-    void register(ExceptionFormatter formatter);
+    public PrepareException(String message, String identifier) {
+        super(message, identifier);
+    }
 
-    /**
-     * De-registers the given formatter
-     *
-     * @param formatter the formatter to de-register
-     */
-    void unregister(ExceptionFormatter formatter);
-
+    public PrepareException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
 }

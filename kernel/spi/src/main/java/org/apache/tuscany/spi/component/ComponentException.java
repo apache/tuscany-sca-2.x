@@ -16,28 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.api.TuscanyException;
 
 /**
- * Denotes an error during post-processing of a wire
- *
  * @version $Rev$ $Date$
  */
-public class PostProcessingException extends BuilderException {
-    public PostProcessingException() {
+public abstract class ComponentException extends TuscanyException {
+
+    protected ComponentException() {
     }
 
-    public PostProcessingException(String message) {
+    protected ComponentException(String message) {
         super(message);
     }
 
-    public PostProcessingException(String message, Throwable cause) {
+    protected ComponentException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    protected ComponentException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public PostProcessingException(Throwable cause) {
+    protected ComponentException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
+    protected ComponentException(Throwable cause) {
         super(cause);
     }
 }

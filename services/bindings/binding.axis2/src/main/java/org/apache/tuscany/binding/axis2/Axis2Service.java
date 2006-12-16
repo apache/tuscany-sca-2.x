@@ -268,7 +268,7 @@ public class Axis2Service extends ServiceExtension {
     /**
      * Get the Method from an interface matching the WSDL operation name
      */
-    protected Method getMethod(Class<?> serviceInterface, String operationName) {
+    protected Method getMethod(Class<?> serviceInterface, String operationName) throws BuilderConfigException {
         // Note: this doesn't support overloaded operations
         Method[] methods = serviceInterface.getMethods();
         for (Method m : methods) {

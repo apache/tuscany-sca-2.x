@@ -21,6 +21,7 @@ package org.apache.tuscany.container.spring;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.ServiceExtension;
@@ -45,7 +46,8 @@ public final class SpringTestUtils {
     public static <T> Service createService(String name,
                                                Class<T> serviceInterface,
                                                CompositeComponent parent,
-                                               WireService wireService) throws InvalidServiceContractException {
+                                               WireService wireService)
+        throws InvalidServiceContractException, WiringException {
         Service service = new ServiceExtension(name, serviceInterface, parent, wireService);
         InboundWire inboundWire = ArtifactFactory.createInboundWire(name, serviceInterface);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire(name, serviceInterface);

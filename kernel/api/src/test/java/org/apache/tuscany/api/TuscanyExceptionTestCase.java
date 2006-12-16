@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.api;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,14 +53,18 @@ public class TuscanyExceptionTestCase extends TestCase {
 
     public void testAppendBaseMessage() {
         TuscanyException ex = new DummyException(MESSAGE, IDENTIFIER);
-        StringBuilder b = new StringBuilder();
-        assertEquals("Message [IDENTIFIER]", ex.appendBaseMessage(b).toString());
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        ex.appendBaseMessage(pw);
+        assertEquals("Message [IDENTIFIER]", writer.toString());
     }
 
     public void testAppendBaseMessageNoIdentifier() {
         TuscanyException ex = new DummyException(MESSAGE);
-        StringBuilder b = new StringBuilder();
-        assertEquals("Message", ex.appendBaseMessage(b).toString());
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        ex.appendBaseMessage(pw);
+        assertEquals("Message", writer.toString());
     }
 
     public void testThrowableConstructor() {
@@ -92,8 +98,10 @@ public class TuscanyExceptionTestCase extends TestCase {
         TuscanyException ex = new DummyException(MESSAGE);
         ex.addContextName(CONTEXT1);
         ex.addContextName(CONTEXT2);
-        StringBuilder b = new StringBuilder();
-        assertEquals("Context stack trace: [CONTEXT2][CONTEXT1]", ex.appendContextStack(b).toString());
+        StringWriter writer = new StringWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        ex.appendContextStack(pw);
+        assertEquals("\nContext stack trace: [CONTEXT2][CONTEXT1]", writer.toString());
     }
 
     public void testAddContext() throws Exception {

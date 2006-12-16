@@ -19,15 +19,17 @@
 
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
+
+import org.apache.tuscany.api.TuscanyException;
 
 /**
  * Denotes imcompatible service contracts for a wire
  *
  * @version $Rev$ $Date$
  */
-public class IncompatibleServiceContractException extends WireException {
+public class IncompatibleServiceContractException extends TuscanyException {
     private static final long serialVersionUID = 5127478601823295587L;
     private final ServiceContract<?> source;
     private final ServiceContract<?> target;
@@ -35,7 +37,7 @@ public class IncompatibleServiceContractException extends WireException {
     private final Operation<?> targetOperation;
 
     public IncompatibleServiceContractException(String message, ServiceContract<?> source, ServiceContract<?> target) {
-        super(message, null);
+        super(message, (String) null);
         this.source = source;
         this.target = target;
         this.sourceOperation = null;
@@ -47,7 +49,7 @@ public class IncompatibleServiceContractException extends WireException {
                                                 ServiceContract<?> source,
                                                 ServiceContract<?> target,
                                                 Operation<?> sourceOperation, Operation<?> targetOperation) {
-        super(message, null);
+        super(message, (String) null);
         this.source = source;
         this.target = target;
         this.sourceOperation = sourceOperation;
@@ -61,7 +63,6 @@ public class IncompatibleServiceContractException extends WireException {
     public ServiceContract<?> getSource() {
         return source;
     }
-
 
     public Operation<?> getSourceOperation() {
         return sourceOperation;

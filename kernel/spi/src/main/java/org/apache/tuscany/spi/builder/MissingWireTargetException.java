@@ -19,23 +19,18 @@
 package org.apache.tuscany.spi.builder;
 
 /**
+ * Denotes a missing wire target in an assembly
+ *
  * @version $Rev$ $Date$
  */
-public class InvalidTargetTypeException extends BuilderConfigException {
+public class MissingWireTargetException extends WiringException {
 
-
-    public InvalidTargetTypeException() {
-    }
-
-    public InvalidTargetTypeException(String message) {
+    public MissingWireTargetException(String message) {
         super(message);
     }
 
-    public InvalidTargetTypeException(String message, Throwable cause) {
-        super(message, cause);
+    public MissingWireTargetException(String message, String identifier) {
+        super(message, identifier);
     }
 
-    public InvalidTargetTypeException(Throwable cause) {
-        super(cause);
-    }
 }

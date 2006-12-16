@@ -29,6 +29,7 @@ import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.AutowireResolutionException;
@@ -37,6 +38,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.IllegalTargetException;
 import org.apache.tuscany.spi.component.ObjectRegistrationException;
+import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
@@ -89,6 +91,11 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
+        throws ObjectRegistrationException {
+        throw new UnsupportedOperationException();
+    }
+
+    public <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
         throws ObjectRegistrationException {
         throw new UnsupportedOperationException();
     }
@@ -393,7 +400,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         }
     }
 
-    public void prepare() {
+    public void prepare() throws PrepareException {
         // Connect services and references first so that their wires are linked first
         List<SCAObject> childList = new ArrayList<SCAObject>();
         for (SCAObject child : systemChildren.values()) {
@@ -407,8 +414,14 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         for (SCAObject child : childList) {
             // connect all children
             // TODO for composite wires, should delegate down
-            connector.connect(child);
-            child.prepare();
+            try {
+                connector.connect(child);
+                child.prepare();
+            } catch (PrepareException e) {
+                e.addContextName(getName());
+            } catch (WiringException e) {
+                throw new PrepareException("Error preparing composite", getName(), e);
+            }
         }
 
         // connect application artifacts
@@ -423,8 +436,14 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         for (SCAObject child : childList) {
             // connect all children
             // TODO for composite wires, should delegate down
-            connector.connect(child);
-            child.prepare();
+            try {
+                connector.connect(child);
+                child.prepare();
+            } catch (PrepareException e) {
+                e.addContextName(getName());
+            } catch (WiringException e) {
+                throw new PrepareException("Error preparing composite", getName(), e);
+            }
         }
     }
 

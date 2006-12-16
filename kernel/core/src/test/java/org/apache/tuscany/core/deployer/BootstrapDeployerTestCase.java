@@ -108,7 +108,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals(1, included.getComponents().size());
     }
 
-    public void testBoot1Deployment() throws LoaderException {
+    public void testBoot1Deployment() throws Exception {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
@@ -121,7 +121,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testBoot2Deployment() throws LoaderException {
+    public void testBoot2Deployment() throws Exception {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = createNiceMock(CompositeComponent.class);

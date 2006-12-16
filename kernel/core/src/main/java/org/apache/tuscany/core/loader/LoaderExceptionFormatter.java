@@ -1,6 +1,6 @@
 package org.apache.tuscany.core.loader;
 
-import java.util.logging.LogRecord;
+import java.io.PrintWriter;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
@@ -8,7 +8,6 @@ import org.osoa.sca.annotations.Init;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderException;
 
-import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.monitor.ExceptionFormatter;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
 
@@ -18,7 +17,7 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
  * @version $Rev$ $Date$
  */
 public class LoaderExceptionFormatter implements ExceptionFormatter {
-    private MonitorFactory factory;
+    private FormatterRegistry factory;
 
     public LoaderExceptionFormatter() {
     }
@@ -27,41 +26,32 @@ public class LoaderExceptionFormatter implements ExceptionFormatter {
         return LoaderException.class.isAssignableFrom(type);
     }
 
-    @Autowire(required = false)
-    public void setRegistry(MonitorFactory factory) {
+    @Autowire
+    public void setRegistry(FormatterRegistry factory) {
         this.factory = factory;
     }
 
     @Init(eager = true)
     public void init() {
-        if (factory instanceof FormatterRegistry) {
-            ((FormatterRegistry) factory).register(this);
-        }
+        factory.register(this);
     }
 
     @Destroy
     public void destroy() {
-        if (factory instanceof FormatterRegistry) {
-            ((FormatterRegistry) factory).unregister(this);
-        }
+        factory.unregister(this);
     }
 
-    public LogRecord write(LogRecord record, Throwable exception) {
+    public PrintWriter write(PrintWriter writer, Throwable exception) {
         assert exception instanceof LoaderException;
         LoaderException e = (LoaderException) exception;
-        StringBuilder b = new StringBuilder(256);
-        e.appendBaseMessage(b);
+        e.appendBaseMessage(writer);
         if (e.getLine() != LoaderException.UNDEFINED) {
-            b.append("\n").append("Line: ").append(e.getLine()).append("\n");
-            b.append("Column: ").append(e.getColumn()).append("\n");
+            writer.write("\nLine: " + e.getLine() + "\n");
+            writer.write("Column: " + e.getColumn());
         } else {
-            b.append("\n");
+            writer.write("\n");
         }
-        e.appendContextStack(b);
-        if (b.length() >= 1) {
-            record.setMessage(b.toString());
-        }
-        record.setThrown(exception);
-        return record;
+        e.appendContextStack(writer).append("\n");
+        return writer;
     }
 }

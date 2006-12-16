@@ -25,8 +25,10 @@ import org.osoa.sca.SCA;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -93,6 +95,12 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
 
             context = new CompositeContextImpl(application);
         } catch (LoaderException e) {
+            // FIXME do something with this
+            e.printStackTrace();
+        } catch (BuilderException e) {
+            // FIXME do something with this
+            e.printStackTrace();
+        } catch (ComponentException e) {
             // FIXME do something with this
             e.printStackTrace();
         }

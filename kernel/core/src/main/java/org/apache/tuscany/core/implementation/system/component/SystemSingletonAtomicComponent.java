@@ -26,8 +26,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -50,6 +50,16 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         this.instance = instance;
         serviceInterfaces = new ArrayList<Class<?>>(1);
         serviceInterfaces.add(interfaze);
+    }
+
+
+    public SystemSingletonAtomicComponent(String name,
+                                          CompositeComponent parent,
+                                          List<Class<?>> serviceInterfaces,
+                                          T instance) {
+        super(name, parent);
+        this.instance = instance;
+        this.serviceInterfaces = serviceInterfaces;
     }
 
     public List<Class<?>> getServiceInterfaces() {

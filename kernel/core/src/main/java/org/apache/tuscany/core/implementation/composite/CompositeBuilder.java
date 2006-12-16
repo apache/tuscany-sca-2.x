@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.composite;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -46,7 +46,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
 
     public Component build(CompositeComponent parent,
                            ComponentDefinition<CompositeImplementation> componentDefinition,
-                           DeploymentContext deploymentContext) throws BuilderConfigException {
+                           DeploymentContext deploymentContext) throws BuilderException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
 

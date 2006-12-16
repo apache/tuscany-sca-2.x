@@ -32,5 +32,5 @@ import org.apache.tuscany.spi.model.Implementation;
 public interface ComponentBuilder<I extends Implementation<?>> {
     Component build(CompositeComponent parent,
                        ComponentDefinition<I> componentDefinition,
-                       DeploymentContext deploymentContext) throws BuilderConfigException;
+                       DeploymentContext deploymentContext) throws BuilderException;
 }

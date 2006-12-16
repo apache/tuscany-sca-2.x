@@ -215,7 +215,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         Implementation<?> impl = componentDefinition.getImplementation();
         ComponentType<?, ?, ?> componentType = impl.getComponentType();
         if (!componentType.getReferences().containsKey(name)) {
-            throw new UndefinedReferenceException("name");
+            throw new UndefinedReferenceException(name);
         }
         ReferenceTarget referenceTarget = new ReferenceTarget();
         referenceTarget.setReferenceName(name);
