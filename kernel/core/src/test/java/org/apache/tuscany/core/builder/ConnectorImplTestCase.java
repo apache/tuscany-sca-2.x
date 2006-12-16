@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -56,7 +57,7 @@ public class ConnectorImplTestCase extends TestCase {
     private Interceptor headInterceptor;
     private Interceptor tailInterceptor;
 
-    public void testConnectReferenceWires() {
+    public void testConnectReferenceWires() throws Exception {
 
         // create the inbound wire and chain
         InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
@@ -100,7 +101,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(outboundChain);
     }
 
-    public void testConnectServiceWires() {
+    public void testConnectServiceWires() throws Exception {
         // create the inbound wire and chain for the target
         InboundInvocationChain targetChain = EasyMock.createMock(InboundInvocationChain.class);
         EasyMock.expect(targetChain.getOperation()).andReturn(operation).atLeastOnce();
@@ -266,7 +267,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(target);
     }
 
-    public void testConnectInboundAtomicComponentWires() {
+    public void testConnectInboundAtomicComponentWires() throws Exception {
         // create the inbound wire and chain
         InboundInvocationChain chain = EasyMock.createMock(InboundInvocationChain.class);
         EasyMock.expect(chain.getOperation()).andReturn(operation).atLeastOnce();
@@ -301,7 +302,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(chain);
     }
 
-    public void testConnectTargetNotFound() {
+    public void testConnectTargetNotFound() throws Exception {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getName()).andReturn("parent");
         parent.getChild(EasyMock.isA(String.class));
@@ -312,6 +313,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expect(outboundWire.getTargetName()).andReturn(new QualifiedName("target/FooService")).anyTimes();
         EasyMock.expect(outboundWire.getInvocationChains()).andReturn(null).anyTimes();
         EasyMock.expect(outboundWire.getReferenceName()).andReturn("nothtere");
+        EasyMock.expect(outboundWire.getContainer()).andReturn(EasyMock.createNiceMock(SCAObject.class));
         outboundWire.getTargetCallbackInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap());
         EasyMock.replay(outboundWire);
@@ -330,14 +332,14 @@ public class ConnectorImplTestCase extends TestCase {
         try {
             connector.connect(source);
             fail();
-        } catch (ReferenceTargetNotFoundException e) {
+        } catch (TargetServiceNotFoundException e) {
             // expected
         }
 
         EasyMock.verify(source);
     }
 
-    public void testOutboundToInboundOptimization() {
+    public void testOutboundToInboundOptimization() throws Exception {
         InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(inboundWire.getContainer()).andReturn(null);
         inboundWire.getInvocationChains();
@@ -389,7 +391,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.verify(inboundChain);
     }
 
-    public void testOutboundWireToInboundReferenceTarget() {
+    public void testOutboundWireToInboundReferenceTarget() throws Exception {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("foo");
         EasyMock.replay(component);

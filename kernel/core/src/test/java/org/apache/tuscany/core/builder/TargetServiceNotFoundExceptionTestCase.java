@@ -18,14 +18,24 @@
  */
 package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.spi.builder.BuilderException;
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
  */
-public class BuilderNotFoundException extends BuilderException {
+public class TargetServiceNotFoundExceptionTestCase extends TestCase {
 
-    public BuilderNotFoundException(String message, String identifier) {
-        super(message, identifier);
+    public void testInstantiation() throws Exception {
+        TargetServiceNotFoundException e = new TargetServiceNotFoundException("message",
+            "source name",
+            "ref name",
+            "target name",
+            "service name");
+        assertEquals("message", e.getMessage());
+        assertEquals("source name", e.getSourceName());
+        assertEquals("ref name", e.getReferenceName());
+        assertEquals("target name", e.getTargetName());
+        assertEquals("service name", e.getTargetServiceName());
+
     }
 }

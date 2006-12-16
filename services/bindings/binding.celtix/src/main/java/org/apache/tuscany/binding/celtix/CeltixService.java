@@ -41,7 +41,6 @@ import javax.xml.ws.WebServiceProvider;
 import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
@@ -114,7 +113,7 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
 
         QName qName = wsdlService.getQName();
         String portName = port.getName();
-        EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url,qName,portName);
+        EndpointReferenceType reference = EndpointReferenceUtils.getEndpointReference(url, qName, portName);
 
         AttributedURIType address = new AttributedURIType();
 
@@ -235,7 +234,8 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
                 return m;
             }
         }
-        throw new BuilderConfigException("no operation named " + operationName
+        // FIXME
+        throw new CeltixServiceInitException("no operation named " + operationName
             + " found on service interface: " + serviceInterface.getName());
     }
 

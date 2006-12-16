@@ -62,7 +62,7 @@ public interface SCAObject extends EventPublisher, Lifecycle {
      * Called to signal that the composite should perform and required steps prior to registration with its parent such
      * as wiring of its children
      */
-    void prepare();
+    void prepare() throws PrepareException;
 
     /**
      * The extensions map contains other runtime context such as type systems for various databindings

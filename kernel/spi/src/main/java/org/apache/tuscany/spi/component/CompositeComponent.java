@@ -38,7 +38,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      *
      * @param context the context to add as a child
      * @throws InvalidComponentTypeException
-     */                                                        
+     */
     void register(SCAObject context) throws InvalidComponentTypeException;
 
     /**
@@ -51,6 +51,18 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * @throws ObjectRegistrationException
      */
     <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
+        throws ObjectRegistrationException;
+
+    /**
+     * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
+     * create the initial configuration components.
+     *
+     * @param name     the name of the resulting component
+     * @param services the service interfaces the component should expose
+     * @param instance the Object that will become the component's implementation
+     * @throws ObjectRegistrationException
+     */
+    <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
         throws ObjectRegistrationException;
 
     /**
@@ -125,7 +137,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     <T> T locateSystemService(Class<T> serviceInterface, String serviceName);
 
     /**
-     * @param scopeContainer
+     * @param scopeContainer the scope container associated with the composite
      */
     void setScopeContainer(ScopeContainer scopeContainer);
 

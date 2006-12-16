@@ -22,8 +22,8 @@ import java.net.URI;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BindingBuilder;
-import org.apache.tuscany.spi.builder.InvalidTargetTypeException;
-import org.apache.tuscany.spi.builder.MissingTargetException;
+import org.apache.tuscany.spi.builder.MissingWireTargetException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
@@ -44,6 +44,7 @@ import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundAutowire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
+import org.apache.tuscany.core.builder.InvalidTargetTypeException;
 
 /**
  * Creates {@link SystemService}s and {@link org.apache.tuscany.core.implementation.system.component.SystemReference}s
@@ -56,18 +57,23 @@ public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding>
 
     public SystemService build(CompositeComponent parent,
                                BoundServiceDefinition<SystemBinding> definition,
-                               DeploymentContext deploymentContext) {
+                               DeploymentContext deploymentContext) throws BuilderException {
 
         URI uri = definition.getTarget();
         if (uri == null) {
-            throw new MissingTargetException("Target URI not specified", definition.getName());
+            throw new MissingWireTargetException("Target URI not specified", definition.getName());
         }
         QualifiedName targetName = new QualifiedName(uri.getPath());
-        SCAObject target = parent.getSystemChild(targetName.getPartName());
+        String targetComponentName = targetName.getPartName();
+        SCAObject target = parent.getSystemChild(targetComponentName);
         if (target == null) {
-            throw new MissingTargetException(targetName.toString());
+            throw new MissingWireTargetException(targetName.toString());
         } else if (!(target instanceof SystemAtomicComponent)) {
-            throw new InvalidTargetTypeException(targetName.toString());
+            throw new InvalidTargetTypeException("Target must be a system component",
+                definition.getName(),
+                null,
+                targetName.getPartName(),
+                null);
         }
         SystemAtomicComponent atomicComponent = (SystemAtomicComponent) target;
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();

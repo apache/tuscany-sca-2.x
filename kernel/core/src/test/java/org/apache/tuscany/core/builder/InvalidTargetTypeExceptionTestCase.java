@@ -16,27 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.host.monitor;
+package org.apache.tuscany.core.builder;
+
+import junit.framework.TestCase;
 
 /**
- * A registry for exception formatters
- *
  * @version $Rev$ $Date$
  */
-public interface FormatterRegistry {
+public class InvalidTargetTypeExceptionTestCase extends TestCase {
 
-    /**
-     * Registers the given formatter
-     *
-     * @param formatter the formatter to register
-     */
-    void register(ExceptionFormatter formatter);
+    public void testInstantiation() throws Exception {
+        InvalidTargetTypeException e = new InvalidTargetTypeException("message",
+            "source name",
+            "ref name",
+            "target name",
+            "service name");
+        assertEquals("message", e.getMessage());
+        assertEquals("source name", e.getSourceName());
+        assertEquals("ref name", e.getReferenceName());
+        assertEquals("target name", e.getTargetName());
+        assertEquals("service name", e.getTargetServiceName());
 
-    /**
-     * De-registers the given formatter
-     *
-     * @param formatter the formatter to de-register
-     */
-    void unregister(ExceptionFormatter formatter);
-
+    }
 }

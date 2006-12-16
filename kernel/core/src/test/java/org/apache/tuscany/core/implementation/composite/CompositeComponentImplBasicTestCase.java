@@ -186,7 +186,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         composite.onEvent(event);
     }
 
-    public void testPrepare() {
+    public void testPrepare() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.prepare();
     }

@@ -16,26 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.builder;
+package org.apache.tuscany.core.builder;
+
+import junit.framework.TestCase;
 
 /**
- * Raised when a builder cannot be found for a SCDL entry type
- *
  * @version $Rev$ $Date$
  */
-public class NoRegisteredBuilderException extends BuilderException {
-    public NoRegisteredBuilderException() {
-    }
+public class IllegalCallbackExceptionTestCase extends TestCase {
 
-    public NoRegisteredBuilderException(String message) {
-        super(message);
-    }
+    public void testInstantiation() throws Exception {
+        IllegalCallbackException e = new IllegalCallbackException("message",
+            "identifier",
+            "source name",
+            "ref name",
+            "target name",
+            "service name");
+        assertEquals("message", e.getMessage());
+        assertEquals("identifier", e.getIdentifier());
+        assertEquals("source name", e.getSourceName());
+        assertEquals("ref name", e.getReferenceName());
+        assertEquals("target name", e.getTargetName());
+        assertEquals("service name", e.getTargetServiceName());
 
-    public NoRegisteredBuilderException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoRegisteredBuilderException(Throwable cause) {
-        super(cause);
     }
 }

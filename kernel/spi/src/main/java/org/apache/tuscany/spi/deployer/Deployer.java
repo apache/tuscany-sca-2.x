@@ -18,7 +18,9 @@
  */
 package org.apache.tuscany.spi.deployer;
 
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -41,6 +43,6 @@ public interface Deployer {
      * @return the newly deployed component
      */
     <I extends Implementation<?>> Component deploy(CompositeComponent parent,
-                                                      ComponentDefinition<I> componentDefinition)
-        throws LoaderException;
+                                                   ComponentDefinition<I> componentDefinition)
+        throws LoaderException, BuilderException, ComponentException;
 }

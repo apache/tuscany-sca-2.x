@@ -30,4 +30,14 @@
         <system:implementation.system class="org.apache.tuscany.core.loader.LoaderExceptionFormatter"/>
     </component>
 
+    <component name="IncompatibleServiceContractExceptionFormatter">
+        <system:implementation.system
+            class="org.apache.tuscany.core.wire.IncompatibleServiceContractExceptionFormatter"/>
+    </component>
+
+    <component name="WireExceptionExceptionFormatter">
+        <system:implementation.system
+            class="org.apache.tuscany.core.builder.WiringExceptionFormatter"/>
+    </component>
+
 </composite>

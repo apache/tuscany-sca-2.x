@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 import commonj.sdo.helper.TypeHelper;
 import org.objectweb.celtix.Bus;
@@ -61,6 +62,11 @@ public class CeltixReference<T> extends ReferenceExtension {
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CeltixInvoker(operation.getName(), bus, port, wsdlService, wsdlDef, typeHelper);
+        try {
+            return new CeltixInvoker(operation.getName(), bus, port, wsdlService, wsdlDef, typeHelper);
+        } catch (BuilderException e) {
+            // fixme
+            throw new CeltixServiceInitException(e);
+        }
     }
 }

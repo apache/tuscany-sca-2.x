@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -46,7 +47,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
     /**
      * Verifies system services in a CompositeComponentImpl are wired during the parent composite's prepare callback
      */
-    public void testSystemServiceWire() {
+    public void testSystemServiceWire() throws Exception {
         InboundWire inbound = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(inbound.getServiceContract()).andReturn(new JavaServiceContract(Foo.class));
         inbound.getInvocationChains();
@@ -114,7 +115,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
     /**
      * Verifies an application component cannot be wired to a system service in the same composite
      */
-    public void testSystemServiceIsolationWire() {
+    public void testSystemServiceIsolationWire() throws Exception {
         InboundWire inbound = EasyMock.createMock(InboundWire.class);
         EasyMock.replay(inbound);
 
@@ -122,6 +123,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         services.add(Foo.class);
         QualifiedName qName = new QualifiedName("target/bar");
         OutboundWire outbound = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(outbound.getContainer()).andReturn(EasyMock.createNiceMock(SCAObject.class));
         EasyMock.expect(outbound.getReferenceName()).andReturn("foo");
         EasyMock.expect(outbound.getTargetName()).andReturn(qName).atLeastOnce();
         EasyMock.replay(outbound);
@@ -151,7 +153,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         try {
             parent.prepare();
             fail();
-        } catch (BuilderConfigException e) {
+        } catch (PrepareException e) {
             //expected
         }
         EasyMock.verify(source);

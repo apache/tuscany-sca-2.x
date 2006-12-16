@@ -20,7 +20,8 @@ package org.apache.tuscany.core.launcher;
 
 import java.io.File;
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.CompositeContext;
@@ -40,6 +41,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.host.Launcher;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
  * Basic launcher implementation.
@@ -50,7 +52,7 @@ public class LauncherImpl implements Launcher {
     /**
      * A conventional META-INF based location for the system SCDL.
      *
-     * @see #bootRuntime(URL, MonitorFactory)
+     * @see #bootRuntime(URL,MonitorFactory)
      */
     public static final String METAINF_SYSTEM_SCDL_PATH = "META-INF/tuscany/system.scdl";
 
@@ -87,7 +89,14 @@ public class LauncherImpl implements Launcher {
         parent.registerJavaObject("RuntimeInfo", RuntimeInfo.class, runtimeInfo);
 
         // register the monitor factory
-        parent.registerJavaObject("MonitorFactory", MonitorFactory.class, monitor);
+        if (monitor instanceof FormatterRegistry) {
+            List<Class<?>> interfazes = new ArrayList<Class<?>>(2);
+            interfazes.add(MonitorFactory.class);
+            interfazes.add(FormatterRegistry.class);
+            parent.registerJavaObject("MonitorFactory", interfazes, monitor);
+        } else {
+            parent.registerJavaObject("MonitorFactory", MonitorFactory.class, monitor);
+        }
         parent.start();
         // create a ComponentDefinition to represent the component we are going to deploy
         SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
@@ -96,10 +105,13 @@ public class LauncherImpl implements Launcher {
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(
                 ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
-
-        // deploy the component into the runtime under the system parent
-        composite = (CompositeComponent) bootDeployer.deploy(parent, definition);
-
+        try {
+            // deploy the component into the runtime under the system parent
+            composite = (CompositeComponent) bootDeployer.deploy(parent, definition);
+        } catch (TuscanyException e) {
+            e.addContextName(definition.getName());
+            throw e;
+        }
         // start the system
         composite.start();
 
@@ -167,7 +179,6 @@ public class LauncherImpl implements Launcher {
      * @param appScdl URL to the SCDL defining the application
      * @return a CompositeComponent for the newly booted application
      * @throws LoaderException
-     * @see METAINF_APPLICATION_SCDL_PATH
      */
     @Deprecated
     public CompositeComponent bootApplication(String name, URL appScdl) throws TuscanyException {
@@ -192,8 +203,12 @@ public class LauncherImpl implements Launcher {
         try {
 
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-
-            return (CompositeComponent) deployer.deploy(parent, moduleDefinition);
+            try {
+                return (CompositeComponent) deployer.deploy(parent, moduleDefinition);
+            } catch (TuscanyException e) {
+                e.addContextName(moduleDefinition.getName());
+                throw e;
+            }
         } finally {
             Thread.currentThread().setContextClassLoader(ccl);
         }

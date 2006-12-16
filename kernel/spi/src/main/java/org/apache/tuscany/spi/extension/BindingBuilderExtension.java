@@ -23,6 +23,7 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -61,14 +62,14 @@ public abstract class BindingBuilderExtension<B extends Binding> implements Bind
     }
 
     public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<B> boundServiceDefinition,
-                           DeploymentContext deploymentContext) {
+                         BoundServiceDefinition<B> boundServiceDefinition,
+                         DeploymentContext deploymentContext) throws BuilderException {
         return null;
     }
 
     public Reference build(CompositeComponent parent,
                            BoundReferenceDefinition<B> boundReferenceDefinition,
-                           DeploymentContext deploymentContext) {
+                           DeploymentContext deploymentContext) throws BuilderException {
         return null;
     }
 

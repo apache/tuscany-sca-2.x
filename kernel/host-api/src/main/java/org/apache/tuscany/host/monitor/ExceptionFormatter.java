@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.host.monitor;
 
-import java.util.logging.LogRecord;
+import java.io.PrintWriter;
 
 /**
- * Formats exception data during a monitor event for JDK logging
+ * Formats exception data during a monitor event
  *
  * @version $Rev$ $Date$
  */
@@ -29,6 +29,6 @@ public interface ExceptionFormatter {
 
     boolean canFormat(Class<?> type);
 
-    LogRecord write(LogRecord record, Throwable exception);
+    PrintWriter write(PrintWriter writer, Throwable exception);
 
 }

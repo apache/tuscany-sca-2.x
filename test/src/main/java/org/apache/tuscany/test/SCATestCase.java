@@ -24,7 +24,9 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentMonitor;
@@ -32,6 +34,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.launcher.LauncherImpl;
@@ -60,25 +63,25 @@ public abstract class SCATestCase extends TestCase {
         launcher = new LauncherImpl();
         launcher.setApplicationLoader(cl);
         URL scdl = cl.getResource(LauncherImpl.METAINF_SYSTEM_SCDL_PATH);
-        CompositeComponent composite = launcher.bootRuntime(scdl, monitorFactory);
 
         try {
+            CompositeComponent composite = launcher.bootRuntime(scdl, monitorFactory);
             for (String extensionName : extensions.keySet()) {
                 deployExtension(composite, extensionName, extensions.get(extensionName));
             }
-        } catch (LoaderException e) {
+            if (applicationSCDL == null) {
+                throw new RuntimeException("application SCDL not found: " + applicationSCDL);
+            }
+            component = launcher.bootApplication("application", applicationSCDL);
+            component.start();
+            context = new CompositeContextImpl(component);
+            context.start();
+        } catch (TuscanyException e) {
             DeploymentMonitor monitor = monitorFactory.getMonitor(DeploymentMonitor.class);
             monitor.deploymentError(e);
             throw e;
         }
 
-        if (applicationSCDL == null) {
-            throw new RuntimeException("application SCDL not found: " + applicationSCDL);
-        }
-        component = launcher.bootApplication("application", applicationSCDL);
-        component.start();
-        context = new CompositeContextImpl(component);
-        context.start();
     }
 
     /**
@@ -119,7 +122,7 @@ public abstract class SCATestCase extends TestCase {
     }
 
     protected void deployExtension(CompositeComponent composite, String extensionName, URL scdlURL)
-        throws LoaderException {
+        throws LoaderException, BuilderException, ComponentException {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
         implementation.setScdlLocation(scdlURL);
         implementation.setClassLoader(new URLClassLoader(new URL[]{scdlURL}, getClass().getClassLoader()));

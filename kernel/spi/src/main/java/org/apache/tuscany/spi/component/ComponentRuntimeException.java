@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.CoreRuntimeException;
  *
  * @version $Rev$ $Date$
  */
-public class ComponentRuntimeException extends CoreRuntimeException {
+public abstract class ComponentRuntimeException extends CoreRuntimeException {
 
     public ComponentRuntimeException() {
         super();

@@ -19,7 +19,7 @@
 package org.apache.tuscany.container.spring.impl;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -48,7 +48,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
     @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<SpringImplementation> componentDefinition,
-                           DeploymentContext deploymentContext) throws BuilderConfigException {
+                           DeploymentContext deploymentContext) throws BuilderException {
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
         Resource resource = implementation.getApplicationResource();

@@ -16,27 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.host.monitor;
+package org.apache.tuscany.core.builder;
+
+import org.apache.tuscany.spi.builder.WiringException;
 
 /**
- * A registry for exception formatters
+ * Denotes an illegal callback
  *
  * @version $Rev$ $Date$
  */
-public interface FormatterRegistry {
+public class IllegalCallbackException extends WiringException {
 
-    /**
-     * Registers the given formatter
-     *
-     * @param formatter the formatter to register
-     */
-    void register(ExceptionFormatter formatter);
-
-    /**
-     * De-registers the given formatter
-     *
-     * @param formatter the formatter to de-register
-     */
-    void unregister(ExceptionFormatter formatter);
-
+    public IllegalCallbackException(String message,
+                                    String identifier,
+                                    String sourceName,
+                                    String referenceName,
+                                    String targetName,
+                                    String serviceName) {
+        super(message, identifier);
+        setSourceName(sourceName);
+        setReferenceName(referenceName);
+        setTargetName(targetName);
+        setTargetServiceName(serviceName);
+    }
 }

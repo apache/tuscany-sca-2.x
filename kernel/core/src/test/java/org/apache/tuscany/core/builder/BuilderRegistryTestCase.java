@@ -39,7 +39,7 @@ public class BuilderRegistryTestCase extends TestCase {
     private DeploymentContext deploymentContext;
     private BuilderRegistryImpl registry;
 
-    public void testRegistrationWithoutGenerics() {
+    public void testRegistrationWithoutGenerics() throws Exception {
         RawBuilder builder = new RawBuilder();
         registry.register(CompositeImplementation.class, builder);
         CompositeImplementation implementation = new CompositeImplementation();

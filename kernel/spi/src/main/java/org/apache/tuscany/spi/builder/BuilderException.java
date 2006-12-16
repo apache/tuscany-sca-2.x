@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
+import org.apache.tuscany.api.TuscanyException;
 
 /**
  * The root exception for the builder package. Builder exceptions denote a non-recoverable failure.
  *
  * @version $Rev$ $Date$
  */
-public abstract class BuilderException extends CoreRuntimeException {
+public abstract class BuilderException extends TuscanyException {
 
     public BuilderException() {
         super();

@@ -21,10 +21,12 @@ package org.apache.tuscany.core.runtime;
 import java.net.URL;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.builder.BuilderException;
 
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -109,7 +111,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
                                                   String name,
                                                   URL systemScdl,
                                                   ClassLoader systemClassLoader)
-        throws LoaderException {
+        throws LoaderException, BuilderException, ComponentException {
 
         SystemCompositeImplementation impl = new SystemCompositeImplementation();
         impl.setScdlLocation(systemScdl);
@@ -125,7 +127,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
                                                        String name,
                                                        URL applicationScdl,
                                                        ClassLoader applicationClassLoader)
-        throws LoaderException {
+        throws LoaderException, BuilderException, ComponentException {
 
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(applicationScdl);

@@ -18,14 +18,13 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.QualifiedName;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
@@ -43,7 +42,7 @@ import org.springframework.context.support.StaticApplicationContext;
  */
 public class ServiceInvocationTestCase extends TestCase {
 
-    public void testInvocation() throws InvalidServiceContractException {
+    public void testInvocation() throws Exception {
         AbstractApplicationContext springContext = createSpringContext();
         SpringCompositeComponent composite = new SpringCompositeComponent("parent", springContext, null, null, null);
         InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);

@@ -22,9 +22,11 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -68,17 +70,11 @@ public class DeployerImpl implements Deployer {
     }
 
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
-                                                             ComponentDefinition<I> componentDefinition)
-        throws LoaderException {
+                                                          ComponentDefinition<I> componentDefinition)
+        throws LoaderException, BuilderException, PrepareException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope, null);
-        try {
-            load(parent, componentDefinition, deploymentContext);
-        } catch (LoaderException e) {
-            e.addContextName(componentDefinition.getName());
-            e.addContextName(parent.getName());
-            throw e;
-        }
+        load(parent, componentDefinition, deploymentContext);
         Component component = (Component) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) component;
@@ -111,8 +107,9 @@ public class DeployerImpl implements Deployer {
      * @return the new runtime context
      */
     protected <I extends Implementation<?>> SCAObject build(CompositeComponent parent,
-                                                               ComponentDefinition<I> componentDefinition,
-                                                               DeploymentContext deploymentContext) {
+                                                            ComponentDefinition<I> componentDefinition,
+                                                            DeploymentContext deploymentContext)
+        throws BuilderException {
         return builder.build(parent, componentDefinition, deploymentContext);
     }
 

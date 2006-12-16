@@ -25,8 +25,8 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -80,7 +80,7 @@ public class ConnectorImpl implements Connector {
         this.workContext = workContext;
     }
 
-    public void connect(SCAObject source) {
+    public void connect(SCAObject source) throws WiringException {
         CompositeComponent parent = source.getParent();
         if (source instanceof AtomicComponent) {
             AtomicComponent sourceComponent = (AtomicComponent) source;
@@ -98,7 +98,7 @@ public class ConnectorImpl implements Connector {
                             target = parent.getChild(outboundWire.getTargetName().getPartName());
                         }
                         connect(sourceComponent, outboundWire, target);
-                    } catch (BuilderConfigException e) {
+                    } catch (WiringException e) {
                         e.addContextName(source.getName());
                         e.addContextName(parent.getName());
                         throw e;
@@ -148,10 +148,10 @@ public class ConnectorImpl implements Connector {
             OutboundWire outboundWire = service.getOutboundWire();
             // For a composite reference only, since its outbound wire comes from its parent composite,
             // the corresponding target would not lie in its parent but rather in its parent's parent
-            if (source instanceof CompositeReference) {
-                parent = parent.getParent();
-                assert parent != null : "Parent of parent was null";
-            }
+//            if (source instanceof CompositeReference) {
+//                parent = parent.getParent();
+//                assert parent != null : "Parent of parent was null";
+//            }
             SCAObject target;
             if (service.isSystem()) {
                 target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
@@ -169,7 +169,7 @@ public class ConnectorImpl implements Connector {
     }
 
     public void connect(InboundWire sourceWire, OutboundWire targetWire, boolean optimizable)
-        throws BuilderConfigException {
+        throws WiringException {
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
         if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
@@ -184,9 +184,16 @@ public class ConnectorImpl implements Connector {
             // match wire chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
             if (outboundChain == null) {
-                // FIXME JFM
+                // FIXME JFM    -------
                 String serviceName = sourceWire.getServiceName();
-                throw new BuilderConfigException("Incompatible source and target interfaces", serviceName);
+                String sourceName = sourceWire.getContainer().getName();
+                String refName = targetWire.getReferenceName();
+                String targetName = targetWire.getContainer().getName();
+                throw new IncompatibleInterfacesException("Incompatible source and target interfaces",
+                    sourceName,
+                    refName,
+                    targetName,
+                    serviceName);
             }
             connect(inboundChain, outboundChain);
         }
@@ -203,7 +210,8 @@ public class ConnectorImpl implements Connector {
      * @param targetWire  the target wire to connect to
      * @param optimizable true if the wire connection can be optimized
      */
-    public void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable) {
+    public void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable)
+        throws IncompatibleInterfacesException, IllegalCallbackException {
         SCAObject source = sourceWire.getContainer();
         SCAObject target = targetWire.getContainer();
         ServiceContract contract = sourceWire.getServiceContract();
@@ -224,15 +232,30 @@ public class ConnectorImpl implements Connector {
             Operation<?> operation = outboundChain.getOperation();
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
-                String name = sourceWire.getReferenceName();
-                // FIXME JFM
-                throw new BuilderConfigException("Incompatible source and target interfaces for reference", name);
+                String sourceName = sourceWire.getContainer().getName();
+                String refName = sourceWire.getReferenceName();
+                String targetName = targetWire.getContainer().getName();
+                String serviceName = targetWire.getServiceName();
+                throw new IncompatibleInterfacesException("Incompatible interfaces",
+                    sourceName,
+                    refName,
+                    targetName,
+                    serviceName);
             }
             Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
             boolean operationHasCallback = contract.getCallbackName() != null;
             if (isOneWayOperation && operationHasCallback) {
-                throw new BuilderConfigException("Operation cannot be marked one-way and have a callback");
+                String sourceName = sourceWire.getContainer().getName();
+                String refName = sourceWire.getReferenceName();
+                String targetName = targetWire.getContainer().getName();
+                String serviceName = targetWire.getServiceName();
+                throw new IllegalCallbackException("Operation cannot be marked one-way and have a callback",
+                    inboundOperation.getName(),
+                    sourceName,
+                    refName,
+                    targetName,
+                    serviceName);
             }
             TargetInvoker invoker = null;
             if (target instanceof Component) {
@@ -274,11 +297,17 @@ public class ConnectorImpl implements Connector {
         for (InboundInvocationChain inboundChain : sourceWire.getTargetCallbackInvocationChains().values()) {
             Operation<?> operation = inboundChain.getOperation();
             if (sourceCallbackChains != null && sourceCallbackChains.get(operation) != null) {
-                String name = operation.getName();
-                // FIXME JFM
+                String opName = operation.getName();
+                String sourceName = sourceWire.getContainer().getName();
                 String refName = sourceWire.getReferenceName();
-                throw new BuilderConfigException("Source callback chain should not exist for operation [" + name + "]",
-                    refName);
+                String targetName = targetWire.getContainer().getName();
+                String serviceName = targetWire.getServiceName();
+                throw new IllegalCallbackException("Source callback chain should not exist for operation",
+                    opName,
+                    sourceName,
+                    refName,
+                    targetName,
+                    serviceName);
             }
 
             Operation targetOp =
@@ -320,10 +349,7 @@ public class ConnectorImpl implements Connector {
                  TargetInvoker invoker,
                  boolean nonBlocking) {
         Interceptor head = targetChain.getHeadInterceptor();
-        if (head == null) {
-            String name = targetChain.getOperation().getName();
-            throw new BuilderConfigException("No interceptor for operation", name);
-        }
+        assert head != null;
         if (nonBlocking) {
             sourceChain.setTargetInterceptor(new NonBlockingBridgingInterceptor(scheduler, workContext, head));
         } else {
@@ -350,19 +376,22 @@ public class ConnectorImpl implements Connector {
      * <code>AtomicComponent</code>s contained in the composite, or <code>References</code> of the composite.
      *
      * @param sourceWire
-     * @throws BuilderConfigException
+     * @throws WiringException
      */
-    private void connect(SCAObject source, OutboundWire sourceWire, SCAObject target) throws BuilderConfigException {
-        assert sourceWire.getTargetName() != null : "Wire target name was null";
+    private void connect(SCAObject source, OutboundWire sourceWire, SCAObject target) throws WiringException {
+        assert sourceWire.getTargetName() != null;
         QualifiedName targetName = sourceWire.getTargetName();
 
         if (target instanceof AtomicComponent) {
             AtomicComponent targetComponent = (AtomicComponent) target;
             InboundWire targetWire = targetComponent.getInboundWire(targetName.getPortName());
             if (targetWire == null) {
-                String refName = sourceWire.getReferenceName();
-                // FIXME JFM
-                throw new BuilderConfigException("No target service for reference " + refName,
+                String sourceName = sourceWire.getContainer().getName();
+                String sourceReference = sourceWire.getReferenceName();
+                throw new TargetServiceNotFoundException("Target service not found",
+                    sourceName,
+                    sourceReference,
+                    targetName.getPartName(),
                     targetName.getPortName());
             }
             checkIfWireable(sourceWire, targetWire);
@@ -411,34 +440,66 @@ public class ConnectorImpl implements Connector {
                 }
             }
             if (targetWire == null) {
-                throw new BuilderConfigException("No target composite service in composite");
+                String sourceName = sourceWire.getContainer().getName();
+                String sourceReference = sourceWire.getReferenceName();
+                throw new TargetServiceNotFoundException("Target service not found",
+                    sourceName,
+                    sourceReference,
+                    targetName.getPartName(),
+                    targetName.getPortName());
             }
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(sourceWire, targetWire, optimizable);
         } else if (target == null) {
-            String name = sourceWire.getReferenceName();
-            throw new ReferenceTargetNotFoundException(name, targetName.getQualifiedName());
+            String sourceName = sourceWire.getContainer().getName();
+            String sourceReference = sourceWire.getReferenceName();
+            throw new TargetServiceNotFoundException("Target service not found",
+                sourceName,
+                sourceReference,
+                targetName.getPartName(),
+                targetName.getPortName());
         } else {
-            String name = sourceWire.getReferenceName();
-            // FIXME JFM
-            throw new BuilderConfigException("Invalid target type for reference " + name,
-                targetName.getQualifiedName());
+            String sourceName = sourceWire.getContainer().getName();
+            String sourceReference = sourceWire.getReferenceName();
+            throw new InvalidTargetTypeException("Invalid target type",
+                sourceName,
+                sourceReference,
+                targetName.getPartName(),
+                targetName.getPortName());
         }
     }
 
-    private void checkIfWireable(OutboundWire sourceWire, InboundWire targetWire) {
+    private void checkIfWireable(OutboundWire sourceWire, InboundWire targetWire)
+        throws IncompatibleInterfacesException {
         if (wireService == null) {
             Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
             Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
             if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                throw new BuilderConfigException("Incompatible source and target interfaces");
+                String sourceName = sourceWire.getContainer().getName();
+                String refName = sourceWire.getReferenceName();
+                String targetName = targetWire.getContainer().getName();
+                String serviceName = targetWire.getServiceName();
+                throw new IncompatibleInterfacesException("Incompatible interfaces",
+                    sourceName,
+                    refName,
+                    targetName,
+                    serviceName);
             }
         } else {
             try {
-                wireService.checkCompatibility(sourceWire.getServiceContract(), targetWire
-                    .getServiceContract(), false);
+                ServiceContract sourceContract = sourceWire.getServiceContract();
+                ServiceContract targetContract = targetWire.getServiceContract();
+                wireService.checkCompatibility(sourceContract, targetContract, false);
             } catch (IncompatibleServiceContractException e) {
-                throw new BuilderConfigException("Incompatible source and target interfaces", e);
+                String sourceName = sourceWire.getContainer().getName();
+                String refName = sourceWire.getReferenceName();
+                String targetName = targetWire.getContainer().getName();
+                String serviceName = targetWire.getServiceName();
+                throw new IncompatibleInterfacesException("Incompatible interfaces",
+                    sourceName,
+                    refName,
+                    targetName,
+                    serviceName, e);
             }
         }
     }

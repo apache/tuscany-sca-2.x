@@ -59,7 +59,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     
     private WorkContext workContext;
 
-    public Axis2BindingBuilder() {
+    public Axis2BindingBuilder() throws BuilderConfigException {
         initAxis();
     }
 
@@ -190,7 +190,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         return WebServiceBinding.class;
     }
 
-    protected void initAxis() {
+    protected void initAxis() throws BuilderConfigException {
         // TODO: Fix classloader switching. See TUSCANY-647
         // TODO: also consider having a system component wrapping the Axis2 ConfigContext
         ClassLoader tccl = Thread.currentThread().getContextClassLoader();

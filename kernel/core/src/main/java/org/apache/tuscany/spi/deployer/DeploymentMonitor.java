@@ -1,7 +1,6 @@
 package org.apache.tuscany.spi.deployer;
 
-import org.apache.tuscany.spi.loader.LoaderException;
-
+import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.api.annotation.LogLevel;
 
 /**
@@ -16,6 +15,6 @@ public interface DeploymentMonitor {
     void endDeployment();
 
     @LogLevel("SEVERE")
-    void deploymentError(LoaderException e);
+    void deploymentError(TuscanyException e);
 
 }
