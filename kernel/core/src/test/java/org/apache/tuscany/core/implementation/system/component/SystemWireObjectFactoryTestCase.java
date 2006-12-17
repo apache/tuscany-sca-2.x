@@ -27,7 +27,7 @@ import org.easymock.EasyMock;
  */
 public class SystemWireObjectFactoryTestCase extends TestCase {
 
-    public void testGetInstance() {
+    public void testGetInstance() throws Exception {
         Foo foo = new Foo();
         SystemOutboundWire wire = EasyMock.createMock(SystemOutboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn(foo);

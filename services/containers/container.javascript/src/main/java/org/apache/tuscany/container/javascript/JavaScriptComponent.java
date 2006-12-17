@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
@@ -49,7 +50,8 @@ public class JavaScriptComponent extends AtomicComponentExtension {
 
     private RhinoScript rhinoScript;
 
-    public JavaScriptComponent(String name, RhinoScript rhinoScript, Map<String, Object> properties, List<Class<?>> services,
+    public JavaScriptComponent(String name, RhinoScript rhinoScript, Map<String, Object> properties,
+                               List<Class<?>> services,
                                CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService,
                                WorkContext workContext,
                                ExecutionMonitor monitor) {
@@ -112,7 +114,7 @@ public class JavaScriptComponent extends AtomicComponentExtension {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
-            throw new TargetException("ServiceDefinition not found", service);
+            throw new TargetNotFoundException("ServiceDefinition not found", service);
         }
         return wireService.createProxy(wire);
     }

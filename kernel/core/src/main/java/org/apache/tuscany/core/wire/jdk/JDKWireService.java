@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ReferenceNotFoundException;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Binding;
@@ -221,13 +220,7 @@ public class JDKWireService extends WireServiceExtension {
         for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
             Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
             ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName());
-            if (mappedReference == null) {
-                String refName = referenceTarget.getReferenceName();
-                ReferenceNotFoundException e = new ReferenceNotFoundException(refName);
-                e.addContextName(refName);
-                e.addContextName(definition.getName());
-                throw e;
-            }
+            assert mappedReference != null;
             OutboundWire wire = createWire(referenceTarget, mappedReference);
             wire.setContainer(component);
             component.addOutboundWire(wire);

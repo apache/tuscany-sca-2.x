@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import org.apache.tuscany.spi.component.TargetException;
+
 import junit.framework.TestCase;
 
 /**
@@ -25,7 +27,7 @@ import junit.framework.TestCase;
  */
 public class SystemSingletonAtomicComponentTestCase extends TestCase {
 
-    public void testGetInstance() {
+    public void testGetInstance() throws TargetException {
         FooImpl foo = new FooImpl();
         SystemSingletonAtomicComponent<Foo, FooImpl> component =
             new SystemSingletonAtomicComponent<Foo, FooImpl>("foo", null, Foo.class, foo);

@@ -30,7 +30,7 @@ import org.easymock.EasyMock;
  */
 public class SystemInboundtoOutboundTestCase extends TestCase {
 
-    public void testWire() throws NoSuchMethodException {
+    public void testWire() throws Exception {
         Target target = new TargetImpl();
         SystemOutboundWire outboundWire = EasyMock.createMock(SystemOutboundWire.class);
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);

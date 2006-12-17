@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class DuplicateNameException extends ComponentRuntimeException {
+public class DuplicateNameException extends ComponentRegistrationException {
 
     public DuplicateNameException(String message) {
         super(message);

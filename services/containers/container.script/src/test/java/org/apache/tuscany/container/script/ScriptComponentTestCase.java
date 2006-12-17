@@ -54,7 +54,7 @@ public class ScriptComponentTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testGetServiceInstance() {
+    public void testGetServiceInstance() throws Exception {
         WireService wireService = EasyMock.createMock(WireService.class);
         EasyMock.expect(wireService.createProxy(EasyMock.isA(RuntimeWire.class))).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {

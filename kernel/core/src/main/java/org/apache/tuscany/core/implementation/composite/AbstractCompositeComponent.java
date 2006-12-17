@@ -26,10 +26,11 @@ import java.util.concurrent.TimeUnit;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ObjectRegistrationException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -80,12 +81,12 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
-        throws ObjectRegistrationException {
+        throws ComponentRegistrationException {
         register(new SystemSingletonAtomicComponent<S, I>(name, this, service, instance));
     }
 
     public <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
-        throws ObjectRegistrationException {
+        throws ComponentRegistrationException {
         register(new SystemSingletonAtomicComponent<S, I>(name, this, services, instance));
     }
 
@@ -144,21 +145,22 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
         super.publish(event);
     }
 
-    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
+    public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
+        throws TargetInvokerCreationException {
         return null;
     }
 
     /**
      * Blocks until the module context has been initialized
      */
-    protected void checkInit() {
+    protected void checkInit() throws ComponentTimeoutException {
         if (!initialized) {
             try {
                 /* block until the module has initialized */
                 boolean success = initializeLatch.await(AbstractCompositeComponent.DEFAULT_WAIT,
                     TimeUnit.MILLISECONDS);
                 if (!success) {
-                    throw new ComponentInitException("Timeout waiting for context to initialize");
+                    throw new ComponentTimeoutException("Timeout waiting for context to initialize");
                 }
             } catch (InterruptedException e) { // should not happen
             }

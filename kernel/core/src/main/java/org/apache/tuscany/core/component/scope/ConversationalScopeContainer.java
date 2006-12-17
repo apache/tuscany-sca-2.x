@@ -75,7 +75,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
 
     @Override
     public Object getInstance(AtomicComponent component) throws TargetException {
-        String conversationId = getConversationId(component);
+        String conversationId = getConversationId();
         try {
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
@@ -93,16 +93,16 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 return o;
             }
         } catch (StoreReadException e) {
-            throw new TargetException(e);
+            throw new TargetRetrievalException("Error retrieving target instance", e);
         } catch (StoreWriteException e) {
-            throw new TargetException(e);
+            throw new TargetPersistException("Error persisting target instance", e);
         } finally {
             workContext.setCurrentAtomicComponent(null);
         }
     }
 
     public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
-        String conversationId = getConversationId(component);
+        String conversationId = getConversationId();
         try {
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
@@ -117,9 +117,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 throw new TargetNotFoundException(component.getName());
             }
         } catch (StoreReadException e) {
-            throw new TargetException(e);
+            throw new TargetRetrievalException("Error retrieving target instance", e);
         } catch (StoreWriteException e) {
-            throw new TargetException(e);
+            throw new TargetPersistException("Error persisting target instance", e);
         } finally {
             workContext.setCurrentAtomicComponent(null);
         }
@@ -144,7 +144,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     }
 
     public void remove(AtomicComponent component) throws PersistenceException {
-        String conversationId = getConversationId(component);
+        String conversationId = getConversationId();
         try {
             nonDurableStore.removeRecord(component, conversationId);
         } catch (StoreWriteException e) {
@@ -152,17 +152,17 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
         }
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Returns the conversation id associated with the current invocation context
      */
-    private String getConversationId(AtomicComponent component) {
+    private String getConversationId() throws PersistenceException {
         String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
         if (conversationId == null) {
-            throw new TargetException("Conversation id not set in context", component.getName());
+            throw new PersistenceException("Conversation id not set in context");
         }
         return conversationId;
     }

@@ -33,7 +33,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 /**
- *
  * @version $Rev$ $Date$
  */
 public class CompositePropagationTestCase extends TestCase {
@@ -41,7 +40,7 @@ public class CompositePropagationTestCase extends TestCase {
     private CompositeComponent parent;
     private CompositeComponent child2;
 
-    public void testSystemLifecyclePropagation() throws NoSuchMethodException {
+    public void testSystemLifecyclePropagation() throws Exception {
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
@@ -56,7 +55,7 @@ public class CompositePropagationTestCase extends TestCase {
         verify(component);
     }
 
-    public void testLifecyclePropagation() throws NoSuchMethodException {
+    public void testLifecyclePropagation() throws Exception {
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);

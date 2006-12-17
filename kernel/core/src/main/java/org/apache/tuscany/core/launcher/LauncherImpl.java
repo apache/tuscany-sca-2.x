@@ -203,12 +203,7 @@ public class LauncherImpl implements Launcher {
         try {
 
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            try {
-                return (CompositeComponent) deployer.deploy(parent, moduleDefinition);
-            } catch (TuscanyException e) {
-                e.addContextName(moduleDefinition.getName());
-                throw e;
-            }
+            return (CompositeComponent) deployer.deploy(parent, moduleDefinition);
         } finally {
             Thread.currentThread().setContextClassLoader(ccl);
         }

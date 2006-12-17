@@ -33,13 +33,13 @@ import org.apache.tuscany.test.SCATestCase;
 public class BootstrapTestCase extends SCATestCase {
     private CompositeComponent jtaComposite;
 
-    public void testTransactionManagerLocation() {
+    public void testTransactionManagerLocation() throws Exception {
         AtomicComponent tmComponent = (AtomicComponent) jtaComposite.getSystemChild("TransactionManager");
         Object tm = tmComponent.getServiceInstance();
         assertTrue(tm instanceof TransactionManager);
     }
 
-    public void testAutowire() {
+    public void testAutowire() throws Exception {
         assertNotNull(jtaComposite.resolveSystemInstance(TransactionManager.class));
     }
 

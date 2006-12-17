@@ -42,6 +42,7 @@ import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -215,7 +216,12 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
         Class<?> serviceInterface = this.getInterface();
         Method meth = getMethod(serviceInterface, operationName.getLocalPart());
 
-        Object proxy = this.getServiceInstance();
+        Object proxy = null;
+        try {
+            proxy = this.getServiceInstance();
+        } catch (TargetException e) {
+            throw new CeltixServiceInitException(e);
+        }
 
         return new SCAServerDataBindingCallback(opInfo, inout, meth, proxy, typeHelper);
     }

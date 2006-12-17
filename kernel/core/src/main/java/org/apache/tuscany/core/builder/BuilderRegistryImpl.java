@@ -148,7 +148,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             return component;
         } catch (BuilderException e) {
             e.addContextName(componentDefinition.getName());
-            e.addContextName(parent.getName());
+//            e.addContextName(parent.getName());
             throw e;
         }
     }
@@ -159,23 +159,16 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                DeploymentContext deploymentContext) throws BuilderException {
         Class<?> bindingClass = boundServiceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        try {
-            if (bindingBuilder == null) {
-                throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
-            }
-            SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
-            if (wireService != null && !(object instanceof SystemService)) {
-                String path = boundServiceDefinition.getTarget().getPath();
-                ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
-                wireService.createWires((Service) object, path, contract);
-            }
-            return object;
-        } catch (BuilderException e) {
-            e.addContextName(boundServiceDefinition.getName());
-            e.addContextName(parent.getName());
-            throw e;
+        if (bindingBuilder == null) {
+            throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
         }
-
+        SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
+        if (wireService != null && !(object instanceof SystemService)) {
+            String path = boundServiceDefinition.getTarget().getPath();
+            ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
+            wireService.createWires((Service) object, path, contract);
+        }
+        return object;
     }
 
     @SuppressWarnings("unchecked")
@@ -184,14 +177,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                DeploymentContext deploymentContext) throws BuilderException {
         Class<B> bindingClass = (Class<B>) boundReferenceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        SCAObject object = null;
-        try {
-            object = bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);
-        } catch (BuilderException e) {
-            e.addContextName(boundReferenceDefinition.getName());
-            e.addContextName(parent.getName());
-            throw e;
-        }
+        SCAObject object;
+        object = bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);
         // create wires for the component
         if (wireService != null) {
             wireService.createWires((Reference) object, boundReferenceDefinition.getServiceContract());

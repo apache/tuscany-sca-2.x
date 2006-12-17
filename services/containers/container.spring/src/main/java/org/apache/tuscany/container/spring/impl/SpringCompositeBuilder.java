@@ -21,6 +21,7 @@ package org.apache.tuscany.container.spring.impl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -36,6 +37,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.springframework.core.io.Resource;
 
 /**
@@ -70,13 +72,21 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
                 chain.setTargetInvoker(component.createTargetInvoker(targetName.getPartName(), chain.getOperation(),
                     null));
             }
-            component.register(service);
+            try {
+                component.register(service);
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering service", e);
+            }
         }
         for (BoundReferenceDefinition<?> referenceDefinition : componentType.getReferences().values()) {
             // call back into builder registry to handle building of references
             Reference reference = (Reference) builderRegistry.build(parent, referenceDefinition, deploymentContext);
             connector.connect(reference);
-            component.register(reference);
+            try {
+                component.register(reference);
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering reference", e);
+            }
         }
         return component;
     }

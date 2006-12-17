@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
@@ -79,7 +80,7 @@ public class ScriptComponent extends AtomicComponentExtension {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
-            throw new TargetException("Service not found", service); // TODO better error message
+            throw new TargetNotFoundException("Service not found", service);
         }
         return wireService.createProxy(wire);
     }

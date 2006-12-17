@@ -62,7 +62,6 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
                                     DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert REFERENCE.equals(reader.getName());
-
         String name = reader.getAttributeValue(null, "name");
         Multiplicity multiplicity =
             StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE);

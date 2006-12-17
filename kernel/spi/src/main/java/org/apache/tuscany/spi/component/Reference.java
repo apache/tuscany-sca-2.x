@@ -42,7 +42,7 @@ public interface Reference extends SCAObject {
      *
      * @throws TargetException
      */
-    WireInvocationHandler getHandler() throws TargetException;
+    WireInvocationHandler getHandler();
 
     /**
      * Returns the inbound wire for flowing a request through the reference
@@ -70,25 +70,33 @@ public interface Reference extends SCAObject {
      *
      * @param contract  the service contract to invoke on
      * @param operation the operation to invoke
+     * @throws TargetInvokerCreationException
      */
-    TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation);
+    TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException;
 
     /**
      * Creates a target invoker for callbacks
+     *
+     * @param contract  the service contract to invoke on
+     * @param operation the operation to invoke
+     * @throws TargetInvokerCreationException
      */
-    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation);
+    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException;
 
     /**
      * Get the ServiceContract for the binding
+     *
      * @return
      */
     ServiceContract<?> getBindingServiceContract();
-    
-    
+
+
     /**
-     * Set the ServiceContract for the binding. This contract will be used for the outbound wire.
-     * If not set, it will be the same as the ServideContract from the interface.
-     *  
+     * Set the ServiceContract for the binding. This contract will be used for the outbound wire. If not set, it will be
+     * the same as the ServideContract from the interface.
+     *
      * @param serviceContract
      */
     void setBindingServiceContract(ServiceContract<?> serviceContract);

@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.host.ResourceResolutionException;
 
@@ -91,7 +92,11 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
         } else {
             T instance = null;
             if (mappedName == null) {
-                instance = parent.resolveSystemInstance(type);
+                try {
+                    instance = parent.resolveSystemInstance(type);
+                } catch (TargetException e) {
+                    throw new ObjectCreationException(e);
+                }
                 if (instance == null) {
                     // if not found in parent scope, search the host namespace
                     resolveFromHost = true;
@@ -104,7 +109,11 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
             } else {
                 SCAObject child = parent.getSystemChild(mappedName);
                 if (child != null) {
-                    instance = type.cast(child.getServiceInstance());
+                    try {
+                        instance = type.cast(child.getServiceInstance());
+                    } catch (TargetException e) {
+                        throw new ObjectCreationException(e);
+                    }
                 }
                 if (instance == null && !optional) {
                     throw new ResourceNotFoundException("No resource found for URI", mappedName);

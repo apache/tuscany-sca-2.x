@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import javax.naming.ConfigurationException;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 
@@ -40,7 +38,7 @@ public class JavaObjectRegistrationTestCase extends TestCase {
         assertSame(instance, resolvedInstance);
     }
 
-    public void testDuplicateRegistration() throws ConfigurationException {
+    public void testDuplicateRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
         try {
@@ -51,14 +49,14 @@ public class JavaObjectRegistrationTestCase extends TestCase {
         }
     }
 
-    public void testSystemAutowireToObject() {
+    public void testSystemAutowireToObject() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
         assertSame(instance, composite.resolveSystemInstance(MockComponent.class));
         assertNull(composite.resolveSystemExternalInstance(MockComponent.class));
     }
 
-    public void testApplicationAutowireToObject() {
+    public void testApplicationAutowireToObject() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
         assertNull(composite.resolveInstance(MockComponent.class));

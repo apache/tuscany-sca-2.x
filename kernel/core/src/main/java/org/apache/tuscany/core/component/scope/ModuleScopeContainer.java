@@ -26,7 +26,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
@@ -69,7 +68,12 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     public void onEvent(Event event) {
         checkInit();
         if (event instanceof CompositeStart) {
-            eagerInitComponents();
+            try {
+                eagerInitComponents();
+            } catch (TargetException e) {
+                // JFM FIXME
+                e.printStackTrace();
+            }
             lifecycleState = RUNNING;
         } else if (event instanceof CompositeStop) {
             shutdownContexts();
@@ -103,7 +107,12 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
             // shutdown destroyable instances in reverse instantiation order
             ListIterator<InstanceWrapper> iter = destroyQueue.listIterator(destroyQueue.size());
             while (iter.hasPrevious()) {
-                iter.previous().stop();
+                try {
+                    iter.previous().stop();
+                } catch (TargetException e) {
+                    // JFM FIXME
+                    e.printStackTrace();
+                }
             }
             destroyQueue.clear();
         }
@@ -132,7 +141,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
-    private void eagerInitComponents() throws ObjectCreationException {
+    private void eagerInitComponents() throws ObjectCreationException, TargetException {
         List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
         Collections.sort(componentList, COMPARATOR);
         // start each group
@@ -163,9 +172,21 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         }
     }
 
-    private static class EmptyWrapper extends AbstractLifecycle implements InstanceWrapper {
+    private static class EmptyWrapper implements InstanceWrapper {
         public Object getInstance() {
             return null;
+        }
+
+        public boolean isStarted() {
+            return true;
+        }
+
+        public void start() throws TargetException {
+
+        }
+
+        public void stop() throws TargetException {
+
         }
     }
 }

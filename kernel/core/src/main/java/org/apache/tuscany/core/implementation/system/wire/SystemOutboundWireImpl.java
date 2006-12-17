@@ -76,9 +76,7 @@ public class SystemOutboundWireImpl implements SystemOutboundWire {
     }
 
     public Object getTargetService() throws TargetException {
-        if (targetWire == null) {
-            throw new TargetException("No target wire connected to source wire");
-        }
+        assert targetWire != null;
         return interfaze.cast(targetWire.getTargetService());
     }
 
@@ -138,7 +136,7 @@ public class SystemOutboundWireImpl implements SystemOutboundWire {
     public SCAObject getContainer() {
         return container;
     }
-    
+
     public void setContainer(SCAObject container) {
         this.container = container;
     }

@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -81,7 +82,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         EasyMock.verify(service);
     }
 
-    private ScopeContainer createMock() {
+    private ScopeContainer createMock() throws TargetException {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();

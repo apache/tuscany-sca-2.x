@@ -41,6 +41,10 @@ public abstract class WiringException extends BuilderException {
         super(message, cause);
     }
 
+    protected WiringException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
+    }
+
     protected WiringException(Throwable cause) {
         super(cause);
     }

@@ -43,7 +43,7 @@ public class AutowireResolutionTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testResolveToSelf() {
+    public void testResolveToSelf() throws Exception {
         CompositeComponent parent = createMock(CompositeComponent.class);
         replay(parent);
         CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
@@ -51,7 +51,7 @@ public class AutowireResolutionTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testSystemResolveToSelf() {
+    public void testSystemResolveToSelf() throws Exception {
         CompositeComponent parent = createMock(CompositeComponent.class);
         replay(parent);
         CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
@@ -59,7 +59,7 @@ public class AutowireResolutionTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testResolvedByAutowire() {
+    public void testResolvedByAutowire() throws Exception {
         Foo foo = new Foo() {
         };
         CompositeComponent parent = createMock(CompositeComponent.class);
@@ -70,7 +70,7 @@ public class AutowireResolutionTestCase extends TestCase {
         verify(parent);
     }
 
-    public void testSystemResolvedByAutowire() {
+    public void testSystemResolvedByAutowire() throws Exception {
         Foo foo = new Foo() {
         };
         CompositeComponent parent = createMock(CompositeComponent.class);
@@ -84,7 +84,7 @@ public class AutowireResolutionTestCase extends TestCase {
     /**
      * Verify parent resolution strategy for application services
      */
-    public void testNamespaceIsolationAutowire() {
+    public void testNamespaceIsolationAutowire() throws Exception {
         Foo foo = new Foo() {
         };
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);

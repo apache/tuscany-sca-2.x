@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReactivationException;
 import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetInvocationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
@@ -112,7 +112,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
                 return hashCode();
                 // TODO beter hash algorithm
             }
-            throw new TargetException("Operation not configured", method.getName());
+            throw new TargetInvocationException("Operation not configured", method.getName());
         }
         OutboundInvocationChain chain = holder.chain;
         TargetInvoker invoker;
@@ -121,7 +121,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
                 String name = chain.getOperation().getName();
-                throw new TargetException("No target invoker configured for operation", name);
+                throw new TargetInvocationException("No target invoker configured for operation", name);
             }
             if (chain.getTargetInvoker().isCacheable()) {
                 // clone and store the invoker locally

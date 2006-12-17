@@ -6,36 +6,38 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.spi.component;
 
 /**
- * Thrown when an error is encountered registering an object
+ * Raised when an error is encountered during a target invocation
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class ObjectRegistrationException extends ComponentRuntimeException {
-    public ObjectRegistrationException() {
-    }
+public class TargetInvocationException extends TargetException {
 
-    public ObjectRegistrationException(String message) {
+    public TargetInvocationException(String message) {
         super(message);
     }
 
-    public ObjectRegistrationException(String message, Throwable cause) {
+    public TargetInvocationException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    public TargetInvocationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ObjectRegistrationException(Throwable cause) {
-        super(cause);
+    public TargetInvocationException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 }

@@ -45,7 +45,7 @@ public class CompositeLifecycleTestCase extends TestCase {
         composite.stop();
     }
 
-    public void testSystemRestart() throws NoSuchMethodException {
+    public void testSystemRestart() throws Exception {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         Source originalSource = new SourceImpl();
@@ -75,7 +75,7 @@ public class CompositeLifecycleTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
-    public void testRestart() throws NoSuchMethodException {
+    public void testRestart() throws Exception {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         Source originalSource = new SourceImpl();
@@ -105,7 +105,7 @@ public class CompositeLifecycleTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
-    public void testChildStoppedBeforeParent() {
+    public void testChildStoppedBeforeParent() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
         CompositeComponent child = new CompositeComponentImpl("child", null, null, null);
         parent.register(child);

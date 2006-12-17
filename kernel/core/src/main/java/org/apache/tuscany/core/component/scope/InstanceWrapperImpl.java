@@ -18,19 +18,18 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.AbstractLifecycle;
-import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * Default implementation of an <code>InstanceWrapper</code>
  *
  * @version $$Rev$$ $$Date$$
  */
-public class InstanceWrapperImpl extends AbstractLifecycle implements InstanceWrapper {
-
+public class InstanceWrapperImpl implements InstanceWrapper {
     private Object instance;
     private AtomicComponent component;
+    private boolean started;
 
     public InstanceWrapperImpl(AtomicComponent component, Object instance) {
         assert component != null;
@@ -39,30 +38,25 @@ public class InstanceWrapperImpl extends AbstractLifecycle implements InstanceWr
         this.instance = instance;
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+
     public Object getInstance() {
-        checkInit();
+        if (!started) {
+            throw new IllegalStateException("Instance not started");
+        }
         return instance;
     }
 
-    public void start() throws CoreRuntimeException {
-        try {
-            component.init(instance);
-            lifecycleState = RUNNING;
-        } catch (RuntimeException e) {
-            lifecycleState = ERROR;
-            throw e;
-        }
+    public void start() throws TargetException {
+        component.init(instance);
+        started = true;
     }
 
-    public void stop() throws CoreRuntimeException {
-        checkInit();
+    public void stop() throws TargetException {
         component.destroy(instance);
-    }
-
-    protected void checkInit() {
-        if (getLifecycleState() != RUNNING) {
-            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
-        }
+        started = false;
     }
 
 }

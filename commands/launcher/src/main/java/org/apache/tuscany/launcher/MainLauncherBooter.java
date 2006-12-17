@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -57,8 +56,8 @@ public class MainLauncherBooter {
         File installDir = getInstallDirectory();
         URL baseUrl = installDir.toURI().toURL();
         File bootDir = getBootDirectory(installDir);
-        
-        boolean online = ! Boolean.parseBoolean(System.getProperty("offline", Boolean.FALSE.toString())); 
+
+        boolean online = !Boolean.parseBoolean(System.getProperty("offline", Boolean.FALSE.toString()));
         StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDir, installDir, online);
 
         File applicationJar = new File(args[0]);
@@ -74,7 +73,7 @@ public class MainLauncherBooter {
         URL applicationScdl = booter.getApplicationScdl(applicationClassLoader);
 
         String className = System.getProperty("tuscany.launcherClass",
-                                              "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
+            "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
         TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
         runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setSystemScdl(systemScdl);
@@ -132,10 +131,10 @@ public class MainLauncherBooter {
     }
 
     /**
-     * Find the directory containing the bootstrap jars.
-     * If the <code>tuscany.bootDir</code> system property is set then its value is used as the boot directory.
-     * Otherwise, we locate a jar file containing this class and return a "boot" directory that is a sibling
-     * to the directory that contains it. This class must be loaded from a jar file located on the local filesystem.
+     * Find the directory containing the bootstrap jars. If the <code>tuscany.bootDir</code> system property is set then
+     * its value is used as the boot directory. Otherwise, we locate a jar file containing this class and return a
+     * "boot" directory that is a sibling to the directory that contains it. This class must be loaded from a jar file
+     * located on the local filesystem.
      *
      * @return the directory of the bootstrap jars
      */

@@ -25,7 +25,6 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.mock.component.Source;
@@ -39,7 +38,7 @@ import org.easymock.EasyMock;
  */
 public class CompositeComponentResolutionTestCase extends TestCase {
 
-    public void testSystemComponentResolution() throws NoSuchMethodException {
+    public void testSystemComponentResolution() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -59,7 +58,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
-    public void testLocateSystemService() throws NoSuchMethodException {
+    public void testLocateSystemService() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -77,7 +76,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
-    public void testLocateService() throws NoSuchMethodException {
+    public void testLocateService() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -95,7 +94,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
-    public void testComponentResolution() throws NoSuchMethodException {
+    public void testComponentResolution() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
@@ -116,7 +115,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
     }
 
 
-    public void testGetService() throws NoSuchMethodException {
+    public void testGetService() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
         parent.start();
         Service service = EasyMock.createMock(Service.class);
@@ -127,16 +126,11 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         EasyMock.replay(service);
         parent.register(service);
         assertNotNull(parent.getService("source"));
-        try {
-            parent.getSystemService("source");
-            fail();
-        } catch (TargetNotFoundException e) {
-            // expected
-        }
+        assertNull(parent.getSystemService("source"));
         EasyMock.verify(service);
     }
 
-    public void testSystemGetService() throws NoSuchMethodException {
+    public void testSystemGetService() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
         parent.start();
         Service service = EasyMock.createMock(Service.class);
@@ -147,12 +141,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         EasyMock.replay(service);
         parent.register(service);
         assertNotNull(parent.getSystemService("source"));
-        try {
-            parent.getService("source");
-            fail();
-        } catch (TargetNotFoundException e) {
-            // expected
-        }
+        assertNull(parent.getService("source"));
         EasyMock.verify(service);
     }
 

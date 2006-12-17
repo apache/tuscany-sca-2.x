@@ -33,11 +33,25 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
 public interface Service extends SCAObject {
 
     /**
-     * Returns the handler responsible for flowing a request through the service
+     * Get the ServiceContract for the binding
      *
-     * @throws TargetException
+     * @return the ServiceContract for the binding
      */
-    WireInvocationHandler getHandler() throws TargetException;
+    ServiceContract<?> getBindingServiceContract();
+
+
+    /**
+     * Set the ServiceContract for the binding. This contract will be used for the inbound wire. If not set, it will be
+     * the same as the ServideContract from the interface.
+     *
+     * @param serviceContract the binding contract
+     */
+    void setBindingServiceContract(ServiceContract<?> serviceContract);
+
+    /**
+     * Returns the handler responsible for flowing a request through the service
+     */
+    WireInvocationHandler getHandler();
 
     /**
      * Returns the service interface configured for the service
@@ -77,21 +91,9 @@ public interface Service extends SCAObject {
      *
      * @param contract  the callback contract
      * @param operation the callback operation the target invoker dispatches to
+     * @throws TargetInvokerCreationException
      */
-    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation);
-    
-    /**
-     * Get the ServiceContract for the binding
-     * @return
-     */
-    ServiceContract<?> getBindingServiceContract();
-    
-    
-    /**
-     * Set the ServiceContract for the binding. This contract will be used for the inbound wire.
-     * If not set, it will be the same as the ServideContract from the interface.
+    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException;
 
-     * @param serviceContract
-     */
-    void setBindingServiceContract(ServiceContract<?> serviceContract);    
 }

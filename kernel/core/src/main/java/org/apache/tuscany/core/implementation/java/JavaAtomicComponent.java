@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireObjectFactory;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -39,7 +40,6 @@ import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
 import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.MethodInjector;
-import org.apache.tuscany.spi.wire.WireObjectFactory;
 
 /**
  * The runtime instantiation of Java component implementations
@@ -69,7 +69,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         } else if (serviceInterfaces.size() == 1) {
             return getTargetInstance();
         } else {
-            throw new TargetException("Component must have exactly one service");
+            throw new TargetNotFoundException("Component must have exactly one service");
         }
     }
 
@@ -77,7 +77,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         Method[] methods;
         Class callbackClass = null;
         if (operation.isCallback()) {
-            callbackClass = operation.getServiceContract().getCallbackClass(); 
+            callbackClass = operation.getServiceContract().getCallbackClass();
             methods = callbackClass.getMethods();
 
         } else {

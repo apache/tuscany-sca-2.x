@@ -20,10 +20,13 @@ package org.apache.tuscany.container.script;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * TargetInvoker implementation that calls a function on a ScriptInstanceImpl
+ *
+ * @version $Rev$ $Dev$
  */
 public class ScriptTargetInvoker extends TargetInvokerExtension {
 
@@ -37,7 +40,12 @@ public class ScriptTargetInvoker extends TargetInvokerExtension {
     }
 
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
-        ScriptInstance target = (ScriptInstance) component.getTargetInstance();
+        ScriptInstance target;
+        try {
+            target = (ScriptInstance) component.getTargetInstance();
+        } catch (TargetException e) {
+            throw new InvocationTargetException(e);
+        }
         try {
             return target.invokeTarget(functionName, (Object[]) payload);
         } catch (Exception e) {

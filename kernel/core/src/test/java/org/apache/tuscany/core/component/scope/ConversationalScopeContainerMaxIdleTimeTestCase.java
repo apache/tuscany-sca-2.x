@@ -39,7 +39,7 @@ public class ConversationalScopeContainerMaxIdleTimeTestCase extends TestCase {
     private Store store;
     private AtomicComponent component;
 
-    public void testMaxIdleTimeUpdate() {
+    public void testMaxIdleTimeUpdate() throws Exception {
         context.setIdentifier(Scope.CONVERSATION, "12345");
         container.getInstance(component);
         EasyMock.verify(store);

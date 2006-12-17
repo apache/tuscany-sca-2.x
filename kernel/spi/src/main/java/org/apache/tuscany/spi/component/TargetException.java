@@ -18,14 +18,12 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
-
 /**
- * Denotes an error while performing an operation on a target component implementation instance or proxy
+ * Denotes an error while performing an operation on a target component implementation instance
  *
  * @version $Rev$ $Date$
  */
-public class TargetException extends CoreRuntimeException {
+public abstract class TargetException extends ComponentException {
 
     public TargetException(String message) {
         super(message);

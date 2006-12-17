@@ -34,13 +34,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public interface Component extends SCAObject {
 
     /**
-     * Returns a service associated with the given name
-     *
-     * @throws TargetException if an error occurs retrieving the service instance
-     */
-    Object getServiceInstance(String name) throws TargetException;
-
-    /**
      * Returns the service interfaces implemented by the component
      */
     List<Class<?>> getServiceInterfaces();
@@ -52,7 +45,7 @@ public interface Component extends SCAObject {
     void addInboundWire(InboundWire wire);
 
     /**
-     * Returns the target-side wire associated with the given service name
+     * Returns the target-side wire associated with the given service name or null if not found
      */
     InboundWire getInboundWire(String serviceName);
 
@@ -82,10 +75,20 @@ public interface Component extends SCAObject {
      * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to a service offered by
      * the component
      *
-     * @param targetName
-     * @param operation  the operation to invoke
-     * @param callbackWire
+     * @param targetName   the service name
+     * @param operation    the operation to invoke
+     * @param callbackWire the callback wire or null if the associated wire is unidirectional
+     * @throws TargetInvokerCreationException
      */
-    TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire);
+    TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
+        throws TargetInvokerCreationException;
+
+    /**
+     * Returns a service associated with the given name
+     *
+     * @throws TargetException if an error occurs retrieving the service instance
+     */
+    Object getServiceInstance(String name) throws TargetException;
+
 
 }

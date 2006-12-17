@@ -34,7 +34,7 @@ import org.easymock.EasyMock;
  */
 public class SystemServiceComponentWireTestCase extends TestCase {
 
-    public void testServiceContext() throws NoSuchMethodException {
+    public void testServiceContext() throws Exception {
         Target target = new TargetImpl();
         SystemOutboundWire outboundWire = EasyMock.createMock(SystemOutboundWire.class);
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);

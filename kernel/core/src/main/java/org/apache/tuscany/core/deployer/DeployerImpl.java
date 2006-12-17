@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -37,6 +38,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 
 /**
@@ -74,14 +76,23 @@ public class DeployerImpl implements Deployer {
         throws LoaderException, BuilderException, PrepareException {
         ScopeContainer moduleScope = new ModuleScopeContainer();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope, null);
-        load(parent, componentDefinition, deploymentContext);
+        try {
+            load(parent, componentDefinition, deploymentContext);
+        } catch (LoaderException e) {
+            e.addContextName(componentDefinition.getName());
+            throw e;
+        }
         Component component = (Component) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) component;
             composite.setScopeContainer(moduleScope);
         }
         component.prepare();
-        parent.register(component);
+        try {
+            parent.register(component);
+        } catch (ComponentRegistrationException e) {
+            throw new BuilderInstantiationException("Error registering component", e);
+        }
         return component;
     }
 

@@ -20,7 +20,6 @@ package org.apache.tuscany.persistence.datasource;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
 
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -73,7 +72,7 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
             try {
                 ((DataSourceProvider) instance).close();
             } catch (ProviderException e) {
-                throw new TargetException(e);
+                throw new DataSourceCloseException("Error closing data source provider", e);
             }
         }
     }

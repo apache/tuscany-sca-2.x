@@ -22,8 +22,10 @@ import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetException;
 
 
 public class CompositeContextImpl extends SCA implements CompositeContext {
@@ -61,8 +63,12 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         return null;
     }
 
-    public <T> T locateService(Class<T> serviceInterface, String serviceName) {
-        return composite.locateService(serviceInterface, serviceName);
+    public <T> T locateService(Class<T> serviceInterface, String serviceName) throws ServiceRuntimeException {
+        try {
+            return composite.locateService(serviceInterface, serviceName);
+        } catch (TargetException e) {
+            throw new ServiceRuntimeException(e);
+        }
     }
 
     public ServiceReference newSession(String arg0) {

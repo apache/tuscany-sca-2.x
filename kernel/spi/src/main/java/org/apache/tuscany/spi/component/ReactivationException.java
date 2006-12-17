@@ -18,14 +18,12 @@
  */
 package org.apache.tuscany.spi.component;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
-
 /**
  * Raised when an error is encountered reactivating a serialized instance
  *
  * @version $Rev$ $Date$
  */
-public class ReactivationException extends TuscanyRuntimeException {
+public class ReactivationException extends ComponentRuntimeException {
     private String owner;
 
     public ReactivationException(String message) {

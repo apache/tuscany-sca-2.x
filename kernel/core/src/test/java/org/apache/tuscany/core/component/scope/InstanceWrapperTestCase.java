@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.Lifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
@@ -29,7 +28,6 @@ import org.easymock.EasyMock;
  */
 public class InstanceWrapperTestCase extends TestCase {
 
-
     public void testExceptionInit() throws Exception {
         AtomicComponent component = getComponent();
         InstanceWrapper wrapper = new InstanceWrapperImpl(component, new Object());
@@ -39,7 +37,7 @@ public class InstanceWrapperTestCase extends TestCase {
         } catch (SomeException e) {
             // expected
         }
-        assertEquals(Lifecycle.ERROR, wrapper.getLifecycleState());
+        assertFalse(wrapper.isStarted());
         EasyMock.verify(component);
     }
 

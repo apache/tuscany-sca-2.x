@@ -41,7 +41,7 @@ import org.easymock.EasyMock;
  */
 public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
 
-    public void testWireResolution() throws NoSuchMethodException {
+    public void testWireResolution() throws Exception {
         ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Target target = new TargetImpl();
