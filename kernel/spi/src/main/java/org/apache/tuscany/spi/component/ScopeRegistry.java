@@ -28,7 +28,13 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public interface ScopeRegistry {
 
-    ScopeContainer getScopeContainer(Scope scope) throws ScopeNotFoundException;
+    /**
+     * Returns the scope container for the given scope or null if one not found
+     *
+     * @param scope the scope
+     * @return the scope container for the given scope or null if one not found
+     */
+    ScopeContainer getScopeContainer(Scope scope);
 
     <T extends ScopeContainer> void registerFactory(Scope scope, ObjectFactory<T> factory);
 

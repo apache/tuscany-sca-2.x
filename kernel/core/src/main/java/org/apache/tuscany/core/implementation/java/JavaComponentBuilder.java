@@ -25,8 +25,10 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;
@@ -72,7 +74,11 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         if (Scope.MODULE == scope) {
             configuration.setScopeContainer(deployment.getModuleScope());
         } else {
-            configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
+            ScopeContainer container = scopeRegistry.getScopeContainer(scope);
+            if (container == null) {
+                throw new ScopeNotFoundException(scope.getScope());
+            }
+            configuration.setScopeContainer(container);
         }
         if (definition.getInitLevel() != null) {
             configuration.setInitLevel(definition.getInitLevel());
@@ -148,7 +154,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             } else {
                 String name = resource.getName();
                 boolean optional = resource.isOptional();
-                Class<Object> type = (Class<Object>)resource.getType();
+                Class<Object> type = (Class<Object>) resource.getType();
                 ResourceObjectFactory<Object> factory;
                 String mappedName = resource.getMappedName();
                 if (mappedName == null) {

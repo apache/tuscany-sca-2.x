@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
@@ -37,9 +36,9 @@ import org.apache.tuscany.spi.model.Scope;
 public class ScopeRegistryImpl implements ScopeRegistry {
 
     private final Map<Scope, ScopeContainer> scopeCache =
-            new ConcurrentHashMap<Scope, ScopeContainer>();
+        new ConcurrentHashMap<Scope, ScopeContainer>();
     private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache =
-            new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
+        new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
     private WorkContext workContext;
 
     public ScopeRegistryImpl(WorkContext workContext) {
@@ -61,13 +60,12 @@ public class ScopeRegistryImpl implements ScopeRegistry {
         ScopeContainer container = scopeCache.get(scope);
         if (container == null) {
             ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);
-            if (factory == null) {
-                throw new ScopeNotFoundException("Scope object factory not registered for scope", scope.getScope());
+            if (factory != null) {
+                container = factory.getInstance();
+                container.setWorkContext(workContext);
+                container.start();
+                scopeCache.put(scope, container);
             }
-            container = factory.getInstance();
-            container.setWorkContext(workContext);
-            container.start();
-            scopeCache.put(scope, container);
         }
         return container;
     }
