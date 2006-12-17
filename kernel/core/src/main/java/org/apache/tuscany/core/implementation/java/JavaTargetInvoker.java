@@ -22,14 +22,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import org.osoa.sca.NoRegisteredCallbackException;
+
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.osoa.sca.NoRegisteredCallbackException;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllUniquePublicProtectedMethods;
@@ -57,7 +57,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         this.component = component;
         this.callbackClass = callbackClass;
     }
-    
+
     public JavaTargetInvoker(Method operation,
                              JavaAtomicComponent component,
                              InboundWire callbackWire,
@@ -71,8 +71,8 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             Object instance = getInstance(sequence);
             if (callbackClass != null && !callbackClass.isInstance(instance)) {
                 throw new InvocationTargetException(
-                        new NoRegisteredCallbackException("Instance is does not implement callback: "
-                                                        + callbackClass.toString()));
+                    new NoRegisteredCallbackException("Instance is does not implement callback: "
+                        + callbackClass.toString()));
             }
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
@@ -94,7 +94,9 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             }
             return ret;
         } catch (IllegalAccessException e) {
-            throw new InvocationRuntimeException(e);
+            throw new InvocationTargetException(e);
+        } catch (TargetException e) {
+            throw new InvocationTargetException(e);
         }
     }
 
@@ -119,7 +121,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             } else if (sequence == CONTINUE || sequence == END) {
                 return component.getAssociatedTargetInstance();
             } else {
-                throw new InvalidConversationSequenceException(String.valueOf(sequence));
+                throw new InvalidConversationSequenceException("Unknown sequence type", String.valueOf(sequence));
             }
         } else {
             assert sequence == NONE;  // conversations are not cacheable

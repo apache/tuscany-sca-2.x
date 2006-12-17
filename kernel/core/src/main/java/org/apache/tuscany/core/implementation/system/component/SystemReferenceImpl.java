@@ -85,7 +85,7 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
         return referenceInterface.cast(inboundWire.getTargetService());
     }
 
-    public WireInvocationHandler getHandler() throws TargetException {
+    public WireInvocationHandler getHandler() {
         throw new UnsupportedOperationException();
     }
 

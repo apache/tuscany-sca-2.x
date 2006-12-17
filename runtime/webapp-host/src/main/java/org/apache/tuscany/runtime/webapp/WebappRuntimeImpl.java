@@ -27,6 +27,7 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
@@ -44,6 +45,7 @@ import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
@@ -82,12 +84,11 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         this.servletContext = servletContext;
     }
 
-    public void initialize() {
+    public void initialize() throws InitializationException {
         ClassLoader bootClassLoader = getClass().getClassLoader();
 
         // Read optional system monitor factory classname
         MonitorFactory mf = getMonitorFactory();
-
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
 
@@ -96,18 +97,22 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         runtime.start();
         systemComponent = runtime.getSystemComponent();
 
-        // register the runtime info provided by the host
-        // FIXME andyp@bea.com -- autowire appears to need an exact type match,
-        // hence the need to register this twice
-        systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
-            RuntimeInfo.class,
-            (WebappRuntimeInfo) getRuntimeInfo());
-        systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
-            WebappRuntimeInfo.class,
-            (WebappRuntimeInfo) getRuntimeInfo());
+        try {
+            // register the runtime info provided by the host
+            // FIXME andyp@bea.com -- autowire appears to need an exact type match,
+            // hence the need to register this twice
+            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
+                RuntimeInfo.class,
+                (WebappRuntimeInfo) getRuntimeInfo());
+            systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
+                WebappRuntimeInfo.class,
+                (WebappRuntimeInfo) getRuntimeInfo());
 
-        // register the monitor factory provided by the host
-        systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+            // register the monitor factory provided by the host
+            systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+        } catch (ComponentRegistrationException e) {
+            throw new InitializationException(e);
+        }
 
         systemComponent.start();
 

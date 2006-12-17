@@ -43,7 +43,7 @@ public class ConversationalScopeContainerPersistenceTestCase extends TestCase {
     /**
      * Verifies the scope container properly creates an instance
      */
-    public void testNotYetPersistedInMemory() {
+    public void testNotYetPersistedInMemory() throws Exception {
         String id = UUID.randomUUID().toString();
         context.setIdentifier(Scope.CONVERSATION, id);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);

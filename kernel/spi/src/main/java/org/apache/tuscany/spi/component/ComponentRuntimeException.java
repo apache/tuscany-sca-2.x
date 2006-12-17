@@ -21,7 +21,7 @@ package org.apache.tuscany.spi.component;
 import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
- * An unchecked exception encountered by an {@link SCAObject}
+ * An unchecked exception encountered by an {@link org.apache.tuscany.spi.component.Component}
  *
  * @version $Rev$ $Date$
  */

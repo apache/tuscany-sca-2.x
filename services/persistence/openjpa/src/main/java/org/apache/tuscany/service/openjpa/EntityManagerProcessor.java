@@ -26,6 +26,7 @@ import javax.persistence.PersistenceContext;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
@@ -66,8 +67,13 @@ public class EntityManagerProcessor extends AbstractPropertyProcessor<Persistenc
     protected <T> void initProperty(JavaMappedProperty<T> property,
                                     PersistenceContext annotation,
                                     CompositeComponent parent,
-                                    DeploymentContext context) {
-        EntityManagerFactory emf = parent.resolveSystemInstance(EntityManagerFactory.class);
+                                    DeploymentContext context) throws ProcessingException {
+        EntityManagerFactory emf;
+        try {
+            emf = parent.resolveSystemInstance(EntityManagerFactory.class);
+        } catch (TargetException e) {
+            throw new ProcessingException(e);
+        }
         ObjectFactory factory = new EntityManagerObjectFactory(emf);
         property.setDefaultValueFactory(factory);
     }

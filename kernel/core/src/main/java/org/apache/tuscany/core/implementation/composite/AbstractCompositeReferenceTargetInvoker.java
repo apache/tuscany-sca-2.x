@@ -67,10 +67,7 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
             }
         } else {
             msg.setTargetInvoker(invoker);
-
-            Message resp = headInterceptor.invoke(msg);
-
-            return resp;
+            return headInterceptor.invoke(msg);
         }
     }
 

@@ -21,7 +21,6 @@ package org.apache.tuscany.service.persistence.common;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
@@ -31,28 +30,35 @@ import javax.transaction.TransactionManager;
 
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
- * Annotation processor for injecting <code>PersistenceUnit</code> 
- * annotations on properties.
+ * Annotation processor for injecting <code>PersistenceUnit</code> annotations on properties.
  *
+ * @version $Rev$ $Date$
  */
 public class PersistenceContextProcessor extends AbstractPropertyProcessor<PersistenceContext> {
-    
-    /** Transaction Manager */
+
+    /**
+     * Transaction Manager
+     */
     @Autowire
     private TransactionManager transactionManager;
 
-    /** Persistence unit builder */
+    /**
+     * Persistence unit builder
+     */
     private PersistenceUnitBuilder builder = new DefaultPersistenceUnitBuilder();
 
     /**
      * Injects the implementation processor service.
+     *
      * @param service Implementation processor service.
      */
     public PersistenceContextProcessor(@Autowire ImplementationProcessorService service) {
@@ -71,14 +77,21 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
      * Initializes the property.
      */
     @SuppressWarnings("unchecked")
-    protected <T> void initProperty(JavaMappedProperty<T> property, PersistenceContext annotation, CompositeComponent parent, DeploymentContext context) {
+    protected <T> void initProperty(JavaMappedProperty<T> property,
+                                    PersistenceContext annotation,
+                                    CompositeComponent parent,
+                                    DeploymentContext context) throws ProcessingException {
 
         String unitName = annotation.unitName();
         EntityManagerFactory emf = (EntityManagerFactory) parent.getSystemChild(unitName);
 
         if (emf == null) {
             emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
-            parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
+            try {
+                parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
+            } catch (ComponentRegistrationException e) {
+                throw new ProcessingException(e);
+            }
         }
         ObjectFactory factory = new EmObjectFactory(emf, annotation);
         property.setDefaultValueFactory(factory);
@@ -86,7 +99,7 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
     }
 
     private class EmObjectFactory implements ObjectFactory<EntityManager> {
-        
+
         private EntityManagerFactory emf;
         private PersistenceContext annotation;
 
@@ -96,26 +109,27 @@ public class PersistenceContextProcessor extends AbstractPropertyProcessor<Persi
         }
 
         public EntityManager getInstance() {
-            
+
             PersistenceContextType type = annotation.type();
-            if(type == PersistenceContextType.TRANSACTION) {
-                
+            if (type == PersistenceContextType.TRANSACTION) {
+
                 Properties props = new Properties();
-                for(PersistenceProperty property : annotation.properties()) {
+                for (PersistenceProperty property : annotation.properties()) {
                     props.put(property.name(), property.value());
                 }
-                
-                Class[] interfaces = new Class[] {EntityManager.class};
+
+                Class[] interfaces = new Class[]{EntityManager.class};
                 InvocationHandler handler = new EntityManagerProxy(props, emf, transactionManager);
-                EntityManager em = (EntityManager)Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, handler);
+                EntityManager em =
+                    (EntityManager) Proxy.newProxyInstance(getClass().getClassLoader(), interfaces, handler);
                 return em;
-                
+
             } else {
                 throw new UnsupportedOperationException("Extended persistence contexts not supported");
             }
-            
+
         }
-        
+
     }
 
 }

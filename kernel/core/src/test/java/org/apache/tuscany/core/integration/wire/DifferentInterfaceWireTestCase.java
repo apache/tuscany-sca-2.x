@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
@@ -109,7 +110,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
         super.tearDown();
     }
 
-    private ScopeContainer createMock() {
+    private ScopeContainer createMock() throws TargetException {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();

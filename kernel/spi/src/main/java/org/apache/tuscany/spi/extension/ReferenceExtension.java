@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -81,11 +82,12 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
         return wireService.createProxy(inboundWire);
     }
 
-    public WireInvocationHandler getHandler() throws TargetException {
+    public WireInvocationHandler getHandler() {
         return wireService.createHandler(inboundWire);
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
 

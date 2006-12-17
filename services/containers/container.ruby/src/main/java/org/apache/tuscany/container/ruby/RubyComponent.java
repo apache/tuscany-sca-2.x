@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
@@ -131,7 +132,7 @@ public class RubyComponent extends AtomicComponentExtension {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
-            throw new TargetException("ServiceDefinition not found", service); // TODO better error message
+            throw new TargetNotFoundException("ServiceDefinition not found", service); // TODO better error message
         }
         return wireService.createProxy(wire);
     }

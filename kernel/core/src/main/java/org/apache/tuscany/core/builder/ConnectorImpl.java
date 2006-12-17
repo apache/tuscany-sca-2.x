@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -60,7 +61,6 @@ import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
  * @version $$Rev$$ $$Date$$
  */
 public class ConnectorImpl implements Connector {
-
     private WirePostProcessorRegistry postProcessorRegistry;
     private WireService wireService;
     private WorkContext workContext;
@@ -110,7 +110,18 @@ public class ConnectorImpl implements Connector {
                 for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                     Operation<?> operation = chain.getOperation();
                     String serviceName = inboundWire.getServiceName();
-                    TargetInvoker invoker = sourceComponent.createTargetInvoker(serviceName, operation, null);
+                    TargetInvoker invoker;
+                    try {
+                        invoker = sourceComponent.createTargetInvoker(serviceName, operation, null);
+                    } catch (TargetInvokerCreationException e) {
+                        String targetName = inboundWire.getContainer().getName();
+                        throw new WireConnectException("Error processing inbound wire",
+                            null,
+                            null,
+                            targetName,
+                            serviceName,
+                            e);
+                    }
                     chain.setTargetInvoker(invoker);
                     chain.prepare();
                 }
@@ -124,7 +135,18 @@ public class ConnectorImpl implements Connector {
                 // add target invoker on inbound side
                 ServiceContract contract = inboundWire.getServiceContract();
                 Operation operation = chain.getOperation();
-                TargetInvoker invoker = reference.createTargetInvoker(contract, operation);
+                TargetInvoker invoker;
+                try {
+                    invoker = reference.createTargetInvoker(contract, operation);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = inboundWire.getContainer().getName();
+                    throw new WireConnectException("Error processing inbound wire",
+                        null,
+                        null,
+                        targetName,
+                        null,
+                        e);
+                }
                 chain.setTargetInvoker(invoker);
                 chain.prepare();
             }
@@ -148,10 +170,6 @@ public class ConnectorImpl implements Connector {
             OutboundWire outboundWire = service.getOutboundWire();
             // For a composite reference only, since its outbound wire comes from its parent composite,
             // the corresponding target would not lie in its parent but rather in its parent's parent
-//            if (source instanceof CompositeReference) {
-//                parent = parent.getParent();
-//                assert parent != null : "Parent of parent was null";
-//            }
             SCAObject target;
             if (service.isSystem()) {
                 target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
@@ -209,9 +227,10 @@ public class ConnectorImpl implements Connector {
      * @param sourceWire  the source wire to connect
      * @param targetWire  the target wire to connect to
      * @param optimizable true if the wire connection can be optimized
+     * @throws WiringException
      */
     public void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable)
-        throws IncompatibleInterfacesException, IllegalCallbackException {
+        throws WiringException {
         SCAObject source = sourceWire.getContainer();
         SCAObject target = targetWire.getContainer();
         ServiceContract contract = sourceWire.getServiceContract();
@@ -261,10 +280,28 @@ public class ConnectorImpl implements Connector {
             if (target instanceof Component) {
                 Component component = (Component) target;
                 String portName = sourceWire.getTargetName().getPortName();
-                invoker = component.createTargetInvoker(portName, inboundOperation, targetWire);
+                try {
+                    invoker = component.createTargetInvoker(portName, inboundOperation, targetWire);
+                } catch (TargetInvokerCreationException e) {
+                    String sourceName = sourceWire.getContainer().getName();
+                    String refName = sourceWire.getReferenceName();
+                    String targetName = targetWire.getContainer().getName();
+                    String serviceName = targetWire.getServiceName();
+                    throw new WireConnectException("Error connecting source and target",
+                        sourceName,
+                        refName,
+                        targetName,
+                        serviceName,
+                        e);
+                }
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
-                invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundOperation);
+                try {
+                    invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundOperation);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = targetWire.getContainer().getName();
+                    throw new WireConnectException("Error processing inbound wire", null, null, targetName, null, e);
+                }
             } else if (target instanceof CompositeService) {
                 CompositeService compServ = (CompositeService) target;
                 invoker = compServ.createTargetInvoker(targetWire.getServiceContract(), inboundChain.getOperation());
@@ -316,7 +353,21 @@ public class ConnectorImpl implements Connector {
             targetWire.addSourceCallbackInvocationChain(source.getName(), targetOp, outboundChain);
             if (source instanceof Component) {
                 Component component = (Component) source;
-                TargetInvoker invoker = component.createTargetInvoker(null, operation, null);
+                TargetInvoker invoker;
+                try {
+                    invoker = component.createTargetInvoker(null, operation, null);
+                } catch (TargetInvokerCreationException e) {
+                    String sourceName = sourceWire.getContainer().getName();
+                    String refName = sourceWire.getReferenceName();
+                    String targetName = targetWire.getContainer().getName();
+                    String serviceName = targetWire.getServiceName();
+                    throw new WireConnectException("Error connecting source and target",
+                        sourceName,
+                        refName,
+                        targetName,
+                        serviceName,
+                        e);
+                }
                 connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof CompositeReference) {
                 CompositeReference compRef = (CompositeReference) source;
@@ -326,7 +377,13 @@ public class ConnectorImpl implements Connector {
             } else if (source instanceof Service) {
                 Service service = (Service) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
-                TargetInvoker invoker = service.createCallbackTargetInvoker(sourceContract, operation);
+                TargetInvoker invoker;
+                try {
+                    invoker = service.createCallbackTargetInvoker(sourceContract, operation);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = sourceWire.getContainer().getName();
+                    throw new WireConnectException("Error processing callback wire", null, null, targetName, null, e);
+                }
                 connect(outboundChain, inboundChain, invoker, false);
             }
         }

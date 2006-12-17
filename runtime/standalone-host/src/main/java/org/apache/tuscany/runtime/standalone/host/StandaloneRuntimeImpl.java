@@ -24,11 +24,12 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.builder.BuilderException;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -36,6 +37,7 @@ import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 
 /**
@@ -48,7 +50,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
     private CompositeComponent tuscanySystem;
     private CompositeComponent application;
 
-    public void initialize() {
+    public void initialize() throws InitializationException {
         ClassLoader bootClassLoader = getClass().getClassLoader();
 
         // Read optional system monitor factory classname
@@ -63,13 +65,17 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
 
         // register the runtime info provided by the host
         RuntimeInfo runtimeInfo = getRuntimeInfo();
-        systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
-        systemComponent.registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
-                                           StandaloneRuntimeInfo.class,
-                                           (StandaloneRuntimeInfo) runtimeInfo);
+        try {
+            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
+            systemComponent.registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
+                StandaloneRuntimeInfo.class,
+                (StandaloneRuntimeInfo) runtimeInfo);
 
-        // register the monitor factory provided by the host
-        systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+            // register the monitor factory provided by the host
+            systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+        } catch (ComponentRegistrationException e) {
+            throw new InitializationException(e);
+        }
 
         systemComponent.start();
 

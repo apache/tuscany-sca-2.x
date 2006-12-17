@@ -22,8 +22,8 @@ import java.net.URL;
 
 import org.osoa.sca.SCA;
 
-import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * @version $Rev$ $Date$
@@ -45,12 +45,14 @@ public interface TuscanyRuntime {
 
     /**
      * Returns the name of the component associated with the application SCDL.
+     *
      * @return the name of the component associated with the application SCDL
      */
     String getApplicationName();
 
     /**
      * Sets the name of the component associated with the application SCDL.
+     *
      * @param applicationName the name of the component associated with the application SCDL
      */
     void setApplicationName(String applicationName);
@@ -91,15 +93,15 @@ public interface TuscanyRuntime {
     RuntimeInfo getRuntimeInfo();
 
     /**
-     * Sets the info this runtime should make available to service components.
-     * The instance supplied here should be registered in the system composite with the name
-     * {@link RuntimeInfo#COMPONENT_NAME "RuntimeInfo"}.
+     * Sets the info this runtime should make available to service components. The instance supplied here should be
+     * registered in the system composite with the name {@link RuntimeInfo#COMPONENT_NAME "RuntimeInfo"}.
      *
      * @param runtimeInfo the information this runtime should make available to service components
      */
     void setRuntimeInfo(RuntimeInfo runtimeInfo);
 
-    /** Returns the MonitorFactory that this runtime is using.
+    /**
+     * Returns the MonitorFactory that this runtime is using.
      *
      * @return the MonitorFactory that this runtime is using
      */
@@ -107,6 +109,7 @@ public interface TuscanyRuntime {
 
     /**
      * Sets the MonitorFactory that this runtime should use.
+     *
      * @param monitorFactory the MonitorFactory that this runtime should use
      */
     void setMonitorFactory(MonitorFactory monitorFactory);
@@ -121,13 +124,16 @@ public interface TuscanyRuntime {
     /**
      * Initialize a runtime.
      *
+     * @throws InitializationException if there is an error initializing the runtime
      */
-    void initialize();
+    void initialize() throws InitializationException;
 
     /**
      * Destroy the runtime. Any further invocations should result in an error.
+     *
+     * @throws ShutdownException if there is an error destroying the runtime
      */
-    void destroy();
+    void destroy() throws ShutdownException;
 
     /**
      * Returns the current SCA context

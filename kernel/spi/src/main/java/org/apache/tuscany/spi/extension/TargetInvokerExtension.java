@@ -21,14 +21,16 @@ package org.apache.tuscany.spi.extension;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * The default implementation of a TargetInvoker
+ *
+ * @version $Rev$ $Date$
  */
 public abstract class TargetInvokerExtension implements TargetInvoker {
 
@@ -40,9 +42,9 @@ public abstract class TargetInvokerExtension implements TargetInvoker {
     /**
      * Creates a new invoker
      *
-     * @param wire the callback wire
+     * @param wire        the callback wire
      * @param workContext the work context to use for setting correlation information
-     * @param monitor
+     * @param monitor     the event monitor
      */
     public TargetInvokerExtension(InboundWire wire, WorkContext workContext, ExecutionMonitor monitor) {
         this.wire = wire;

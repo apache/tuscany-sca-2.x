@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -210,7 +211,7 @@ public class CompositeBuilderTestCase extends TestCase {
         return new ComponentDefinition<JavaImplementation>("TargetComponent", targetImpl);
     }
 
-    private ScopeContainer createMock() {
+    private ScopeContainer createMock() throws TargetException {
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
         container.start();
         container.register(EasyMock.isA(AtomicComponent.class));

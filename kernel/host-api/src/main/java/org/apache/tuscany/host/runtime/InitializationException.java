@@ -6,38 +6,28 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.host.runtime;
 
-import org.apache.tuscany.spi.component.ComponentRuntimeException;
+import org.apache.tuscany.api.TuscanyException;
 
 /**
- * Denotes an error initializing a component
+ * Denotes an error starting the runtime
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class ComponentInitException extends ComponentRuntimeException {
-    public ComponentInitException() {
-    }
+public class InitializationException extends TuscanyException {
 
-    public ComponentInitException(String message) {
-        super(message);
-    }
-
-    public ComponentInitException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public ComponentInitException(Throwable cause) {
+    public InitializationException(Throwable cause) {
         super(cause);
     }
 }

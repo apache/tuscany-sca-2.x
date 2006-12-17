@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import java.lang.reflect.InvocationTargetException;
-
-
 /**
  * Base class for dispatching an invocation through an {@link InboundInvocationChain}
  *
@@ -34,16 +31,11 @@ public abstract class AbstractInboundInvocationHandler {
     public Object invoke(InboundInvocationChain chain, TargetInvoker invoker, Object[] args) throws Throwable {
         Interceptor headInterceptor = chain.getHeadInterceptor();
         if (headInterceptor == null) {
-            try {
-                // short-circuit the dispatch and invoke the target directly
-                if (chain.getTargetInvoker() == null) {
-                    throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
-                }
-                return chain.getTargetInvoker().invokeTarget(args, TargetInvoker.NONE);
-            } catch (InvocationTargetException e) {
-                // the cause was thrown by the target so throw it
-                throw e.getCause();
+            // short-circuit the dispatch and invoke the target directly
+            if (chain.getTargetInvoker() == null) {
+                throw new AssertionError("No target invoker [" + chain.getOperation().getName() + "]");
             }
+            return chain.getTargetInvoker().invokeTarget(args, TargetInvoker.NONE);
         } else {
             Message msg = new MessageImpl();
             msg.setTargetInvoker(invoker);

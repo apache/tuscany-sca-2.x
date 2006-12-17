@@ -19,14 +19,14 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collections;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -35,13 +35,13 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
@@ -52,7 +52,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
-/**                 
+/**
  * @version $$Rev$$ $$Date$$
  */
 public class JavaComponentBuilderReferenceTestCase extends TestCase {
@@ -84,7 +84,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
 
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setWireService(wireService);
-        JavaAtomicComponent component =  (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
         component.addOutboundWire(wire);
         deploymentContext.getModuleScope().start();
         component.start();
@@ -104,7 +104,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     }
 
 
-    private void createDeploymentContext() {
+    private void createDeploymentContext() throws Exception {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         scope.start();
         scope.stop();

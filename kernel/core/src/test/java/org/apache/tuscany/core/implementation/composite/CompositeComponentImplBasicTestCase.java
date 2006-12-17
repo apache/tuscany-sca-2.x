@@ -50,51 +50,41 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         Assert.assertEquals(Scope.COMPOSITE, composite.getScope());
     }
 
-    public void testGetChildren() {
+    public void testGetChildren() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         Assert.assertEquals(1, composite.getChildren().size());
     }
 
-    public void testGetServices() {
+    public void testGetServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getServices().size());
     }
 
-    public void testGetService() {
+    public void testGetService() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.start();
         assertNotNull(composite.getService("foo"));
     }
 
-    public void testServiceNotFound() {
+    public void testServiceNotFound() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.start();
-        try {
-            composite.getService("bar");
-            fail();
-        } catch (TargetNotFoundException e) {
-            // expected
-        }
+        assertNull(composite.getService("bar"));
     }
 
-    public void testNotService() {
+    public void testNotService() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(getReference("foo"));
         composite.start();
-        try {
-            composite.getService("foo");
-            fail();
-        } catch (TargetNotFoundException e) {
-            // expected
-        }
+        assertNull(composite.getService("foo"));
     }
 
-    public void testTargetNotFound() {
+    public void testTargetNotFound() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(getReference("foo"));
         composite.start();
@@ -106,14 +96,14 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         }
     }
 
-    public void testReferencesServices() {
+    public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getReferences().size());
     }
 
-    public void testServiceInterfaces() {
+    public void testServiceInterfaces() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service1 = getService("foo", Foo.class);
         composite.register(service1);
@@ -129,7 +119,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         }
     }
 
-    public void testGetServiceInstanceByName() {
+    public void testGetServiceInstanceByName() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service = createMock(Service.class);
         EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
@@ -145,7 +135,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         assertNotNull(composite.getServiceInstance("foo"));
     }
 
-    public void testGetServiceInstanceNotFound() {
+    public void testGetServiceInstanceNotFound() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service = getService("foo", Foo.class);
         composite.register(service);
@@ -157,7 +147,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         }
     }
 
-    public void testGetServiceInstanceNotService() {
+    public void testGetServiceInstanceNotService() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Reference reference = getReference("foo");
         composite.register(reference);

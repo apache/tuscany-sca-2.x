@@ -18,16 +18,16 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.store.Store;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -39,7 +39,7 @@ public class ConversationalScopeContainerMaxAgeTestCase extends TestCase {
     private Store store;
     private AtomicComponent component;
 
-    public void testMaxAgeUpdate() {
+    public void testMaxAgeUpdate() throws Exception {
         context.setIdentifier(Scope.CONVERSATION, "12345");
         container.getInstance(component);
         EasyMock.verify(store);

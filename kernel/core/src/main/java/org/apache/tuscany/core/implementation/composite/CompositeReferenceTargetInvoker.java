@@ -27,7 +27,9 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
+ * Dispatches an invocation through a composite reference
  *
+ * @version $Rev$ $Date$
  */
 public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 

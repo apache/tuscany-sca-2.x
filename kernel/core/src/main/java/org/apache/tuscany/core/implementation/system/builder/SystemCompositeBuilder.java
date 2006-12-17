@@ -24,7 +24,9 @@ import java.util.List;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -87,7 +89,11 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
                 e.addContextName(parent.getName());
                 throw e;
             }
-            component.register(child);
+            try {
+                component.register(child);
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering component", e);
+            }
         }
 
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
@@ -100,7 +106,11 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
                 e.addContextName(parent.getName());
                 throw e;
             }
-            component.register(object);
+            try {
+                component.register(object);
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering service", e);
+            }
         }
         return component;
     }

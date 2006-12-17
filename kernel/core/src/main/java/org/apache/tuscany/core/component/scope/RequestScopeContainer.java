@@ -24,7 +24,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -65,9 +64,9 @@ public class RequestScopeContainer extends AbstractScopeContainer {
                 if (entry.getKey().isEagerInit()) {
                     try {
                         getInstance(entry.getKey());
-                    } catch (ObjectCreationException e) {
-                        e.addContextName(entry.getKey().getName());
-                        throw e;
+                    } catch (TargetException e) {
+                        // FIXME JFM monitor 
+                        e.printStackTrace();
                     }
                 }
             }
@@ -131,7 +130,8 @@ public class RequestScopeContainer extends AbstractScopeContainer {
                     try {
                         iter.previous().stop();
                     } catch (TargetException e) {
-                        // TODO send a monitoring event
+                        // JFM FIXME
+                        e.printStackTrace();
                     }
                 }
             }

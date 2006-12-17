@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
@@ -84,19 +86,39 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         String name = componentDefinition.getName();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, connector, null);
         for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
-            component.register(builderRegistry.build(component, referenceDefinition, deploymentContext));
+            try {
+                component.register(builderRegistry.build(component, referenceDefinition, deploymentContext));
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering reference", e);
+            }
         }
         for (BindlessServiceDefinition bindlessServiceDef : allBindlessServices) {
-            component.register(builderRegistry.build(component, bindlessServiceDef, deploymentContext));
+            try {
+                component.register(builderRegistry.build(component, bindlessServiceDef, deploymentContext));
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering service", e);
+            }
         }
         for (ComponentDefinition<? extends Implementation<?>> child : allComponents) {
-            component.register(builderRegistry.build(component, child, deploymentContext));
+            try {
+                component.register(builderRegistry.build(component, child, deploymentContext));
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering component", e);
+            }
         }
         for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
-            component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
+            try {
+                component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering service", e);
+            }
         }
         for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
-            component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
+            try {
+                component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering reference", e);
+            }
         }
         component.getExtensions().putAll(componentType.getExtensions());
         return component;

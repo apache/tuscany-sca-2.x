@@ -21,7 +21,6 @@ package org.apache.tuscany.container.spring.impl;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
@@ -55,10 +54,10 @@ public class SpringInvoker implements TargetInvoker {
             try {
                 bean = component.locateService(Object.class, beanName);
                 if (bean == null) {
-                    throw new TargetNotFoundException(beanName);
+                    throw new InvocationTargetException(new TargetNotFoundException(beanName));
                 }
             } catch (BeansException e) {
-                throw new TargetException(e);
+                throw new InvocationTargetException(e);
             }
         }
         try {

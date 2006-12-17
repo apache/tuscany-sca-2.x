@@ -25,8 +25,9 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
-import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
+import org.apache.tuscany.host.runtime.ShutdownException;
 import static org.apache.tuscany.runtime.webapp.Constants.ONLINE_PARAM;
+import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 
 /**
  * Launches a Tuscany runtime in a web application, loading information from servlet context parameters. This listener
@@ -39,11 +40,11 @@ import static org.apache.tuscany.runtime.webapp.Constants.ONLINE_PARAM;
  * <p/>
  * The <code>web.xml</code> of a web application embedding Tuscany must have entries for this listener and {@link
  * TuscanySessionListener}. The latter notifies the runtime of session creation and expiration events through a
- * "bridging" contract, {@link WebappRuntime}. The <code>web.xml</code> may also optionally be configured with
- * entries for {@link TuscanyFilter} and {@link TuscanyServlet}. The former must be mapped to all urls that execute
- * "unmanaged" code which accesses the Tuscany runtime though the SCA API, for example, JSPs and Servlets. The latter
- * forwards service requests into the runtime, by default requests sent to URLs relative to the context path beginning
- * with <code>/services</code>.
+ * "bridging" contract, {@link WebappRuntime}. The <code>web.xml</code> may also optionally be configured with entries
+ * for {@link TuscanyFilter} and {@link TuscanyServlet}. The former must be mapped to all urls that execute "unmanaged"
+ * code which accesses the Tuscany runtime though the SCA API, for example, JSPs and Servlets. The latter forwards
+ * service requests into the runtime, by default requests sent to URLs relative to the context path beginning with
+ * <code>/services</code>.
  *
  * @version $Rev$ $Date$
  */
@@ -58,8 +59,8 @@ public class TuscanyContextListener implements ServletContextListener {
             WebappRuntime runtime = utils.getRuntime(bootClassLoader);
             boolean online = Boolean.valueOf(utils.getInitParameter(ONLINE_PARAM, "true"));
             WebappRuntimeInfo info = new WebappRuntimeInfoImpl(servletContext,
-                                                               servletContext.getResource("/WEB-INF/tuscany/"),
-                                                               online);
+                servletContext.getResource("/WEB-INF/tuscany/"),
+                online);
             URL systemScdl = utils.getSystemScdl(bootClassLoader);
             URL applicationScdl = utils.getApplicationScdl(webappClassLoader);
             String name = utils.getApplicationName();
@@ -100,7 +101,11 @@ public class TuscanyContextListener implements ServletContextListener {
             return;
         }
         servletContext.removeAttribute(RUNTIME_ATTRIBUTE);
-        runtime.destroy();
+        try {
+            runtime.destroy();
+        } catch (ShutdownException e) {
+            servletContext.log("Error destorying runtume", e);
+        }
     }
 
 }

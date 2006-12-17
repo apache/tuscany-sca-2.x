@@ -63,14 +63,14 @@ public class WiringExceptionFormatter implements ExceptionFormatter {
         assert exception instanceof WiringException;
         WiringException e = (WiringException) exception;
         e.appendBaseMessage(writer);
-        if (e.getReferenceName() != null) {
+        if (e.getSourceName() != null && e.getReferenceName() != null) {
             writer.write("\nSource : " + e.getSourceName() + "/" + e.getReferenceName());
-        } else {
+        } else if (e.getSourceName() != null) {
             writer.write("\nSource : " + e.getSourceName());
         }
-        if (e.getTargetServiceName() != null) {
+        if (e.getTargetName() != null && e.getTargetServiceName() != null) {
             writer.write("\nTarget : " + e.getTargetName() + "/" + e.getTargetServiceName());
-        } else {
+        } else if (e.getTargetName() != null) {
             writer.write("\nTarget : " + e.getTargetName());
         }
         e.appendContextStack(writer).append("\n");

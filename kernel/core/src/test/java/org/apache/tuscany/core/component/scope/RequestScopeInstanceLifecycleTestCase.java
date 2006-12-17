@@ -20,6 +20,7 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetException;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -115,7 +116,7 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private SystemAtomicComponent createComponent(boolean init) {
+    private SystemAtomicComponent createComponent(boolean init) throws TargetException {
         SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
         EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {

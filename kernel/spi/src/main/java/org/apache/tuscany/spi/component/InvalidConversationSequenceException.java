@@ -23,17 +23,9 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class InvalidConversationSequenceException extends TargetException {
+public class InvalidConversationSequenceException extends TargetInvocationException {
 
-    public InvalidConversationSequenceException(String message) {
-        super(message);
-    }
-
-    public InvalidConversationSequenceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidConversationSequenceException(Throwable cause) {
-        super(cause);
+    public InvalidConversationSequenceException(String message, String identifier) {
+        super(message, identifier);
     }
 }

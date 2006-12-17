@@ -52,17 +52,11 @@ public interface SCAObject extends EventPublisher, Lifecycle {
     Scope getScope();
 
     /**
-     * Returns an instance associated with the default service
+     * Returns true if the artifact is a system artifact
      *
-     * @throws TargetException if an error occurs retrieving the instance
+     * @return true if the artifact is a system artifact
      */
-    Object getServiceInstance() throws TargetException;
-
-    /**
-     * Called to signal that the composite should perform and required steps prior to registration with its parent such
-     * as wiring of its children
-     */
-    void prepare() throws PrepareException;
+    boolean isSystem();
 
     /**
      * The extensions map contains other runtime context such as type systems for various databindings
@@ -72,10 +66,16 @@ public interface SCAObject extends EventPublisher, Lifecycle {
     Map<Object, Object> getExtensions();
 
     /**
-     * Returns true if the artifact is a system artifact
+     * Returns an instance associated with the default service
      *
-     * @return true if the artifact is a system artifact
+     * @throws TargetException if an error occurs retrieving the instance
      */
-    boolean isSystem();
+    Object getServiceInstance() throws TargetException;
+
+    /**
+     * Called to signal that the composite should perform any required steps prior to registration with its parent such
+     * as wiring of its children
+     */
+    void prepare() throws PrepareException;
 
 }

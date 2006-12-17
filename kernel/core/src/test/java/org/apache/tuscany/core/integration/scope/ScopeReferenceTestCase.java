@@ -29,6 +29,7 @@ import java.util.concurrent.FutureTask;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -45,11 +46,11 @@ import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.integration.mock.MockFactory;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.core.mock.component.Target;
-import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Source;
+import org.apache.tuscany.core.mock.component.SourceImpl;
+import org.apache.tuscany.core.mock.component.Target;
+import org.apache.tuscany.core.mock.component.TargetImpl;
+import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
  * Tests scoping is properly handled for service references
@@ -161,7 +162,12 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = (Target) targetComponent.getServiceInstance();
+                Target target2 = null;
+                try {
+                    target2 = (Target) targetComponent.getServiceInstance();
+                } catch (TargetException e) {
+                    fail(e.getMessage());
+                }
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -336,7 +342,12 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = (Target) targetComponent.getServiceInstance();
+                Target target2 = null;
+                try {
+                    target2 = (Target) targetComponent.getServiceInstance();
+                } catch (TargetException e) {
+                    fail(e.getMessage());
+                }
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");
@@ -420,8 +431,14 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = (Source) sourceComponent.getServiceInstance();
-                Target target2 = (Target) targetComponent.getServiceInstance();
+                Source source2 = null;
+                Target target2 = null;
+                try {
+                    source2 = (Source) sourceComponent.getServiceInstance();
+                    target2 = (Target) targetComponent.getServiceInstance();
+                } catch (TargetException e) {
+                    fail(e.getMessage());
+                }
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source2.getTarget().getString()));
                 source2.getTarget().setString("bar");
@@ -466,8 +483,14 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = (Source) sourceComponent.getServiceInstance();
-                Target target2 = (Target) targetComponent.getServiceInstance();
+                Source source2 = null;
+                Target target2 = null;
+                try {
+                    source2 = (Source) sourceComponent.getServiceInstance();
+                    target2 = (Target) targetComponent.getServiceInstance();
+                } catch (TargetException e) {
+                    fail(e.getMessage());
+                }
                 assertEquals("foo", target2.getString());
                 assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -518,8 +541,14 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Source source2 = (Source) sourceComponent.getServiceInstance();
-                Target target2 = (Target) targetComponent.getServiceInstance();
+                Source source2 = null;
+                Target target2 = null;
+                try {
+                    source2 = (Source) sourceComponent.getServiceInstance();
+                    target2 = (Target) targetComponent.getServiceInstance();
+                } catch (TargetException e) {
+                    fail(e.getMessage());
+                }
                 assertEquals("foo", target2.getString());
                 assertEquals("foo", source2.getTarget().getString());
                 source2.getTarget().setString("bar");
@@ -628,7 +657,12 @@ public class ScopeReferenceTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 requestScope.onEvent(new RequestStart(this));
-                Target target2 = (Target) targetComponent.getServiceInstance();
+                Target target2 = null;
+                try {
+                    target2 = (Target) targetComponent.getServiceInstance();
+                } catch (TargetException e) {
+                    fail(e.getMessage());
+                }
                 assertFalse("foo".equals(target2.getString()));
                 assertFalse("foo".equals(source.getTarget().getString()));
                 source.getTarget().setString("bar");

@@ -201,7 +201,7 @@ public class JavaLoggingMonitorFactory implements MonitorFactory, FormatterRegis
         private final Logger logger;
         private final Map<String, Level> methodLevels;
         private final ResourceBundle bundle;
-        private List<ExceptionFormatter> formatters = new ArrayList<ExceptionFormatter>();
+        private List<ExceptionFormatter> formatters;
         private ExceptionFormatter defaultFormatter;
 
         public LoggingHandler(Logger logger,

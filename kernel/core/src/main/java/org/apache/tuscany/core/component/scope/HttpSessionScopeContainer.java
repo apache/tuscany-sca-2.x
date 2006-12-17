@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -67,8 +67,12 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
                     try {
                         getInstance(entry.getKey(), key, true);
                     } catch (ObjectCreationException e) {
-                        e.addContextName(entry.getKey().getName());
-                        throw e;
+                        // FIXME JFM
+                        e.printStackTrace();
+                    } catch (TargetException e) {
+                        // FIXME JFM
+                        e.printStackTrace();
+
                     }
                 }
             }
@@ -106,7 +110,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
         return getInstance(component, key, create);
     }
 
-    private InstanceWrapper getInstance(AtomicComponent component, Object key, boolean create) {
+    private InstanceWrapper getInstance(AtomicComponent component, Object key, boolean create) throws TargetException {
         Map<Object, InstanceWrapper> wrappers = contexts.get(component);
         InstanceWrapper ctx = wrappers.get(key);
         if (ctx == null && !create) {
@@ -141,7 +145,8 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
                     try {
                         iter.previous().stop();
                     } catch (TargetException e) {
-                        // TODO send a monitoring event
+                        // JFM FIXME
+                        e.printStackTrace();
                     }
                 }
             }

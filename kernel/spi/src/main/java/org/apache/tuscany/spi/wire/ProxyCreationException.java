@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.api.TuscanyRuntimeException;
+import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
  * Denotes an error creating a proxy
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ProxyCreationException extends TuscanyRuntimeException {
+public class ProxyCreationException extends CoreRuntimeException {
     public ProxyCreationException() {
     }
 

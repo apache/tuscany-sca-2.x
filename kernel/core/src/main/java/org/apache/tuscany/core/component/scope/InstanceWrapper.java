@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.Lifecycle;
+import org.apache.tuscany.spi.component.TargetException;
 
 /**
  * Provides lifecycle management for an implementation instance associated with an {@link
@@ -27,8 +27,14 @@ import org.apache.tuscany.spi.Lifecycle;
  *
  * @version $Rev$ $Date$
  */
-public interface InstanceWrapper extends Lifecycle {
+public interface InstanceWrapper {
 
     Object getInstance();
+
+    boolean isStarted();
+
+    void start() throws TargetException;
+
+    void stop() throws TargetException;
 
 }

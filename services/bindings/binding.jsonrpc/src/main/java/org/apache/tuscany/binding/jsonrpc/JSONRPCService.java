@@ -19,6 +19,8 @@
 package org.apache.tuscany.binding.jsonrpc;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObjectStartException;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
@@ -44,8 +46,12 @@ public class JSONRPCService extends ServiceExtension {
 
     public synchronized void start() {
         super.start();
-
-        JSONRPCEntryPointServlet servlet = new JSONRPCEntryPointServlet(getName(), interfaze, this.getServiceInstance());
+		  JSONRPCEntryPointServlet servlet;
+        try {
+            servlet = new JSONRPCEntryPointServlet(getName(), interfaze, this.getServiceInstance());
+		  } catch (TargetException e) {
+			  throw new SCAObjectStartException(e);
+		  }
 
         // register the servlet based on the service name
         servletHost.registerMapping("/" + getName(), servlet);

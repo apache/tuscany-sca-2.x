@@ -26,11 +26,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.component.PersistenceException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -106,7 +106,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     public Object getInstance(AtomicComponent component) throws TargetException {
         InstanceWrapper ctx = getInstanceWrapper(component, true);
         if (ctx != null) {
-            if (ctx.getLifecycleState() == UNINITIALIZED) {
+            if (!ctx.isStarted()) {
                 ctx.start();
             }
             return ctx.getInstance();
@@ -117,7 +117,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
         InstanceWrapper ctx = getInstanceWrapper(component, false);
         if (ctx != null) {
-            if (ctx.getLifecycleState() == UNINITIALIZED) {
+            if (!ctx.isStarted()) {
                 ctx.start();
             }
             return ctx.getInstance();
@@ -161,5 +161,6 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
         return "ScopeContainer [" + name + "] in state [" + super.toString() + ']';
     }
 
-    protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create);
+    protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+        throws TargetException;
 }

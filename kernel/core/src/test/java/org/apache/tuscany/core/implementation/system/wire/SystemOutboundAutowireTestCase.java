@@ -32,7 +32,7 @@ import static org.easymock.EasyMock.verify;
  */
 public class SystemOutboundAutowireTestCase extends TestCase {
 
-    public void testAutowire() {
+    public void testAutowire() throws Exception {
         CompositeComponent component = createMock(CompositeComponent.class);
         expect(component.resolveSystemInstance(Object.class)).andReturn(new Object());
         replay(component);
@@ -42,7 +42,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
     }
 
 
-    public void testNonExistentAutowire() {
+    public void testNonExistentAutowire() throws Exception {
         CompositeComponent component = createMock(CompositeComponent.class);
         expect(component.resolveSystemInstance(Object.class)).andReturn(null);
         replay(component);
@@ -57,7 +57,7 @@ public class SystemOutboundAutowireTestCase extends TestCase {
     }
 
 
-    public void testNonExistentAutowireNotRequired() {
+    public void testNonExistentAutowireNotRequired() throws Exception {
         CompositeComponent component = createMock(CompositeComponent.class);
         expect(component.resolveSystemInstance(Object.class)).andReturn(null);
         replay(component);

@@ -26,8 +26,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -37,6 +37,8 @@ import groovy.lang.GroovyObject;
 
 /**
  * The Groovy atomic component implementation. Groovy implementations may be "scripts" or classes.
+ *
+ * @version $Rev$ $Date$
  */
 public class GroovyAtomicComponent extends AtomicComponentExtension {
     private final Class<? extends GroovyObject> groovyClass;
@@ -104,7 +106,7 @@ public class GroovyAtomicComponent extends AtomicComponentExtension {
     public Object getServiceInstance(String service) throws TargetException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
-            throw new TargetException("ServiceDefinition not found", service);
+            throw new TargetNotFoundException("Service not found", service);
         }
         return wireService.createProxy(wire);
     }

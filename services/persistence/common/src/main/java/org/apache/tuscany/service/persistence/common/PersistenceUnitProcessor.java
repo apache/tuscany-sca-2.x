@@ -19,13 +19,14 @@
 package org.apache.tuscany.service.persistence.common;
 
 import java.lang.reflect.Field;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -36,13 +37,15 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
 
 /**
- * Annotation processor for injecting <code>PersistenceUnit</code> 
- * annotations on properties.
+ * Annotation processor for injecting <code>PersistenceUnit</code> annotations on properties.
  *
+ * @version $Rev$ $Date$
  */
 public class PersistenceUnitProcessor extends ImplementationProcessorExtension {
 
-    /** Persistence unit builder */
+    /**
+     * Persistence unit builder
+     */
     private PersistenceUnitBuilder builder = new DefaultPersistenceUnitBuilder();
 
     public void visitField(CompositeComponent parent,
@@ -56,15 +59,23 @@ public class PersistenceUnitProcessor extends ImplementationProcessorExtension {
         }
         String unitName = annotation.unitName();
 
-        SystemAtomicComponent component = (SystemAtomicComponent)parent.getSystemChild(unitName);
+        SystemAtomicComponent component = (SystemAtomicComponent) parent.getSystemChild(unitName);
         EntityManagerFactory emf;
         if (component == null) {
             emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());
-            parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
+            try {
+                parent.registerJavaObject(unitName, EntityManagerFactory.class, emf);
+            } catch (ComponentRegistrationException e) {
+                throw new ProcessingException(e);
+            }
         } else {
-            emf = (EntityManagerFactory)component.getTargetInstance();
+            try {
+                emf = (EntityManagerFactory) component.getTargetInstance();
+            } catch (TargetException e) {
+                throw new ProcessingException(e);
+            }
         }
-        
+
         ObjectFactory factory = new EmfObjectFactory(emf);
         Resource resource = new Resource();
         resource.setObjectFactory(factory);

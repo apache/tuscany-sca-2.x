@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
@@ -39,6 +40,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.container.spring.context.SCAApplicationContext;
+import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -173,7 +175,11 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
                 // need null check since Spring may pass in a null
                 throw new BeanNotOfRequiredTypeException(name, requiredType, type);
             }
-            return object.getServiceInstance();
+            try {
+                return object.getServiceInstance();
+            } catch (TargetException e) {
+                throw new BeanInstantiationException(requiredType, "Error returning service or reference", e);
+            }
         }
 
         public boolean containsBean(String name) {

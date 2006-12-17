@@ -29,7 +29,7 @@ import org.easymock.classextension.EasyMock;
 public class ScriptInvokerTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
-    public void testInvokeTarget() throws InvocationTargetException {
+    public void testInvokeTarget() throws Exception {
         ScriptInstance instance = EasyMock.createMock(ScriptInstance.class);
         instance.invokeTarget(EasyMock.eq("operation"), (Object[]) EasyMock.notNull());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer() {
@@ -51,7 +51,7 @@ public class ScriptInvokerTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testInvokeTargetException() throws InvocationTargetException, SecurityException, NoSuchMethodException {
+    public void testInvokeTargetException() throws Exception {
         ScriptInstance instance = EasyMock.createMock(ScriptInstance.class);
         instance.invokeTarget(EasyMock.eq("operation"), (Object[]) EasyMock.notNull());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer() {

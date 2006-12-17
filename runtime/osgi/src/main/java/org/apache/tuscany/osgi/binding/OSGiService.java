@@ -22,6 +22,8 @@ import java.lang.reflect.Proxy;
 import java.util.Properties;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObjectStartException;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -58,10 +60,15 @@ public class OSGiService extends ServiceExtension {
         this.host = host;
     }
 
-    public void start() {
+    public void start() throws SCAObjectStartException {
         super.start();
         Properties properties = new Properties();
-        Object instance = getServiceInstance();
+        Object instance;
+        try {
+            instance = getServiceInstance();
+        } catch (TargetException e) {
+            throw new SCAObjectStartException(e);
+        }
         if (instance instanceof ServiceFactory) {
             host.registerService(osgiServiceName, instance, properties);
         } else {

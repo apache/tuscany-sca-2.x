@@ -18,10 +18,9 @@ import org.apache.tuscany.test.SCATestCase;
  * @version $Rev$ $Date$
  */
 public class BootstrapTestCase extends SCATestCase {
-
     private CompositeContext context;
 
-    public void testDemoBoot() {
+    public void testDemoBoot() throws Exception {
         SpringCompositeComponent comp = (SpringCompositeComponent) component.getChild("Spring");
         Service service = (Service) comp.getChild("fooService");
         TestBean bean = (TestBean) service.getServiceInstance();

@@ -50,11 +50,9 @@ public class OutboundWireImpl implements OutboundWire {
     private SCAObject container;
 
     public Object getTargetService() throws TargetException {
-        if (targetWire != null) {
-            // optimized, no interceptors or handlers on either end
-            return targetWire.getTargetService();
-        }
-        throw new TargetException("Target wire not optimized");
+        assert targetWire != null;
+        // optimized, no interceptors or handlers on either end
+        return targetWire.getTargetService();
     }
 
     public ServiceContract getServiceContract() {

@@ -21,6 +21,7 @@ package org.apache.tuscany.container.javascript;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -52,7 +53,12 @@ public class JavaScriptInvoker extends TargetInvokerExtension {
      * Invokes a function on a script instance
      */
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
-        RhinoScriptInstance target = context.getTargetInstance();
+        RhinoScriptInstance target = null;
+        try {
+            target = context.getTargetInstance();
+        } catch (TargetException e) {
+            throw new InvocationTargetException(e);
+        }
         return target.invokeFunction(functionName, (Object[]) payload);
     }
 

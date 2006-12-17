@@ -20,6 +20,7 @@ package org.apache.tuscany.container.groovy;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
@@ -61,11 +62,15 @@ public class GroovyInvoker extends TargetInvokerExtension {
     }
 
     /**
-     * Dispatches to the the target.
-     * TODO support conversational dispatch
+     * Dispatches to the the target. TODO support conversational dispatch
      */
     public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
-        GroovyObject target = component.getTargetInstance();
+        GroovyObject target = null;
+        try {
+            target = component.getTargetInstance();
+        } catch (TargetException e) {
+            throw new InvocationTargetException(e);
+        }
         Object[] args = (Object[]) payload;
         try {
             return target.invokeMethod(operation, args);

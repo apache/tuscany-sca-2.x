@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.bootstrap;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.deployer.Deployer;
 
 /**
@@ -48,6 +49,7 @@ public interface RuntimeComponent extends CompositeComponent {
      * Returns the deployer for this runtime. This interface can be used to deploy new SCA bundles to the runtime.
      *
      * @return the deployer for this runtime
+     * @throws TargetException if there is an error returning the deployer
      */
-    Deployer getDeployer();
+    Deployer getDeployer() throws TargetException;
 }
