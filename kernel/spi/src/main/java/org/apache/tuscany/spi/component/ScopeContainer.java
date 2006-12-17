@@ -68,7 +68,7 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      * @param id         the id associated with the instance
      * @param instance   the instance to persist
      * @param expiration the expiration in milliseconds
-     * @throws org.apache.tuscany.spi.component.PersistenceException
+     * @throws PersistenceException
      */
     void persistNew(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
 
@@ -79,7 +79,7 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      * @param id         the id associated with the instance
      * @param instance   the instance to persist
      * @param expiration the expiration in milliseconds
-     * @throws org.apache.tuscany.spi.component.PersistenceException
+     * @throws PersistenceException
      */
     void persist(AtomicComponent component, String id, Object instance, long expiration) throws PersistenceException;
 
@@ -87,7 +87,7 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      * Removes a component implementation instance associated with the current context from persistent storage
      *
      * @param component the owning component
-     * @throws org.apache.tuscany.spi.component.PersistenceException
+     * @throws PersistenceException
      */
     void remove(AtomicComponent component) throws PersistenceException;
 }
