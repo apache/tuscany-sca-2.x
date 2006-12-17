@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.spi.services.store.StoreException;
 
 /**
  * Denotes an error shutting down the journal
  *
  * @version $Rev$ $Date$
  */
-public class JournalShutdownException extends TuscanyException {
+public class JournalShutdownException extends StoreException {
 
     public JournalShutdownException(Throwable cause) {
         super(cause);

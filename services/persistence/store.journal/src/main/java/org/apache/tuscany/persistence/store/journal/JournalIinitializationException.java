@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.spi.services.store.StoreException;
 
 /**
  * Denotes an error starting the journal
  *
  * @version $Rev$ $Date$
  */
-public class JournalIinitializationException extends TuscanyException {
+public class JournalIinitializationException extends StoreException {
 
     public JournalIinitializationException(Throwable cause) {
         super(cause);

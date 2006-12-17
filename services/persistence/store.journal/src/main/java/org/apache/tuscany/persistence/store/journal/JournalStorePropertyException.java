@@ -18,14 +18,14 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
-import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.spi.services.store.StoreException;
 
 /**
  * Denotes an error setting a property on the journal store
  *
  * @version $Rev$ $Date$
  */
-public class JournalStorePropertyException extends TuscanyException {
+public class JournalStorePropertyException extends StoreException {
 
     public JournalStorePropertyException(Throwable cause) {
         super(cause);
