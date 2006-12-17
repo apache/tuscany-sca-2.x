@@ -159,11 +159,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     /**
      * Returns the conversation id associated with the current invocation context
      */
-    private String getConversationId() throws PersistenceException {
+    private String getConversationId() {
         String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
-        if (conversationId == null) {
-            throw new PersistenceException("Conversation id not set in context");
-        }
+        assert conversationId != null;
         return conversationId;
     }
 

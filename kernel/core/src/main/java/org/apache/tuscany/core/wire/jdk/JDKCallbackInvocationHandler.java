@@ -69,6 +69,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         this.serviceName = wire.getServiceName();
     }
 
+    @SuppressWarnings({"unchecked"})
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
             return "[Proxy - " + Integer.toHexString(hashCode()) + "]";

@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class PersistenceException extends ScopeRuntimeException {
+public class PersistenceException extends ComponentException {
     public PersistenceException() {
     }
 

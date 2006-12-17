@@ -27,6 +27,7 @@ import org.osoa.sca.NoRegisteredCallbackException;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -95,7 +96,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             return ret;
         } catch (IllegalAccessException e) {
             throw new InvocationTargetException(e);
-        } catch (TargetException e) {
+        } catch (ComponentException e) {
             throw new InvocationTargetException(e);
         }
     }

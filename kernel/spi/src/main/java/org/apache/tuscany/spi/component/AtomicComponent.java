@@ -28,7 +28,9 @@ import org.apache.tuscany.spi.ObjectCreationException;
 public interface AtomicComponent extends Component {
 
     /**
-     * Returns whether component instances should be eagerly initialized
+     * Returns true if component instances should be eagerly initialized.
+     *
+     * @return true if component instances should be eagerly initialized
      */
     boolean isEagerInit();
 
@@ -36,33 +38,33 @@ public interface AtomicComponent extends Component {
      * Returns the initialization level for this component.
      *
      * @return the initialization level for this component
-     * @see org.apache.tuscany.spi.model.ComponentDefinition#getInitLevel()
      */
     int getInitLevel();
 
     /**
-     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational
+     * Returns the idle time allowed between operations in milliseconds if the implementation is conversational.
      *
      * @return the idle time allowed between operations in milliseconds if the implementation is conversational
      */
     long getMaxIdleTime();
 
     /**
-     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is conversational
+     * Returns the maximum age a conversation may remain active in milliseconds if the implementation is
+     * conversational.
      *
      * @return the maximum age a conversation may remain active in milliseconds if the implementation is conversational
      */
     long getMaxAge();
 
     /**
-     * Notifies the given instance of an initialization event
+     * Notifies the given instance of an initialization event.
      *
      * @throws TargetException
      */
     void init(Object instance) throws TargetException;
 
     /**
-     * Notifies the given instance of a destroy event
+     * Notifies the given instance of a destroy event.
      *
      * @throws TargetException
      */
@@ -70,15 +72,18 @@ public interface AtomicComponent extends Component {
 
     /**
      * Creates a new implementation instance, generally used as a callback by a {@link
-     * org.apache.tuscany.spi.component.ScopeContainer}
+     * org.apache.tuscany.spi.component.ScopeContainer}.
      *
+     * @return the instance
      * @throws ObjectCreationException
      */
     Object createInstance() throws ObjectCreationException;
 
     /**
-     * Removes an implementation instance associated with the current invocation context
+     * Removes an implementation instance associated with the current invocation context.
+     *
+     * @throws ComponentException
      */
-    void removeInstance();
+    void removeInstance() throws ComponentException;
 
 }

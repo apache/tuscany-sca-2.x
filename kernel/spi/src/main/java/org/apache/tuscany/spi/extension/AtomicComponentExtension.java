@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -169,7 +170,7 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
         onReferenceWires(multiplicityClass, wires);
     }
 
-    public void removeInstance() {
+    public void removeInstance() throws ComponentException {
         scopeContainer.remove(this);
     }
 
