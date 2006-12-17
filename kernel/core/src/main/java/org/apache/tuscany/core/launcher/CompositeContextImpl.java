@@ -27,9 +27,13 @@ import org.osoa.sca.ServiceRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetException;
 
-
+/**
+ * Implementation of SCA Specification CompositeContext that delegates to the Tuscany runtime fabric.
+ *
+ * @version $Rev$ $Date$
+ */
 public class CompositeContextImpl extends SCA implements CompositeContext {
-    protected final CompositeComponent composite;
+    private final CompositeComponent composite;
 
     public CompositeContextImpl(final CompositeComponent composite) {
         this.composite = composite;
@@ -43,11 +47,11 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         setCompositeContext(null);
     }
 
-    public ServiceReference createServiceReferenceForSession(Object arg0) {
+    public ServiceReference createServiceReferenceForSession(Object self) {
         return null;
     }
 
-    public ServiceReference createServiceReferenceForSession(Object arg0, String arg1) {
+    public ServiceReference createServiceReferenceForSession(Object self, String serviceName) {
         return null;
     }
 
@@ -71,12 +75,11 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         }
     }
 
-    public ServiceReference newSession(String arg0) {
+    public ServiceReference newSession(String serviceName) {
         return null;
     }
 
-    public ServiceReference newSession(String arg0, Object arg1) {
+    public ServiceReference newSession(String serviceName, Object sessionId) {
         return null;
     }
-
 }
