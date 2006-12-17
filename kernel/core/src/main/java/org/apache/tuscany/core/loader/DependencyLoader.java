@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.services.artifact.Artifact;
+
+import org.apache.tuscany.core.implementation.composite.Dependency;
 
 /**
  * Loader for handling <dependency> elements.

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.loader;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.apache.tuscany.core.implementation.composite.Dependency;
 
 /**
  * @version $Rev$ $Date$
