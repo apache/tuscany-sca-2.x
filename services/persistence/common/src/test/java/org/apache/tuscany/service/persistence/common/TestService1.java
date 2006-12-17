@@ -21,7 +21,6 @@ public class TestService1 {
         
         tx.begin();
         EntityManager em = emf.createEntityManager();
-        em.persist(new Employee());
         tx.commit();
         
     }
