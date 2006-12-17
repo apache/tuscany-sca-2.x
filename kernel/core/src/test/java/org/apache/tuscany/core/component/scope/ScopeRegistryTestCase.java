@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
@@ -58,50 +57,20 @@ public class ScopeRegistryTestCase extends TestCase {
         RequestScopeObjectFactory factory = new RequestScopeObjectFactory();
         scopeRegistry.registerFactory(Scope.REQUEST, factory);
         scopeRegistry.deregisterFactory(Scope.REQUEST);
-        try {
-            scopeRegistry.getScopeContainer(Scope.REQUEST);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
+        assertNull(scopeRegistry.getScopeContainer(Scope.REQUEST));
         ConversationalScopeObjectFactory convFactory = new ConversationalScopeObjectFactory(scopeRegistry, null);
         scopeRegistry.registerFactory(Scope.CONVERSATION, convFactory);
         scopeRegistry.deregisterFactory(Scope.CONVERSATION);
-        try {
-            scopeRegistry.getScopeContainer(Scope.CONVERSATION);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
+        assertNull(scopeRegistry.getScopeContainer(Scope.CONVERSATION));
     }
 
     public void testScopeNotRegistered() throws Exception {
         WorkContext workContext = new WorkContextImpl();
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
-        try {
-            scopeRegistry.getScopeContainer(Scope.REQUEST);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
-        try {
-            scopeRegistry.getScopeContainer(Scope.SESSION);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
-        try {
-            scopeRegistry.getScopeContainer(Scope.CONVERSATION);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
-        try {
-            scopeRegistry.getScopeContainer(Scope.STATELESS);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
+        assertNull(scopeRegistry.getScopeContainer(Scope.REQUEST));
+        assertNull(scopeRegistry.getScopeContainer(Scope.SESSION));
+        assertNull(scopeRegistry.getScopeContainer(Scope.CONVERSATION));
+        assertNull(scopeRegistry.getScopeContainer(Scope.STATELESS));
     }
 
 

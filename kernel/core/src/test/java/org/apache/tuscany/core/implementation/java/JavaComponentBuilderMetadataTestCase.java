@@ -2,9 +2,11 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -67,6 +69,18 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
         assertEquals(Scope.MODULE, component.getScope());
+    }
+
+    public void testUnknownScope() throws Exception {
+        JavaComponentBuilder builder = new JavaComponentBuilder();
+        builder.setScopeRegistry(EasyMock.createNiceMock(ScopeRegistry.class));
+        definition.getImplementation().getComponentType().setImplementationScope(new Scope("foo"));
+        try {
+            builder.build(parent, definition, deploymentContext);
+            fail();
+        } catch (ScopeNotFoundException e) {
+            // expected
+        }
     }
 
     public void testServiceInterfaces() throws Exception {
