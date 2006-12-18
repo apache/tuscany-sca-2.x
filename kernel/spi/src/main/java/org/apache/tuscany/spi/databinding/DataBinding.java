@@ -47,10 +47,17 @@ public interface DataBinding {
      * @return The DataType or null if the java type is not supported by this databinding
      */
     DataType introspect(Object value);
-    
+
     /**
      * Provide a WrapperHandler for this databinding
      * @return A wrapper handler which can handle wrapping/wrapping for this databinding
      */
     WrapperHandler getWrapperHandler();
+
+    /**
+     * make a copy of the input object
+     * @param source object to copy 
+     * @return copy of the object passed in as argument
+     */
+    Object copy(Object object);
 }
