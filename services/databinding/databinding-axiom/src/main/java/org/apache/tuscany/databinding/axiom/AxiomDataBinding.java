@@ -19,7 +19,14 @@
 
 package org.apache.tuscany.databinding.axiom;
 
+import java.io.ByteArrayInputStream;
+import java.io.StringWriter;
+
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.impl.builder.StAXOMBuilder;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
@@ -43,6 +50,23 @@ public class AxiomDataBinding extends DataBindingExtension {
     @Override
     public WrapperHandler getWrapperHandler() {
         return new OMElementWrapperHandler();
+    }
+
+    public Object copy(Object source) {
+        if ( OMElement.class.isAssignableFrom(source.getClass()) ) {
+            try {
+                OMElement sourceElement = (OMElement)source;
+                StringWriter writer = new StringWriter();
+                sourceElement.serialize(writer);
+                
+                StAXOMBuilder builder = new StAXOMBuilder(new ByteArrayInputStream(writer.toString().getBytes()));
+                OMElement copyElement = builder.getDocumentElement();
+                return copyElement;
+            } catch ( XMLStreamException e ) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+        return super.copy(source);
     }
 
 }
