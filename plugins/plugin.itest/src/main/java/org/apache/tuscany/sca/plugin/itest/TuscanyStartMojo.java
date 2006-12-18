@@ -41,6 +41,8 @@ import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.tuscany.host.runtime.InitializationException;
+
 import org.osoa.sca.SCA;
 
 /**
@@ -292,7 +294,11 @@ public class TuscanyStartMojo extends AbstractMojo {
         runtime.setApplicationScdl(applicationScdl);
         runtime.setApplicationClassLoader(applicationClassLoader);
         runtime.setRuntimeInfo(runtimeInfo);
-        runtime.initialize();
+        try {
+            runtime.initialize();
+        } catch (InitializationException e) {
+            throw new MojoExecutionException("Error initializing", e);
+        }
         SCA context = runtime.getContext();
         context.start();
 
