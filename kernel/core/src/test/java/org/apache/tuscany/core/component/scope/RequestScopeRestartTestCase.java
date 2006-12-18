@@ -40,7 +40,7 @@ public class RequestScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx);
+        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
         MethodEventInvoker<Object> initInvoker =
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("init"));

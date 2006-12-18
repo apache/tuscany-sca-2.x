@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.AbstractLifecycle;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -44,22 +45,13 @@ import org.apache.tuscany.spi.event.TrueFilter;
 public abstract class AbstractScopeContainer extends AbstractLifecycle implements ScopeContainer {
     private static final EventFilter TRUE_FILTER = new TrueFilter();
 
-    // The event context the scope container is associated with
     protected WorkContext workContext;
-    private final String name;
+    protected ScopeContainerMonitor monitor;
     private Map<EventFilter, List<RuntimeEventListener>> listeners;
 
-    public AbstractScopeContainer(String name, WorkContext workContext) {
-        this.name = name;
+    public AbstractScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
         this.workContext = workContext;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
+        this.monitor = monitor;
     }
 
     public void addListener(RuntimeEventListener listener) {
@@ -67,7 +59,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void removeListener(RuntimeEventListener listener) {
-        assert listener != null : "Listener cannot be null";
+        assert listener != null;
         synchronized (getListeners()) {
             for (List<RuntimeEventListener> currentList : getListeners().values()) {
                 for (RuntimeEventListener current : currentList) {
@@ -81,7 +73,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void addListener(EventFilter filter, RuntimeEventListener listener) {
-        assert listener != null : "Listener cannot be null";
+        assert listener != null;
         synchronized (getListeners()) {
             List<RuntimeEventListener> list = getListeners().get(filter);
             if (list == null) {
@@ -93,7 +85,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public void publish(Event event) {
-        assert event != null : "Event object was null";
+        assert event != null;
         for (Map.Entry<EventFilter, List<RuntimeEventListener>> entry : getListeners().entrySet()) {
             if (entry.getKey().match(event)) {
                 for (RuntimeEventListener listener : entry.getValue()) {
@@ -149,7 +141,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
 
     protected void checkInit() {
         if (getLifecycleState() != RUNNING) {
-            throw new IllegalStateException("Scope not running [" + getLifecycleState() + "]");
+            throw new IllegalStateException("Scope container not running [" + getLifecycleState() + "]");
         }
     }
 
@@ -158,7 +150,7 @@ public abstract class AbstractScopeContainer extends AbstractLifecycle implement
     }
 
     public String toString() {
-        return "ScopeContainer [" + name + "] in state [" + super.toString() + ']';
+        return "In state [" + super.toString() + ']';
     }
 
     protected abstract InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)

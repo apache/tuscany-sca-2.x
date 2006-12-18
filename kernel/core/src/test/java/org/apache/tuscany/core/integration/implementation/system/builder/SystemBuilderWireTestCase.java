@@ -58,7 +58,7 @@ public class SystemBuilderWireTestCase extends TestCase {
      */
     public void testAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContainer scope = new ModuleScopeContainer(work);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         Connector connector = new ConnectorImpl();
@@ -93,7 +93,7 @@ public class SystemBuilderWireTestCase extends TestCase {
      */
     public void testAtomicToReferenceWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContainer scope = new ModuleScopeContainer(work);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         Connector connector = new ConnectorImpl();
@@ -138,7 +138,7 @@ public class SystemBuilderWireTestCase extends TestCase {
      */
     public void testServiceToAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContainer scope = new ModuleScopeContainer(work);
+        ScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         ConnectorImpl connector = new ConnectorImpl();
@@ -174,7 +174,7 @@ public class SystemBuilderWireTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ModuleScopeContainer moduleScope = new ModuleScopeContainer();
+        ModuleScopeContainer moduleScope = new ModuleScopeContainer(null);
         moduleScope.start();
         deploymentContext = new RootDeploymentContext(null, null, moduleScope, null);
 

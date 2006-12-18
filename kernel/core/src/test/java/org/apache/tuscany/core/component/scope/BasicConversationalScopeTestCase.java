@@ -51,7 +51,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         WorkContext workContext = new WorkContextImpl();
-        ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext);
+        ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext, null);
         scopeContext.start();
         SystemAtomicComponent atomicContext = createContext(scopeContext);
         // start the request
@@ -75,7 +75,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         WorkContext workContext = new WorkContextImpl();
-        ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext);
+        ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext, null);
         scopeContext.start();
 
         SystemAtomicComponent atomicContext = createContext(scopeContext);

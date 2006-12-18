@@ -49,7 +49,7 @@ public class ConversationalScopeRestartTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         WorkContext ctx = new WorkContextImpl();
-        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx);
+        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
         scope.start();
         MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(
             ConversationalScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));

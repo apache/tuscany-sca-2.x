@@ -33,11 +33,13 @@ import org.apache.tuscany.core.component.WorkContextImpl;
  */
 public class ScopeRegistryTestCase extends TestCase {
     public void testScopeContextCreation() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
-        scopeRegistry.registerFactory(Scope.REQUEST, new RequestScopeObjectFactory());
-        scopeRegistry.registerFactory(Scope.SESSION, new HttpSessionScopeObjectFactory(scopeRegistry));
-        scopeRegistry.registerFactory(Scope.CONVERSATION, new ConversationalScopeObjectFactory(scopeRegistry, null));
+        WorkContext context = new WorkContextImpl();
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
+        scopeRegistry.registerFactory(Scope.REQUEST, new RequestScopeObjectFactory(context, null));
+        HttpSessionScopeObjectFactory sessionFactory = new HttpSessionScopeObjectFactory(scopeRegistry, context, null);
+        scopeRegistry.registerFactory(Scope.SESSION, sessionFactory);
+        scopeRegistry.registerFactory(Scope.CONVERSATION,
+            new ConversationalScopeObjectFactory(scopeRegistry, context, null, null));
         ScopeContainer request = scopeRegistry.getScopeContainer(Scope.REQUEST);
         assertTrue(request instanceof RequestScopeContainer);
         assertSame(request, scopeRegistry.getScopeContainer(Scope.REQUEST));
@@ -52,13 +54,14 @@ public class ScopeRegistryTestCase extends TestCase {
     }
 
     public void testDeregisterFactory() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
-        RequestScopeObjectFactory factory = new RequestScopeObjectFactory();
+        WorkContext context = new WorkContextImpl();
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
+        RequestScopeObjectFactory factory = new RequestScopeObjectFactory(context, null);
         scopeRegistry.registerFactory(Scope.REQUEST, factory);
         scopeRegistry.deregisterFactory(Scope.REQUEST);
         assertNull(scopeRegistry.getScopeContainer(Scope.REQUEST));
-        ConversationalScopeObjectFactory convFactory = new ConversationalScopeObjectFactory(scopeRegistry, null);
+        ConversationalScopeObjectFactory convFactory =
+            new ConversationalScopeObjectFactory(scopeRegistry, context, null, null);
         scopeRegistry.registerFactory(Scope.CONVERSATION, convFactory);
         scopeRegistry.deregisterFactory(Scope.CONVERSATION);
         assertNull(scopeRegistry.getScopeContainer(Scope.CONVERSATION));
@@ -66,7 +69,7 @@ public class ScopeRegistryTestCase extends TestCase {
 
     public void testScopeNotRegistered() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
         assertNull(scopeRegistry.getScopeContainer(Scope.REQUEST));
         assertNull(scopeRegistry.getScopeContainer(Scope.SESSION));
         assertNull(scopeRegistry.getScopeContainer(Scope.CONVERSATION));

@@ -24,10 +24,9 @@ import org.apache.tuscany.spi.model.Scope;
 
 
 /**
- * Manages the lifecycle and visibility of instances associated with a set of {@link AtomicComponent}s.
+ * Manages the lifecycle and visibility of instances associated with a an {@link AtomicComponent}.
  *
  * @version $Rev$ $Date$
- * @see SCAObject
  */
 public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
 
@@ -35,11 +34,6 @@ public interface ScopeContainer extends Lifecycle, RuntimeEventListener {
      * Returns the scope value representing the scope context
      */
     Scope getScope();
-
-    /**
-     * Sets the work context used by the scope container
-     */
-    void setWorkContext(WorkContext workContext);
 
     /**
      * Registers a component with the scope component

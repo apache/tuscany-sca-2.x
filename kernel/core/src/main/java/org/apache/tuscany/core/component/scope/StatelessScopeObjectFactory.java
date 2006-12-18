@@ -18,12 +18,17 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.osoa.sca.annotations.Init;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
+
+import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * Creates a new stateless scope context
@@ -31,9 +36,15 @@ import org.osoa.sca.annotations.Init;
  * @version $$Rev$$ $$Date$$
  */
 public class StatelessScopeObjectFactory implements ObjectFactory<StatelessScopeContainer> {
+    private WorkContext context;
+    private ScopeContainerMonitor monitor;
 
-    public StatelessScopeObjectFactory(@Autowire ScopeRegistry registry) {
+    public StatelessScopeObjectFactory(@Autowire ScopeRegistry registry,
+                                       @Autowire WorkContext context,
+                                       @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.STATELESS, this);
+        this.context = context;
+        this.monitor = monitor;
     }
 
     @Init(eager = true)
@@ -41,6 +52,6 @@ public class StatelessScopeObjectFactory implements ObjectFactory<StatelessScope
     }
 
     public StatelessScopeContainer getInstance() throws ObjectCreationException {
-        return new StatelessScopeContainer();
+        return new StatelessScopeContainer(context, monitor);
     }
 }

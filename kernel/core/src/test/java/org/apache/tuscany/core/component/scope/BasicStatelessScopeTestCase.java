@@ -46,7 +46,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
      */
     public void testInstanceManagement() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
         scope.start();
         SystemAtomicComponent component1 = createComponent(scope);
         scope.register(component1);
@@ -62,7 +62,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     public void testGetAssociatedInstance() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
         scope.start();
         SystemAtomicComponent component1 = createComponent(scope);
         scope.register(component1);
@@ -78,7 +78,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     public void testRegisterContextAfterRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
 
         scope.start();
         SystemAtomicComponent component1 = createComponent(scope);
@@ -98,7 +98,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
      */
     public void testSetNullComponents() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        StatelessScopeContainer scope = new StatelessScopeContainer(ctx);
+        StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
         scope.start();
         scope.stop();
     }

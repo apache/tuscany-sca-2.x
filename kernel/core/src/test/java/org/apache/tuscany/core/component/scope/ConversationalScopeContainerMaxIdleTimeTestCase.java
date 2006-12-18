@@ -60,7 +60,7 @@ public class ConversationalScopeContainerMaxIdleTimeTestCase extends TestCase {
             EasyMock.eq(foo),
             EasyMock.anyLong());
         EasyMock.replay(store);
-        container = new ConversationalScopeContainer(store, context);
+        container = new ConversationalScopeContainer(store, context, null);
         container.start();
     }
 

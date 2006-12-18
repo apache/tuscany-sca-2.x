@@ -76,7 +76,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     private WireService wireService = new JDKWireService(new WorkContextImpl(), null);
 
     public void testToStatelessScope() throws Exception {
-        StatelessScopeContainer scope = new StatelessScopeContainer(workContext);
+        StatelessScopeContainer scope = new StatelessScopeContainer(workContext, null);
         scope.start();
         final OutboundWire wire = getWire(scope);
         Target service = (Target) wireService.createProxy(wire);
@@ -87,7 +87,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToRequestScope() throws Exception {
-        final RequestScopeContainer scope = new RequestScopeContainer(workContext);
+        final RequestScopeContainer scope = new RequestScopeContainer(workContext, null);
         scope.start();
 
         scope.onEvent(new RequestStart(this));
@@ -120,7 +120,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToSessionScope() throws Exception {
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(workContext);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(workContext, null);
         scope.start();
         Object session1 = new Object();
         workContext.setIdentifier(Scope.SESSION, session1);
@@ -161,7 +161,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToModuleScope() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(workContext);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
         final OutboundWire wire = getWire(scope);

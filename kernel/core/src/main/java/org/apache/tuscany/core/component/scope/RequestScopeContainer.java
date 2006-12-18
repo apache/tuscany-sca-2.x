@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -40,16 +41,11 @@ import org.apache.tuscany.core.component.event.RequestStart;
  * @version $Rev$ $Date$
  */
 public class RequestScopeContainer extends AbstractScopeContainer {
-
     private final Map<AtomicComponent, Map<Thread, InstanceWrapper>> contexts;
     private final Map<Thread, List<InstanceWrapper>> destroyQueues;
 
-    public RequestScopeContainer() {
-        this(null);
-    }
-
-    public RequestScopeContainer(WorkContext workContext) {
-        super("Request Scope", workContext);
+    public RequestScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
+        super(workContext, monitor);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Thread, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Thread, List<InstanceWrapper>>();
     }

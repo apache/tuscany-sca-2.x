@@ -18,13 +18,18 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.osoa.sca.annotations.Init;
+
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
-import org.osoa.sca.annotations.Init;
+
+import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * Creates a new Session Scope context
@@ -32,12 +37,18 @@ import org.osoa.sca.annotations.Init;
  * @version $$Rev: 450456 $$ $$Date: 2006-09-27 10:28:36 -0400 (Wed, 27 Sep 2006) $$
  */
 public class ConversationalScopeObjectFactory implements ObjectFactory<ConversationalScopeContainer> {
-    
+    private WorkContext context;
     private Store store;
-    
-    public ConversationalScopeObjectFactory(@Autowire ScopeRegistry registry, @Autowire Store store) {
+    private ScopeContainerMonitor monitor;
+
+    public ConversationalScopeObjectFactory(@Autowire ScopeRegistry registry,
+                                            @Autowire WorkContext context,
+                                            @Autowire Store store,
+                                            @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.CONVERSATION, this);
+        this.context = context;
         this.store = store;
+        this.monitor = monitor;
     }
 
     @Init(eager = true)
@@ -46,6 +57,6 @@ public class ConversationalScopeObjectFactory implements ObjectFactory<Conversat
 
 
     public ConversationalScopeContainer getInstance() throws ObjectCreationException {
-        return new ConversationalScopeContainer(store, null);
+        return new ConversationalScopeContainer(store, context, monitor);
     }
 }

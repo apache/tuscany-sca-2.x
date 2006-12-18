@@ -20,6 +20,23 @@ package org.apache.tuscany.core.bootstrap;
 
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.builder.Builder;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.ScopeRegistry;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.extension.LoaderExtension;
+import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
+import org.apache.tuscany.spi.implementation.java.Introspector;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.PropertyObjectFactory;
+
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -39,9 +56,9 @@ import org.apache.tuscany.core.implementation.processor.InitProcessor;
 import org.apache.tuscany.core.implementation.processor.MonitorProcessor;
 import org.apache.tuscany.core.implementation.processor.PropertyProcessor;
 import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
+import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
@@ -61,21 +78,6 @@ import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
 import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.builder.Builder;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
-import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.extension.LoaderExtension;
-import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
-import org.apache.tuscany.spi.implementation.java.Introspector;
-import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 
 /**
  * A default implementation of a Bootstrapper. Please see the documentation on the individual methods for how the
@@ -146,8 +148,8 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @return a new ScopeRegistry
      */
     public ScopeRegistry createScopeRegistry(WorkContext workContext) {
-        ScopeRegistry scopeRegistry = new ScopeRegistryImpl(workContext);
-        new ModuleScopeObjectFactory(scopeRegistry); // self-registers
+        ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
+        new ModuleScopeObjectFactory(scopeRegistry, monitorFactory.getMonitor(ScopeContainerMonitor.class));
         return scopeRegistry;
     }
 

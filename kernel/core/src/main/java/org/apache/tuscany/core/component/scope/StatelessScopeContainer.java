@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
@@ -31,12 +32,8 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public class StatelessScopeContainer extends AbstractScopeContainer {
 
-    public StatelessScopeContainer() {
-        this(null);
-    }
-
-    public StatelessScopeContainer(WorkContext workContext) {
-        super("Stateless scope", workContext);
+    public StatelessScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
+        super(workContext, monitor);
     }
 
     public Scope getScope() {

@@ -40,7 +40,7 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx);
+        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
         Foo comp = new Foo();
         SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
@@ -61,7 +61,7 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx);
+        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(false);
@@ -97,7 +97,7 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testEagerInitDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx);
+        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(true);

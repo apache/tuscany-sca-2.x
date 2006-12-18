@@ -233,7 +233,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        container = new ModuleScopeContainer();
+        container = new ModuleScopeContainer(null);
         container.start();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(deploymentContext.getModuleScope()).andReturn(container).atLeastOnce();

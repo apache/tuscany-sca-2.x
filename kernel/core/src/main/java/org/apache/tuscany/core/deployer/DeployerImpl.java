@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
@@ -40,6 +41,7 @@ import org.apache.tuscany.spi.model.Implementation;
 
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * Default implementation of Deployer.
@@ -50,6 +52,7 @@ public class DeployerImpl implements Deployer {
     private XMLInputFactory xmlFactory;
     private Loader loader;
     private Builder builder;
+    private ScopeContainerMonitor monitor;
 
     public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder) {
         this.xmlFactory = xmlFactory;
@@ -71,10 +74,15 @@ public class DeployerImpl implements Deployer {
         this.builder = builder;
     }
 
+    @Monitor
+    public void setMonitor(ScopeContainerMonitor monitor) {
+        this.monitor = monitor;
+    }
+
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, PrepareException {
-        ScopeContainer moduleScope = new ModuleScopeContainer();
+        ScopeContainer moduleScope = new ModuleScopeContainer(monitor);
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope, null);
         try {
             load(parent, componentDefinition, deploymentContext);

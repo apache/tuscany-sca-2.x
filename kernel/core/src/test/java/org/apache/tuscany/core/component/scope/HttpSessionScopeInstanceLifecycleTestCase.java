@@ -42,7 +42,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx, null);
         scope.start();
         Foo comp = new Foo();
         SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
@@ -66,7 +66,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx, null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(false);
@@ -104,7 +104,7 @@ public class HttpSessionScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testEagerInitDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx, null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(true);

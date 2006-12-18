@@ -20,6 +20,11 @@ package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.WorkContext;
+
+import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * Creates a new request scope context
@@ -27,8 +32,16 @@ import org.apache.tuscany.spi.ObjectFactory;
  * @version $$Rev$$ $$Date$$
  */
 public class RequestScopeObjectFactory implements ObjectFactory<RequestScopeContainer> {
+    private WorkContext context;
+    private ScopeContainerMonitor monitor;
+
+
+    public RequestScopeObjectFactory(@Autowire WorkContext context, @Monitor ScopeContainerMonitor monitor) {
+        this.context = context;
+        this.monitor = monitor;
+    }
 
     public RequestScopeContainer getInstance() throws ObjectCreationException {
-        return new RequestScopeContainer();
+        return new RequestScopeContainer(context, monitor);
     }
 }
