@@ -28,9 +28,9 @@ import org.apache.tuscany.api.annotation.LogLevel;
 public interface ScopeContainerMonitor {
 
     @LogLevel("SEVERE")
-    void eagerInitializationError(TargetResolutionException e);
+    void eagerInitializationError(Exception e);
 
     @LogLevel("SEVERE")
-    void destructionError(TargetResolutionException e);
+    void destructionError(TargetDestructionException e);
 
 }

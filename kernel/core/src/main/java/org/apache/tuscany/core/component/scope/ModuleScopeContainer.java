@@ -68,10 +68,10 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
                 eagerInitComponents();
             } catch (ObjectCreationException e) {
                 // JFM
-                e.printStackTrace();
+                monitor.eagerInitializationError(e);
             } catch (TargetResolutionException e) {
                 // JFM FIXME
-                e.printStackTrace();
+                monitor.eagerInitializationError(e);
             }
             lifecycleState = RUNNING;
         } else if (event instanceof CompositeStop) {
@@ -110,6 +110,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
                     iter.previous().stop();
                 } catch (TargetDestructionException e) {
                     // JFM FIXME
+                    monitor.destructionError(e);
                     e.printStackTrace();
                 }
             }
