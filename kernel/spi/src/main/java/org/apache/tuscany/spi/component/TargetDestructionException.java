@@ -16,22 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation;
-
-import org.apache.tuscany.spi.component.TargetException;
+package org.apache.tuscany.spi.component;
 
 /**
- * Denotes an error initializing a target
+ * Denotes an error destroying a target
  *
  * @version $Rev$ $Date$
  */
-public class TargetInitializationException extends TargetException {
+public class TargetDestructionException extends TargetException {
 
-    public TargetInitializationException(String message, String identifier) {
+
+    public TargetDestructionException(String message, String identifier) {
         super(message, identifier);
     }
 
-    public TargetInitializationException(String message, String identifier, Throwable cause) {
+    public TargetDestructionException(String message, String identifier, Throwable cause) {
         super(message, identifier, cause);
+    }
+
+
+    public TargetDestructionException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
