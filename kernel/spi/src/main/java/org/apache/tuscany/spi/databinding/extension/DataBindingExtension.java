@@ -18,6 +18,16 @@
  */
 package org.apache.tuscany.spi.databinding.extension;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.OutputStream;
+import java.io.Serializable;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
@@ -33,6 +43,7 @@ import org.osoa.sca.annotations.Service;
 @Scope("MODULE")
 @Service(DataBinding.class)
 public abstract class DataBindingExtension implements DataBinding {
+
     protected DataBindingRegistry registry;
 
     protected Class<?> baseType;
@@ -101,4 +112,62 @@ public abstract class DataBindingExtension implements DataBinding {
     public WrapperHandler getWrapperHandler() {
         return null;
     }
+
+    public Object copy(Object arg) {
+        if (arg == null) {
+            return null;
+        }
+        final Class clazz = arg.getClass();
+        if (String.class == clazz || clazz.isPrimitive() || Number.class.isAssignableFrom(clazz)
+                || Boolean.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz)
+                || Byte.class.isAssignableFrom(clazz)) {
+            // Immutable classes
+            return arg;
+        }
+        try {
+            if (arg instanceof Serializable) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = getObjectOutputStream(bos);
+                oos.writeObject(arg);
+                oos.close();
+                bos.close();
+
+                ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+                ObjectInputStream ois = getObjectInputStream(bis, clazz.getClassLoader());
+                Object objectCopy = ois.readObject();
+                ois.close();
+                bis.close();
+                return objectCopy;
+            } else {
+                //return arg;
+                throw new IllegalArgumentException(
+                        "Pass-by-value is not supported for the given object");
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    "Pass-by-value is not supported for the given object", e);
+        }
+    }
+
+    protected ObjectOutputStream getObjectOutputStream(OutputStream os) throws IOException {
+        return new ObjectOutputStream(os);
+    }
+
+    protected ObjectInputStream getObjectInputStream(InputStream is, final ClassLoader cl)
+            throws IOException {
+        ObjectInputStream ois = new ObjectInputStream(is) {
+            @Override
+            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
+                    ClassNotFoundException {
+                try {
+                    return Class.forName(desc.getName(), false, cl);
+                } catch (ClassNotFoundException e) {
+                    return super.resolveClass(desc);
+                }
+            }
+
+        };
+        return ois;
+    }
+
 }
