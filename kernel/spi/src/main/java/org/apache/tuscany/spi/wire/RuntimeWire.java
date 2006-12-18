@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.component.TargetException;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * The base wire type used to connect references and services
@@ -32,7 +32,7 @@ public interface RuntimeWire {
     /**
      * Returns the non-proxied target instance for this wire
      */
-    Object getTargetService() throws TargetException;
+    Object getTargetService() throws TargetResolutionException;
 
     /**
      * Returns the service contract associated with the wire

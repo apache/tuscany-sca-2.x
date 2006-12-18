@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -78,7 +78,7 @@ public class SystemInboundWireImpl implements SystemInboundWire {
         throw new UnsupportedOperationException();
     }
 
-    public Object getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetResolutionException {
         if (wire != null) {
             return interfaze.cast(wire.getTargetService());
         }
@@ -107,7 +107,7 @@ public class SystemInboundWireImpl implements SystemInboundWire {
 
     public void addSourceCallbackInvocationChains(Object targetAddr,
                                                   Map<Operation<?>,
-                                                  OutboundInvocationChain> chains) {
+                                                      OutboundInvocationChain> chains) {
         throw new UnsupportedOperationException();
     }
 

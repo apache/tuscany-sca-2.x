@@ -28,7 +28,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
@@ -70,7 +72,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         if (event instanceof CompositeStart) {
             try {
                 eagerInitComponents();
-            } catch (TargetException e) {
+            } catch (TargetResolutionException e) {
                 // JFM FIXME
                 e.printStackTrace();
             }
@@ -109,7 +111,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
             while (iter.hasPrevious()) {
                 try {
                     iter.previous().stop();
-                } catch (TargetException e) {
+                } catch (TargetDestructionException e) {
                     // JFM FIXME
                     e.printStackTrace();
                 }
@@ -123,7 +125,8 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         instanceWrappers.put(component, EMPTY);
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+        throws TargetResolutionException {
         checkInit();
         InstanceWrapper ctx = instanceWrappers.get(component);
         assert ctx != null : "Component not registered with scope: " + component;
@@ -141,7 +144,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         return ctx;
     }
 
-    private void eagerInitComponents() throws ObjectCreationException, TargetException {
+    private void eagerInitComponents() throws ObjectCreationException, TargetResolutionException {
         List<AtomicComponent> componentList = new ArrayList<AtomicComponent>(instanceWrappers.keySet());
         Collections.sort(componentList, COMPARATOR);
         // start each group
@@ -181,11 +184,11 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
             return true;
         }
 
-        public void start() throws TargetException {
+        public void start() throws TargetInitializationException {
 
         }
 
-        public void stop() throws TargetException {
+        public void stop() throws TargetDestructionException {
 
         }
     }

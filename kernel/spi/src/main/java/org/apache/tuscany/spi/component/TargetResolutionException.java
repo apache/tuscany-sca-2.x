@@ -16,22 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.component.scope;
-
-import org.apache.tuscany.spi.component.TargetException;
+package org.apache.tuscany.spi.component;
 
 /**
  * Denotes an error retrieving a target instance
  *
  * @version $Rev$ $Date$
  */
-public class TargetRetrievalException extends TargetException {
+public class TargetResolutionException extends TargetException {
 
-    public TargetRetrievalException(String message) {
+    public TargetResolutionException(String message) {
         super(message);
     }
 
-    public TargetRetrievalException(String message, Throwable cause) {
+    public TargetResolutionException(String message, String identifier) {
+        super(message, identifier);
+    }
+
+    public TargetResolutionException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public TargetResolutionException(String message, String identifier, Throwable cause) {
+        super(message, identifier, cause);
     }
 }

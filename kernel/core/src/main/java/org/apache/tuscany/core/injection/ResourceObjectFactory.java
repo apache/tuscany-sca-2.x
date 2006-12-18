@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.host.ResourceResolutionException;
 
@@ -94,7 +94,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
             if (mappedName == null) {
                 try {
                     instance = parent.resolveSystemInstance(type);
-                } catch (TargetException e) {
+                } catch (TargetResolutionException e) {
                     throw new ObjectCreationException(e);
                 }
                 if (instance == null) {
@@ -111,7 +111,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
                 if (child != null) {
                     try {
                         instance = type.cast(child.getServiceInstance());
-                    } catch (TargetException e) {
+                    } catch (TargetResolutionException e) {
                         throw new ObjectCreationException(e);
                     }
                 }

@@ -25,8 +25,8 @@ import javax.sql.DataSource;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.SystemAtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -64,7 +64,7 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
         return instanceFactory.getInstance();
     }
 
-    public Object getTargetInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetResolutionException {
         return scopeContainer.getInstance(this);
     }
 

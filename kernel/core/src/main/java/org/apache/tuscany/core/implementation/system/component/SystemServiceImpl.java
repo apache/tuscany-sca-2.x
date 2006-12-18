@@ -21,7 +21,7 @@ package org.apache.tuscany.core.implementation.system.component;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -82,7 +82,7 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
         throw new UnsupportedOperationException();
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         return inboundWire.getTargetService();
     }
 

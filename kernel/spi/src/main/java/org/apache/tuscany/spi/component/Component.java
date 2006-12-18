@@ -86,9 +86,9 @@ public interface Component extends SCAObject {
     /**
      * Returns a service associated with the given name
      *
-     * @throws TargetException if an error occurs retrieving the service instance
+     * @throws TargetResolutionException if an error occurs retrieving the service instance
      */
-    Object getServiceInstance(String name) throws TargetException;
+    Object getServiceInstance(String name) throws TargetResolutionException;
 
 
 }

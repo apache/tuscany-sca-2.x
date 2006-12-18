@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
@@ -72,7 +72,7 @@ public class DefaultRuntime extends CompositeComponentImpl implements RuntimeCom
         return systemComponent;
     }
 
-    public Deployer getDeployer() throws TargetException {
+    public Deployer getDeployer() throws TargetResolutionException {
         return systemComponent.resolveExternalInstance(Deployer.class);
     }
 }

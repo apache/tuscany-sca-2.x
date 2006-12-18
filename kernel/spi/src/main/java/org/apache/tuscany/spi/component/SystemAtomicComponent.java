@@ -29,9 +29,9 @@ public interface SystemAtomicComponent extends AtomicComponent {
      * Returns the target instance associated with the component. A target instance is the actual object a request is
      * dispatched to sans wire chain.
      *
-     * @throws org.apache.tuscany.spi.component.TargetException
+     * @throws TargetResolutionException
      *
      */
-    Object getTargetInstance() throws TargetException;
+    Object getTargetInstance() throws TargetResolutionException;
 
 }

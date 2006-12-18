@@ -25,7 +25,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
@@ -64,7 +65,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
                 if (entry.getKey().isEagerInit()) {
                     try {
                         getInstance(entry.getKey());
-                    } catch (TargetException e) {
+                    } catch (TargetResolutionException e) {
                         // FIXME JFM monitor 
                         e.printStackTrace();
                     }
@@ -94,7 +95,8 @@ public class RequestScopeContainer extends AbstractScopeContainer {
         contexts.put(component, new ConcurrentHashMap<Thread, InstanceWrapper>());
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+        throws TargetResolutionException {
         Map<Thread, InstanceWrapper> instanceContextMap = contexts.get(component);
         assert instanceContextMap != null : "Atomic component not registered";
         InstanceWrapper ctx = instanceContextMap.get(Thread.currentThread());
@@ -129,7 +131,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
                 while (iter.hasPrevious()) {
                     try {
                         iter.previous().stop();
-                    } catch (TargetException e) {
+                    } catch (TargetDestructionException e) {
                         // JFM FIXME
                         e.printStackTrace();
                     }

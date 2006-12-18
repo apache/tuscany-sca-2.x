@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -47,7 +47,7 @@ public class InboundWireImpl implements InboundWire {
         new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
     private SCAObject container;
 
-    public Object getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetResolutionException {
         assert targetWire != null;
         // optimized, no interceptors or handlers on either end
         return targetWire.getTargetService();

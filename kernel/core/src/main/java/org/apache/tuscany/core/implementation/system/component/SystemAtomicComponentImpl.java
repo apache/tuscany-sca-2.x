@@ -19,13 +19,13 @@
 package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -43,11 +43,11 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent implements Sy
         scope = Scope.MODULE;
     }
 
-    public Object getServiceInstance(String name) throws TargetException {
+    public Object getServiceInstance(String name) throws TargetResolutionException {
         return getTargetInstance();
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         return getTargetInstance();
     }
 

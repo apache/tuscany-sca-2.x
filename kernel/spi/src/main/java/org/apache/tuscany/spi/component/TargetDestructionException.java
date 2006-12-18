@@ -23,8 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class TargetDestructionException extends TargetException {
-
+public class TargetDestructionException extends TargetResolutionException {
 
     public TargetDestructionException(String message, String identifier) {
         super(message, identifier);

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -75,7 +75,7 @@ public class SystemOutboundWireImpl implements SystemOutboundWire {
         this.targetName = targetName;
     }
 
-    public Object getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetResolutionException {
         assert targetWire != null;
         return interfaze.cast(targetWire.getTargetService());
     }

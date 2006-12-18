@@ -23,8 +23,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -53,7 +53,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         this.scope = configuration.getScopeContainer().getScope();
     }
 
-    public Object getServiceInstance(String name) throws TargetException {
+    public Object getServiceInstance(String name) throws TargetResolutionException {
         InboundWire wire = serviceWires.get(name);
         if (wire == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
@@ -63,7 +63,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         return wireService.createProxy(wire);
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         if (serviceInterfaces.size() == 0) {
             return getTargetInstance();
         } else if (serviceInterfaces.size() == 1) {

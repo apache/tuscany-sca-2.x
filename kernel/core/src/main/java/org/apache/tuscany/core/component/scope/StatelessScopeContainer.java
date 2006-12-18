@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
@@ -64,7 +64,8 @@ public class StatelessScopeContainer extends AbstractScopeContainer {
         checkInit();
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws TargetException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+        throws TargetResolutionException {
         // there never is a previously associated instance, return null
         if (!create) {
             return null;

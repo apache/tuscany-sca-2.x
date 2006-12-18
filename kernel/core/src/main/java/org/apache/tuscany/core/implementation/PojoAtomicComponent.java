@@ -29,8 +29,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
@@ -118,11 +118,11 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
     }
 
-    public Object getTargetInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetResolutionException {
         return scopeContainer.getInstance(this);
     }
 
-    public Object getAssociatedTargetInstance() throws TargetException {
+    public Object getAssociatedTargetInstance() throws TargetResolutionException {
         return scopeContainer.getAssociatedInstance(this);
     }
 
@@ -204,6 +204,17 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         //TODO multiplicity for constructor injection
     }
 
+    public boolean implementsCallback(Class callbackClass) {
+        Class<?>[] implementedInterfaces = implementationClass.getInterfaces();
+        for (Class<?> implementedInterface : implementedInterfaces) {
+            if (implementedInterface.isAssignableFrom(callbackClass)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected Injector<Object> createInjector(Member member, RuntimeWire wire) {
         ObjectFactory<?> factory = createWireFactory(wire);
         if (member instanceof Field) {
@@ -243,14 +254,4 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     protected abstract ObjectFactory<?> createWireFactory(RuntimeWire wire);
 
-    public boolean implementsCallback(Class callbackClass) {
-        Class<?>[] implementedInterfaces = implementationClass.getInterfaces();
-        for (Class<?> implementedInterface : implementedInterfaces) {
-            if (implementedInterface.isAssignableFrom(callbackClass)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

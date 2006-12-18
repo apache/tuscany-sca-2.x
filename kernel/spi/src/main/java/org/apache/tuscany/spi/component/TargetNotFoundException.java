@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class TargetNotFoundException extends TargetException {
+public class TargetNotFoundException extends TargetResolutionException {
 
     public TargetNotFoundException(String message) {
         super(message);

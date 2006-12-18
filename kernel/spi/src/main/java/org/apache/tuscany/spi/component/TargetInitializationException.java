@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $Rev$ $Date$
  */
-public class TargetInitializationException extends TargetException {
+public class TargetInitializationException extends TargetResolutionException {
 
     public TargetInitializationException(String message, String identifier) {
         super(message, identifier);

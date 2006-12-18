@@ -41,8 +41,8 @@ import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -224,7 +224,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return null;
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         Service service = services.get(0);
         if (service == null) {
             throw new TargetNotFoundException("Component has no services");
@@ -240,7 +240,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return null;
     }
 
-    public <T> T locateService(Class<T> serviceInterface, String name) throws TargetException {
+    public <T> T locateService(Class<T> serviceInterface, String name) throws TargetResolutionException {
         SCAObject target = children.get(name);
         if (target == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
@@ -250,7 +250,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return serviceInterface.cast(target.getServiceInstance());
     }
 
-    public <T> T locateSystemService(Class<T> serviceInterface, String name) throws TargetException {
+    public <T> T locateSystemService(Class<T> serviceInterface, String name) throws TargetResolutionException {
         SCAObject object = systemChildren.get(name);
         if (object == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
@@ -260,7 +260,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return serviceInterface.cast(object.getServiceInstance());
     }
 
-    public Object getServiceInstance(String name) throws TargetException {
+    public Object getServiceInstance(String name) throws TargetResolutionException {
         SCAObject context = children.get(name);
         if (context == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
@@ -273,7 +273,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         }
     }
 
-    public Object getSystemServiceInstance(String name) throws TargetException {
+    public Object getSystemServiceInstance(String name) throws TargetResolutionException {
         SCAObject target = systemChildren.get(name);
         if (target == null) {
             TargetNotFoundException e = new TargetNotFoundException(name);
@@ -296,7 +296,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return serviceInterfaces;
     }
 
-    public <T> T resolveInstance(Class<T> instanceInterface) throws TargetException {
+    public <T> T resolveInstance(Class<T> instanceInterface) throws TargetResolutionException {
         if (CompositeComponent.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         }
@@ -325,7 +325,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         }
     }
 
-    public <T> T resolveSystemInstance(Class<T> instanceInterface) throws TargetException {
+    public <T> T resolveSystemInstance(Class<T> instanceInterface) throws TargetResolutionException {
         if (CompositeComponent.class.equals(instanceInterface)) {
             return instanceInterface.cast(this);
         }
@@ -352,7 +352,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         }
     }
 
-    public <T> T resolveExternalInstance(Class<T> instanceInterface) throws TargetException {
+    public <T> T resolveExternalInstance(Class<T> instanceInterface) throws TargetResolutionException {
         Service service = autowireExternal.get(instanceInterface);
         if (service != null) {
             try {
@@ -366,7 +366,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         }
     }
 
-    public <T> T resolveSystemExternalInstance(Class<T> instanceInterface) throws TargetException {
+    public <T> T resolveSystemExternalInstance(Class<T> instanceInterface) throws TargetResolutionException {
         Service service = systemAutowireExternal.get(instanceInterface);
         if (service != null) {
             try {

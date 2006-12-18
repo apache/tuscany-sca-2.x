@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.component;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class IllegalTargetException extends TargetException {
+public class IllegalTargetException extends TargetResolutionException {
 
     public IllegalTargetException(String message, String identifier) {
         super(message, identifier);
