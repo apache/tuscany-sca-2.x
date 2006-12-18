@@ -52,7 +52,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         WorkContext ctx = new WorkContextImpl();
-        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx);
+        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
         scope.start();
 
         Foo comp = new Foo();
@@ -82,7 +82,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         WorkContext ctx = new WorkContextImpl();
-        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx);
+        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(false);
@@ -124,7 +124,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         monitor.stop(EasyMock.isA(String.class));
         MemoryStore store = new MemoryStore(monitor);
         WorkContext ctx = new WorkContextImpl();
-        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx);
+        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(true);

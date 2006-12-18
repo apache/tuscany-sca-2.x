@@ -45,7 +45,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderModuleScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
+        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(null);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
@@ -73,7 +73,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderAfterStartModuleScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(ctx);
+        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(null);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
@@ -99,7 +99,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderSessionScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
+        HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx, null);
         scopeCtx.start();
         Object session = new Object();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
@@ -124,7 +124,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderAfterStartSessionScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx);
+        HttpSessionScopeContainer scopeCtx = new HttpSessionScopeContainer(ctx, null);
         scopeCtx.start();
         Object session = new Object();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
@@ -148,7 +148,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderRequestScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scopeCtx = new RequestScopeContainer(ctx);
+        RequestScopeContainer scopeCtx = new RequestScopeContainer(ctx, null);
         scopeCtx.start();
         scopeCtx.onEvent(new RequestStart(this));
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",

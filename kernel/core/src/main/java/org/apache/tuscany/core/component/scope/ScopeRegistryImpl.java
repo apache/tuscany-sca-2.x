@@ -22,10 +22,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
 
 /**
@@ -34,35 +32,18 @@ import org.apache.tuscany.spi.model.Scope;
  * @version $Rev$ $Date$
  */
 public class ScopeRegistryImpl implements ScopeRegistry {
-
     private final Map<Scope, ScopeContainer> scopeCache =
         new ConcurrentHashMap<Scope, ScopeContainer>();
     private final Map<Scope, ObjectFactory<? extends ScopeContainer>> factoryCache =
         new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
-    private WorkContext workContext;
-
-    public ScopeRegistryImpl(WorkContext workContext) {
-        assert workContext != null;
-        this.workContext = workContext;
-    }
-
-    // TODO remove and replace with CDI
-    public ScopeRegistryImpl() {
-    }
-
-    @Autowire
-    public void setWorkContext(WorkContext workContext) {
-        this.workContext = workContext;
-    }
 
     public ScopeContainer getScopeContainer(Scope scope) {
-        assert Scope.MODULE != scope : "Cannot get MODULE scope from the registry";
+        assert Scope.MODULE != scope;
         ScopeContainer container = scopeCache.get(scope);
         if (container == null) {
             ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);
             if (factory != null) {
                 container = factory.getInstance();
-                container.setWorkContext(workContext);
                 container.start();
                 scopeCache.put(scope, container);
             }

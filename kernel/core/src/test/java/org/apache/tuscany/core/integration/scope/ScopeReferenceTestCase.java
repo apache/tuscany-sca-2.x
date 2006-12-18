@@ -89,9 +89,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(null);
         moduleScope.start();
-        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -137,9 +137,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(null);
         moduleScope.start();
-        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -190,9 +190,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(null);
         moduleScope.start();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -223,7 +223,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -269,9 +269,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(null);
         moduleScope.start();
-        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -316,9 +316,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
-        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -372,9 +372,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -409,7 +409,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -458,8 +458,8 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
-        final ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
+        final ScopeContainer moduleScope = new ModuleScopeContainer(null);
         requestScope.start();
         moduleScope.start();
         moduleScope.onEvent(new CompositeStart(this, null));
@@ -514,8 +514,8 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
-        final ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
+        final ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         requestScope.start();
         sessionScope.start();
 
@@ -574,9 +574,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testRequestToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -607,7 +607,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -634,9 +634,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        final ScopeContainer requestScope = new RequestScopeContainer(ctx);
+        final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -682,9 +682,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
-        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx);
+        ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -729,9 +729,9 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testStatelessToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer statelessScope = new StatelessScopeContainer(ctx);
+        ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
-        ScopeContainer moduleScope = new ModuleScopeContainer(ctx);
+        ScopeContainer moduleScope = new ModuleScopeContainer(null);
         moduleScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,

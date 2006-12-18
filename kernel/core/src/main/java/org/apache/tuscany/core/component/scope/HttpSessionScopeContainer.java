@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -44,12 +45,8 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     private final Map<AtomicComponent, Map<Object, InstanceWrapper>> contexts;
     private final Map<Object, List<InstanceWrapper>> destroyQueues;
 
-    public HttpSessionScopeContainer() {
-        this(null);
-    }
-
-    public HttpSessionScopeContainer(WorkContext workContext) {
-        super("Session Scope", workContext);
+    public HttpSessionScopeContainer(WorkContext workContext, ScopeContainerMonitor monitor) {
+        super(workContext, monitor);
         contexts = new ConcurrentHashMap<AtomicComponent, Map<Object, InstanceWrapper>>();
         destroyQueues = new ConcurrentHashMap<Object, List<InstanceWrapper>>();
     }

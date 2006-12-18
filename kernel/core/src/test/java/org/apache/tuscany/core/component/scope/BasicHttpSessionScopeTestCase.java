@@ -44,7 +44,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -64,7 +64,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testGetAssociatedInstance() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -76,7 +76,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -92,7 +92,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     public void testSessionIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext);
+        HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
 
         SystemAtomicComponent component = createComponent(scopeContext);

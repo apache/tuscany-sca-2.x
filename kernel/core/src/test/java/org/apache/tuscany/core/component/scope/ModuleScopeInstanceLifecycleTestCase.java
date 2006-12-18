@@ -46,7 +46,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
      */
     public void testInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Foo comp = new Foo();
         SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
@@ -71,7 +71,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
      */
     public void testEagerInitDestroy() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
         Foo comp = new Foo();
         SystemAtomicComponent initDestroyComponent = EasyMock.createMock(SystemAtomicComponent.class);
@@ -91,7 +91,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(0);
@@ -128,7 +128,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
     public void testEagerInitDestroyOrder() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scope = new ModuleScopeContainer(ctx);
+        ModuleScopeContainer scope = new ModuleScopeContainer(null);
         scope.start();
 
         SystemAtomicComponent oneComponent = createComponent(1);

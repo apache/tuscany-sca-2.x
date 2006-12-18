@@ -40,7 +40,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     private PojoObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null);
+        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -57,7 +57,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testGetAssociatedInstance() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null);
+        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -67,7 +67,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null);
+        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -81,7 +81,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     }
 
     public void testRequestIsolation() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null);
+        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
 
         SystemAtomicComponent component = createComponent(scopeContext);

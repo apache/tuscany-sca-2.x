@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 public class StatelessScopeContainerTestCase extends TestCase {
 
     public void testBadStopWithoutStart() throws Exception {
-        StatelessScopeContainer container = new StatelessScopeContainer();
+        StatelessScopeContainer container = new StatelessScopeContainer(null, null);
         try {
             container.stop();
             fail();
@@ -36,7 +36,7 @@ public class StatelessScopeContainerTestCase extends TestCase {
     }
 
     public void testBadDoubleStart() throws Exception {
-        StatelessScopeContainer container = new StatelessScopeContainer();
+        StatelessScopeContainer container = new StatelessScopeContainer(null, null);
         try {
             container.start();
             container.start();

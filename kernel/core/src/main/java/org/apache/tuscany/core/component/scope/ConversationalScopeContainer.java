@@ -21,10 +21,10 @@ package org.apache.tuscany.core.component.scope;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -43,8 +43,8 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     private Store nonDurableStore;
     private Map<AtomicComponent, AtomicComponent> components;
 
-    public ConversationalScopeContainer(@Autowire Store store, @Autowire WorkContext workContext) {
-        super("Conversational Scope", workContext);
+    public ConversationalScopeContainer(Store store, WorkContext workContext, ScopeContainerMonitor monitor) {
+        super(workContext, monitor);
         this.nonDurableStore = store;
         components = new ConcurrentHashMap<AtomicComponent, AtomicComponent>();
     }

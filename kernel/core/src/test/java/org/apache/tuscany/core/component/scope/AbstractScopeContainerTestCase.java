@@ -27,21 +27,12 @@ import org.apache.tuscany.spi.event.TrueFilter;
 import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class AbstractScopeContainerTestCase extends TestCase {
-
-    public void testSetWorkContext() {
-        TestContainer container = new TestContainer("foo");
-        WorkContext ctx = new WorkContextImpl();
-        container.setWorkContext(ctx);
-        assertEquals(ctx, container.getWorkContext());
-
-    }
 
     public void testFireListener() {
         TestContainer container = new TestContainer("foo");
@@ -91,16 +82,10 @@ public class AbstractScopeContainerTestCase extends TestCase {
         assertNotNull(container.toString());
     }
 
-    public void testGetName() {
-        TestContainer container = new TestContainer("foo");
-        assertEquals("foo", container.getName());
-    }
-
-
     private class TestContainer extends AbstractScopeContainer {
 
         public TestContainer(String name) {
-            super(name, null);
+            super(null, null);
         }
 
         protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) {

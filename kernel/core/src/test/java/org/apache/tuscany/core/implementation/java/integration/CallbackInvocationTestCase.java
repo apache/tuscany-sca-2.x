@@ -356,7 +356,7 @@ public class CallbackInvocationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         wireService = new JDKWireService();
-        container = new ModuleScopeContainer();
+        container = new ModuleScopeContainer(null);
         container.start();
         context = createMock(DeploymentContext.class);
         context.getModuleScope();

@@ -28,10 +28,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -44,21 +44,15 @@ import org.apache.tuscany.core.component.event.CompositeStop;
  * @version $Rev$ $Date$
  */
 public class ModuleScopeContainer extends AbstractScopeContainer {
-
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
     private static final ComponentInitComparator COMPARATOR = new ComponentInitComparator();
 
     private final Map<AtomicComponent, InstanceWrapper> instanceWrappers;
-
     // the queue of instanceWrappers to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
 
-    public ModuleScopeContainer() {
-        this(null);
-    }
-
-    public ModuleScopeContainer(WorkContext workContext) {
-        super("Module Scope", workContext);
+    public ModuleScopeContainer(ScopeContainerMonitor monitor) {
+        super(null, monitor);
         instanceWrappers = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
         destroyQueue = new ArrayList<InstanceWrapper>();
     }
@@ -72,6 +66,9 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         if (event instanceof CompositeStart) {
             try {
                 eagerInitComponents();
+            } catch (ObjectCreationException e) {
+                // JFM
+                e.printStackTrace();
             } catch (TargetResolutionException e) {
                 // JFM FIXME
                 e.printStackTrace();

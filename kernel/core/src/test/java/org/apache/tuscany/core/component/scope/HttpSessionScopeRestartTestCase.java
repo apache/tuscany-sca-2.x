@@ -43,7 +43,7 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx);
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(ctx, null);
         scope.start();
         MethodEventInvoker<Object> initInvoker = new MethodEventInvoker<Object>(
             HttpSessionScopeRestartTestCase.InitDestroyOnce.class.getMethod("init"));
