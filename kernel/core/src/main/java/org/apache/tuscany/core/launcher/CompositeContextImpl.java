@@ -25,15 +25,11 @@ import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 
-/**
- * Implementation of SCA Specification CompositeContext that delegates to the Tuscany runtime fabric.
- *
- * @version $Rev$ $Date$
- */
+
 public class CompositeContextImpl extends SCA implements CompositeContext {
-    private final CompositeComponent composite;
+    protected final CompositeComponent composite;
 
     public CompositeContextImpl(final CompositeComponent composite) {
         this.composite = composite;
@@ -47,11 +43,11 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         setCompositeContext(null);
     }
 
-    public ServiceReference createServiceReferenceForSession(Object self) {
+    public ServiceReference createServiceReferenceForSession(Object arg0) {
         return null;
     }
 
-    public ServiceReference createServiceReferenceForSession(Object self, String serviceName) {
+    public ServiceReference createServiceReferenceForSession(Object arg0, String arg1) {
         return null;
     }
 
@@ -70,16 +66,17 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
     public <T> T locateService(Class<T> serviceInterface, String serviceName) throws ServiceRuntimeException {
         try {
             return composite.locateService(serviceInterface, serviceName);
-        } catch (TargetException e) {
+        } catch (TargetResolutionException e) {
             throw new ServiceRuntimeException(e);
         }
     }
 
-    public ServiceReference newSession(String serviceName) {
+    public ServiceReference newSession(String arg0) {
         return null;
     }
 
-    public ServiceReference newSession(String serviceName, Object sessionId) {
+    public ServiceReference newSession(String arg0, Object arg1) {
         return null;
     }
+
 }

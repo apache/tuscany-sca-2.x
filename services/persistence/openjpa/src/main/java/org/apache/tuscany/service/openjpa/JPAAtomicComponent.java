@@ -26,7 +26,7 @@ import javax.persistence.Persistence;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.SystemAtomicComponentExtension;
 
 /**
@@ -65,7 +65,7 @@ public class JPAAtomicComponent extends SystemAtomicComponentExtension {
         return factory;
     }
 
-    public Object getTargetInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetResolutionException {
         return factory;
     }
 

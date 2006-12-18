@@ -23,10 +23,10 @@ import java.util.List;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * @version $Rev$ $Date$
@@ -50,11 +50,11 @@ public abstract class SystemAtomicComponentExtension extends AtomicComponentExte
         this.interfazes = serviceInterfaces;
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         return getTargetInstance();
     }
 
-    public Object getServiceInstance(String name) throws TargetException {
+    public Object getServiceInstance(String name) throws TargetResolutionException {
         throw new UnsupportedOperationException();
     }
 

@@ -28,8 +28,8 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -88,15 +88,15 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return -1;
     }
 
-    public T getTargetInstance() throws TargetException {
+    public T getTargetInstance() throws TargetResolutionException {
         return instance;
     }
 
-    public Object getServiceInstance(String name) throws TargetException {
+    public Object getServiceInstance(String name) throws TargetResolutionException {
         return getTargetInstance();
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         return getTargetInstance();
     }
 

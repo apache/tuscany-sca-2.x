@@ -19,7 +19,8 @@
 package org.apache.tuscany.core.component.scope;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
  * Default implementation of an <code>InstanceWrapper</code>
@@ -49,12 +50,12 @@ public class InstanceWrapperImpl implements InstanceWrapper {
         return instance;
     }
 
-    public void start() throws TargetException {
+    public void start() throws TargetInitializationException {
         component.init(instance);
         started = true;
     }
 
-    public void stop() throws TargetException {
+    public void stop() throws TargetDestructionException {
         component.destroy(instance);
         started = false;
     }

@@ -18,7 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 
 /**
  * Provides lifecycle management for an implementation instance associated with an {@link
@@ -33,8 +34,8 @@ public interface InstanceWrapper {
 
     boolean isStarted();
 
-    void start() throws TargetException;
+    void start() throws TargetInitializationException;
 
-    void stop() throws TargetException;
+    void stop() throws TargetDestructionException;
 
 }

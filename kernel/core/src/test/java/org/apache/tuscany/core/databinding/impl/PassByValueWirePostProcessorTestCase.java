@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -48,6 +48,8 @@ import static org.easymock.EasyMock.expect;
 /**
  * Testcase for testing if the PassByValueWireProcessor adds the PassByValueInterceptor to the invocation chains and
  * also ensure that the outbound and inbound chain of interceptors are linked after this insertion
+ *
+ * @version $Rev$ $Date$
  */
 public class PassByValueWirePostProcessorTestCase extends TestCase {
     private PassByValueWirePostProcessor processor;
@@ -156,27 +158,22 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         }
 
         public Object createInstance() throws ObjectCreationException {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
-            // TODO Auto-generated method stub
             return null;
         }
 
-        public Object getServiceInstance(String name) throws TargetException {
-            // TODO Auto-generated method stub
+        public Object getServiceInstance(String name) throws TargetResolutionException {
             return null;
         }
 
         public List<Class<?>> getServiceInterfaces() {
-            // TODO Auto-generated method stub
             return null;
         }
 
-        public Object getServiceInstance() throws TargetException {
-            // TODO Auto-generated method stub
+        public Object getServiceInstance() throws TargetResolutionException {
             return null;
         }
 

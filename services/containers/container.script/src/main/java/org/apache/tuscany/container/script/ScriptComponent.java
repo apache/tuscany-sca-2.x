@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
@@ -34,6 +35,8 @@ import org.apache.tuscany.spi.wire.WireObjectFactory;
 
 /**
  * A component implementation for script languages.
+ *
+ * @version $Rev$ $Date$
  */
 public class ScriptComponent extends AtomicComponentExtension {
     private final List<Class<?>> services;
@@ -68,7 +71,7 @@ public class ScriptComponent extends AtomicComponentExtension {
         return services;
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         return getServiceInstance(null);
     }
 
@@ -77,7 +80,7 @@ public class ScriptComponent extends AtomicComponentExtension {
     }
 
     @SuppressWarnings("unchecked")
-    public Object getServiceInstance(String service) throws TargetException {
+    public Object getServiceInstance(String service) throws TargetResolutionException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
             throw new TargetNotFoundException("Service not found", service);

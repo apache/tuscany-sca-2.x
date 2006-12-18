@@ -25,8 +25,8 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
@@ -74,7 +74,7 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     }
 
     @Override
-    public Object getInstance(AtomicComponent component) throws TargetException {
+    public Object getInstance(AtomicComponent component) throws TargetResolutionException {
         String conversationId = getConversationId();
         try {
             workContext.setCurrentAtomicComponent(component);
@@ -93,15 +93,15 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 return o;
             }
         } catch (StoreReadException e) {
-            throw new TargetRetrievalException("Error retrieving target instance", e);
+            throw new TargetResolutionException("Error retrieving target instance", e);
         } catch (StoreWriteException e) {
-            throw new TargetPersistException("Error persisting target instance", e);
+            throw new TargetResolutionException("Error persisting target instance", e);
         } finally {
             workContext.setCurrentAtomicComponent(null);
         }
     }
 
-    public Object getAssociatedInstance(AtomicComponent component) throws TargetException {
+    public Object getAssociatedInstance(AtomicComponent component) throws TargetResolutionException {
         String conversationId = getConversationId();
         try {
             workContext.setCurrentAtomicComponent(component);
@@ -117,9 +117,9 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                 throw new TargetNotFoundException(component.getName());
             }
         } catch (StoreReadException e) {
-            throw new TargetRetrievalException("Error retrieving target instance", e);
+            throw new TargetResolutionException("Error retrieving target instance", e);
         } catch (StoreWriteException e) {
-            throw new TargetPersistException("Error persisting target instance", e);
+            throw new TargetResolutionException("Error persisting target instance", e);
         } finally {
             workContext.setCurrentAtomicComponent(null);
         }

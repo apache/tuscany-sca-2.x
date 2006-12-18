@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -98,12 +99,12 @@ public class GroovyAtomicComponent extends AtomicComponentExtension {
         return (GroovyObject) scopeContainer.getInstance(this);
     }
 
-    public Object getServiceInstance() throws TargetException {
+    public Object getServiceInstance() throws TargetResolutionException {
         //TODO this should return a default service from a wire
         return scopeContainer.getInstance(this);
     }
 
-    public Object getServiceInstance(String service) throws TargetException {
+    public Object getServiceInstance(String service) throws TargetResolutionException {
         InboundWire wire = getInboundWire(service);
         if (wire == null) {
             throw new TargetNotFoundException("Service not found", service);

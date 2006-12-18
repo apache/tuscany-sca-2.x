@@ -123,23 +123,23 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     /**
      * Returns a system service associated with the given name
      *
-     * @throws TargetException if an error occurs retrieving the service instance
+     * @throws TargetResolutionException if an error occurs retrieving the service instance
      */
-    Object getSystemServiceInstance(String name) throws TargetException;
+    Object getSystemServiceInstance(String name) throws TargetResolutionException;
 
     /**
      * Returns the service instance for associated with the child registered for the given name
      *
-     * @throws TargetException
+     * @throws TargetResolutionException
      */
-    <T> T locateService(Class<T> serviceInterface, String serviceName) throws TargetException;
+    <T> T locateService(Class<T> serviceInterface, String serviceName) throws TargetResolutionException;
 
     /**
      * Returns the system service instance for associated with the child registered for the given name
      *
-     * @throws TargetException
+     * @throws TargetResolutionException
      */
-    <T> T locateSystemService(Class<T> serviceInterface, String serviceName) throws TargetException;
+    <T> T locateSystemService(Class<T> serviceInterface, String serviceName) throws TargetResolutionException;
 
     /**
      * Returns the references contained by the composite
@@ -157,9 +157,9 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
-     * @throws TargetException
+     * @throws TargetResolutionException
      */
-    <T> T resolveInstance(Class<T> instanceInterface) throws TargetException;
+    <T> T resolveInstance(Class<T> instanceInterface) throws TargetResolutionException;
 
     /**
      * Invoked by system child components to return an an autowire target. Resolved targets may be system services or
@@ -167,9 +167,9 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
-     * @throws TargetException
+     * @throws TargetResolutionException
      */
-    <T> T resolveSystemInstance(Class<T> instanceInterface) throws TargetException;
+    <T> T resolveSystemInstance(Class<T> instanceInterface) throws TargetResolutionException;
 
     /**
      * Invoked by a parent component to return an autowire target in a child. Resolved targets must be services. For
@@ -179,9 +179,9 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
-     * @throws TargetException
+     * @throws TargetResolutionException
      */
-    <T> T resolveExternalInstance(Class<T> instanceInterface) throws TargetException;
+    <T> T resolveExternalInstance(Class<T> instanceInterface) throws TargetResolutionException;
 
     /**
      * Invoked by a parent component to return a system autowire target in a child. Resolved targets must be system
@@ -191,8 +191,8 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if none can be found
-     * @throws TargetException
+     * @throws TargetResolutionException
      */
-    <T> T resolveSystemExternalInstance(Class<T> instanceInterface) throws TargetException;
+    <T> T resolveSystemExternalInstance(Class<T> instanceInterface) throws TargetResolutionException;
 
 }

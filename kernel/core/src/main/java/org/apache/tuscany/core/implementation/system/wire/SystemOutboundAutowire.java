@@ -24,8 +24,8 @@ import java.util.Map;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -79,7 +79,7 @@ public class SystemOutboundAutowire implements OutboundAutowire, SystemOutboundW
     public void setTargetName(QualifiedName targetName) {
     }
 
-    public Object getTargetService() throws TargetException {
+    public Object getTargetService() throws TargetResolutionException {
         Class<?> interfaze = serviceContract.getInterfaceClass();
         Object service = component.resolveSystemInstance(interfaze);
         if (service == null && required) {
