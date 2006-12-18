@@ -30,19 +30,21 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.tuscany.api.annotation.DataContext;
-import org.apache.tuscany.api.annotation.DataType;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorExtension;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 
+import org.apache.tuscany.api.annotation.DataContext;
+import org.apache.tuscany.api.annotation.DataType;
+
 /**
  * The databinding annotation processor for java interfaces
+ *
+ * @version $Rev$ $Date$
  */
 public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExtension {
 
@@ -50,8 +52,8 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
 
     private static final Class[] SIMPLE_JAVA_TYPES =
         {Byte.class, Character.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Date.class,
-         Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class, BigInteger.class,
-         BigDecimal.class};
+        Calendar.class, GregorianCalendar.class, Duration.class, XMLGregorianCalendar.class, BigInteger.class,
+        BigDecimal.class};
 
     private static final Set<Class> SIMPLE_TYPE_SET = new HashSet<Class>(Arrays.asList(SIMPLE_JAVA_TYPES));
 
@@ -108,7 +110,7 @@ public class DataBindingJavaInterfaceProcessor extends JavaInterfaceProcessorExt
         if (!(type instanceof Class)) {
             return;
         }
-        Class cls = (Class)dataType.getPhysical();
+        Class cls = (Class) dataType.getPhysical();
         if (cls.isPrimitive() || SIMPLE_TYPE_SET.contains(cls)) {
             dataType.setDataBinding(SIMPLE_JAVA_OBJECTS);
         } else if (cls == String.class && (dataBinding == null || !dataBinding.equals(String.class.getName()))) {

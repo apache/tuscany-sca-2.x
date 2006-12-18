@@ -28,17 +28,20 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Base Implementation of DataBinding
+ *
+ * @version $Rev$ $Date$
  */
 @Scope("MODULE")
 @Service(DataBinding.class)
@@ -51,11 +54,9 @@ public abstract class DataBindingExtension implements DataBinding {
     protected String name;
 
     /**
-     * Create a databinding with the base java type whose name will be used as
-     * the name of the databinding
-     * 
-     * @param baseType The base java class or interface representing the
-     *            databinding, for example, org.w3c.dom.Node
+     * Create a databinding with the base java type whose name will be used as the name of the databinding
+     *
+     * @param baseType The base java class or interface representing the databinding, for example, org.w3c.dom.Node
      */
     protected DataBindingExtension(Class<?> baseType) {
         this(baseType.getName(), baseType);
@@ -63,10 +64,9 @@ public abstract class DataBindingExtension implements DataBinding {
 
     /**
      * Create a databinding with the name and base java type
-     * 
-     * @param name The name of the databinding
-     * @param baseType The base java class or interface representing the
-     *            databinding, for example, org.w3c.dom.Node
+     *
+     * @param name     The name of the databinding
+     * @param baseType The base java class or interface representing the databinding, for example, org.w3c.dom.Node
      */
     protected DataBindingExtension(String name, Class<?> baseType) {
         this.name = name;
@@ -119,8 +119,8 @@ public abstract class DataBindingExtension implements DataBinding {
         }
         final Class clazz = arg.getClass();
         if (String.class == clazz || clazz.isPrimitive() || Number.class.isAssignableFrom(clazz)
-                || Boolean.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz)
-                || Byte.class.isAssignableFrom(clazz)) {
+            || Boolean.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz)
+            || Byte.class.isAssignableFrom(clazz)) {
             // Immutable classes
             return arg;
         }
@@ -141,11 +141,11 @@ public abstract class DataBindingExtension implements DataBinding {
             } else {
                 //return arg;
                 throw new IllegalArgumentException(
-                        "Pass-by-value is not supported for the given object");
+                    "Pass-by-value is not supported for the given object");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(
-                    "Pass-by-value is not supported for the given object", e);
+                "Pass-by-value is not supported for the given object", e);
         }
     }
 
@@ -154,11 +154,10 @@ public abstract class DataBindingExtension implements DataBinding {
     }
 
     protected ObjectInputStream getObjectInputStream(InputStream is, final ClassLoader cl)
-            throws IOException {
+        throws IOException {
         ObjectInputStream ois = new ObjectInputStream(is) {
             @Override
-            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-                    ClassNotFoundException {
+            protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException, ClassNotFoundException {
                 try {
                     return Class.forName(desc.getName(), false, cl);
                 } catch (ClassNotFoundException e) {
