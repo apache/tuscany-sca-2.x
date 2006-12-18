@@ -59,16 +59,16 @@ public interface AtomicComponent extends Component {
     /**
      * Notifies the given instance of an initialization event.
      *
-     * @throws TargetException
+     * @throws TargetInitializationException
      */
-    void init(Object instance) throws TargetException;
+    void init(Object instance) throws TargetInitializationException;
 
     /**
      * Notifies the given instance of a destroy event.
      *
-     * @throws TargetException
+     * @throws TargetDestructionException
      */
-    void destroy(Object instance) throws TargetException;
+    void destroy(Object instance) throws TargetDestructionException;
 
     /**
      * Creates a new implementation instance, generally used as a callback by a {@link

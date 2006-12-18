@@ -28,7 +28,9 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
@@ -96,7 +98,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         return serviceInterfaces;
     }
 
-    public void init(Object instance) throws TargetException {
+    public void init(Object instance) throws TargetInitializationException {
         if (initInvoker != null) {
             try {
                 initInvoker.invokeEvent(instance);
@@ -106,7 +108,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
     }
 
-    public void destroy(Object instance) throws TargetException {
+    public void destroy(Object instance) throws TargetDestructionException {
         if (destroyInvoker != null) {
             try {
                 destroyInvoker.invokeEvent(instance);

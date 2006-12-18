@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class DataSourceCloseException extends TargetException {
+public class DataSourceCloseException extends TargetDestructionException {
 
     public DataSourceCloseException(String message, Throwable cause) {
         super(message, cause);

@@ -27,11 +27,12 @@ import java.util.Map;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -125,11 +126,11 @@ public abstract class AtomicComponentExtension extends AbstractSCAObject impleme
         scopeContainer.register(this);
     }
 
-    public void init(Object instance) throws TargetException {
+    public void init(Object instance) throws TargetInitializationException {
 
     }
 
-    public void destroy(Object instance) throws TargetException {
+    public void destroy(Object instance) throws TargetDestructionException {
 
     }
 
