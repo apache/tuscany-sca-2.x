@@ -19,11 +19,17 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.databinding.DataBinding;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -37,17 +43,29 @@ import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
  */
 public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
-
+    private DataBindingRegistry dataBindingRegistry;
+    
     public PassByValueWirePostProcessor() {
         super();
 
     }
+    
+    /**
+     * @param dataBindingRegistry the dataBindingRegistry to set
+     */
+    @Autowire
+    public void setDataBindingRegistry(DataBindingRegistry dataBindingRegistry) {
+        this.dataBindingRegistry = dataBindingRegistry;
+    }
 
     public void process(OutboundWire source, InboundWire target) {
         Interceptor tailInterceptor;
-        PassByValueInterceptor passByValueInterceptor;
+        PassByValueInterceptor passByValueInterceptor = null;
         Operation<?> targetOperation;
         Operation<?> sourceOperation;
+        DataBinding[] argsDataBindings = null;
+        DataBinding resultDataBinding = null;
+        
         boolean allowsPassByReference = false;
         if (target.getContainer() instanceof AtomicComponentExtension) {
             allowsPassByReference =
@@ -57,11 +75,18 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
             && !allowsPassByReference) {
             Map<Operation<?>, InboundInvocationChain> chains = target.getInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {
-                passByValueInterceptor = new PassByValueInterceptor();
                 targetOperation = entry.getKey();
                 sourceOperation =
                     getSourceOperation(source.getInvocationChains().keySet(), targetOperation.getName());
 
+                argsDataBindings = resolveArgsDataBindings(targetOperation);
+                resultDataBinding = resolveResultDataBinding(targetOperation);
+                
+                passByValueInterceptor = new PassByValueInterceptor();
+                passByValueInterceptor.setDataBinding(getDataBinding(targetOperation));
+                passByValueInterceptor.setArgsDataBindings(argsDataBindings);
+                passByValueInterceptor.setResultDataBinding(resultDataBinding);
+    
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor = source.getInvocationChains().get(sourceOperation).getTailInterceptor();
                 if (tailInterceptor != null) {
@@ -85,12 +110,19 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
             Object targetAddress = source.getContainer().getName();
             Map<Operation<?>, InboundInvocationChain> callbackChains = source.getTargetCallbackInvocationChains();
             for (Map.Entry<Operation<?>, InboundInvocationChain> entry : callbackChains.entrySet()) {
-                passByValueInterceptor = new PassByValueInterceptor();
                 targetOperation = entry.getKey();
                 sourceOperation =
                     getSourceOperation(target.getSourceCallbackInvocationChains(targetAddress).keySet(),
                         targetOperation.getName());
-
+                
+                argsDataBindings = resolveArgsDataBindings(targetOperation);
+                resultDataBinding = resolveResultDataBinding(targetOperation);
+                
+                passByValueInterceptor = new PassByValueInterceptor();
+                passByValueInterceptor.setDataBinding(getDataBinding(targetOperation));
+                passByValueInterceptor.setArgsDataBindings(argsDataBindings);
+                passByValueInterceptor.setResultDataBinding(resultDataBinding);
+                
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor =
                     target.getSourceCallbackInvocationChains(targetAddress).get(sourceOperation)
@@ -113,5 +145,45 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
             }
         }
         return null;
+    }
+    
+    private DataBinding getDataBinding(Operation<?> operation) {
+        String dataBinding = operation.getDataBinding();
+        if (dataBinding == null) {
+            ServiceContract<?> serviceContract = operation.getServiceContract();
+            dataBinding = serviceContract.getDataBinding();
+        }
+        return dataBindingRegistry.getDataBinding(dataBinding);
+        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private DataBinding[] resolveArgsDataBindings(Operation operation) {
+        List<DataType<?>> argumentTypes = (List<DataType<?>>)operation.getInputType().getLogical();
+        DataBinding[] argDataBindings = new DataBinding[argumentTypes.size()];
+        int count = 0; 
+        for ( DataType argType : argumentTypes ) {
+            argDataBindings[count] = null;
+            if ( argType != null ) {
+                if ( argType.getLogical() instanceof Class ) {
+                    argDataBindings[count] = 
+                        dataBindingRegistry.getDataBinding(((Class)argType.getLogical()).getName());
+                }
+            }
+            ++count;
+        }
+        return argDataBindings;
+    }
+    
+    private DataBinding resolveResultDataBinding(Operation operation) {
+        DataType<?> resultType = (DataType<?>)operation.getOutputType();
+        DataBinding resultBinding = null;
+        if ( resultType != null ) {
+            if ( resultType.getLogical() instanceof Class ) {
+                resultBinding = 
+                        dataBindingRegistry.getDataBinding(((Class)resultType.getLogical()).getName());
+            }
+        }
+        return resultBinding;
     }
 }
