@@ -131,19 +131,28 @@ public class PassByValueInterceptor implements Interceptor {
             return null;
         }
         
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream oos = null;
+        
         try {
             if (arg instanceof Serializable) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream oos = getObjectOutputStream(bos);
+                bos = new ByteArrayOutputStream();
+                oos = getObjectOutputStream(bos);
                 oos.writeObject(arg);
-                oos.close();
-                bos.close();
+                
                 return bos.toByteArray();
             } else {
                 throw new IllegalArgumentException("Unable to serialize using Java Serialization");
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Exception while serializing argument ", e);
+        } finally {
+            try {
+                oos.close();
+                bos.close();
+            } catch ( IOException e ) {
+                throw new IllegalArgumentException("Exception while serializing argument ", e);
+            }
         }
     }
     
@@ -156,15 +165,27 @@ public class PassByValueInterceptor implements Interceptor {
             // Immutable classes
             return arg;
         }
+        
+        ByteArrayInputStream bis =  null;
+        ObjectInputStream ois = null;
+        
         try {
-            ByteArrayInputStream bis = new ByteArrayInputStream((byte[])arg);
-            ObjectInputStream ois = getObjectInputStream(bis, clazz.getClassLoader());
+            bis = new ByteArrayInputStream((byte[])arg);
+            ois = getObjectInputStream(bis, clazz.getClassLoader());
             Object objectCopy = ois.readObject();
-            ois.close();
-            bis.close();
+            
             return objectCopy;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Exception when attempting to Java Deserialization of object ", e);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException("Exception when attempting to Java Deserialization of object ", e);
+        } finally {
+            try {
+                ois.close();
+                bis.close();
+            } catch ( IOException e ) {
+                throw new IllegalArgumentException("Exception when attempting to Java Deserialization of object ", e);
+            }
         }
     }
     
