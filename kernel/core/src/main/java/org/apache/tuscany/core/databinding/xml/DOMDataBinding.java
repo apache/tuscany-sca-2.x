@@ -38,5 +38,18 @@ public class DOMDataBinding extends DataBindingExtension {
     public WrapperHandler getWrapperHandler() {
         return new DOMWrapperHandler();
     }
-
+    
+    public Object copy(Object source) {
+        if ( Node.class.isAssignableFrom(source.getClass()) ) {
+            Node nodeSource = (Node)source;
+            Node2String strTransformer  = new Node2String();
+            String stringCopy = strTransformer.transform(nodeSource, null);
+            
+            String2Node nodeTransformer = new String2Node();
+            Node nodeCopy = nodeTransformer.transform(stringCopy, null);
+            return nodeCopy;
+        }
+        
+        return super.copy(source);
+    }
 }

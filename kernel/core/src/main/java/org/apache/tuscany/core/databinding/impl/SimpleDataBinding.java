@@ -19,9 +19,12 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
+import org.apache.tuscany.core.databinding.xml.Node2String;
+import org.apache.tuscany.core.databinding.xml.String2Node;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.spi.loader.MissingResourceException;
 import org.osoa.sca.annotations.Property;
+import org.w3c.dom.Node;
 
 /**
  * Simple databinding represented by a base java type. A SCDL property className
@@ -55,5 +58,4 @@ public class SimpleDataBinding extends DataBindingExtension {
             }
         }
     }
-
 }

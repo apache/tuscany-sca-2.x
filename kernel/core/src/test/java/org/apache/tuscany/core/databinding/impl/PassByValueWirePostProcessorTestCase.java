@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -60,9 +61,12 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         this.processor = new PassByValueWirePostProcessor();
+        DataBindingRegistry dataBindingRegistry = createMock(DataBindingRegistry.class);
+        processor.setDataBindingRegistry(dataBindingRegistry);
     }
 
     public void testProcessInclusionOfInterceptor() {
+        
         InboundWire inboundWire = createMock(InboundWire.class);
         OutboundWire outboundWire = createMock(OutboundWire.class);
 
@@ -71,7 +75,8 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         Map<Operation<?>, InboundInvocationChain> inChainsMap =
             new Hashtable<Operation<?>, InboundInvocationChain>();
 
-        Operation<?> operation1 = new Operation<Type>("testMethod", null, null, null);
+        Operation<Type> operation1 = new Operation<Type>("testMethod", null, null, null); 
+        operation1.setServiceContract(serviceContract);
         InboundInvocationChainImpl inChain = new InboundInvocationChainImpl(operation1);
         inChainsMap.put(operation1, inChain);
 

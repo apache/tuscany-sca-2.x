@@ -56,7 +56,7 @@ public class PassByValueInterceptorTestCase extends TestCase {
     }
 
     public void testCopy() {
-        Object[] copy = PassByValueInterceptor.copy(values);
+        Object[] copy = new PassByValueInterceptor().copy(values);
         assertTrue(copy[0] instanceof MySerialiable);
         MySerialiable copied = (MySerialiable)copy[0];
         assertNotSame(serialiable, copy[0]);
