@@ -81,7 +81,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     }
 
     public Scope getScope() {
-        return Scope.COMPOSITE;
+        return Scope.SYSTEM;
     }
 
     public void onEvent(Event event) {

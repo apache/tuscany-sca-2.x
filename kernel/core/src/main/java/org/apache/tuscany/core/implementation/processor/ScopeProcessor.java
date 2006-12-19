@@ -55,8 +55,8 @@ public class ScopeProcessor extends ImplementationProcessorExtension {
             scope = Scope.CONVERSATION;
         } else if ("REQUEST".equals(name)) {
             scope = Scope.REQUEST;
-        } else if ("COMPOSITE".equals(name)) {
-            scope = Scope.COMPOSITE;
+        } else if ("SYSTEM".equals(name)) {
+            scope = Scope.SYSTEM;
         } else {
             scope = new Scope(name);
         }

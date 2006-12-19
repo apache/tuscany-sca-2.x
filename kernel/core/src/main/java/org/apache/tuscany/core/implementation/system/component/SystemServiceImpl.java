@@ -52,7 +52,7 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
     }
 
     public Scope getScope() {
-        return Scope.COMPOSITE;
+        return Scope.SYSTEM;
     }
 
     public InboundWire getInboundWire() {

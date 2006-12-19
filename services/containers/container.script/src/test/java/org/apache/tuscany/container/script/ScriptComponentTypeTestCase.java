@@ -27,8 +27,8 @@ public class ScriptComponentTypeTestCase extends TestCase {
     public void testLifecycleScope() {
         ScriptComponentType ct = new ScriptComponentType();
         assertEquals(Scope.MODULE, ct.getLifecycleScope());
-        ct.setLifecycleScope(Scope.COMPOSITE);
-        assertEquals(Scope.COMPOSITE, ct.getLifecycleScope());
+        ct.setLifecycleScope(Scope.SYSTEM);
+        assertEquals(Scope.SYSTEM, ct.getLifecycleScope());
     }
 
 }

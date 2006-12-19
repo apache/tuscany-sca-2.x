@@ -34,7 +34,7 @@ public class ServiceExtensionTestCase extends TestCase {
 
     public void testScope() throws Exception {
         ServiceExtension service = new ServiceExtension(null, null, null, null);
-        assertEquals(Scope.COMPOSITE, service.getScope());
+        assertEquals(Scope.SYSTEM, service.getScope());
     }
 
     public void testSetGetInterface() throws Exception {

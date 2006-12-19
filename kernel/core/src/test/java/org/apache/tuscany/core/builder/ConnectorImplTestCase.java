@@ -171,7 +171,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.expect(service.getParent()).andReturn(parent).atLeastOnce();
         EasyMock.expect(service.getInboundWire()).andReturn(inboundWire).atLeastOnce();
-        EasyMock.expect(service.getScope()).andReturn(Scope.COMPOSITE);
+        EasyMock.expect(service.getScope()).andReturn(Scope.SYSTEM);
         EasyMock.expect(service.getOutboundWire()).andReturn(outboundWire);
         EasyMock.replay(service);
 

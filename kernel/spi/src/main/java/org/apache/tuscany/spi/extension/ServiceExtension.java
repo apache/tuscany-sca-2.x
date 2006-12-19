@@ -53,7 +53,7 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
     }
 
     public Scope getScope() {
-        return Scope.COMPOSITE;
+        return Scope.SYSTEM;
     }
 
     public InboundWire getInboundWire() {
