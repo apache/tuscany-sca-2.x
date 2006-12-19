@@ -65,12 +65,9 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
                     try {
                         getInstance(entry.getKey(), key, true);
                     } catch (ObjectCreationException e) {
-                        // FIXME JFM
-                        e.printStackTrace();
+                        monitor.eagerInitializationError(e);
                     } catch (TargetResolutionException e) {
-                        // FIXME JFM
-                        e.printStackTrace();
-
+                        monitor.eagerInitializationError(e);
                     }
                 }
             }
@@ -145,8 +142,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
                     try {
                         iter.previous().stop();
                     } catch (TargetDestructionException e) {
-                        // JFM FIXME
-                        e.printStackTrace();
+                        monitor.destructionError(e);
                     }
                 }
             }

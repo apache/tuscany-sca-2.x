@@ -67,10 +67,8 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
             try {
                 eagerInitComponents();
             } catch (ObjectCreationException e) {
-                // JFM
                 monitor.eagerInitializationError(e);
             } catch (TargetResolutionException e) {
-                // JFM FIXME
                 monitor.eagerInitializationError(e);
             }
             lifecycleState = RUNNING;
@@ -109,9 +107,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
                 try {
                     iter.previous().stop();
                 } catch (TargetDestructionException e) {
-                    // JFM FIXME
                     monitor.destructionError(e);
-                    e.printStackTrace();
                 }
             }
             destroyQueue.clear();
@@ -127,7 +123,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
         throws TargetResolutionException {
         checkInit();
         InstanceWrapper ctx = instanceWrappers.get(component);
-        assert ctx != null : "Component not registered with scope: " + component;
+        assert ctx != null;
         if (ctx == EMPTY && !create) {
             return null;
         }
