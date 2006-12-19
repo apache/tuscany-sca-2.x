@@ -67,7 +67,7 @@
         <module>services</module>
         <module>runtime</module>
         <module>commands</module>
-        <module>tools</module>
+        <!--<module>tools</module>-->
         <module>plugins</module>
     </modules>
 

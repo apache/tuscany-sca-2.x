@@ -52,7 +52,7 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
     }
 
     public Scope getScope() {
-        return Scope.COMPOSITE;
+        return Scope.SYSTEM;
     }
 
     public void setInboundWire(InboundWire wire) {

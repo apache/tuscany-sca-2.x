@@ -47,7 +47,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testGetScope() {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Assert.assertEquals(Scope.COMPOSITE, composite.getScope());
+        Assert.assertEquals(Scope.SYSTEM, composite.getScope());
     }
 
     public void testGetChildren() throws Exception {

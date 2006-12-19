@@ -69,12 +69,12 @@ public class ScopeProcessorTestCase extends TestCase {
         assertEquals(Scope.REQUEST, type.getImplementationScope());
     }
 
-    public void testCompositeScope() throws ProcessingException {
+    public void testSystemScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        processor.visitClass(parent, Composite.class, type, null);
-        assertEquals(Scope.COMPOSITE, type.getImplementationScope());
+        processor.visitClass(parent, System.class, type, null);
+        assertEquals(Scope.SYSTEM, type.getImplementationScope());
     }
 
     public void testStatelessScope() throws ProcessingException {
@@ -114,8 +114,8 @@ public class ScopeProcessorTestCase extends TestCase {
     private class Request {
     }
 
-    @org.osoa.sca.annotations.Scope("COMPOSITE")
-    private class Composite {
+    @org.osoa.sca.annotations.Scope("SYSTEM")
+    private class System {
     }
 
     @org.osoa.sca.annotations.Scope("STATELESS")

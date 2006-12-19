@@ -55,7 +55,7 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
     }
 
     public Scope getScope() {
-        return Scope.COMPOSITE;
+        return Scope.SYSTEM;
     }
 
     public void setInboundWire(InboundWire wire) {

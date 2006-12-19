@@ -46,7 +46,7 @@ public class ReferenceTestCase extends TestCase {
 
     public void testScope() throws Exception {
         TestReference ref = new TestReference<Object>(Object.class);
-        assertEquals(Scope.COMPOSITE, ref.getScope());
+        assertEquals(Scope.SYSTEM, ref.getScope());
     }
 
     public void testSetGetInterface() throws Exception {

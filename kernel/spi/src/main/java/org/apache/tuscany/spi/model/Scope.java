@@ -29,7 +29,7 @@ public class Scope {
     public static final Scope SESSION = new Scope("SESSION");
     public static final Scope CONVERSATION = new Scope("CONVERSATION");
     public static final Scope MODULE = new Scope("MODULE");
-    public static final Scope COMPOSITE = new Scope("COMPOSITE");
+    public static final Scope SYSTEM = new Scope("SYSTEM");
     public static final Scope UNDEFINED = new Scope("UNDEFINED");
 
     private String scope;
