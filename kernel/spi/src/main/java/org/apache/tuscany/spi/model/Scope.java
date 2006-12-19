@@ -20,6 +20,8 @@ package org.apache.tuscany.spi.model;
 
 /**
  * The default implementation scopes supported by assemblies.
+ *
+ * @version $Rev$ $Date$
  */
 public class Scope {
     public static final Scope STATELESS = new Scope("STATELESS");

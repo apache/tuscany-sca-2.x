@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.ObjectCreationException;
 
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
@@ -62,8 +63,9 @@ public class RequestScopeContainer extends AbstractScopeContainer {
                     try {
                         getInstance(entry.getKey());
                     } catch (TargetResolutionException e) {
-                        // FIXME JFM monitor 
-                        e.printStackTrace();
+                        monitor.eagerInitializationError(e);
+                    } catch (ObjectCreationException e) {
+                        monitor.eagerInitializationError(e);
                     }
                 }
             }
@@ -128,8 +130,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
                     try {
                         iter.previous().stop();
                     } catch (TargetDestructionException e) {
-                        // JFM FIXME
-                        e.printStackTrace();
+                        monitor.destructionError(e);
                     }
                 }
             }
