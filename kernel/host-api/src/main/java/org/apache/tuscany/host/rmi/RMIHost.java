@@ -25,7 +25,7 @@ import java.rmi.Remote;
  */
 
 public interface RMIHost {
-    int RMI_DEFAULT_PORT = 1099;
+    int RMI_DEFAULT_PORT = 1299;
 
     // registers an RMI service with the given name and port
     void registerService(String serviceName, int port, Remote serviceObject) throws RMIHostException,
