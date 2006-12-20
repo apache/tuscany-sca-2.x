@@ -34,7 +34,7 @@ import org.osoa.sca.annotations.Scope;
 /**
  * This class provides an implementation for the RMI Host SPIs
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class RMIHostImpl implements RMIHost {
 
     // map of RMI registries started and running

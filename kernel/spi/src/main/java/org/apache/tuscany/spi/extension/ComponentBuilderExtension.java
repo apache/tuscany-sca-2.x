@@ -40,7 +40,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
 
     protected BuilderRegistry builderRegistry;

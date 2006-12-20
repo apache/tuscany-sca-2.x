@@ -68,7 +68,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
     public void testScope() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
-        assertEquals(Scope.MODULE, component.getScope());
+        assertEquals(Scope.COMPOSITE, component.getScope());
     }
 
     public void testUnknownScope() throws Exception {
@@ -105,7 +105,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         scope.stop();
         scope.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
-        EasyMock.expect(scope.getScope()).andReturn(Scope.MODULE).atLeastOnce();
+        EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.replay(scope);
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(deploymentContext.getModuleScope()).andReturn(scope).atLeastOnce();
@@ -114,7 +114,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
 
     private void createComponentDefinitionAndType() throws Exception {
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName("target");
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));

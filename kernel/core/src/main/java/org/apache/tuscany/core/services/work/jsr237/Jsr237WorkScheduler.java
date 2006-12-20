@@ -41,7 +41,7 @@ import commonj.work.WorkRejectedException;
  * manager implementaion available. For example, if the managed environment supports work manager the runtime can use
  * the appropriate lookup mechanism to inject the work manager implementation. </p>
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class Jsr237WorkScheduler implements WorkScheduler {
 
     /**

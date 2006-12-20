@@ -26,7 +26,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 public class JavaScriptComponentType extends ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> {
 
-    private Scope lifecycleScope = Scope.MODULE;
+    private Scope lifecycleScope = Scope.COMPOSITE;
 
     public JavaScriptComponentType() {
     }

@@ -66,7 +66,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
 
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> sourceType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        sourceType.setImplementationScope(Scope.MODULE);
+        sourceType.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName("target");
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
@@ -110,7 +110,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         scope.stop();
         scope.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
-        EasyMock.expect(scope.getScope()).andReturn(Scope.MODULE).atLeastOnce();
+        EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         scope.getInstance(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();

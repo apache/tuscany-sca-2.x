@@ -47,8 +47,8 @@ public class ScopeProcessor extends ImplementationProcessorExtension {
         //FIXME deal with eager init
         String name = annotation.value();
         Scope scope;
-        if ("MODULE".equals(name)) {
-            scope = Scope.MODULE;
+        if ("COMPOSITE".equals(name)) {
+            scope = Scope.COMPOSITE;
         } else if ("SESSION".equals(name)) {
             scope = Scope.SESSION;
         } else if ("CONVERSATION".equals(name)) {

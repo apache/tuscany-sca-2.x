@@ -102,7 +102,7 @@ public class ScriptComponentTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         container = EasyMock.createMock(ScopeContainer.class);
-        EasyMock.expect(container.getScope()).andReturn(Scope.MODULE);
+        EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(container);
     }
 

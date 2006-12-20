@@ -49,7 +49,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
         final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
         expect(scopeContainer.getScope()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
-                return Scope.MODULE;
+                return Scope.COMPOSITE;
             }
         });
         expect(deploymentContext.getModuleScope()).andStubAnswer(new IAnswer() {
@@ -61,7 +61,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
         ComponentDefinition<ScriptImplementation> impl =
             new ComponentDefinition<ScriptImplementation>(new ScriptImplementation());
         ScriptComponentType componentType = new ScriptComponentType();
-        componentType.setLifecycleScope(Scope.MODULE);
+        componentType.setLifecycleScope(Scope.COMPOSITE);
         ServiceDefinition service = new ServiceDefinition();
         ServiceContract serviceContract = new JavaServiceContract();
         service.setServiceContract(serviceContract);
@@ -90,7 +90,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
         final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
         expect(scopeContainer.getScope()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
-                return Scope.MODULE;
+                return Scope.COMPOSITE;
             }
         });
         expect(deploymentContext.getModuleScope()).andStubAnswer(new IAnswer() {

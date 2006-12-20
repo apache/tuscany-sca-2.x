@@ -45,7 +45,7 @@ public class GetServiceByNameTestCase extends TestCase {
     public void testServiceLocate() throws Exception {
         ScopeContainer scope = createMock(ScopeContainer.class);
         scope.register(EasyMock.isA(JavaAtomicComponent.class));
-        expect(scope.getScope()).andReturn(Scope.MODULE);
+        expect(scope.getScope()).andReturn(Scope.COMPOSITE);
         replay(scope);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);

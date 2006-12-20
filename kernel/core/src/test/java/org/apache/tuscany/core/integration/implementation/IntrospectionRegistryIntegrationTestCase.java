@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import static org.apache.tuscany.spi.model.Scope.MODULE;
+import static org.apache.tuscany.spi.model.Scope.COMPOSITE;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -59,7 +59,7 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         registry.introspect(null, Foo.class, type, null);
         assertEquals(Foo.class.getMethod("init"), type.getInitMethod());
         assertEquals(Foo.class.getMethod("destroy"), type.getDestroyMethod());
-        assertEquals(MODULE, type.getImplementationScope());
+        assertEquals(COMPOSITE, type.getImplementationScope());
         assertEquals(Foo.class.getMethod("setBar", String.class), type.getProperties().get("bar").getMember());
         assertEquals(Foo.class.getMethod("setTarget", Foo.class), type.getReferences().get("target").getMember());
         assertEquals(Foo.class.getMethod("setResource", Foo.class), type.getResources().get("resource").getMember());
@@ -79,7 +79,7 @@ public class IntrospectionRegistryIntegrationTestCase extends TestCase {
         registry.registerProcessor(new ResourceProcessor());
     }
 
-    @Scope("MODULE")
+    @Scope("COMPOSITE")
     private static class Foo {
         protected Foo target;
         protected String bar;

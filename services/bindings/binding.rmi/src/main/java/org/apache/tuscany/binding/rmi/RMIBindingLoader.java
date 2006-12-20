@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
     public static final QName BINDING_RMI = new QName(
         "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");

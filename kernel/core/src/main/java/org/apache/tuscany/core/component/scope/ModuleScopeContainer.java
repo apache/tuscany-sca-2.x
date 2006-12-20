@@ -58,7 +58,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     }
 
     public Scope getScope() {
-        return Scope.MODULE;
+        return Scope.COMPOSITE;
     }
 
     public void onEvent(Event event) {

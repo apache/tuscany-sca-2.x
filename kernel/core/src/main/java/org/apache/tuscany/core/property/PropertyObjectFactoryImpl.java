@@ -40,7 +40,7 @@ import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Node;
 
 @Service(PropertyObjectFactory.class)
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class PropertyObjectFactoryImpl implements PropertyObjectFactory {
     private DataBindingRegistry registry;
     private Mediator mediator;

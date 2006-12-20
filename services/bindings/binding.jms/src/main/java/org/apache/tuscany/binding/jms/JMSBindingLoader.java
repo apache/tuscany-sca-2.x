@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class JMSBindingLoader extends LoaderExtension<JMSBinding> {
     public static final QName BINDING_JMS = new QName(
         "http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT", "binding.jms");

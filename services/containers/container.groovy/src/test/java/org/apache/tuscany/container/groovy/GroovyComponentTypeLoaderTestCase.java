@@ -32,6 +32,6 @@ public class GroovyComponentTypeLoaderTestCase extends TestCase {
         GroovyImplementation impl = new GroovyImplementation();
         loader.load(null, impl, null);
         GroovyComponentType type = impl.getComponentType();
-        assertEquals(Scope.MODULE, type.getLifecycleScope());
+        assertEquals(Scope.COMPOSITE, type.getLifecycleScope());
     }
 }

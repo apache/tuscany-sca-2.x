@@ -56,7 +56,7 @@ import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl.Monitor;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
     public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 

@@ -573,19 +573,19 @@ public class ConnectorImpl implements Connector {
             return true;
         } else if (pReferrer == Scope.REQUEST && pReferee == Scope.SESSION) {
             return true;
-        } else if (pReferrer == Scope.REQUEST && pReferee == Scope.MODULE) {
+        } else if (pReferrer == Scope.REQUEST && pReferee == Scope.COMPOSITE) {
             return true;
         } else if (pReferrer == Scope.REQUEST && pReferee == Scope.SYSTEM) {
             return true;
-        } else if (pReferrer == Scope.SESSION && pReferee == Scope.MODULE) {
+        } else if (pReferrer == Scope.SESSION && pReferee == Scope.COMPOSITE) {
             return true;
         } else if (pReferrer == Scope.SESSION && pReferee == Scope.SYSTEM) {
             return true;
-        } else if (pReferrer == Scope.SYSTEM && pReferee == Scope.MODULE) {
+        } else if (pReferrer == Scope.SYSTEM && pReferee == Scope.COMPOSITE) {
             // case where a service context points to a module scoped component
             return true;
         } else {
-            return pReferrer == Scope.MODULE && pReferee == Scope.SYSTEM;
+            return pReferrer == Scope.COMPOSITE && pReferee == Scope.SYSTEM;
         }
     }
 

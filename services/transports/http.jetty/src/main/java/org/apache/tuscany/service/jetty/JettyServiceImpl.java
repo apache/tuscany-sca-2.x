@@ -52,7 +52,7 @@ import org.mortbay.thread.ThreadPool;
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 @Service(ServletHost.class)
 public class JettyServiceImpl implements JettyService {
 

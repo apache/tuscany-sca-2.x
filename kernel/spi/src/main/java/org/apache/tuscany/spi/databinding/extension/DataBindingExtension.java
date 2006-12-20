@@ -43,7 +43,7 @@ import org.apache.tuscany.spi.model.DataType;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 @Service(DataBinding.class)
 public abstract class DataBindingExtension implements DataBinding {
 

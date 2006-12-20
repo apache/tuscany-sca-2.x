@@ -23,7 +23,7 @@ import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 
-@Scope("MODULE")
+@Scope("COMPOSITE")
 /**
  * @version $Rev$ $Date$
  */

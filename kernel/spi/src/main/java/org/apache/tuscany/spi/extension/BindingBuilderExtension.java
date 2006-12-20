@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public abstract class BindingBuilderExtension<B extends Binding> implements BindingBuilder<B> {
 
     protected BuilderRegistry builderRegistry;

@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class OSGiBindingLoader extends LoaderExtension<OSGiBinding> {
     public static final QName BINDING_OSGI = new QName("http://tuscany.apache.org/xmlns/osgi/1.0", "binding.osgi");
 

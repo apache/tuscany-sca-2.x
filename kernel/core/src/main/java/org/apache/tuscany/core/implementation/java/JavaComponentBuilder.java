@@ -71,7 +71,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
         Scope scope = componentType.getImplementationScope();
-        if (Scope.MODULE == scope) {
+        if (Scope.COMPOSITE == scope) {
             configuration.setScopeContainer(deployment.getModuleScope());
         } else {
             ScopeContainer container = scopeRegistry.getScopeContainer(scope);

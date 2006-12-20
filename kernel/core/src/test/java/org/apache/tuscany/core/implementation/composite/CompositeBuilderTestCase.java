@@ -155,7 +155,7 @@ public class CompositeBuilderTestCase extends TestCase {
 
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> sourceType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        sourceType.setImplementationScope(Scope.MODULE);
+        sourceType.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference reference = new JavaMappedReference();
         reference.setName("targetReference");
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
@@ -191,7 +191,7 @@ public class CompositeBuilderTestCase extends TestCase {
 
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> targetType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        targetType.setImplementationScope(Scope.MODULE);
+        targetType.setImplementationScope(Scope.COMPOSITE);
 
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> targetContract = registry.introspect(Target.class);
@@ -216,7 +216,7 @@ public class CompositeBuilderTestCase extends TestCase {
         container.start();
         container.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(container.getScope()).andReturn(Scope.MODULE).anyTimes();
+        EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE).anyTimes();
         EasyMock.expect(container.getInstance(EasyMock.isA(AtomicComponent.class))).andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
 
