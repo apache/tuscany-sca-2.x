@@ -34,7 +34,7 @@ import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
 
 /**
- * Unit tests for the module scope container
+ * Unit tests for the composite scope container
  *
  * @version $Rev$ $Date$
  */

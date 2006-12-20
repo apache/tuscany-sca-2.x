@@ -40,7 +40,7 @@ public class JPAComponentBuilder extends ComponentBuilderExtension {
     public Component build(CompositeComponent parent, ComponentDefinition definition, DeploymentContext ctx)
         throws BuilderConfigException {
 //        String name = definition.getName();
-//        ScopeContainer moduleScope = ctx.getModuleScope();
+//        ScopeContainer moduleScope = ctx.getCompositeScope();
 //        Integer initLevel = definition.getInitLevel();
         ComponentType<?, ?, ?> type = definition.getImplementation().getComponentType();
         Property<?> persistenceUnit = type.getProperties().get(PERSISTENCE_UNIT);

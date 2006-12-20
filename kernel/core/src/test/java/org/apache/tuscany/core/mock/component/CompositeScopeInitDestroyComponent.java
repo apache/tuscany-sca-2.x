@@ -20,7 +20,7 @@ package org.apache.tuscany.core.mock.component;
 
 import org.osoa.sca.annotations.Destroy;
 
-public class ModuleScopeEagerInitDestroyComponent extends ModuleScopeEagerInitComponent {
+public class CompositeScopeInitDestroyComponent extends CompositeScopeInitOnlyComponent {
 
     boolean destroyed;
 
@@ -30,6 +30,10 @@ public class ModuleScopeEagerInitDestroyComponent extends ModuleScopeEagerInitCo
 
     @Destroy
     public void destroy() {
+        if (destroyed) {
+            throw new AssertionError("Destroy called more than once");
+        }
         destroyed = true;
     }
+
 }

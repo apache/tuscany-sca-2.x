@@ -69,7 +69,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         scopeContext.stop();
     }
 
-    public void testModuleIsolation() throws Exception {
+    public void testCompositeIsolation() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         monitor.start(EasyMock.isA(String.class));
         monitor.stop(EasyMock.isA(String.class));

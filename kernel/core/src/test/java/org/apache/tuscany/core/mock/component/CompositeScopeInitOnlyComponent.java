@@ -16,23 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.component.scope;
+package org.apache.tuscany.core.mock.component;
 
-import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.model.Scope;
+import org.osoa.sca.annotations.Init;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+public class CompositeScopeInitOnlyComponent extends CompositeScopeComponentImpl {
 
-/**
- * @version $Rev$ $Date$
- */
-public class ModuleScopeObjectFactoryTestCase extends TestCase {
+    private boolean initialized;
+    // this value tests to ensure introspection can find the init() method even
+    // if a field is named the same. Ultimately, this should be in the introspection tests
+    private boolean init;
 
-    public void testCreation() {
-        ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
-        registry.registerFactory(EasyMock.isA(Scope.class), EasyMock.isA(CompositeScopeObjectFactory.class));
-
-        assertNotNull(new CompositeScopeObjectFactory(registry, null).getInstance());
+    public boolean isInitialized() {
+        return initialized;
     }
+
+    @Init
+    public void init() {
+        if (initialized) {
+            throw new AssertionError("Init called more than once");
+        }
+        initialized = true;
+    }
+
 }

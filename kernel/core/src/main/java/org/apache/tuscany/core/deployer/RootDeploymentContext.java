@@ -32,23 +32,23 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  */
 public class RootDeploymentContext extends AbstractDeploymentContext {
     private final XMLInputFactory xmlFactory;
-    private final ScopeContainer moduleScope;
+    private final ScopeContainer scopeContainer;
 
     /**
      * Constructor specifying the loader for application resources.
      *
-     * @param classLoader the loader for application resources
-     * @param xmlFactory  a factory that can be used to obtain an StAX XMLStreamReader
-     * @param moduleScope the scope context representing this deployment's MODULE scope
-     * @param scdlLocation the location of the SCDL being deployed
+     * @param classLoader    the loader for application resources
+     * @param xmlFactory     a factory that can be used to obtain an StAX XMLStreamReader
+     * @param scopeContainer the scope context representing this deployment's COMPOSITE scope
+     * @param scdlLocation   the location of the SCDL being deployed
      */
     public RootDeploymentContext(ClassLoader classLoader,
                                  XMLInputFactory xmlFactory,
-                                 ScopeContainer moduleScope,
+                                 ScopeContainer scopeContainer,
                                  URL scdlLocation) {
         super(classLoader, scdlLocation);
         this.xmlFactory = xmlFactory;
-        this.moduleScope = moduleScope;
+        this.scopeContainer = scopeContainer;
     }
 
     public DeploymentContext getParent() {
@@ -60,6 +60,6 @@ public class RootDeploymentContext extends AbstractDeploymentContext {
     }
 
     public ScopeContainer getCompositeScope() {
-        return moduleScope;
+        return scopeContainer;
     }
 }

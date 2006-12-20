@@ -99,12 +99,12 @@ public class LauncherImpl implements Launcher {
         }
         parent.start();
         // create a ComponentDefinition to represent the component we are going to deploy
-        SystemCompositeImplementation moduleImplementation = new SystemCompositeImplementation();
-        moduleImplementation.setScdlLocation(systemScdl);
-        moduleImplementation.setClassLoader(systemClassLoader);
+        SystemCompositeImplementation compositeImplementation = new SystemCompositeImplementation();
+        compositeImplementation.setScdlLocation(systemScdl);
+        compositeImplementation.setClassLoader(systemClassLoader);
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(
-                ComponentNames.TUSCANY_SYSTEM, moduleImplementation);
+                ComponentNames.TUSCANY_SYSTEM, compositeImplementation);
         try {
             // deploy the component into the runtime under the system parent
             composite = (CompositeComponent) bootDeployer.deploy(parent, definition);
@@ -192,7 +192,7 @@ public class LauncherImpl implements Launcher {
         CompositeImplementation impl = new CompositeImplementation();
         impl.setScdlLocation(appScdl);
         impl.setClassLoader(applicationLoader);
-        ComponentDefinition<CompositeImplementation> moduleDefinition =
+        ComponentDefinition<CompositeImplementation> definition =
             new ComponentDefinition<CompositeImplementation>(name, impl);
 
         // deploy the component into the runtime under the system parent
@@ -203,7 +203,7 @@ public class LauncherImpl implements Launcher {
         try {
 
             Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-            return (CompositeComponent) deployer.deploy(parent, moduleDefinition);
+            return (CompositeComponent) deployer.deploy(parent, definition);
         } finally {
             Thread.currentThread().setContextClassLoader(ccl);
         }

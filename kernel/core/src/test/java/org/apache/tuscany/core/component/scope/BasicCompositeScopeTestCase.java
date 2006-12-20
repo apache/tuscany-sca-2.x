@@ -21,39 +21,36 @@ package org.apache.tuscany.core.component.scope;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.component.ModuleScopeInitDestroyComponent;
+import org.apache.tuscany.core.mock.component.CompositeScopeInitDestroyComponent;
 
 /**
  * @version $$Rev$$ $$Date$$
  */
-public class BasicModuleScopeTestCase extends TestCase {
+public class BasicCompositeScopeTestCase extends TestCase {
 
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
     private PojoObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
         CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
-        ModuleScopeInitDestroyComponent o1 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
+        CompositeScopeInitDestroyComponent o1 =
+            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
-        ModuleScopeInitDestroyComponent o2 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
+        CompositeScopeInitDestroyComponent o2 =
+            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertEquals(o1, o2);
         scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
@@ -62,7 +59,6 @@ public class BasicModuleScopeTestCase extends TestCase {
 
 
     public void testGetAssociatedInstance() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
         CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
@@ -72,7 +68,6 @@ public class BasicModuleScopeTestCase extends TestCase {
     }
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
         CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
@@ -85,20 +80,19 @@ public class BasicModuleScopeTestCase extends TestCase {
         }
     }
 
-    public void testModuleIsolation() throws Exception {
-        WorkContext workContext = new WorkContextImpl();
+    public void testCompositeIsolation() throws Exception {
         CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
 
         SystemAtomicComponent component = createComponent(scopeContext);
 
-        ModuleScopeInitDestroyComponent o1 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
+        CompositeScopeInitDestroyComponent o1 =
+            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
 
-        ModuleScopeInitDestroyComponent o2 =
-            (ModuleScopeInitDestroyComponent) scopeContext.getInstance(component);
+        CompositeScopeInitDestroyComponent o2 =
+            (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertSame(o1, o2);
         scopeContext.onEvent(new CompositeStop(this, null));
         assertTrue(o1.isDestroyed());
@@ -107,11 +101,11 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        factory = new PojoObjectFactory<ModuleScopeInitDestroyComponent>(
-            ModuleScopeInitDestroyComponent.class.getConstructor((Class[]) null));
-        initInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod(
+        factory = new PojoObjectFactory<CompositeScopeInitDestroyComponent>(
+            CompositeScopeInitDestroyComponent.class.getConstructor((Class[]) null));
+        initInvoker = new MethodEventInvoker<Object>(CompositeScopeInitDestroyComponent.class.getMethod(
             "init", (Class[]) null));
-        destroyInvoker = new MethodEventInvoker<Object>(ModuleScopeInitDestroyComponent.class.getMethod(
+        destroyInvoker = new MethodEventInvoker<Object>(CompositeScopeInitDestroyComponent.class.getMethod(
             "destroy", (Class[]) null));
     }
 
@@ -122,7 +116,7 @@ public class BasicModuleScopeTestCase extends TestCase {
     private SystemAtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
-        configuration.addServiceInterface(ModuleScopeInitDestroyComponent.class);
+        configuration.addServiceInterface(CompositeScopeInitDestroyComponent.class);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);

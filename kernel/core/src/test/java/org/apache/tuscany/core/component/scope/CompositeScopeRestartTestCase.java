@@ -20,14 +20,12 @@ package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.SystemAtomicComponent;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -37,10 +35,9 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ModuleScopeRestartTestCase extends TestCase {
+public class CompositeScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         MethodEventInvoker<Object> initInvoker =

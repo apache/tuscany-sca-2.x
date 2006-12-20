@@ -41,8 +41,8 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.integration.mock.MockFactory;
@@ -62,9 +62,9 @@ public class ScopeReferenceTestCase extends TestCase {
     private Map<String, Member> members;
 
     /**
-     * Tests a module-to-module scoped wire
+     * Tests a composite-to-composite scoped wire
      */
-    public void testModuleToModule() throws Exception {
+    public void testCompositeToComposite() throws Exception {
         ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
@@ -85,18 +85,18 @@ public class ScopeReferenceTestCase extends TestCase {
     }
 
     /**
-     * Tests a module-to-session scoped wire is setup properly by the runtime
+     * Tests a composite-to-session scoped wire is setup properly by the runtime
      */
-    public void testModuleToSession() throws Exception {
+    public void testCompositeToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new CompositeScopeContainer(null);
-        moduleScope.start();
+        ScopeContainer compositeScope = new CompositeScopeContainer(null);
+        compositeScope.start();
         ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            moduleScope, members, "target", Target.class, TargetImpl.class, sessionScope);
-        moduleScope.onEvent(new CompositeStart(this, null));
+            compositeScope, members, "target", Target.class, TargetImpl.class, sessionScope);
+        compositeScope.onEvent(new CompositeStart(this, null));
         Object session1 = new Object();
         ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
@@ -127,24 +127,24 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
 
         ctx.clearIdentifier(Scope.SESSION);
-        moduleScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new CompositeStop(this, null));
         sessionScope.stop();
-        moduleScope.stop();
+        compositeScope.stop();
     }
 
     /**
-     * Tests a module-to-request scoped wire
+     * Tests a composite-to-request scoped wire
      */
-    public void testModuleToRequest() throws Exception {
+    public void testCompositeToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new CompositeScopeContainer(null);
-        moduleScope.start();
+        ScopeContainer compositeScope = new CompositeScopeContainer(null);
+        compositeScope.start();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            moduleScope, members, "target", Target.class, TargetImpl.class, requestScope);
-        moduleScope.onEvent(new CompositeStart(this, null));
+            compositeScope, members, "target", Target.class, TargetImpl.class, requestScope);
+        compositeScope.onEvent(new CompositeStart(this, null));
         requestScope.onEvent(new RequestStart(this));
 
         AtomicComponent sourceComponent = contexts.get("source");
@@ -180,24 +180,24 @@ public class ScopeReferenceTestCase extends TestCase {
         future.get();
         assertEquals("foo", source.getTarget().getString());
         requestScope.onEvent(new RequestEnd(this));
-        moduleScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new CompositeStop(this, null));
         requestScope.stop();
-        moduleScope.stop();
+        compositeScope.stop();
     }
 
     /**
-     * Tests a module-to-stateless scoped wire is setup properly by the runtime
+     * Tests a composite-to-stateless scoped wire is setup properly by the runtime
      */
-    public void testModuleToStateless() throws Exception {
+    public void testCompositeToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new CompositeScopeContainer(null);
-        moduleScope.start();
+        ScopeContainer compositeScope = new CompositeScopeContainer(null);
+        compositeScope.start();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            moduleScope, members, "target", Target.class, TargetImpl.class, statelessScope);
-        moduleScope.onEvent(new CompositeStart(this, null));
+            compositeScope, members, "target", Target.class, TargetImpl.class, statelessScope);
+        compositeScope.onEvent(new CompositeStart(this, null));
 
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
@@ -212,8 +212,8 @@ public class ScopeReferenceTestCase extends TestCase {
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
-        moduleScope.onEvent(new CompositeStop(this, null));
-        moduleScope.stop();
+        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.stop();
         statelessScope.stop();
     }
 
@@ -265,18 +265,18 @@ public class ScopeReferenceTestCase extends TestCase {
 
 
     /**
-     * Tests a session-to-module scoped wire
+     * Tests a session-to-composite scoped wire
      */
-    public void testSessionToModule() throws Exception {
+    public void testSessionToComposite() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new CompositeScopeContainer(null);
-        moduleScope.start();
+        ScopeContainer compositeScope = new CompositeScopeContainer(null);
+        compositeScope.start();
         ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            sessionScope, members, "target", Target.class, TargetImpl.class, moduleScope);
-        moduleScope.onEvent(new CompositeStart(this, null));
+            sessionScope, members, "target", Target.class, TargetImpl.class, compositeScope);
+        compositeScope.onEvent(new CompositeStart(this, null));
         Object session1 = new Object();
         ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
@@ -307,7 +307,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("baz", target.getString());
         ctx.clearIdentifier(Scope.SESSION);
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
-        moduleScope.stop();
+        compositeScope.stop();
         sessionScope.stop();
     }
 
@@ -454,18 +454,18 @@ public class ScopeReferenceTestCase extends TestCase {
     }
 
     /**
-     * Tests a request-to-module scoped wire
+     * Tests a request-to-composite scoped wire
      */
-    public void testRequestToModule() throws Exception {
+    public void testRequestToComposite() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
-        final ScopeContainer moduleScope = new CompositeScopeContainer(null);
+        final ScopeContainer compositeScope = new CompositeScopeContainer(null);
         requestScope.start();
-        moduleScope.start();
-        moduleScope.onEvent(new CompositeStart(this, null));
+        compositeScope.start();
+        compositeScope.onEvent(new CompositeStart(this, null));
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            requestScope, members, "target", Target.class, TargetImpl.class, moduleScope);
+            requestScope, members, "target", Target.class, TargetImpl.class, compositeScope);
         requestScope.onEvent(new RequestStart(this));
 
         final AtomicComponent sourceComponent = contexts.get("source");
@@ -505,8 +505,8 @@ public class ScopeReferenceTestCase extends TestCase {
 
         requestScope.onEvent(new RequestEnd(this));
         requestScope.stop();
-        moduleScope.onEvent(new CompositeStop(this, null));
-        moduleScope.stop();
+        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.stop();
     }
 
     /**
@@ -725,18 +725,18 @@ public class ScopeReferenceTestCase extends TestCase {
 
 
     /**
-     * Tests a stateless-to-module scoped wire is setup properly by the runtime
+     * Tests a stateless-to-composite scoped wire is setup properly by the runtime
      */
-    public void testStatelessToModule() throws Exception {
+    public void testStatelessToComposite() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
-        ScopeContainer moduleScope = new CompositeScopeContainer(null);
-        moduleScope.start();
+        ScopeContainer compositeScope = new CompositeScopeContainer(null);
+        compositeScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
-            statelessScope, members, "target", Target.class, TargetImpl.class, moduleScope);
-        moduleScope.onEvent(new CompositeStart(this, null));
+            statelessScope, members, "target", Target.class, TargetImpl.class, compositeScope);
+        compositeScope.onEvent(new CompositeStart(this, null));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getServiceInstance();
@@ -750,7 +750,7 @@ public class ScopeReferenceTestCase extends TestCase {
         //second session
         Object session2 = new Object();
         ctx.setIdentifier(Scope.SESSION, session2);
-        moduleScope.onEvent(new HttpSessionStart(this, session2));
+        compositeScope.onEvent(new HttpSessionStart(this, session2));
 
         Target target2 = (Target) targetComponent.getServiceInstance();
         assertEquals("foo", target2.getString());
@@ -760,8 +760,8 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("bar", target2.getString());
         assertEquals("bar", source.getTarget().getString());
 
-        moduleScope.onEvent(new CompositeStop(this, null));
-        moduleScope.stop();
+        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.stop();
         statelessScope.stop();
     }
 

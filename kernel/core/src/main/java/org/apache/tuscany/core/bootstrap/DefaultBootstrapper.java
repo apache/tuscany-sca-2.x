@@ -142,7 +142,7 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     /**
      * Create a basic ScopeRegistry containing the ScopeContainers that are available to components in the system
-     * definition. The implementation returned only support MODULE scope.
+     * definition. The implementation returned only support COMPOSITE scope.
      *
      * @param workContext the WorkContext the scopes should use
      * @return a new ScopeRegistry

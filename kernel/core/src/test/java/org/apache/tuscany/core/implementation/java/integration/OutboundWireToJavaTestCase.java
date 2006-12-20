@@ -160,7 +160,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.stop();
     }
 
-    public void testToModuleScope() throws Exception {
+    public void testToCompositeScope() throws Exception {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         scope.onEvent(new CompositeStart(this, null));

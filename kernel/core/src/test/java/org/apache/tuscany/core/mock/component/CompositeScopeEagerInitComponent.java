@@ -18,22 +18,23 @@
  */
 package org.apache.tuscany.core.mock.component;
 
-import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
 
-public class ModuleScopeInitDestroyComponent extends ModuleScopeInitOnlyComponent {
+public class CompositeScopeEagerInitComponent extends CompositeScopeComponentImpl {
 
-    boolean destroyed;
+    boolean initialized;
+    // this value tests to ensure introspection can find the init() method even
+    // if a field is named the same. Ultimately, this should be in the
+    // introspection tests
+    private boolean init;
 
-    public boolean isDestroyed() {
-        return destroyed;
+    public boolean isInitialized() {
+        return initialized;
     }
 
-    @Destroy
-    public void destroy() {
-        if (destroyed) {
-            throw new AssertionError("Destroy called more than once");
-        }
-        destroyed = true;
+    @Init(eager = true)
+    public void init() {
+        initialized = true;
     }
 
 }

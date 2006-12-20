@@ -43,8 +43,7 @@ import org.apache.tuscany.core.mock.component.OrderedInitPojoImpl;
  */
 public class DependencyLifecycleTestCase extends TestCase {
 
-    public void testInitDestroyOrderModuleScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
+    public void testInitDestroyOrderCompositeScope() throws Exception {
         CompositeScopeContainer scopeCtx = new CompositeScopeContainer(null);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
@@ -71,8 +70,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         scopeCtx.stop();
     }
 
-    public void testInitDestroyOrderAfterStartModuleScope() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
+    public void testInitDestroyOrderAfterStartCompositeScope() throws Exception {
         CompositeScopeContainer scopeCtx = new CompositeScopeContainer(null);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",

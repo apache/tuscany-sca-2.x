@@ -38,7 +38,7 @@ public class JavaAtomicComponentNegativeMetadataTestCase extends TestCase {
     }
 
     /**
-     * Tests that a pojo with <code>@Context</code> specified on a non-ModuleContext type generates an error.
+     * Tests that a pojo with <code>@Context</code> specified on a non-CompositeContext type generates an error.
      * <p/>
      * <strong>NB:</strong> the test assumes an error with a message containing "@Context" is generated
      */

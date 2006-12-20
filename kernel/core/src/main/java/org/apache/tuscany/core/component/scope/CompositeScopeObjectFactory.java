@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.api.annotation.Monitor;
 
 /**
- * Creates a new module scope context
+ * Creates a new composite scope context
  *
  * @version $$Rev$$ $$Date$$
  */

@@ -23,6 +23,6 @@ import org.osoa.sca.annotations.Context;
 public class BadContextPojo {
 
     @Context
-    String moduleContext;
+    String context;
 
 }
