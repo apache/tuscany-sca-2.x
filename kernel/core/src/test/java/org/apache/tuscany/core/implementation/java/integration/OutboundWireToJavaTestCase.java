@@ -51,7 +51,7 @@ import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -161,7 +161,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     }
 
     public void testToModuleScope() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
         final OutboundWire wire = getWire(scope);

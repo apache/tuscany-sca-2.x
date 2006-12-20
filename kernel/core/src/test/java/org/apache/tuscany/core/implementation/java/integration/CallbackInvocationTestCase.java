@@ -47,7 +47,7 @@ import org.apache.tuscany.spi.wire.WireService;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaAtomicComponent;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
@@ -356,7 +356,7 @@ public class CallbackInvocationTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         wireService = new JDKWireService();
-        container = new ModuleScopeContainer(null);
+        container = new CompositeScopeContainer(null);
         container.start();
         context = createMock(DeploymentContext.class);
         context.getCompositeScope();

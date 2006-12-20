@@ -35,7 +35,7 @@ import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
@@ -58,7 +58,7 @@ public class SystemBuilderWireTestCase extends TestCase {
      */
     public void testAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
         Connector connector = new ConnectorImpl();
@@ -93,7 +93,7 @@ public class SystemBuilderWireTestCase extends TestCase {
      */
     public void testAtomicToReferenceWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
         Connector connector = new ConnectorImpl();
@@ -138,7 +138,7 @@ public class SystemBuilderWireTestCase extends TestCase {
      */
     public void testServiceToAtomicWireBuild() throws Exception {
         WorkContext work = new WorkContextImpl();
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
         ConnectorImpl connector = new ConnectorImpl();
@@ -174,9 +174,9 @@ public class SystemBuilderWireTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ModuleScopeContainer moduleScope = new ModuleScopeContainer(null);
-        moduleScope.start();
-        deploymentContext = new RootDeploymentContext(null, null, moduleScope, null);
+        CompositeScopeContainer compositeScope = new CompositeScopeContainer(null);
+        compositeScope.start();
+        deploymentContext = new RootDeploymentContext(null, null, compositeScope, null);
 
     }
 }

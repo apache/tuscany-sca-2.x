@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
@@ -55,7 +55,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     CompositeComponent parent;
     DeploymentContext deploymentContext;
     SystemComponentBuilder builder = new SystemComponentBuilder();
-    ModuleScopeContainer container;
+    CompositeScopeContainer container;
 
     /**
      * Verifies lifecycle callbacks are made
@@ -233,7 +233,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         parent = EasyMock.createNiceMock(CompositeComponent.class);
-        container = new ModuleScopeContainer(null);
+        container = new CompositeScopeContainer(null);
         container.start();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
         EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(container).atLeastOnce();

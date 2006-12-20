@@ -41,7 +41,7 @@ public class ModuleScopeInitDestroyErrorTestCase extends TestCase {
         monitor = EasyMock.createMock(ScopeContainerMonitor.class);
         monitor.eagerInitializationError(EasyMock.isA(ObjectCreationException.class));
         EasyMock.replay(monitor);
-        ModuleScopeContainer scope = new ModuleScopeContainer(monitor);
+        CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
@@ -61,7 +61,7 @@ public class ModuleScopeInitDestroyErrorTestCase extends TestCase {
         monitor = EasyMock.createMock(ScopeContainerMonitor.class);
         monitor.destructionError(EasyMock.isA(TargetDestructionException.class));
         EasyMock.replay(monitor);
-        ModuleScopeContainer scope = new ModuleScopeContainer(monitor);
+        CompositeScopeContainer scope = new CompositeScopeContainer(monitor);
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();

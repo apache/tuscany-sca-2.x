@@ -45,7 +45,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderModuleScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(null);
+        CompositeScopeContainer scopeCtx = new CompositeScopeContainer(null);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
@@ -73,7 +73,7 @@ public class DependencyLifecycleTestCase extends TestCase {
 
     public void testInitDestroyOrderAfterStartModuleScope() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scopeCtx = new ModuleScopeContainer(null);
+        CompositeScopeContainer scopeCtx = new CompositeScopeContainer(null);
         scopeCtx.start();
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,

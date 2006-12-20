@@ -29,7 +29,8 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.container.ruby.mock.Greeting;
 import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -108,7 +109,7 @@ public class WireTestCase extends TestCase {
      * Tests a basic invocation to a target
      */
     public void testTargetInvocation() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
@@ -145,7 +146,7 @@ public class WireTestCase extends TestCase {
      * Tests a basic invocation down a target wire
      */
     public void testTargetWireInvocation() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
