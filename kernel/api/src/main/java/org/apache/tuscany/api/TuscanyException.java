@@ -20,6 +20,7 @@ package org.apache.tuscany.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import java.io.PrintWriter;
 
 /**
@@ -111,7 +112,7 @@ public abstract class TuscanyException extends Exception {
         if (contextStack == null) {
             contextStack = new ArrayList<String>();
         }
-        return contextStack;
+        return Collections.unmodifiableList(contextStack);
     }
 
     /**
