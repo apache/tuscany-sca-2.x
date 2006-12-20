@@ -37,7 +37,7 @@ import org.osoa.sca.annotations.Scope;
  * 
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class JSONRPCBindingLoader extends LoaderExtension<JSONRPCBinding> {
     public static final QName BINDING_JSON = new QName(XML_NAMESPACE_1_0, "binding.jsonrpc");
 

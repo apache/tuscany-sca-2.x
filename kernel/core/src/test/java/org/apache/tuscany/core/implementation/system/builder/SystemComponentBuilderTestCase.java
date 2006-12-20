@@ -70,7 +70,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         Method destroyMethod = FooImpl.class.getMethod("destroy");
         destroyMethod.setAccessible(true);
         type.setDestroyMethod(destroyMethod);
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         ConstructorDefinition<FooImpl> ctorDef = new ConstructorDefinition<FooImpl>(FooImpl.class.getConstructor());
         type.setConstructorDefinition(ctorDef);
         SystemImplementation impl = new SystemImplementation();
@@ -99,7 +99,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         Method destroyMethod = FooImpl.class.getMethod("destroy");
         destroyMethod.setAccessible(true);
         type.setDestroyMethod(destroyMethod);
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         JavaMappedProperty mappedProp = new JavaMappedProperty();
         mappedProp.setName("prop");
         Method propMethod = FooImpl.class.getMethod("setProp", String.class);
@@ -129,7 +129,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     public void testRefBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference mappedReference = new JavaMappedReference();
         mappedReference.setName("ref");
         Method refMethod = FooImpl.class.getMethod("setRef", Foo.class);
@@ -168,7 +168,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     public void testAutowireBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference mappedReference = new JavaMappedReference();
         mappedReference.setName("ref");
         mappedReference.setAutowire(true);
@@ -202,7 +202,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
     public void testAutowireConstructorBuild() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         ConstructorDefinition<FooImpl2> ctorDef =
             new ConstructorDefinition<FooImpl2>(FooImpl2.class.getConstructor(Foo.class));
         ctorDef.getInjectionNames().add("ref");

@@ -35,7 +35,7 @@ import org.osoa.sca.annotations.Scope;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class BusServiceImpl implements BusService {
 
     protected WSDLDefinitionRegistry wsdlRegistry;

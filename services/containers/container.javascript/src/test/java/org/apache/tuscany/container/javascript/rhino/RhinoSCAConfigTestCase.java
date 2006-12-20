@@ -63,7 +63,7 @@ public class RhinoSCAConfigTestCase extends TestCase {
         RhinoScript rs = new RhinoScript("testScopeComposite", "SCA = { scope : 'composite', javaInterface : 'helloworld.HelloWorldService'}");
         RhinoSCAConfig scaConfig = rs.getSCAConfig();
         assertTrue(scaConfig.hasSCAConfig());
-        assertEquals(Scope.MODULE, scaConfig.getScope()); // TODO 
+        assertEquals(Scope.COMPOSITE, scaConfig.getScope()); // TODO
     }
 
     public void testScopeConversational() {

@@ -63,7 +63,7 @@ public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImpl
         // TODO: have ComponentBuilderExtension pass ScopeContainer in on build method?
         ScopeContainer scopeContainer;
         Scope scope = componentType.getLifecycleScope();
-        if (Scope.MODULE == scope) {
+        if (Scope.COMPOSITE == scope) {
             scopeContainer = deploymentContext.getModuleScope();
         } else {
             scopeContainer = scopeRegistry.getScopeContainer(scope);

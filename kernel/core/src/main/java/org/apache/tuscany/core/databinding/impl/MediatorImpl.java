@@ -37,7 +37,7 @@ import org.osoa.sca.annotations.Scope;
 /**
  * Default Mediator implementation
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class MediatorImpl implements Mediator {
 
     private DataBindingRegistry dataBindingRegistry;

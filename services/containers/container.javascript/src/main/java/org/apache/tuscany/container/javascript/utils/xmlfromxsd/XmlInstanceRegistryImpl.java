@@ -29,7 +29,7 @@ import org.osoa.sca.annotations.Scope;
  * An implementation for the XMLInstnaceRegistry
  *
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class XmlInstanceRegistryImpl implements XmlInstanceRegistry {
 
     private Hashtable<String, Map<String, XmlObject>> wsdlXmlInstances;

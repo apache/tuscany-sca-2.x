@@ -43,7 +43,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class MemoryStore implements Store {
     private Map<SCAObject, Map<String, Record>> store;
     // TODO integrate with a core threading scheme

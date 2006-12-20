@@ -26,8 +26,8 @@ import junit.framework.TestCase;
 public class ScopeTestCase extends TestCase {
 
     public void testEquals() throws Exception {
-        Scope module = new Scope("module");
-        assertTrue(module.equals(Scope.MODULE));
+        Scope module = new Scope("COMPOSITE");
+        assertTrue(module.equals(Scope.COMPOSITE));
     }
 
     public void testEqualsNew() throws Exception {

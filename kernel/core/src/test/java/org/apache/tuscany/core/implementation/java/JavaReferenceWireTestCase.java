@@ -88,7 +88,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         scope.stop();
         scope.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
-        EasyMock.expect(scope.getScope()).andReturn(Scope.MODULE).atLeastOnce();
+        EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         scope.getInstance(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();

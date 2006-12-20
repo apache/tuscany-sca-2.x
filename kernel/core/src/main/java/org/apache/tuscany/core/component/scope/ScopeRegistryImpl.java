@@ -38,7 +38,7 @@ public class ScopeRegistryImpl implements ScopeRegistry {
         new ConcurrentHashMap<Scope, ObjectFactory<? extends ScopeContainer>>();
 
     public ScopeContainer getScopeContainer(Scope scope) {
-        assert Scope.MODULE != scope;
+        assert Scope.COMPOSITE != scope;
         ScopeContainer container = scopeCache.get(scope);
         if (container == null) {
             ObjectFactory<? extends ScopeContainer> factory = factoryCache.get(scope);

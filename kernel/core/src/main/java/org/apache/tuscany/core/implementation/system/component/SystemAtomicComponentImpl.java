@@ -40,7 +40,7 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent implements Sy
 
     public SystemAtomicComponentImpl(PojoConfiguration configuration) {
         super(configuration);
-        scope = Scope.MODULE;
+        scope = Scope.COMPOSITE;
     }
 
     public Object getServiceInstance(String name) throws TargetResolutionException {

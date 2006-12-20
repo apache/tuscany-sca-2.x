@@ -42,7 +42,7 @@ public class ScopeProcessorTestCase extends TestCase {
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
 
         processor.visitClass(parent, Module.class, type, null);
-        assertEquals(Scope.MODULE, type.getImplementationScope());
+        assertEquals(Scope.COMPOSITE, type.getImplementationScope());
     }
 
     public void testSessionScope() throws ProcessingException {
@@ -98,7 +98,7 @@ public class ScopeProcessorTestCase extends TestCase {
         parent = EasyMock.createNiceMock(CompositeComponent.class);
     }
 
-    @org.osoa.sca.annotations.Scope("MODULE")
+    @org.osoa.sca.annotations.Scope("COMPOSITE")
     private class Module {
     }
 

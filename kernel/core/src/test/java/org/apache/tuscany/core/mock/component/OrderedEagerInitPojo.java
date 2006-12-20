@@ -22,7 +22,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class OrderedEagerInitPojo {
 
     private static final Object LOCK = new Object();

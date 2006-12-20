@@ -27,7 +27,7 @@ import org.osoa.sca.annotations.Service;
 /**
  * Base Implementation of Transformer which provides the registration to the transformer registry
  */
-@org.osoa.sca.annotations.Scope("MODULE")
+@org.osoa.sca.annotations.Scope("COMPOSITE")
 @Service(Transformer.class)
 public abstract class TransformerExtension<S, T> implements Transformer {
 

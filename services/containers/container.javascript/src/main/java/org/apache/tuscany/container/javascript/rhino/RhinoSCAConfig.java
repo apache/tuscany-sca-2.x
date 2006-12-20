@@ -113,7 +113,7 @@ public class RhinoSCAConfig {
                 } else if ("conversational".equalsIgnoreCase(String.valueOf(o))) {
                     this.scope = Scope.SESSION; // TODO: where's CONVERSATION?
                 } else if ("composite".equalsIgnoreCase(String.valueOf(o))) {
-                    this.scope = Scope.MODULE; // TODO: composite = MODULE for now?
+                    this.scope = Scope.COMPOSITE; // TODO: composite = MODULE for now?
                 } else {
                     throw new IllegalArgumentException("invalid scope value: " + o);
                 }

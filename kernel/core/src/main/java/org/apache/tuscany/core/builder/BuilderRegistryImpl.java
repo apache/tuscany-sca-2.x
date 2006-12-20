@@ -58,7 +58,7 @@ import org.apache.tuscany.core.implementation.system.component.SystemService;
  *
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class BuilderRegistryImpl implements BuilderRegistry {
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;

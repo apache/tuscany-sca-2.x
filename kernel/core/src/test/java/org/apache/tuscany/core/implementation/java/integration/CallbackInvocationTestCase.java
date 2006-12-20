@@ -182,7 +182,7 @@ public class CallbackInvocationTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         type.setConstructorDefinition(ctorDef);
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         Method method = FooImpl.class.getMethod("setCallback", FooCallback.class);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(Foo.class);
@@ -204,7 +204,7 @@ public class CallbackInvocationTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         type.setConstructorDefinition(ctorDef);
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         Method method = FooClient.class.getMethod("setFoo", Foo.class);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(Foo.class);
@@ -230,7 +230,7 @@ public class CallbackInvocationTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         type.setConstructorDefinition(ctorDef);
-        type.setImplementationScope(Scope.MODULE);
+        type.setImplementationScope(Scope.COMPOSITE);
         Method method = FooPlainClient.class.getMethod("setFoo", Foo.class);
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract = registry.introspect(Foo.class);

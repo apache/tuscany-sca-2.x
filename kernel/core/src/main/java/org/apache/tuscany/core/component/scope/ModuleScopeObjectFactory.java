@@ -39,7 +39,7 @@ public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContai
 
     public ModuleScopeObjectFactory(@Autowire ScopeRegistry registry,
                                     @Monitor ScopeContainerMonitor monitor) {
-        registry.registerFactory(Scope.MODULE, this);
+        registry.registerFactory(Scope.COMPOSITE, this);
         this.monitor = monitor;
     }
 

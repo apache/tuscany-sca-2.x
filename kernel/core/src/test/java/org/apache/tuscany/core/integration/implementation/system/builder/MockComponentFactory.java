@@ -59,7 +59,7 @@ public final class MockComponentFactory {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        componentType.setImplementationScope(Scope.MODULE);
+        componentType.setImplementationScope(Scope.COMPOSITE);
         componentType
             .setConstructorDefinition(
                 new ConstructorDefinition<SourceImpl>(SourceImpl.class.getConstructor((Class[]) null)));
@@ -99,7 +99,7 @@ public final class MockComponentFactory {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        componentType.setImplementationScope(Scope.MODULE);
+        componentType.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference reference;
         try {
             reference = new JavaMappedReference();
@@ -132,7 +132,7 @@ public final class MockComponentFactory {
         SystemImplementation impl = new SystemImplementation();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-        componentType.setImplementationScope(Scope.MODULE);
+        componentType.setImplementationScope(Scope.COMPOSITE);
         componentType
             .setConstructorDefinition(
                 new ConstructorDefinition<TargetImpl>(TargetImpl.class.getConstructor((Class[]) null)));

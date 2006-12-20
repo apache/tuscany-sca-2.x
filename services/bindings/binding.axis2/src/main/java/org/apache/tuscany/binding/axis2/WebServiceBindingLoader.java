@@ -49,7 +49,7 @@ import org.osoa.sca.annotations.Scope;
  * 
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 @SuppressWarnings("deprecation")
 public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
     public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");

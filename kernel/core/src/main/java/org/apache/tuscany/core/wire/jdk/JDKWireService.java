@@ -67,7 +67,7 @@ import org.apache.tuscany.core.wire.OutboundWireImpl;
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public class JDKWireService extends WireServiceExtension {
 
     public JDKWireService() {

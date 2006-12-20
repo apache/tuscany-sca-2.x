@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.Implementation;
 /**
  * @version $Rev$ $Date$
  */
-@Scope("MODULE")
+@Scope("COMPOSITE")
 public abstract class ComponentTypeLoaderExtension<I extends Implementation> implements ComponentTypeLoader<I> {
     protected LoaderRegistry loaderRegistry;
 

@@ -69,7 +69,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
     }
 
     public Scope getScope() {
-        return Scope.MODULE;
+        return Scope.COMPOSITE;
     }
 
     public boolean isEagerInit() {
