@@ -32,7 +32,7 @@
     <name>Tuscany SCA Runtime Hosts</name>
 
     <modules>
-        <module>webapp</module>
+        <module>webapp-api</module>
         <module>webapp-host</module>
         <module>standalone</module>
     </modules>
