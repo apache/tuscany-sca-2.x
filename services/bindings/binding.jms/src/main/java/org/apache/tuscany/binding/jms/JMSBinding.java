@@ -59,6 +59,8 @@ public class JMSBinding extends Binding {
 	
 	private String operationSelectorPropertyName = "OpName";
 
+        private String correlationScheme;
+
 	public JMSBinding(int destinationType, String destinationName, String connectionFactoryName, String activationSpecName, String initialContextFactoryName, String providerURL, int deliveryMode, int timeToLive, int priority, String replyTo) {
 		super();
 		this.destinationType = destinationType;
@@ -181,5 +183,16 @@ public class JMSBinding extends Binding {
 			String operationSelectorPropertyName) {
 		this.operationSelectorPropertyName = operationSelectorPropertyName;
 	}
+
+    public void setCorrelationScheme(String correlationScheme) {
+        this.correlationScheme = correlationScheme;
+    }
+
+    public String getCorrelationScheme() {
+        return correlationScheme;
+    }
+
+    public void setCreateDestination(String create) {
+    }
 
 }
