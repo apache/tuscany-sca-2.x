@@ -128,6 +128,16 @@ public class TuscanyExceptionTestCase extends TestCase {
         e.getMessage();
     }
 
+    public void testImmutableContextNames() {
+        TuscanyException e = new DummyException("message", "foo");
+        try {
+            e.returnContextNames().add("foo");
+            fail();
+        } catch (UnsupportedOperationException e1) {
+            // expected
+        }
+    }
+
 
     public static class DummyException extends TuscanyException {
 

@@ -109,6 +109,16 @@ public class TuscanyRuntimeExceptionTestCase extends TestCase {
         assertEquals("Message", writer.toString());
     }
 
+    public void testImmutableContextNames() {
+        TuscanyRuntimeException e = new DummyException("message", "foo");
+        try {
+            e.returnContextNames().add("foo");
+            fail();
+        } catch (UnsupportedOperationException e1) {
+            // expected
+        }
+    }
+
     public static class DummyException extends TuscanyRuntimeException {
         public DummyException() {
         }
