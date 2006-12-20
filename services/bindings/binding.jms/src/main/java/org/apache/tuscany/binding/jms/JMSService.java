@@ -25,8 +25,10 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -80,7 +82,9 @@ public class JMSService extends ServiceExtension {
         Destination destination = session.createQueue(jmsBinding.getDestinationName());
         
         consumer = session.createConsumer(destination);
-        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,operationSelector));
+        ServiceContract sc = getBindingServiceContract();
+        boolean xmlStyle = sc instanceof WSDLServiceContract;
+        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,operationSelector, xmlStyle));
         
         jmsResourceFactory.startConnection();
         

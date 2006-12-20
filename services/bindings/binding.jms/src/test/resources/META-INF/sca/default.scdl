@@ -14,7 +14,8 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="jms.sample">
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:wsdli="http://www.w3.org/2006/01/wsdl-instance" 
+    name="jms.sample">
 
     <service name="GreetingJMSService">
         <interface.java class="org.apache.tuscany.binding.jms.GreetingService"/>
@@ -46,5 +47,21 @@
         </binding.jms>
     </reference>
     
+    <service name="HelloworldJMSService">
+        <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" 
+            wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
+        <binding.jms xmlns="http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT" >
+        	<connection.jms destinationName="HelloworldServiceQueue"
+        	                connectionFactoryName="ConnectionFactory"
+        	                initialContextFactoryName="org.activemq.jndi.ActiveMQInitialContextFactory"
+        	                providerURL="tcp://localhost:61616" />   
+        </binding.jms>
+        <reference>HelloworldComponent</reference>
+    </service>
+
+    <component name="HelloworldComponent">
+        <implementation.java class="org.apache.tuscany.binding.jms.HelloworldServiceImpl"/>
+    </component>
+
 </composite>
 

@@ -95,6 +95,13 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
     	return message;
 	}
 
+        public Message createObjectMessage(Session session) throws JMSException{
+            Message message = session.createObjectMessage();  // default
+            message.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
+            message.setJMSPriority(jmsBinding.getPriority());
+            return message;
+        }
+        
 	private void createConnection() throws NamingException, JMSException {
 		if(context == null){
 			createInitialContext();
