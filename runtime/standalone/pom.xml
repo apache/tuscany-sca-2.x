@@ -20,21 +20,20 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca</groupId>
+        <groupId>org.apache.tuscany.sca.runtime</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.runtime</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
+    <artifactId>standalone</artifactId>
     <packaging>pom</packaging>
-    <name>Tuscany SCA Runtime Hosts</name>
+    <name>Apache Tuscany Standalone SCA Runtime</name>
 
     <modules>
-        <module>webapp</module>
-        <module>webapp-host</module>
-        <module>standalone</module>
+        <module>standalone-api</module>
+        <module>standalone-host</module>
     </modules>
 
 </project>
