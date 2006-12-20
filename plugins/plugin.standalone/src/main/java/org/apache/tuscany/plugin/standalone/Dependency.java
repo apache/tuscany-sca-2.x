@@ -39,7 +39,8 @@ public class Dependency {
      */
     private static final Dependency[] DEFAULT_BOOT_LIBS =
         new Dependency[] {
-                          new Dependency("org.apache.tuscany.sca.runtime", "standalone-host",
+                          new Dependency("org.apache.tuscany.sca.runtime.standalone",
+                                         "standalone-host",
                                          "1.0-incubator-SNAPSHOT"),
                           // HACK to force servlet-api
                           new Dependency("javax.servlet", "servlet-api", "2.4")};
