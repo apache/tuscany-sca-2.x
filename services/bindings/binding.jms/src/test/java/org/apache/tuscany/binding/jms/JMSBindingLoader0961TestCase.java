@@ -1,0 +1,83 @@
+package org.apache.tuscany.binding.jms;
+
+import java.io.StringReader;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.loader.LoaderException;
+
+public class JMSBindingLoader0961TestCase extends TestCase {
+    
+    private JMSBindingLoader0961 loader;
+
+    public void testMinimal() throws LoaderException, XMLStreamException {
+        String xml = "<binding.jms></binding.jms>";
+        XMLStreamReader reader = createReader(xml);
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertNotNull(jmsBinding);
+    }
+
+    public void testCorrelationScheme() throws LoaderException, XMLStreamException {
+        XMLStreamReader reader = createReader("<binding.jms correlationScheme=\"RequestMsgIDToCorrelID\"></binding.jms>");
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("RequestMsgIDToCorrelID", jmsBinding.getCorrelationScheme());
+
+        reader = createReader("<binding.jms correlationScheme=\"RequestCorrelIDToCorrelID\"></binding.jms>");
+        jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("RequestCorrelIDToCorrelID", jmsBinding.getCorrelationScheme());
+
+        reader = createReader("<binding.jms correlationScheme=\"none\"></binding.jms>");
+        jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("none", jmsBinding.getCorrelationScheme());
+
+        reader = createReader("<binding.jms correlationScheme=\"xxx\"></binding.jms>");
+        try {
+            jmsBinding = loader.load(null, null, reader, null);
+            fail("expecting invalid correlationScheme");
+        } catch (LoaderException e) {
+            // expected
+        }
+    }
+
+    public void testInitialContextFactory() throws LoaderException, XMLStreamException {
+        XMLStreamReader reader = createReader("<binding.jms initialContextFactory=\"myicf\"></binding.jms>");
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("myicf", jmsBinding.getInitialContextFactoryName());
+    }
+
+    public void testJNDIProviderURL() throws LoaderException, XMLStreamException {
+        XMLStreamReader reader = createReader("<binding.jms JNDIProviderURL=\"myURL\"></binding.jms>");
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("myURL", jmsBinding.getJNDIProviderURL());
+    }
+
+    public void testConnectionFactory() throws LoaderException, XMLStreamException {
+        XMLStreamReader reader = createReader("<binding.jms connectionFactory=\"myfactory\"></binding.jms>");
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("myfactory", jmsBinding.getConnectionFactoryName());
+    }
+
+    public void testActivationSpec() throws LoaderException, XMLStreamException {
+        XMLStreamReader reader = createReader("<binding.jms activationSpec=\"myas\"></binding.jms>");
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("myas", jmsBinding.getActivationSpecName());
+    }
+
+    private XMLStreamReader createReader(String xml) throws XMLStreamException {
+        XMLInputFactory factory = XMLInputFactory.newInstance();
+
+        String xxx = "<xxx xmlns=\"http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT\">" + xml + "</xxx>";
+        XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xxx));
+        reader.nextTag();
+        reader.nextTag();
+        return reader;
+    }
+
+    protected void setUp() throws Exception {
+        this.loader = new JMSBindingLoader0961(null);
+    }
+}
