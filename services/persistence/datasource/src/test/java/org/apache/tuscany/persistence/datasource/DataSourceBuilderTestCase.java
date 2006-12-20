@@ -44,7 +44,7 @@ public class DataSourceBuilderTestCase extends TestCase {
         ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
         EasyMock.replay(scope);
         DeploymentContext ctx = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(ctx.getModuleScope()).andReturn(scope);
+        EasyMock.expect(ctx.getCompositeScope()).andReturn(scope);
         EasyMock.replay(ctx);
 
         DataSourceImplementation implementation = new DataSourceImplementation();

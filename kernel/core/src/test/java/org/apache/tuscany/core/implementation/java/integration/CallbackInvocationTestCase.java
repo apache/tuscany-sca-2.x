@@ -359,7 +359,7 @@ public class CallbackInvocationTestCase extends TestCase {
         container = new ModuleScopeContainer(null);
         container.start();
         context = createMock(DeploymentContext.class);
-        context.getModuleScope();
+        context.getCompositeScope();
         expectLastCall().andReturn(container).anyTimes();
         replay(context);
 

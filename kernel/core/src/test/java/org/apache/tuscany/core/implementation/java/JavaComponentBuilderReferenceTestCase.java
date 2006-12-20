@@ -86,7 +86,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         builder.setWireService(wireService);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
         component.addOutboundWire(wire);
-        deploymentContext.getModuleScope().start();
+        deploymentContext.getCompositeScope().start();
         component.start();
 
         Source source = (Source) component.getServiceInstance();
@@ -127,7 +127,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         }).anyTimes();
         EasyMock.replay(scope);
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(deploymentContext.getModuleScope()).andReturn(scope).atLeastOnce();
+        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(scope).atLeastOnce();
         EasyMock.replay(deploymentContext);
     }
 

@@ -82,7 +82,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
-        configuration.setScopeContainer(deploymentContext.getModuleScope());
+        configuration.setScopeContainer(deploymentContext.getCompositeScope());
         if (definition.getInitLevel() != null) {
             configuration.setInitLevel(definition.getInitLevel());
         } else {

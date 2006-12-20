@@ -236,7 +236,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         container = new ModuleScopeContainer(null);
         container.start();
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(deploymentContext.getModuleScope()).andReturn(container).atLeastOnce();
+        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(container).atLeastOnce();
         EasyMock.replay(deploymentContext);
     }
 

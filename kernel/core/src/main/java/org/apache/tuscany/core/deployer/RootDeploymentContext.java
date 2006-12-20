@@ -59,7 +59,7 @@ public class RootDeploymentContext extends AbstractDeploymentContext {
         return xmlFactory;
     }
 
-    public ScopeContainer getModuleScope() {
+    public ScopeContainer getCompositeScope() {
         return moduleScope;
     }
 }

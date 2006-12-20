@@ -96,13 +96,13 @@ public class CompositeBuilderTestCase extends TestCase {
         ConnectorImpl connector = new ConnectorImpl();
         connector.connect(component);
 
-        deploymentContext.getModuleScope().start();
+        deploymentContext.getCompositeScope().start();
         component.start();
         CompositeComponent sourceComponent = (CompositeComponent) component.getChild("SourceComponent");
         Source source = (Source) sourceComponent.getServiceInstance("InnerSourceService");
         assertNotNull(source);
         AtomicComponent innerSourceComponent = (AtomicComponent) sourceComponent.getChild("InnerSourceComponent");
-        Source innerSourceInstance = (Source) deploymentContext.getModuleScope().getInstance(innerSourceComponent);
+        Source innerSourceInstance = (Source) deploymentContext.getCompositeScope().getInstance(innerSourceComponent);
         assertNotNull(innerSourceInstance);
         component.stop();
     }
