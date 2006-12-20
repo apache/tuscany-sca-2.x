@@ -72,7 +72,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setParent(parent);
         Scope scope = componentType.getImplementationScope();
         if (Scope.COMPOSITE == scope) {
-            configuration.setScopeContainer(deployment.getModuleScope());
+            configuration.setScopeContainer(deployment.getCompositeScope());
         } else {
             ScopeContainer container = scopeRegistry.getScopeContainer(scope);
             if (container == null) {

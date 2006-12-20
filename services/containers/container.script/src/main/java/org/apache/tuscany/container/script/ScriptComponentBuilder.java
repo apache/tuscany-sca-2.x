@@ -64,7 +64,7 @@ public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImpl
         ScopeContainer scopeContainer;
         Scope scope = componentType.getLifecycleScope();
         if (Scope.COMPOSITE == scope) {
-            scopeContainer = deploymentContext.getModuleScope();
+            scopeContainer = deploymentContext.getCompositeScope();
         } else {
             scopeContainer = scopeRegistry.getScopeContainer(scope);
         }

@@ -52,7 +52,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
                 return Scope.COMPOSITE;
             }
         });
-        expect(deploymentContext.getModuleScope()).andStubAnswer(new IAnswer() {
+        expect(deploymentContext.getCompositeScope()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
                 return scopeContainer;
             }
@@ -84,7 +84,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testBuildModuleScope() throws Exception {
+    public void testBuildCompositeScope() throws Exception {
         ScriptComponentBuilder builder = new ScriptComponentBuilder();
         DeploymentContext deploymentContext = createMock(DeploymentContext.class);
         final ScopeContainer scopeContainer = createMock(ScopeContainer.class);
@@ -93,7 +93,7 @@ public class ScriptComponentBuilderTestCase extends TestCase {
                 return Scope.COMPOSITE;
             }
         });
-        expect(deploymentContext.getModuleScope()).andStubAnswer(new IAnswer() {
+        expect(deploymentContext.getCompositeScope()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
                 return scopeContainer;
             }

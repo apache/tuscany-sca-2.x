@@ -98,7 +98,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
         ScopeContainer scopeContainer;
         Scope scope = componentType.getLifecycleScope();
         if (Scope.COMPOSITE == scope) {
-            scopeContainer = deploymentContext.getModuleScope();
+            scopeContainer = deploymentContext.getCompositeScope();
         } else {
             scopeContainer = scopeRegistry.getScopeContainer(scope);
         }

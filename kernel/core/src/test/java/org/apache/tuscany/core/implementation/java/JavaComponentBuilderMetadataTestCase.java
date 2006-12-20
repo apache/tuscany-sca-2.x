@@ -108,7 +108,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.replay(scope);
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(deploymentContext.getModuleScope()).andReturn(scope).atLeastOnce();
+        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(scope).atLeastOnce();
         EasyMock.replay(deploymentContext);
     }
 

@@ -91,7 +91,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         // get the scope container for this component's scope
         Scope scope = componentType.getLifecycleScope();
         if (Scope.COMPOSITE == scope) {
-            configuration.setScopeContainer(deploymentContext.getModuleScope());
+            configuration.setScopeContainer(deploymentContext.getCompositeScope());
         } else {
             configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
         }

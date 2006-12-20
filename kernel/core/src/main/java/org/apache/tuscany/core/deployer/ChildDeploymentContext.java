@@ -54,7 +54,7 @@ public class ChildDeploymentContext extends AbstractDeploymentContext {
         return parent.getXmlFactory();
     }
 
-    public ScopeContainer getModuleScope() {
-        return parent.getModuleScope();
+    public ScopeContainer getCompositeScope() {
+        return parent.getCompositeScope();
     }
 }

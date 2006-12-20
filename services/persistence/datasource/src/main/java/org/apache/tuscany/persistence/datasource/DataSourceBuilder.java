@@ -67,7 +67,7 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
                 }
             }
             ProviderObjectFactory providerFactory = new ProviderObjectFactory(beanClass, injectors);
-            ScopeContainer scope = deploymentContext.getModuleScope();
+            ScopeContainer scope = deploymentContext.getCompositeScope();
             int initLevel = implementation.getComponentType().getInitLevel();
             return new DataSourceComponent(definition.getName(), providerFactory, parent, scope, initLevel);
         } catch (ClassNotFoundException e) {
