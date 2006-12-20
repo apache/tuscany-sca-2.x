@@ -18,44 +18,35 @@
  * under the License.    
 -->
 <project>
-
     <parent>
-        <groupId>org.apache.tuscany.sca.services.containers</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
+        <artifactId>webapp</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>spring</artifactId>
-    <name>Apache Tuscany Spring Framework Container</name>
-    <description>Container for managing Spring composites</description>
+    <artifactId>webapp-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Apache Tuscany Web Application Runtime</name>
+    <description>Integration code to run Tuscany in a Web application.</description>
 
     <dependencies>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
+            <artifactId>tuscany-host-api</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
+        <!-- test dependencies -->
         <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
-            <artifactId>webapp-api</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>2.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -65,17 +56,5 @@
             <version>${sca.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-        </dependency>
-
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
-
     </dependencies>
-
 </project>

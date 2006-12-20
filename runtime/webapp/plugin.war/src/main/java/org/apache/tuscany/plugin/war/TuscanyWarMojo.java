@@ -213,7 +213,7 @@ public class TuscanyWarMojo extends AbstractMojo {
         	// if there is a runtime version specified and no bootLib dependancies,
         	// modify the bootLibs to have the runtime version.
         	if (runTimeVersion != null && bootLibs == Dependency.getDefaultBootLibs()) {
-        		Dependency dependancy = new Dependency("org.apache.tuscany.sca.runtime", 
+        		Dependency dependancy = new Dependency("org.apache.tuscany.sca.runtime.webapp", 
         				"webapp-host", runTimeVersion);
         		bootLibs = new Dependency[] {dependancy};
         	}
