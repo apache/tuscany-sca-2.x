@@ -59,7 +59,6 @@
     <modules>
         <module>plugin.war</module>
         <module>plugin.itest</module>
-        <module>plugin.standalone</module>
         <module>plugin.wsdl2java</module>
         <module>plugin.java2wsdl</module>
     </modules>
