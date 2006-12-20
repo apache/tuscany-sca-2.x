@@ -34,73 +34,73 @@ import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.InvocationChain;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
-public class JMSProxy implements MessageListener{
-	
-	protected Method operationMethod;
-    private JMSResourceFactory jmsResourceFactory; 
-	private OperationSelector operationSelector;
-	private InboundWire inboundWire;
-    
-	public JMSProxy(InboundWire inboundWire,JMSResourceFactory jmsResourceFactory,OperationSelector operationSelector) throws NamingException{		
-		
-		this.jmsResourceFactory = jmsResourceFactory;
-		this.operationSelector = operationSelector;
-		this.inboundWire = inboundWire;
-	}   
+public class JMSProxy implements MessageListener {
 
-	public void onMessage(Message msg){
-		
-		
-        try{        
-			        	
-			String operationName = operationSelector.getOperationName(msg);
-			Operation op = (Operation) inboundWire.getServiceContract().getOperations().get(operationName);
-			
-		    InvocationChain chain = inboundWire.getInvocationChains().get(op);
-		    Interceptor headInterceptor = chain.getHeadInterceptor();		    
-		    
-		    org.apache.tuscany.spi.wire.Message tuscanyMsg = new MessageImpl();
-                    Object payload = jmsResourceFactory.getMessagePayload(msg);
-		    tuscanyMsg.setBody(payload);
-		    tuscanyMsg.setTargetInvoker(chain.getTargetInvoker());
-		    org.apache.tuscany.spi.wire.Message tuscanyResMsg = null;
-		    
-		    if (headInterceptor != null){
-		    	tuscanyResMsg = headInterceptor.invoke(tuscanyMsg);
-		    }
-		    	        
-		    // if result is null then the method can be assumed as oneway
-		    if (tuscanyResMsg != null && tuscanyResMsg.getBody() != null){
-                        
-		    	sendReply(msg,operationName, tuscanyResMsg);
-		    }
+    protected Method operationMethod;
+    private JMSResourceFactory jmsResourceFactory;
+    private OperationSelector operationSelector;
+    private InboundWire inboundWire;
 
-		} catch (JMSBindingException e) {
-			throw new JMSBindingRuntimeException(e);
-		} catch (JMSException e) {
-			throw new JMSBindingRuntimeException(e);
-		} catch (NamingException e) {
-			throw new JMSBindingRuntimeException(e);
-                } catch (Exception e) {
-                    // TODO: need to not swallow these exceptions
-                    e.printStackTrace();
-                    throw new JMSBindingRuntimeException(e);
-                }
-                
-	}
+    public JMSProxy(InboundWire inboundWire, JMSResourceFactory jmsResourceFactory, OperationSelector operationSelector)
+        throws NamingException {
 
+        this.jmsResourceFactory = jmsResourceFactory;
+        this.operationSelector = operationSelector;
+        this.inboundWire = inboundWire;
+    }
 
-	private void sendReply(Message reqMsg,String operationName,org.apache.tuscany.spi.wire.Message tuscanyResMsg) throws JMSException, NamingException{
-        
-		Session session = jmsResourceFactory.createSession();
+    public void onMessage(Message msg) {
+
+        try {
+
+            String operationName = operationSelector.getOperationName(msg);
+            Operation op = (Operation)inboundWire.getServiceContract().getOperations().get(operationName);
+
+            InvocationChain chain = inboundWire.getInvocationChains().get(op);
+            Interceptor headInterceptor = chain.getHeadInterceptor();
+
+            org.apache.tuscany.spi.wire.Message tuscanyMsg = new MessageImpl();
+            Object payload = jmsResourceFactory.getMessagePayload(msg);
+            tuscanyMsg.setBody(payload);
+            tuscanyMsg.setTargetInvoker(chain.getTargetInvoker());
+            org.apache.tuscany.spi.wire.Message tuscanyResMsg = null;
+
+            if (headInterceptor != null) {
+                tuscanyResMsg = headInterceptor.invoke(tuscanyMsg);
+            }
+
+            // if result is null then the method can be assumed as oneway
+            if (tuscanyResMsg != null && tuscanyResMsg.getBody() != null) {
+
+                sendReply(msg, operationName, tuscanyResMsg);
+            }
+
+        } catch (JMSBindingException e) {
+            throw new JMSBindingRuntimeException(e);
+        } catch (JMSException e) {
+            throw new JMSBindingRuntimeException(e);
+        } catch (NamingException e) {
+            throw new JMSBindingRuntimeException(e);
+        } catch (Exception e) {
+            // TODO: need to not swallow these exceptions
+            e.printStackTrace();
+            throw new JMSBindingRuntimeException(e);
+        }
+
+    }
+
+    private void sendReply(Message reqMsg, String operationName, org.apache.tuscany.spi.wire.Message tuscanyResMsg)
+        throws JMSException, NamingException {
+
+        Session session = jmsResourceFactory.createSession();
 
         Message message = jmsResourceFactory.createMessage(session, tuscanyResMsg.getBody());
-    	
-    	Destination destination = reqMsg.getJMSReplyTo();
-        
+
+        Destination destination = reqMsg.getJMSReplyTo();
+
         MessageProducer producer = session.createProducer(destination);
         producer.send(message);
         producer.close();
         session.close();
-	}
+    }
 }
