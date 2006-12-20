@@ -33,7 +33,7 @@ import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 import org.xml.sax.SAXException;
 
-public class JMSBindingTestCase extends SCATestCase {
+public class JMSBindingTestCaseX extends SCATestCase {
 
     private IntroService introService;
     private BrokerContainer broker;
@@ -79,7 +79,7 @@ public class JMSBindingTestCase extends SCATestCase {
     }
 
     public static void main(String[] args) {
-        JMSBindingTestCase test = new JMSBindingTestCase();
+        JMSBindingTestCaseX test = new JMSBindingTestCaseX();
         try {
             test.setUp();
             test.testJMSBinding();
