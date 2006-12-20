@@ -16,16 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-
 package org.apache.tuscany.core.databinding.xml;
 
 
+import org.w3c.dom.Node;
+
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
-import org.w3c.dom.Node;
 
 /**
  * DOM DataBinding
+ *
+ * @version $Rev$ $Date$
  */
 public class DOMDataBinding extends DataBindingExtension {
     public static final String NAME = Node.class.getName();
@@ -38,18 +40,17 @@ public class DOMDataBinding extends DataBindingExtension {
     public WrapperHandler getWrapperHandler() {
         return new DOMWrapperHandler();
     }
-    
+
     public Object copy(Object source) {
-        if ( Node.class.isAssignableFrom(source.getClass()) ) {
-            Node nodeSource = (Node)source;
-            Node2String strTransformer  = new Node2String();
+        if (Node.class.isAssignableFrom(source.getClass())) {
+            Node nodeSource = (Node) source;
+            Node2String strTransformer = new Node2String();
             String stringCopy = strTransformer.transform(nodeSource, null);
-            
+
             String2Node nodeTransformer = new String2Node();
-            Node nodeCopy = nodeTransformer.transform(stringCopy, null);
-            return nodeCopy;
+            return nodeTransformer.transform(stringCopy, null);
         }
-        
+
         return super.copy(source);
     }
 }
