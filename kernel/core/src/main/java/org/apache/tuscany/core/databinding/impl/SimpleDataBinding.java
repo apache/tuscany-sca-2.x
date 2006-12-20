@@ -19,29 +19,29 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
-import org.apache.tuscany.core.databinding.xml.Node2String;
-import org.apache.tuscany.core.databinding.xml.String2Node;
+import org.osoa.sca.annotations.Property;
+
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
 import org.apache.tuscany.spi.loader.MissingResourceException;
-import org.osoa.sca.annotations.Property;
-import org.w3c.dom.Node;
 
 /**
- * Simple databinding represented by a base java type. A SCDL property className
- * is used to customize this component.
- * <p>
- * The following illustrates how a simple data binding can be registered as a
- * SCA component.
- * <p>
+ * Simple databinding represented by a base java type. A SCDL property className is used to customize this component.
+ * <p/>
+ * The following illustrates how a simple data binding can be registered as a SCA component.
+ * <p/>
+ * <pre>
  * &lt;component name="databinding.MyDataBinding"&gt;<br>
  * &nbsp;&nbsp;&lt;system:implementation.java
  * class="org.apache.tuscany.databinding.impl.SimpleDataBinding"/&gt;<br>
  * &nbsp;&nbsp;&lt;property name="className"&gt;my.Type&lt;/property&gt;<br>
  * &lt/component&gt;
+ * </pre>
+ *
+ * @version $Rv$ $Date$
  */
 public class SimpleDataBinding extends DataBindingExtension {
 
-    public SimpleDataBinding(@Property(name = "className") String className) throws MissingResourceException {
+    public SimpleDataBinding(@Property(name = "className")String className) throws MissingResourceException {
         super(resolve(className));
     }
 

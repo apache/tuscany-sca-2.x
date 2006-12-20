@@ -40,16 +40,18 @@ import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
  * This processor is responsible for enforcing the pass-by-value semantics required of Remotable interfaces. This is
  * done by adding a pass-by-value interceptor to the inbound invocation chain of a target if the target interface is
  * Remotable.
+ *
+ * @version $Rev$ $Date$
  */
 public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
     private DataBindingRegistry dataBindingRegistry;
-    
+
     public PassByValueWirePostProcessor() {
         super();
 
     }
-    
+
     /**
      * @param dataBindingRegistry the dataBindingRegistry to set
      */
@@ -60,12 +62,12 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
     public void process(OutboundWire source, InboundWire target) {
         Interceptor tailInterceptor;
-        PassByValueInterceptor passByValueInterceptor = null;
+        PassByValueInterceptor passByValueInterceptor;
         Operation<?> targetOperation;
         Operation<?> sourceOperation;
-        DataBinding[] argsDataBindings = null;
-        DataBinding resultDataBinding = null;
-        
+        DataBinding[] argsDataBindings;
+        DataBinding resultDataBinding;
+
         boolean allowsPassByReference = false;
         if (target.getContainer() instanceof AtomicComponentExtension) {
             allowsPassByReference =
@@ -81,12 +83,12 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
 
                 argsDataBindings = resolveArgsDataBindings(targetOperation);
                 resultDataBinding = resolveResultDataBinding(targetOperation);
-                
+
                 passByValueInterceptor = new PassByValueInterceptor();
                 passByValueInterceptor.setDataBinding(getDataBinding(targetOperation));
                 passByValueInterceptor.setArgsDataBindings(argsDataBindings);
                 passByValueInterceptor.setResultDataBinding(resultDataBinding);
-    
+
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor = source.getInvocationChains().get(sourceOperation).getTailInterceptor();
                 if (tailInterceptor != null) {
@@ -114,15 +116,15 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
                 sourceOperation =
                     getSourceOperation(target.getSourceCallbackInvocationChains(targetAddress).keySet(),
                         targetOperation.getName());
-                
+
                 argsDataBindings = resolveArgsDataBindings(targetOperation);
                 resultDataBinding = resolveResultDataBinding(targetOperation);
-                
+
                 passByValueInterceptor = new PassByValueInterceptor();
                 passByValueInterceptor.setDataBinding(getDataBinding(targetOperation));
                 passByValueInterceptor.setArgsDataBindings(argsDataBindings);
                 passByValueInterceptor.setResultDataBinding(resultDataBinding);
-                
+
                 entry.getValue().addInterceptor(0, passByValueInterceptor);
                 tailInterceptor =
                     target.getSourceCallbackInvocationChains(targetAddress).get(sourceOperation)
@@ -146,7 +148,7 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
         }
         return null;
     }
-    
+
     private DataBinding getDataBinding(Operation<?> operation) {
         String dataBinding = operation.getDataBinding();
         if (dataBinding == null) {
@@ -154,35 +156,33 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
             dataBinding = serviceContract.getDataBinding();
         }
         return dataBindingRegistry.getDataBinding(dataBinding);
-        
+
     }
-    
+
     @SuppressWarnings("unchecked")
     private DataBinding[] resolveArgsDataBindings(Operation operation) {
-        List<DataType<?>> argumentTypes = (List<DataType<?>>)operation.getInputType().getLogical();
+        List<DataType<?>> argumentTypes = (List<DataType<?>>) operation.getInputType().getLogical();
         DataBinding[] argDataBindings = new DataBinding[argumentTypes.size()];
-        int count = 0; 
-        for ( DataType argType : argumentTypes ) {
+        int count = 0;
+        for (DataType argType : argumentTypes) {
             argDataBindings[count] = null;
-            if ( argType != null ) {
-                if ( argType.getLogical() instanceof Class ) {
-                    argDataBindings[count] = 
-                        dataBindingRegistry.getDataBinding(((Class)argType.getLogical()).getName());
+            if (argType != null) {
+                if (argType.getLogical() instanceof Class) {
+                    argDataBindings[count] =
+                        dataBindingRegistry.getDataBinding(((Class) argType.getLogical()).getName());
                 }
             }
             ++count;
         }
         return argDataBindings;
     }
-    
+
     private DataBinding resolveResultDataBinding(Operation operation) {
-        DataType<?> resultType = (DataType<?>)operation.getOutputType();
+        DataType<?> resultType = (DataType<?>) operation.getOutputType();
         DataBinding resultBinding = null;
-        if ( resultType != null ) {
-            if ( resultType.getLogical() instanceof Class ) {
-                resultBinding = 
-                        dataBindingRegistry.getDataBinding(((Class)resultType.getLogical()).getName());
-            }
+        if (resultType != null && resultType.getLogical() instanceof Class) {
+            Class<?> logical = (Class<?>) resultType.getLogical();
+            resultBinding = dataBindingRegistry.getDataBinding(logical.getName());
         }
         return resultBinding;
     }
