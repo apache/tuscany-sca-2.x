@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -50,16 +51,13 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
                            BoundServiceDefinition<JMSBinding> serviceDefinition,
                            DeploymentContext deploymentContext){
 
-    	JMSBinding jmsBinding = serviceDefinition.getBinding();
+        ServiceContract serviceContract = serviceDefinition.getServiceContract();
+        if (serviceContract instanceof WSDLServiceContract) {
+            serviceContract.setDataBinding(OM_DATA_BINDING);
+        }
+
+        JMSBinding jmsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-        
-        ServiceContract serviceContract;
-		try {
-			serviceContract = (ServiceContract)serviceDefinition.getServiceContract().clone();
-		} catch (CloneNotSupportedException e) {
-			throw new JMSBindingRuntimeException("Couldn't clone the Service Contract",e);
-		}
-        serviceContract.setDataBinding(OM_DATA_BINDING);
         
         JMSResourceFactory jmsResourceFactory;
         OperationSelector opSec;

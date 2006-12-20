@@ -19,12 +19,14 @@
 package org.apache.tuscany.binding.jms;
 
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
@@ -42,12 +44,14 @@ public class JMSTargetInvoker implements TargetInvoker {
     private String operationName;
 	private JMSResourceFactory jmsResourceFactory;
     private OperationSelector operationSelector;
+    protected boolean xmlStyle;
     
-    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector){
+    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector, boolean xmlStyle){
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.operationName = operationName;
         this.operationSelector = operationSelector;
+        this.xmlStyle = xmlStyle;
     }
 
     /* By the time I receive the args it should have been converted to
@@ -70,7 +74,7 @@ public class JMSTargetInvoker implements TargetInvoker {
         	return sendReceiveMessage(payload);
         	
         } catch (Exception e) { // catch JMS specific error
-            
+                e.printStackTrace();
         	throw new AssertionError(e);
         }
 
@@ -98,12 +102,18 @@ public class JMSTargetInvoker implements TargetInvoker {
     private Object sendReceiveMessage(Object payload) throws JMSException, NamingException, JMSBindingException{
     	
     	Session session = jmsResourceFactory.createSession();
+
+        javax.jms.Message message;
+        if (xmlStyle) {
+            message = jmsResourceFactory.createMessage(session);
+            ((javax.jms.TextMessage)message).setText((String)payload);
+        } else {
+            message = jmsResourceFactory.createObjectMessage(session);
+            ((javax.jms.ObjectMessage)message).setObject((Serializable)payload);
+        }
     	
-    	javax.jms.Message message = jmsResourceFactory.createMessage(session);
-    	operationSelector.setOperationName(operationName,message);  
-    	
-        ((javax.jms.TextMessage)message).setText((String)payload);
-    	
+        operationSelector.setOperationName(operationName,message);  
+        
     	Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
         
         MessageProducer producer = session.createProducer(destination);
@@ -122,6 +132,6 @@ public class JMSTargetInvoker implements TargetInvoker {
         consumer.close();        
         session.close();
         
-        return ((javax.jms.TextMessage)reply).getText();
+        return reply instanceof ObjectMessage ? ((javax.jms.ObjectMessage)reply).getObject() : ((javax.jms.TextMessage)reply).getText();
     }
 }

@@ -49,35 +49,27 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sdo</groupId>
-            <artifactId>tuscany-sdo-impl</artifactId>
+            <groupId>org.apache.tuscany.sca.services.idl</groupId>
+            <artifactId>wsdl</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-            <artifactId>databinding-sdo</artifactId>
+            <artifactId>databinding-axiom</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>        
 
         <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-kernel</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-api</artifactId>
-            <version>SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
             <artifactId>axiom-impl</artifactId>
-            <version>SNAPSHOT</version>
         </dependency>
 
 	<dependency>
@@ -85,12 +77,6 @@
 	    <artifactId>commons-logging</artifactId>
 	    <version>1.1</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.ws.commons</groupId>
-            <artifactId>XmlSchema</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>        
 
         <!-- test dependencies -->
         <dependency>
@@ -125,6 +111,24 @@
             <version>${sca.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+           <groupId>xmlunit</groupId>
+           <artifactId>xmlunit</artifactId>
+           <version>1.0</version>
+           <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

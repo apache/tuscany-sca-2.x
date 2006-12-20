@@ -40,5 +40,7 @@ public interface JMSResourceFactory {
 	public abstract Message createMessage(Session session)
 			throws JMSException;
 
+        public abstract Message createObjectMessage(Session session) throws JMSException;
+
 	public abstract Destination lookupDestination(String jndiName) throws NamingException;
 }
