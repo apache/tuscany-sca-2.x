@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.tuscany.binding.jms.databinding.XMLTextMsgDataBinding;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -51,10 +52,6 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
                            BoundServiceDefinition<JMSBinding> serviceDefinition,
                            DeploymentContext deploymentContext){
 
-        ServiceContract serviceContract = serviceDefinition.getServiceContract();
-        if (serviceContract instanceof WSDLServiceContract) {
-            serviceContract.setDataBinding(OM_DATA_BINDING);
-        }
 
         JMSBinding jmsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
@@ -67,7 +64,12 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 		} catch (JMSBindingException e) {
 			throw new JMSBindingRuntimeException("Error building JMS Service",e);
 		}
-        
+                
+        ServiceContract serviceContract = serviceDefinition.getServiceContract();
+        if (serviceContract instanceof WSDLServiceContract) {
+            serviceContract.setDataBinding(OM_DATA_BINDING);
+            jmsResourceFactory.setDataBinding(new XMLTextMsgDataBinding());
+        }
         
         Service service = new JMSService(serviceDefinition.getName(),parent, wireService, jmsBinding, jmsResourceFactory,opSec,interfaze);
         service.setBindingServiceContract(serviceContract);

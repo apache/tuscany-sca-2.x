@@ -19,7 +19,6 @@
 package org.apache.tuscany.binding.jms;
 
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.jms.Destination;
@@ -60,7 +59,7 @@ public class JMSTargetInvoker implements TargetInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
         	Object[] args = (Object[])msg.getBody();
-            Object resp = invokeTarget(args[0],(short)0);
+            Object resp = invokeTarget(args,(short)0);
             msg.setBody(resp);
         } catch (Exception e) {
             msg.setBody(e.getCause());
@@ -71,7 +70,7 @@ public class JMSTargetInvoker implements TargetInvoker {
     public Object invokeTarget(Object payload,final short sequence)throws InvocationTargetException {
         try {
             
-        	return sendReceiveMessage(payload);
+        	return sendReceiveMessage((Object[])payload);
         	
         } catch (Exception e) { // catch JMS specific error
                 e.printStackTrace();
@@ -99,18 +98,11 @@ public class JMSTargetInvoker implements TargetInvoker {
     public void setCacheable(boolean cacheable) {
     }
     
-    private Object sendReceiveMessage(Object payload) throws JMSException, NamingException, JMSBindingException{
+    private Object sendReceiveMessage(Object[] payload) throws JMSException, NamingException, JMSBindingException{
     	
     	Session session = jmsResourceFactory.createSession();
 
-        javax.jms.Message message;
-        if (xmlStyle) {
-            message = jmsResourceFactory.createMessage(session);
-            ((javax.jms.TextMessage)message).setText((String)payload);
-        } else {
-            message = jmsResourceFactory.createObjectMessage(session);
-            ((javax.jms.ObjectMessage)message).setObject((Serializable)payload);
-        }
+        javax.jms.Message message = jmsResourceFactory.createMessage(session, payload);
     	
         operationSelector.setOperationName(operationName,message);  
         
@@ -132,6 +124,6 @@ public class JMSTargetInvoker implements TargetInvoker {
         consumer.close();        
         session.close();
         
-        return reply instanceof ObjectMessage ? ((javax.jms.ObjectMessage)reply).getObject() : ((javax.jms.TextMessage)reply).getText();
+        return jmsResourceFactory.getMessagePayload(reply);
     }
 }

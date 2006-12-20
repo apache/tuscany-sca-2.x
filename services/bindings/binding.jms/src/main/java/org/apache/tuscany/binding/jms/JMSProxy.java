@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.binding.jms;
 
-import java.io.Serializable;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 
 import javax.jms.Destination;
@@ -27,16 +25,9 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.naming.NamingException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.impl.builder.StAXOMBuilder;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -49,14 +40,12 @@ public class JMSProxy implements MessageListener{
     private JMSResourceFactory jmsResourceFactory; 
 	private OperationSelector operationSelector;
 	private InboundWire inboundWire;
-        protected boolean xmlStyle;
     
-	public JMSProxy(InboundWire inboundWire,JMSResourceFactory jmsResourceFactory,OperationSelector operationSelector, boolean xmlStyle) throws NamingException{		
+	public JMSProxy(InboundWire inboundWire,JMSResourceFactory jmsResourceFactory,OperationSelector operationSelector) throws NamingException{		
 		
 		this.jmsResourceFactory = jmsResourceFactory;
 		this.operationSelector = operationSelector;
 		this.inboundWire = inboundWire;
-                this.xmlStyle = xmlStyle;
 	}   
 
 	public void onMessage(Message msg){
@@ -71,19 +60,19 @@ public class JMSProxy implements MessageListener{
 		    Interceptor headInterceptor = chain.getHeadInterceptor();		    
 		    
 		    org.apache.tuscany.spi.wire.Message tuscanyMsg = new MessageImpl();
-		    tuscanyMsg.setBody(getPayload(msg));
+                    Object payload = jmsResourceFactory.getMessagePayload(msg);
+		    tuscanyMsg.setBody(payload);
 		    tuscanyMsg.setTargetInvoker(chain.getTargetInvoker());
 		    org.apache.tuscany.spi.wire.Message tuscanyResMsg = null;
 		    
-		    // again over here I expect the data binding interecptors to convert the 
-		    // XML string into objects
 		    if (headInterceptor != null){
 		    	tuscanyResMsg = headInterceptor.invoke(tuscanyMsg);
 		    }
 		    	        
 		    // if result is null then the method can be assumed as oneway
 		    if (tuscanyResMsg != null && tuscanyResMsg.getBody() != null){
-		    	sendReply(msg,operationName, fromPayload(tuscanyResMsg));
+                        
+		    	sendReply(msg,operationName, tuscanyResMsg);
 		    }
 
 		} catch (JMSBindingException e) {
@@ -100,49 +89,12 @@ public class JMSProxy implements MessageListener{
                 
 	}
 
-    private Object fromPayload(org.apache.tuscany.spi.wire.Message tuscanyResMsg) {
-        if (xmlStyle) {
-            OMElement omElement = (OMElement) tuscanyResMsg.getBody();
-            omElement.build();
-            return (String)omElement.toString();
-        } else {
-            Object o = tuscanyResMsg.getBody();
-            return o;
-        }
-    }
 
-    private Object[] getPayload(Message msg) throws JMSException {
-        if (xmlStyle) {
-            try {
-                String xml = ((TextMessage)msg).getText();
-
-                XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(new StringReader(xml));
-                StAXOMBuilder builder = new StAXOMBuilder(reader);
-                OMElement omElement = builder.getDocumentElement();
-
-                return new Object[] {omElement};
-
-            } catch (XMLStreamException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            Object o = ((ObjectMessage)msg).getObject();
-            return new Object[] {o};
-        }
-    }
-
-	private void sendReply(Message reqMsg,String operationName,Object payload) throws JMSException, NamingException{
+	private void sendReply(Message reqMsg,String operationName,org.apache.tuscany.spi.wire.Message tuscanyResMsg) throws JMSException, NamingException{
         
 		Session session = jmsResourceFactory.createSession();
 
-        Message message;
-        if (xmlStyle) {
-            message = jmsResourceFactory.createMessage(session);
-            ((TextMessage)message).setText((String)payload);
-        } else {
-            message = jmsResourceFactory.createObjectMessage(session);
-            ((ObjectMessage)message).setObject((Serializable)payload);
-        }
+        Message message = jmsResourceFactory.createMessage(session, tuscanyResMsg.getBody());
     	
     	Destination destination = reqMsg.getJMSReplyTo();
         

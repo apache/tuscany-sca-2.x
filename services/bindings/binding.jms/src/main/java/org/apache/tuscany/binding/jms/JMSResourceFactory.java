@@ -37,10 +37,13 @@ public interface JMSResourceFactory {
 
 	public abstract void closeConnection() throws JMSException, NamingException;
 
-	public abstract Message createMessage(Session session)
+	public abstract Message createMessage(Session session, Object payload)
 			throws JMSException;
 
-        public abstract Message createObjectMessage(Session session) throws JMSException;
+        public abstract Object getMessagePayload(Message jmsMessage)
+            throws JMSException;
 
-	public abstract Destination lookupDestination(String jndiName) throws NamingException;
+        public abstract Destination lookupDestination(String jndiName) throws NamingException;
+
+    public abstract void setDataBinding(JMSDataBinding jmsDataBinding);
 }
