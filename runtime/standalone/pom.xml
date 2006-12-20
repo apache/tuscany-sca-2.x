@@ -32,9 +32,10 @@
     <name>Apache Tuscany Standalone SCA Runtime</name>
 
     <modules>
-        <module>launcher</module>
         <module>standalone-api</module>
+        <module>launcher</module>
         <module>standalone-host</module>
+        <module>plugin.standalone</module>
     </modules>
 
 </project>
