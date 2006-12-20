@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.runtime</groupId>
-            <artifactId>standalone</artifactId>
+            <artifactId>standalone-api</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>

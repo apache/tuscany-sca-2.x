@@ -34,7 +34,7 @@
     <modules>
         <module>webapp</module>
         <module>webapp-host</module>
-        <module>standalone</module>
+        <module>standalone-api</module>
         <module>standalone-host</module>
     </modules>
 

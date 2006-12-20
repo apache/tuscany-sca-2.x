@@ -24,7 +24,7 @@
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>standalone</artifactId>
+    <artifactId>standalone-api</artifactId>
     <packaging>jar</packaging>
     <name>Apache Tuscany Standalone Runtime</name>
     <description>Code to run Tuscany in a standalone application.</description>
