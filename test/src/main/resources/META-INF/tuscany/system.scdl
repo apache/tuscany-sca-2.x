@@ -82,7 +82,7 @@
     
     <!-- Default scopes -->
     <component name="scope.module">
-        <system:implementation.system class="org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory"/>
+        <system:implementation.system class="org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory"/>
     </component>
     <component name="scope.stateless">
         <system:implementation.system class="org.apache.tuscany.core.component.scope.StatelessScopeObjectFactory"/>

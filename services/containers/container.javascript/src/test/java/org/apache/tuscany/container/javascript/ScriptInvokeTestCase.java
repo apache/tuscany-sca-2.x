@@ -18,16 +18,9 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.javascript.mock.Greeting;
 import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.test.ArtifactFactory;
 
 /**
  * Tests for invoker JavaScriptComponents
@@ -42,7 +35,7 @@ public class ScriptInvokeTestCase extends TestCase {
      * Tests the invocation of a Groovy "script" as opposed to a class
      */
     public void testBasicScriptInvocation() throws Exception {
-//        ModuleScopeContainer scope = new ModuleScopeContainer(null);
+//        CompositeScopeContainer scope = new CompositeScopeContainer(null);
 //        scope.start();
 //        List<Class<?>> services = new ArrayList<Class<?>>();
 //        services.add(Greeting.class);

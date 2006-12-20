@@ -39,11 +39,11 @@ import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 
 /**
- * A scope context which manages atomic component instances keyed by module
+ * A scope context which manages atomic component instances keyed by composite
  *
  * @version $Rev$ $Date$
  */
-public class ModuleScopeContainer extends AbstractScopeContainer {
+public class CompositeScopeContainer extends AbstractScopeContainer {
     private static final InstanceWrapper EMPTY = new EmptyWrapper();
     private static final ComponentInitComparator COMPARATOR = new ComponentInitComparator();
 
@@ -51,7 +51,7 @@ public class ModuleScopeContainer extends AbstractScopeContainer {
     // the queue of instanceWrappers to destroy, in the order that their instances were created
     private final List<InstanceWrapper> destroyQueue;
 
-    public ModuleScopeContainer(ScopeContainerMonitor monitor) {
+    public CompositeScopeContainer(ScopeContainerMonitor monitor) {
         super(null, monitor);
         instanceWrappers = new ConcurrentHashMap<AtomicComponent, InstanceWrapper>();
         destroyQueue = new ArrayList<InstanceWrapper>();

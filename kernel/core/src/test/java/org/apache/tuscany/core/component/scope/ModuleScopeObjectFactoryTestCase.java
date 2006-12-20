@@ -31,8 +31,8 @@ public class ModuleScopeObjectFactoryTestCase extends TestCase {
 
     public void testCreation() {
         ScopeRegistry registry = EasyMock.createMock(ScopeRegistry.class);
-        registry.registerFactory(EasyMock.isA(Scope.class), EasyMock.isA(ModuleScopeObjectFactory.class));
+        registry.registerFactory(EasyMock.isA(Scope.class), EasyMock.isA(CompositeScopeObjectFactory.class));
 
-        assertNotNull(new ModuleScopeObjectFactory(registry, null).getInstance());
+        assertNotNull(new CompositeScopeObjectFactory(registry, null).getInstance());
     }
 }

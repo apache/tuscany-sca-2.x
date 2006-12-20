@@ -41,7 +41,7 @@ public class ModuleScopeRestartTestCase extends TestCase {
 
     public void testRestart() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         MethodEventInvoker<Object> initInvoker =
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("init"));

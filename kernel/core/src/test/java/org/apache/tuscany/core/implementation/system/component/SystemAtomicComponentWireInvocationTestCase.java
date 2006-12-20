@@ -23,7 +23,7 @@ import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
 import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
@@ -42,7 +42,7 @@ import org.easymock.EasyMock;
 public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
 
     public void testWireResolution() throws Exception {
-        ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Target target = new TargetImpl();
         SystemInboundWire inboundWire = EasyMock.createMock(SystemInboundWire.class);

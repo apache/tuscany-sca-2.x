@@ -34,11 +34,11 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContainer> {
+public class CompositeScopeObjectFactory implements ObjectFactory<CompositeScopeContainer> {
     private ScopeContainerMonitor monitor;
 
-    public ModuleScopeObjectFactory(@Autowire ScopeRegistry registry,
-                                    @Monitor ScopeContainerMonitor monitor) {
+    public CompositeScopeObjectFactory(@Autowire ScopeRegistry registry,
+                                       @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.COMPOSITE, this);
         this.monitor = monitor;
     }
@@ -47,7 +47,7 @@ public class ModuleScopeObjectFactory implements ObjectFactory<ModuleScopeContai
     public void init() {
     }
 
-    public ModuleScopeContainer getInstance() throws ObjectCreationException {
-        return new ModuleScopeContainer(monitor);
+    public CompositeScopeContainer getInstance() throws ObjectCreationException {
+        return new CompositeScopeContainer(monitor);
     }
 }

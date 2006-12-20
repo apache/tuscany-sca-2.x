@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.scope.ModuleScopeObjectFactory;
+import org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.idl.java.InterfaceJavaLoader;
@@ -149,7 +149,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     public ScopeRegistry createScopeRegistry(WorkContext workContext) {
         ScopeRegistry scopeRegistry = new ScopeRegistryImpl();
-        new ModuleScopeObjectFactory(scopeRegistry, monitorFactory.getMonitor(ScopeContainerMonitor.class));
+        new CompositeScopeObjectFactory(scopeRegistry, monitorFactory.getMonitor(ScopeContainerMonitor.class));
         return scopeRegistry;
     }
 

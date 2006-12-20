@@ -44,7 +44,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testLifecycleManagement() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContainer scopeContext = new ModuleScopeContainer(null);
+        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -63,7 +63,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testGetAssociatedInstance() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContainer scopeContext = new ModuleScopeContainer(null);
+        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -73,7 +73,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContainer scopeContext = new ModuleScopeContainer(null);
+        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
         SystemAtomicComponent component = createComponent(scopeContext);
         // start the request
@@ -87,7 +87,7 @@ public class BasicModuleScopeTestCase extends TestCase {
 
     public void testModuleIsolation() throws Exception {
         WorkContext workContext = new WorkContextImpl();
-        ModuleScopeContainer scopeContext = new ModuleScopeContainer(null);
+        CompositeScopeContainer scopeContext = new CompositeScopeContainer(null);
         scopeContext.start();
 
         SystemAtomicComponent component = createComponent(scopeContext);

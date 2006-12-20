@@ -42,7 +42,7 @@ import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.component.scope.HttpSessionScopeContainer;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.component.scope.RequestScopeContainer;
 import org.apache.tuscany.core.component.scope.StatelessScopeContainer;
 import org.apache.tuscany.core.integration.mock.MockFactory;
@@ -65,7 +65,7 @@ public class ScopeReferenceTestCase extends TestCase {
      * Tests a module-to-module scoped wire
      */
     public void testModuleToModule() throws Exception {
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
@@ -89,7 +89,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToSession() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(null);
+        ScopeContainer moduleScope = new CompositeScopeContainer(null);
         moduleScope.start();
         ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
@@ -137,7 +137,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToRequest() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(null);
+        ScopeContainer moduleScope = new CompositeScopeContainer(null);
         moduleScope.start();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
         requestScope.start();
@@ -190,7 +190,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testModuleToStateless() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(null);
+        ScopeContainer moduleScope = new CompositeScopeContainer(null);
         moduleScope.start();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
@@ -269,7 +269,7 @@ public class ScopeReferenceTestCase extends TestCase {
      */
     public void testSessionToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
-        ScopeContainer moduleScope = new ModuleScopeContainer(null);
+        ScopeContainer moduleScope = new CompositeScopeContainer(null);
         moduleScope.start();
         ScopeContainer sessionScope = new HttpSessionScopeContainer(ctx, null);
         sessionScope.start();
@@ -459,7 +459,7 @@ public class ScopeReferenceTestCase extends TestCase {
     public void testRequestToModule() throws Exception {
         WorkContext ctx = new WorkContextImpl();
         final ScopeContainer requestScope = new RequestScopeContainer(ctx, null);
-        final ScopeContainer moduleScope = new ModuleScopeContainer(null);
+        final ScopeContainer moduleScope = new CompositeScopeContainer(null);
         requestScope.start();
         moduleScope.start();
         moduleScope.onEvent(new CompositeStart(this, null));
@@ -731,7 +731,7 @@ public class ScopeReferenceTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         ScopeContainer statelessScope = new StatelessScopeContainer(ctx, null);
         statelessScope.start();
-        ScopeContainer moduleScope = new ModuleScopeContainer(null);
+        ScopeContainer moduleScope = new CompositeScopeContainer(null);
         moduleScope.start();
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,

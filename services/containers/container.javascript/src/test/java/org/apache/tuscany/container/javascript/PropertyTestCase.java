@@ -18,18 +18,9 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
-import org.apache.tuscany.container.javascript.mock.Greeting;
 import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
-import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.test.ArtifactFactory;
 
 /**
  * Tests for component properties
@@ -44,7 +35,7 @@ public class PropertyTestCase extends TestCase {
      * Tests injecting a simple property type on a Javascript implementation instance
      */
     public void testPropertyInjection() throws Exception {
-        /*ModuleScopeContainer scope = new ModuleScopeContainer(null);
+        /*CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);

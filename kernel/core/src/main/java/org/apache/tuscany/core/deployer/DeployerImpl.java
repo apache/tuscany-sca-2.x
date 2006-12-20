@@ -40,7 +40,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.api.annotation.Monitor;
 
 /**
@@ -82,7 +82,7 @@ public class DeployerImpl implements Deployer {
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, PrepareException {
-        ScopeContainer moduleScope = new ModuleScopeContainer(monitor);
+        ScopeContainer moduleScope = new CompositeScopeContainer(monitor);
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope, null);
         try {
             load(parent, componentDefinition, deploymentContext);

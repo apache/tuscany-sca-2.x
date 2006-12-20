@@ -29,7 +29,7 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 
@@ -59,7 +59,7 @@ public class DataObjectLoaderTestCase extends TestCase {
             event = reader.nextTag();
         }
         DataObjectLoader loader = new DataObjectLoader(name);
-        DeploymentContext context = new RootDeploymentContext(getClass().getClassLoader(), inputFactory, new ModuleScopeContainer(null), null);
+        DeploymentContext context = new RootDeploymentContext(getClass().getClassLoader(), inputFactory, new CompositeScopeContainer(null), null);
         ModelDataObject modelObject = (ModelDataObject) loader.load(null, null, reader, context);
         Assert.assertNotNull(modelObject.getDataObject());
         Assert.assertTrue(modelObject.getDataObject().getString("myAttr").equals("helloworld.HelloWorldImpl"));

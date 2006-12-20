@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.scope.ModuleScopeContainer;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.integration.mock.MockFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
@@ -43,7 +43,7 @@ public class ReferenceInjectionTestCase extends TestCase {
     private Map<String, Member> members;
 
     public void testProxiedReferenceInjection() throws Exception {
-        ScopeContainer scope = new ModuleScopeContainer(null);
+        ScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Map<String, AtomicComponent> components =
             MockFactory.createWiredComponents("source", SourceImpl.class, scope,
