@@ -82,8 +82,8 @@ public class DeployerImpl implements Deployer {
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, PrepareException {
-        ScopeContainer moduleScope = new CompositeScopeContainer(monitor);
-        DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, moduleScope, null);
+        ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
+        DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
         try {
             load(parent, componentDefinition, deploymentContext);
         } catch (LoaderException e) {
@@ -93,7 +93,7 @@ public class DeployerImpl implements Deployer {
         Component component = (Component) build(parent, componentDefinition, deploymentContext);
         if (component instanceof CompositeComponent) {
             CompositeComponent composite = (CompositeComponent) component;
-            composite.setScopeContainer(moduleScope);
+            composite.setScopeContainer(scopeContainer);
         }
         component.prepare();
         try {

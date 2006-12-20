@@ -36,7 +36,7 @@ public interface Lifecycle {
     int RUNNING = 4;
     /* In the process of being shutdown */
     int STOPPING = 5;
-    /* Has been shutdown and removed from the module */
+    /* Has been shutdown and removed from the composite */
     int STOPPED = 6;
     /* In an error state */
     int ERROR = 7;

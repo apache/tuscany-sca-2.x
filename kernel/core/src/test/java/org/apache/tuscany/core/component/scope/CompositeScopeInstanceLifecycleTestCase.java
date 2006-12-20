@@ -20,11 +20,9 @@ package org.apache.tuscany.core.component.scope;
 
 
 import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.component.TargetException;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.mock.component.OrderedInitPojo;
@@ -33,11 +31,11 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
 /**
- * Lifecycle unit tests for the module scope container
+ * Lifecycle unit tests for the composite scope container
  *
  * @version $Rev$ $Date$
  */
-public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
+public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
 
     /**
      * Verify init and stop by scope container on an atomic component
@@ -45,7 +43,6 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
      * @throws Exception
      */
     public void testInitDestroy() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Foo comp = new Foo();
@@ -58,7 +55,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         scope.register(component);
         scope.onEvent(new CompositeStart(this, null));
         assertNotNull(scope.getInstance(component));
-        // expire module
+        // expire composite
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
         EasyMock.verify(component);
@@ -70,7 +67,6 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
      * @throws Exception
      */
     public void testEagerInitDestroy() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Foo comp = new Foo();
@@ -82,7 +78,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         EasyMock.replay(initDestroyComponent);
         scope.register(initDestroyComponent);
         scope.onEvent(new CompositeStart(this, null));
-        // expire module
+        // expire composite
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
         EasyMock.verify(initDestroyComponent);
@@ -90,7 +86,6 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
 
 
     public void testDestroyOrder() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
@@ -117,7 +112,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         assertEquals(3, three.getNumberInstantiated());
         assertEquals(3, three.getInitOrder());
 
-        // expire module
+        // expire composite
         scope.onEvent(new CompositeStop(this, null));
         assertEquals(0, one.getNumberInstantiated());
         scope.stop();
@@ -127,7 +122,6 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
     }
 
     public void testEagerInitDestroyOrder() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
@@ -148,7 +142,7 @@ public class ModuleScopeInstanceLifecycleTestCase extends TestCase {
         OrderedInitPojo three = (OrderedInitPojo) scope.getInstance(threeComponent);
         assertNotNull(three);
 
-        // expire module
+        // expire composite
         scope.onEvent(new CompositeStop(this, null));
         assertEquals(0, one.getNumberInstantiated());
         scope.stop();

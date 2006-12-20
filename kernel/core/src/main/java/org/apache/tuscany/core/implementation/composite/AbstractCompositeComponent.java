@@ -50,12 +50,12 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
 
     public static final int DEFAULT_WAIT = 1000 * 60;
 
-    // Blocking latch to ensure the module is initialized exactly once prior to servicing requests
+    // Blocking latch to ensure the composite is initialized exactly once prior to servicing requests
     protected CountDownLatch initializeLatch = new CountDownLatch(1);
 
     protected final Object lock = new Object();
 
-    // Indicates whether the module context has been initialized
+    // Indicates whether the composite context has been initialized
     protected boolean initialized;
 
     protected ScopeContainer scopeContainer;
@@ -151,12 +151,12 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     }
 
     /**
-     * Blocks until the module context has been initialized
+     * Blocks until the composite context has been initialized
      */
     protected void checkInit() throws ComponentTimeoutException {
         if (!initialized) {
             try {
-                /* block until the module has initialized */
+                /* block until the composite has initialized */
                 boolean success = initializeLatch.await(AbstractCompositeComponent.DEFAULT_WAIT,
                     TimeUnit.MILLISECONDS);
                 if (!success) {

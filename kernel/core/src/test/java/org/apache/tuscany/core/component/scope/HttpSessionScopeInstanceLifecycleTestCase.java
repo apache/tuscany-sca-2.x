@@ -34,7 +34,7 @@ import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
 /**
- * Lifecycle unit tests for the module scope container
+ * Lifecycle unit tests for the composite scope container
  *
  * @version $Rev$ $Date$
  */

@@ -20,12 +20,21 @@ package org.apache.tuscany.core.mock.component;
 
 import org.osoa.sca.annotations.Scope;
 
+
 /**
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public interface ModuleScopeComponent {
+public class CompositeScopeComponentImpl implements
+    CompositeScopeComponent {
 
-    //public boolean isInit();
+    private String foo;
+
+    public void setFoo(String foo) {
+        this.foo = foo;
+    }
+
+    public String getFoo() {
+        return foo;
+    }
 }
-

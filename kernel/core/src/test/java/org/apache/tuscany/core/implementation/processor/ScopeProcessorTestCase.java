@@ -36,12 +36,12 @@ public class ScopeProcessorTestCase extends TestCase {
 
     CompositeComponent parent;
 
-    public void testModuleScope() throws ProcessingException {
+    public void testCompositeScope() throws ProcessingException {
         ScopeProcessor processor = new ScopeProcessor();
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
 
-        processor.visitClass(parent, Module.class, type, null);
+        processor.visitClass(parent, Composite.class, type, null);
         assertEquals(Scope.COMPOSITE, type.getImplementationScope());
     }
 
@@ -99,7 +99,7 @@ public class ScopeProcessorTestCase extends TestCase {
     }
 
     @org.osoa.sca.annotations.Scope("COMPOSITE")
-    private class Module {
+    private class Composite {
     }
 
     @org.osoa.sca.annotations.Scope("SESSION")

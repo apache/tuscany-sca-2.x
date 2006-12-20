@@ -34,7 +34,7 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ModuleScopeInitDestroyErrorTestCase extends TestCase {
+public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
 
     public void testInitializeErrorMonitor() throws Exception {
         ScopeContainerMonitor monitor;

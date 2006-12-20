@@ -31,7 +31,7 @@ public class JavaAtomicComponentMetadataInjectionTestCase extends TestCase {
         // TODO implement
     }
 
-    public void testModuleContextSet() throws Exception {
+    public void testCompositeContextSet() throws Exception {
         // TODO implement
     }
 }

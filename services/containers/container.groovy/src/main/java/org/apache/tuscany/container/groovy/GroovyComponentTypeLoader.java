@@ -35,7 +35,7 @@ public class GroovyComponentTypeLoader extends ComponentTypeLoaderExtension<Groo
     public void load(CompositeComponent parent, GroovyImplementation implementation, DeploymentContext context)
         throws LoaderException {
         GroovyComponentType componentType = new GroovyComponentType();
-        // for now, default to module
+        // for now, default to composite
         componentType.setLifecycleScope(Scope.COMPOSITE);
         implementation.setComponentType(componentType);
     }

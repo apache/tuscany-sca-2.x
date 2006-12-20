@@ -30,10 +30,10 @@ public class CompositeStop extends AbstractEvent implements CompositeEvent {
     private CompositeComponent component;
 
     /**
-     * Creates a module stop event
+     * Creates a composite stop event
      *
      * @param source    the source of the event
-     * @param component the composite component associated the module being stopped
+     * @param component the composite component associated the composite being stopped
      */
     public CompositeStop(Object source, CompositeComponent component) {
         super(source);

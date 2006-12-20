@@ -18,23 +18,19 @@
  */
 package org.apache.tuscany.core.mock.component;
 
-import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Destroy;
 
+public class CompositeScopeDestroyOnlyComponent extends CompositeScopeComponentImpl {
 
-/**
- * @version $Rev$ $Date$
- */
-@Scope("COMPOSITE")
-public class ModuleScopeComponentImpl implements
-    ModuleScopeComponent {
+    boolean destroyed;
 
-    private String foo;
-
-    public void setFoo(String foo) {
-        this.foo = foo;
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
-    public String getFoo() {
-        return foo;
+    @Destroy
+    public void destroy() {
+        destroyed = true;
     }
+
 }
