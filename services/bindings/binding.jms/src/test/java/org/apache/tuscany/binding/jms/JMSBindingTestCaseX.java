@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.activemq.broker.BrokerContainer;
 import org.activemq.broker.impl.BrokerContainerImpl;
 import org.activemq.store.vm.VMPersistenceAdapter;
+import org.apache.tuscany.binding.jms.databinding.XMLTextMsgDataBinding;
 import org.apache.tuscany.test.SCATestCase;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -46,6 +47,15 @@ public class JMSBindingTestCaseX extends SCATestCase {
         assertEquals("Hello Rajith", reply);
 
         // TODO: the rest should be in a seperate test method but that doesn't work as you get broker conflicts
+        JMSTargetInvoker invoker = createJMSInvoker();
+        Object[] response = (Object[])invoker.invokeTarget(new Object[]{REQUEST_XML}, (short)0);
+
+        Diff diff = XMLUnit.compareXML(REPLY_XML, response[0].toString());
+        assertTrue(diff.toString(), diff.similar());
+    
+    }
+
+    private JMSTargetInvoker createJMSInvoker() {
         JMSBinding binding = new JMSBinding();
         binding.setInitialContextFactoryName("org.activemq.jndi.ActiveMQInitialContextFactory");
         binding.setConnectionFactoryName("ConnectionFactory");
@@ -53,13 +63,10 @@ public class JMSBindingTestCaseX extends SCATestCase {
         binding.setDestinationName("dynamicQueues/HelloworldServiceQueue");
         binding.setTimeToLive(3000);
         binding.setOperationSelectorPropertyName("scaOperationName");
-        JMSTargetInvoker invoker = new JMSTargetInvoker(new SimpleJMSResourceFactory(binding), binding, "getGreetings", new DefaultOperationSelector(binding), true);
-
-        String response = (String)invoker.invokeTarget(REQUEST_XML, (short)0);
-
-        Diff diff = XMLUnit.compareXML(REPLY_XML, response);
-        assertTrue(diff.toString(), diff.similar());
-    
+        JMSResourceFactory rf = new SimpleJMSResourceFactory(binding);
+        rf.setDataBinding(new XMLTextMsgDataBinding());
+        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", new DefaultOperationSelector(binding), true);
+        return invoker;
     }
 
     protected void setUp() throws Exception {

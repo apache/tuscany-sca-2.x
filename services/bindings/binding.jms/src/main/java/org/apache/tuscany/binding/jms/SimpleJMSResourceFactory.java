@@ -30,15 +30,19 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.tuscany.binding.jms.databinding.ObjectMsgDataBinding;
+
 public class SimpleJMSResourceFactory implements JMSResourceFactory {
 		
 	private JMSBinding jmsBinding;
 	private Connection con;
 	private Context context;
 	private boolean isConnectionStarted;
+        private JMSDataBinding jmsDataBinding;
 
 	public  SimpleJMSResourceFactory(JMSBinding jmsBinding){
 		this.jmsBinding = jmsBinding;
+                this.jmsDataBinding = new ObjectMsgDataBinding();
 	}
 	
 	/* 
@@ -87,21 +91,13 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
 	/* (non-Javadoc)
 	 * @see org.apache.tuscany.binding.jms.JMSResourceFactory#createTextMessage(javax.jms.Session)
 	 */
-	public Message createMessage(Session session) throws JMSException{
-		javax.jms.Message message = session.createTextMessage();  // default
-    	message.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
-    	message.setJMSPriority(jmsBinding.getPriority());
-    	
-    	return message;
-	}
-
-        public Message createObjectMessage(Session session) throws JMSException{
-            Message message = session.createObjectMessage();  // default
+	public Message createMessage(Session session, Object payload) throws JMSException {
+            Message message = jmsDataBinding.toJMSMessage(session, payload);
             message.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
             message.setJMSPriority(jmsBinding.getPriority());
             return message;
         }
-        
+
 	private void createConnection() throws NamingException, JMSException {
 		if(context == null){
 			createInitialContext();
@@ -121,5 +117,13 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
 	public Destination lookupDestination(String jndiName) throws NamingException {
 		return (Destination)context.lookup(jndiName);
 	}
+
+    public void setDataBinding(JMSDataBinding jmsDataBinding) {
+        this.jmsDataBinding = jmsDataBinding;
+    }
+
+    public Object getMessagePayload(Message jmsMessage) throws JMSException {
+        return jmsDataBinding.fromJMSMessage(jmsMessage);
+    }
 
 }
