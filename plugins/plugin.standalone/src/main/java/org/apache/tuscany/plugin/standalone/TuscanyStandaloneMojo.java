@@ -254,7 +254,7 @@ public class TuscanyStandaloneMojo extends AbstractMojo {
     private Map transDepenedencyMap = new HashMap();
 
     private Dependency launcher =
-        new Dependency("org.apache.tuscany.sca.commands", "launcher", "1.0-incubator-SNAPSHOT");
+        new Dependency("org.apache.tuscany.sca.runtime.standalone", "launcher", "1.0-incubator-SNAPSHOT");
 
     /**
      * Executes the MOJO.
