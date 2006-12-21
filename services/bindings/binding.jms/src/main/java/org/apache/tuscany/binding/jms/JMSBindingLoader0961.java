@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.osoa.sca.annotations.Scope;
 
@@ -45,8 +44,9 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
     public static final QName BINDING_JMS =
         new QName("http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT", "binding.jms");
 
-    public static final List<String> VALID_CORRELATION_SCHEMES = Arrays.asList(new String[] {"requestmsgidtocorrelid", "requestcorrelidtocorrelid", "none"});
-    
+    public static final List<String> VALID_CORRELATION_SCHEMES =
+        Arrays.asList(new String[] {"requestmsgidtocorrelid", "requestcorrelidtocorrelid", "none"});
+
     public JMSBindingLoader0961(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -103,7 +103,7 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
                     if ("destination".equals(elementName)) {
                         parseDestination(reader, jmsBinding);
                     } else if ("response".equals(elementName)) {
-                        parseResponseDestination(reader, jmsBinding);
+                        parseResponse(reader, jmsBinding);
                     } else if ("headers".equals(elementName)) {
                         parseHeaders(reader, jmsBinding);
                     } else if ("operationAndDataBinding".equals(elementName)) {
@@ -126,32 +126,28 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         }
     }
 
-    private void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) {
         // TODO Auto-generated method stub
-        LoaderUtil.skipToEndElement(reader);
+        
     }
 
-    private void parseOperation(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
-        LoaderUtil.skipToEndElement(reader);
     }
 
-    private void parseOperationAndDataBinding(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseOperation(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
-        LoaderUtil.skipToEndElement(reader);
     }
 
-    private void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
-        LoaderUtil.skipToEndElement(reader);
     }
 
-    private void parseResponseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
-        LoaderUtil.skipToEndElement(reader);
     }
 
-    private void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
@@ -168,13 +164,11 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         }
         String create = reader.getAttributeValue(null, "create");
         if (create != null && create.length() > 0) {
-                jmsBinding.setCreateDestination(create);
+            jmsBinding.setCreateDestination(create);
         }
-        LoaderUtil.skipToEndElement(reader);
     }
 
-    private void parseURI(JMSBinding jmsBinding, String uri) {
+    protected void parseURI(JMSBinding jmsBinding, String uri) {
         // TODO Auto-generated method stub
-
     }
 }

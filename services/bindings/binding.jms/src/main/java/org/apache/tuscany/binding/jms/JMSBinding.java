@@ -195,4 +195,19 @@ public class JMSBinding extends Binding {
     public void setCreateDestination(String create) {
     }
 
+    public void setResponseDestinationName(String name) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void setResponseDestinationType(int destination_type_queue2) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void setCreateResponseDestination(String create) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

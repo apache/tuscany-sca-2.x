@@ -43,6 +43,12 @@ public class JMSBindingLoader0961TestCase extends TestCase {
         }
     }
 
+    public void testDestination() throws LoaderException, XMLStreamException {
+        XMLStreamReader reader = createReader("<binding.jms><destination name=\"foo\"/></binding.jms>");
+        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        assertEquals("foo", jmsBinding.getDestinationName());
+    }
+
     public void testInitialContextFactory() throws LoaderException, XMLStreamException {
         XMLStreamReader reader = createReader("<binding.jms initialContextFactory=\"myicf\"></binding.jms>");
         JMSBinding jmsBinding = loader.load(null, null, reader, null);

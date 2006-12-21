@@ -65,7 +65,7 @@ public class JMSBindingTestCaseX extends SCATestCase {
         binding.setOperationSelectorPropertyName("scaOperationName");
         JMSResourceFactory rf = new SimpleJMSResourceFactory(binding);
         rf.setDataBinding(new XMLTextMsgDataBinding());
-        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", new DefaultOperationSelector(binding), true);
+        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", new DefaultOperationSelector(binding));
         return invoker;
     }
 

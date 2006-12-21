@@ -50,6 +50,6 @@ public class JMSReference<T> extends ReferenceExtension {
 	}
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-    	return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(),operationSelector, false);
+    	return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(),operationSelector);
     }
 }

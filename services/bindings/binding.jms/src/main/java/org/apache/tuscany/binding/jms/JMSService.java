@@ -80,7 +80,7 @@ public class JMSService extends ServiceExtension {
         Destination destination = session.createQueue(jmsBinding.getDestinationName());
         
         consumer = session.createConsumer(destination);
-        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,operationSelector));
+        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,operationSelector, jmsBinding.getCorrelationScheme()));
         
         jmsResourceFactory.startConnection();
         
