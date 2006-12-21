@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -31,14 +32,15 @@ import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Invoke a JMS reference.
- * 
- * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 public class JMSTargetInvoker extends TargetInvokerExtension {
-    private JMSBinding jmsBinding;
-    private String operationName;
-    private JMSResourceFactory jmsResourceFactory;
-    private OperationSelector operationSelector;
+
+    protected JMSBinding jmsBinding;
+    protected JMSResourceFactory jmsResourceFactory;
+
+    protected String operationName;
+    protected OperationSelector operationSelector;
+
     protected Destination requestDest;
     protected Destination replyDest;
 
@@ -59,43 +61,54 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
 
     public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
         try {
+            Session session = jmsResourceFactory.createSession();
+            try {
 
-            return sendReceiveMessage((Object[])payload);
+                Destination replyToDest = (replyDest != null) ? replyDest : session.createTemporaryQueue();
+                Message requestMsg = sendRequest((Object[])payload, session, replyToDest);
+                Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
 
-        } catch (Exception e) { // catch JMS specific error
-            e.printStackTrace();
-            throw new AssertionError(e);
+                return jmsResourceFactory.getMessagePayload(replyMsg);
+
+            } finally {
+                session.close();
+            }
+        } catch (JMSException e) {
+            throw new InvocationTargetException(e);
+        } catch (NamingException e) {
+            throw new InvocationTargetException(e);
+        } catch (JMSBindingException e) {
+            throw new InvocationTargetException(e);
         }
-
     }
 
-    private Object sendReceiveMessage(Object[] payload) throws JMSException, NamingException, JMSBindingException {
-
-        Session session = jmsResourceFactory.createSession();
-
-        javax.jms.Message message = jmsResourceFactory.createMessage(session, payload);
-        operationSelector.setOperationName(operationName, message);
-
-        if (jmsBinding.getResponseDestinationName() == null) {
-            replyDest = session.createTemporaryQueue();
-        }
-
-        message.setJMSReplyTo(replyDest);
+    protected Message sendRequest(Object[] payload, Session session, Destination replyToDest) throws JMSException,
+        JMSBindingException {
+        Message requestMsg = jmsResourceFactory.createMessage(session, payload);
+        operationSelector.setOperationName(operationName, requestMsg);
+        requestMsg.setJMSReplyTo(replyToDest);
 
         MessageProducer producer = session.createProducer(requestDest);
+        try {
+            producer.send(requestMsg);
+        } finally {
+            producer.close();
+        }
+        return requestMsg;
+    }
 
-        producer.send(message);
-        producer.close();
-
-        String msgSelector = "JMSCorrelationID = '" + message.getJMSMessageID() + "'";
-        
-        MessageConsumer consumer = session.createConsumer(replyDest, msgSelector);
-        jmsResourceFactory.startConnection();
-        javax.jms.Message reply = consumer.receive(jmsBinding.getTimeToLive());
-        consumer.close();
-        session.close();
-
-        return jmsResourceFactory.getMessagePayload(reply);
+    protected Message receiveReply(Session session, Destination replyToDest, String requestMsgId) throws JMSException,
+        NamingException {
+        String msgSelector = "JMSCorrelationID = '" + requestMsgId + "'";
+        MessageConsumer consumer = session.createConsumer(replyToDest, msgSelector);
+        Message replyMsg;
+        try {
+            jmsResourceFactory.startConnection();
+            replyMsg = consumer.receive(jmsBinding.getTimeToLive());
+        } finally {
+            consumer.close();
+        }
+        return replyMsg;
     }
 
 }
