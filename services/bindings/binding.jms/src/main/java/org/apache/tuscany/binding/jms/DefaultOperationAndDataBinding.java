@@ -55,7 +55,7 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
             return message.getStringProperty(operationPropertyName);
 
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException("Exception retreiving operation name from message", e);
+            throw new JMSBindingException("Exception retreiving operation name from message", e);
         }
     }
 
@@ -71,7 +71,7 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
             message.setStringProperty(operationPropertyName, operationName);
 
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException("Exception setting the operation name on message", e);
+            throw new JMSBindingException("Exception setting the operation name on message", e);
         }
     }
 
@@ -114,9 +114,9 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
             return new Object[] {omElement};
 
         } catch (XMLStreamException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         }
     }
 
@@ -134,7 +134,7 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
             return message;
 
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         }
     }
 
@@ -144,7 +144,7 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
             return ((ObjectMessage)msg).getObject();
 
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         }
     }
 
@@ -156,7 +156,7 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
             return message;
 
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         }
     }
 }

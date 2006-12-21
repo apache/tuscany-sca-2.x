@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.wire.WireService;
 /**
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
-public class JMSReference<T> extends ReferenceExtension {
+public class JMSReference extends ReferenceExtension {
 
     protected JMSBinding jmsBinding;
     protected JMSResourceFactory jmsResourceFactory;

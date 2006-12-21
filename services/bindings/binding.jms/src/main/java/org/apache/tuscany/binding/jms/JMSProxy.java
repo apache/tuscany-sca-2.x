@@ -119,9 +119,9 @@ public class JMSProxy implements MessageListener {
             session.close();
 
         } catch (JMSException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         } catch (NamingException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         }
     }
 
