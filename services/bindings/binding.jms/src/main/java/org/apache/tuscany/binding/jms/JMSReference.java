@@ -34,7 +34,8 @@ public class JMSReference<T> extends ReferenceExtension {
 
     protected JMSBinding jmsBinding;
     protected JMSResourceFactory jmsResourceFactory;
-    protected OperationSelector operationSelector;
+    protected OperationAndDataBinding requestOperationAndDataBinding;
+    protected OperationAndDataBinding responseOperationAndDataBinding;
     protected Destination requestDest;
     protected Destination replyDest;
 
@@ -43,7 +44,8 @@ public class JMSReference<T> extends ReferenceExtension {
                         WireService wireService,
                         JMSBinding jmsBinding,
                         JMSResourceFactory jmsResourceFactory,
-                        OperationSelector operationSelector,
+                        OperationAndDataBinding requestOperationAndDataBinding,
+                        OperationAndDataBinding responseOperationAndDataBinding,
                         Class<?> service,
                         Destination requestDest,
                         Destination replyDest) {
@@ -52,14 +54,16 @@ public class JMSReference<T> extends ReferenceExtension {
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
-        this.operationSelector = operationSelector;
+        this.requestOperationAndDataBinding = requestOperationAndDataBinding;
+        this.responseOperationAndDataBinding = responseOperationAndDataBinding;
         this.requestDest = requestDest;
         this.replyDest = replyDest;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(), operationSelector,
-                                    requestDest, replyDest);
+        return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(),
+                                    requestOperationAndDataBinding, responseOperationAndDataBinding, requestDest,
+                                    replyDest);
     }
 
 }

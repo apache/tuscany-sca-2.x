@@ -29,7 +29,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.activemq.broker.BrokerContainer;
 import org.activemq.broker.impl.BrokerContainerImpl;
 import org.activemq.store.vm.VMPersistenceAdapter;
-import org.apache.tuscany.binding.jms.databinding.XMLTextMsgDataBinding;
 import org.apache.tuscany.test.SCATestCase;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -65,11 +64,11 @@ public class JMSBindingTestCaseX extends SCATestCase {
         binding.setJNDIProviderURL("tcp://localhost:61616");
         binding.setDestinationName("dynamicQueues/HelloworldServiceQueue");
         binding.setTimeToLive(3000);
-        binding.setOperationSelectorPropertyName("scaOperationName");
+        binding.setXMLFormat(true);
         JMSResourceFactory rf = new SimpleJMSResourceFactory(binding);
-        rf.setDataBinding(new XMLTextMsgDataBinding());
         Destination requestDest = rf.lookupDestination(binding.getDestinationName());
-        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", new DefaultOperationSelector(binding), requestDest, null);
+        DefaultOperationAndDataBinding odb = new DefaultOperationAndDataBinding(binding);
+        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", odb, odb, requestDest, null);
         return invoker;
     }
 

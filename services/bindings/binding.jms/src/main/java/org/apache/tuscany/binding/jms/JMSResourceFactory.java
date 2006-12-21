@@ -21,7 +21,6 @@ package org.apache.tuscany.binding.jms;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
@@ -37,13 +36,5 @@ public interface JMSResourceFactory {
 
 	public abstract void closeConnection() throws JMSException, NamingException;
 
-	public abstract Message createMessage(Session session, Object payload)
-			throws JMSException;
-
-        public abstract Object getMessagePayload(Message jmsMessage)
-            throws JMSException;
-
         public abstract Destination lookupDestination(String jndiName) throws NamingException;
-
-    public abstract void setDataBinding(JMSDataBinding jmsDataBinding);
 }

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.binding.jms;
 
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
@@ -34,55 +33,59 @@ import org.apache.tuscany.spi.wire.WireService;
  */
 public class JMSService extends ServiceExtension {
 
-	private JMSBinding jmsBinding;
-	private JMSResourceFactory jmsResourceFactory;
+    private JMSBinding jmsBinding;
+    private JMSResourceFactory jmsResourceFactory;
     private MessageConsumer consumer;
-	private OperationSelector operationSelector;
-    
+    protected OperationAndDataBinding requestOperationAndDataBinding;
+    protected OperationAndDataBinding responseOperationAndDataBinding;
+
     public JMSService(String name,
                       CompositeComponent parent,
                       WireService wireService,
                       JMSBinding jmsBinding,
                       JMSResourceFactory jmsResourceFactory,
-                      OperationSelector operationSelector,
+                      OperationAndDataBinding requestOperationAndDataBinding,
+                      OperationAndDataBinding responseOperationAndDataBinding,
                       Class<?> service) {
         super(name, service, parent, wireService);
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
-        this.operationSelector = operationSelector;
+        this.requestOperationAndDataBinding = requestOperationAndDataBinding;
+        this.responseOperationAndDataBinding = responseOperationAndDataBinding;
     }
 
     public void start() {
         super.start();
         try {
-			registerListerner();
-		} catch (Exception e) {
-			throw new JMSBindingRuntimeException("Error starting JMSService",e);
-		}
+            registerListerner();
+        } catch (Exception e) {
+            throw new JMSBindingRuntimeException("Error starting JMSService", e);
+        }
     }
 
     public void stop() {
-            	
-    	try {
-    		consumer.close();
-    		jmsResourceFactory.closeConnection();
-		} catch (Exception e) {
-			throw new JMSBindingRuntimeException("Error stopping JMSService",e);
-		}
-    	
-    	super.stop();
+
+        try {
+            consumer.close();
+            jmsResourceFactory.closeConnection();
+        } catch (Exception e) {
+            throw new JMSBindingRuntimeException("Error stopping JMSService", e);
+        }
+
+        super.stop();
     }
-    
-    private void registerListerner() throws NamingException, JMSException{
-    	    	
-    	Session session = jmsResourceFactory.createSession();
+
+    private void registerListerner() throws NamingException, JMSException {
+
+        Session session = jmsResourceFactory.createSession();
         Destination destination = session.createQueue(jmsBinding.getDestinationName());
-        
+
         consumer = session.createConsumer(destination);
-        consumer.setMessageListener(new JMSProxy(getInboundWire(),jmsResourceFactory,operationSelector, jmsBinding.getCorrelationScheme()));
-        
+        consumer.setMessageListener(new JMSProxy(getInboundWire(), jmsResourceFactory, requestOperationAndDataBinding,
+                                                 responseOperationAndDataBinding, jmsBinding.getCorrelationScheme()));
+
         jmsResourceFactory.startConnection();
-        
-    }    
+
+    }
 }

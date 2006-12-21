@@ -57,10 +57,18 @@ public class JMSBinding extends Binding {
 	
 	private String operationSelectorName;
 	
-	private String operationSelectorPropertyName = "OpName";
+	private String operationSelectorPropertyName = DEFAULT_OPERATION_PROP_NAME;
 
         private String correlationScheme;
         private String responseDestinationName;
+
+        private String requestOperationAndDatabindingName = DEFAULT_ODB_CLASSNAME;
+        private String responseOperationAndDatabindingName = DEFAULT_ODB_CLASSNAME;
+
+        private boolean xmlFormat;
+        
+        public static final String DEFAULT_ODB_CLASSNAME = DefaultOperationAndDataBinding.class.getName();
+        public static final String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
 	public JMSBinding(int destinationType, String destinationName, String connectionFactoryName, String activationSpecName, String initialContextFactoryName, String providerURL, int deliveryMode, int timeToLive, int priority, String replyTo) {
 		super();
@@ -211,6 +219,30 @@ public class JMSBinding extends Binding {
     public void setCreateResponseDestination(String create) {
         // TODO Auto-generated method stub
         
+    }
+
+    public void setRequestOperationAndDatabindingName(String name) {
+        this.requestOperationAndDatabindingName = name;
+    }
+
+    public String getRequestOperationAndDatabindingName() {
+        return requestOperationAndDatabindingName;
+    }
+
+    public void setResponseOperationAndDatabindingName(String name) {
+        this.responseOperationAndDatabindingName = name;
+    }
+
+    public String getResponseOperationAndDatabindingName() {
+        return responseOperationAndDatabindingName;
+    }
+
+    public boolean isXMLFormat() {
+        return xmlFormat;
+    }
+    
+    public void setXMLFormat(boolean b) {
+        this.xmlFormat = b;
     }
 
 }

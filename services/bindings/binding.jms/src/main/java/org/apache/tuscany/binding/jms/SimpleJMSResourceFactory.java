@@ -24,13 +24,10 @@ import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
-import javax.jms.Message;
 import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.tuscany.binding.jms.databinding.ObjectMsgDataBinding;
 
 public class SimpleJMSResourceFactory implements JMSResourceFactory {
 		
@@ -38,11 +35,9 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
 	private Connection con;
 	private Context context;
 	private boolean isConnectionStarted;
-        private JMSDataBinding jmsDataBinding;
 
 	public  SimpleJMSResourceFactory(JMSBinding jmsBinding){
 		this.jmsBinding = jmsBinding;
-                this.jmsDataBinding = new ObjectMsgDataBinding();
 	}
 	
 	/* 
@@ -88,16 +83,6 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.apache.tuscany.binding.jms.JMSResourceFactory#createTextMessage(javax.jms.Session)
-	 */
-	public Message createMessage(Session session, Object payload) throws JMSException {
-            Message message = jmsDataBinding.toJMSMessage(session, payload);
-            message.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
-            message.setJMSPriority(jmsBinding.getPriority());
-            return message;
-        }
-
 	private void createConnection() throws NamingException, JMSException {
 		if(context == null){
 			createInitialContext();
@@ -120,13 +105,5 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
                 }
 		return (Destination)context.lookup(jndiName);
 	}
-
-    public void setDataBinding(JMSDataBinding jmsDataBinding) {
-        this.jmsDataBinding = jmsDataBinding;
-    }
-
-    public Object getMessagePayload(Message jmsMessage) throws JMSException {
-        return jmsDataBinding.fromJMSMessage(jmsMessage);
-    }
 
 }

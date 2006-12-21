@@ -102,7 +102,6 @@ public class JMSBindingLoader extends LoaderExtension<JMSBinding> {
         binding.setReplyTo(replyTo);
         binding.setJmsResourceFactoryName(jmsResourceFactoryName);
         binding.setOperationSelectorName(operationSelector);
-        binding.setOperationSelectorPropertyName(jmsOpSecPropertyName);
         
         if (deliveryMode != null && deliveryMode.trim().equals("")){
         	try{

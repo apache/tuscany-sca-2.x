@@ -38,17 +38,20 @@ public class JMSProxy implements MessageListener {
 
     protected Method operationMethod;
     protected JMSResourceFactory jmsResourceFactory;
-    protected OperationSelector operationSelector;
+    protected OperationAndDataBinding requestOperationAndDataBinding;
+    protected OperationAndDataBinding responseOperationAndDataBinding;
     protected InboundWire inboundWire;
     protected String correlationScheme;
 
     public JMSProxy(InboundWire inboundWire,
                     JMSResourceFactory jmsResourceFactory,
-                    OperationSelector operationSelector,
+                    OperationAndDataBinding requestOperationAndDataBinding,
+                    OperationAndDataBinding responseOperationAndDataBinding,
                     String correlationScheme) throws NamingException {
 
         this.jmsResourceFactory = jmsResourceFactory;
-        this.operationSelector = operationSelector;
+        this.requestOperationAndDataBinding = requestOperationAndDataBinding;
+        this.responseOperationAndDataBinding = responseOperationAndDataBinding;
         this.inboundWire = inboundWire;
         this.correlationScheme = correlationScheme;
     }
@@ -64,8 +67,8 @@ public class JMSProxy implements MessageListener {
 
     protected Object invokeService(Message requestJMSMsg) throws JMSBindingException, JMSException {
 
-        String operationName = operationSelector.getOperationName(requestJMSMsg);
-        Object requestPayload = jmsResourceFactory.getMessagePayload(requestJMSMsg);
+        String operationName = requestOperationAndDataBinding.getOperationName(requestJMSMsg);
+        Object requestPayload = requestOperationAndDataBinding.extractPayload(requestJMSMsg);
 
         Operation op = (Operation)inboundWire.getServiceContract().getOperations().get(operationName);
         InvocationChain chain = inboundWire.getInvocationChains().get(op);
@@ -95,7 +98,11 @@ public class JMSProxy implements MessageListener {
             }
 
             Session session = jmsResourceFactory.createSession();
-            Message replyJMSMsg = jmsResourceFactory.createMessage(session, responsePayload);
+            Message replyJMSMsg = responseOperationAndDataBinding.createJMSMessage(session, responsePayload);
+
+            replyJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
+            replyJMSMsg.setJMSExpiration(requestJMSMsg.getJMSExpiration());
+            replyJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
 
             if (correlationScheme == null || "RequestMsgIDToCorrelID".equalsIgnoreCase(correlationScheme)) {
                 replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());

@@ -46,18 +46,28 @@ public class JMSProxyTestCase extends TestCase {
         EasyMock.replay(session);
 
         ObjectMessage responseJMSMsg = EasyMock.createMock(ObjectMessage.class);
+        responseJMSMsg.setJMSDeliveryMode(1);
+        responseJMSMsg.setJMSExpiration(1);
+        responseJMSMsg.setJMSPriority(1);
         responseJMSMsg.setJMSCorrelationID(id);
         EasyMock.replay(responseJMSMsg);
 
-
         JMSResourceFactory jmsResourceFactory = EasyMock.createMock(JMSResourceFactory.class);
         EasyMock.expect(jmsResourceFactory.createSession()).andReturn(session);
-        EasyMock.expect(jmsResourceFactory.createMessage(EasyMock.eq(session), EasyMock.isA(Exception.class))).andReturn(responseJMSMsg);
 
-        JMSProxy jmsProxy = new JMSProxy(null, jmsResourceFactory, null, null);
+        OperationAndDataBinding odb = EasyMock.createMock(OperationAndDataBinding.class);
+        EasyMock.expect(odb.createJMSMessage(EasyMock.eq(session), EasyMock.isA(Exception.class))).andReturn(responseJMSMsg);
+        EasyMock.replay(odb);
+
+        JMSProxy jmsProxy = new JMSProxy(null, jmsResourceFactory, null, odb, null);
 
         Message requestJMSMsg = EasyMock.createMock(Message.class);
         EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination(){});
+        
+        EasyMock.expect(requestJMSMsg.getJMSDeliveryMode()).andReturn(1);
+        EasyMock.expect(requestJMSMsg.getJMSExpiration()).andReturn(1L);
+        EasyMock.expect(requestJMSMsg.getJMSPriority()).andReturn(1);
+
         EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination(){});
         EasyMock.expect(requestJMSMsg.getJMSMessageID()).andReturn(id);
         

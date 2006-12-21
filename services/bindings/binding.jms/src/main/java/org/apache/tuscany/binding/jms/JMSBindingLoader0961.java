@@ -140,7 +140,18 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
     }
 
     protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
-        // TODO Auto-generated method stub
+        String name = reader.getAttributeValue(null, "name");
+        String use = reader.getAttributeValue(null, "use");
+        if (name != null && name.length() > 0) {
+            if ("request".equalsIgnoreCase(use)) {
+                jmsBinding.setRequestOperationAndDatabindingName(name);
+            } else if ("response".equalsIgnoreCase(use)) {
+                jmsBinding.setResponseOperationAndDatabindingName(name);
+            } else {
+                jmsBinding.setRequestOperationAndDatabindingName(name);
+                jmsBinding.setResponseOperationAndDatabindingName(name);
+            }
+        }
     }
 
     protected void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {

@@ -39,7 +39,8 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
     protected JMSResourceFactory jmsResourceFactory;
 
     protected String operationName;
-    protected OperationSelector operationSelector;
+    protected OperationAndDataBinding requestOperationAndDataBinding;
+    protected OperationAndDataBinding responseOperationAndDataBinding;
 
     protected Destination requestDest;
     protected Destination replyDest;
@@ -47,14 +48,16 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
     public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,
                             JMSBinding jmsBinding,
                             String operationName,
-                            OperationSelector operationSelector,
+                            OperationAndDataBinding requestOperationAndDataBinding,
+                            OperationAndDataBinding responseOperationAndDataBinding,
                             Destination requestDest,
                             Destination replyDest) {
         super(null, null, null);
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.operationName = operationName;
-        this.operationSelector = operationSelector;
+        this.requestOperationAndDataBinding = requestOperationAndDataBinding;
+        this.responseOperationAndDataBinding = responseOperationAndDataBinding;
         this.requestDest = requestDest;
         this.replyDest = replyDest;
     }
@@ -68,7 +71,7 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
                 Message requestMsg = sendRequest((Object[])payload, session, replyToDest);
                 Message replyMsg = receiveReply(session, replyToDest, requestMsg.getJMSMessageID());
 
-                return jmsResourceFactory.getMessagePayload(replyMsg);
+                return responseOperationAndDataBinding.extractPayload(replyMsg);
 
             } finally {
                 session.close();
@@ -84,8 +87,13 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
 
     protected Message sendRequest(Object[] payload, Session session, Destination replyToDest) throws JMSException,
         JMSBindingException {
-        Message requestMsg = jmsResourceFactory.createMessage(session, payload);
-        operationSelector.setOperationName(operationName, requestMsg);
+
+        Message requestMsg = requestOperationAndDataBinding.createJMSMessage(session, payload);
+
+        requestMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
+        requestMsg.setJMSPriority(jmsBinding.getPriority());
+        
+        requestOperationAndDataBinding.setOperationName(operationName, requestMsg);
         requestMsg.setJMSReplyTo(replyToDest);
 
         MessageProducer producer = session.createProducer(requestDest);

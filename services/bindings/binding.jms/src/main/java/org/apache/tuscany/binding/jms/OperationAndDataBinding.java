@@ -18,14 +18,31 @@
  */
 package org.apache.tuscany.binding.jms;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
-public interface JMSDataBinding {
+/**
+ * Interface for a component that does operation selection and message payload databinding
+ */
+public interface OperationAndDataBinding {
 
-    public abstract Object fromJMSMessage(Message msg) throws JMSException;
+    /**
+     * Get the operation name from a JMS Message
+     */
+    public abstract String getOperationName(Message message);
 
-    public abstract Message toJMSMessage(Session session, Object o);
+    /**
+     * Set the operation name on a JMS Message
+     */
+    public abstract void setOperationName(String operationName, Message message);
 
+    /**
+     * Extracts the payload from a JMS Message
+     */
+    public abstract Object extractPayload(Message msg);
+
+    /**
+     * Create a JMS Message containing the payload
+     */
+    public abstract Message createJMSMessage(Session session, Object payload);
 }
