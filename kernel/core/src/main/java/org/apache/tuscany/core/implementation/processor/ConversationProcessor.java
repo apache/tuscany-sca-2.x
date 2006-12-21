@@ -18,7 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import org.osoa.sca.annotations.Conversation;
+import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -82,6 +87,27 @@ public class ConversationProcessor extends ImplementationProcessorExtension {
             }
         }
 
+    }
+
+    public void visitMethod(CompositeComponent parent, Method method,
+                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                            DeploymentContext context)
+        throws ProcessingException {
+        ConversationID conversationID = method.getAnnotation(ConversationID.class);
+        if (conversationID == null) {
+            return;
+        }
+        type.setConversationIDMember(method);
+    }
+
+    public void visitField(CompositeComponent parent, Field field,
+                           PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                           DeploymentContext context) throws ProcessingException {
+        ConversationID conversationID = field.getAnnotation(ConversationID.class);
+        if (conversationID == null) {
+            return;
+        }
+        type.setConversationIDMember(field);
     }
 
     protected long convertTimeMillis(String expr) throws NumberFormatException {

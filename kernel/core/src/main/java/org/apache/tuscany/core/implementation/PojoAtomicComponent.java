@@ -36,6 +36,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.RuntimeWire;
 
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
+import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.FieldInjector;
 import org.apache.tuscany.core.injection.Injector;
@@ -169,6 +170,17 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
             }
         }
         //FIXME throw an error if no injection site found
+    }
+    
+    public void addConversationIDFactory(Member member) {
+        ObjectFactory<String> convIDObjectFactory = new ConversationIDObjectFactory(workContext);
+        if (member instanceof Field) {
+            injectors.add(new FieldInjector<Object>((Field) member, convIDObjectFactory));
+        } else if (member instanceof Method) {
+            injectors.add(new MethodInjector<Object>((Method) member, convIDObjectFactory));
+        } else {
+            throw new InvalidAccessorException("Member must be a field or method", member.getName());
+        }
     }
 
     protected void onReferenceWire(OutboundWire wire) {

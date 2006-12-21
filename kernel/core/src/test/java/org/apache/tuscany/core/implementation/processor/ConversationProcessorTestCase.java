@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import org.osoa.sca.annotations.Conversation;
+import org.osoa.sca.annotations.ConversationID;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -88,6 +92,24 @@ public class ConversationProcessorTestCase extends TestCase {
         assertEquals(-1, type.getMaxAge());
         assertEquals(-1, type.getMaxIdleTime());
     }
+    
+    public void testSetConversationIDField() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Field field = FooWithConversationIDField.class.getDeclaredField("conversationID");
+        processor.visitField(null, field, type, null);
+        assertNotNull(type.getConversationIDMember());
+        assertEquals(field, type.getConversationIDMember());
+    }
+
+    public void testSetConversationIDMethod() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Method method = FooWithConversationIDMethod.class.getDeclaredMethods()[0];
+        processor.visitMethod(null, method, type, null);
+        assertNotNull(type.getConversationIDMember());
+        assertEquals(method, type.getConversationIDMember());
+    }
 
     @Scope("CONVERSATION")
     @Conversation(maxIdleTime = "10 seconds")
@@ -117,4 +139,14 @@ public class ConversationProcessorTestCase extends TestCase {
     private class FooJustConversation {
     }
 
+    private class FooWithConversationIDField {
+        @ConversationID
+        private String conversationID;
+    }
+
+    private class FooWithConversationIDMethod {
+        @ConversationID
+        void setConversationID(String conversationID) {
+        }
+    }
 }
