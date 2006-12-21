@@ -21,6 +21,9 @@ package org.apache.tuscany.binding.jms;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.naming.NamingException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.activemq.broker.BrokerContainer;
@@ -42,7 +45,7 @@ public class JMSBindingTestCaseX extends SCATestCase {
     protected static final String REQUEST_XML = "<ns:getGreetings xmlns:ns=\"http://helloworld\"><ns:name>petra</ns:name></ns:getGreetings>";
     protected static final String REPLY_XML = "<ns1:getGreetingsResponse xmlns:ns1=\"http://helloworld\"><ns1:getGreetingsReturn>Hello petra</ns1:getGreetingsReturn></ns1:getGreetingsResponse>";
 
-    public void testJMSBinding() throws InvocationTargetException, SAXException, IOException, ParserConfigurationException {
+    public void testJMSBinding() throws InvocationTargetException, SAXException, IOException, ParserConfigurationException, NamingException, JMSException {
         String reply = introService.greet("Rajith");
         assertEquals("Hello Rajith", reply);
 
@@ -55,7 +58,7 @@ public class JMSBindingTestCaseX extends SCATestCase {
     
     }
 
-    private JMSTargetInvoker createJMSInvoker() {
+    private JMSTargetInvoker createJMSInvoker() throws NamingException, JMSException {
         JMSBinding binding = new JMSBinding();
         binding.setInitialContextFactoryName("org.activemq.jndi.ActiveMQInitialContextFactory");
         binding.setConnectionFactoryName("ConnectionFactory");
@@ -65,7 +68,8 @@ public class JMSBindingTestCaseX extends SCATestCase {
         binding.setOperationSelectorPropertyName("scaOperationName");
         JMSResourceFactory rf = new SimpleJMSResourceFactory(binding);
         rf.setDataBinding(new XMLTextMsgDataBinding());
-        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", new DefaultOperationSelector(binding));
+        Destination requestDest = rf.lookupDestination(binding.getDestinationName());
+        JMSTargetInvoker invoker = new JMSTargetInvoker(rf, binding, "getGreetings", new DefaultOperationSelector(binding), requestDest, null);
         return invoker;
     }
 
