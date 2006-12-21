@@ -22,7 +22,8 @@ import javax.jms.Message;
 import javax.jms.Session;
 
 /**
- * Interface for a component that does operation selection and message payload databinding
+ * Interface for a component that does operation selection and message payload
+ * databinding
  */
 public interface OperationAndDataBinding {
 

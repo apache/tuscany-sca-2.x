@@ -30,80 +30,85 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 public class SimpleJMSResourceFactory implements JMSResourceFactory {
-		
-	private JMSBinding jmsBinding;
-	private Connection con;
-	private Context context;
-	private boolean isConnectionStarted;
 
-	public  SimpleJMSResourceFactory(JMSBinding jmsBinding){
-		this.jmsBinding = jmsBinding;
-	}
-	
-	/* 
-	 * This is a simple implementation where a connection is created per binding
-	 * Ideally the resource factory should be able to leverage the host environment
-	 * to provide connection pooling if it can.
-	 * 
-	 * For ex If Tuscany is running inside an AppServer
-	 * Then we could leverage the JMS resources it provides
-	 *
-	 * @see org.apache.tuscany.binding.jms.JMSResourceFactory#getConnection()
-	 */
-	public Connection getConnection() throws NamingException, JMSException{
-		if (con == null){
-			createConnection();			
-		}
-		return con;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.tuscany.binding.jms.JMSResourceFactory#createSession()
-	 */
-	public Session createSession() throws JMSException, NamingException{
-		return getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.tuscany.binding.jms.JMSResourceFactory#startConnection()
-	 */
-	public void startConnection() throws JMSException, NamingException{
-		if(!isConnectionStarted){
-			getConnection().start();
-			isConnectionStarted = true;
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.apache.tuscany.binding.jms.JMSResourceFactory#closeConnection()
-	 */
-	public void closeConnection() throws JMSException, NamingException{
-		if(con != null){	
-			con.close();
-		}
-	}
-	
-	private void createConnection() throws NamingException, JMSException {
-		if(context == null){
-			createInitialContext();
-		}
-		ConnectionFactory conFac = (ConnectionFactory)context.lookup(jmsBinding.getConnectionFactoryName());
-		con = conFac.createConnection();		
-	}
-	
-	private void createInitialContext() throws NamingException{
-		Properties props = new Properties();
-    	props.setProperty(Context.INITIAL_CONTEXT_FACTORY,jmsBinding.getInitialContextFactoryName().trim());
-    	props.setProperty(Context.PROVIDER_URL,jmsBinding.getJNDIProviderURL().trim());
-    	
-    	context = new InitialContext(props);
-	}
+    private JMSBinding jmsBinding;
+    private Connection con;
+    private Context context;
+    private boolean isConnectionStarted;
 
-	public Destination lookupDestination(String jndiName) throws NamingException {
-                if(context == null){
-                        createInitialContext();
-                }
-		return (Destination)context.lookup(jndiName);
-	}
+    public SimpleJMSResourceFactory(JMSBinding jmsBinding) {
+        this.jmsBinding = jmsBinding;
+    }
+
+    /*
+     * This is a simple implementation where a connection is created per binding
+     * Ideally the resource factory should be able to leverage the host
+     * environment to provide connection pooling if it can. For ex If Tuscany is
+     * running inside an AppServer Then we could leverage the JMS resources it
+     * provides
+     * 
+     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#getConnection()
+     */
+    public Connection getConnection() throws NamingException, JMSException {
+        if (con == null) {
+            createConnection();
+        }
+        return con;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#createSession()
+     */
+    public Session createSession() throws JMSException, NamingException {
+        return getConnection().createSession(false, Session.AUTO_ACKNOWLEDGE);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#startConnection()
+     */
+    public void startConnection() throws JMSException, NamingException {
+        if (!isConnectionStarted) {
+            getConnection().start();
+            isConnectionStarted = true;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apache.tuscany.binding.jms.JMSResourceFactory#closeConnection()
+     */
+    public void closeConnection() throws JMSException, NamingException {
+        if (con != null) {
+            con.close();
+        }
+    }
+
+    private void createConnection() throws NamingException, JMSException {
+        if (context == null) {
+            createInitialContext();
+        }
+        ConnectionFactory conFac = (ConnectionFactory)context.lookup(jmsBinding.getConnectionFactoryName());
+        con = conFac.createConnection();
+    }
+
+    private void createInitialContext() throws NamingException {
+        Properties props = new Properties();
+        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, jmsBinding.getInitialContextFactoryName().trim());
+        props.setProperty(Context.PROVIDER_URL, jmsBinding.getJNDIProviderURL().trim());
+
+        context = new InitialContext(props);
+    }
+
+    public Destination lookupDestination(String jndiName) throws NamingException {
+        if (context == null) {
+            createInitialContext();
+        }
+        return (Destination)context.lookup(jndiName);
+    }
 
 }

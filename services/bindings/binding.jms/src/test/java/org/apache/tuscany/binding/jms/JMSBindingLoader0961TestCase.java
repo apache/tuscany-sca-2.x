@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.spi.loader.LoaderException;
 
 public class JMSBindingLoader0961TestCase extends TestCase {
-    
+
     private JMSBindingLoader0961 loader;
 
     public void testMinimal() throws LoaderException, XMLStreamException {
@@ -22,7 +22,8 @@ public class JMSBindingLoader0961TestCase extends TestCase {
     }
 
     public void testCorrelationScheme() throws LoaderException, XMLStreamException {
-        XMLStreamReader reader = createReader("<binding.jms correlationScheme=\"RequestMsgIDToCorrelID\"></binding.jms>");
+        XMLStreamReader reader =
+            createReader("<binding.jms correlationScheme=\"RequestMsgIDToCorrelID\"></binding.jms>");
         JMSBinding jmsBinding = loader.load(null, null, reader, null);
         assertEquals("RequestMsgIDToCorrelID", jmsBinding.getCorrelationScheme());
 

@@ -128,7 +128,7 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
 
     protected void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) {
         // TODO Auto-generated method stub
-        
+
     }
 
     protected void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
@@ -139,7 +139,8 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         // TODO Auto-generated method stub
     }
 
-    protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBinding jmsBinding)
+        throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         String use = reader.getAttributeValue(null, "use");
         if (name != null && name.length() > 0) {

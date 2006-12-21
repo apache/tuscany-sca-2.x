@@ -89,7 +89,7 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
 
         requestMsg.setJMSDeliveryMode(jmsBinding.getDeliveryMode());
         requestMsg.setJMSPriority(jmsBinding.getPriority());
-        
+
         requestOperationAndDataBinding.setOperationName(operationName, requestMsg);
         requestMsg.setJMSReplyTo(replyToDest);
 
