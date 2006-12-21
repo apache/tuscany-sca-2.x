@@ -25,46 +25,28 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Invoke a JMS reference.
  *
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
-public class JMSTargetInvoker implements TargetInvoker {
+public class JMSTargetInvoker extends TargetInvokerExtension {
     private JMSBinding jmsBinding;
     private String operationName;
 	private JMSResourceFactory jmsResourceFactory;
     private OperationSelector operationSelector;
-    protected boolean xmlStyle;
     
-    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector, boolean xmlStyle){
+    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector){
+        super(null, null, null);
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.operationName = operationName;
         this.operationSelector = operationSelector;
-        this.xmlStyle = xmlStyle;
-    }
-
-    /* By the time I receive the args it should have been converted to
-     * XML by the data binding framework.
-     */
-    public Message invoke(Message msg) throws InvocationRuntimeException {
-        try {
-        	Object[] args = (Object[])msg.getBody();
-            Object resp = invokeTarget(args,(short)0);
-            msg.setBody(resp);
-        } catch (Exception e) {
-            msg.setBody(e.getCause());
-        }
-        return msg;
     }
 
     public Object invokeTarget(Object payload,final short sequence)throws InvocationTargetException {
@@ -79,25 +61,6 @@ public class JMSTargetInvoker implements TargetInvoker {
 
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e);
-        }
-    }
-
-    public boolean isOptimizable() {
-        return false;
-    }
-
-    public boolean isCacheable() {
-        return false;
-    }
-
-    public void setCacheable(boolean cacheable) {
-    }
-    
     private Object sendReceiveMessage(Object[] payload) throws JMSException, NamingException, JMSBindingException{
     	
     	Session session = jmsResourceFactory.createSession();

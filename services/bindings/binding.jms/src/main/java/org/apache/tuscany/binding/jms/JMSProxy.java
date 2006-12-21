@@ -37,70 +37,89 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 public class JMSProxy implements MessageListener {
 
     protected Method operationMethod;
-    private JMSResourceFactory jmsResourceFactory;
-    private OperationSelector operationSelector;
-    private InboundWire inboundWire;
+    protected JMSResourceFactory jmsResourceFactory;
+    protected OperationSelector operationSelector;
+    protected InboundWire inboundWire;
+    protected String correlationScheme;
 
-    public JMSProxy(InboundWire inboundWire, JMSResourceFactory jmsResourceFactory, OperationSelector operationSelector)
-        throws NamingException {
+    public JMSProxy(InboundWire inboundWire,
+                    JMSResourceFactory jmsResourceFactory,
+                    OperationSelector operationSelector,
+                    String correlationScheme) throws NamingException {
 
         this.jmsResourceFactory = jmsResourceFactory;
         this.operationSelector = operationSelector;
         this.inboundWire = inboundWire;
+        this.correlationScheme = correlationScheme;
     }
 
-    public void onMessage(Message msg) {
+    public void onMessage(Message requestJMSMsg) {
+        try {
+            Object responsePayload = invokeService(requestJMSMsg);
+            sendReply(requestJMSMsg, responsePayload);
+        } catch (Exception e) {
+            sendFaultReply(requestJMSMsg, e);
+        }
+    }
 
+    protected Object invokeService(Message requestJMSMsg) throws JMSBindingException, JMSException {
+
+        String operationName = operationSelector.getOperationName(requestJMSMsg);
+        Object requestPayload = jmsResourceFactory.getMessagePayload(requestJMSMsg);
+
+        Operation op = (Operation)inboundWire.getServiceContract().getOperations().get(operationName);
+        InvocationChain chain = inboundWire.getInvocationChains().get(op);
+
+        org.apache.tuscany.spi.wire.Message tuscanyRequestMsg = new MessageImpl();
+        tuscanyRequestMsg.setTargetInvoker(chain.getTargetInvoker());
+        tuscanyRequestMsg.setBody(requestPayload);
+
+        org.apache.tuscany.spi.wire.Message tuscanyResponseMsg = null;
+
+        Interceptor headInterceptor = chain.getHeadInterceptor();
+        if (headInterceptor != null) {
+            tuscanyResponseMsg = headInterceptor.invoke(tuscanyRequestMsg);
+        }
+
+        // TODO: what if headInterceptor is null?
+
+        return tuscanyResponseMsg.getBody();
+    }
+
+    protected void sendReply(Message requestJMSMsg, Object responsePayload) {
         try {
 
-            String operationName = operationSelector.getOperationName(msg);
-            Operation op = (Operation)inboundWire.getServiceContract().getOperations().get(operationName);
-
-            InvocationChain chain = inboundWire.getInvocationChains().get(op);
-            Interceptor headInterceptor = chain.getHeadInterceptor();
-
-            org.apache.tuscany.spi.wire.Message tuscanyMsg = new MessageImpl();
-            Object payload = jmsResourceFactory.getMessagePayload(msg);
-            tuscanyMsg.setBody(payload);
-            tuscanyMsg.setTargetInvoker(chain.getTargetInvoker());
-            org.apache.tuscany.spi.wire.Message tuscanyResMsg = null;
-
-            if (headInterceptor != null) {
-                tuscanyResMsg = headInterceptor.invoke(tuscanyMsg);
+            if (requestJMSMsg.getJMSReplyTo() == null) {
+                // assume no reply is expected
+                return;
             }
 
-            // if result is null then the method can be assumed as oneway
-            if (tuscanyResMsg != null && tuscanyResMsg.getBody() != null) {
+            Session session = jmsResourceFactory.createSession();
+            Message replyJMSMsg = jmsResourceFactory.createMessage(session, responsePayload);
 
-                sendReply(msg, operationName, tuscanyResMsg);
+            if (correlationScheme == null || "RequestMsgIDToCorrelID".equalsIgnoreCase(correlationScheme)) {
+                replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSMessageID());
+            } else if ("RequestCorrelIDToCorrelID".equalsIgnoreCase(correlationScheme)) {
+                replyJMSMsg.setJMSCorrelationID(requestJMSMsg.getJMSCorrelationID());
             }
 
-        } catch (JMSBindingException e) {
-            throw new JMSBindingRuntimeException(e);
+            Destination destination = requestJMSMsg.getJMSReplyTo();
+            MessageProducer producer = session.createProducer(destination);
+
+            producer.send(replyJMSMsg);
+
+            producer.close();
+            session.close();
+
         } catch (JMSException e) {
             throw new JMSBindingRuntimeException(e);
         } catch (NamingException e) {
             throw new JMSBindingRuntimeException(e);
-        } catch (Exception e) {
-            // TODO: need to not swallow these exceptions
-            e.printStackTrace();
-            throw new JMSBindingRuntimeException(e);
         }
-
     }
 
-    private void sendReply(Message reqMsg, String operationName, org.apache.tuscany.spi.wire.Message tuscanyResMsg)
-        throws JMSException, NamingException {
-
-        Session session = jmsResourceFactory.createSession();
-
-        Message message = jmsResourceFactory.createMessage(session, tuscanyResMsg.getBody());
-
-        Destination destination = reqMsg.getJMSReplyTo();
-
-        MessageProducer producer = session.createProducer(destination);
-        producer.send(message);
-        producer.close();
-        session.close();
+    protected void sendFaultReply(Message requestJMSMsg, Exception e) {
+        sendReply(requestJMSMsg, new JMSBindingException("exception invoking JMS service", e));
     }
+
 }
