@@ -115,6 +115,9 @@ public class SimpleJMSResourceFactory implements JMSResourceFactory {
 	}
 
 	public Destination lookupDestination(String jndiName) throws NamingException {
+                if(context == null){
+                        createInitialContext();
+                }
 		return (Destination)context.lookup(jndiName);
 	}
 

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.binding.jms;
 
-
 import java.lang.reflect.InvocationTargetException;
 
 import javax.jms.Destination;
@@ -32,61 +31,71 @@ import org.apache.tuscany.spi.extension.TargetInvokerExtension;
 
 /**
  * Invoke a JMS reference.
- *
+ * 
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 public class JMSTargetInvoker extends TargetInvokerExtension {
     private JMSBinding jmsBinding;
     private String operationName;
-	private JMSResourceFactory jmsResourceFactory;
+    private JMSResourceFactory jmsResourceFactory;
     private OperationSelector operationSelector;
-    
-    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,JMSBinding jmsBinding, String operationName, OperationSelector operationSelector){
+    protected Destination requestDest;
+    protected Destination replyDest;
+
+    public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,
+                            JMSBinding jmsBinding,
+                            String operationName,
+                            OperationSelector operationSelector,
+                            Destination requestDest,
+                            Destination replyDest) {
         super(null, null, null);
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.operationName = operationName;
         this.operationSelector = operationSelector;
+        this.requestDest = requestDest;
+        this.replyDest = replyDest;
     }
 
-    public Object invokeTarget(Object payload,final short sequence)throws InvocationTargetException {
+    public Object invokeTarget(Object payload, final short sequence) throws InvocationTargetException {
         try {
-            
-        	return sendReceiveMessage((Object[])payload);
-        	
+
+            return sendReceiveMessage((Object[])payload);
+
         } catch (Exception e) { // catch JMS specific error
-                e.printStackTrace();
-        	throw new AssertionError(e);
+            e.printStackTrace();
+            throw new AssertionError(e);
         }
 
     }
 
-    private Object sendReceiveMessage(Object[] payload) throws JMSException, NamingException, JMSBindingException{
-    	
-    	Session session = jmsResourceFactory.createSession();
+    private Object sendReceiveMessage(Object[] payload) throws JMSException, NamingException, JMSBindingException {
+
+        Session session = jmsResourceFactory.createSession();
 
         javax.jms.Message message = jmsResourceFactory.createMessage(session, payload);
-    	
-        operationSelector.setOperationName(operationName,message);  
-        
-    	Destination destination = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
-        
-        MessageProducer producer = session.createProducer(destination);
-        
-        // create a temporary queue and listen to the response
-        //Destination replyDest = session.createQueue(jmsBinding.getDestinationName()+ "-reply");
-        Destination replyDest = session.createTemporaryQueue();
+        operationSelector.setOperationName(operationName, message);
+
+        if (jmsBinding.getResponseDestinationName() == null) {
+            replyDest = session.createTemporaryQueue();
+        }
+
         message.setJMSReplyTo(replyDest);
-        
+
+        MessageProducer producer = session.createProducer(requestDest);
+
         producer.send(message);
         producer.close();
+
+        String msgSelector = "JMSCorrelationID = '" + message.getJMSMessageID() + "'";
         
-        MessageConsumer consumer = session.createConsumer(replyDest);
+        MessageConsumer consumer = session.createConsumer(replyDest, msgSelector);
         jmsResourceFactory.startConnection();
-        javax.jms.Message reply = consumer.receive(jmsBinding.getTimeToLive());        
-        consumer.close();        
+        javax.jms.Message reply = consumer.receive(jmsBinding.getTimeToLive());
+        consumer.close();
         session.close();
-        
+
         return jmsResourceFactory.getMessagePayload(reply);
     }
+
 }

@@ -60,6 +60,7 @@ public class JMSBinding extends Binding {
 	private String operationSelectorPropertyName = "OpName";
 
         private String correlationScheme;
+        private String responseDestinationName;
 
 	public JMSBinding(int destinationType, String destinationName, String connectionFactoryName, String activationSpecName, String initialContextFactoryName, String providerURL, int deliveryMode, int timeToLive, int priority, String replyTo) {
 		super();
@@ -196,8 +197,10 @@ public class JMSBinding extends Binding {
     }
 
     public void setResponseDestinationName(String name) {
-        // TODO Auto-generated method stub
-        
+        this.responseDestinationName = name;
+    }
+    public String getResponseDestinationName() {
+        return responseDestinationName;
     }
 
     public void setResponseDestinationType(int destination_type_queue2) {

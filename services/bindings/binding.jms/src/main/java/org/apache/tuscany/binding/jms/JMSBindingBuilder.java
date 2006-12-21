@@ -19,6 +19,9 @@ package org.apache.tuscany.binding.jms;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.jms.Destination;
+import javax.naming.NamingException;
+
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.binding.jms.databinding.XMLTextMsgDataBinding;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
@@ -101,13 +104,23 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 		} catch (JMSBindingException e) {
 			throw new JMSBindingRuntimeException("Error building JMS reference",e);
 		}
+                Destination requestDest;
+                Destination replyDest = null;
+                try {
+                    requestDest = jmsResourceFactory.lookupDestination(jmsBinding.getDestinationName());
+                    if (jmsBinding.getResponseDestinationName() != null) {
+                        replyDest = jmsResourceFactory.lookupDestination(jmsBinding.getResponseDestinationName());
+                    }
+                } catch (NamingException e) {
+                    throw new JMSBindingRuntimeException(e);
+                }
         
-        Reference reference = new JMSReference(name,parent,wireService, jmsBinding, jmsResourceFactory,opSec,interfaze);
+        Reference reference = new JMSReference(name,parent,wireService, jmsBinding, jmsResourceFactory,opSec,interfaze, requestDest, replyDest);
         reference.setBindingServiceContract(serviceContract);
         return reference;
 
     }
-
+        
     private JMSResourceFactory getJMSResourceFactory(JMSBinding jmsBinding) throws JMSBindingException {
     	String className = jmsBinding.getJmsResourceFactoryName();   
     	if (className != null && !className.equals("")){

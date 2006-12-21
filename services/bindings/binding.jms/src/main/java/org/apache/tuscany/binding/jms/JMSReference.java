@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.binding.jms;
 
+import javax.jms.Destination;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -29,27 +31,35 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 public class JMSReference<T> extends ReferenceExtension {
-	
-	private JMSBinding jmsBinding; 
-	private JMSResourceFactory jmsResourceFactory;
-	private OperationSelector operationSelector;
-	
-    public JMSReference(String name, 
-    		            CompositeComponent parent,
-			            WireService wireService, 
-			            JMSBinding jmsBinding,			            
-			            JMSResourceFactory jmsResourceFactory,
-			            OperationSelector operationSelector,
-			            Class<?> service) {
-    	
-		super(name, service, parent, wireService);
 
-		this.jmsBinding = jmsBinding;
-		this.jmsResourceFactory = jmsResourceFactory;
-		this.operationSelector = operationSelector;
-	}
+    protected JMSBinding jmsBinding;
+    protected JMSResourceFactory jmsResourceFactory;
+    protected OperationSelector operationSelector;
+    protected Destination requestDest;
+    protected Destination replyDest;
+
+    public JMSReference(String name,
+                        CompositeComponent parent,
+                        WireService wireService,
+                        JMSBinding jmsBinding,
+                        JMSResourceFactory jmsResourceFactory,
+                        OperationSelector operationSelector,
+                        Class<?> service,
+                        Destination requestDest,
+                        Destination replyDest) {
+
+        super(name, service, parent, wireService);
+
+        this.jmsBinding = jmsBinding;
+        this.jmsResourceFactory = jmsResourceFactory;
+        this.operationSelector = operationSelector;
+        this.requestDest = requestDest;
+        this.replyDest = replyDest;
+    }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-    	return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(),operationSelector);
+        return new JMSTargetInvoker(jmsResourceFactory, jmsBinding, operation.getName(), operationSelector,
+                                    requestDest, replyDest);
     }
+
 }
