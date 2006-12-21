@@ -178,6 +178,10 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
 
         component.setAllowsPassByReference(componentType.isAllowsPassByReference());
+        
+        if (componentType.getConversationIDMember() != null) {
+            component.addConversationIDFactory(componentType.getConversationIDMember());
+        }
 
         return component;
     }

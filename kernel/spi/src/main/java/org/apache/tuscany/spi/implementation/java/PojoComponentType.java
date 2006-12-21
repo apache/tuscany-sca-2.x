@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.implementation.java;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     private Method initMethod;
     private Method destroyMethod;
     private final Map<String, Resource> resources = new HashMap<String, Resource>();
+    private Member conversationIDMember;
 
     /**
      * Returns the component implementation scope
@@ -114,5 +116,12 @@ public class PojoComponentType<S extends ServiceDefinition, R extends ReferenceD
     public void setAllowsPassByReference(boolean allowsPassByReference) {
         this.allowsPassByReference = allowsPassByReference;
     }
+    
+    public Member getConversationIDMember() {
+        return this.conversationIDMember;
+    }
 
+    public void setConversationIDMember(Member conversationIDMember) {
+        this.conversationIDMember = conversationIDMember;
+    }
 }
