@@ -20,20 +20,20 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
 
 public class JMSBindingRuntimeException extends TuscanyRuntimeException {
 
-	public JMSBindingRuntimeException() {
-		super();
-	}
+    public JMSBindingRuntimeException() {
+        super();
+    }
 
-	public JMSBindingRuntimeException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-	}
+    public JMSBindingRuntimeException(String arg0, Throwable arg1) {
+        super(arg0, arg1);
+    }
 
-	public JMSBindingRuntimeException(String arg0) {
-		super(arg0);
-	}
+    public JMSBindingRuntimeException(String arg0) {
+        super(arg0);
+    }
 
-	public JMSBindingRuntimeException(Throwable arg0) {
-		super(arg0);
-	}
+    public JMSBindingRuntimeException(Throwable arg0) {
+        super(arg0);
+    }
 
 }

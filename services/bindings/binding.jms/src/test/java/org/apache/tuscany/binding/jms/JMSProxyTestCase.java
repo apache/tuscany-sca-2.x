@@ -31,14 +31,14 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 public class JMSProxyTestCase extends TestCase {
-    
+
     /**
      * Tests the jms response msg has correlation id set to the request msg id
      */
     public void testOnMessageRequestMsgIDToCorrelID() throws NamingException, JMSException {
 
         String id = "123";
-        
+
         MessageProducer producer = EasyMock.createNiceMock(MessageProducer.class);
 
         Session session = EasyMock.createNiceMock(Session.class);
@@ -56,21 +56,24 @@ public class JMSProxyTestCase extends TestCase {
         EasyMock.expect(jmsResourceFactory.createSession()).andReturn(session);
 
         OperationAndDataBinding odb = EasyMock.createMock(OperationAndDataBinding.class);
-        EasyMock.expect(odb.createJMSMessage(EasyMock.eq(session), EasyMock.isA(Exception.class))).andReturn(responseJMSMsg);
+        EasyMock.expect(odb.createJMSMessage(EasyMock.eq(session), EasyMock.isA(Exception.class)))
+            .andReturn(responseJMSMsg);
         EasyMock.replay(odb);
 
         JMSProxy jmsProxy = new JMSProxy(null, jmsResourceFactory, null, odb, null);
 
         Message requestJMSMsg = EasyMock.createMock(Message.class);
-        EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination(){});
-        
+        EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination() {
+        });
+
         EasyMock.expect(requestJMSMsg.getJMSDeliveryMode()).andReturn(1);
         EasyMock.expect(requestJMSMsg.getJMSExpiration()).andReturn(1L);
         EasyMock.expect(requestJMSMsg.getJMSPriority()).andReturn(1);
 
-        EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination(){});
+        EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination() {
+        });
         EasyMock.expect(requestJMSMsg.getJMSMessageID()).andReturn(id);
-        
+
         producer.send(EasyMock.isA(Message.class));
         EasyMock.replay(producer);
 

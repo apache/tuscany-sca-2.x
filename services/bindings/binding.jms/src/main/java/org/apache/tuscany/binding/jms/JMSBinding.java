@@ -27,171 +27,179 @@ import org.apache.tuscany.spi.model.Binding;
  */
 
 public class JMSBinding extends Binding {
-	
-	public final static int DESTINATION_TYPE_QUEUE = 0;
-	public final static int DESTINATION_TYPE_TOPIC = 1;
-	
-	private int destinationType = DESTINATION_TYPE_QUEUE;
-	
-	private String destinationName;
 
-	// Topic or Query factory name
-	private String connectionFactoryName;
+    public final static int DESTINATION_TYPE_QUEUE = 0;
+    public final static int DESTINATION_TYPE_TOPIC = 1;
 
-	private String activationSpecName;
+    private int destinationType = DESTINATION_TYPE_QUEUE;
 
-	private String initialContextFactoryName; // "org.apache.activemq.jndi.ActiveMQInitialContextFactory"
+    private String destinationName;
 
-	private String jNDIProviderURL; // "tcp://hostname:61616"
+    // Topic or Query factory name
+    private String connectionFactoryName;
 
-	// Maps to javax.jms.DeliveryMode
-	private int deliveryMode = DeliveryMode.NON_PERSISTENT;
+    private String activationSpecName;
 
-	private int timeToLive = 1000 ; // in mili seconds
+    private String initialContextFactoryName; // "org.apache.activemq.jndi.ActiveMQInitialContextFactory"
 
-	private int priority;
+    private String jNDIProviderURL; // "tcp://hostname:61616"
 
-	private String replyTo;
-	
-	private String jmsResourceFactoryName;
-	
-	private String operationSelectorName;
-	
-	private String operationSelectorPropertyName = DEFAULT_OPERATION_PROP_NAME;
+    // Maps to javax.jms.DeliveryMode
+    private int deliveryMode = DeliveryMode.NON_PERSISTENT;
 
-        private String correlationScheme;
-        private String responseDestinationName;
+    private int timeToLive = 1000; // in mili seconds
 
-        private String requestOperationAndDatabindingName = DEFAULT_ODB_CLASSNAME;
-        private String responseOperationAndDatabindingName = DEFAULT_ODB_CLASSNAME;
+    private int priority;
 
-        private boolean xmlFormat;
-        
-        public static final String DEFAULT_ODB_CLASSNAME = DefaultOperationAndDataBinding.class.getName();
-        public static final String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
+    private String replyTo;
 
-	public JMSBinding(int destinationType, String destinationName, String connectionFactoryName, String activationSpecName, String initialContextFactoryName, String providerURL, int deliveryMode, int timeToLive, int priority, String replyTo) {
-		super();
-		this.destinationType = destinationType;
-		this.destinationName = destinationName;
-		this.connectionFactoryName = connectionFactoryName;
-		this.activationSpecName = activationSpecName;
-		this.initialContextFactoryName = initialContextFactoryName;
-		this.jNDIProviderURL = providerURL;
-		this.deliveryMode = deliveryMode;
-		this.timeToLive = timeToLive;
-		this.priority = priority;
-		this.replyTo = replyTo;
-	}
+    private String jmsResourceFactoryName;
 
-	public JMSBinding(){
-		super();
-	}
+    private String operationSelectorName;
 
-	public String getActivationSpecName() {
-		return activationSpecName;
-	}
+    private String operationSelectorPropertyName = DEFAULT_OPERATION_PROP_NAME;
 
-	public void setActivationSpecName(String activationSpecName) {
-		this.activationSpecName = activationSpecName;
-	}
+    private String correlationScheme;
+    private String responseDestinationName;
 
-	public String getConnectionFactoryName() {
-		return connectionFactoryName;
-	}
+    private String requestOperationAndDatabindingName = DEFAULT_ODB_CLASSNAME;
+    private String responseOperationAndDatabindingName = DEFAULT_ODB_CLASSNAME;
 
-	public void setConnectionFactoryName(String connectionFactoryName) {
-		this.connectionFactoryName = connectionFactoryName;
-	}
+    private boolean xmlFormat;
 
-	public int getDeliveryMode() {
-		return deliveryMode;
-	}
+    public static final String DEFAULT_ODB_CLASSNAME = DefaultOperationAndDataBinding.class.getName();
+    public static final String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
-	public void setDeliveryMode(int deliveryMode) {
-		this.deliveryMode = deliveryMode;
-	}
+    public JMSBinding(int destinationType,
+                      String destinationName,
+                      String connectionFactoryName,
+                      String activationSpecName,
+                      String initialContextFactoryName,
+                      String providerURL,
+                      int deliveryMode,
+                      int timeToLive,
+                      int priority,
+                      String replyTo) {
+        super();
+        this.destinationType = destinationType;
+        this.destinationName = destinationName;
+        this.connectionFactoryName = connectionFactoryName;
+        this.activationSpecName = activationSpecName;
+        this.initialContextFactoryName = initialContextFactoryName;
+        this.jNDIProviderURL = providerURL;
+        this.deliveryMode = deliveryMode;
+        this.timeToLive = timeToLive;
+        this.priority = priority;
+        this.replyTo = replyTo;
+    }
 
-	public String getDestinationName() {
-		return destinationName;
-	}
+    public JMSBinding() {
+        super();
+    }
 
-	public void setDestinationName(String destinationName) {
-		this.destinationName = destinationName;
-	}
+    public String getActivationSpecName() {
+        return activationSpecName;
+    }
 
-	public String getInitialContextFactoryName() {
-		return initialContextFactoryName;
-	}
+    public void setActivationSpecName(String activationSpecName) {
+        this.activationSpecName = activationSpecName;
+    }
 
-	public void setInitialContextFactoryName(String initialContextFactoryName) {
-		this.initialContextFactoryName = initialContextFactoryName;
-	}
+    public String getConnectionFactoryName() {
+        return connectionFactoryName;
+    }
 
-	public String getJNDIProviderURL() {
-		return jNDIProviderURL;
-	}
+    public void setConnectionFactoryName(String connectionFactoryName) {
+        this.connectionFactoryName = connectionFactoryName;
+    }
 
-	public void setJNDIProviderURL(String providerURL) {
-		jNDIProviderURL = providerURL;
-	}
+    public int getDeliveryMode() {
+        return deliveryMode;
+    }
 
-	public int getPriority() {
-		return priority;
-	}
+    public void setDeliveryMode(int deliveryMode) {
+        this.deliveryMode = deliveryMode;
+    }
 
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
+    public String getDestinationName() {
+        return destinationName;
+    }
 
-	public String getReplyTo() {
-		return replyTo;
-	}
+    public void setDestinationName(String destinationName) {
+        this.destinationName = destinationName;
+    }
 
-	public void setReplyTo(String replyTo) {
-		this.replyTo = replyTo;
-	}
+    public String getInitialContextFactoryName() {
+        return initialContextFactoryName;
+    }
 
-	public int getTimeToLive() {
-		return timeToLive;
-	}
+    public void setInitialContextFactoryName(String initialContextFactoryName) {
+        this.initialContextFactoryName = initialContextFactoryName;
+    }
 
-	public void setTimeToLive(int timeToLive) {
-		this.timeToLive = timeToLive;
-	}
+    public String getJNDIProviderURL() {
+        return jNDIProviderURL;
+    }
 
-	public int getDestinationType() {
-		return destinationType;
-	}
+    public void setJNDIProviderURL(String providerURL) {
+        jNDIProviderURL = providerURL;
+    }
 
-	public void setDestinationType(int destinationType) {
-		this.destinationType = destinationType;
-	}
+    public int getPriority() {
+        return priority;
+    }
 
-	public String getJmsResourceFactoryName() {
-		return jmsResourceFactoryName;
-	}
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
-	public void setJmsResourceFactoryName(String jmsResourceFactoryName) {
-		this.jmsResourceFactoryName = jmsResourceFactoryName;
-	}
+    public String getReplyTo() {
+        return replyTo;
+    }
 
-	public String getOperationSelectorName() {
-		return operationSelectorName;
-	}
+    public void setReplyTo(String replyTo) {
+        this.replyTo = replyTo;
+    }
 
-	public void setOperationSelectorName(String operationSelectorName) {
-		this.operationSelectorName = operationSelectorName;
-	}
+    public int getTimeToLive() {
+        return timeToLive;
+    }
 
-	public String getOperationSelectorPropertyName() {
-		return operationSelectorPropertyName;
-	}
+    public void setTimeToLive(int timeToLive) {
+        this.timeToLive = timeToLive;
+    }
 
-	public void setOperationSelectorPropertyName(
-			String operationSelectorPropertyName) {
-		this.operationSelectorPropertyName = operationSelectorPropertyName;
-	}
+    public int getDestinationType() {
+        return destinationType;
+    }
+
+    public void setDestinationType(int destinationType) {
+        this.destinationType = destinationType;
+    }
+
+    public String getJmsResourceFactoryName() {
+        return jmsResourceFactoryName;
+    }
+
+    public void setJmsResourceFactoryName(String jmsResourceFactoryName) {
+        this.jmsResourceFactoryName = jmsResourceFactoryName;
+    }
+
+    public String getOperationSelectorName() {
+        return operationSelectorName;
+    }
+
+    public void setOperationSelectorName(String operationSelectorName) {
+        this.operationSelectorName = operationSelectorName;
+    }
+
+    public String getOperationSelectorPropertyName() {
+        return operationSelectorPropertyName;
+    }
+
+    public void setOperationSelectorPropertyName(String operationSelectorPropertyName) {
+        this.operationSelectorPropertyName = operationSelectorPropertyName;
+    }
 
     public void setCorrelationScheme(String correlationScheme) {
         this.correlationScheme = correlationScheme;
@@ -207,18 +215,19 @@ public class JMSBinding extends Binding {
     public void setResponseDestinationName(String name) {
         this.responseDestinationName = name;
     }
+
     public String getResponseDestinationName() {
         return responseDestinationName;
     }
 
     public void setResponseDestinationType(int destination_type_queue2) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void setCreateResponseDestination(String create) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void setRequestOperationAndDatabindingName(String name) {
@@ -240,7 +249,7 @@ public class JMSBinding extends Binding {
     public boolean isXMLFormat() {
         return xmlFormat;
     }
-    
+
     public void setXMLFormat(boolean b) {
         this.xmlFormat = b;
     }

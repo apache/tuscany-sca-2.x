@@ -41,20 +41,24 @@ public class JMSBindingTestCaseX extends SCATestCase {
     private IntroService introService;
     private BrokerContainer broker;
 
-    protected static final String REQUEST_XML = "<ns:getGreetings xmlns:ns=\"http://helloworld\"><ns:name>petra</ns:name></ns:getGreetings>";
-    protected static final String REPLY_XML = "<ns1:getGreetingsResponse xmlns:ns1=\"http://helloworld\"><ns1:getGreetingsReturn>Hello petra</ns1:getGreetingsReturn></ns1:getGreetingsResponse>";
+    protected static final String REQUEST_XML =
+        "<ns:getGreetings xmlns:ns=\"http://helloworld\"><ns:name>petra</ns:name></ns:getGreetings>";
+    protected static final String REPLY_XML =
+        "<ns1:getGreetingsResponse xmlns:ns1=\"http://helloworld\"><ns1:getGreetingsReturn>Hello petra</ns1:getGreetingsReturn></ns1:getGreetingsResponse>";
 
-    public void testJMSBinding() throws InvocationTargetException, SAXException, IOException, ParserConfigurationException, NamingException, JMSException {
+    public void testJMSBinding() throws InvocationTargetException, SAXException, IOException,
+        ParserConfigurationException, NamingException, JMSException {
         String reply = introService.greet("Rajith");
         assertEquals("Hello Rajith", reply);
 
-        // TODO: the rest should be in a seperate test method but that doesn't work as you get broker conflicts
+        // TODO: the rest should be in a seperate test method but that doesn't
+        // work as you get broker conflicts
         JMSTargetInvoker invoker = createJMSInvoker();
-        Object[] response = (Object[])invoker.invokeTarget(new Object[]{REQUEST_XML}, (short)0);
+        Object[] response = (Object[])invoker.invokeTarget(new Object[] {REQUEST_XML}, (short)0);
 
         Diff diff = XMLUnit.compareXML(REPLY_XML, response[0].toString());
         assertTrue(diff.toString(), diff.similar());
-    
+
     }
 
     private JMSTargetInvoker createJMSInvoker() throws NamingException, JMSException {

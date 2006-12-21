@@ -25,16 +25,14 @@ import javax.jms.Session;
 import javax.naming.NamingException;
 
 public interface JMSResourceFactory {
-	
-	public abstract Connection getConnection() throws NamingException,
-			JMSException;
 
-	public abstract Session createSession() throws JMSException,
-			NamingException;
+    public abstract Connection getConnection() throws NamingException, JMSException;
 
-	public abstract void startConnection() throws JMSException, NamingException;
+    public abstract Session createSession() throws JMSException, NamingException;
 
-	public abstract void closeConnection() throws JMSException, NamingException;
+    public abstract void startConnection() throws JMSException, NamingException;
 
-        public abstract Destination lookupDestination(String jndiName) throws NamingException;
+    public abstract void closeConnection() throws JMSException, NamingException;
+
+    public abstract Destination lookupDestination(String jndiName) throws NamingException;
 }
