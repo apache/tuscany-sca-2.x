@@ -23,7 +23,6 @@ import javax.jms.Destination;
 import javax.naming.NamingException;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.tuscany.binding.jms.databinding.XMLTextMsgDataBinding;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -59,22 +58,19 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         JMSBinding jmsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
         
-        JMSResourceFactory jmsResourceFactory;
-        OperationSelector opSec;
-		try {
-			jmsResourceFactory = getJMSResourceFactory(jmsBinding);
-			opSec = getOperationSelector(jmsBinding);
-		} catch (JMSBindingException e) {
-			throw new JMSBindingRuntimeException("Error building JMS Service",e);
-		}
-                
         ServiceContract serviceContract = serviceDefinition.getServiceContract();
+        jmsBinding.setXMLFormat(serviceContract instanceof WSDLServiceContract);
+
+        JMSResourceFactory jmsResourceFactory = getJMSResourceFactory(jmsBinding);
+
         if (serviceContract instanceof WSDLServiceContract) {
             serviceContract.setDataBinding(OM_DATA_BINDING);
-            jmsResourceFactory.setDataBinding(new XMLTextMsgDataBinding());
         }
         
-        Service service = new JMSService(serviceDefinition.getName(),parent, wireService, jmsBinding, jmsResourceFactory,opSec,interfaze);
+        OperationAndDataBinding requestODB = getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
+        OperationAndDataBinding responseODB = getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
+        
+        Service service = new JMSService(serviceDefinition.getName(),parent, wireService, jmsBinding, jmsResourceFactory, requestODB, responseODB, interfaze);
         service.setBindingServiceContract(serviceContract);
         
         return service;
@@ -96,14 +92,8 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         serviceContract.setDataBinding(OM_DATA_BINDING);
         
         JMSBinding jmsBinding = referenceDefinition.getBinding();
-        JMSResourceFactory jmsResourceFactory;
-		OperationSelector opSec;
-		try {
-			jmsResourceFactory = getJMSResourceFactory(jmsBinding);
-			opSec = getOperationSelector(jmsBinding);
-		} catch (JMSBindingException e) {
-			throw new JMSBindingRuntimeException("Error building JMS reference",e);
-		}
+        JMSResourceFactory jmsResourceFactory = getJMSResourceFactory(jmsBinding);
+
                 Destination requestDest;
                 Destination replyDest = null;
                 try {
@@ -115,13 +105,16 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
                     throw new JMSBindingRuntimeException(e);
                 }
         
-        Reference reference = new JMSReference(name,parent,wireService, jmsBinding, jmsResourceFactory,opSec,interfaze, requestDest, replyDest);
+        OperationAndDataBinding requestODB = getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
+        OperationAndDataBinding responseODB = getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
+                
+        Reference reference = new JMSReference(name,parent,wireService, jmsBinding, jmsResourceFactory, requestODB, responseODB, interfaze, requestDest, replyDest);
         reference.setBindingServiceContract(serviceContract);
         return reference;
 
     }
         
-    private JMSResourceFactory getJMSResourceFactory(JMSBinding jmsBinding) throws JMSBindingException {
+    private JMSResourceFactory getJMSResourceFactory(JMSBinding jmsBinding) {
     	String className = jmsBinding.getJmsResourceFactoryName();   
     	if (className != null && !className.equals("")){
 			try {
@@ -129,52 +122,56 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 				Constructor constructor = factoryClass.getDeclaredConstructor(new Class[]{JMSBinding.class});
 				return (JMSResourceFactory) constructor.newInstance(jmsBinding);
 			} catch (ClassNotFoundException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			} catch (SecurityException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			} catch (NoSuchMethodException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			} catch (IllegalArgumentException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			} catch (InstantiationException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			} catch (IllegalAccessException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			} catch (InvocationTargetException e) {
-				throw new JMSBindingException("Error loading the JMSResourceFactory",e);
+				throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory",e);
 			}
     	}else{
     		return new SimpleJMSResourceFactory(jmsBinding);
     	}	
 		
 	}
-    
 
-	private OperationSelector getOperationSelector(JMSBinding jmsBinding) throws JMSBindingException {
-		String className = jmsBinding.getOperationSelectorName();    	
-		
-		if (className != null && !className.equals("")){
-			try {
-	    		Class factoryClass = Class.forName(className != null ? className : DEFAULT_OPERATION_SELECTOR);
-				Constructor constructor = factoryClass.getDeclaredConstructor(new Class[]{JMSBinding.class});
-				return (OperationSelector) constructor.newInstance(jmsBinding);
-			} catch (ClassNotFoundException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			} catch (SecurityException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			} catch (NoSuchMethodException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			} catch (IllegalArgumentException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			} catch (InstantiationException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			} catch (IllegalAccessException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			} catch (InvocationTargetException e) {
-				throw new JMSBindingException("Error loading the OperationSelector",e);
-			}
-		}else{
-			return new DefaultOperationSelector(jmsBinding);
-		}
-	}
+    protected OperationAndDataBinding getRequestOperationAndDatabinding(JMSBinding jmsBinding, ClassLoader cl) {
+        String className = jmsBinding.getRequestOperationAndDatabindingName();
+        OperationAndDataBinding operationAndDataBinding = instantiateClass(jmsBinding, cl, className);
+        return operationAndDataBinding;
+    }
+
+    protected OperationAndDataBinding getResponseOperationAndDatabinding(JMSBinding jmsBinding, ClassLoader cl) {
+        String className = jmsBinding.getResponseOperationAndDatabindingName();
+        OperationAndDataBinding operationAndDataBinding = instantiateClass(jmsBinding, cl, className);
+        return operationAndDataBinding;
+    }
+
+    protected OperationAndDataBinding instantiateClass(JMSBinding jmsBinding, ClassLoader cl, String className) {
+        OperationAndDataBinding operationAndDataBinding;
+        if (cl == null) {
+            cl = this.getClass().getClassLoader();
+        }
+        try {
+            Class clazz;
+            try {
+                clazz = cl.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                clazz = this.getClass().getClassLoader().loadClass(className);
+            }
+            Constructor constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class});
+            operationAndDataBinding = (OperationAndDataBinding)constructor.newInstance(jmsBinding);
+
+        } catch (Throwable e) {
+            throw new JMSBindingRuntimeException("Exception instantiating OperationAndDataBinding class", e);
+        }
+        return operationAndDataBinding;
+    }
 }
