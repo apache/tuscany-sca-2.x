@@ -68,9 +68,7 @@ public class TuscanyStartMojo extends AbstractMojo {
         /**
          * Resolves the dependencies transitively.
          * 
-         * @param artifact Artifact whose dependencies need to be resolved.
-         * @throws TuscanyDependencyException If unable to resolve the
-         *             dependencies.
+         * @param rootArtifact Artifact whose dependencies need to be resolved.
          */
         public boolean resolveTransitively(org.apache.tuscany.spi.services.artifact.Artifact rootArtifact) {
 
