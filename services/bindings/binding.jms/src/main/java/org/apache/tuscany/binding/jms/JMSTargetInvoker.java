@@ -80,13 +80,10 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
             throw new InvocationTargetException(e);
         } catch (NamingException e) {
             throw new InvocationTargetException(e);
-        } catch (JMSBindingException e) {
-            throw new InvocationTargetException(e);
         }
     }
 
-    protected Message sendRequest(Object[] payload, Session session, Destination replyToDest) throws JMSException,
-        JMSBindingException {
+    protected Message sendRequest(Object[] payload, Session session, Destination replyToDest) throws JMSException {
 
         Message requestMsg = requestOperationAndDataBinding.createJMSMessage(session, payload);
 

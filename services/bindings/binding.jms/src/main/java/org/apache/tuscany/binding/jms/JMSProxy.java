@@ -65,7 +65,7 @@ public class JMSProxy implements MessageListener {
         }
     }
 
-    protected Object invokeService(Message requestJMSMsg) throws JMSBindingException, JMSException {
+    protected Object invokeService(Message requestJMSMsg) throws JMSException {
 
         String operationName = requestOperationAndDataBinding.getOperationName(requestJMSMsg);
         Object requestPayload = requestOperationAndDataBinding.extractPayload(requestJMSMsg);
