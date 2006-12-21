@@ -35,16 +35,16 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-            <version>${sca.version}</version>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-jms</artifactId>
+            <version>1.1-rc4</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-jms</artifactId>
-            <version>1.1-rc4</version>
+            <groupId>org.apache.tuscany.sca.kernel</groupId>
+            <artifactId>tuscany-spi</artifactId>
+            <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -73,8 +73,9 @@
         </dependency>
 
         <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
+	       <groupId>commons-logging</groupId>
+	       <artifactId>commons-logging</artifactId>
+	       <version>1.1</version>
         </dependency>
 
         <!-- test dependencies -->
@@ -91,6 +92,13 @@
         </dependency>       
 
         <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-management</artifactId>
+            <version>1.0-rc4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
             <version>${sca.version}</version>
@@ -102,6 +110,16 @@
            <artifactId>xmlunit</artifactId>
            <version>1.0</version>
            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
         </dependency>
 
     </dependencies>
