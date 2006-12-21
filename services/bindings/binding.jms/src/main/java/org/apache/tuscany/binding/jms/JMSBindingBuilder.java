@@ -25,7 +25,6 @@ import javax.naming.NamingException;
 import org.apache.axiom.om.OMElement;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -43,14 +42,13 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 
     private static final String DEFAULT_JMS_RESOURCE_FACTORY =
         "org.apache.tuscany.binding.jms.SimpleJMSResourceFactory";
-    private static final String DEFAULT_OPERATION_SELECTOR = "org.apache.tuscany.binding.jms.DefaultOperationSelector";
+
     private static final String OM_DATA_BINDING = OMElement.class.getName();
 
     protected Class<JMSBinding> getBindingType() {
         return JMSBinding.class;
     }
 
-    @SuppressWarnings( {"unchecked"})
     public Service build(CompositeComponent parent,
                          BoundServiceDefinition<JMSBinding> serviceDefinition,
                          DeploymentContext deploymentContext) {
@@ -80,8 +78,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         return service;
     }
 
-    @SuppressWarnings( {"unchecked"})
-    public Reference build(CompositeComponent parent,
+    public JMSReference build(CompositeComponent parent,
                            BoundReferenceDefinition<JMSBinding> referenceDefinition,
                            DeploymentContext deploymentContext) {
 
@@ -91,7 +88,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         try {
             serviceContract = (ServiceContract)referenceDefinition.getServiceContract().clone();
         } catch (CloneNotSupportedException e) {
-            throw new JMSBindingRuntimeException("Couldn't clone the Service Contract", e);
+            throw new JMSBindingException("Couldn't clone the Service Contract", e);
         }
         serviceContract.setDataBinding(OM_DATA_BINDING);
 
@@ -106,7 +103,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
                 replyDest = jmsResourceFactory.lookupDestination(jmsBinding.getResponseDestinationName());
             }
         } catch (NamingException e) {
-            throw new JMSBindingRuntimeException(e);
+            throw new JMSBindingException(e);
         }
 
         OperationAndDataBinding requestODB =
@@ -114,7 +111,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         OperationAndDataBinding responseODB =
             getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
 
-        Reference reference =
+        JMSReference reference =
             new JMSReference(name, parent, wireService, jmsBinding, jmsResourceFactory, requestODB, responseODB,
                              interfaze, requestDest, replyDest);
         reference.setBindingServiceContract(serviceContract);
@@ -130,19 +127,19 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
                 Constructor constructor = factoryClass.getDeclaredConstructor(new Class[] {JMSBinding.class});
                 return (JMSResourceFactory)constructor.newInstance(jmsBinding);
             } catch (ClassNotFoundException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             } catch (SecurityException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             } catch (NoSuchMethodException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             } catch (IllegalArgumentException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             } catch (InstantiationException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             } catch (IllegalAccessException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             } catch (InvocationTargetException e) {
-                throw new JMSBindingRuntimeException("Error loading the JMSResourceFactory", e);
+                throw new JMSBindingException("Error loading the JMSResourceFactory", e);
             }
         } else {
             return new SimpleJMSResourceFactory(jmsBinding);
@@ -178,7 +175,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
             operationAndDataBinding = (OperationAndDataBinding)constructor.newInstance(jmsBinding);
 
         } catch (Throwable e) {
-            throw new JMSBindingRuntimeException("Exception instantiating OperationAndDataBinding class", e);
+            throw new JMSBindingException("Exception instantiating OperationAndDataBinding class", e);
         }
         return operationAndDataBinding;
     }

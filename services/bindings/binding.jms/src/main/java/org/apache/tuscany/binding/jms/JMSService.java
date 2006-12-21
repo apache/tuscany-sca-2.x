@@ -60,7 +60,7 @@ public class JMSService extends ServiceExtension {
         try {
             registerListerner();
         } catch (Exception e) {
-            throw new JMSBindingRuntimeException("Error starting JMSService", e);
+            throw new JMSBindingException("Error starting JMSService", e);
         }
     }
 
@@ -70,7 +70,7 @@ public class JMSService extends ServiceExtension {
             consumer.close();
             jmsResourceFactory.closeConnection();
         } catch (Exception e) {
-            throw new JMSBindingRuntimeException("Error stopping JMSService", e);
+            throw new JMSBindingException("Error stopping JMSService", e);
         }
 
         super.stop();

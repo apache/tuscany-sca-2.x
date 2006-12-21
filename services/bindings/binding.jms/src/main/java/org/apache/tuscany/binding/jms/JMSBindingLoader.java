@@ -92,7 +92,6 @@ public class JMSBindingLoader extends LoaderExtension<JMSBinding> {
                                         // QName("name"));
         // OMElement opSecPropertyOM = opSecOM.getFirstChildWithName(new
         // QName("property"));
-        String jmsOpSecPropertyName = ""; // = opSecPropertyOM.getText();
 
         JMSBinding binding = new JMSBinding();
         binding.setActivationSpecName(activationSpecName);

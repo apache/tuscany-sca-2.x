@@ -14,12 +14,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package org.apache.tuscany.binding.jms;
 
-import org.apache.tuscany.api.TuscanyException;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
-public class JMSBindingException extends TuscanyException {
+public class JMSBindingException extends TuscanyRuntimeException {
+    private static final long serialVersionUID = 1L;
 
     public JMSBindingException() {
         super();
