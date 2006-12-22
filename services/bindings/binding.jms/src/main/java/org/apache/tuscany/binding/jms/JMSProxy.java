@@ -101,7 +101,6 @@ public class JMSProxy implements MessageListener {
             Message replyJMSMsg = responseOperationAndDataBinding.createJMSMessage(session, responsePayload);
 
             replyJMSMsg.setJMSDeliveryMode(requestJMSMsg.getJMSDeliveryMode());
-            replyJMSMsg.setJMSExpiration(requestJMSMsg.getJMSExpiration());
             replyJMSMsg.setJMSPriority(requestJMSMsg.getJMSPriority());
 
             if (correlationScheme == null || "RequestMsgIDToCorrelID".equalsIgnoreCase(correlationScheme)) {
