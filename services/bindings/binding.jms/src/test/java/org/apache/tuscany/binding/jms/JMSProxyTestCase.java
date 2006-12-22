@@ -47,7 +47,6 @@ public class JMSProxyTestCase extends TestCase {
 
         ObjectMessage responseJMSMsg = EasyMock.createMock(ObjectMessage.class);
         responseJMSMsg.setJMSDeliveryMode(1);
-        responseJMSMsg.setJMSExpiration(1);
         responseJMSMsg.setJMSPriority(1);
         responseJMSMsg.setJMSCorrelationID(id);
         EasyMock.replay(responseJMSMsg);
@@ -67,7 +66,6 @@ public class JMSProxyTestCase extends TestCase {
         });
 
         EasyMock.expect(requestJMSMsg.getJMSDeliveryMode()).andReturn(1);
-        EasyMock.expect(requestJMSMsg.getJMSExpiration()).andReturn(1L);
         EasyMock.expect(requestJMSMsg.getJMSPriority()).andReturn(1);
 
         EasyMock.expect(requestJMSMsg.getJMSReplyTo()).andReturn(new Destination() {
