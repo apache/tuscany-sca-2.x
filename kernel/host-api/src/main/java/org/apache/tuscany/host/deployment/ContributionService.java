@@ -24,11 +24,11 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * Interface that allows artifacts to be deployed to a Tuscany runtime.
+ * Service interface that manages artifacts contributed to a Tuscany runtime.
  *
  * @version $Rev$ $Date$
  */
-public interface Deployer {
+public interface ContributionService {
     /**
      * Contribute an artifact to the SCA Domain.
      * The type of the contribution is determined by the Content-Type of the resource
