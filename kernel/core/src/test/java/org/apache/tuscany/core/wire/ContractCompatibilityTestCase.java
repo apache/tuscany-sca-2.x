@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.spi.wire;
+package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,6 +35,15 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 
