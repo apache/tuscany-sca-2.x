@@ -64,13 +64,15 @@ public class SpringCompositeBuilderTestCase extends TestCase {
     public void testImplicitServiceWiring() throws Exception {
         // Create a service instance that the mock builder registry will return
         WireService wireService = ArtifactFactory.createWireService();
-        ServiceExtension serviceContext =
+        ServiceExtension service =
             new ServiceExtension("fooService", TestBean.class, null, wireService);
         InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
-        serviceContext.setInboundWire(inboundWire);
-        serviceContext.setOutboundWire(outboundWire);
+        service.setInboundWire(inboundWire);
+        service.setOutboundWire(outboundWire);
+        inboundWire.setContainer(service);
+        outboundWire.setContainer(service);
         Connector connector = ArtifactFactory.createConnector();
         connector.connect(inboundWire, outboundWire, true);
 
@@ -78,7 +80,7 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         BuilderRegistry registry = createMock(BuilderRegistry.class);
         expect(registry.build(isA(CompositeComponent.class),
             isA(BoundServiceDefinition.class),
-            isA(DeploymentContext.class))).andStubReturn(serviceContext);
+            isA(DeploymentContext.class))).andStubReturn(service);
         replay(registry);
 
         // Test the SpringCompositeBuilder
@@ -89,8 +91,8 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         DeploymentContext context = createNiceMock(DeploymentContext.class);
         CompositeComponent component = (CompositeComponent) builder.build(parent, definition, context);
         component.start();
-        Service service = component.getService("fooService");
-        TestBean bean = (TestBean) service.getServiceInstance();
+        Service fooService = component.getService("fooService");
+        TestBean bean = wireService.createProxy(TestBean.class, fooService.getInboundWire());
         assertEquals("call foo", bean.echo("call foo"));
         verify(registry);
     }

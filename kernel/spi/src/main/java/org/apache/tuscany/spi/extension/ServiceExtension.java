@@ -23,7 +23,6 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -91,10 +90,6 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
-    }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        return wireService.createProxy(inboundWire);
     }
 
 }

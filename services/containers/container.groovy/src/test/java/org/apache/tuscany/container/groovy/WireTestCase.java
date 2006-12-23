@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.container.groovy;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
@@ -34,11 +33,13 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.groovy.mock.Greeting;
+import org.apache.tuscany.test.ArtifactFactory;
 import static org.apache.tuscany.test.ArtifactFactory.createInboundWire;
 import static org.apache.tuscany.test.ArtifactFactory.createOutboundWire;
 import static org.apache.tuscany.test.ArtifactFactory.createWireService;
@@ -81,6 +82,7 @@ public class WireTestCase extends TestCase {
     private Class<? extends GroovyObject> implClass1;
     private Class<? extends GroovyObject> implClass2;
     private ScopeContainer scopeContainer;
+    private WireService wireService;
 
     /**
      * Tests a basic invocation down a source wire
@@ -109,7 +111,7 @@ public class WireTestCase extends TestCase {
             chain.setTargetInvoker(invoker);
         }
         component.addOutboundWire(wire);
-        Greeting greeting = (Greeting) component.getServiceInstance();
+        Greeting greeting = (Greeting) component.getTargetInstance();
         assertEquals("foo", greeting.greet("foo"));
         verify(invoker);
     }
@@ -171,10 +173,11 @@ public class WireTestCase extends TestCase {
             chain.setTargetInvoker(component.createTargetInvoker(null, chain.getOperation(), null));
         }
         component.addInboundWire(wire);
-        Greeting greeting = (Greeting) component.getServiceInstance("Greeting");
+        Greeting greeting = wireService.createProxy(Greeting.class, component.getInboundWire("Greeting"));
         assertEquals("foo", greeting.greet("foo"));
     }
 
+    @SuppressWarnings({"unchecked"})
     protected void setUp() throws Exception {
         super.setUp();
         GroovyClassLoader cl = new GroovyClassLoader(getClass().getClassLoader());
@@ -187,5 +190,6 @@ public class WireTestCase extends TestCase {
             }
         });
         replay(scopeContainer);
+        wireService = ArtifactFactory.createWireService();
     }
 }

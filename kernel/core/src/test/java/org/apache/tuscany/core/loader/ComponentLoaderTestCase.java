@@ -46,6 +46,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isNull;
 import static org.easymock.EasyMock.replay;
+import org.easymock.IAnswer;
 
 /**
  * @version $Rev$ $Date$
@@ -74,6 +75,14 @@ public class ComponentLoaderTestCase extends TestCase {
         mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            @SuppressWarnings("unchecked")
+            public Object answer() throws Throwable {
+                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[1];
+                impl.setComponentType(new PojoComponentType());
+                return impl;
+            }
+        });
 
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
@@ -100,6 +109,15 @@ public class ComponentLoaderTestCase extends TestCase {
         mockRegistry.loadComponentType(EasyMock.isA(CompositeComponent.class),
             EasyMock.isA(Implementation.class),
             EasyMock.isA(DeploymentContext.class));
+
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            @SuppressWarnings("unchecked")
+            public Object answer() throws Throwable {
+                Implementation impl = (Implementation) EasyMock.getCurrentArguments()[1];
+                impl.setComponentType(new PojoComponentType());
+                return impl;
+            }
+        });
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),

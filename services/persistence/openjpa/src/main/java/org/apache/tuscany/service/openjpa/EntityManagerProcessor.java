@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.implementation.java.AbstractPropertyProcessor;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 
 /**
@@ -70,7 +71,13 @@ public class EntityManagerProcessor extends AbstractPropertyProcessor<Persistenc
                                     DeploymentContext context) throws ProcessingException {
         EntityManagerFactory emf;
         try {
-            emf = parent.resolveSystemInstance(EntityManagerFactory.class);
+            InboundWire wire = parent.resolveSystemAutowire(EntityManagerFactory.class);
+            if (wire == null) {
+                throw new EntityManagerFactoryNotConfiguredException();
+            }
+            Object o = wire.getTargetService();
+            assert o instanceof EntityManagerFactory;
+            emf = (EntityManagerFactory) o;
         } catch (TargetException e) {
             throw new ProcessingException(e);
         }

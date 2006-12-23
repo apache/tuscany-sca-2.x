@@ -20,11 +20,13 @@ package org.apache.tuscany.core.injection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.host.ResourceHost;
 import org.apache.tuscany.spi.host.ResourceResolutionException;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * Resolves a runtime resource to be injected on a field or method of a Java component type marked with {@link
@@ -86,6 +88,7 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
         this.optional = optional;
     }
 
+    @SuppressWarnings({"unchecked"})
     public T getInstance() throws ObjectCreationException {
         if (resolveFromHost) {
             return resolveInstance();
@@ -93,7 +96,10 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
             T instance = null;
             if (mappedName == null) {
                 try {
-                    instance = parent.resolveSystemInstance(type);
+                    InboundWire wire = parent.resolveSystemAutowire(type);
+                    if (wire != null) {
+                        instance = (T) wire.getTargetService();
+                    }
                 } catch (TargetResolutionException e) {
                     throw new ObjectCreationException(e);
                 }
@@ -108,14 +114,16 @@ public class ResourceObjectFactory<T> implements ObjectFactory<T> {
                 return instance;
             } else {
                 SCAObject child = parent.getSystemChild(mappedName);
-                if (child != null) {
+                if (child instanceof AtomicComponent) {
                     try {
-                        instance = type.cast(child.getServiceInstance());
+                        AtomicComponent component = (AtomicComponent) child;
+                        instance = type.cast(component.getTargetInstance());
                     } catch (TargetResolutionException e) {
                         throw new ObjectCreationException(e);
                     }
-                }
-                if (instance == null && !optional) {
+                } else if (child != null) {
+                    throw new InvalidResourceTypeException("Invalid resource type", mappedName);
+                } else if (!optional) {
                     throw new ResourceNotFoundException("No resource found for URI", mappedName);
                 }
                 return instance;

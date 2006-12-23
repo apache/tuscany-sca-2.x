@@ -18,9 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import org.apache.tuscany.spi.wire.OutboundWire;
+
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -75,7 +76,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));
         Foo target = new Foo();
-        SystemOutboundWire wire = EasyMock.createMock(SystemOutboundWire.class);
+        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn(target);
         EasyMock.expect(wire.getReferenceName()).andReturn("ref").anyTimes();
         EasyMock.replay(wire);

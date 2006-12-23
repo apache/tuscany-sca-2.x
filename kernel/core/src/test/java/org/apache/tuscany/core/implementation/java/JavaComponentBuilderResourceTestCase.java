@@ -26,6 +26,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -56,8 +57,12 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         impl.setImplementationClass(Foo.class);
         impl.setComponentType(type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("foo", impl);
+        InboundWire resourceWire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(resourceWire.getTargetService()).andReturn("result");
+        EasyMock.replay(resourceWire);
+
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(String.class)).andReturn("result");
+        EasyMock.expect(parent.resolveSystemAutowire(String.class)).andReturn(resourceWire);
         EasyMock.replay(parent);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);
         Foo foo = (Foo) component.createInstance();

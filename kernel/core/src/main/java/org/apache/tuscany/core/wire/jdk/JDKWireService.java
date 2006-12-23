@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -61,6 +62,7 @@ import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 
 /**
  * the default implementation of a wire service that uses JDK dynamic proxies
@@ -142,14 +144,18 @@ public class JDKWireService extends WireServiceExtension {
     }
 
     public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
-        //TODO multiplicity
-        if (reference.getTargets().size() != 1) {
+        if (!def.isAutowire() && reference.getTargets().size() != 1) {
+            //TODO multiplicity
             throw new UnsupportedOperationException();
         }
         ServiceContract<?> contract = def.getServiceContract();
         OutboundWire wire = new OutboundWireImpl();
-        QualifiedName qName = new QualifiedName(reference.getTargets().get(0).toString());
-        wire.setTargetName(qName);
+        if (!def.isAutowire()) {
+            QualifiedName qName = new QualifiedName(reference.getTargets().get(0).toString());
+            wire.setTargetName(qName);
+        } else {
+            wire.setAutowire(true);
+        }
         wire.setServiceContract(contract);
         wire.setReferenceName(reference.getReferenceName());
         for (Operation<?> operation : contract.getOperations().values()) {
@@ -180,7 +186,11 @@ public class JDKWireService extends WireServiceExtension {
             InboundInvocationChain chain = createInboundChain(operation);
             // TODO handle policy
             //TODO statement below could be cleaner
-            chain.addInterceptor(new InvokerInterceptor());
+            if (service instanceof BindlessServiceDefinition) {
+                chain.addInterceptor(new SynchronousBridgingInterceptor());
+            } else {
+                chain.addInterceptor(new InvokerInterceptor());
+            }
             wire.addInvocationChain(operation, chain);
         }
         if (contract.getCallbackName() != null) {

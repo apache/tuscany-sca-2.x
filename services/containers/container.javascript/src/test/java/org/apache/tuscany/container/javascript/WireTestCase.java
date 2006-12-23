@@ -18,26 +18,25 @@
  */
 package org.apache.tuscany.container.javascript;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
-import static org.easymock.EasyMock.reportMatcher;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.container.javascript.mock.Greeting;
-import org.apache.tuscany.container.javascript.rhino.RhinoScript;
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.container.javascript.mock.Greeting;
+import org.apache.tuscany.container.javascript.rhino.RhinoScript;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.test.ArtifactFactory;
+import static org.easymock.EasyMock.reportMatcher;
 import org.easymock.IArgumentMatcher;
 
 /**
@@ -61,6 +60,7 @@ public class WireTestCase extends TestCase {
     private RhinoScript implClass1;
 
     private RhinoScript implClass2;
+    private WireService wireService;
 
     /**
      * Tests a basic invocation down a source wire
@@ -150,13 +150,14 @@ public class WireTestCase extends TestCase {
             chain.setTargetInvoker(context.createTargetInvoker(null, chain.getOperation(), null));
         }
         context.addInboundWire(wire);
-        Greeting greeting = (Greeting) context.getServiceInstance("Greeting");
+        Greeting greeting = wireService.createProxy(Greeting.class, context.getInboundWire("Greeting"));
         assertEquals("foo", greeting.greet("foo"));
         scope.stop();
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        wireService = ArtifactFactory.createWireService();
         implClass1 = new RhinoScript("script1", SCRIPT);
         implClass2 = new RhinoScript("script2", SCRIPT2);
     }

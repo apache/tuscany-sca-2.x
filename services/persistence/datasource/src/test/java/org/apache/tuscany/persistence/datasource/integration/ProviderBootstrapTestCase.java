@@ -21,6 +21,8 @@ package org.apache.tuscany.persistence.datasource.integration;
 import java.net.URL;
 import javax.sql.DataSource;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+
 import org.apache.tuscany.persistence.datasource.integration.mock.Provider;
 import org.apache.tuscany.test.SCATestCase;
 
@@ -33,7 +35,7 @@ import org.apache.tuscany.test.SCATestCase;
 public class ProviderBootstrapTestCase extends SCATestCase {
 
     public void testBoot() throws Exception {
-        DataSource ds = (DataSource) component.getSystemChild("TestDS").getServiceInstance();
+        DataSource ds = (DataSource) ((AtomicComponent)component.getSystemChild("TestDS")).getTargetInstance();
         assertNotNull(ds);
         assertEquals("value", ((Provider) ds).getTest());
     }

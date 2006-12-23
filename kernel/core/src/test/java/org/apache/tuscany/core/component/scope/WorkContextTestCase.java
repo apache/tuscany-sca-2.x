@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;

@@ -18,8 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
+import org.apache.tuscany.spi.component.SCAObject;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
@@ -34,7 +36,9 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testRegistration() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
-        MockComponent resolvedInstance = (MockComponent) composite.getSystemChild("foo").getServiceInstance();
+        SCAObject child = composite.getSystemChild("foo");
+        assertTrue(child instanceof AtomicComponent);
+        MockComponent resolvedInstance = (MockComponent) ((AtomicComponent) child).getTargetInstance();
         assertSame(instance, resolvedInstance);
     }
 
@@ -52,15 +56,15 @@ public class JavaObjectRegistrationTestCase extends TestCase {
     public void testSystemAutowireToObject() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
-        assertSame(instance, composite.resolveSystemInstance(MockComponent.class));
-        assertNull(composite.resolveSystemExternalInstance(MockComponent.class));
+        assertSame(instance, composite.resolveSystemAutowire(MockComponent.class).getTargetService());
+        assertNull(composite.resolveSystemExternalAutowire(MockComponent.class));
     }
 
     public void testApplicationAutowireToObject() throws Exception {
         MockComponent instance = new MockComponent();
         composite.registerJavaObject("foo", MockComponent.class, instance);
-        assertNull(composite.resolveInstance(MockComponent.class));
-        assertNull(composite.resolveExternalInstance(MockComponent.class));
+        assertNull(composite.resolveAutowire(MockComponent.class));
+        assertNull(composite.resolveExternalAutowire(MockComponent.class));
     }
 
     protected void setUp() throws Exception {

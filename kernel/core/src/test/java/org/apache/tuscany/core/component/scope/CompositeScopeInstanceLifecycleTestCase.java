@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
 
 import junit.framework.TestCase;
@@ -46,7 +46,7 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Foo comp = new Foo();
-        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstance()).andReturn(comp);
         EasyMock.expect(component.getInitLevel()).andReturn(1).atLeastOnce();
         component.init(EasyMock.eq(comp));
@@ -70,7 +70,7 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Foo comp = new Foo();
-        SystemAtomicComponent initDestroyComponent = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent initDestroyComponent = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(initDestroyComponent.createInstance()).andReturn(comp);
         EasyMock.expect(initDestroyComponent.getInitLevel()).andReturn(1).atLeastOnce();
         initDestroyComponent.init(EasyMock.eq(comp));
@@ -89,11 +89,11 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
-        SystemAtomicComponent oneComponent = createComponent(0);
+        AtomicComponent oneComponent = createComponent(0);
         scope.register(oneComponent);
-        SystemAtomicComponent twoComponent = createComponent(0);
+        AtomicComponent twoComponent = createComponent(0);
         scope.register(twoComponent);
-        SystemAtomicComponent threeComponent = createComponent(0);
+        AtomicComponent threeComponent = createComponent(0);
         scope.register(threeComponent);
 
         scope.onEvent(new CompositeStart(this, null));
@@ -125,11 +125,11 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
 
-        SystemAtomicComponent oneComponent = createComponent(1);
+        AtomicComponent oneComponent = createComponent(1);
         scope.register(oneComponent);
-        SystemAtomicComponent twoComponent = createComponent(1);
+        AtomicComponent twoComponent = createComponent(1);
         scope.register(twoComponent);
-        SystemAtomicComponent threeComponent = createComponent(1);
+        AtomicComponent threeComponent = createComponent(1);
         scope.register(threeComponent);
 
         scope.onEvent(new CompositeStart(this, null));
@@ -152,8 +152,8 @@ public class CompositeScopeInstanceLifecycleTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private SystemAtomicComponent createComponent(int init) throws TargetException {
-        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+    private AtomicComponent createComponent(int init) throws TargetException {
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
                 return new OrderedInitPojoImpl();

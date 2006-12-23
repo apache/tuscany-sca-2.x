@@ -89,7 +89,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         deploymentContext.getCompositeScope().start();
         component.start();
 
-        Source source = (Source) component.getServiceInstance();
+        Source source = (Source) component.getTargetInstance();
         assertNotNull(source.getTarget());
         component.stop();
     }

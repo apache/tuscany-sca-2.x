@@ -23,7 +23,6 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Builder;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
@@ -77,6 +76,7 @@ import org.apache.tuscany.core.loader.PropertyLoader;
 import org.apache.tuscany.core.loader.ReferenceLoader;
 import org.apache.tuscany.core.loader.ServiceLoader;
 import org.apache.tuscany.core.property.PropertyObjectFactoryImpl;
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.host.MonitorFactory;
 
 /**
@@ -240,7 +240,8 @@ public class DefaultBootstrapper implements Bootstrapper {
      * @return a new Builder
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
-        BuilderRegistry builderRegistry = new BuilderRegistryImpl(scopeRegistry);
+        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(scopeRegistry);
+        builderRegistry.setWireService(new JDKWireService());
         SystemCompositeBuilder builder = new SystemCompositeBuilder(builderRegistry, createConnector());
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());

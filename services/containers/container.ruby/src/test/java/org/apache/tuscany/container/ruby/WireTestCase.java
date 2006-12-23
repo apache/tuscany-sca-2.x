@@ -18,24 +18,23 @@
  */
 package org.apache.tuscany.container.ruby;
 
-import static org.easymock.EasyMock.reportMatcher;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.apache.tuscany.container.ruby.mock.Greeting;
-import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.WireService;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.container.ruby.mock.Greeting;
+import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.test.ArtifactFactory;
+import static org.easymock.EasyMock.reportMatcher;
 import org.easymock.IArgumentMatcher;
 
 /**
@@ -44,15 +43,16 @@ import org.easymock.IArgumentMatcher;
 public class WireTestCase extends TestCase {
 
     private static final String SCRIPT = "   def setWire(ref)\n" + "       wire = ref\n"
-            + "end   \n" + "   def greet(name)\n" + "       return wire.greet(name) \n"
-            + "   end\n";
+        + "end   \n" + "   def greet(name)\n" + "       return wire.greet(name) \n"
+        + "   end\n";
 
     private static final String SCRIPT2 = "   def greet(name)\n" + "       return name  \n"
-            + "end \n";
+        + "end \n";
 
     private RubyScript implClass1;
 
     private RubyScript implClass2;
+    private WireService wireSerivce;
 
     /**
      * Tests a basic invocation down a source wire
@@ -113,19 +113,19 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        Map<String, Object> properties = new Hashtable<String,Object>();
-        properties.put("greeting","HeyThere");
-        
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("greeting", "HeyThere");
+
         RubyComponent context = new RubyComponent("source",
-                                                                      implClass2,
-                                                                      null,
-                                                                      services,
-                                                                      properties,
-                                                                      null,
-                                                                      scope,
-                                                                      ArtifactFactory.createWireService(),
-                                                                      null,
-                                                                       null);
+            implClass2,
+            null,
+            services,
+            properties,
+            null,
+            scope,
+            ArtifactFactory.createWireService(),
+            null,
+            null);
         scope.register(context);
         DataType<String> returnDataType = new DataType<String>(String.class, String.class.getName());
 //        Operation<String> operation = new Operation<String>("greet",
@@ -150,36 +150,37 @@ public class WireTestCase extends TestCase {
         scope.start();
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
-        Map<String, Object> properties = new Hashtable<String,Object>();
-        properties.put("greeting","HeyThere");
+        Map<String, Object> properties = new Hashtable<String, Object>();
+        properties.put("greeting", "HeyThere");
         RubyComponent context = new RubyComponent("source",
-                                                                      implClass2,
-                                                                      null,
-                                                                      services,
-                                                                      properties,
-                                                                      null,
-                                                                      scope,
-                                                                      ArtifactFactory.createWireService(),
-                                                                      null,
-                                                                        null);
+            implClass2,
+            null,
+            services,
+            properties,
+            null,
+            scope,
+            ArtifactFactory.createWireService(),
+            null,
+            null);
         scope.register(context);
 
         InboundWire wire = ArtifactFactory.createInboundWire("Greeting",
-                                                                Greeting.class);
+            Greeting.class);
         ArtifactFactory.terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker(null,
-                                                               chain.getOperation(), null));
+                chain.getOperation(), null));
         }
         context.addInboundWire(wire);
-        Greeting greeting = (Greeting) context.getServiceInstance("Greeting");
+        Greeting greeting = wireSerivce.createProxy(Greeting.class, context.getInboundWire("Greeting"));
         assertEquals("foo",
-                     greeting.greet("foo"));
+            greeting.greet("foo"));
         scope.stop();
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        wireSerivce = ArtifactFactory.createWireService();
         implClass1 = new RubyScript("script1", SCRIPT);
         implClass2 = new RubyScript("script2", SCRIPT2);
     }

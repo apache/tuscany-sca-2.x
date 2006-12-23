@@ -38,7 +38,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * @version $Rev$ $Date$
  */
 public class OutboundWireImpl implements OutboundWire {
-
     private ServiceContract serviceContract;
     private Class<?>[] callbackInterfaces;
     private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
@@ -48,6 +47,7 @@ public class OutboundWireImpl implements OutboundWire {
     private QualifiedName targetName;
     private InboundWire targetWire;
     private SCAObject container;
+    private boolean autowire;
 
     public Object getTargetService() throws TargetResolutionException {
         assert targetWire != null;
@@ -125,6 +125,14 @@ public class OutboundWireImpl implements OutboundWire {
 
     public void setTargetName(QualifiedName targetName) {
         this.targetName = targetName;
+    }
+
+    public boolean isAutowire() {
+        return autowire;
+    }
+
+    public void setAutowire(boolean autowire) {
+        this.autowire = autowire;
     }
 
     public boolean isOptimizable() {

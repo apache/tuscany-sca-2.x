@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="ASCII"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,27 +6,26 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
--->
+ * under the License.
+ */
+package org.apache.tuscany.spi.component;
 
-<componentType xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+/**
+ * Thrown when an invalid interface is specified during autowire registration
+ *
+ * @version $Rev$ $Date$
+ */
+public class InvalidAutowireInterface extends ComponentRegistrationException {
 
-    <service name="helloworld.HelloWorldService">
-<!--        <interface.wsdl interface="http://integration.rhino.container.tuscany.apache.org#HelloWorld"/> -->
-			<interface.java interface="helloworld.HelloWorldService"/>
-    </service>
-    
-   	<reference name="extHelloWorldService">
-		<interface.java interface="helloworld.HelloWorldService"/>
-	</reference>
-    
-
-</componentType>
+    public InvalidAutowireInterface(String message, String identifier) {
+        super(message, identifier);
+    }
+}

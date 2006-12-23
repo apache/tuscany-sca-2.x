@@ -47,7 +47,12 @@ public final class ComponentNames {
     /**
      * The name of the component that contains the deployer.
      */
-    public static final String TUSCANY_DEPLOYER = "tuscany.deployer";
+    public static final String TUSCANY_DEPLOYER = "deployer";
+
+    /**
+     * The name of the component that contains the deployer.
+     */
+    public static final String TUSCANY_WIRE_SERVICE = "wireService";
 
     private ComponentNames() {
     }

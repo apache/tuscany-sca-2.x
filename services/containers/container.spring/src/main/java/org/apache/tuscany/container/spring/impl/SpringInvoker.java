@@ -52,7 +52,7 @@ public class SpringInvoker implements TargetInvoker {
     public Object invokeTarget(final Object object, final short sequence) throws InvocationTargetException {
         if (bean == null) {
             try {
-                bean = component.locateService(Object.class, beanName);
+                bean = component.getBean(Object.class, beanName);
                 if (bean == null) {
                     throw new InvocationTargetException(new TargetNotFoundException(beanName));
                 }

@@ -166,19 +166,15 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
             return null;
         }
 
+        public Object getTargetInstance() throws TargetResolutionException {
+            return null;
+        }
+
         public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
             return null;
         }
 
-        public Object getServiceInstance(String name) throws TargetResolutionException {
-            return null;
-        }
-
         public List<Class<?>> getServiceInterfaces() {
-            return null;
-        }
-
-        public Object getServiceInstance() throws TargetResolutionException {
             return null;
         }
 

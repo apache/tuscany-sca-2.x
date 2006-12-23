@@ -22,10 +22,10 @@ import java.net.URL;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -134,8 +134,10 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertNotNull(component);
         verify(parent);
         component.start();
-        Deployer newDeployer = (Deployer) component.getSystemServiceInstance("deployer");
+        SCAObject newDeployer = component.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
         assertNotNull(newDeployer);
+        SCAObject wireService = component.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
+        assertNotNull(wireService);
 
 /*      // FIXME
         // load the boot2 file using the newly loaded deployer

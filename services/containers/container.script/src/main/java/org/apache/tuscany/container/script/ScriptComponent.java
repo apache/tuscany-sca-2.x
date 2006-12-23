@@ -22,7 +22,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
@@ -71,24 +70,11 @@ public class ScriptComponent extends AtomicComponentExtension {
         return services;
     }
 
-    public Object getServiceInstance() throws TargetResolutionException {
-        return getServiceInstance(null);
-    }
-
     protected void onReferenceWire(OutboundWire wire) {
         factory.addContextObjectFactory(wire.getReferenceName(), new WireObjectFactory(wire, wireService));
     }
 
-    @SuppressWarnings("unchecked")
-    public Object getServiceInstance(String service) throws TargetResolutionException {
-        InboundWire wire = getInboundWire(service);
-        if (wire == null) {
-            throw new TargetNotFoundException("Service not found", service);
-        }
-        return wireService.createProxy(wire);
-    }
-
-    public Object getTargetInstance() throws TargetException {
+    public Object getTargetInstance() throws TargetResolutionException {
         return scopeContainer.getInstance(this);
     }
 

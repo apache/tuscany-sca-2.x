@@ -35,25 +35,24 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
  * @version $Rev$ $Date$
  */
 public class ServiceProcessorTestCase extends TestCase {
-
     private ServiceProcessor processor;
     private PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type;
 
     public void testMultipleInterfaces() throws Exception {
         processor.visitClass(null, FooMultiple.class, type, null);
         assertEquals(2, type.getServices().size());
-        JavaMappedService service = type.getServices().get("ServiceProcessorTestCase$Baz");
+        JavaMappedService service = type.getServices().get(Baz.class.getName());
         ServiceContract contract = service.getServiceContract();
         assertEquals(Baz.class, contract.getInterfaceClass());
         assertEquals(Bar.class, contract.getCallbackClass());
         assertEquals("ServiceProcessorTestCase$Bar", contract.getCallbackName());
-        assertNotNull(type.getServices().get("ServiceProcessorTestCase$Bar"));
+        assertNotNull(type.getServices().get(Bar.class.getName()));
     }
 
     public void testSingleInterfaces() throws Exception {
         processor.visitClass(null, FooSingle.class, type, null);
         assertEquals(1, type.getServices().size());
-        assertNotNull(type.getServices().get("ServiceProcessorTestCase$Baz"));
+        assertNotNull(type.getServices().get(Baz.class.getName()));
     }
 
     public void testMultipleNoService() throws Exception {
@@ -64,7 +63,7 @@ public class ServiceProcessorTestCase extends TestCase {
     public void testRemotableNoService() throws Exception {
         processor.visitClass(null, FooRemotableNoService.class, type, null);
         assertEquals(1, type.getServices().size());
-        JavaMappedService service = type.getServices().get("ServiceProcessorTestCase$BazRemotable");
+        JavaMappedService service = type.getServices().get(BazRemotable.class.getName());
         ServiceContract contract = service.getServiceContract();
         assertEquals(BazRemotable.class, contract.getInterfaceClass());
     }

@@ -19,36 +19,25 @@
 package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 
 /**
  * Default implementation of a system atomic context
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemAtomicComponentImpl extends PojoAtomicComponent implements SystemAtomicComponent {
+public class SystemAtomicComponentImpl extends PojoAtomicComponent {
 
     public SystemAtomicComponentImpl(PojoConfiguration configuration) {
         super(configuration);
         scope = Scope.COMPOSITE;
-    }
-
-    public Object getServiceInstance(String name) throws TargetResolutionException {
-        return getTargetInstance();
-    }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        return getTargetInstance();
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
@@ -59,9 +48,7 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent implements Sy
         return true;
     }
 
-    protected ObjectFactory<?> createWireFactory(RuntimeWire wire) {
-        assert wire instanceof SystemOutboundWire : "Wire must be an instance of " + SystemOutboundWire.class.getName();
-        SystemOutboundWire systemWire = (SystemOutboundWire) wire;
-        return new SystemWireObjectFactory(systemWire);
+    protected ObjectFactory<?> createWireFactory(OutboundWire wire) {
+        return new WireObjectFactory(wire);
     }
 }

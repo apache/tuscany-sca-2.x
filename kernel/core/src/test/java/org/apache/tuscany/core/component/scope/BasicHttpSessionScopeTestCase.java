@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Scope;
@@ -46,7 +46,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
@@ -66,7 +66,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
@@ -78,7 +78,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
         // start the request
         Object session = new Object();
         workContext.setIdentifier(Scope.SESSION, session);
@@ -95,7 +95,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         HttpSessionScopeContainer scopeContext = new HttpSessionScopeContainer(workContext, null);
         scopeContext.start();
 
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
 
         Object session1 = new Object();
         workContext.setIdentifier(Scope.SESSION, session1);
@@ -131,7 +131,7 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createComponent(ScopeContainer scopeContainer) {
+    private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(SessionScopeInitDestroyComponent.class);

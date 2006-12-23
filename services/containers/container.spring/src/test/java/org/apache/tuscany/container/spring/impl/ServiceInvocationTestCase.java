@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
@@ -41,6 +42,7 @@ import org.springframework.context.support.StaticApplicationContext;
  * @version $$Rev$$ $$Date$$
  */
 public class ServiceInvocationTestCase extends TestCase {
+    private WireService wireService;
 
     public void testInvocation() throws Exception {
         AbstractApplicationContext springContext = createSpringContext();
@@ -54,12 +56,15 @@ public class ServiceInvocationTestCase extends TestCase {
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         Connector connector = ArtifactFactory.createConnector();
+        outboundWire.setContainer(service);
+        inboundWire.setContainer(service);
         connector.connect(inboundWire, outboundWire, true);
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
             chain.setTargetInvoker(composite.createTargetInvoker("foo", chain.getOperation(), null));
         }
         composite.register(service);
-        TestBean serviceInstance = (TestBean) composite.getService("fooService").getServiceInstance();
+        InboundWire wire = composite.getService("fooService").getInboundWire();
+        TestBean serviceInstance = wireService.createProxy(TestBean.class, wire);
         assertEquals("bar", serviceInstance.echo("bar"));
     }
 
@@ -72,4 +77,9 @@ public class ServiceInvocationTestCase extends TestCase {
         return beanFactory;
     }
 
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        wireService = ArtifactFactory.createWireService();
+    }
 }

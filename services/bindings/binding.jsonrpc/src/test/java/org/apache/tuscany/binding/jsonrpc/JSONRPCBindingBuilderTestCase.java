@@ -37,7 +37,7 @@ public class JSONRPCBindingBuilderTestCase extends TestCase {
         ServletHost mockServletHost = createMock(ServletHost.class);
         replay(mockServletHost);
         bindingBuilder.setServletHost(mockServletHost);
-        assertEquals(mockServletHost, bindingBuilder.servletHost);
+        assertEquals(mockServletHost, bindingBuilder.getServletHost());
     }
 
     public void testGetBindingType() {

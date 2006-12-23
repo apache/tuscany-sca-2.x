@@ -23,8 +23,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -39,7 +37,7 @@ public interface WireService {
      * Create a proxy for the supplied wire that implements the supplied interface.
      *
      * @param interfaze the interface that the proxy class must implement
-     * @param wire the wire to connect the proxy to
+     * @param wire      the wire to connect the proxy to
      * @return a proxy that allows invocation of the wire
      * @throws ProxyCreationException if there was a problem creating the proxy
      */
@@ -110,7 +108,7 @@ public interface WireService {
      * @param def       the model artifact representing the target reference
      * @return the wire for flowing outbound invocations to a reference
      */
-    OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def);
+    //OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def);
 
     /**
      * Creates wires for a component and injects them on the component

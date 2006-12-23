@@ -49,7 +49,7 @@ public class ReferenceInjectionTestCase extends TestCase {
             MockFactory.createWiredComponents("source", SourceImpl.class, scope,
                 members, "target", Target.class, TargetImpl.class, scope);
         AtomicComponent sourceComponent = components.get("source");
-        Source source = (Source) sourceComponent.getServiceInstance();
+        Source source = (Source) sourceComponent.getTargetInstance();
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
 

@@ -20,38 +20,47 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
 
 /**
  * An {@link org.apache.tuscany.spi.component.AtomicComponent} used when registering objects directly into a composite
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject
-    implements SystemAtomicComponent {
+public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject implements AtomicComponent {
 
     private T instance;
     private List<Class<?>> serviceInterfaces;
+    private Map<String, InboundWire> inboundWires;
+    private WireService wireService = new JDKWireService();
 
     public SystemSingletonAtomicComponent(String name, CompositeComponent parent, Class<S> interfaze, T instance) {
         super(name, parent);
         this.instance = instance;
         serviceInterfaces = new ArrayList<Class<?>>(1);
         serviceInterfaces.add(interfaze);
+        inboundWires = new HashMap<String, InboundWire>();
+        initWire(interfaze);
     }
 
 
@@ -62,6 +71,10 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         super(name, parent);
         this.instance = instance;
         this.serviceInterfaces = serviceInterfaces;
+        inboundWires = new HashMap<String, InboundWire>();
+        for (Class<?> interfaze : serviceInterfaces) {
+            initWire(interfaze);
+        }
     }
 
     public List<Class<?>> getServiceInterfaces() {
@@ -92,14 +105,6 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
         return instance;
     }
 
-    public Object getServiceInstance(String name) throws TargetResolutionException {
-        return getTargetInstance();
-    }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        return getTargetInstance();
-    }
-
     public void init(Object instance) throws TargetInitializationException {
 
     }
@@ -117,15 +122,15 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
     }
 
     public void addInboundWire(InboundWire wire) {
-        throw new UnsupportedOperationException();
+        inboundWires.put(wire.getServiceName(), wire);
     }
 
     public Map<String, InboundWire> getInboundWires() {
-        return Collections.emptyMap();
+        return inboundWires;
     }
 
     public InboundWire getInboundWire(String serviceName) {
-        return null;
+        return inboundWires.get(serviceName);
     }
 
     public void addOutboundWire(OutboundWire wire) {
@@ -148,4 +153,13 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
     public boolean isSystem() {
         return true;
     }
+
+    private void initWire(Class<?> interfaze) {
+        JavaServiceContract serviceContract = new JavaServiceContract(interfaze);
+        ServiceDefinition def = new ServiceDefinition(interfaze.getName(), serviceContract, false);
+        InboundWire wire = wireService.createWire(def);
+        wire.setContainer(this);
+        inboundWires.put(wire.getServiceName(), wire);
+    }
+
 }

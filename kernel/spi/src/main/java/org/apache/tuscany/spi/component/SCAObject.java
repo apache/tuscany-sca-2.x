@@ -66,13 +66,6 @@ public interface SCAObject extends EventPublisher, Lifecycle {
     Map<Object, Object> getExtensions();
 
     /**
-     * Returns an instance associated with the default service
-     *
-     * @throws TargetResolutionException if an error occurs resolving the instance
-     */
-    Object getServiceInstance() throws TargetResolutionException;
-
-    /**
      * Called to signal that the composite should perform any required steps prior to registration with its parent such
      * as wiring of its children
      */

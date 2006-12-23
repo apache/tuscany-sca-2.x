@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -34,7 +33,7 @@ import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
 /**
- * 
+ *
  */
 public class CompositeReferenceTestCase extends TestCase {
 

@@ -6,32 +6,39 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.spi.component;
+package org.apache.tuscany.core.implementation.system.component;
+
+import org.apache.tuscany.spi.wire.OutboundWire;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
- * Implementations are specialized atomic components used to provide system services by the runtime
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface SystemAtomicComponent extends AtomicComponent {
+public class WireObjectFactoryTestCase extends TestCase {
 
-    /**
-     * Returns the target instance associated with the component. A target instance is the actual object a request is
-     * dispatched to sans wire chain.
-     *
-     * @throws TargetResolutionException
-     *
-     */
-    Object getTargetInstance() throws TargetResolutionException;
+    public void testGetInstance() throws Exception {
+        Foo foo = new Foo();
+        OutboundWire wire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn(foo);
+        EasyMock.replay(wire);
+        WireObjectFactory factory = new WireObjectFactory(wire);
+        assertEquals(foo, factory.getInstance());
+        EasyMock.verify(wire);
+    }
 
+    private class Foo {
+
+    }
 }

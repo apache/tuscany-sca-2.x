@@ -21,6 +21,7 @@ package org.apache.tuscany.core.wire;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
@@ -37,7 +38,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * @version $Rev$ $Date$
  */
 public class InboundWireImpl implements InboundWire {
-
     private String serviceName;
     private ServiceContract serviceContract;
     private OutboundWire targetWire;
@@ -46,8 +46,13 @@ public class InboundWireImpl implements InboundWire {
     private Map<Object, Map<Operation<?>, OutboundInvocationChain>> callbackSourceChainMaps =
         new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
     private SCAObject container;
+    private AtomicComponent targetComponent;
 
     public Object getTargetService() throws TargetResolutionException {
+        // JFM fixme hack
+        if (targetWire == null && targetComponent != null) {
+            return targetComponent.getTargetInstance();
+        }
         assert targetWire != null;
         // optimized, no interceptors or handlers on either end
         return targetWire.getTargetService();
@@ -139,6 +144,9 @@ public class InboundWireImpl implements InboundWire {
     }
 
     public void setContainer(SCAObject container) {
+        if (container instanceof AtomicComponent) {
+            targetComponent = (AtomicComponent) container;
+        }
         this.container = container;
     }
 }

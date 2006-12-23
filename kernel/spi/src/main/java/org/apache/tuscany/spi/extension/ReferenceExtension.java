@@ -22,7 +22,6 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -76,10 +75,6 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
 
     public Class<?> getInterface() {
         return referenceInterface;
-    }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        return wireService.createProxy(inboundWire);
     }
 
     public WireInvocationHandler getHandler() {

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.WorkContext;
 
@@ -48,9 +48,9 @@ public class BasicStatelessScopeTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
         scope.start();
-        SystemAtomicComponent component1 = createComponent(scope);
+        AtomicComponent component1 = createComponent(scope);
         scope.register(component1);
-        SystemAtomicComponent component2 = createComponent(scope);
+        AtomicComponent component2 = createComponent(scope);
         scope.register(component2);
         StatelessComponentImpl comp1 = (StatelessComponentImpl) scope.getInstance(component1);
         Assert.assertNotNull(comp1);
@@ -64,7 +64,7 @@ public class BasicStatelessScopeTestCase extends TestCase {
         WorkContext ctx = new WorkContextImpl();
         StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
         scope.start();
-        SystemAtomicComponent component1 = createComponent(scope);
+        AtomicComponent component1 = createComponent(scope);
         scope.register(component1);
         try {
             // always throws an exception, which is the semantic for stateless implementations
@@ -81,11 +81,11 @@ public class BasicStatelessScopeTestCase extends TestCase {
         StatelessScopeContainer scope = new StatelessScopeContainer(ctx, null);
 
         scope.start();
-        SystemAtomicComponent component1 = createComponent(scope);
+        AtomicComponent component1 = createComponent(scope);
         scope.register(component1);
         StatelessComponent comp1 = (StatelessComponentImpl) scope.getInstance(component1);
         Assert.assertNotNull(comp1);
-        SystemAtomicComponent component2 = createComponent(scope);
+        AtomicComponent component2 = createComponent(scope);
         scope.register(component2);
         StatelessComponentImpl comp2 = (StatelessComponentImpl) scope.getInstance(component2);
         Assert.assertNotNull(comp2);
@@ -110,13 +110,13 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     }
 
-    private SystemAtomicComponent createComponent(ScopeContainer scopeContainer) {
+    private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(RequestScopeInitDestroyComponent.class);
         configuration.setInstanceFactory(factory);
         configuration.setName("foo");
-        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         scopeContainer.register(component);
         return component;
     }

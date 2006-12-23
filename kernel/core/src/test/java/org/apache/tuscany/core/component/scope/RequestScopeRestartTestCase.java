@@ -20,13 +20,13 @@ package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -53,12 +53,12 @@ public class RequestScopeRestartTestCase extends TestCase {
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
-        configuration.setName("InitDestroy");        
-        SystemAtomicComponent context = new SystemAtomicComponentImpl(configuration);
+        configuration.setName("InitDestroy");
+        AtomicComponent context = new SystemAtomicComponentImpl(configuration);
         context.start();
 
-        Object instance = context.getServiceInstance();
-        assertSame(instance, context.getServiceInstance());
+        Object instance = context.getTargetInstance();
+        assertSame(instance, context.getTargetInstance());
 
         scope.onEvent(new RequestEnd(this));
         scope.stop();
@@ -66,7 +66,7 @@ public class RequestScopeRestartTestCase extends TestCase {
 
         scope.start();
         context.start();
-        assertNotSame(instance, context.getServiceInstance());
+        assertNotSame(instance, context.getTargetInstance());
         scope.onEvent(new RequestEnd(this));
         scope.stop();
         context.stop();

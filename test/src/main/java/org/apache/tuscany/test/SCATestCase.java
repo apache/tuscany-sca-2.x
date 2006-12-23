@@ -24,14 +24,18 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentMonitor;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.api.TuscanyException;
@@ -40,6 +44,7 @@ import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.launcher.LauncherImpl;
 import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
 import org.apache.tuscany.host.MonitorFactory;
+import org.apache.tuscany.host.runtime.InitializationException;
 
 /**
  * Base class for JUnit tests that want to run in an SCA client environment.
@@ -69,12 +74,20 @@ public abstract class SCATestCase extends TestCase {
             for (String extensionName : extensions.keySet()) {
                 deployExtension(composite, extensionName, extensions.get(extensionName));
             }
+
+            SCAObject wireServiceComponent = composite.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
+            if (!(wireServiceComponent instanceof AtomicComponent)) {
+                throw new InitializationException("WireService must be an atomic component");
+            }
+
+            WireService wireService = (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
+
             if (applicationSCDL == null) {
                 throw new RuntimeException("application SCDL not found: " + applicationSCDL);
             }
             component = launcher.bootApplication("application", applicationSCDL);
             component.start();
-            context = new CompositeContextImpl(component);
+            context = new CompositeContextImpl(component, wireService);
             context.start();
         } catch (TuscanyException e) {
             DeploymentMonitor monitor = monitorFactory.getMonitor(DeploymentMonitor.class);
@@ -122,7 +135,7 @@ public abstract class SCATestCase extends TestCase {
     }
 
     protected void deployExtension(CompositeComponent composite, String extensionName, URL scdlURL)
-        throws LoaderException, BuilderException, ComponentException {
+        throws LoaderException, BuilderException, ComponentException, InitializationException {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
         implementation.setScdlLocation(scdlURL);
         implementation.setClassLoader(new URLClassLoader(new URL[]{scdlURL}, getClass().getClassLoader()));
@@ -130,7 +143,12 @@ public abstract class SCATestCase extends TestCase {
         ComponentDefinition<SystemCompositeImplementation> definition =
             new ComponentDefinition<SystemCompositeImplementation>(extensionName, implementation);
 
-        Deployer deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
+
+        SCAObject child = composite.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
+        if (!(child instanceof AtomicComponent)) {
+            throw new InitializationException("Deployer must be an atomic component");
+        }
+        Deployer deployer = (Deployer) ((AtomicComponent) child).getTargetInstance();
         Component component = deployer.deploy(composite, definition);
         component.start();
     }

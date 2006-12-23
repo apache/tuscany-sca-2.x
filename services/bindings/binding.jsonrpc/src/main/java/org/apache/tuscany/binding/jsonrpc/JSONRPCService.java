@@ -18,13 +18,12 @@
  */
 package org.apache.tuscany.binding.jsonrpc;
 
+import org.osoa.sca.annotations.Destroy;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObjectStartException;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Destroy;
 
 /**
  * @version $Rev$ $Date$
@@ -37,7 +36,8 @@ public class JSONRPCService extends ServiceExtension {
 
     public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
 
-    public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
+    public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService,
+                          ServletHost servletHost) {
 
         super(theName, interfaze, parent, wireService);
 
@@ -46,12 +46,10 @@ public class JSONRPCService extends ServiceExtension {
 
     public synchronized void start() {
         super.start();
-		  JSONRPCEntryPointServlet servlet;
-        try {
-            servlet = new JSONRPCEntryPointServlet(getName(), interfaze, this.getServiceInstance());
-		  } catch (TargetException e) {
-			  throw new SCAObjectStartException(e);
-		  }
+        JSONRPCEntryPointServlet servlet;
+        // FIXME this should not have to create a proxy but should instead dispatch directly down an invocation chain
+        Object instance = wireService.createProxy(interfaze, getInboundWire());
+        servlet = new JSONRPCEntryPointServlet(getName(), interfaze, instance);
 
         // register the servlet based on the service name
         servletHost.registerMapping("/" + getName(), servlet);

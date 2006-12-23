@@ -25,11 +25,14 @@ import org.osoa.sca.SCA;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -90,7 +93,17 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             tuscanySystem.start();
 
             // switch to the system deployer
-            deployer = (Deployer) tuscanySystem.getSystemChild("deployer").getServiceInstance();
+            SCAObject deployerComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
+            if (!(deployerComponent instanceof AtomicComponent)) {
+                throw new InitializationException("Deployer must be an atomic component");
+            }
+            deployer = (Deployer) ((AtomicComponent) deployerComponent).getTargetInstance();
+
+            SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
+            if (!(wireServiceComponent instanceof AtomicComponent)) {
+                throw new InitializationException("WireService must be an atomic component");
+            }
+            WireService wireService = (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
 
             application = deployApplicationScdl(deployer,
                 runtime.getRootComponent(),
@@ -99,7 +112,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
                 getApplicationClassLoader());
             application.start();
 
-            context = new CompositeContextImpl(application);
+            context = new CompositeContextImpl(application, wireService);
         } catch (LoaderException e) {
             // FIXME do something with this
             e.printStackTrace();

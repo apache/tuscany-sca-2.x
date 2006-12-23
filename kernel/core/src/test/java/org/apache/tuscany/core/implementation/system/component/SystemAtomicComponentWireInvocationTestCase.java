@@ -18,15 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
-import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.Source;
 import org.apache.tuscany.core.mock.component.SourceImpl;
@@ -45,24 +42,20 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
         Target target = new TargetImpl();
-        SystemInboundWire inboundWire = EasyMock.createMock(SystemInboundWire.class);
-        EasyMock.expect(inboundWire.getTargetService()).andReturn(target);
-        EasyMock.replay(inboundWire);
-
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.addReferenceSite("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.addServiceInterface(Source.class);
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
         configuration.setName("source");
-        SystemAtomicComponent component = new SystemAtomicComponentImpl(configuration);
-        QualifiedName qName = new QualifiedName("service");
-        OutboundWire outboundWire = new SystemOutboundWireImpl("setTarget", qName, Target.class);
-        outboundWire.setTargetWire(inboundWire);
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(outboundWire.getReferenceName()).andReturn("setTarget").atLeastOnce();
+        EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
+        EasyMock.replay(outboundWire);
         component.addOutboundWire(outboundWire);
         component.start();
-        assertSame(((Source) component.getServiceInstance()).getTarget(), target);
-        // wires should pass back direct ref
-        EasyMock.verify(inboundWire);
+        assertSame(((Source) component.getTargetInstance()).getTarget(), target);
+        EasyMock.verify(outboundWire);
     }
 }

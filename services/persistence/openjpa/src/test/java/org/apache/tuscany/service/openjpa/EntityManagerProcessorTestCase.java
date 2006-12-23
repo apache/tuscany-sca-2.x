@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -92,12 +93,18 @@ public class EntityManagerProcessorTestCase extends TestCase {
         super.setUp();
         EntityManagerFactory emf = EasyMock.createMock(EntityManagerFactory.class);
         EasyMock.replay(emf);
+
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn(emf);
+        EasyMock.replay(wire);
+
         parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EntityManagerFactory.class)).andReturn(emf).atLeastOnce();
+        EasyMock.expect(parent.resolveSystemAutowire(EntityManagerFactory.class)).andReturn(wire).atLeastOnce();
         EasyMock.replay(parent);
         ImplementationProcessorService service = EasyMock.createMock(ImplementationProcessorService.class);
         service.addName(EasyMock.isA(List.class), EasyMock.eq(0), EasyMock.isA(String.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer() {
+            @SuppressWarnings({"unchecked"})
             public Object answer() throws Throwable {
                 ((List<Object>) EasyMock.getCurrentArguments()[0]).add(EasyMock.getCurrentArguments()[2]);
                 return null;

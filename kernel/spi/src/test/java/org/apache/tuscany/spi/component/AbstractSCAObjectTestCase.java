@@ -106,9 +106,6 @@ public class AbstractSCAObjectTestCase extends TestCase {
             return null;
         }
 
-        public Object getServiceInstance() throws TargetResolutionException {
-            return null;
-        }
     }
 
     private class TestEvent implements Event {

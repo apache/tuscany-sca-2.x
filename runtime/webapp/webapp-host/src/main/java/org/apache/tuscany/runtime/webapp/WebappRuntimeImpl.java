@@ -27,11 +27,13 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.event.EventPublisher;
+import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -103,7 +105,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             // hence the need to register this twice
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
                 RuntimeInfo.class,
-                (WebappRuntimeInfo) getRuntimeInfo());
+                getRuntimeInfo());
             systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
                 WebappRuntimeInfo.class,
                 (WebappRuntimeInfo) getRuntimeInfo());
@@ -130,10 +132,24 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                 bootClassLoader);
             tuscanySystem.start();
 
-            requestInjector = (ServletRequestInjector) tuscanySystem.getSystemChild("servletHost").getServiceInstance();
+            SCAObject host = tuscanySystem.getSystemChild("servletHost");
+            if (!(host instanceof AtomicComponent)) {
+                throw new InitializationException("Servlet host must be an atomic component");
+            }
+            requestInjector = (ServletRequestInjector) ((AtomicComponent) host).getTargetInstance();
 
             // switch to the system deployer
-            deployer = (Deployer) tuscanySystem.getSystemChild("deployer").getServiceInstance();
+            SCAObject child = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
+            if (!(child instanceof AtomicComponent)) {
+                throw new InitializationException("Deployer must be an atomic component");
+            }
+            deployer = (Deployer) ((AtomicComponent) child).getTargetInstance();
+
+            SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
+            if (!(wireServiceComponent instanceof AtomicComponent)) {
+                throw new InitializationException("WireService must be an atomic component");
+            }
+            WireService wireService = (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
 
             if (getApplicationScdl() == null) {
                 throw new TuscanyInitException("Could not find application SCDL");
@@ -157,7 +173,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                     current = (CompositeComponent) o;
                 }
             }
-            context = new CompositeContextImpl(current);
+            context = new CompositeContextImpl(current, wireService);
         } catch (Exception e) {
             throw new ServletLauncherInitException(e);
         }

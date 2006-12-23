@@ -20,16 +20,15 @@ package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.model.Scope;
-
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
@@ -57,14 +56,14 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
-        SystemAtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.start();
 
         Object session = new Object();
         ctx.setIdentifier(Scope.SESSION, session);
         scope.onEvent(new HttpSessionStart(this, session));
-        Object instance = component.getServiceInstance();
-        assertSame(instance, component.getServiceInstance());
+        Object instance = component.getTargetInstance();
+        assertSame(instance, component.getTargetInstance());
 
         scope.onEvent(new HttpSessionEnd(this, session));
         scope.stop();
@@ -73,7 +72,7 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         scope.start();
         scope.onEvent(new HttpSessionStart(this, session));
         component.start();
-        assertNotSame(instance, component.getServiceInstance());
+        assertNotSame(instance, component.getTargetInstance());
         scope.onEvent(new HttpSessionEnd(this, session));
         scope.stop();
         component.stop();

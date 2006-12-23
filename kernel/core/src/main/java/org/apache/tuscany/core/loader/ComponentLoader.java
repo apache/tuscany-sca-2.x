@@ -62,6 +62,7 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
@@ -92,6 +93,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         return COMPONENT;
     }
 
+    @SuppressWarnings("unchecked")
     public ComponentDefinition<?> load(CompositeComponent parent,
                                        ModelObject object,
                                        XMLStreamReader reader,
@@ -139,6 +141,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                 .getImplementation() instanceof SystemImplementation)) {
                                 populatePropertyValues(componentDefinition);
                             }
+                            ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+                                (ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>) componentDefinition
+                                    .getImplementation().getComponentType();
+                            for (ReferenceDefinition ref : type.getReferences().values()) {
+                                if (ref.isAutowire()) {
+                                    ReferenceTarget referenceTarget = new ReferenceTarget();
+                                    referenceTarget.setReferenceName(ref.getName());
+                                    componentDefinition.add(referenceTarget);
+                                }
+                            }
+
                             validate(componentDefinition);
                             return componentDefinition;
                         }

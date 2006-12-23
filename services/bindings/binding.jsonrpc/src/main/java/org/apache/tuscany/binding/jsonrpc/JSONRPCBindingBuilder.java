@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Builds a Service for JSON-RPC binding.
@@ -33,11 +34,22 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBinding> {
 
-    ServletHost servletHost;
+    private ServletHost servletHost;
+    private WireService wireService;
 
     @Autowire()
     public void setServletHost(ServletHost servletHost) {
         this.servletHost = servletHost;
+    }
+
+    @Autowire
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
+    }
+
+
+    public ServletHost getServletHost() {
+        return servletHost;
     }
 
     protected Class<JSONRPCBinding> getBindingType() {
@@ -50,7 +62,7 @@ public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindin
                              DeploymentContext deploymentContext) {
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
 
-        return new JSONRPCService(serviceDefinition.getName(), interfaze, parent, wireService, servletHost);
+        return new JSONRPCService(serviceDefinition.getName(), interfaze, parent, this.wireService, servletHost);
     }
 
 }

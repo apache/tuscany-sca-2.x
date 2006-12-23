@@ -16,28 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.service.openjpa;
 
-import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
-import org.easymock.EasyMock;
+import org.apache.tuscany.spi.implementation.java.ProcessingException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class SystemWireObjectFactoryTestCase extends TestCase {
+public class EntityManagerFactoryNotConfiguredException extends ProcessingException {
 
-    public void testGetInstance() throws Exception {
-        Foo foo = new Foo();
-        SystemOutboundWire wire = EasyMock.createMock(SystemOutboundWire.class);
-        EasyMock.expect(wire.getTargetService()).andReturn(foo);
-        EasyMock.replay(wire);
-        SystemWireObjectFactory factory = new SystemWireObjectFactory(wire);
-        assertEquals(foo, factory.getInstance());
-        EasyMock.verify(wire);
-    }
-
-    private class Foo {
-
+    public EntityManagerFactoryNotConfiguredException() {
+        super("Entity manager factory not configured");
     }
 }

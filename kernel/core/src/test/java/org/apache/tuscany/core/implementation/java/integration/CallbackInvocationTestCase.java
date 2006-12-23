@@ -97,7 +97,7 @@ public class CallbackInvocationTestCase extends TestCase {
         Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
 
         connector.connect(clientComponent);
-        FooClient client = (FooClient) clientComponent.getServiceInstance();
+        FooClient client = (FooClient) clientComponent.getTargetInstance();
         client.invoke();
         assertTrue(client.invoked);
         client.invokeMultiCallback();
@@ -128,7 +128,7 @@ public class CallbackInvocationTestCase extends TestCase {
         Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
 
         connector.connect(clientComponent);
-        FooPlainClient client = (FooPlainClient) clientComponent.getServiceInstance();
+        FooPlainClient client = (FooPlainClient) clientComponent.getTargetInstance();
         try {
             client.invoke();
             fail();
@@ -167,10 +167,10 @@ public class CallbackInvocationTestCase extends TestCase {
         Connector connector = new ConnectorImpl(new JDKWireService(), null, scheduler, workContext);
         connector.connect(clientComponent1);
         connector.connect(clientComponent2);
-        FooClient client1 = (FooClient) clientComponent1.getServiceInstance();
+        FooClient client1 = (FooClient) clientComponent1.getTargetInstance();
         client1.invoke();
         assertTrue(client1.invoked);
-        FooClient client2 = (FooClient) clientComponent2.getServiceInstance();
+        FooClient client2 = (FooClient) clientComponent2.getTargetInstance();
         client2.invoke();
         assertTrue(client2.invoked);
     }

@@ -78,15 +78,11 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             super(null, null, scopeContainer, null, null, null, null, 0);
         }
 
-        public Object getServiceInstance() throws TargetResolutionException {
-            return null;
-        }
-
         public Object createInstance() throws ObjectCreationException {
             return null;
         }
 
-        public Object getServiceInstance(String name) throws TargetResolutionException {
+        public Object getTargetInstance() throws TargetResolutionException {
             return null;
         }
 

@@ -33,7 +33,6 @@ import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.ConversationIDObjectFactory;
@@ -171,7 +170,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
         //FIXME throw an error if no injection site found
     }
-    
+
     public void addConversationIDFactory(Member member) {
         ObjectFactory<String> convIDObjectFactory = new ConversationIDObjectFactory(workContext);
         if (member instanceof Field) {
@@ -227,7 +226,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         return false;
     }
 
-    protected Injector<Object> createInjector(Member member, RuntimeWire wire) {
+    protected Injector<Object> createInjector(Member member, OutboundWire wire) {
         ObjectFactory<?> factory = createWireFactory(wire);
         if (member instanceof Field) {
             return new FieldInjector<Object>((Field) member, factory);
@@ -264,6 +263,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
     }
 
-    protected abstract ObjectFactory<?> createWireFactory(RuntimeWire wire);
+    protected abstract ObjectFactory<?> createWireFactory(OutboundWire wire);
 
 }

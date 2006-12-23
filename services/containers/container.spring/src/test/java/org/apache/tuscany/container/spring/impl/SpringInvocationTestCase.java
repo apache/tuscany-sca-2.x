@@ -40,7 +40,7 @@ public class SpringInvocationTestCase extends TestCase {
         EasyMock.expectLastCall();
         EasyMock.replay(bean);
         SpringCompositeComponent context = EasyMock.createMock(SpringCompositeComponent.class);
-        EasyMock.expect(context.locateService(Object.class, "foo")).andReturn(bean);
+        EasyMock.expect(context.getBean(Object.class, "foo")).andReturn(bean);
         EasyMock.replay(context);
         SpringInvoker invoker = new SpringInvoker("foo", TestBean.class.getMethod("test", String.class), context);
         Message msg = new MessageImpl();

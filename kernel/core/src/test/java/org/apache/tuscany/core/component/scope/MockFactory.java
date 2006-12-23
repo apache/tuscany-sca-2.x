@@ -30,16 +30,16 @@ import org.osoa.sca.annotations.Init;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
-import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWireImpl;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -60,7 +60,7 @@ public final class MockFactory {
         List<Class<?>> sourceInterfaces = new ArrayList<Class<?>>();
         sourceInterfaces.add(sourceClass);
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
-        SystemAtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
+        AtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
         PojoConfiguration sourceConfig = new PojoConfiguration();
         sourceConfig.getServiceInterfaces().addAll(sourceInterfaces);
         sourceConfig.setScopeContainer(sourceScopeContainer);
@@ -94,10 +94,15 @@ public final class MockFactory {
 
         sourceConfig.addReferenceSite(setter.getName(), setter);
         sourceConfig.setName(source);
-        SystemAtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
+        AtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
         QualifiedName targetName = new QualifiedName(target);
-        SystemOutboundWire wire = new SystemOutboundWireImpl(setter.getName(), targetName, targetClass);
-        InboundWire inboundWire = new SystemInboundWireImpl(targetName.getPortName(), targetClass, targetComponent);
+        OutboundWire wire = new OutboundWireImpl();
+        wire.setReferenceName(setter.getName());
+        wire.setServiceContract(new JavaServiceContract(targetClass));
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setContainer(targetComponent);
+        inboundWire.setServiceContract(new JavaServiceContract(targetClass));
+        inboundWire.setServiceName(targetName.getPortName());
         wire.setTargetWire(inboundWire);
         sourceComponent.addOutboundWire(wire);
         components.put(source, sourceComponent);
@@ -106,7 +111,7 @@ public final class MockFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static SystemAtomicComponent createAtomicComponent(String name, ScopeContainer container, Class<?> clazz)
+    public static AtomicComponent createAtomicComponent(String name, ScopeContainer container, Class<?> clazz)
         throws NoSuchMethodException {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(container);
