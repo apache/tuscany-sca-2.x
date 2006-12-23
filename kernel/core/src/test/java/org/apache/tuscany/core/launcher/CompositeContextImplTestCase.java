@@ -102,6 +102,34 @@ public class CompositeContextImplTestCase extends TestCase {
         EasyMock.verify(child);
     }
 
+
+    public void testCompositeLocate() throws Exception {
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.replay(wire);
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getInboundWire()).andReturn(wire);
+        EasyMock.replay(service);
+        CompositeComponent child = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(child.getChild("Bar")).andReturn(service);
+        EasyMock.replay(child);
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getChild("Foo")).andReturn(child);
+        EasyMock.replay(composite);
+
+        WireService wireService = EasyMock.createMock(WireService.class);
+        EasyMock.expect(wireService.createProxy(EasyMock.eq(FooService.class), EasyMock.eq(wire)))
+            .andReturn(new FooService() {
+            });
+        EasyMock.replay(wireService);
+        CompositeContextImpl context = new CompositeContextImpl(composite, wireService);
+        context.locateService(FooService.class, "Foo/Bar");
+        EasyMock.verify(wireService);
+        EasyMock.verify(composite);
+        EasyMock.verify(wire);
+        EasyMock.verify(child);
+        EasyMock.verify(service);
+    }
+
     private class FooService {
 
     }
