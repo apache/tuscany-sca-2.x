@@ -86,4 +86,13 @@ public interface AtomicComponent extends Component {
      */
     void removeInstance() throws ComponentException;
 
+    /**
+     * Returns the target instance associated with the component. A target instance is the actual object a request is
+     * dispatched to sans wire chain.
+     *
+     * @throws TargetResolutionException
+     *
+     */
+    Object getTargetInstance() throws TargetResolutionException;
+    
 }

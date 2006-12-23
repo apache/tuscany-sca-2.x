@@ -19,6 +19,9 @@
 package org.apache.tuscany.binding.celtix;
 
 import java.net.URL;
+import java.util.Map;
+import java.util.HashMap;
+import java.lang.reflect.Type;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -31,6 +34,11 @@ import org.xml.sax.InputSource;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.model.Operation;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -51,7 +59,21 @@ public class CeltixServiceTestCase extends TestCase {
 
     public void testGetDataBindingCallback() throws Exception {
         CeltixService celtixService = createCeltixService();
-
+        Message msg = new MessageImpl();
+        msg.setBody("Hello Celtix");
+        Interceptor interceptor = EasyMock.createMock(Interceptor.class);
+        EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andReturn(msg);
+        EasyMock.replay(interceptor);
+        InboundInvocationChain chain = EasyMock.createMock(InboundInvocationChain.class);
+        EasyMock.expect(chain.getHeadInterceptor()) .andReturn(interceptor);
+        EasyMock.replay(chain);
+        Map<Operation<?>,InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+        Operation<?> op = new Operation<Type>("greetMe", null, null, null);
+        chains.put(op, chain);
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
+        EasyMock.replay(wire);
+        celtixService.setInboundWire(wire);
         QName operationName = new QName("greetMe");
         ObjectMessageContextImpl ctx = new ObjectMessageContextImpl();
         ctx.setMessageObjects(new String[]{"Celtix"});
@@ -59,8 +81,8 @@ public class CeltixServiceTestCase extends TestCase {
         assertNotNull(callback1);
 
         callback1.invoke(ctx);
-        Object rtn = (String) ctx.getReturn();
-        assertEquals("Hello Celtix", rtn);
+        Message rtn = (Message) ctx.getReturn();
+        assertEquals("Hello Celtix", rtn.getBody());
 
     }
 

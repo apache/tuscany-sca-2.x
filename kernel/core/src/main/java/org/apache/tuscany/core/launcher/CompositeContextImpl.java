@@ -24,15 +24,23 @@ import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceReference;
 import org.osoa.sca.ServiceRuntimeException;
 
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.WireService;
 
 
 public class CompositeContextImpl extends SCA implements CompositeContext {
     protected final CompositeComponent composite;
+    protected final WireService wireService;
 
-    public CompositeContextImpl(final CompositeComponent composite) {
+    public CompositeContextImpl(final CompositeComponent composite, final WireService wireService) {
         this.composite = composite;
+        this.wireService = wireService;
     }
 
     public void start() {
@@ -64,11 +72,41 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
     }
 
     public <T> T locateService(Class<T> serviceInterface, String serviceName) throws ServiceRuntimeException {
-        try {
-            return composite.locateService(serviceInterface, serviceName);
-        } catch (TargetResolutionException e) {
-            throw new ServiceRuntimeException(e);
+        String name = serviceInterface.getName();
+        QualifiedName qName = new QualifiedName(serviceName);
+        SCAObject child = composite.getChild(qName.getPartName());
+        InboundWire wire;
+        if (child instanceof CompositeComponent) {
+            CompositeComponent childComposite = (CompositeComponent) child;
+            child = childComposite.getChild(qName.getPortName());
+            if (child == null) {
+                throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
+            }
+            wire = getInboundWire(child, name, "");
+        } else {
+            wire = getInboundWire(child, name, qName.getPortName());
         }
+        return wireService.createProxy(serviceInterface, wire);
+    }
+
+    private InboundWire getInboundWire(SCAObject child, String name, String serviceName) {
+        InboundWire wire;
+        if (child instanceof AtomicComponent) {
+            wire = ((AtomicComponent) child).getInboundWire(name);
+            if (wire == null) {
+                String qName = serviceName + QualifiedName.NAME_SEPARATOR + name;
+                throw new ServiceRuntimeException("Service not found [" + qName + "]");
+            }
+        } else if (child instanceof Service) {
+            wire = ((Service) child).getInboundWire();
+        } else if (child instanceof Reference) {
+            wire = ((Reference) child).getInboundWire();
+        } else if (child == null) {
+            throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
+        } else {
+            throw new ServiceRuntimeException("Invalid service type [" + child.getClass().getName() + "]");
+        }
+        return wire;
     }
 
     public ServiceReference newSession(String arg0) {

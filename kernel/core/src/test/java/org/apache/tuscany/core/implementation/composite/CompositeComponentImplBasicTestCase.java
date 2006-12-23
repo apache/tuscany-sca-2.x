@@ -21,18 +21,19 @@ package org.apache.tuscany.core.implementation.composite;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.IllegalTargetException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.implementation.TestUtils;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.eq;
@@ -58,7 +59,11 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testGetServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null, null, null));
+        ServiceExtension extension = new ServiceExtension("foo", null, null, null);
+        InboundWire wire = TestUtils.createInboundWire(Foo.class);
+        wire.setContainer(extension);
+        extension.setInboundWire(wire);
+        composite.register(extension);
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getServices().size());
     }
@@ -84,18 +89,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         assertNull(composite.getService("foo"));
     }
 
-    public void testTargetNotFound() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(getReference("foo"));
-        composite.start();
-        try {
-            composite.locateService(Foo.class, "foo1");
-            fail();
-        } catch (TargetNotFoundException e) {
-            // expected
-        }
-    }
-
     public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         composite.register(new ServiceExtension("foo", null, null, null));
@@ -116,46 +109,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
             if (!(Foo.class.isAssignableFrom(o)) && !(Bar.class.isAssignableFrom(o))) {
                 fail();
             }
-        }
-    }
-
-    public void testGetServiceInstanceByName() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Service service = createMock(Service.class);
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
-        service.getName();
-        expectLastCall().andReturn("foo").anyTimes();
-        service.getInterface();
-        expectLastCall().andReturn(Foo.class);
-        service.getServiceInstance();
-        expectLastCall().andReturn(new Foo() {
-        });
-        replay(service);
-        composite.register(service);
-        assertNotNull(composite.getServiceInstance("foo"));
-    }
-
-    public void testGetServiceInstanceNotFound() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Service service = getService("foo", Foo.class);
-        composite.register(service);
-        try {
-            composite.getServiceInstance("bar");
-            fail();
-        } catch (TargetNotFoundException e) {
-            //expected
-        }
-    }
-
-    public void testGetServiceInstanceNotService() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Reference reference = getReference("foo");
-        composite.register(reference);
-        try {
-            composite.getServiceInstance("foo");
-            fail();
-        } catch (IllegalTargetException e) {
-            //expected
         }
     }
 
@@ -181,9 +134,13 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         composite.prepare();
     }
 
-    private Reference getReference(String name) {
+    private Reference getReference(String name) throws InvalidServiceContractException {
         Reference reference = EasyMock.createNiceMock(Reference.class);
         EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
+        InboundWire wire = TestUtils.createInboundWire(Bar.class);
+        wire.setContainer(reference);
+        EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
+
         reference.getName();
         expectLastCall().andReturn(name).anyTimes();
         reference.getInterface();
@@ -192,11 +149,14 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         return reference;
     }
 
-    private Service getService(String name, Class<?> interfaze) {
+    private Service getService(String name, Class<?> interfaze) throws InvalidServiceContractException {
         Service service = createMock(Service.class);
         EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
         service.getName();
         expectLastCall().andReturn(name).anyTimes();
+        InboundWire wire = TestUtils.createInboundWire(interfaze);
+        wire.setContainer(service);
+        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
         service.getInterface();
         expectLastCall().andReturn(interfaze).atLeastOnce();
         replay(service);

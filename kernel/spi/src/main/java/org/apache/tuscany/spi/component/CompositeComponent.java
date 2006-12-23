@@ -23,6 +23,7 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * The runtime instantiation of an SCA composite component. Composites may contain child components, offer services, and
@@ -121,27 +122,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     Service getSystemService(String name);
 
     /**
-     * Returns a system service associated with the given name
-     *
-     * @throws TargetResolutionException if an error occurs retrieving the service instance
-     */
-    Object getSystemServiceInstance(String name) throws TargetResolutionException;
-
-    /**
-     * Returns the service instance for associated with the child registered for the given name
-     *
-     * @throws TargetResolutionException
-     */
-    <T> T locateService(Class<T> serviceInterface, String serviceName) throws TargetResolutionException;
-
-    /**
-     * Returns the system service instance for associated with the child registered for the given name
-     *
-     * @throws TargetResolutionException
-     */
-    <T> T locateSystemService(Class<T> serviceInterface, String serviceName) throws TargetResolutionException;
-
-    /**
      * Returns the references contained by the composite
      */
     List<Reference> getReferences();
@@ -150,49 +130,49 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * Returns the system references contained by the composite
      */
     List<Reference> getSystemReferences();
-    
-    /**
-     * Invoked by child components to return an an autowire target. Resolved targets may be services or components in
-     * the parent or its ancestors, or references in a sibling component
-     *
-     * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if none can be found
-     * @throws TargetResolutionException
-     */
-    <T> T resolveInstance(Class<T> instanceInterface) throws TargetResolutionException;
 
     /**
-     * Invoked by system child components to return an an autowire target. Resolved targets may be system services or
-     * components in the parent or its ancestors, or references in a sibling component
+     * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be
+     * services or components in the parent or its ancestors, or references in a sibling component
      *
      * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if none can be found
+     * @return a reference to the requested service or null if one is not be found
      * @throws TargetResolutionException
      */
-    <T> T resolveSystemInstance(Class<T> instanceInterface) throws TargetResolutionException;
+    InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException;
 
     /**
-     * Invoked by a parent component to return an autowire target in a child. Resolved targets must be services. For
-     * example, given a parent P and two siblings, A and B, A would request an autowire by invoking {@link
-     * #resolveInstance(Class<T>)} on P, which in turn could invoke the present method on B in order to resolve a
-     * target.
+     * Invoked by system child components to return a wire to a system target based on matching type. Resolved targets
+     * may be system services or components in the parent or its ancestors, or references in a sibling component
      *
      * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if none can be found
+     * @return a reference to the requested service or null if one is not be found
      * @throws TargetResolutionException
      */
-    <T> T resolveExternalInstance(Class<T> instanceInterface) throws TargetResolutionException;
+    InboundWire resolveSystemAutowire(Class<?> instanceInterface) throws TargetResolutionException;
 
     /**
-     * Invoked by a parent component to return a system autowire target in a child. Resolved targets must be system
-     * services. For example, given a parent P and two siblings, A and B, A would request an autowire by invoking {@link
-     * #resolveInstance(Class<T>)} on P, which in turn could invoke the present method on B in order to resolve a
-     * target.
+     * Invoked by a parent component to return an wire to a target in a child based on matching type. Resolved targets
+     * must be services. For example, given a parent P and two siblings, A and B, A would request an autowire by
+     * invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on B in order to
+     * resolve a target.
      *
      * @param instanceInterface the type of service being requested
-     * @return a reference to the requested service or null if none can be found
+     * @return a reference to the requested service or null if one is not be found
      * @throws TargetResolutionException
      */
-    <T> T resolveSystemExternalInstance(Class<T> instanceInterface) throws TargetResolutionException;
+    InboundWire resolveExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException;
+
+    /**
+     * Invoked by a parent component to return a wire to a system target in a child based on matching type. Resolved
+     * targets must be system services. For example, given a parent P and two siblings, A and B, A would request an
+     * autowire by invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on B
+     * in order to resolve a target.
+     *
+     * @param instanceInterface the type of service being requested
+     * @return a reference to the requested service or null if one is not be found
+     * @throws TargetResolutionException
+     */
+    InboundWire resolveSystemExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException;
 
 }

@@ -21,10 +21,12 @@ package org.apache.tuscany.container.spring.impl;
 import java.net.URL;
 
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
-import org.apache.tuscany.container.spring.mock.TestBeanImpl;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -41,18 +43,20 @@ public class ReferenceInvocationTestCase extends TestCase {
     public void testInvocation() throws Exception {
         URL url = getClass().getClassLoader().getResource("META-INF/sca/testReferenceContext.xml");
         Resource resource = new UrlResource(url);
-        SpringCompositeComponent parent = new SpringCompositeComponent("spring", resource, null, null, null);
-        TestBean referenceTarget = new TestBeanImpl();
+        SpringCompositeComponent parent = new SpringCompositeComponent("spring", resource, null, null, null, null);
+        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(inboundWire.getServiceContract()).andReturn(new ServiceContract(TestBean.class){});
+        EasyMock.replay(inboundWire);
         Reference reference = createMock(Reference.class);
         expect(reference.getName()).andReturn("bar").anyTimes();
         expect(reference.isSystem()).andReturn(false).atLeastOnce();
         expect(reference.getInterface()).andStubReturn(TestBean.class);
-        expect(reference.getServiceInstance()).andStubReturn(referenceTarget);
+        expect(reference.getInboundWire()).andStubReturn(inboundWire);
         reference.start();
         replay(reference);
         parent.register(reference);
         parent.start();
-        parent.locateService(TestBean.class, "testBean");
+        parent.getBean(TestBean.class, "testBean");
     }
 
 }

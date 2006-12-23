@@ -21,19 +21,18 @@ package org.apache.tuscany.core.implementation.system.component;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.TargetResolutionException;
-
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
- * Uses a system wire to return an object instance
+ * Returns a target instance from a wire
  *
  * @version $Rev$ $Date$
  */
-public class SystemWireObjectFactory implements ObjectFactory {
+public class WireObjectFactory implements ObjectFactory {
 
-    private SystemOutboundWire wire;
+    private OutboundWire wire;
 
-    public SystemWireObjectFactory(SystemOutboundWire factory) {
+    public WireObjectFactory(OutboundWire factory) {
         this.wire = factory;
     }
 

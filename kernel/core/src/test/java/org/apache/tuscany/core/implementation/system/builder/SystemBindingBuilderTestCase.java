@@ -21,8 +21,8 @@ package org.apache.tuscany.core.implementation.system.builder;
 import java.net.URI;
 
 import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -39,7 +39,7 @@ public class SystemBindingBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
         SystemBindingBuilder builder = new SystemBindingBuilder();
-        SystemAtomicComponent componet = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent componet = EasyMock.createMock(AtomicComponent.class);
         EasyMock.replay(componet);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getSystemChild("foo")).andReturn(componet);

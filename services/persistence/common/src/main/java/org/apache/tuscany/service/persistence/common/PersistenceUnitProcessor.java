@@ -25,8 +25,8 @@ import javax.persistence.PersistenceUnit;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -59,7 +59,7 @@ public class PersistenceUnitProcessor extends ImplementationProcessorExtension {
         }
         String unitName = annotation.unitName();
 
-        SystemAtomicComponent component = (SystemAtomicComponent) parent.getSystemChild(unitName);
+        AtomicComponent component = (AtomicComponent) parent.getSystemChild(unitName);
         EntityManagerFactory emf;
         if (component == null) {
             emf = builder.newEntityManagerFactory(unitName, context.getClassLoader());

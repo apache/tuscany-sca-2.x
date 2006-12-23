@@ -60,7 +60,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         processor.visitEnd(null, SingleInterfaceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
         assertEquals(PropertyInterface.class,
-            type.getServices().get("HeuristicPojoProcessorTestCase$PropertyInterface")
+            type.getServices().get(PropertyInterface.class.getName())
                 .getServiceContract().getInterfaceClass());
         assertTrue(type.getProperties().isEmpty());
         assertTrue(type.getReferences().isEmpty());
@@ -78,7 +78,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         processor.visitEnd(null, SingleInterfaceWithPropertyReferenceImpl.class, type, null);
         assertEquals(1, type.getServices().size());
         assertEquals(Interface1.class,
-            type.getServices().get("HeuristicPojoProcessorTestCase$Interface1")
+            type.getServices().get(Interface1.class.getName())
                 .getServiceContract().getInterfaceClass());
         assertEquals(1, type.getProperties().size());
         assertEquals(ComplexProperty.class, type.getProperties().get("property").getJavaType());
@@ -155,7 +155,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         Constructor<Child> ctor = Child.class.getConstructor();
         type.setConstructorDefinition(new ConstructorDefinition<Child>(ctor));
         processor.visitEnd(null, Child.class, type, null);
-        assertTrue(type.getServices().containsKey("HeuristicPojoProcessorTestCase$Interface1"));
+        assertTrue(type.getServices().containsKey(Interface1.class.getName()));
     }
 
     /**
@@ -212,7 +212,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
     private static class PropertyIntTypeOnConstructor {
         private int foo;
 
-        public PropertyIntTypeOnConstructor(@Property(name = "foo") int foo) {
+        public PropertyIntTypeOnConstructor(@Property(name = "foo")int foo) {
             this.foo = foo;
         }
 

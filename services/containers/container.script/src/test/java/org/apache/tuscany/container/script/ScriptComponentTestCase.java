@@ -28,14 +28,10 @@ import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 
 public class ScriptComponentTestCase extends TestCase {
 
@@ -51,41 +47,6 @@ public class ScriptComponentTestCase extends TestCase {
         operation.setServiceContract(new Contract<Type>(List.class));
         TargetInvoker invoker = component.createTargetInvoker("hashCode", operation, null);
         assertNotNull(invoker);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void testGetServiceInstance() throws Exception {
-        WireService wireService = EasyMock.createMock(WireService.class);
-        EasyMock.expect(wireService.createProxy(EasyMock.isA(RuntimeWire.class))).andStubAnswer(new IAnswer() {
-            public Object answer() throws Throwable {
-                return "foo";
-            }
-        });
-        EasyMock.replay(wireService);
-        ComponentConfiguration config = new ComponentConfiguration();
-        config.setName("foo");
-        config.setScopeContainer(container);
-        config.setWireService(wireService);
-        ScriptComponent pc = new ScriptComponent(config);
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getServiceName()).andReturn("foo");
-        EasyMock.replay(wire);
-        pc.addInboundWire(wire);
-        assertEquals("foo", pc.getServiceInstance());
-        EasyMock.verify(wireService);
-    }
-
-    public void testGetServiceInstanceFail() {
-        ComponentConfiguration config = new ComponentConfiguration();
-        config.setName("foo");
-        config.setScopeContainer(container);
-        ScriptComponent pc = new ScriptComponent(config);
-        try {
-            pc.getServiceInstance();
-            fail();
-        } catch (TargetException e) {
-            // expected
-        }
     }
 
     public void testGetServiceInterfaces() {

@@ -18,6 +18,13 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.services.store.StoreMonitor;
+
+import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.event.ConversationEnd;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -27,14 +34,7 @@ import org.apache.tuscany.core.injection.MethodEventInvoker;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 import org.apache.tuscany.core.mock.component.ConversationalScopeInitDestroyComponent;
 import org.apache.tuscany.core.services.store.memory.MemoryStore;
-import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.easymock.EasyMock;
-
-import junit.framework.TestCase;
 
 /**
  * @version $$Rev: 471111 $$ $$Date: 2006-11-03 23:06:48 -0500 (Fri, 03 Nov 2006) $$
@@ -53,7 +53,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         WorkContext workContext = new WorkContextImpl();
         ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext, null);
         scopeContext.start();
-        SystemAtomicComponent atomicContext = createContext(scopeContext);
+        AtomicComponent atomicContext = createContext(scopeContext);
         // start the request
         String conversation = "conv";
         workContext.setIdentifier(Scope.CONVERSATION, conversation);
@@ -78,7 +78,7 @@ public class BasicConversationalScopeTestCase extends TestCase {
         ConversationalScopeContainer scopeContext = new ConversationalScopeContainer(store, workContext, null);
         scopeContext.start();
 
-        SystemAtomicComponent atomicContext = createContext(scopeContext);
+        AtomicComponent atomicContext = createContext(scopeContext);
 
         String conversation1 = "conv";
         workContext.setIdentifier(Scope.CONVERSATION, conversation1);
@@ -104,18 +104,18 @@ public class BasicConversationalScopeTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         factory = new PojoObjectFactory<ConversationalScopeInitDestroyComponent>(
-                ConversationalScopeInitDestroyComponent.class.getConstructor((Class[]) null));
+            ConversationalScopeInitDestroyComponent.class.getConstructor((Class[]) null));
         initInvoker = new MethodEventInvoker<Object>(
-                ConversationalScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
+            ConversationalScopeInitDestroyComponent.class.getMethod("init", (Class[]) null));
         destroyInvoker = new MethodEventInvoker<Object>(
-                ConversationalScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
+            ConversationalScopeInitDestroyComponent.class.getMethod("destroy", (Class[]) null));
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createContext(ScopeContainer scopeContainer) {
+    private AtomicComponent createContext(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(ConversationalScopeInitDestroyComponent.class);

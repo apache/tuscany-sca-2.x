@@ -70,7 +70,7 @@ public class PropertyTestCase extends TestCase {
         expect((String) factory.getInstance()).andReturn("bar");
         replay(factory);
         component.addPropertyFactory("property", factory);
-        Greeting greeting = (Greeting) component.getServiceInstance();
+        Greeting greeting = (Greeting) component.getTargetInstance();
         assertEquals("bar", greeting.greet("foo"));
     }
 

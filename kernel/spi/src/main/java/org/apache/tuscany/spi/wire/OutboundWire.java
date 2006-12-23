@@ -52,6 +52,10 @@ public interface OutboundWire extends RuntimeWire {
      */
     void setTargetName(QualifiedName name);
 
+    boolean isAutowire();
+
+    void setAutowire(boolean val);
+
     /**
      * Sets the callback interface type generated proxies implement
      */

@@ -29,6 +29,8 @@ import org.osoa.sca.CompositeContext;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -41,6 +43,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.host.Launcher;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
@@ -115,7 +118,11 @@ public class LauncherImpl implements Launcher {
         // start the system
         composite.start();
 
-        deployer = (Deployer) composite.getSystemChild("deployer").getServiceInstance();
+        SCAObject child = composite.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
+        if (!(child instanceof AtomicComponent)) {
+            throw new InitializationException("Deployer must be an atomic component");
+        }
+        deployer = (Deployer) ((AtomicComponent) child).getTargetInstance();
         runtime.getRootComponent().start();
     }
 

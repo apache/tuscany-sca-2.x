@@ -23,13 +23,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireObjectFactory;
 
@@ -51,26 +49,6 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
     public JavaAtomicComponent(PojoConfiguration configuration) {
         super(configuration);
         this.scope = configuration.getScopeContainer().getScope();
-    }
-
-    public Object getServiceInstance(String name) throws TargetResolutionException {
-        InboundWire wire = serviceWires.get(name);
-        if (wire == null) {
-            TargetNotFoundException e = new TargetNotFoundException(name);
-            e.addContextName(getName());
-            throw e;
-        }
-        return wireService.createProxy(wire);
-    }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        if (serviceInterfaces.size() == 0) {
-            return getTargetInstance();
-        } else if (serviceInterfaces.size() == 1) {
-            return getTargetInstance();
-        } else {
-            throw new TargetNotFoundException("Component must have exactly one service");
-        }
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
@@ -114,7 +92,7 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         }
     }
 
-    protected ObjectFactory<?> createWireFactory(RuntimeWire wire) {
+    protected ObjectFactory<?> createWireFactory(OutboundWire wire) {
         return new WireObjectFactory(wire, wireService);
     }
 }

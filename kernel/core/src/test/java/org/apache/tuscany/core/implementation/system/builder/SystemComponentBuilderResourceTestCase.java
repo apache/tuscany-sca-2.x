@@ -3,7 +3,7 @@ package org.apache.tuscany.core.implementation.system.builder;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
@@ -13,6 +13,7 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
@@ -48,10 +49,15 @@ public class SystemComponentBuilderResourceTestCase extends TestCase {
         impl.setComponentType(type);
         ComponentDefinition<SystemImplementation> definition =
             new ComponentDefinition<SystemImplementation>("foo", impl);
+
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn("result");
+        EasyMock.replay(wire);
+
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(String.class)).andReturn("result");
+        EasyMock.expect(parent.resolveSystemAutowire(String.class)).andReturn(wire);
         EasyMock.replay(parent);
-        SystemAtomicComponent component = (SystemAtomicComponent) builder.build(parent, definition, ctx);
+        AtomicComponent component = builder.build(parent, definition, ctx);
         SystemComponentBuilderResourceTestCase.Foo foo =
             (SystemComponentBuilderResourceTestCase.Foo) component.createInstance();
         assertEquals("result", foo.resource);

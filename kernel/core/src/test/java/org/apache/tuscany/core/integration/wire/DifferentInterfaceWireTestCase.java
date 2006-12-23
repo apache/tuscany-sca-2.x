@@ -67,7 +67,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
                 scope,
                 null);
         AtomicComponent sourceComponent = contexts.get("source");
-        Source source = (Source) sourceComponent.getServiceInstance();
+        Source source = (Source) sourceComponent.getTargetInstance();
         Target target = source.getTarget();
         assertTrue(Proxy.isProxyClass(target.getClass()));
         assertNotNull(target);
@@ -91,7 +91,7 @@ public class DifferentInterfaceWireTestCase extends TestCase {
                 members,
                 scope);
         AtomicComponent sourceComponent = components.get("source");
-        Source source = (Source) sourceComponent.getServiceInstance();
+        Source source = (Source) sourceComponent.getTargetInstance();
         List<Target> targets = source.getTargets();
         assertEquals(1, targets.size());
         Target target = targets.get(0);

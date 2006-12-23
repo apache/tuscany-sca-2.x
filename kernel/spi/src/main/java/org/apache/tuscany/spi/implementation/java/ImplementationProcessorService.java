@@ -35,8 +35,7 @@ public interface ImplementationProcessorService {
     /**
      * Introspects the given interface to produce a mapped service
      */
-    JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException,
-                                                               InvalidServiceContractException;
+    JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException;
 
     JavaMappedReference createReference(String name, Member member, Class<?> paramType) throws ProcessingException;
 

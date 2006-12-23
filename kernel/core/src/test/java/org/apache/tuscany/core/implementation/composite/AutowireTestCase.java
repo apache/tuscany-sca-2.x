@@ -20,14 +20,14 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.TestUtils;
 import org.apache.tuscany.core.implementation.system.component.SystemReference;
 import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.easymock.EasyMock;
@@ -45,25 +45,23 @@ public class AutowireTestCase extends TestCase {
     public void testSystemAtomicAutowire() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
-
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
-        Source originalSource = new SourceImpl();
-        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.getServiceInstance()).andReturn(originalSource).atLeastOnce();
         EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-
+        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
+        TestUtils.populateInboundWires(component, wires);
         EasyMock.replay(component);
         parent.register(component);
-
-        Source source = parent.resolveSystemInstance(Source.class);
+        InboundWire source = parent.resolveSystemAutowire(Source.class);
         assertNotNull(source);
-        Source2 source2 = parent.resolveSystemInstance(Source2.class);
-        assertSame(source, source2);
-        assertNull(parent.resolveSystemExternalInstance(Source.class));
+        InboundWire source2 = parent.resolveSystemAutowire(Source2.class);
+        assertSame(source.getContainer(), source2.getContainer());
+        assertNull(parent.resolveSystemExternalAutowire(Source.class));
         EasyMock.verify(component);
     }
 
@@ -77,96 +75,73 @@ public class AutowireTestCase extends TestCase {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
         interfaces.add(Source2.class);
-        Source originalSource = new SourceImpl();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.getServiceInstance()).andReturn(originalSource).atLeastOnce();
         EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
+        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
+        TestUtils.populateInboundWires(component, wires);
 
         EasyMock.replay(component);
         parent.register(component);
 
-        Source source = parent.resolveInstance(Source.class);
+        InboundWire source = parent.resolveAutowire(Source.class);
         assertNotNull(source);
-        Source2 source2 = parent.resolveInstance(Source2.class);
-        assertSame(source, source2);
-        assertNull(parent.resolveExternalInstance(Source.class));
+        InboundWire source2 = parent.resolveAutowire(Source2.class);
+        assertSame(source.getContainer(), source2.getContainer());
+        assertNull(parent.resolveExternalAutowire(Source.class));
         EasyMock.verify(component);
     }
 
     /**
-     * Tests autowiring to a system service which is wired to an atomic component.
+     * Tests autowiring to a system service
      */
     public void testSystemServiceAutowire() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
-        interfaces.add(Source2.class);
-
-        Source serviceSource = new SourceImpl();
-        SystemService component = EasyMock.createMock(SystemService.class);
-        EasyMock.expect(component.getName()).andReturn("service").atLeastOnce();
-        component.getInterface();
+        SystemService service = EasyMock.createMock(SystemService.class);
+        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
+        service.getInterface();
         EasyMock.expectLastCall().andReturn(Source.class).atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-        EasyMock.expect(component.getServiceInstance()).andReturn(serviceSource);
-        EasyMock.replay(component);
-        parent.register(component);
+        EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
+        InboundWire wire = TestUtils.createInboundWire(Source.class);
+        wire.setContainer(service);
+        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(service);
+        parent.register(service);
 
-
-        SystemAtomicComponent component2 = EasyMock.createMock(SystemAtomicComponent.class);
-        EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component2.getServiceInterfaces()).andReturn(interfaces).atLeastOnce();
-        EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
-        EasyMock.replay(component2);
-        parent.register(component2);
-
-        Source source = parent.resolveSystemExternalInstance(Source.class);
-        assertSame(serviceSource, source);
-        Source2 source2 = parent.resolveSystemExternalInstance(Source2.class);
+        InboundWire source = parent.resolveSystemExternalAutowire(Source.class);
+        assertSame(service, source.getContainer());
+        InboundWire source2 = parent.resolveSystemExternalAutowire(Source2.class);
         assertNull(source2);
-        EasyMock.verify(component);
-        EasyMock.verify(component2);
+        EasyMock.verify(service);
     }
 
     /**
-     * Tests autowiring to a system service which is wired to an atomic component.
+     * Tests autowiring to a service
      */
     public void testServiceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        List<Class<?>> interfaces = new ArrayList<Class<?>>();
-        interfaces.add(Source.class);
-        interfaces.add(Source2.class);
-
-        Source serviceSource = new SourceImpl();
-        Service component = EasyMock.createMock(Service.class);
-        EasyMock.expect(component.getName()).andReturn("service").atLeastOnce();
-        component.getInterface();
+        SystemService service = EasyMock.createMock(SystemService.class);
+        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
+        service.getInterface();
         EasyMock.expectLastCall().andReturn(Source.class).atLeastOnce();
-        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
-        EasyMock.expect(component.getServiceInstance()).andReturn(serviceSource);
-        EasyMock.replay(component);
-        parent.register(component);
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        InboundWire wire = TestUtils.createInboundWire(Source.class);
+        wire.setContainer(service);
+        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(service);
+        parent.register(service);
 
-
-        AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component2.getServiceInterfaces()).andReturn(interfaces).atLeastOnce();
-        EasyMock.expect(component2.isSystem()).andReturn(false).atLeastOnce();
-        EasyMock.replay(component2);
-        parent.register(component2);
-
-        Source source = parent.resolveExternalInstance(Source.class);
-        assertSame(serviceSource, source);
-        Source2 source2 = parent.resolveExternalInstance(Source2.class);
+        InboundWire source = parent.resolveExternalAutowire(Source.class);
+        assertSame(service, source.getContainer());
+        InboundWire source2 = parent.resolveExternalAutowire(Source2.class);
         assertNull(source2);
-        EasyMock.verify(component);
-        EasyMock.verify(component2);
+        EasyMock.verify(service);
     }
 
 
@@ -177,19 +152,19 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        Source refSource = new SourceImpl();
         SystemReference reference = EasyMock.createMock(SystemReference.class);
         EasyMock.expect(reference.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(reference.getServiceInstance()).andReturn(refSource);
         EasyMock.expect(reference.isSystem()).andReturn(true).atLeastOnce();
         reference.getInterface();
         EasyMock.expectLastCall().andReturn(Source.class);
+        InboundWire wire = TestUtils.createInboundWire(Source.class);
+        wire.setContainer(reference);
+        EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.replay(reference);
         parent.register(reference);
 
-        Source source = parent.resolveSystemInstance(Source.class);
+        InboundWire source = parent.resolveSystemAutowire(Source.class);
         assertNotNull(source);
-        assertNull(parent.resolveSystemExternalInstance(Source.class));
         EasyMock.verify(reference);
     }
 
@@ -197,21 +172,22 @@ public class AutowireTestCase extends TestCase {
      * Tests autowiring to a reference
      */
     public void testReferenceAutowire() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
-        Source refSource = new SourceImpl();
-        Reference reference = EasyMock.createMock(Reference.class);
+
+        SystemReference reference = EasyMock.createMock(SystemReference.class);
         EasyMock.expect(reference.getName()).andReturn("service").atLeastOnce();
-        EasyMock.expect(reference.getServiceInstance()).andReturn(refSource);
         EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
         reference.getInterface();
         EasyMock.expectLastCall().andReturn(Source.class);
+        InboundWire wire = TestUtils.createInboundWire(Source.class);
+        wire.setContainer(reference);
+        EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
         EasyMock.replay(reference);
         parent.register(reference);
 
-        Source source = parent.resolveInstance(Source.class);
+        InboundWire source = parent.resolveAutowire(Source.class);
         assertNotNull(source);
-        assertNull(parent.resolveExternalInstance(Source.class));
         EasyMock.verify(reference);
     }
 

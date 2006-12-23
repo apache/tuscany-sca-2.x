@@ -83,12 +83,4 @@ public interface Component extends SCAObject {
     TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
         throws TargetInvokerCreationException;
 
-    /**
-     * Returns a service associated with the given name
-     *
-     * @throws TargetResolutionException if an error occurs retrieving the service instance
-     */
-    Object getServiceInstance(String name) throws TargetResolutionException;
-
-
 }

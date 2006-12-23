@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
@@ -47,8 +48,13 @@ public class ResourceInjectionTestCase extends TestCase {
         configuration.setInstanceFactory(new PojoObjectFactory<Foo>(ctor));
         configuration.addResourceSite("bar", field);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn("result");
+        EasyMock.replay(wire);
+
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn("result");
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(wire);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, null);
         component.addResourceFactory("bar", factory);
@@ -70,8 +76,13 @@ public class ResourceInjectionTestCase extends TestCase {
         ctorNames.add("bar");
         configuration.setConstructorParamNames(ctorNames);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn("result");
+        EasyMock.replay(wire);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn("result");
+
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(wire);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, null);
         component.addResourceFactory("bar", factory);

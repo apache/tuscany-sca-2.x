@@ -20,7 +20,7 @@ package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.component.AtomicComponent;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
@@ -52,12 +52,12 @@ public class CompositeScopeRestartTestCase extends TestCase {
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
-        SystemAtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.start();
 
         scope.onEvent(new CompositeStart(this, null));
-        Object instance = component.getServiceInstance();
-        assertSame(instance, component.getServiceInstance());
+        Object instance = component.getTargetInstance();
+        assertSame(instance, component.getTargetInstance());
 
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
@@ -66,7 +66,7 @@ public class CompositeScopeRestartTestCase extends TestCase {
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
         component.start();
-        assertNotSame(instance, component.getServiceInstance());
+        assertNotSame(instance, component.getTargetInstance());
         scope.onEvent(new CompositeStop(this, null));
         scope.stop();
         component.stop();

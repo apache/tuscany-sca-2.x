@@ -19,39 +19,51 @@
 package org.apache.tuscany.binding.celtix.io;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.Map;
+
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.MessageImpl;
 
 import commonj.sdo.helper.TypeHelper;
-
 import org.objectweb.celtix.bindings.ServerDataBindingCallback;
 import org.objectweb.celtix.bus.bindings.WSDLOperationInfo;
 import org.objectweb.celtix.context.ObjectMessageContext;
 
 
 /**
- *
  * @version $Rev$ $Date$
  */
 public class SCAServerDataBindingCallback extends SCADataBindingCallback
-        implements ServerDataBindingCallback {
-    Method method;
-    Object targetObject;
+    implements ServerDataBindingCallback {
+    String operationName;
+    InboundWire wire;
 
     public SCAServerDataBindingCallback(WSDLOperationInfo op,
                                         boolean inout,
-                                        Method meth,
-                                        Object target,
+                                        String operationName,
+                                        InboundWire wire,
                                         TypeHelper theTypeHelper) {
         super(op, inout, theTypeHelper);
-        method = meth;
-        targetObject = target;
+        this.operationName = operationName;
+        this.wire = wire;
     }
 
 
     public void invoke(ObjectMessageContext octx) throws InvocationTargetException {
         Object ret;
         try {
-            ret = method.invoke(targetObject, octx.getMessageObjects());
+            InboundInvocationChain chain = null;
+            for (Map.Entry<Operation<?>, InboundInvocationChain> entry : wire.getInvocationChains().entrySet()) {
+                if (entry.getKey().getName().equals(operationName)) {
+                    chain = entry.getValue();
+                    break;
+                }
+            }
+            MessageImpl msg = new MessageImpl();
+            msg.setBody(octx.getMessageObjects());
+            ret = chain.getHeadInterceptor().invoke(msg);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -60,10 +72,10 @@ public class SCAServerDataBindingCallback extends SCADataBindingCallback
         octx.setReturn(ret);
     }
 
-    public void initObjectContext(ObjectMessageContext octx) {
-        Object o[] = new Object[method.getParameterTypes().length];
-        //REVIST - holders?
-        octx.setMessageObjects(o);
-    }
+//    public void initObjectContext(ObjectMessageContext octx) {
+//        Object o[] = new Object[method.getParameterTypes().length];
+//        //REVIST - holders?
+//        octx.setMessageObjects(o);
+//    }
 
 }

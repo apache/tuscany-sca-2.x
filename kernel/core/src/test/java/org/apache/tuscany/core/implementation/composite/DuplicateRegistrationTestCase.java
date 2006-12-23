@@ -20,12 +20,15 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.TestUtils;
 import org.apache.tuscany.core.mock.component.Source;
 import org.easymock.EasyMock;
 
@@ -42,14 +45,17 @@ public class DuplicateRegistrationTestCase extends TestCase {
 
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        SystemAtomicComponent component1 = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component1 = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component1.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component1.isSystem()).andReturn(true).atLeastOnce();
         component1.stop();
         EasyMock.expect(component1.getServiceInterfaces()).andReturn(interfaces);
+        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        TestUtils.populateInboundWires(component1, wires);
+        EasyMock.expect(component1.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component1);
 
-        SystemAtomicComponent component2 = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
         component2.stop();
@@ -70,13 +76,16 @@ public class DuplicateRegistrationTestCase extends TestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Source.class);
         CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
-        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
+        Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
+        TestUtils.populateInboundWires(component, wires);
+        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);
         parent.register(component);
-        SystemAtomicComponent component2 = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component2.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component2.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();

@@ -49,10 +49,6 @@ public class MockSCAObject implements SCAObject {
         return null;
     }
 
-    public Object getServiceInstance() throws TargetResolutionException {
-        return null;
-    }
-
     public void prepare() {
 
     }

@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
@@ -56,7 +56,7 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         scope.start();
 
         Foo comp = new Foo();
-        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstance()).andReturn(comp);
         //EasyMock.expect(component.isEagerInit()).andReturn(true).atLeastOnce();
         EasyMock.expect(component.getMaxAge()).andReturn(1L).anyTimes();
@@ -85,11 +85,11 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
         scope.start();
 
-        SystemAtomicComponent oneComponent = createComponent(false);
+        AtomicComponent oneComponent = createComponent(false);
         scope.register(oneComponent);
-        SystemAtomicComponent twoComponent = createComponent(false);
+        AtomicComponent twoComponent = createComponent(false);
         scope.register(twoComponent);
-        SystemAtomicComponent threeComponent = createComponent(false);
+        AtomicComponent threeComponent = createComponent(false);
         scope.register(threeComponent);
 
         String convID = "ConvID";
@@ -127,11 +127,11 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
         scope.start();
 
-        SystemAtomicComponent oneComponent = createComponent(true);
+        AtomicComponent oneComponent = createComponent(true);
         scope.register(oneComponent);
-        SystemAtomicComponent twoComponent = createComponent(true);
+        AtomicComponent twoComponent = createComponent(true);
         scope.register(twoComponent);
-        SystemAtomicComponent threeComponent = createComponent(true);
+        AtomicComponent threeComponent = createComponent(true);
         scope.register(threeComponent);
 
         String convID = "ConvID";
@@ -145,8 +145,8 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    private SystemAtomicComponent createComponent(boolean init) throws TargetException {
-        SystemAtomicComponent component = EasyMock.createMock(SystemAtomicComponent.class);
+    private AtomicComponent createComponent(boolean init) throws TargetException {
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
                 return new OrderedInitPojoImpl();

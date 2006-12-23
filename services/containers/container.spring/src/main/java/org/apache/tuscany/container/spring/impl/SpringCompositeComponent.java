@@ -31,16 +31,15 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.container.spring.context.SCAApplicationContext;
-import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -63,6 +62,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
     private static final String[] EMPTY_ARRAY = new String[0];
     private AbstractApplicationContext springContext;
     private Resource resource;
+    private WireService wireService;
 
     /**
      * Creates a new composite
@@ -70,23 +70,26 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
      * @param name           the name of the SCA composite
      * @param resource       a resource pointing to the application context
      * @param parent         the SCA composite parent
+     * @param wireService    the wire service to create proxies
      * @param connector      the connector to use for wiring children
      * @param propertyValues the values of this composite's Properties
      */
     public SpringCompositeComponent(String name,
                                     Resource resource,
                                     CompositeComponent parent,
+                                    WireService wireService,
                                     Connector connector,
                                     Map<String, Document> propertyValues) {
         super(name, parent, connector, propertyValues);
         this.resource = resource;
+        this.wireService = wireService;
     }
 
     /**
      * Creates a new composite
      *
      * @param name           the name of the SCA composite
-     * @param context
+     * @param context        the Spring application context
      * @param parent         the SCA composite parent
      * @param connector      the connector to use for wiring children
      * @param propertyValues the values of this composite's Properties
@@ -142,7 +145,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
         springContext.stop();
     }
 
-    public <T> T locateService(Class<T> serviceInterface, String name) {
+    public <T> T getBean(Class<T> serviceInterface, String name) {
         return serviceInterface.cast(springContext.getBean(name));
     }
 
@@ -165,20 +168,23 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             }
             Class<?> type;
             if (object instanceof Reference) {
-                type = ((Reference) object).getInterface();
+                Reference reference = (Reference) object;
+                type = reference.getInterface();
+                if (requiredType != null && requiredType.isAssignableFrom(type)) {
+                    // need null check since Spring may pass in a null
+                    throw new BeanNotOfRequiredTypeException(name, requiredType, type);
+                }
+                return wireService.createProxy(type, reference.getInboundWire());
             } else if (object instanceof Service) {
-                type = ((Service) object).getInterface();
+                Service service = (Service) object;
+                type = service.getInterface();
+                if (requiredType != null && requiredType.isAssignableFrom(type)) {
+                    // need null check since Spring may pass in a null
+                    throw new BeanNotOfRequiredTypeException(name, requiredType, type);
+                }
+                return wireService.createProxy(type, service.getInboundWire());
             } else {
                 throw new AssertionError("Illegal object type [" + name + "]");
-            }
-            if (requiredType != null && requiredType.isAssignableFrom(type)) {
-                // need null check since Spring may pass in a null
-                throw new BeanNotOfRequiredTypeException(name, requiredType, type);
-            }
-            try {
-                return object.getServiceInstance();
-            } catch (TargetException e) {
-                throw new BeanInstantiationException(requiredType, "Error returning service or reference", e);
             }
         }
 

@@ -34,7 +34,6 @@ import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -63,7 +62,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     public JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException {
         JavaMappedService service = new JavaMappedService();
-        service.setName(getBaseName(interfaze));
+        service.setName(interfaze.getName());
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
         ServiceContract<?> contract = registry.introspect(interfaze);
         service.setServiceContract(contract);
@@ -203,7 +202,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         int pos,
         Class<?> param,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        List<String> injectionNames) throws InvalidAutowireException, InvalidConstructorException {
+        List<String> injectionNames) throws ProcessingException {
         // the param is marked as an autowire
         Autowire autowireAnnot = (Autowire) annot;
         JavaMappedReference reference = new JavaMappedReference();
@@ -235,7 +234,14 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         }
         reference.setName(name);
         reference.setRequired(autowireAnnot.required());
-        ServiceContract<?> contract = new JavaServiceContract();
+        ServiceContract<?> contract = null;
+        try {
+            contract = registry.introspect(param);
+        } catch (InvalidServiceContractException e) {
+            throw new ProcessingException(e);
+        }
+
+//        ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(param);
         reference.setServiceContract(contract);
         type.getReferences().put(name, reference);

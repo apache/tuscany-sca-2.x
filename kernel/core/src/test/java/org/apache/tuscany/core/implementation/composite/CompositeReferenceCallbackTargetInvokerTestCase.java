@@ -74,7 +74,7 @@ public class CompositeReferenceCallbackTargetInvokerTestCase extends TestCase {
         wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
         EasyMock.replay(wire);
-        
+
         invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);
     }
 

@@ -23,35 +23,42 @@ import javax.servlet.Servlet;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import static org.easymock.classextension.EasyMock.*;
+import org.easymock.EasyMock;
 
 import junit.framework.TestCase;
 
 public class JSONRPCServiceTestCase extends TestCase {
     private static final String SERVICE_NAME = "test_service_name";    
 
+    @SuppressWarnings({"unchecked"})
     public void testStart() {
         CompositeComponent mockParent = createMock(CompositeComponent.class);
         replay(mockParent);
         WireService mockWireService = createMock(WireService.class);
-        expect(mockWireService.createProxy(null)).andReturn(this);
+        expect(mockWireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class))).andReturn(this);
         replay(mockWireService);
         ServletHost mockServletHost = createMock(ServletHost.class);
         expect(mockServletHost.isMappingRegistered(JSONRPCService.SCRIPT_GETTER_SERVICE_MAPPING)).andReturn(false);
         mockServletHost.registerMapping(eq("/" + SERVICE_NAME), (Servlet) notNull());
         mockServletHost.registerMapping(eq(JSONRPCService.SCRIPT_GETTER_SERVICE_MAPPING), (Servlet) notNull());
         replay(mockServletHost);
-        
+
         JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, this.getClass(), mockParent, mockWireService, mockServletHost );
+        InboundWire wire = EasyMock.createNiceMock(InboundWire.class);
+        EasyMock.replay(wire);
+        jsonRpcService.setInboundWire(wire);
         jsonRpcService.start();
     }
 
+    @SuppressWarnings({"unchecked"})
     public void testStop() {
         CompositeComponent mockParent = createMock(CompositeComponent.class);
         replay(mockParent);
         WireService mockWireService = createMock(WireService.class);
-        expect(mockWireService.createProxy(null)).andReturn(this);
+        expect(mockWireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class))).andReturn(this);
         replay(mockWireService);
         ServletHost mockServletHost = createMock(ServletHost.class);
         expect(mockServletHost.isMappingRegistered(JSONRPCService.SCRIPT_GETTER_SERVICE_MAPPING)).andReturn(false);
@@ -62,6 +69,9 @@ public class JSONRPCServiceTestCase extends TestCase {
         replay(mockServletHost);
         
         JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, this.getClass(), mockParent, mockWireService, mockServletHost );
+        InboundWire wire = EasyMock.createNiceMock(InboundWire.class);
+        EasyMock.replay(wire);
+        jsonRpcService.setInboundWire(wire);
         jsonRpcService.start();
         jsonRpcService.stop();
     }

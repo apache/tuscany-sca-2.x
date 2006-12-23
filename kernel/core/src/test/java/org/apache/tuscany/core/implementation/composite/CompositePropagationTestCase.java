@@ -20,11 +20,14 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.TestUtils;
 import org.apache.tuscany.core.mock.component.Source;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
@@ -44,11 +47,15 @@ public class CompositePropagationTestCase extends TestCase {
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        SystemAtomicComponent component = createMock(SystemAtomicComponent.class);
+        AtomicComponent component = createMock(AtomicComponent.class);
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
         expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
+        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        TestUtils.populateInboundWires(component, wires);
+        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
+
         replay(component);
         child2.register(component);
         parent.stop();
@@ -59,11 +66,14 @@ public class CompositePropagationTestCase extends TestCase {
         parent.start();
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
         interfaces.add(Source.class);
-        SystemAtomicComponent component = createMock(SystemAtomicComponent.class);
+        AtomicComponent component = createMock(AtomicComponent.class);
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
         expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
+        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        TestUtils.populateInboundWires(component, wires);
+        EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         replay(component);
         child2.register(component);
         parent.stop();

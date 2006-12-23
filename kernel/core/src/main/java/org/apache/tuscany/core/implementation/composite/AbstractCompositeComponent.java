@@ -47,17 +47,12 @@ import org.apache.tuscany.core.implementation.system.component.SystemSingletonAt
  * @version $Rev$ $Date$
  */
 public abstract class AbstractCompositeComponent extends CompositeComponentExtension {
-
     public static final int DEFAULT_WAIT = 1000 * 60;
-
     // Blocking latch to ensure the composite is initialized exactly once prior to servicing requests
     protected CountDownLatch initializeLatch = new CountDownLatch(1);
-
     protected final Object lock = new Object();
-
     // Indicates whether the composite context has been initialized
     protected boolean initialized;
-
     protected ScopeContainer scopeContainer;
 
 

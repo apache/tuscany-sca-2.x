@@ -18,13 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
+
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
-import org.apache.tuscany.core.implementation.system.wire.SystemInboundWireImpl;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
+import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.easymock.EasyMock;
 
 /**
@@ -34,17 +35,18 @@ import org.easymock.EasyMock;
  */
 public class SystemServiceComponentWireTestCase extends TestCase {
 
-    public void testServiceContext() throws Exception {
+    public void testService() throws Exception {
         Target target = new TargetImpl();
-        SystemOutboundWire outboundWire = EasyMock.createMock(SystemOutboundWire.class);
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
         EasyMock.replay(outboundWire);
-        SystemInboundWire wire = new SystemInboundWireImpl("Target", Target.class);
-        SystemService serviceContext = new SystemServiceImpl("service", null, new JavaServiceContract());
-        serviceContext.setInboundWire(wire);
-        serviceContext.setOutboundWire(outboundWire);
+        InboundWire wire = new InboundWireImpl();
+        wire.setServiceContract(new JavaServiceContract(Target.class));
+        SystemService service = new SystemServiceImpl("service", null, new JavaServiceContract());
+        service.setInboundWire(wire);
+        service.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);
-        assertSame(target, serviceContext.getServiceInstance());
+        assertSame(target, service.getInboundWire().getTargetService());
         EasyMock.verify(outboundWire);
     }
 }

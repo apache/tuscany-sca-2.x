@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.binding.celtix;
 
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -213,37 +211,41 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
         }
         boolean inout = false;
 
-        Class<?> serviceInterface = this.getInterface();
-        Method meth = getMethod(serviceInterface, operationName.getLocalPart());
+ //       Class<?> serviceInterface = this.getInterface();
+        // Method meth = getMethod(serviceInterface, operationName.getLocalPart());
 
-        Object proxy = null;
-        try {
-            proxy = this.getServiceInstance();
-        } catch (TargetException e) {
-            throw new CeltixServiceInitException(e);
-        }
+        // Object proxy = null;
+//        try {
+//         //   proxy = this.getServiceInstance();
+//        } catch (TargetException e) {
+//            throw new CeltixServiceInitException(e);
+//        }
 
-        return new SCAServerDataBindingCallback(opInfo, inout, meth, proxy, typeHelper);
+        return new SCAServerDataBindingCallback(opInfo,
+            inout,
+            operationName.getLocalPart(),
+            getInboundWire(),
+            typeHelper);
     }
 
-    protected Method getMethod(Class<?> serviceInterface, String operationName) {
-        // Note: this doesn't support overloaded operations
-        Method[] methods = serviceInterface.getMethods();
-        for (Method m : methods) {
-            if (m.getName().equals(operationName)) {
-                return m;
-            }
-            // tolerate WSDL with capatalized operation name
-            StringBuilder sb = new StringBuilder(operationName);
-            sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
-            if (m.getName().equals(sb.toString())) {
-                return m;
-            }
-        }
-        // FIXME
-        throw new CeltixServiceInitException("no operation named " + operationName
-            + " found on service interface: " + serviceInterface.getName());
-    }
+//    protected Method getMethod(Class<?> serviceInterface, String operationName) {
+//        // Note: this doesn't support overloaded operations
+//        Method[] methods = serviceInterface.getMethods();
+//        for (Method m : methods) {
+//            if (m.getName().equals(operationName)) {
+//                return m;
+//            }
+//            // tolerate WSDL with capatalized operation name
+//            StringBuilder sb = new StringBuilder(operationName);
+//            sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+//            if (m.getName().equals(sb.toString())) {
+//                return m;
+//            }
+//        }
+//        // FIXME
+//        throw new CeltixServiceInitException("no operation named " + operationName
+//            + " found on service interface: " + serviceInterface.getName());
+//    }
 
     public DataBindingCallback getFaultDataBindingCallback(ObjectMessageContext objContext) {
         // REVISIT - what to do about faults

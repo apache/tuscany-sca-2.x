@@ -22,6 +22,8 @@ import java.sql.Connection;
 import java.net.URL;
 import javax.sql.DataSource;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+
 import org.apache.tuscany.test.SCATestCase;
 
 /**
@@ -32,7 +34,7 @@ import org.apache.tuscany.test.SCATestCase;
 public class DHCPBootstrapTestCase extends SCATestCase {
 
     public void testBasicConnection() throws Exception {
-        DataSource ds = (DataSource) component.getSystemChild("TestDS").getServiceInstance();
+        DataSource ds = (DataSource) ((AtomicComponent)component.getSystemChild("TestDS")).getTargetInstance();
         assertNotNull(ds);
         Connection conn = ds.getConnection();
         conn.createStatement().execute("CREATE TABLE foo (bar char(20));");

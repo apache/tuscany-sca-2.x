@@ -21,6 +21,7 @@ package org.apache.tuscany.core.injection;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.host.ResourceHost;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -35,7 +36,7 @@ public class ResourceObjectFactoryTestCase extends TestCase {
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn("foo");
         EasyMock.replay(host);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn(null);
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, host);
         assertEquals("foo", factory.getInstance());
@@ -56,7 +57,11 @@ public class ResourceObjectFactoryTestCase extends TestCase {
 
     public void testResolveFromParentByType() throws Exception {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn("foo");
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn("foo");
+        EasyMock.replay(wire);
+
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(wire);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, null);
         assertEquals("foo", factory.getInstance());
@@ -65,7 +70,7 @@ public class ResourceObjectFactoryTestCase extends TestCase {
 
     public void testResolveFromParentByName() throws Exception {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getServiceInstance()).andReturn("foo");
+        EasyMock.expect(component.getTargetInstance()).andReturn("foo");
         EasyMock.replay(component);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(parent.getSystemChild(EasyMock.eq("bar"))).andReturn(component);
@@ -84,8 +89,9 @@ public class ResourceObjectFactoryTestCase extends TestCase {
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn("foo");
         EasyMock.replay(host);
+
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn(null);
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, host);
         assertEquals("foo", factory.getInstance());
@@ -98,7 +104,7 @@ public class ResourceObjectFactoryTestCase extends TestCase {
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(host);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn(null);
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, true, parent, host);
         assertNull(factory.getInstance());
@@ -110,8 +116,13 @@ public class ResourceObjectFactoryTestCase extends TestCase {
         ResourceHost host = EasyMock.createMock(ResourceHost.class);
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(host);
+
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getTargetService()).andReturn(null);
+        EasyMock.replay(wire);
+
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn(null);
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, false, parent, host);
         try {
@@ -129,7 +140,7 @@ public class ResourceObjectFactoryTestCase extends TestCase {
         EasyMock.expect(host.resolveResource(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(host);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.resolveSystemInstance(EasyMock.eq(String.class))).andReturn(null);
+        EasyMock.expect(parent.resolveSystemAutowire(EasyMock.eq(String.class))).andReturn(null);
         EasyMock.replay(parent);
         ResourceObjectFactory<String> factory = new ResourceObjectFactory<String>(String.class, true, parent, host);
         assertNull(factory.getInstance());

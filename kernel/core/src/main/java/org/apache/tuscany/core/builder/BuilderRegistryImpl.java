@@ -38,7 +38,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.Binding;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
@@ -50,8 +49,6 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.implementation.system.component.SystemService;
 
 /**
  * The default builder registry in the runtime
@@ -142,13 +139,12 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
-            if (wireService != null && !(component instanceof SystemAtomicComponent)) {
+            if (wireService != null) {
                 wireService.createWires(component, componentDefinition);
             }
             return component;
         } catch (BuilderException e) {
             e.addContextName(componentDefinition.getName());
-//            e.addContextName(parent.getName());
             throw e;
         }
     }
@@ -163,7 +159,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
         }
         SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
-        if (wireService != null && !(object instanceof SystemService)) {
+        if (wireService != null) {
             String path = boundServiceDefinition.getTarget().getPath();
             ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
             wireService.createWires((Service) object, path, contract);

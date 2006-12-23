@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.SystemAtomicComponent;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 
 import junit.framework.TestCase;
@@ -42,7 +42,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testLifecycleManagement() throws Exception {
         RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
         // start the request
         RequestScopeInitDestroyComponent o1 =
             (RequestScopeInitDestroyComponent) scopeContext.getInstance(component);
@@ -59,7 +59,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testGetAssociatedInstance() throws Exception {
         RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
         // start the request
         scopeContext.getInstance(component);
         scopeContext.getAssociatedInstance(component);
@@ -69,7 +69,7 @@ public class BasicRequestScopeTestCase extends TestCase {
     public void testGetAssociatedInstanceNonExistent() throws Exception {
         RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
         // start the request
         try {
             scopeContext.getAssociatedInstance(component);
@@ -84,7 +84,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
         scopeContext.start();
 
-        SystemAtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContext);
 
         RequestScopeInitDestroyComponent o1 =
             (RequestScopeInitDestroyComponent) scopeContext.getInstance(component);
@@ -114,7 +114,7 @@ public class BasicRequestScopeTestCase extends TestCase {
         super.tearDown();
     }
 
-    private SystemAtomicComponent createComponent(ScopeContainer scopeContainer) {
+    private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
         configuration.addServiceInterface(RequestScopeInitDestroyComponent.class);

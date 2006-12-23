@@ -35,12 +35,12 @@ public class BootstrapTestCase extends SCATestCase {
 
     public void testTransactionManagerLocation() throws Exception {
         AtomicComponent tmComponent = (AtomicComponent) jtaComposite.getSystemChild("TransactionManager");
-        Object tm = tmComponent.getServiceInstance();
+        Object tm = tmComponent.getTargetInstance();
         assertTrue(tm instanceof TransactionManager);
     }
 
     public void testAutowire() throws Exception {
-        assertNotNull(jtaComposite.resolveSystemInstance(TransactionManager.class));
+        assertNotNull(jtaComposite.resolveSystemAutowire(TransactionManager.class));
     }
 
     protected void setUp() throws Exception {

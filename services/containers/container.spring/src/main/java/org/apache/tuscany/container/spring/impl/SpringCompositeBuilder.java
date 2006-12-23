@@ -20,6 +20,7 @@ package org.apache.tuscany.container.spring.impl;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -37,7 +38,6 @@ import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
-import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.springframework.core.io.Resource;
 
 /**
@@ -54,7 +54,8 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         String name = componentDefinition.getName();
         SpringImplementation implementation = componentDefinition.getImplementation();
         Resource resource = implementation.getApplicationResource();
-        SpringCompositeComponent component = new SpringCompositeComponent(name, resource, parent, connector, null);
+        SpringCompositeComponent component =
+            new SpringCompositeComponent(name, resource, parent, wireService, connector, null);
         SpringComponentType<Property<?>> componentType = implementation.getComponentType();
 
         // We need to set the target invoker as opposed to having the connector do it since the

@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -28,9 +27,6 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-
-import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
 
 /**
  * Default implementation of a reference configured with the
@@ -40,8 +36,8 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  */
 public class SystemReferenceImpl extends AbstractSCAObject implements SystemReference {
 
-    protected SystemInboundWire inboundWire;
-    protected SystemOutboundWire outboundWire;
+    protected InboundWire inboundWire;
+    protected OutboundWire outboundWire;
     protected Class<?> referenceInterface;
 
 
@@ -56,8 +52,7 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
     }
 
     public void setInboundWire(InboundWire wire) {
-        assert wire instanceof SystemInboundWire : "Wire must be a " + SystemInboundWire.class.getName();
-        this.inboundWire = (SystemInboundWire) wire;
+        this.inboundWire = wire;
     }
 
     public InboundWire getInboundWire() {
@@ -69,8 +64,7 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
     }
 
     public void setOutboundWire(OutboundWire wire) {
-        assert wire instanceof SystemOutboundWire : "Wire must be a " + SystemOutboundWire.class.getName();
-        this.outboundWire = (SystemOutboundWire) wire;
+        this.outboundWire = wire;
     }
 
     public Class<?> getInterface() {
@@ -79,10 +73,6 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
 
     public void setInterface(Class<?> referenceInterface) {
         this.referenceInterface = referenceInterface;
-    }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        return referenceInterface.cast(inboundWire.getTargetService());
     }
 
     public WireInvocationHandler getHandler() {

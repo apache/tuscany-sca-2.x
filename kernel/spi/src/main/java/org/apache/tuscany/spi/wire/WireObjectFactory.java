@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.ObjectFactory;
  * @version $Rev$ $Date$
  */
 public class WireObjectFactory implements ObjectFactory {
-
     private RuntimeWire wire;
     private WireService wireService;
 

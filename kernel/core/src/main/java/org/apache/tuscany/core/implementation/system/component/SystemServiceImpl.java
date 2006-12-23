@@ -21,7 +21,6 @@ package org.apache.tuscany.core.implementation.system.component;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -30,9 +29,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
-import org.apache.tuscany.core.implementation.system.wire.SystemInboundWire;
-import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
-
 /**
  * Default implementation for services configured with the
  * {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
@@ -40,9 +36,8 @@ import org.apache.tuscany.core.implementation.system.wire.SystemOutboundWire;
  * @version $$Rev$$ $$Date$$
  */
 public class SystemServiceImpl extends AbstractSCAObject implements SystemService {
-
-    protected SystemInboundWire inboundWire;
-    protected SystemOutboundWire outboundWire;
+    protected InboundWire inboundWire;
+    protected OutboundWire outboundWire;
     protected ServiceContract<?> serviceContract;
 
     public SystemServiceImpl(String name, CompositeComponent parent, ServiceContract<?> serviceContract)
@@ -60,8 +55,7 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
     }
 
     public void setInboundWire(InboundWire wire) {
-        assert wire instanceof SystemInboundWire : "wire must be a " + SystemInboundWire.class.getName();
-        this.inboundWire = (SystemInboundWire) wire;
+        this.inboundWire = wire;
     }
 
     public OutboundWire getOutboundWire() {
@@ -69,8 +63,7 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
     }
 
     public void setOutboundWire(OutboundWire wire) {
-        assert wire instanceof SystemOutboundWire : "wire must be a " + SystemOutboundWire.class.getName();
-        this.outboundWire = (SystemOutboundWire) wire;
+        this.outboundWire = wire;
     }
 
     public Class<?> getInterface() {
@@ -81,11 +74,6 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
         // system services do not proxy
         throw new UnsupportedOperationException();
     }
-
-    public Object getServiceInstance() throws TargetResolutionException {
-        return inboundWire.getTargetService();
-    }
-
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
         throw new UnsupportedOperationException();
