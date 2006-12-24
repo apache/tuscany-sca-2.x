@@ -33,6 +33,8 @@ import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default implementation f a {@link BindlessBuilder} for a composite
+ *
+ * @version $Rev$ $Date$
  */
 public class CompositeBindlessBuilder implements BindlessBuilder {
 

@@ -224,18 +224,19 @@ public class ConnectorImpl implements Connector {
                 String opName = operation.getName();
                 throw new IllegalCallbackException("Source callback chain should not exist for operation",
                     opName,
-                    sourceWire, targetWire);
+                    sourceWire,
+                    targetWire);
             }
 
-            Operation targetOp =
-                (Operation) targetWire.getServiceContract().getCallbackOperations().get(operation.getName());
+            ServiceContract<?> targetContract = targetWire.getServiceContract();
+            Operation targetOp = targetContract.getCallbackOperations().get(operation.getName());
             OutboundInvocationChain outboundChain = wireService.createOutboundChain(targetOp);
             targetWire.addSourceCallbackInvocationChain(source.getName(), targetOp, outboundChain);
             if (source instanceof Component) {
                 Component component = (Component) source;
                 TargetInvoker invoker;
                 try {
-                    invoker = component.createTargetInvoker(null, operation, null);
+                    invoker = component.createTargetInvoker(targetOp.getName(), operation, null);
                 } catch (TargetInvokerCreationException e) {
                     throw new WireConnectException("Error connecting source and target",
                         sourceWire,
@@ -377,71 +378,15 @@ public class ConnectorImpl implements Connector {
                 try {
                     if (sourceComponent.isSystem()) {
                         if (outboundWire.isAutowire()) {
-                            // JFM FIXME test
-                            InboundWire targetWire;
-                            try {
-                                Class interfaze = outboundWire.getServiceContract().getInterfaceClass();
-                                // JFM FIXME test this
-                                if (CompositeComponent.class.equals(interfaze)) {
-                                    JavaServiceContract contract =
-                                        new JavaServiceContract(CompositeComponent.class);
-                                    targetWire = new LoopBackWire();
-                                    targetWire.setServiceContract(contract);
-                                    targetWire.setContainer(parent);
-                                    outboundWire.setTargetWire(targetWire);
-                                    return;
+                            autowire(outboundWire, parent);
 
-                                }
-                                targetWire = parent.resolveSystemAutowire(interfaze);
-                            } catch (TargetResolutionException e) {
-                                String sourceReference = outboundWire.getReferenceName();
-                                throw new WireConnectException("Error resolving autowire target",
-                                    sourceComponent.getName(),
-                                    sourceReference,
-                                    null,
-                                    null,
-                                    e);
-                            }
-                            if (targetWire == null) {
-                                // jfm fixme test
-                                // autowire may return null if it is optional. It is up to the client to decide if
-                                // an error should be thrown
-                                return;
-                            }
-                            Scope sourceScope = outboundWire.getContainer().getScope();
-                            Scope targetScope = targetWire.getContainer().getScope();
-                            boolean optimizable = isOptimizable(sourceScope, targetScope);
-                            connect(outboundWire, targetWire, optimizable);
                         } else {
                             SCAObject target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
                             connect(sourceComponent, outboundWire, target);
                         }
                     } else {
                         if (outboundWire.isAutowire()) {
-                            // JFM FIXME test
-                            InboundWire targetWire;
-                            try {
-                                Class interfaze = outboundWire.getServiceContract().getInterfaceClass();
-                                targetWire = parent.resolveAutowire(interfaze);
-                            } catch (TargetResolutionException e) {
-                                throw new WireConnectException("Error resolving autowire target",
-                                    sourceComponent.getName(),
-                                    outboundWire.getReferenceName(),
-                                    null,
-                                    null,
-                                    e);
-                            }
-                            if (targetWire == null) {
-                                throw new TargetServiceNotFoundException("Autowire target not found",
-                                    sourceComponent.getName(),
-                                    outboundWire.getReferenceName(),
-                                    null,
-                                    null);
-                            }
-                            Scope sourceScope = outboundWire.getContainer().getScope();
-                            Scope targetScope = targetWire.getContainer().getScope();
-                            boolean optimizable = isOptimizable(sourceScope, targetScope);
-                            connect(outboundWire, targetWire, optimizable);
+                            autowire(outboundWire, parent);
                         } else {
                             SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
                             connect(sourceComponent, outboundWire, target);
@@ -478,8 +423,8 @@ public class ConnectorImpl implements Connector {
     }
 
     /**
-     * Connects an component's outbound wire to its target in a composite.  Valid targets are either
-     * <code>AtomicComponent</code>s contained in the composite, or <code>References</code> of the composite.
+     * Connects an component's outbound wire to its target in a composite.  Valid targets are either component services
+     * or references.
      *
      * @param sourceWire the source wire to connect
      * @throws WiringException
@@ -573,6 +518,47 @@ public class ConnectorImpl implements Connector {
                 targetName.getPartName(),
                 targetName.getPortName());
         }
+    }
+
+    private void autowire(OutboundWire outboundWire, CompositeComponent parent)
+        throws WiringException {
+        // JFM FIXME test
+        InboundWire targetWire;
+        try {
+            Class interfaze = outboundWire.getServiceContract().getInterfaceClass();
+            // JFM FIXME test this
+            if (CompositeComponent.class.equals(interfaze)) {
+                JavaServiceContract contract = new JavaServiceContract(CompositeComponent.class);
+                targetWire = new LoopBackWire();
+                targetWire.setServiceContract(contract);
+                targetWire.setContainer(parent);
+                outboundWire.setTargetWire(targetWire);
+                return;
+            }
+            if (outboundWire.getContainer().isSystem()) {
+                targetWire = parent.resolveSystemAutowire(interfaze);
+            } else {
+                targetWire = parent.resolveAutowire(interfaze);
+            }
+        } catch (TargetResolutionException e) {
+            String sourceReference = outboundWire.getReferenceName();
+            throw new WireConnectException("Error resolving autowire target",
+                outboundWire.getContainer().getName(),
+                sourceReference,
+                null,
+                null,
+                e);
+        }
+        if (targetWire == null) {
+            // jfm fixme test
+            // autowire may return null if it is optional. It is up to the client to decide if
+            // an error should be thrown
+            return;
+        }
+        Scope sourceScope = outboundWire.getContainer().getScope();
+        Scope targetScope = targetWire.getContainer().getScope();
+        boolean optimizable = isOptimizable(sourceScope, targetScope);
+        connect(outboundWire, targetWire, optimizable);
     }
 
     private void checkIfWireable(OutboundWire sourceWire, InboundWire targetWire)
