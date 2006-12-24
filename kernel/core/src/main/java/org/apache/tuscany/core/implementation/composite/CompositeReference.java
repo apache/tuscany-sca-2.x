@@ -27,6 +27,8 @@ import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * A bindless reference to a target service in the parent composite
+ *
+ * @version $Rev$ $Date$
  */
 public class CompositeReference extends ReferenceExtension {
 
