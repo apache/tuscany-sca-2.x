@@ -36,12 +36,12 @@ public class CompositeService extends ServiceExtension {
 
     /**
      * A service for a remote binding does not need a target invoker, but a bindless service does because it gets wired
-     * localy from a reference (or from a parent service?!) We just reuse CompositeReferenceTargetInvoker for now since
+     * localy from a reference (or from a parent service?!) We just reuse CompositeTargetInvoker for now since
      * it seems the target invoker we need does the same thing, if this is confirmed we should give it a common name
      * FIXME !!! Notice that this method is not defined in the SPI !!!
      */
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceTargetInvoker(operation, outboundWire);
+        return new CompositeTargetInvoker(operation, outboundWire);
     }
 
     /**

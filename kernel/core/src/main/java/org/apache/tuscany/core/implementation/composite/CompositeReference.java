@@ -38,7 +38,7 @@ public class CompositeReference extends ReferenceExtension {
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceTargetInvoker(operation, outboundWire);
+        return new CompositeTargetInvoker(operation, outboundWire);
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
