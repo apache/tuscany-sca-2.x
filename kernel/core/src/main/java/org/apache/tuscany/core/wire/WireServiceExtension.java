@@ -56,7 +56,6 @@ import org.apache.tuscany.core.implementation.composite.CompositeReference;
  * @version $Rev$ $Date$
  */
 public abstract class WireServiceExtension implements WireService {
-
     protected PolicyBuilderRegistry policyRegistry;
     protected WorkContext context;
 
@@ -204,7 +203,7 @@ public abstract class WireServiceExtension implements WireService {
         }
 
         // Notice that we skip inboundWire.setCallbackReferenceName
-        // First, an inbound inboundWire's callbackReferenceName is only retrieved by JavaAtomicComponent
+        // First, an inbound wire's callbackReferenceName is only retrieved by JavaAtomicComponent
         // to create a callback injector based on the callback reference member; a composite reference
         // should not need to do that
         // Second, a reference definition does not have a callback reference name like a service
