@@ -27,33 +27,32 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Dispatches an invocation through a composite reference
+ * Dispatches an invocation through a composite service or reference
  *
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
+public class CompositeTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
 
     private OutboundInvocationChain chain;
     private Object fromAddress;
     private boolean contractHasCallback;
 
-    public CompositeReferenceTargetInvoker(Operation operation,
-                                           OutboundWire outboundWire) {
-        assert operation != null : "Operation method cannot be null";
+    public CompositeTargetInvoker(Operation operation,
+                                  OutboundWire outboundWire) {
+        assert operation != null;
         chain = outboundWire.getInvocationChains().get(operation);
         fromAddress = (outboundWire.getContainer() == null) ? null : outboundWire.getContainer().getName();
         contractHasCallback = outboundWire.getServiceContract().getCallbackClass() != null;
     }
 
     @Override
-    public CompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {
-        return (CompositeReferenceTargetInvoker) super.clone();
+    public CompositeTargetInvoker clone() throws CloneNotSupportedException {
+        return (CompositeTargetInvoker) super.clone();
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             TargetInvoker invoker = chain.getTargetInvoker();
-
             // Pushing the from address only needs to happen in the outbound (forward) direction for callbacks
             if (contractHasCallback) {
                 msg.pushFromAddress(fromAddress);
