@@ -104,23 +104,16 @@ public class ConnectorImpl implements Connector {
             }
             return;
         } else if (optimizable && sourceWire.getContainer().isSystem() && targetWire.getContainer().isSystem()) {
+            // system services are directly wired withut invocation chains
             // JFM FIXME test this
             sourceWire.setTargetWire(targetWire);
             return;
         }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
-            // match wire chains
+            // match invocation chains
             OutboundInvocationChain outboundChain = targetChains.get(inboundChain.getOperation());
             if (outboundChain == null) {
-                String serviceName = sourceWire.getServiceName();
-                String sourceName = sourceWire.getContainer().getName();
-                String refName = targetWire.getReferenceName();
-                String targetName = targetWire.getContainer().getName();
-                throw new IncompatibleInterfacesException("Incompatible source and target interfaces",
-                    sourceName,
-                    refName,
-                    targetName,
-                    serviceName);
+                throw new IncompatibleInterfacesException(sourceWire, targetWire);
             }
             connect(inboundChain, outboundChain);
         }
@@ -164,30 +157,16 @@ public class ConnectorImpl implements Connector {
             Operation<?> operation = outboundChain.getOperation();
             InboundInvocationChain inboundChain = targetChains.get(operation);
             if (inboundChain == null) {
-                String sourceName = sourceWire.getContainer().getName();
-                String refName = sourceWire.getReferenceName();
-                String targetName = targetWire.getContainer().getName();
-                String serviceName = targetWire.getServiceName();
-                throw new IncompatibleInterfacesException("Incompatible interfaces",
-                    sourceName,
-                    refName,
-                    targetName,
-                    serviceName);
+                throw new IncompatibleInterfacesException(sourceWire, targetWire);
             }
             Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
             boolean operationHasCallback = contract.getCallbackName() != null;
             if (isOneWayOperation && operationHasCallback) {
-                String sourceName = sourceWire.getContainer().getName();
-                String refName = sourceWire.getReferenceName();
-                String targetName = targetWire.getContainer().getName();
-                String serviceName = targetWire.getServiceName();
                 throw new IllegalCallbackException("Operation cannot be marked one-way and have a callback",
                     inboundOperation.getName(),
-                    sourceName,
-                    refName,
-                    targetName,
-                    serviceName);
+                    sourceWire,
+                    targetWire);
             }
             TargetInvoker invoker = null;
             if (target instanceof Component) {
@@ -200,16 +179,7 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = component.createTargetInvoker(portName, inboundOperation, targetWire);
                 } catch (TargetInvokerCreationException e) {
-                    String sourceName = sourceWire.getContainer().getName();
-                    String refName = sourceWire.getReferenceName();
-                    String targetName = targetWire.getContainer().getName();
-                    String serviceName = targetWire.getServiceName();
-                    throw new WireConnectException("Error connecting source and target",
-                        sourceName,
-                        refName,
-                        targetName,
-                        serviceName,
-                        e);
+                    throw new WireConnectException("Error connecting source and target", sourceWire, targetWire, e);
                 }
             } else if (target instanceof Reference) {
                 Reference reference = (Reference) target;
@@ -252,16 +222,9 @@ public class ConnectorImpl implements Connector {
             Operation<?> operation = inboundChain.getOperation();
             if (sourceCallbackChains != null && sourceCallbackChains.get(operation) != null) {
                 String opName = operation.getName();
-                String sourceName = sourceWire.getContainer().getName();
-                String refName = sourceWire.getReferenceName();
-                String targetName = targetWire.getContainer().getName();
-                String serviceName = targetWire.getServiceName();
                 throw new IllegalCallbackException("Source callback chain should not exist for operation",
                     opName,
-                    sourceName,
-                    refName,
-                    targetName,
-                    serviceName);
+                    sourceWire, targetWire);
             }
 
             Operation targetOp =
@@ -274,15 +237,9 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = component.createTargetInvoker(null, operation, null);
                 } catch (TargetInvokerCreationException e) {
-                    String sourceName = sourceWire.getContainer().getName();
-                    String refName = sourceWire.getReferenceName();
-                    String targetName = targetWire.getContainer().getName();
-                    String serviceName = targetWire.getServiceName();
                     throw new WireConnectException("Error connecting source and target",
-                        sourceName,
-                        refName,
-                        targetName,
-                        serviceName,
+                        sourceWire,
+                        targetWire,
                         e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
@@ -624,15 +581,7 @@ public class ConnectorImpl implements Connector {
             Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
             Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
             if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                String sourceName = sourceWire.getContainer().getName();
-                String refName = sourceWire.getReferenceName();
-                String targetName = targetWire.getContainer().getName();
-                String serviceName = targetWire.getServiceName();
-                throw new IncompatibleInterfacesException("Incompatible interfaces",
-                    sourceName,
-                    refName,
-                    targetName,
-                    serviceName);
+                throw new IncompatibleInterfacesException(sourceWire, targetWire);
             }
         } else {
             try {
@@ -640,15 +589,7 @@ public class ConnectorImpl implements Connector {
                 ServiceContract targetContract = targetWire.getServiceContract();
                 wireService.checkCompatibility(sourceContract, targetContract, false);
             } catch (IncompatibleServiceContractException e) {
-                String sourceName = sourceWire.getContainer().getName();
-                String refName = sourceWire.getReferenceName();
-                String targetName = targetWire.getContainer().getName();
-                String serviceName = targetWire.getServiceName();
-                throw new IncompatibleInterfacesException("Incompatible interfaces",
-                    sourceName,
-                    refName,
-                    targetName,
-                    serviceName, e);
+                throw new IncompatibleInterfacesException(sourceWire, targetWire, e);
             }
         }
     }

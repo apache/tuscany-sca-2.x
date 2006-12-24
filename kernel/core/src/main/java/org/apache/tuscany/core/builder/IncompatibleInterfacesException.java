@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.spi.builder.WiringException;
+import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Denotes an attempt to wire incompatible interfaces
@@ -29,10 +31,10 @@ public class IncompatibleInterfacesException extends WiringException {
 
 
     public IncompatibleInterfacesException(String message,
-                                          String sourceName,
-                                          String referenceName,
-                                          String targetName,
-                                          String targetServiceName) {
+                                           String sourceName,
+                                           String referenceName,
+                                           String targetName,
+                                           String targetServiceName) {
         super(message);
         setSourceName(sourceName);
         setReferenceName(referenceName);
@@ -41,14 +43,39 @@ public class IncompatibleInterfacesException extends WiringException {
     }
 
     public IncompatibleInterfacesException(String message, String sourceName,
-                                          String referenceName,
-                                          String targetName,
-                                          String serviceName,
-                                          Throwable cause) {
+                                           String referenceName,
+                                           String targetName,
+                                           String serviceName,
+                                           Throwable cause) {
         super(message, cause);
         setSourceName(sourceName);
         setReferenceName(referenceName);
         setTargetName(targetName);
         setTargetServiceName(serviceName);
     }
+
+    public IncompatibleInterfacesException(InboundWire source, OutboundWire target) {
+        super("Incompatible source and target interfaces");
+        setTargetServiceName(source.getServiceName());
+        setSourceName(source.getContainer().getName());
+        setReferenceName(target.getReferenceName());
+        setTargetName(target.getContainer().getName());
+    }
+
+    public IncompatibleInterfacesException(OutboundWire source, InboundWire target) {
+        super("Incompatible source and target interfaces");
+        setTargetServiceName(target.getServiceName());
+        setSourceName(source.getContainer().getName());
+        setReferenceName(source.getReferenceName());
+        setTargetName(target.getContainer().getName());
+    }
+
+    public IncompatibleInterfacesException(OutboundWire source, InboundWire target, Throwable throwable) {
+        super("Incompatible source and target interfaces", throwable);
+        setTargetServiceName(target.getServiceName());
+        setSourceName(source.getContainer().getName());
+        setReferenceName(source.getReferenceName());
+        setTargetName(target.getContainer().getName());
+    }
+
 }
