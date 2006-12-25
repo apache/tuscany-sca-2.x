@@ -78,7 +78,6 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         super(name, parent);
         this.propertyValues = propertyValues;
         this.connector = connector;
-        // JFM FIXME
     }
 
     public Scope getScope() {
