@@ -36,6 +36,8 @@
         <module>launcher</module>
         <module>standalone-host</module>
         <module>plugin.standalone</module>
+        <module>server.start</module>
+        <module>server.shutdown</module>
     </modules>
 
 </project>
