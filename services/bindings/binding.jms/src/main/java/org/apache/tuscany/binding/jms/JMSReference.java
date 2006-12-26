@@ -44,11 +44,10 @@ public class JMSReference extends ReferenceExtension {
                         JMSResourceFactory jmsResourceFactory,
                         OperationAndDataBinding requestOperationAndDataBinding,
                         OperationAndDataBinding responseOperationAndDataBinding,
-                        Class<?> service,
                         Destination requestDest,
                         Destination replyDest) {
 
-        super(name, service, parent);
+        super(name, parent);
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;

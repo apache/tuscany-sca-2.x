@@ -46,12 +46,11 @@ public class CeltixReference<T> extends ReferenceExtension {
     private TypeHelper typeHelper;
 
     public CeltixReference(String name,
-                           Class<T> interfaze,
                            CompositeComponent parent,
                            WebServiceBinding binding,
                            Bus theBus,
                            TypeHelper theTypeHelper) {
-        super(name, interfaze, parent);
+        super(name, parent);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();

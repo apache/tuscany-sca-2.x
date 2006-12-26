@@ -169,7 +169,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             Class<?> type;
             if (object instanceof Reference) {
                 Reference reference = (Reference) object;
-                type = reference.getInterface();
+                type = reference.getInboundWire().getServiceContract().getInterfaceClass();
                 if (requiredType != null && requiredType.isAssignableFrom(type)) {
                     // need null check since Spring may pass in a null
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);

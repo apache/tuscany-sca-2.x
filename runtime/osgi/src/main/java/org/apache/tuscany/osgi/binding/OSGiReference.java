@@ -32,8 +32,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public class OSGiReference extends ReferenceExtension {
     //private final String uri;
 
-    public OSGiReference(String name, Class<?> interfaze, CompositeComponent parent) {
-        super(name, interfaze, parent);
+    public OSGiReference(String name, CompositeComponent parent) {
+        super(name, parent);
         //this.uri = uri;
     }
 

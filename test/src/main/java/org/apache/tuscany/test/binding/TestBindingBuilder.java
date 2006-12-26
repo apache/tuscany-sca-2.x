@@ -42,9 +42,8 @@ public class TestBindingBuilder extends BindingBuilderExtension<TestBinding> {
     public Reference build(CompositeComponent parent,
                                BoundReferenceDefinition<TestBinding> definition,
                                DeploymentContext context) {
-        Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
         String name = definition.getName();
-        return new TestBindingReference(name, interfaze, parent);
+        return new TestBindingReference(name, parent);
     }
 
     protected Class<TestBinding> getBindingType() {

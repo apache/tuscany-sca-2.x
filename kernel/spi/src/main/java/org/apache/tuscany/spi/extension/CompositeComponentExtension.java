@@ -482,7 +482,8 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     }
 
     protected void registerAutowire(Reference reference) throws InvalidAutowireInterface {
-        registerAutowireInternal(reference.getInterface(), reference);
+        Class clazz = reference.getInboundWire().getServiceContract().getInterfaceClass();
+        registerAutowireInternal(clazz, reference);
     }
 
     protected void registerAutowire(Service service) throws InvalidAutowireInterface {

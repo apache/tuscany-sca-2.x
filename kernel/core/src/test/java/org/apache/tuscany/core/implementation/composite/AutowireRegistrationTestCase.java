@@ -8,7 +8,6 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.InvalidAutowireInterface;
-import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.wire.InboundWire;
 
@@ -62,48 +61,6 @@ public class AutowireRegistrationTestCase extends TestCase {
             // expected
         }
     }
-
-    public void testInvalidReferenceInterfaceAutowire() throws Exception {
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        InboundWire wire = TestUtils.createInboundWire(Foo.class);
-        wire.setContainer(parent);
-        Reference reference = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
-        EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
-        reference.getInterface();
-        EasyMock.expectLastCall().andReturn(Bar.class);
-        EasyMock.replay(reference);
-        CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
-        try {
-            component.register(reference);
-            fail();
-        } catch (InvalidAutowireInterface e) {
-            // expected
-        }
-    }
-
-
-    public void testInvalidSystemReferenceInterfaceAutowire() throws Exception {
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        InboundWire wire = TestUtils.createInboundWire(Foo.class);
-        wire.setContainer(parent);
-        Reference reference = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(reference.isSystem()).andReturn(true).atLeastOnce();
-        EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
-        reference.getInterface();
-        EasyMock.expectLastCall().andReturn(Bar.class);
-        EasyMock.replay(reference);
-        CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
-        try {
-            component.register(reference);
-            fail();
-        } catch (InvalidAutowireInterface e) {
-            // expected
-        }
-    }
-
 
     public void testInvalidComponentInterfaceAutowire() throws Exception {
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);

@@ -37,15 +37,10 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public abstract class ReferenceExtension extends AbstractSCAObject implements Reference {
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected Class<?> referenceInterface;
     protected ServiceContract<?> bindingServiceContract;
 
-    protected ReferenceExtension(String name,
-                                 Class<?> referenceInterface,
-                                 CompositeComponent parent
-    ) {
+    protected ReferenceExtension(String name, CompositeComponent parent) {
         super(name, parent);
-        this.referenceInterface = referenceInterface;
     }
 
     public Scope getScope() {
@@ -66,10 +61,6 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
 
     public void setOutboundWire(OutboundWire outboundWire) {
         this.outboundWire = outboundWire;
-    }
-
-    public Class<?> getInterface() {
-        return referenceInterface;
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)

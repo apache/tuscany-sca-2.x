@@ -46,7 +46,7 @@ public class RMIReference<T> extends ReferenceExtension {
                         String port,
                         String svcName,
                         Class<T> service) {
-        super(name, service, parent);
+        super(name, parent);
         this.host = host;
         this.port = port;
         this.svcName = svcName;
@@ -62,7 +62,7 @@ public class RMIReference<T> extends ReferenceExtension {
              */
             Method method = findMethod(operation, contract.getInterfaceClass().getMethods());
             Method remoteMethod =
-                getInterface().getMethod(operation.getName(), (Class[]) method.getParameterTypes());
+                getInboundWire().getServiceContract().getInterfaceClass().getMethod(operation.getName(), (Class[]) method.getParameterTypes());
             return new RMIInvoker(rmiHost, host, port, svcName, remoteMethod);
         } catch (NoSuchMethodException e) {
             throw new NoRemoteMethodException(operation.toString(), e);

@@ -18,14 +18,13 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -45,14 +44,8 @@ import static org.easymock.EasyMock.replay;
 public class ReferenceTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        TestReference ref = new TestReference<Object>(Object.class);
+        TestReference ref = new TestReference();
         assertEquals(Scope.SYSTEM, ref.getScope());
-    }
-
-    public void testSetGetInterface() throws Exception {
-        TestReference<TestReference> ref = new TestReference<TestReference>(TestReference.class);
-        assertEquals(TestReference.class, ref.getInterface());
-
     }
 
     public void testPrepare() throws Exception {
@@ -75,15 +68,15 @@ public class ReferenceTestCase extends TestCase {
         replay(chain);
         replay(wire);
         replay(outboundWire);
-        TestReference<Object> ref = new TestReference<Object>(Object.class);
+        TestReference ref = new TestReference();
         ref.setInboundWire(wire);
         ref.setOutboundWire(outboundWire);
         ref.prepare();
     }
 
-    private class TestReference<T> extends ReferenceExtension {
-        public TestReference(Class<T> clazz) {
-            super(null, clazz, null);
+    private class TestReference extends ReferenceExtension {
+        public TestReference() {
+            super(null, null);
         }
 
         public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
