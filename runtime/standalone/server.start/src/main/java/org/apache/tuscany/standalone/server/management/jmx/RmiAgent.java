@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
@@ -37,7 +38,7 @@ import javax.management.remote.JMXServiceURL;
  * @version $Revsion$ $Date$
  *
  */
-public class Agent {
+public class RmiAgent implements Agent {
 
     /** Administration port system property. */
     private static final String ADMIN_PORT_PROPERTY = "tuscany.adminPort";
@@ -46,7 +47,7 @@ public class Agent {
     private static final int DEFAULT_ADMIN_PORT = 1099;
 
     /** Instance */
-    private static final Agent INSTANCE = new Agent();
+    private static final Agent INSTANCE = new RmiAgent();
 
     /** Root domain */
     private static final String DOMAIN = "tuscany";
@@ -62,12 +63,15 @@ public class Agent {
     
     /** Listen port */
     private int port = DEFAULT_ADMIN_PORT;
+    
+    /** Start flag. */
+    private AtomicBoolean started = new AtomicBoolean();
 
     /**
      * Initialies the server.
      * @throws ManagementException If unable to start the agent.
      */
-    private Agent() throws ManagementException {
+    private RmiAgent() throws ManagementException {
         
         try {
             
@@ -98,11 +102,8 @@ public class Agent {
         return INSTANCE;
     }
 
-    /**
-     * Registers a managed bean.
-     * @param instance Instance to be registered.
-     * @param name Object name of the instance.
-     * @throws ManagementException If unable to register the object.
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#register(java.lang.Object, java.lang.String)
      */
     public synchronized void register(Object instance, String name) throws ManagementException {
         try {
@@ -112,16 +113,22 @@ public class Agent {
         }
     }
 
-    /**
-     * Starts the JMX server.
-     * @throws ManagementException If unable to start the server.
-     *
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#start()
      */
     public void start() throws ManagementException {
 
         try {
+            
+            if(started.get()) {
+                throw new IllegalArgumentException("Agent already started");
+            }
+            
             registry = LocateRegistry.createRegistry(port);
             connectorServer.start();
+            
+            started.set(true);
+            
         } catch (MalformedURLException ex) {
             throw new ManagementException(ex);
         } catch (IOException ex) {
@@ -130,18 +137,24 @@ public class Agent {
 
     }
 
-    /**
-     * Shuts down the JMX server.
-     * @throws ManagementException If unable to shutdown the server.
-     *
+    /* (non-Javadoc)
+     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#shutdown()
      */
     public void shutdown() throws ManagementException {
+        
         try {
+            
+            if(!started.get()) {
+                throw new IllegalArgumentException("Agent not started");
+            }
+            
             connectorServer.stop();
             UnicastRemoteObject.unexportObject(registry, true);
+            
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }
+        
     }
 
 }
