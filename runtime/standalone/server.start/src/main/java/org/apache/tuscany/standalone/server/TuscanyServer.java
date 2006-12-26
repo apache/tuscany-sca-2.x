@@ -100,7 +100,6 @@ public class TuscanyServer implements TuscanyServerMBean {
      *
      */
     public void start() {
-        System.err.println("Started");
     }
     
     /**
@@ -109,7 +108,6 @@ public class TuscanyServer implements TuscanyServerMBean {
      */
     public void shutdown() {
         agent.shutdown();
-        System.err.println("shutdown");
     }
 
 }
