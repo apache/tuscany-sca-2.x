@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface RuntimeWire {
+public interface Wire {
 
     /**
      * Returns the non-proxied target instance for this wire

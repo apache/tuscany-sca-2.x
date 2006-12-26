@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * An interceptor to transform data accross databindings on the wire
@@ -44,7 +44,7 @@ public class DataBindingInteceptor implements Interceptor {
 
     private Mediator mediator;
 
-    public DataBindingInteceptor(RuntimeWire sourceWire, Operation<?> sourceOperation, RuntimeWire targetWire,
+    public DataBindingInteceptor(Wire sourceWire, Operation<?> sourceOperation, Wire targetWire,
                                  Operation<?> targetOperation) {
         super();
         // this.sourceWire = sourceWire;

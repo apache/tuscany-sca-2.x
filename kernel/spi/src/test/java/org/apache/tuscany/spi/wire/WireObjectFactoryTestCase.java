@@ -30,7 +30,7 @@ import static org.easymock.EasyMock.verify;
 public class WireObjectFactoryTestCase extends TestCase {
 
     public void testCreateInstance() throws Exception {
-        RuntimeWire wire = createMock(RuntimeWire.class);
+        Wire wire = createMock(Wire.class);
         WireService service = createMock(WireService.class);
         service.createProxy(Object.class, wire);
         expectLastCall().andReturn(null);

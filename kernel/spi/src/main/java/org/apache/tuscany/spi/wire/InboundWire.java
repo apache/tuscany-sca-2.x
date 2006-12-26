@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.model.Operation;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface InboundWire extends RuntimeWire {
+public interface InboundWire extends Wire {
 
     /**
      * Returns the name of the target service of the wire
