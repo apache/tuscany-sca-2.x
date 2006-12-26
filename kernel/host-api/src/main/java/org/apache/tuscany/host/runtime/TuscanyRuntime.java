@@ -44,34 +44,6 @@ public interface TuscanyRuntime {
     void setSystemScdl(URL systemScdl);
 
     /**
-     * Returns the name of the component associated with the application SCDL.
-     *
-     * @return the name of the component associated with the application SCDL
-     */
-    String getApplicationName();
-
-    /**
-     * Sets the name of the component associated with the application SCDL.
-     *
-     * @param applicationName the name of the component associated with the application SCDL
-     */
-    void setApplicationName(String applicationName);
-
-    /**
-     * Returns the location of the default application's SCDL.
-     *
-     * @return the location of the default application's SCDL
-     */
-    URL getApplicationScdl();
-
-    /**
-     * Sets the location of the default application's SCDL
-     *
-     * @param applicationScdl the location of the default application's SCDL
-     */
-    void setApplicationScdl(URL applicationScdl);
-
-    /**
      * Returns the host ClassLoader that is parent to all Tuscany classloaders.
      *
      * @return the host's ClassLoader
@@ -138,15 +110,50 @@ public interface TuscanyRuntime {
     /**
      * Returns the current SCA context
      */
+    @Deprecated
     SCA getContext();
+
+    /**
+     * Returns the name of the component associated with the application SCDL.
+     *
+     * @return the name of the component associated with the application SCDL
+     */
+    @Deprecated
+    String getApplicationName();
+
+    /**
+     * Sets the name of the component associated with the application SCDL.
+     *
+     * @param applicationName the name of the component associated with the application SCDL
+     */
+    @Deprecated
+    void setApplicationName(String applicationName);
+
+    /**
+     * Returns the location of the default application's SCDL.
+     *
+     * @return the location of the default application's SCDL
+     */
+    @Deprecated
+    URL getApplicationScdl();
+
+    /**
+     * Sets the location of the default application's SCDL
+     *
+     * @param applicationScdl the location of the default application's SCDL
+     */
+    @Deprecated
+    void setApplicationScdl(URL applicationScdl);
 
     /**
      * Get the application classloader
      */
+    @Deprecated
     ClassLoader getApplicationClassLoader();
 
     /**
      * Set the application classloader
      */
+    @Deprecated
     void setApplicationClassLoader(ClassLoader applicationClassLoader);
 }
