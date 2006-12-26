@@ -40,10 +40,13 @@ public interface AssemblyService {
     /**
      * Apply a set of changes to the SCA Domain's logical assembly.
      *
-     * @param changeSet a stream for reading a resource containing a set of changes; the stream will not be closed
-     *                  but no guarantee is made on the position the stream is left in
+     * @param changeSet   a stream for reading a resource containing a set of changes; the stream will not be closed
+     *                    but no guarantee is made on the position the stream is left in
+     * @param contentType the type of changeSet on the stream; must be a valid Content-Type value
+     *                    as specified by <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC2045</a>
+     *                    and must not be null
      * @throws DeploymentException if there was a problem making the changes
      * @throws IOException         if there was a problem reading the stream
      */
-    void applyChanges(InputStream changeSet) throws DeploymentException, IOException;
+    void applyChanges(InputStream changeSet, String contentType) throws DeploymentException, IOException;
 }
