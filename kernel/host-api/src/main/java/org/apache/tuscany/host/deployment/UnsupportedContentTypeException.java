@@ -24,14 +24,14 @@ package org.apache.tuscany.host.deployment;
  *
  * @version $Rev$ $Date$
  */
-public class UnsupportedContentType extends DeploymentException {
+public class UnsupportedContentTypeException extends DeploymentException {
 
     /**
      * Constructor specifying the Content-Type value that is not supported.
      *
      * @param contentType the type that is not supported
      */
-    public UnsupportedContentType(String contentType) {
+    public UnsupportedContentTypeException(String contentType) {
         super(contentType);
     }
 
@@ -42,7 +42,7 @@ public class UnsupportedContentType extends DeploymentException {
      * @param contentType the type that is not supported
      * @param identifier  an identifier for this exception
      */
-    public UnsupportedContentType(String contentType, String identifier) {
+    public UnsupportedContentTypeException(String contentType, String identifier) {
         super(contentType, identifier);
     }
 }
