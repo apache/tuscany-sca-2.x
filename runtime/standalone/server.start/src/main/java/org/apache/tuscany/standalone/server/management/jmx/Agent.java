@@ -30,8 +30,14 @@ import javax.management.ObjectName;
  */
 public class Agent {
     
+    /** Administration port system property. */
+    private static final String ADMIN_PORT_PROPERTY = "tuscany.adminPort";
+    
+    /** Default admin port. */
+    private static final int DEFAULT_ADMIN_PORT = 1066;
+    
     /** Instance */
-    private static Agent INSTANCE = null;
+    private static final Agent INSTANCE = new Agent();
     
     /** Root domain */
     private static final String DOMAIN = "tuscany";
@@ -41,10 +47,9 @@ public class Agent {
     
     /**
      * Initialies the server.
-     * @param port Management port.
      * @throws ManagementException If unable to start the agent.
      */
-    private Agent(int port) throws ManagementException {
+    private Agent() throws ManagementException {
         mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);
     }
     
@@ -53,10 +58,7 @@ public class Agent {
      * @return Agent instance.
      * @throws ManagementException If unable to start the agent.
      */
-    public synchronized static Agent getInstance(int port) throws ManagementException {
-        if(INSTANCE == null) {
-            INSTANCE = new Agent(port);
-        }
+    public static Agent getInstance() throws ManagementException {
         return INSTANCE;
     }
     

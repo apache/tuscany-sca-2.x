@@ -52,47 +52,30 @@ import org.apache.tuscany.standalone.server.management.jmx.Agent;
  */
 public class TuscanyServer implements TuscanyServerMBean {
     
-    /** Administration port system property. */
-    private static final String ADMIN_PORT_PROPERTY = "tuscany.adminPort";
-    
-    /** Default admin port. */
-    private static final int DEFAULT_ADMIN_PORT = 1066;
-    
     /** Agent */
-    private Agent agent;
-    
-    /**
-     * Constructor initializes all the required classloaders.
-     *
-     */
-    private TuscanyServer(Agent agent) { 
-        
-        this.agent = agent;
-        
-        File installDirectory = DirectoryHelper.getInstallDirectory();
-        File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);
-        
-    }
+    private Agent agent = Agent.getInstance();
     
     /**
      * 
      * @param args Commandline arguments.
      */
-    public static void main(String[] args) throws Exception { 
-        
-        String managementPort = System.getProperty(ADMIN_PORT_PROPERTY);
-        int port = DEFAULT_ADMIN_PORT;
-        if(managementPort != null) {
-            port = Integer.parseInt(managementPort);
-        }
-        
-        Agent agent =  Agent.getInstance(port);
-        agent.start();
-        
-        TuscanyServer tuscanyServer = new TuscanyServer(agent);
-        agent.register(tuscanyServer, "tuscanyServer");
+    public static void main(String[] args) throws Exception {         
+        TuscanyServer tuscanyServer = new TuscanyServer();
         tuscanyServer.start();
-
+    }
+    
+    /**
+     * Constructor initializes all the required classloaders.
+     *
+     */
+    private TuscanyServer() {
+        
+        agent.start();
+        agent.register(this, "tuscanyServer");
+        
+        File installDirectory = DirectoryHelper.getInstallDirectory();
+        File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);
+        
     }
     
     /**
