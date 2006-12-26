@@ -37,6 +37,7 @@ public class OSGiService extends ServiceExtension {
     //private final Class<? extends Object> service;
     private OSGiHost host;
     private WireService wireService;
+
     /**
      * Creates a new service instance
      *
@@ -44,16 +45,14 @@ public class OSGiService extends ServiceExtension {
      * @param parent          the containing composite
      * @param wireService     the wire service to use for creating proxies
      * @param osgiServiceName the name to publish the service as to the OSGi hose
-     * @param service         the service type
      * @param host            the OSGi host
      */
     public OSGiService(String name,
                        CompositeComponent parent,
                        WireService wireService,
                        String osgiServiceName,
-                       Class<?> service,
                        OSGiHost host) {
-        super(name, service, parent);
+        super(name, parent);
         this.osgiServiceName = osgiServiceName;
         //this.service = service;
         this.wireService = wireService;

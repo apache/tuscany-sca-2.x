@@ -38,10 +38,9 @@ public class JSONRPCService extends ServiceExtension {
 
     public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
 
-    public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService,
-                          ServletHost servletHost) {
+    public JSONRPCService(String theName, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
 
-        super(theName, interfaze, parent);
+        super(theName, parent);
 
         this.servletHost = servletHost;
         this.wireService = wireService;
@@ -51,8 +50,10 @@ public class JSONRPCService extends ServiceExtension {
         super.start();
         JSONRPCEntryPointServlet servlet;
         // FIXME this should not have to create a proxy but should instead dispatch directly down an invocation chain
-        Object instance = wireService.createProxy(interfaze, getInboundWire());
-        servlet = new JSONRPCEntryPointServlet(getName(), interfaze, instance);
+        Class<?> aClass = getInboundWire().getServiceContract().getInterfaceClass();
+        Object instance =
+            wireService.createProxy(aClass, getInboundWire());
+        servlet = new JSONRPCEntryPointServlet(getName(), aClass, instance);
 
         // register the servlet based on the service name
         servletHost.registerMapping("/" + getName(), servlet);

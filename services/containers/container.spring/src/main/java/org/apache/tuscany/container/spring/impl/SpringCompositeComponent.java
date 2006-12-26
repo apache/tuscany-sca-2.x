@@ -177,7 +177,7 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
                 return wireService.createProxy(type, reference.getInboundWire());
             } else if (object instanceof Service) {
                 Service service = (Service) object;
-                type = service.getInterface();
+                type = service.getInboundWire().getServiceContract().getInterfaceClass();
                 if (requiredType != null && requiredType.isAssignableFrom(type)) {
                     // need null check since Spring may pass in a null
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);

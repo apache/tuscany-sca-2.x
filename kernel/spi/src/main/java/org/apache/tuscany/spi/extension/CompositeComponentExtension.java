@@ -236,7 +236,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
         synchronized (services) {
             for (Service service : services) {
-                serviceInterfaces.add(service.getInterface());
+                serviceInterfaces.add(service.getInboundWire().getServiceContract().getInterfaceClass());
             }
         }
         return serviceInterfaces;
@@ -470,7 +470,7 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     protected void registerAutowire(CompositeComponent component) throws InvalidAutowireInterface {
         List<Service> services = component.getServices();
         for (Service service : services) {
-            registerAutowireInternal(service.getInterface(), service);
+            registerAutowireInternal(service.getInboundWire().getServiceContract().getInterfaceClass(), service);
         }
     }
 
@@ -482,12 +482,19 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     }
 
     protected void registerAutowire(Reference reference) throws InvalidAutowireInterface {
-        Class clazz = reference.getInboundWire().getServiceContract().getInterfaceClass();
+        Class<?> clazz = reference.getInboundWire().getServiceContract().getInterfaceClass();
         registerAutowireInternal(clazz, reference);
     }
 
     protected void registerAutowire(Service service) throws InvalidAutowireInterface {
-        registerAutowireExternal(service.getInterface(), service);
+        InboundWire wire = service.getInboundWire();
+        if (wire == null) {
+            // JFM FIXME this a hack needed b/c we are not setting inbound wires in 
+            // WireService.Extension.createWires(Service, String, ServiceContract<?>) on composite services
+            return;
+        }
+        Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+        registerAutowireExternal(clazz, service);
     }
 
 

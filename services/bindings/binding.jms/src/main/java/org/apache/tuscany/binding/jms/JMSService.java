@@ -45,7 +45,7 @@ public class JMSService extends ServiceExtension {
                       OperationAndDataBinding requestOperationAndDataBinding,
                       OperationAndDataBinding responseOperationAndDataBinding,
                       Class<?> service) {
-        super(name, service, parent);
+        super(name, parent);
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;

@@ -20,16 +20,16 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.wire.WireService;
+
 import net.sf.cglib.asm.ClassWriter;
 import net.sf.cglib.asm.Constants;
 import net.sf.cglib.asm.Type;
 import net.sf.cglib.proxy.Enhancer;
-
 import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.host.rmi.RMIHostException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
@@ -59,7 +59,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
                       String port,
                       String svcName,
                       Class<T> service) {
-        super(name, service, parent);
+        super(name, parent);
 
         this.serviceInterface = service;
         this.rmiHost = rHost;
@@ -80,7 +80,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
                 rmiProxy);
             // bindRmiService(uri,rmiProxy);
         } catch (RMIHostException e) {
-            throw new NoRemoteServiceException(e); 
+            throw new NoRemoteServiceException(e);
         }
     }
 
@@ -96,10 +96,11 @@ public class RMIService<T extends Remote> extends ServiceExtension {
     protected Remote createRmiService() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(UnicastRemoteObject.class);
-        enhancer.setCallback(new RemoteMethodHandler(wireService.createHandler(serviceInterface, getInboundWire()), interfaze));
+        enhancer.setCallback(new RemoteMethodHandler(wireService.createHandler(serviceInterface, getInboundWire()),
+            serviceInterface));
 
         if (!Remote.class.isAssignableFrom(serviceInterface)) {
-            RMIServiceClassLoader classloader = 
+            RMIServiceClassLoader classloader =
                 new RMIServiceClassLoader(getClass().getClassLoader());
             final byte[] byteCode = generateRemoteInterface(serviceInterface);
             serviceInterface = classloader.defineClass(byteCode);
@@ -155,6 +156,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
         public RMIServiceClassLoader(ClassLoader parent) {
             super(parent);
         }
+
         public Class defineClass(byte[] byteArray) {
             return defineClass(null, byteArray, 0, byteArray.length);
         }

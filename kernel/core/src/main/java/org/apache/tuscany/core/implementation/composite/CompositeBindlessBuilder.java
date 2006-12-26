@@ -59,10 +59,7 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     public Service build(CompositeComponent parent,
                          BindlessServiceDefinition definition,
                          DeploymentContext deploymentContext) {
-        return new CompositeService(definition.getName(),
-            definition.getServiceContract().getInterfaceClass(),
-            parent
-        );
+        return new CompositeService(definition.getName(), parent);
     }
 
     public Reference build(CompositeComponent parent,

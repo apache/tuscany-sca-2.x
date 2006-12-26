@@ -47,11 +47,6 @@ public interface Service extends SCAObject {
     void setBindingServiceContract(ServiceContract<?> serviceContract);
 
     /**
-     * Returns the service interface configured for the service
-     */
-    Class<?> getInterface();
-
-    /**
      * Returns the inbound wire for flowing a request through the service
      *
      * @return the inbound wire for flowing a request through the service

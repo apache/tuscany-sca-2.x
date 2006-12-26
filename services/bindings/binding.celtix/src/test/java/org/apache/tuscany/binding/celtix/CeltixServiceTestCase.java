@@ -141,7 +141,7 @@ public class CeltixServiceTestCase extends TestCase {
         EasyMock.expectLastCall().andReturn(new GreeterImpl()).anyTimes();
         EasyMock.replay(wireService);
 
-        CeltixService celtixService = new CeltixService("name", Greeter.class, null, wsBinding, bus, null);
+        CeltixService celtixService = new CeltixService("name", null, wsBinding, bus, null);
         //Not sure how InboundWire is set to CeltixService, is the following way correct?
         celtixService.setInboundWire(inboundWire);
         celtixService.start();

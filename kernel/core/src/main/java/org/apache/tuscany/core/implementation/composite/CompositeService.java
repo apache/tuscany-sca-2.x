@@ -26,11 +26,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 public class CompositeService extends ServiceExtension {
 
-    public CompositeService(String name,
-                            Class<?> interfaze,
-                            CompositeComponent parent
-    ) {
-        super(name, interfaze, parent);
+    public CompositeService(String name, CompositeComponent parent) {
+        super(name, parent);
     }
 
     /**

@@ -29,11 +29,8 @@ public class TestSocketBindingService extends ServiceExtension {
     private ExecutorService executor;
     private TestSocketBindingService.ServerRunnable runnable;
 
-    public TestSocketBindingService(String name,
-                                    int port,
-                                    Class<?> interfaze,
-                                    CompositeComponent parent) throws CoreRuntimeException {
-        super(name, interfaze, parent);
+    public TestSocketBindingService(String name, int port, CompositeComponent parent) throws CoreRuntimeException {
+        super(name, parent);
         this.port = port;
     }
 
