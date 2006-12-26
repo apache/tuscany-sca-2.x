@@ -14,16 +14,15 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocketBinding> {
 
     public Service build(CompositeComponent parent,
-                            BoundServiceDefinition<TestSocketBinding> definition,
-                            DeploymentContext context) {
-        Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
+                         BoundServiceDefinition<TestSocketBinding> definition,
+                         DeploymentContext context) {
         int port = definition.getBinding().getPort();
-        return new TestSocketBindingService(definition.getName(), port, interfaze, parent);
+        return new TestSocketBindingService(definition.getName(), port, parent);
     }
 
     public Reference build(CompositeComponent parent,
-                              BoundReferenceDefinition<TestSocketBinding> definition,
-                              DeploymentContext context) {
+                           BoundReferenceDefinition<TestSocketBinding> definition,
+                           DeploymentContext context) {
         String name = definition.getName();
         int port = definition.getBinding().getPort();
         String host = definition.getBinding().getHost();

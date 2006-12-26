@@ -51,7 +51,7 @@ public class ServiceInvocationTestCase extends TestCase {
         outboundWire.setTargetName(new QualifiedName("foo"));
         ArtifactFactory.terminateWire(outboundWire);
         Service service =
-            new ServiceExtension("fooService", TestBean.class, composite);
+            new ServiceExtension("fooService", composite);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         Connector connector = ArtifactFactory.createConnector();

@@ -65,10 +65,6 @@ public class SystemServiceImpl extends AbstractSCAObject implements Service {
         this.outboundWire = wire;
     }
 
-    public Class<?> getInterface() {
-        return inboundWire.getServiceContract().getInterfaceClass();
-    }
-
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
         throw new UnsupportedOperationException();
     }

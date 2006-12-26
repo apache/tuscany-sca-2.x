@@ -79,12 +79,11 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
 
 
     public CeltixService(String theName,
-                         Class<?> interfaze,
                          CompositeComponent parent,
                          WebServiceBinding binding,
                          Bus bus,
                          TypeHelper theTypeHelper) {
-        super(theName, interfaze, parent);
+        super(theName, parent);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();

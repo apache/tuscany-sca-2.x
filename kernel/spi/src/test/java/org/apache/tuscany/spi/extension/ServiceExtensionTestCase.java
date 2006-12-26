@@ -18,14 +18,9 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 
 /**
  * @version $Rev$ $Date$
@@ -33,23 +28,12 @@ import static org.easymock.EasyMock.replay;
 public class ServiceExtensionTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        ServiceExtension service = new ServiceExtension(null, null, null);
+        ServiceExtension service = new ServiceExtension(null, null);
         assertEquals(Scope.SYSTEM, service.getScope());
     }
 
-    public void testSetGetInterface() throws Exception {
-        InboundWire wire = createMock(InboundWire.class);
-        JavaServiceContract contract = new JavaServiceContract(getClass());
-        expect(wire.getServiceContract()).andReturn(contract);
-        replay(wire);
-        ServiceExtension service = new ServiceExtension(null, null, null);
-        service.setInboundWire(wire);
-        service.getInterface();
-    }
-
-
     public void testPrepare() throws Exception {
-        ServiceExtension service = new ServiceExtension(null, null, null);
+        ServiceExtension service = new ServiceExtension(null, null);
         service.prepare();
     }
 

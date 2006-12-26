@@ -48,7 +48,7 @@ public final class SpringTestUtils {
                                                CompositeComponent parent,
                                                WireService wireService)
         throws InvalidServiceContractException, WiringException {
-        Service service = new ServiceExtension(name, serviceInterface, parent);
+        Service service = new ServiceExtension(name, parent);
         InboundWire inboundWire = ArtifactFactory.createInboundWire(name, serviceInterface);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire(name, serviceInterface);
         ArtifactFactory.terminateWire(outboundWire);

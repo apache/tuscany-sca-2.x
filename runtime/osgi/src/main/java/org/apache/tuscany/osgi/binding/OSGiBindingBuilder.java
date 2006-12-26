@@ -50,9 +50,8 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
                          BoundServiceDefinition<OSGiBinding> boundServiceDefinition,
                          DeploymentContext deploymentContext) {
         String name = boundServiceDefinition.getName();
-        Class<? extends Object> service = getServiceInterface(boundServiceDefinition);
         String osgiServiceName = boundServiceDefinition.getBinding().getService();
-        return new OSGiService(name, parent, wireService, osgiServiceName, service, host);
+        return new OSGiService(name, parent, wireService, osgiServiceName, host);
     }
 
     public OSGiReference build(CompositeComponent parent,

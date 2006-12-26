@@ -62,7 +62,7 @@ public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindin
                              DeploymentContext deploymentContext) {
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
 
-        return new JSONRPCService(serviceDefinition.getName(), interfaze, parent, this.wireService, servletHost);
+        return new JSONRPCService(serviceDefinition.getName(), parent, this.wireService, servletHost);
     }
 
 }

@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.binding.jsonrpc;
 
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -28,7 +27,10 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
-import static org.easymock.classextension.EasyMock.*;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.replay;
 
 public class JSONRPCBindingBuilderTestCase extends TestCase {
 
@@ -50,20 +52,22 @@ public class JSONRPCBindingBuilderTestCase extends TestCase {
         JSONRPCBindingBuilder bindingBuilder = new JSONRPCBindingBuilder();
         CompositeComponent mockParent = createMock(CompositeComponent.class);
         replay(mockParent);
-        BoundServiceDefinition<JSONRPCBinding> mockServiceDefinition = createMock((new BoundServiceDefinition<JSONRPCBinding>()).getClass());
+        BoundServiceDefinition<JSONRPCBinding> mockServiceDefinition =
+            createMock((new BoundServiceDefinition<JSONRPCBinding>()).getClass());
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         try {
             ServiceContract<?> contract = registry.introspect(JSONRPCService.class);
-        
+
             expect(mockServiceDefinition.getServiceContract()).andStubReturn(contract);
             expect(mockServiceDefinition.getName()).andReturn("test_service");
             replay(mockServiceDefinition);
             DeploymentContext mockDeploymentContext = createMock(DeploymentContext.class);
             replay(mockDeploymentContext);
-            
-            JSONRPCService jsonService = (JSONRPCService)bindingBuilder.build(mockParent, mockServiceDefinition, mockDeploymentContext);
-            assertEquals(JSONRPCService.class, jsonService.getInterface());
-        
+
+            JSONRPCService jsonService =
+                (JSONRPCService) bindingBuilder.build(mockParent, mockServiceDefinition, mockDeploymentContext);
+            assertEquals(JSONRPCService.class, jsonService.getClass());
+
         } catch (InvalidServiceContractException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

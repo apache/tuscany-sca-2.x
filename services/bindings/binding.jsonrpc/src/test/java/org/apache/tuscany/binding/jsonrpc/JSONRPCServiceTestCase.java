@@ -24,6 +24,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 import static org.easymock.classextension.EasyMock.*;
 import org.easymock.EasyMock;
@@ -46,8 +47,12 @@ public class JSONRPCServiceTestCase extends TestCase {
         mockServletHost.registerMapping(eq(JSONRPCService.SCRIPT_GETTER_SERVICE_MAPPING), (Servlet) notNull());
         replay(mockServletHost);
 
-        JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, this.getClass(), mockParent, mockWireService, mockServletHost );
+        ServiceContract contract = new ServiceContract(Object.class){
+
+        };
+        JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, mockParent, mockWireService, mockServletHost );
         InboundWire wire = EasyMock.createNiceMock(InboundWire.class);
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract);
         EasyMock.replay(wire);
         jsonRpcService.setInboundWire(wire);
         jsonRpcService.start();
@@ -68,8 +73,12 @@ public class JSONRPCServiceTestCase extends TestCase {
         expect(mockServletHost.unregisterMapping(eq(JSONRPCService.SCRIPT_GETTER_SERVICE_MAPPING))).andReturn(null);
         replay(mockServletHost);
         
-        JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, this.getClass(), mockParent, mockWireService, mockServletHost );
+        ServiceContract contract = new ServiceContract(Object.class){
+
+        };
+        JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, mockParent, mockWireService, mockServletHost );
         InboundWire wire = EasyMock.createNiceMock(InboundWire.class);
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract);
         EasyMock.replay(wire);
         jsonRpcService.setInboundWire(wire);
         jsonRpcService.start();
@@ -84,7 +93,7 @@ public class JSONRPCServiceTestCase extends TestCase {
         ServletHost mockServletHost = createMock(ServletHost.class);        
         replay(mockServletHost);
         
-        JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, this.getClass(), mockParent, mockWireService, mockServletHost );
+        JSONRPCService jsonRpcService = new JSONRPCService(SERVICE_NAME, mockParent, mockWireService, mockServletHost );
         assertNotNull(jsonRpcService);
     }
 

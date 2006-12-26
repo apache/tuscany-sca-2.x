@@ -87,8 +87,6 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         InboundWire wire = TestUtils.createInboundWire(Source.class);
         wire.setContainer(service);
         EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
-        service.getInterface();
-        EasyMock.expectLastCall().andReturn(Source.class);
         EasyMock.replay(service);
         parent.register(service);
         assertNotNull(parent.getService("source"));
@@ -102,8 +100,6 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
-        service.getInterface();
-        EasyMock.expectLastCall().andReturn(Source.class);
         InboundWire wire = TestUtils.createInboundWire(Source.class);
         wire.setContainer(service);
         EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();

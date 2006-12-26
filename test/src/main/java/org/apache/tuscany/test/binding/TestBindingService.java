@@ -26,11 +26,8 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
  * @version $Rev$ $Date$
  */
 public class TestBindingService extends ServiceExtension {
-    public TestBindingService(String name,
-                              Class<?> interfaze,
-                              CompositeComponent parent
-    ) throws CoreRuntimeException {
-        super(name, interfaze, parent);
+    public TestBindingService(String name, CompositeComponent parent) throws CoreRuntimeException {
+        super(name, parent);
         // do nothing, but this could register with the host environment
     }
 }

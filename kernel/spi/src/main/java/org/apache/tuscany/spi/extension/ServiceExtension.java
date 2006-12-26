@@ -36,15 +36,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public class ServiceExtension extends AbstractSCAObject implements Service {
-    protected Class<?> interfaze;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
     protected ServiceContract<?> bindingServiceContract;
 
-    public ServiceExtension(String name, Class<?> interfaze, CompositeComponent parent)
-        throws CoreRuntimeException {
+    public ServiceExtension(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
-        this.interfaze = interfaze;
     }
 
     public Scope getScope() {
@@ -65,10 +62,6 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
 
     public void setOutboundWire(OutboundWire outboundWire) {
         this.outboundWire = outboundWire;
-    }
-
-    public Class<?> getInterface() {
-        return interfaze;
     }
 
     public ServiceContract<?> getBindingServiceContract() {

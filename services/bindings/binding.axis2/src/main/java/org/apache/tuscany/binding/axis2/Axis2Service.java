@@ -95,7 +95,7 @@ public class Axis2Service extends ServiceExtension {
                         ServletHost servletHost,
                         ConfigurationContext configContext, WorkContext workContext) {
 
-        super(theName, serviceContract.getInterfaceClass(), parent);
+        super(theName, parent);
 
         this.serviceContract = serviceContract;
         this.binding = binding;

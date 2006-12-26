@@ -21,7 +21,6 @@ package org.apache.tuscany.binding.celtix;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -29,9 +28,10 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.objectweb.celtix.Bus;
 
 import commonj.sdo.helper.TypeHelper;
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+import org.objectweb.celtix.Bus;
 
 /**
  * Builds a {@link org.apache.tuscany.spi.component.Service} or {@link org.apache.tuscany.spi.component.Reference}
@@ -44,8 +44,8 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
     private Bus bus;
 
     public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
-                           DeploymentContext deploymentContext) {
+                         BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
+                         DeploymentContext deploymentContext) {
         WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if (typeHelper == null) {
@@ -56,7 +56,6 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
         }
         return new CeltixService(
             boundServiceDefinition.getName(),
-            boundServiceDefinition.getServiceContract().getInterfaceClass(),
             parent,
             wsBinding,
             bus,

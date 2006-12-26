@@ -53,13 +53,13 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testGetChildren() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension("foo", null));
         Assert.assertEquals(1, composite.getChildren().size());
     }
 
     public void testGetServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        ServiceExtension extension = new ServiceExtension("foo", null, null);
+        ServiceExtension extension = new ServiceExtension("foo", null);
         InboundWire wire = TestUtils.createInboundWire(Foo.class);
         wire.setContainer(extension);
         extension.setInboundWire(wire);
@@ -70,14 +70,14 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testGetService() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension("foo", null));
         composite.start();
         assertNotNull(composite.getService("foo"));
     }
 
     public void testServiceNotFound() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension("foo", null));
         composite.start();
         assertNull(composite.getService("bar"));
     }
@@ -91,7 +91,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null, null));
+        composite.register(new ServiceExtension("foo", null));
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getReferences().size());
     }
@@ -155,8 +155,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         InboundWire wire = TestUtils.createInboundWire(interfaze);
         wire.setContainer(service);
         EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
-        service.getInterface();
-        expectLastCall().andReturn(interfaze).atLeastOnce();
         replay(service);
         return service;
     }
