@@ -11,8 +11,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class TestBindingReference extends ReferenceExtension {
 
-    public TestBindingReference(String name, Class<?> interfaze, CompositeComponent parent) {
-        super(name, interfaze, parent);
+    public TestBindingReference(String name, CompositeComponent parent) {
+        super(name, parent);
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

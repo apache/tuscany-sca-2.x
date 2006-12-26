@@ -113,7 +113,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 
         JMSReference reference =
             new JMSReference(name, parent, jmsBinding, jmsResourceFactory, requestODB, responseODB,
-                             interfaze, requestDest, replyDest);
+                             requestDest, replyDest);
         reference.setBindingServiceContract(serviceContract);
         return reference;
 

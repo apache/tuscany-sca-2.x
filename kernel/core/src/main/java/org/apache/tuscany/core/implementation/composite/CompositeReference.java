@@ -31,10 +31,8 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class CompositeReference extends ReferenceExtension {
 
-    public CompositeReference(String name,
-                              CompositeComponent parent,
-                              ServiceContract contract) {
-        super(name, contract.getInterfaceClass(), parent);
+    public CompositeReference(String name, CompositeComponent parent) {
+        super(name, parent);
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

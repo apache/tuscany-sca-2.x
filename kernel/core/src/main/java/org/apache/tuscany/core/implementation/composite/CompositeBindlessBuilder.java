@@ -68,8 +68,6 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     public Reference build(CompositeComponent parent,
                            ReferenceDefinition definition,
                            DeploymentContext deploymentContext) {
-        return new CompositeReference(definition.getName(),
-            parent,
-            definition.getServiceContract());
+        return new CompositeReference(definition.getName(), parent);
     }
 }

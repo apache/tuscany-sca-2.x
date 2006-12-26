@@ -143,8 +143,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
         reference.getName();
         expectLastCall().andReturn(name).anyTimes();
-        reference.getInterface();
-        expectLastCall().andReturn(Object.class).atLeastOnce();
         replay(reference);
         return reference;
     }

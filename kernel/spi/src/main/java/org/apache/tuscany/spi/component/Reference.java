@@ -32,11 +32,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public interface Reference extends SCAObject {
 
     /**
-     * Returns the service interface configured for the reference
-     */
-    Class<?> getInterface();
-
-    /**
      * Returns the inbound wire for flowing a request through the reference
      */
     InboundWire getInboundWire();

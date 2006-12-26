@@ -21,8 +21,8 @@ package org.apache.tuscany.container.spring.impl;
 import java.net.URL;
 
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
@@ -45,12 +45,12 @@ public class ReferenceInvocationTestCase extends TestCase {
         Resource resource = new UrlResource(url);
         SpringCompositeComponent parent = new SpringCompositeComponent("spring", resource, null, null, null, null);
         InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(inboundWire.getServiceContract()).andReturn(new ServiceContract(TestBean.class){});
+        EasyMock.expect(inboundWire.getServiceContract()).andReturn(new ServiceContract(TestBean.class) {
+        }).atLeastOnce();
         EasyMock.replay(inboundWire);
         Reference reference = createMock(Reference.class);
         expect(reference.getName()).andReturn("bar").anyTimes();
         expect(reference.isSystem()).andReturn(false).atLeastOnce();
-        expect(reference.getInterface()).andStubReturn(TestBean.class);
         expect(reference.getInboundWire()).andStubReturn(inboundWire);
         reference.start();
         replay(reference);

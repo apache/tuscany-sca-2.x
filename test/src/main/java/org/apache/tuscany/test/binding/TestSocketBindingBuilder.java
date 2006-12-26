@@ -24,11 +24,10 @@ public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocket
     public Reference build(CompositeComponent parent,
                               BoundReferenceDefinition<TestSocketBinding> definition,
                               DeploymentContext context) {
-        Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
         String name = definition.getName();
         int port = definition.getBinding().getPort();
         String host = definition.getBinding().getHost();
-        return new TestSocketBindingReference(name, host, port, interfaze, parent);
+        return new TestSocketBindingReference(name, host, port, parent);
     }
 
     protected Class<TestSocketBinding> getBindingType() {

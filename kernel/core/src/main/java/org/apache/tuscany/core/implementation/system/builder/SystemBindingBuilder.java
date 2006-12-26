@@ -72,16 +72,8 @@ public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding>
     public SystemReference build(CompositeComponent parent,
                                  BoundReferenceDefinition<SystemBinding> definition,
                                  DeploymentContext deploymentContext) {
-        Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
         String name = definition.getName();
-        SystemReferenceImpl reference = new SystemReferenceImpl(name, interfaze, parent);
-//        SystemInboundWire inboundWire = new SystemInboundWireImpl(name, interfaze);
-//        String refName = definition.getName();
-//        boolean required = definition.isRequired();
-//        SystemOutboundWire outboundWire = new SystemOutboundAutowire(refName, interfaze, autowireComponent, required);
-//        reference.setInboundWire(inboundWire);
-//        reference.setOutboundWire(outboundWire);
-        return reference;
+        return new SystemReferenceImpl(name, parent);
     }
 
     @Override

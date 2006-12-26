@@ -155,8 +155,6 @@ public class AutowireTestCase extends TestCase {
         SystemReference reference = EasyMock.createMock(SystemReference.class);
         EasyMock.expect(reference.getName()).andReturn("service").atLeastOnce();
         EasyMock.expect(reference.isSystem()).andReturn(true).atLeastOnce();
-        reference.getInterface();
-        EasyMock.expectLastCall().andReturn(Source.class);
         InboundWire wire = TestUtils.createInboundWire(Source.class);
         wire.setContainer(reference);
         EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
@@ -178,8 +176,6 @@ public class AutowireTestCase extends TestCase {
         SystemReference reference = EasyMock.createMock(SystemReference.class);
         EasyMock.expect(reference.getName()).andReturn("service").atLeastOnce();
         EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
-        reference.getInterface();
-        EasyMock.expectLastCall().andReturn(Source.class);
         InboundWire wire = TestUtils.createInboundWire(Source.class);
         wire.setContainer(reference);
         EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();

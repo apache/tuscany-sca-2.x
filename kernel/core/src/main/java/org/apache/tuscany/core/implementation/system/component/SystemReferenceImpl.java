@@ -34,16 +34,11 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public class SystemReferenceImpl extends AbstractSCAObject implements SystemReference {
-
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected Class<?> referenceInterface;
 
-
-    public SystemReferenceImpl(String name, Class<?> referenceInterface, CompositeComponent parent) {
+    public SystemReferenceImpl(String name, CompositeComponent parent) {
         super(name, parent);
-        assert referenceInterface != null : "Reference interface was null";
-        this.referenceInterface = referenceInterface;
     }
 
     public Scope getScope() {
@@ -64,14 +59,6 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
 
     public void setOutboundWire(OutboundWire wire) {
         this.outboundWire = wire;
-    }
-
-    public Class<?> getInterface() {
-        return referenceInterface;
-    }
-
-    public void setInterface(Class<?> referenceInterface) {
-        this.referenceInterface = referenceInterface;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

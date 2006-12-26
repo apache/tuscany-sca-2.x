@@ -17,10 +17,8 @@ public class TestSocketBindingReference extends ReferenceExtension {
     public TestSocketBindingReference(String name,
                                       String host,
                                       int port,
-                                      Class<?> interfaze,
-                                      CompositeComponent parent
-    ) {
-        super(name, interfaze, parent);
+                                      CompositeComponent parent) {
+        super(name, parent);
         this.port = port;
         this.host = host;
     }

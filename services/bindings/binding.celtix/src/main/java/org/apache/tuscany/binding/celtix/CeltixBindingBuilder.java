@@ -76,7 +76,6 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
         }
         return new CeltixReference(
             boundReferenceDefinition.getName(),
-            boundReferenceDefinition.getServiceContract().getInterfaceClass(),
             parent,
             wsBinding,
             bus,
