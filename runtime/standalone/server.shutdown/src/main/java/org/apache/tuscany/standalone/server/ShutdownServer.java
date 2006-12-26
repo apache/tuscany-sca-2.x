@@ -18,6 +18,14 @@
  */
 package org.apache.tuscany.standalone.server;
 
+import java.io.IOException;
+
+import javax.management.JMException;
+import javax.management.MBeanServerConnection;
+import javax.management.ObjectName;
+import javax.management.remote.JMXServiceURL;
+import javax.management.remote.rmi.RMIConnector;
+
 /**
  * 
  * @version $Rev$ $Date$
@@ -25,11 +33,75 @@ package org.apache.tuscany.standalone.server;
  */
 public class ShutdownServer {
     
+    /** Tuscany admin host. */
+    private static final String ADMIN_HOST_PROPERTY = "tuscany.adminHost";
+    
+    /** Tuscany admin port. */
+    private static final String ADMIN_PORT_PROPERTY = "tuscany.adminPort";
+    
+    /** Default host. */
+    private static final String DEFAULT_ADMIN_HOST = "localhost";
+    
+    /** Default port. */
+    private static final int DEFAULT_ADMIN_PORT = 1099;
+    
+    /** Host. */
+    private String host = DEFAULT_ADMIN_HOST;
+    
+    /** Port. */
+    private int port = DEFAULT_ADMIN_PORT;
+    
     /**
      * 
      * @param args Commandline arguments.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        
+        ShutdownServer shutdownServer = new ShutdownServer();
+        shutdownServer.shutdown();
+        
+    }
+    
+    /**
+     * Initializes the host and the port.
+     *
+     */
+    private ShutdownServer() {
+        
+        if(System.getProperty(ADMIN_HOST_PROPERTY) != null) {
+            host = System.getProperty(ADMIN_HOST_PROPERTY);
+        }
+        
+        if(System.getProperty(ADMIN_PORT_PROPERTY) != null) {
+            port = Integer.parseInt(System.getProperty(ADMIN_PORT_PROPERTY));
+        }
+        
+    }
+    
+    /**
+     * Shuts down the server.
+     * @throws IOException 
+     * @throws JMException
+     *
+     */
+    private void shutdown() throws IOException, JMException {
+        
+        RMIConnector rmiConnector = null;
+        
+        try {
+            
+            JMXServiceURL url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + host + ":" + port + "/server");
+            rmiConnector = new RMIConnector(url, null);
+            rmiConnector.connect();
+            
+            MBeanServerConnection con = rmiConnector.getMBeanServerConnection();
+            con.invoke(new ObjectName("tuscany:name=tuscanyServer"), "shutdown", null, null);
+            
+        } finally {
+            if(rmiConnector != null) {
+                rmiConnector.close();
+            }
+        }
         
     }
 
