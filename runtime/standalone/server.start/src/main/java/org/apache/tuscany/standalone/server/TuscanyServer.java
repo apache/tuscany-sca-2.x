@@ -72,7 +72,7 @@ public class TuscanyServer implements TuscanyServerMBean {
     private TuscanyServer() {
         
         agent.start();
-        agent.register(this, getClass().getName());
+        agent.register(this, "tuscanyServer");
         
         File installDirectory = DirectoryHelper.getInstallDirectory();
         File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);
