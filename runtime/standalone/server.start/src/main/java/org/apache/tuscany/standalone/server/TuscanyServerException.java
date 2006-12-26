@@ -20,4 +20,12 @@ public class TuscanyServerException extends TuscanyRuntimeException {
         super(cause);
     }
 
+    /**
+     * Initializes the message.
+     * @param message Message of the exception.
+     */
+    public TuscanyServerException(String message) {
+        super(message);
+    }
+
 }

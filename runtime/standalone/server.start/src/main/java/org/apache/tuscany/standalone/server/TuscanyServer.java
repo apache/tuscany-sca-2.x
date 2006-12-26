@@ -111,6 +111,9 @@ public class TuscanyServer implements TuscanyServerMBean {
             ClassLoader bootClassLoader = getTuscanyClassLoader(bootDirectory);
             
             URL systemScdl = getSystemScdl(bootClassLoader);
+            if(systemScdl == null) {
+                throw new TuscanyServerException("Unable to find system scdl");
+            }
 
             String className = System.getProperty("tuscany.launcherClass",
                 "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
