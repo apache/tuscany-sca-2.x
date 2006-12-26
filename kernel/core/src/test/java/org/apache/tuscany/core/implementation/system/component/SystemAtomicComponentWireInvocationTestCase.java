@@ -45,7 +45,6 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.addReferenceSite("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
-        configuration.addServiceInterface(Source.class);
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
         configuration.setName("source");
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);

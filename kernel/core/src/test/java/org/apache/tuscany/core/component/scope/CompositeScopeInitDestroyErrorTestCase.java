@@ -18,9 +18,6 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
@@ -47,9 +44,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.createInstance()).andThrow(new ObjectCreationException(""));
         EasyMock.expect(component.getInitLevel()).andReturn(1);
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Object.class);
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.replay(component);
         scope.register(component);
         scope.onEvent(new CompositeStart(this, null));
@@ -67,9 +61,6 @@ public class CompositeScopeInitDestroyErrorTestCase extends TestCase {
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.createInstance()).andReturn(new Object());
         EasyMock.expect(component.getInitLevel()).andReturn(1);
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Object.class);
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         component.init(EasyMock.isA(Object.class));
         component.destroy(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));

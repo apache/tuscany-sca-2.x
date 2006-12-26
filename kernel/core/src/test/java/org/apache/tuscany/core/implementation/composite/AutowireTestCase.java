@@ -50,7 +50,6 @@ public class AutowireTestCase extends TestCase {
         interfaces.add(Source2.class);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -77,7 +76,6 @@ public class AutowireTestCase extends TestCase {
         interfaces.add(Source2.class);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();

@@ -41,7 +41,6 @@ import groovy.lang.GroovyObject;
  */
 public class GroovyAtomicComponent extends AtomicComponentExtension {
     private final Class<? extends GroovyObject> groovyClass;
-    private final List<Class<?>> services;
     //FIXME properties should move up to AtomicComponentExtension
     private final Map<String, ObjectFactory> properties;
 
@@ -56,13 +55,8 @@ public class GroovyAtomicComponent extends AtomicComponentExtension {
             configuration.getInitLevel());
 
         this.groovyClass = configuration.getGroovyClass();
-        this.services = Collections.unmodifiableList(configuration.getServices());
         this.properties = new HashMap<String, ObjectFactory>();
         assert groovyClass != null;
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        return services;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {

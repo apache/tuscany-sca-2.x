@@ -118,7 +118,6 @@ public class BasicConversationalScopeTestCase extends TestCase {
     private AtomicComponent createContext(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
-        configuration.addServiceInterface(ConversationalScopeInitDestroyComponent.class);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);

@@ -60,7 +60,6 @@ public class CompositeLifecycleTestCase extends TestCase {
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
 
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.replay(component);
 
         CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);
@@ -89,7 +88,6 @@ public class CompositeLifecycleTestCase extends TestCase {
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
 
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.replay(component);
 
         CompositeComponent composite = new CompositeComponentImpl("foo", null, null, null);

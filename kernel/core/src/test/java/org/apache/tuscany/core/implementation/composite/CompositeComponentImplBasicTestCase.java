@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.util.List;
-
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -94,22 +92,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         composite.register(new ServiceExtension("foo", null));
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getReferences().size());
-    }
-
-    public void testServiceInterfaces() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Service service1 = getService("foo", Foo.class);
-        composite.register(service1);
-        Service service2 = getService("bar", Bar.class);
-        composite.register(service2);
-
-        List<Class<?>> interfaces = composite.getServiceInterfaces();
-        assertEquals(2, interfaces.size());
-        for (Class o : interfaces) {
-            if (!(Foo.class.isAssignableFrom(o)) && !(Bar.class.isAssignableFrom(o))) {
-                fail();
-            }
-        }
     }
 
     public void testOnEvent() {

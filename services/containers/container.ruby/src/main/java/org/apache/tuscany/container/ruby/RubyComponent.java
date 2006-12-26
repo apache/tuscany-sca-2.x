@@ -43,8 +43,6 @@ import org.apache.tuscany.container.ruby.rubyscript.RubyScriptInstance;
  */
 public class RubyComponent extends AtomicComponentExtension {
 
-    private final List<Class<?>> services;
-
     private final Map<String, Object> properties;
 
     private RubyScript rubyScript;
@@ -54,7 +52,6 @@ public class RubyComponent extends AtomicComponentExtension {
     public RubyComponent(String name,
                          RubyScript rubyScript,
                          String rubyClassName,
-                         List<Class<?>> services,
                          Map<String, Object> propValues,
                          CompositeComponent parent,
                          ScopeContainer scopeContainer,
@@ -65,7 +62,6 @@ public class RubyComponent extends AtomicComponentExtension {
 
         this.rubyScript = rubyScript;
         this.rubyClassName = rubyClassName;
-        this.services = services;
         this.scope = scopeContainer.getScope();
         //this.properties = new HashMap<String, Object>();
         this.properties = propValues;
@@ -111,10 +107,6 @@ public class RubyComponent extends AtomicComponentExtension {
     }
 
     // TODO: move all the following up to AtomicComponentExtension?
-
-    public List<Class<?>> getServiceInterfaces() {
-        return services;
-    }
 
     public Map<String, Object> getProperties() {
         return properties;

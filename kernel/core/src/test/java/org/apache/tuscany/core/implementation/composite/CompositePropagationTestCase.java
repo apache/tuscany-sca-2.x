@@ -50,7 +50,6 @@ public class CompositePropagationTestCase extends TestCase {
         AtomicComponent component = createMock(AtomicComponent.class);
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
-        expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
@@ -69,7 +68,6 @@ public class CompositePropagationTestCase extends TestCase {
         AtomicComponent component = createMock(AtomicComponent.class);
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
-        expect(component.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);

@@ -62,7 +62,6 @@ public final class MockFactory {
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         AtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
         PojoConfiguration sourceConfig = new PojoConfiguration();
-        sourceConfig.getServiceInterfaces().addAll(sourceInterfaces);
         sourceConfig.setScopeContainer(sourceScopeContainer);
         sourceConfig.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
 
@@ -115,7 +114,6 @@ public final class MockFactory {
         throws NoSuchMethodException {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(container);
-        configuration.addServiceInterface(clazz);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {

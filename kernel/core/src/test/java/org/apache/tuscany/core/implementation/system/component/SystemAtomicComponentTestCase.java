@@ -41,7 +41,6 @@ public class SystemAtomicComponentTestCase extends TestCase {
     public void testDefaultCreationAndInit() throws Exception {
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.addServiceInterface(Foo.class);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setName("foo");
@@ -54,7 +53,6 @@ public class SystemAtomicComponentTestCase extends TestCase {
     public void testDestroy() throws Exception {
         PojoObjectFactory<Foo> factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor((Class[]) null));
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.addServiceInterface(Foo.class);
         configuration.setInstanceFactory(factory);
         configuration.setDestroyInvoker(destroyInvoker);
         configuration.setName("foo");
@@ -67,7 +65,6 @@ public class SystemAtomicComponentTestCase extends TestCase {
     public void testReferenceAndPropertyConstructor() throws Exception {
         PojoObjectFactory<Bar> factory = new PojoObjectFactory<Bar>(Bar.class.getConstructor(String.class, Foo.class));
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.addServiceInterface(Foo.class);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.addConstructorParamName("foo");

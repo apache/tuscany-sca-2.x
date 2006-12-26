@@ -83,13 +83,6 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         }
     }
 
-    public void testServiceInterfaces() throws Exception {
-        JavaComponentBuilder builder = new JavaComponentBuilder();
-        JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
-        assertEquals(1, component.getServiceInterfaces().size());
-        assertEquals(Source.class, component.getServiceInterfaces().get(0));
-    }
-
     protected void setUp() throws Exception {
         super.setUp();
         parent = new CompositeComponentImpl(null, null, null, null);

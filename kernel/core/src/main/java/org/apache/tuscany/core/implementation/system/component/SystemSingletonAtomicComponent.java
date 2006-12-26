@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -50,15 +49,12 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
 public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject implements AtomicComponent {
 
     private T instance;
-    private List<Class<?>> serviceInterfaces;
     private Map<String, InboundWire> inboundWires;
     private WireService wireService = new JDKWireService();
 
     public SystemSingletonAtomicComponent(String name, CompositeComponent parent, Class<S> interfaze, T instance) {
         super(name, parent);
         this.instance = instance;
-        serviceInterfaces = new ArrayList<Class<?>>(1);
-        serviceInterfaces.add(interfaze);
         inboundWires = new HashMap<String, InboundWire>();
         initWire(interfaze);
     }
@@ -66,19 +62,14 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAO
 
     public SystemSingletonAtomicComponent(String name,
                                           CompositeComponent parent,
-                                          List<Class<?>> serviceInterfaces,
+                                          List<Class<?>> services,
                                           T instance) {
         super(name, parent);
         this.instance = instance;
-        this.serviceInterfaces = serviceInterfaces;
         inboundWires = new HashMap<String, InboundWire>();
-        for (Class<?> interfaze : serviceInterfaces) {
+        for (Class<?> interfaze : services) {
             initWire(interfaze);
         }
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        return serviceInterfaces;
     }
 
     public Scope getScope() {

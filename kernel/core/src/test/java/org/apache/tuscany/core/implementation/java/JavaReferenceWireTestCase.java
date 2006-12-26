@@ -50,7 +50,6 @@ public class JavaReferenceWireTestCase extends TestCase {
         final Target target = new TargetImpl();
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.addReferenceSite("target", SourceImpl.class.getMethod("setTarget", Target.class));
-        configuration.addServiceInterface(Source.class);
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
         configuration.setScopeContainer(scope);

@@ -49,7 +49,6 @@ public class DuplicateRegistrationTestCase extends TestCase {
         EasyMock.expect(component1.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component1.isSystem()).andReturn(true).atLeastOnce();
         component1.stop();
-        EasyMock.expect(component1.getServiceInterfaces()).andReturn(interfaces);
         Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component1, wires);
         EasyMock.expect(component1.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -59,7 +58,6 @@ public class DuplicateRegistrationTestCase extends TestCase {
         EasyMock.expect(component2.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
         component2.stop();
-        EasyMock.expect(component2.getServiceInterfaces()).andReturn(interfaces);
         EasyMock.replay(component2);
 
         parent.register(component1);
@@ -78,7 +76,6 @@ public class DuplicateRegistrationTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         TestUtils.populateInboundWires(component, wires);
@@ -87,7 +84,6 @@ public class DuplicateRegistrationTestCase extends TestCase {
         parent.register(component);
         AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component2.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component2.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component2.isSystem()).andReturn(true).atLeastOnce();
         EasyMock.replay(component2);
         try {

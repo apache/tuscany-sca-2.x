@@ -122,7 +122,7 @@ public class WireTestCase extends TestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         JavaScriptComponent context =
-            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), services, null, scope,
+            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), null, scope,
                 ArtifactFactory.createWireService(), null, null);
         scope.register(context);
         Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null, NO_CONVERSATION);
@@ -140,7 +140,7 @@ public class WireTestCase extends TestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         JavaScriptComponent context =
-            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), services, null, scope,
+            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), null, scope,
                 ArtifactFactory.createWireService(), null, null);
         scope.register(context);
 

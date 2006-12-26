@@ -46,7 +46,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -63,7 +62,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -83,7 +81,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, null, null);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -91,7 +88,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         parent.register(component);
         AtomicComponent component2 = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component2.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component2.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component2.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.expect(component2.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component2);
@@ -107,7 +103,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         component.stop();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
@@ -126,7 +121,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -145,7 +139,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
@@ -167,7 +160,6 @@ public class CompositeComponentImplTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.start();
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
-        EasyMock.expect(component.getServiceInterfaces()).andReturn(services);
         Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();

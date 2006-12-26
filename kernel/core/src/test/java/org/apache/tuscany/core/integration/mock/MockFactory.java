@@ -120,7 +120,6 @@ public final class MockFactory {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(sourceScope);
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
-        configuration.addServiceInterface(sourceClass);
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
@@ -174,7 +173,6 @@ public final class MockFactory {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(sourceScope);
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
-        configuration.addServiceInterface(sourceClass);
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
@@ -237,7 +235,6 @@ public final class MockFactory {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
-        configuration.addServiceInterface(clazz);
         configuration.setWireService(WIRE_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(name);

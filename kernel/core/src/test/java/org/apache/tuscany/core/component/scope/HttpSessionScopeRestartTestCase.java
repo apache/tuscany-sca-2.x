@@ -50,7 +50,6 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
-        configuration.addServiceInterface(HttpSessionScopeRestartTestCase.InitDestroyOnce.class);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
