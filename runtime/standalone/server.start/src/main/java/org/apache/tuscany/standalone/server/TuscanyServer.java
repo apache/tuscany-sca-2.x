@@ -18,10 +18,22 @@
  */
 package org.apache.tuscany.standalone.server;
 
+import java.beans.Beans;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 
+import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.host.runtime.ShutdownException;
+import org.apache.tuscany.host.runtime.TuscanyRuntime;
+import org.apache.tuscany.host.util.LaunchHelper;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
+import org.osoa.sca.SCA;
 
 /**
  * This class provides the commandline interface for starting the 
@@ -56,6 +68,12 @@ public class TuscanyServer implements TuscanyServerMBean {
     /** Agent */
     private Agent agent = RmiAgent.getInstance();
     
+    /** Context */
+    private SCA context;
+    
+    /** Runtime */
+    private TuscanyRuntime runtime;
+    
     /**
      * 
      * @param args Commandline arguments.
@@ -74,9 +92,6 @@ public class TuscanyServer implements TuscanyServerMBean {
         agent.start();
         agent.register(this, "tuscanyServer");
         
-        File installDirectory = DirectoryHelper.getInstallDirectory();
-        File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);
-        
     }
     
     /**
@@ -84,16 +99,79 @@ public class TuscanyServer implements TuscanyServerMBean {
      *
      */
     public void start() {
+        
+        try {
+            
+            File installDirectory = DirectoryHelper.getInstallDirectory();
+            URL baseUrl = installDirectory.toURI().toURL();
+            File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);boolean online = !Boolean.parseBoolean(System.getProperty("offline", Boolean.FALSE.toString()));
+            StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDirectory, installDirectory, online);
+
+            ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
+            ClassLoader bootClassLoader = getTuscanyClassLoader(bootDirectory);
+            
+            URL systemScdl = getSystemScdl(bootClassLoader);
+
+            String className = System.getProperty("tuscany.launcherClass",
+                "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
+            runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
+            runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
+            runtime.setSystemScdl(systemScdl);
+            runtime.setHostClassLoader(hostClassLoader);
+            
+            runtime.setRuntimeInfo(runtimeInfo);
+            runtime.initialize();
+            context = runtime.getContext();
+
+            context.start();
+            
+        } catch (IOException ex) {
+            throw new TuscanyServerException(ex);
+        } catch (ClassNotFoundException ex) {
+            throw new TuscanyServerException(ex);
+        } catch (InitializationException ex) {
+            throw new TuscanyServerException(ex);
+        }
+        
         System.err.println("Started");
+        
     }
     
     /**
      * Starts the server.
      *
      */
-    public void shutdown() {
-        agent.shutdown();
+    public void shutdown() {        
+        
+        try {
+            context.stop();
+            runtime.destroy();
+            agent.shutdown();
+        } catch (ShutdownException ex) {
+            throw new TuscanyServerException(ex);
+        }
         System.err.println("Shutdown");
+    }
+
+    /**
+     * Gets the tuscany classloader.
+     * @param bootDir Boot directory.
+     * @return Tuscany classloader.
+     */
+    private ClassLoader getTuscanyClassLoader(File bootDir) {
+        URL[] urls = LaunchHelper.scanDirectoryForJars(bootDir);
+        System.err.println(Arrays.asList(urls));
+        return new URLClassLoader(urls, getClass().getClassLoader());
+    }
+
+    /**
+     * Gets the system SCDL.
+     * @param bootClassLoader Boot classloader.
+     * @return URL to the system SCDL.
+     */
+    private URL getSystemScdl(ClassLoader bootClassLoader) {
+        String resource = System.getProperty("tuscany.systemScdlPath", "META-INF/tuscany/system.scdl");
+        return bootClassLoader.getResource(resource);
     }
 
 }
