@@ -43,7 +43,7 @@ import org.apache.tuscany.standalone.server.management.jmx.Agent;
  * <p>
  * The administration port can be specified using the system property
  * <code>tuscany.adminPort</tuscany>.If not specified the default port 
- * that is used is <code>1066</code>
+ * that is used is <code>1099</code>
  * 
  * 
  * 
@@ -83,6 +83,7 @@ public class TuscanyServer implements TuscanyServerMBean {
      *
      */
     public void start() {
+        System.err.println("Started");
     }
     
     /**
@@ -91,6 +92,7 @@ public class TuscanyServer implements TuscanyServerMBean {
      */
     public void shutdown() {
         agent.shutdown();
+        System.err.println("Shutdown");
     }
 
 }
