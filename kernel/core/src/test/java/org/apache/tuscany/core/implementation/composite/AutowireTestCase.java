@@ -24,12 +24,12 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.TestUtils;
-import org.apache.tuscany.core.implementation.system.component.SystemReference;
-import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.easymock.EasyMock;
 
 /**
@@ -101,7 +101,7 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        SystemService service = EasyMock.createMock(SystemService.class);
+        Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
         service.getInterface();
         EasyMock.expectLastCall().andReturn(Source.class).atLeastOnce();
@@ -126,7 +126,7 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        SystemService service = EasyMock.createMock(SystemService.class);
+        Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
         service.getInterface();
         EasyMock.expectLastCall().andReturn(Source.class).atLeastOnce();
@@ -152,7 +152,7 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        SystemReference reference = EasyMock.createMock(SystemReference.class);
+        Reference reference = EasyMock.createMock(Reference.class);
         EasyMock.expect(reference.getName()).andReturn("service").atLeastOnce();
         EasyMock.expect(reference.isSystem()).andReturn(true).atLeastOnce();
         InboundWire wire = TestUtils.createInboundWire(Source.class);
@@ -173,7 +173,7 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
-        SystemReference reference = EasyMock.createMock(SystemReference.class);
+        Reference reference = EasyMock.createMock(Reference.class);
         EasyMock.expect(reference.getName()).andReturn("service").atLeastOnce();
         EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
         InboundWire wire = TestUtils.createInboundWire(Source.class);

@@ -23,12 +23,12 @@ import java.net.URI;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.system.component.SystemService;
 import org.apache.tuscany.core.implementation.system.model.SystemBinding;
 import org.easymock.EasyMock;
 
@@ -52,7 +52,7 @@ public class SystemBindingBuilderTestCase extends TestCase {
         ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
         };
         definition.setServiceContract(contract);
-        SystemService service = builder.build(parent, definition, context);
+        Service service = builder.build(parent, definition, context);
         assertEquals("bar", service.getName());
         assertEquals(contract, service.getBindingServiceContract());
         assertEquals(parent, service.getParent());
