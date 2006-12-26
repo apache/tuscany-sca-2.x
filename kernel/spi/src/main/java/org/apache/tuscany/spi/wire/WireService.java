@@ -41,7 +41,7 @@ public interface WireService {
      * @param wire      the wire to proxy @return the proxy
      * @throws ProxyCreationException
      */
-    <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException;
+    <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the service contract callback
@@ -59,7 +59,7 @@ public interface WireService {
      * @param wire the wire to create the invocation handler for
      * @return the invocation handler
      */
-    WireInvocationHandler createHandler(Class<?> interfaze, RuntimeWire wire);
+    WireInvocationHandler createHandler(Class<?> interfaze, Wire wire);
 
     /**
      * Creates an outbound invocation chain for a given operation

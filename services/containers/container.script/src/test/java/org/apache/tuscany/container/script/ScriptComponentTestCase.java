@@ -68,7 +68,7 @@ public class ScriptComponentTestCase extends TestCase {
 //    @SuppressWarnings("unchecked")
 //    public void testCreateInstanceWithRef() throws IOException {
 //        WireService wireService = createMock(WireService.class);
-//        expect(wireService.createProxy(isA(RuntimeWire.class))).andStubAnswer(new IAnswer() {
+//        expect(wireService.createProxy(isA(Wire.class))).andStubAnswer(new IAnswer() {
 //            public Object answer() throws Throwable {
 //                return Scope.MODULE;
 //            }

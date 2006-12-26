@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
-import org.apache.tuscany.spi.wire.RuntimeWire;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import org.apache.tuscany.core.wire.WireServiceExtension;
@@ -54,7 +54,7 @@ public class JDKWireService extends WireServiceExtension {
     public void init() {
     }
 
-    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
+    public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
@@ -77,7 +77,7 @@ public class JDKWireService extends WireServiceExtension {
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public WireInvocationHandler createHandler(Class<?> interfaze, RuntimeWire wire) {
+    public WireInvocationHandler createHandler(Class<?> interfaze, Wire wire) {
         assert wire != null;
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;

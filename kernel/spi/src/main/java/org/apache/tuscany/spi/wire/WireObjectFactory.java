@@ -28,10 +28,10 @@ import org.apache.tuscany.spi.ObjectFactory;
  */
 public class WireObjectFactory<T> implements ObjectFactory<T> {
     private Class<T> interfaze;
-    private RuntimeWire wire;
+    private Wire wire;
     private WireService wireService;
 
-    public WireObjectFactory(Class<T> interfaze, RuntimeWire wire, WireService wireService) {
+    public WireObjectFactory(Class<T> interfaze, Wire wire, WireService wireService) {
         this.interfaze = interfaze;
         this.wire = wire;
         this.wireService = wireService;

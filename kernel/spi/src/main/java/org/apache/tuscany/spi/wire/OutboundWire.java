@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.model.Operation;
  *
  * @version $$Rev$$ $$Date$$
  */
-public interface OutboundWire extends RuntimeWire {
+public interface OutboundWire extends Wire {
 
     /**
      * Returns the name of the source reference
