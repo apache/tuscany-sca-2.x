@@ -81,7 +81,7 @@ public class TuscanyServer implements TuscanyServerMBean {
         tuscanyServer.start();
         
         MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("tuscany");
-        mBeanServer.registerMBean(tuscanyServer, new ObjectName("tuscany:name=LoginStats"));
+        mBeanServer.registerMBean(tuscanyServer, new ObjectName("tuscany:name=TuscanyServer"));
 
     }
     
