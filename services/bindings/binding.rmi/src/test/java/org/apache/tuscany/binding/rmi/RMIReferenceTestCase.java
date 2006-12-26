@@ -31,7 +31,7 @@ public class RMIReferenceTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testCreateTargetInvoker() {
         // TODO: this doesn't really test anything yet
-        RMIReference ref = new RMIReference(null, null, null, null, null, null, null, null);
+        RMIReference ref = new RMIReference(null, null, null, null, null, null, null);
         ServiceContract contract = new JavaServiceContract();
         contract.setInterfaceClass(String.class);
         List l = new ArrayList();

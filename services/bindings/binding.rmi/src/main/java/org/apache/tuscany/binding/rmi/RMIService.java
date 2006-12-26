@@ -49,6 +49,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
     // of the service outbound to the component's inbound wire which requires that the service
     // and the component match in their service contracts.
     private Class serviceInterface;
+    private WireService wireService;
 
     public RMIService(String name,
                       CompositeComponent parent,
@@ -58,13 +59,14 @@ public class RMIService<T extends Remote> extends ServiceExtension {
                       String port,
                       String svcName,
                       Class<T> service) {
-        super(name, service, parent, wireService);
+        super(name, service, parent);
 
         this.serviceInterface = service;
         this.rmiHost = rHost;
         //this.host = host;
         this.port = port;
         this.serviceName = svcName;
+        this.wireService = wireService;
     }
 
     public void start() {
@@ -94,7 +96,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
     protected Remote createRmiService() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(UnicastRemoteObject.class);
-        enhancer.setCallback(new RemoteMethodHandler(getHandler(), interfaze));
+        enhancer.setCallback(new RemoteMethodHandler(wireService.createHandler(serviceInterface, getInboundWire()), interfaze));
 
         if (!Remote.class.isAssignableFrom(serviceInterface)) {
             RMIServiceClassLoader classloader = 

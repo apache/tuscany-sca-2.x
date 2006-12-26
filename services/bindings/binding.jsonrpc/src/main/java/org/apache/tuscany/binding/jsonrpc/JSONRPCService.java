@@ -34,14 +34,17 @@ public class JSONRPCService extends ServiceExtension {
 
     private ServletHost servletHost;
 
+    private WireService wireService;
+
     public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
 
     public JSONRPCService(String theName, Class<?> interfaze, CompositeComponent parent, WireService wireService,
                           ServletHost servletHost) {
 
-        super(theName, interfaze, parent, wireService);
+        super(theName, interfaze, parent);
 
         this.servletHost = servletHost;
+        this.wireService = wireService;
     }
 
     public synchronized void start() {

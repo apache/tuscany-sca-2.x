@@ -80,6 +80,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     private transient String convIdForRemotableTarget;
     private transient String convIdFromThread;
     private String referenceName;
+    private Class<?> interfaze;
 
     /**
      * Constructor used for deserialization only
@@ -87,15 +88,11 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
     public JDKOutboundInvocationHandler() {
     }
 
-    public JDKOutboundInvocationHandler(OutboundWire wire) {
-        this(wire, null);
-        referenceName = wire.getReferenceName();
-    }
-
-    public JDKOutboundInvocationHandler(OutboundWire wire, WorkContext workContext)
+    public JDKOutboundInvocationHandler(Class<?> interfaze, OutboundWire wire, WorkContext workContext)
         throws NoMethodForOperationException {
         this.workContext = workContext;
-        init(wire);
+        this.interfaze = interfaze;
+        init(interfaze, wire);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -157,12 +154,10 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         }
 
         Object result = invoke(chain, invoker, args, null, null);
-
         if (contractIsConversational && contractIsRemotable) {
             // Make sure we restore the remembered conv id to continue propagating
             workContext.setIdentifier(Scope.CONVERSATION, convIdFromThread);
         }
-
         return result;
     }
 
@@ -180,10 +175,12 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(referenceName);
+        out.writeObject(interfaze);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         referenceName = (String) in.readObject();
+        interfaze = (Class<?>) in.readObject();
     }
 
     public void reactivate() throws ReactivationException {
@@ -198,13 +195,13 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         // TODO handle multiplicity
         OutboundWire wire = wires.get(0);
         try {
-            init(wire);
+            init(interfaze, wire);
         } catch (NoMethodForOperationException e) {
             throw new ReactivationException(e);
         }
     }
 
-    private void init(OutboundWire wire) {
+    private void init(Class<?> interfaze, OutboundWire wire) throws NoMethodForOperationException {
         ServiceContract contract = wire.getServiceContract();
         this.referenceName = wire.getReferenceName();
         SCAObject wireContainer = wire.getContainer();
@@ -227,7 +224,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
         this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
         // TODO optimize this
-        Method[] methods = contract.getInterfaceClass().getMethods();
+        Method[] methods = interfaze.getMethods();
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
             Operation operation = entry.getKey();
             Method method = findMethod(operation, methods);

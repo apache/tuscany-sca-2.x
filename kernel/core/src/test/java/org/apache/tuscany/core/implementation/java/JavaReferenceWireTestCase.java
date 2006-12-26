@@ -60,14 +60,15 @@ public class JavaReferenceWireTestCase extends TestCase {
         EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
-        EasyMock.expect(service.createProxy(EasyMock.eq(wire))).andAnswer(new IAnswer<Object>() {
-            public Object answer() throws Throwable {
-                OutboundWire wire = (OutboundWire) EasyMock.getCurrentArguments()[0];
-                wire.getInvocationChains();
-                return target;
-            }
+        EasyMock.expect(service.createProxy(EasyMock.eq(Target.class), EasyMock.eq(wire)))
+            .andAnswer(new IAnswer<Target>() {
+                public Target answer() throws Throwable {
+                    OutboundWire wire = (OutboundWire) EasyMock.getCurrentArguments()[1];
+                    wire.getInvocationChains();
+                    return target;
+                }
 
-        }).atLeastOnce();
+            }).atLeastOnce();
         EasyMock.replay(service);
         configuration.setWireService(service);
         configuration.setName("source");

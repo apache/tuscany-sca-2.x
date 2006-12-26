@@ -20,7 +20,11 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.binding.rmi.host.RMIHostImpl;
 import org.apache.tuscany.host.rmi.RMIHostRuntimeException;
+import org.easymock.EasyMock;
+
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.InboundWire;
 
 public class RMIServiceTestCase extends TestCase {
 
@@ -38,10 +42,9 @@ public class RMIServiceTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testCreateRmiService() {
-        RMIService s = new RMIService("bla023", null, null, new RMIHostImpl(), null, "9996", "bla", Runnable.class) {
-            public WireInvocationHandler getHandler() {
-                return null;
-            }
+        WireService service = EasyMock.createNiceMock(WireService.class);
+        EasyMock.replay(service);
+        RMIService s = new RMIService("bla023", null, service, new RMIHostImpl(), null, "9996", "bla", Runnable.class) {
         };
         s.start();
         try {

@@ -27,9 +27,9 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.extension.ExecutionMonitor;
 
 import org.apache.tuscany.core.injection.EventInvoker;
 import org.apache.tuscany.core.injection.Injector;
@@ -41,12 +41,12 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  * @version $Rev$ $Date$
  */
 public class PojoConfiguration {
-
     private String name;
     private CompositeComponent parent;
     private ScopeContainer scopeContainer;
     private PojoObjectFactory<?> instanceFactory;
     private List<String> constructorParamNames = new ArrayList<String>();
+    private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
     private int initLevel;
     private EventInvoker<Object> initInvoker;
     private EventInvoker<Object> destroyInvoker;
@@ -114,6 +114,18 @@ public class PojoConfiguration {
 
     public void addConstructorParamName(String name) {
         constructorParamNames.add(name);
+    }
+
+    public List<Class<?>> getConstructorParamTypes() {
+        return constructorParamTypes;
+    }
+
+    public void setConstructorParamTypes(List<Class<?>> constructorParamTypes) {
+        this.constructorParamTypes = constructorParamTypes;
+    }
+
+    public void addConstructorParamType(Class<?> type) {
+        constructorParamTypes.add(type);
     }
 
     public int getInitLevel() {

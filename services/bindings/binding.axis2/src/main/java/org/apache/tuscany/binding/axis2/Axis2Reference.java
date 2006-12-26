@@ -19,9 +19,15 @@
 package org.apache.tuscany.binding.axis2;
 
 import java.util.Collection;
-
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
+
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.soap.SOAPFactory;
@@ -35,14 +41,6 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
 import org.apache.tuscany.binding.axis2.util.WebServiceOperationMetaData;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service
@@ -56,10 +54,9 @@ public class Axis2Reference<T> extends ReferenceExtension {
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
                           CompositeComponent parent,
-                          WireService wireService,
                           WebServiceBinding wsBinding,
                           ServiceContract contract, WorkContext workContext) {
-        super(theName, (Class<T>)contract.getInterfaceClass(), parent, wireService);
+        super(theName, (Class<T>) contract.getInterfaceClass(), parent);
         this.workContext = workContext;
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();
@@ -79,11 +76,11 @@ public class Axis2Reference<T> extends ReferenceExtension {
                 // FIXME: SDODataBinding needs to pass in TypeHelper and classLoader
                 // as parameters.
                 Axis2AsyncTargetInvoker asyncInvoker =
-                    (Axis2AsyncTargetInvoker)createOperationInvoker(serviceClient,
-                                                                    operation,
-                                                                    wsPortMetaData,
-                                                                    true,
-                                                                    false);
+                    (Axis2AsyncTargetInvoker) createOperationInvoker(serviceClient,
+                        operation,
+                        wsPortMetaData,
+                        true,
+                        false);
                 // FIXME: This makes the (BIG) assumption that there is only one
                 // callback method
                 // Relaxing this assumption, however, does not seem to be trivial,
@@ -96,10 +93,9 @@ public class Axis2Reference<T> extends ReferenceExtension {
                 Axis2ReferenceCallbackTargetInvoker callbackInvoker =
                     new Axis2ReferenceCallbackTargetInvoker(callbackOperation, inboundWire, invocationHandler);
                 asyncInvoker.setCallbackTargetInvoker(callbackInvoker);
-                
+
                 invoker = asyncInvoker;
-            }
-            else {
+            } else {
                 boolean isOneWay = operation.isNonBlocking();
                 invoker = createOperationInvoker(serviceClient, operation, wsPortMetaData, false, isOneWay);
             }
@@ -116,7 +112,7 @@ public class Axis2Reference<T> extends ReferenceExtension {
         if (callbackOperations.size() != 1) {
             throw new Axis2BindingRunTimeException("Can only handle one callback operation");
         } else {
-            callbackOperation = (Operation)callbackOperations.iterator().next();
+            callbackOperation = (Operation) callbackOperations.iterator().next();
         }
         return callbackOperation;
     }
@@ -171,7 +167,8 @@ public class Axis2Reference<T> extends ReferenceExtension {
             invoker =
                 new Axis2AsyncTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else if (isOneWay) {
-            invoker = new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
+            invoker =
+                new Axis2OneWayTargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         } else {
             invoker = new Axis2TargetInvoker(serviceClient, wsdlOperationQName, options, soapFactory, workContext);
         }

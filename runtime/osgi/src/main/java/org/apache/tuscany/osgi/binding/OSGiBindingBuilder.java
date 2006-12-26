@@ -61,7 +61,7 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
         String name = boundReferenceDefinition.getName();
         String uri = boundReferenceDefinition.getBinding().getURI();
         Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
-        return new OSGiReference(name, interfaze, parent, wireService, uri);
+        return new OSGiReference(name, interfaze, parent);
     }
 
     protected Class<? extends Object> getServiceInterface(BoundServiceDefinition<OSGiBinding> boundServiceDefinition) {

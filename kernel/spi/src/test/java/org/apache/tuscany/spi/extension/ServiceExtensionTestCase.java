@@ -33,7 +33,7 @@ import static org.easymock.EasyMock.replay;
 public class ServiceExtensionTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        ServiceExtension service = new ServiceExtension(null, null, null, null);
+        ServiceExtension service = new ServiceExtension(null, null, null);
         assertEquals(Scope.SYSTEM, service.getScope());
     }
 
@@ -42,14 +42,14 @@ public class ServiceExtensionTestCase extends TestCase {
         JavaServiceContract contract = new JavaServiceContract(getClass());
         expect(wire.getServiceContract()).andReturn(contract);
         replay(wire);
-        ServiceExtension service = new ServiceExtension(null, null, null, null);
+        ServiceExtension service = new ServiceExtension(null, null, null);
         service.setInboundWire(wire);
         service.getInterface();
     }
 
 
     public void testPrepare() throws Exception {
-        ServiceExtension service = new ServiceExtension(null, null, null, null);
+        ServiceExtension service = new ServiceExtension(null, null, null);
         service.prepare();
     }
 

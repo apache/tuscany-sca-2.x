@@ -79,7 +79,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         StatelessScopeContainer scope = new StatelessScopeContainer(workContext, null);
         scope.start();
         final OutboundWire wire = getWire(scope);
-        Target service = (Target) wireService.createProxy(wire);
+        Target service = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals(null, service.getString());
@@ -93,7 +93,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.onEvent(new RequestStart(this));
 
         final OutboundWire wire = getWire(scope);
-        Target service = (Target) wireService.createProxy(wire);
+        Target service = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
 
@@ -102,8 +102,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         FutureTask<Void> future = new FutureTask<Void>(new Runnable() {
             public void run() {
                 scope.onEvent(new RequestStart(this));
-                Target service2 = (Target) wireService.createProxy(wire);
-                Target target2 = (Target) wireService.createProxy(wire);
+                Target service2 = wireService.createProxy(Target.class, wire);
+                Target target2 = wireService.createProxy(Target.class, wire);
                 assertEquals(null, service2.getString());
                 service2.setString("bar");
                 assertEquals("bar", service2.getString());
@@ -127,8 +127,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.onEvent(new HttpSessionStart(this, session1));
 
         final OutboundWire wire = getWire(scope);
-        Target service = (Target) wireService.createProxy(wire);
-        Target target = (Target) wireService.createProxy(wire);
+        Target service = wireService.createProxy(Target.class, wire);
+        Target target = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());
@@ -141,10 +141,10 @@ public class OutboundWireToJavaTestCase extends TestCase {
         workContext.setIdentifier(Scope.SESSION, session2);
         scope.onEvent(new HttpSessionStart(this, session2));
 
-        Target service2 = (Target) wireService.createProxy(wire);
+        Target service2 = wireService.createProxy(Target.class, wire);
         assertNotNull(service2);
         assertNull(service2.getString());
-        Target target2 = (Target) wireService.createProxy(wire);
+        Target target2 = wireService.createProxy(Target.class, wire);
         service2.setString("bar");
         assertEquals("bar", service2.getString());
         assertEquals("bar", target2.getString());
@@ -165,8 +165,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         scope.start();
         scope.onEvent(new CompositeStart(this, null));
         final OutboundWire wire = getWire(scope);
-        Target service = (Target) wireService.createProxy(wire);
-        Target target = (Target) wireService.createProxy(wire);
+        Target service = wireService.createProxy(Target.class, wire);
+        Target target = wireService.createProxy(Target.class, wire);
         assertNotNull(service);
         service.setString("foo");
         assertEquals("foo", service.getString());

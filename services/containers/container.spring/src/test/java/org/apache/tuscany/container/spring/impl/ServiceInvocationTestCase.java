@@ -31,7 +31,6 @@ import junit.framework.TestCase;
 import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.test.ArtifactFactory;
-import static org.apache.tuscany.test.ArtifactFactory.createWireService;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
@@ -52,7 +51,7 @@ public class ServiceInvocationTestCase extends TestCase {
         outboundWire.setTargetName(new QualifiedName("foo"));
         ArtifactFactory.terminateWire(outboundWire);
         Service service =
-            new ServiceExtension("fooService", TestBean.class, composite, createWireService());
+            new ServiceExtension("fooService", TestBean.class, composite);
         service.setInboundWire(inboundWire);
         service.setOutboundWire(outboundWire);
         Connector connector = ArtifactFactory.createConnector();

@@ -83,7 +83,7 @@ public class ReferenceTestCase extends TestCase {
 
     private class TestReference<T> extends ReferenceExtension {
         public TestReference(Class<T> clazz) {
-            super(null, clazz, null, null);
+            super(null, clazz, null);
         }
 
         public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

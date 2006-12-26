@@ -94,7 +94,7 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
         InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
         iwire.setContainer(target);
         connector.connect(owire, iwire, false);
-        handler = new JDKOutboundInvocationHandler(owire, workContext);
+        handler = new JDKOutboundInvocationHandler(Foo.class, owire, workContext);
         operation1 = Foo.class.getMethod("operation1");
         operation2 = Foo.class.getMethod("operation2");
         endOperation = Foo.class.getMethod("end");

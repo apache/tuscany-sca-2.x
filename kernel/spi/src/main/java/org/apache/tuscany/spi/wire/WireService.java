@@ -33,49 +33,33 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 
 public interface WireService {
-    /**
-     * Create a proxy for the supplied wire that implements the supplied interface.
-     *
-     * @param interfaze the interface that the proxy class must implement
-     * @param wire      the wire to connect the proxy to
-     * @return a proxy that allows invocation of the wire
-     * @throws ProxyCreationException if there was a problem creating the proxy
-     */
-    <T> T createProxy(Class<T> interfaze, InboundWire wire) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the given wire
      *
-     * @param wire the wire to proxy
-     * @return the proxy
+     * @param interfaze the interface the proxy implements
+     * @param wire      the wire to proxy @return the proxy
      * @throws ProxyCreationException
      */
-    Object createProxy(RuntimeWire wire) throws ProxyCreationException;
+    <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException;
 
     /**
      * Creates a Java proxy for the service contract callback
      *
-     * @param contract the service contract
+     * @param interfaze the interface the proxy should implement
      * @return the proxy
      * @throws ProxyCreationException
      */
-    Object createCallbackProxy(ServiceContract<?> contract, InboundWire wire) throws ProxyCreationException;
-
+    Object createCallbackProxy(Class<?> interfaze, InboundWire wire) throws ProxyCreationException;
 
     /**
      * Creates an {@link WireInvocationHandler} for the given wire
      *
+     * @param interfaze the client side interface
      * @param wire the wire to create the invocation handler for
      * @return the invocation handler
      */
-    WireInvocationHandler createHandler(RuntimeWire wire);
-
-    /**
-     * Creates a wire invocation handler for flowing invocations through a callback
-     *
-     * @return the invocation handler for flowing invocations through a callback
-     */
-    WireInvocationHandler createCallbackHandler(InboundWire wire);
+    WireInvocationHandler createHandler(Class<?> interfaze, RuntimeWire wire);
 
     /**
      * Creates an outbound invocation chain for a given operation

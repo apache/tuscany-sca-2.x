@@ -16,7 +16,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Implements a very simple remote, socket-based binding for test purposes. This binding exposes services using a socket
@@ -33,9 +32,8 @@ public class TestSocketBindingService extends ServiceExtension {
     public TestSocketBindingService(String name,
                                     int port,
                                     Class<?> interfaze,
-                                    CompositeComponent parent,
-                                    WireService wireService) throws CoreRuntimeException {
-        super(name, interfaze, parent, wireService);
+                                    CompositeComponent parent) throws CoreRuntimeException {
+        super(name, interfaze, parent);
         this.port = port;
     }
 
@@ -84,7 +82,7 @@ public class TestSocketBindingService extends ServiceExtension {
                     String operation = is.readUTF();
                     int argn = is.readInt();
                     Object[] args = new Object[argn];
-                    for (int i = 0; i<argn; i++) {
+                    for (int i = 0; i < argn; i++) {
                         args[i] = is.readObject();
                     }
                     Map<Operation<?>, InboundInvocationChain> chains = getInboundWire().getInvocationChains();

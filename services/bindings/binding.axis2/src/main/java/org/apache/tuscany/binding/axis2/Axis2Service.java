@@ -27,11 +27,26 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-
 import javax.wsdl.Definition;
 import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
+
+import org.osoa.sca.annotations.Destroy;
+
+import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.host.ServletHost;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Scope;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.wire.Interceptor;
+import org.apache.tuscany.spi.wire.InvocationChain;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
@@ -47,27 +62,11 @@ import org.apache.axis2.engine.MessageReceiver;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.axis2.wsdl.WSDLConstants.WSDL20_2004Constants;
 import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
-import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.host.ServletHost;
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationChain;
-import org.apache.tuscany.spi.wire.Message;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Destroy;
 
 // org.apache.tuscany.spi.model
 /**
- * An implementation of a {@link ServiceExtension} configured with the Axis2
- * binding
- * 
+ * An implementation of a {@link ServiceExtension} configured with the Axis2 binding
+ *
  * @version $Rev$ $Date$
  */
 public class Axis2Service extends ServiceExtension {
@@ -84,20 +83,19 @@ public class Axis2Service extends ServiceExtension {
     private String serviceName;
 
     private WorkContext workContext;
-    
-    private Boolean conversational= null;
-    
-    private Set<String> seenConversations= Collections.synchronizedSet( new HashSet<String>());
+
+    private Boolean conversational = null;
+
+    private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
     public Axis2Service(String theName,
                         ServiceContract<?> serviceContract,
                         CompositeComponent parent,
-                        WireService wireService,
                         WebServiceBinding binding,
                         ServletHost servletHost,
                         ConfigurationContext configContext, WorkContext workContext) {
 
-        super(theName, serviceContract.getInterfaceClass(), parent, wireService);
+        super(theName, serviceContract.getInterfaceClass(), parent);
 
         this.serviceContract = serviceContract;
         this.binding = binding;
@@ -158,7 +156,7 @@ public class Axis2Service extends ServiceExtension {
 
         PortType wsdlPortType = wsdlPortInfo.getPortType();
         for (Object o : wsdlPortType.getOperations()) {
-            Operation wsdlOperation = (Operation)o;
+            Operation wsdlOperation = (Operation) o;
             String operationName = wsdlOperation.getName();
             QName operationQN = new QName(definition.getTargetNamespace(), operationName);
 
@@ -186,12 +184,13 @@ public class Axis2Service extends ServiceExtension {
         return axisService;
     }
 
-    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId, String conversationID)
+    public Object invokeTarget(org.apache.tuscany.spi.model.Operation<?> op, Object[] args, Object messageId,
+                               String conversationID)
         throws InvocationTargetException {
         InvocationChain chain = inboundWire.getInvocationChains().get(op);
         Interceptor headInterceptor = chain.getHeadInterceptor();
-        String oldConversationID= (String) workContext.getIdentifier(Scope.CONVERSATION);
-        if(isConversational() && conversationID != null){
+        String oldConversationID = (String) workContext.getIdentifier(Scope.CONVERSATION);
+        if (isConversational() && conversationID != null) {
             workContext.setIdentifier(Scope.CONVERSATION, conversationID);
         } else {
             workContext.clearIdentifier(Scope.CONVERSATION);
@@ -214,28 +213,29 @@ public class Axis2Service extends ServiceExtension {
                 }
                 msg.setBody(args);
                 Message resp;
-                
-                if(isConversational()){
-                    
-                    
+
+                if (isConversational()) {
+
+
                     int opSeq = op.getConversationSequence();
-                    if(opSeq == org.apache.tuscany.spi.model.Operation.CONVERSATION_END){
-                        assert seenConversations.contains(conversationID) : "End of conversation called when no conversation existed";
+                    if (opSeq == org.apache.tuscany.spi.model.Operation.CONVERSATION_END) {
+                        assert seenConversations
+                            .contains(conversationID) : "End of conversation called when no conversation existed";
                         msg.setConversationSequence(TargetInvoker.END);
                         seenConversations.remove(conversationID); //if a fault occurs does the conversation end?
-                           //how do I know if a component called locally another opeation that ended this conversation?
-                        
+                        //how do I know if a component called locally another opeation that ended this conversation?
+
                     } else {
                         boolean ec = seenConversations.contains(conversationID);
-                        if(ec){
-                          
+                        if (ec) {
+
                             msg.setConversationSequence(TargetInvoker.CONTINUE);
-                        }else{
+                        } else {
                             seenConversations.add(conversationID);
                             msg.setConversationSequence(TargetInvoker.START);
                         }
                     }
-                    
+
                 }
                 // dispatch the wire down the chain and get the response
                 // TODO http://issues.apache.org/jira/browse/TUSCANY-777
@@ -248,16 +248,16 @@ public class Axis2Service extends ServiceExtension {
                 }
                 Object body = resp.getBody();
                 if (resp.isFault()) {
-                    throw new InvocationTargetException((Throwable)body);
+                    throw new InvocationTargetException((Throwable) body);
                 }
                 return body;
             }
         } finally {
-           if(null != oldConversationID){
-               workContext.setIdentifier(Scope.CONVERSATION, conversationID);
-           }else{
-               workContext.clearIdentifier(Scope.CONVERSATION);
-           }
+            if (null != oldConversationID) {
+                workContext.setIdentifier(Scope.CONVERSATION, conversationID);
+            } else {
+                workContext.clearIdentifier(Scope.CONVERSATION);
+            }
         }
     }
 
@@ -310,22 +310,26 @@ public class Axis2Service extends ServiceExtension {
      * @return
      */
     protected static String getConversationID(MessageContext inMC) {
-        String conversationID= null;
-        Iterator i = inMC.getEnvelope().getHeader().getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing","From"));
-        for(; i.hasNext();){
-            Object a= i.next();
-            if(a instanceof OMElement){
-                OMElement ao= (OMElement) a;
-                for(Iterator rpI= ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters")); rpI.hasNext();){
-                    OMElement rpE= (OMElement)rpI.next();
-                    for(Iterator cidI= rpE.getChildrenWithName(WebServiceBinding.CONVERSATION_ID_REFPARM_QN); cidI.hasNext();){
-                        OMElement cidE= (OMElement) cidI.next(); 
-                        conversationID= cidE.getText();
+        String conversationID = null;
+        Iterator i = inMC.getEnvelope().getHeader()
+            .getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "From"));
+        for (; i.hasNext();) {
+            Object a = i.next();
+            if (a instanceof OMElement) {
+                OMElement ao = (OMElement) a;
+                for (Iterator rpI =
+                    ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters"));
+                     rpI.hasNext();) {
+                    OMElement rpE = (OMElement) rpI.next();
+                    for (Iterator cidI = rpE.getChildrenWithName(WebServiceBinding.CONVERSATION_ID_REFPARM_QN);
+                         cidI.hasNext();) {
+                        OMElement cidE = (OMElement) cidI.next();
+                        conversationID = cidE.getText();
                     }
                 }
-    
+
             }
-    
+
         }
         return conversationID;
     }
@@ -355,8 +359,8 @@ public class Axis2Service extends ServiceExtension {
     }
 
     boolean isConversational() {
-        if(conversational == null){
-            conversational=  serviceContract.getInteractionScope()== InteractionScope.CONVERSATIONAL;
+        if (conversational == null) {
+            conversational = serviceContract.getInteractionScope() == InteractionScope.CONVERSATIONAL;
 
         }
         return conversational;

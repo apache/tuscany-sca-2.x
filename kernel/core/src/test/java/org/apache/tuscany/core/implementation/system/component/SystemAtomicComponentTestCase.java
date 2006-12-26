@@ -71,7 +71,9 @@ public class SystemAtomicComponentTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.addConstructorParamName("foo");
+        configuration.addConstructorParamType(String.class);
         configuration.addConstructorParamName("ref");
+        configuration.addConstructorParamType(Foo.class);
         configuration.setName("foo");
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));

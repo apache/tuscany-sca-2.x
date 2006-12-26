@@ -26,17 +26,19 @@ import org.apache.tuscany.spi.ObjectFactory;
  *
  * @version $Rev$ $Date$
  */
-public class WireObjectFactory implements ObjectFactory {
+public class WireObjectFactory<T> implements ObjectFactory<T> {
+    private Class<T> interfaze;
     private RuntimeWire wire;
     private WireService wireService;
 
-    public WireObjectFactory(RuntimeWire wire, WireService wireService) {
+    public WireObjectFactory(Class<T> interfaze, RuntimeWire wire, WireService wireService) {
+        this.interfaze = interfaze;
         this.wire = wire;
         this.wireService = wireService;
     }
 
-    public Object getInstance() throws ObjectCreationException {
-        return wireService.createProxy(wire);
+    public T getInstance() throws ObjectCreationException {
+        return interfaze.cast(wireService.createProxy(interfaze, wire));
     }
 
 }

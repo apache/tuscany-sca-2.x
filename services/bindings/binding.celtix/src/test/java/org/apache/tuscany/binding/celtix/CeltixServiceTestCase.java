@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.binding.celtix;
 
-import java.net.URL;
-import java.util.Map;
-import java.util.HashMap;
 import java.lang.reflect.Type;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
@@ -32,13 +32,13 @@ import javax.xml.namespace.QName;
 import org.xml.sax.InputSource;
 
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -65,9 +65,9 @@ public class CeltixServiceTestCase extends TestCase {
         EasyMock.expect(interceptor.invoke(EasyMock.isA(Message.class))).andReturn(msg);
         EasyMock.replay(interceptor);
         InboundInvocationChain chain = EasyMock.createMock(InboundInvocationChain.class);
-        EasyMock.expect(chain.getHeadInterceptor()) .andReturn(interceptor);
+        EasyMock.expect(chain.getHeadInterceptor()).andReturn(interceptor);
         EasyMock.replay(chain);
-        Map<Operation<?>,InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
+        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
         Operation<?> op = new Operation<Type>("greetMe", null, null, null);
         chains.put(op, chain);
         InboundWire wire = EasyMock.createMock(InboundWire.class);
@@ -86,6 +86,7 @@ public class CeltixServiceTestCase extends TestCase {
 
     }
 
+    @SuppressWarnings({"unchecked"})
     private CeltixService createCeltixService() throws Exception {
         //Make following call to return a mocked SOAPClientBinding:
         //bus.getBindingManager().getBindingFactory(bindingId).createClientBinding(reference)
@@ -136,11 +137,11 @@ public class CeltixServiceTestCase extends TestCase {
 
         //Create mocked WireService, for ServiceExtension.getServiceInstance()
         WireService wireService = EasyMock.createNiceMock(WireService.class);
-        wireService.createProxy(EasyMock.isA(InboundWire.class));
+        wireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class));
         EasyMock.expectLastCall().andReturn(new GreeterImpl()).anyTimes();
         EasyMock.replay(wireService);
 
-        CeltixService celtixService = new CeltixService("name", Greeter.class, null, wireService, wsBinding, bus, null);
+        CeltixService celtixService = new CeltixService("name", Greeter.class, null, wsBinding, bus, null);
         //Not sure how InboundWire is set to CeltixService, is the following way correct?
         celtixService.setInboundWire(inboundWire);
         celtixService.start();

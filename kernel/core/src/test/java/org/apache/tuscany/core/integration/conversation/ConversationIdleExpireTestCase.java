@@ -61,7 +61,7 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
         }
         // verify the instance was expired
         assertNull(store.readRecord(target, "12345A"));
-       // continue the conversation - should throw an error
+        // continue the conversation - should throw an error
         try {
             handler.invoke(operation2, null);
             fail();
@@ -94,7 +94,7 @@ public class ConversationIdleExpireTestCase extends AbstractConversationTestCase
         InboundWire iwire = MockFactory.createInboundWire("foo", Foo.class);
         iwire.setContainer(target);
         connector.connect(owire, iwire, false);
-        handler = new JDKOutboundInvocationHandler(owire, workContext);
+        handler = new JDKOutboundInvocationHandler(Foo.class, owire, workContext);
         operation1 = Foo.class.getMethod("operation1");
         operation2 = Foo.class.getMethod("operation2");
     }

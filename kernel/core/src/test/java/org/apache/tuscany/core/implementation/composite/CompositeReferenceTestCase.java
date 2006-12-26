@@ -42,7 +42,6 @@ public class CompositeReferenceTestCase extends TestCase {
         MyServiceContract serviceContract = new MyServiceContract();
         CompositeReference compositeReference = new CompositeReference("testCompositeReferemce",
             null,
-            null,
             serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
@@ -63,7 +62,6 @@ public class CompositeReferenceTestCase extends TestCase {
 
         MyServiceContract serviceContract = new MyServiceContract();
         CompositeReference compositeReference = new CompositeReference("testCompositeReferemce",
-            null,
             null,
             serviceContract);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);

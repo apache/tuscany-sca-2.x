@@ -77,22 +77,25 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
         }
     }
 
-    protected Injector<Object> createCallbackInjector(Member member, ServiceContract<?> contract,
+    protected Injector<Object> createCallbackInjector(Member member,
+                                                      ServiceContract<?> contract,
                                                       InboundWire inboundWire) {
         if (member instanceof Field) {
             Field field = (Field) member;
-            ObjectFactory<?> factory = new CallbackWireObjectFactory(contract, wireService, inboundWire);
+            ObjectFactory<?> factory = new CallbackWireObjectFactory(field.getType(), wireService, inboundWire);
             return new FieldInjector<Object>(field, factory);
         } else if (member instanceof Method) {
             Method method = (Method) member;
-            ObjectFactory<?> factory = new CallbackWireObjectFactory(contract, wireService, inboundWire);
+            Class<?> type = method.getParameterTypes()[0];
+            ObjectFactory<?> factory = new CallbackWireObjectFactory(type, wireService, inboundWire);
             return new MethodInjector<Object>(method, factory);
         } else {
             throw new InvalidAccessorException("Member must be a field or method", member.getName());
         }
     }
 
-    protected ObjectFactory<?> createWireFactory(OutboundWire wire) {
-        return new WireObjectFactory(wire, wireService);
+    @SuppressWarnings({"unchecked"})
+    protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
+        return new WireObjectFactory(interfaze, wire, wireService);
     }
 }

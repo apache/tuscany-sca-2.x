@@ -23,22 +23,21 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 public class CompositeService extends ServiceExtension {
 
     public CompositeService(String name,
                             Class<?> interfaze,
-                            CompositeComponent parent,
-                            WireService wireService) {
-        super(name, interfaze, parent, wireService);
+                            CompositeComponent parent
+    ) {
+        super(name, interfaze, parent);
     }
 
     /**
      * A service for a remote binding does not need a target invoker, but a bindless service does because it gets wired
-     * localy from a reference (or from a parent service?!) We just reuse CompositeTargetInvoker for now since
-     * it seems the target invoker we need does the same thing, if this is confirmed we should give it a common name
-     * FIXME !!! Notice that this method is not defined in the SPI !!!
+     * localy from a reference (or from a parent service?!) We just reuse CompositeTargetInvoker for now since it seems
+     * the target invoker we need does the same thing, if this is confirmed we should give it a common name FIXME !!!
+     * Notice that this method is not defined in the SPI !!!
      */
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         return new CompositeTargetInvoker(operation, outboundWire);

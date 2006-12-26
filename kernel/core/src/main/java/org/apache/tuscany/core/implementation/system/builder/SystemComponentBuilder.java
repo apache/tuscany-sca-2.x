@@ -118,6 +118,9 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
         configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
+        for (Class<?> clazz : constr.getParameterTypes()) {
+            configuration.addConstructorParamType(clazz);
+        }
         configuration.setName(definition.getName());
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         // handle properties

@@ -18,7 +18,7 @@ public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocket
                             DeploymentContext context) {
         Class<?> interfaze = definition.getServiceContract().getInterfaceClass();
         int port = definition.getBinding().getPort();
-        return new TestSocketBindingService(definition.getName(), port, interfaze, parent, wireService);
+        return new TestSocketBindingService(definition.getName(), port, interfaze, parent);
     }
 
     public Reference build(CompositeComponent parent,
@@ -28,7 +28,7 @@ public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocket
         String name = definition.getName();
         int port = definition.getBinding().getPort();
         String host = definition.getBinding().getHost();
-        return new TestSocketBindingReference(name, host, port, interfaze, parent, wireService);
+        return new TestSocketBindingReference(name, host, port, interfaze, parent);
     }
 
     protected Class<TestSocketBinding> getBindingType() {

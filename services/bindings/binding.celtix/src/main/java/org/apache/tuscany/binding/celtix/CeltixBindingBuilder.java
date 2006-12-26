@@ -58,7 +58,6 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             boundServiceDefinition.getName(),
             boundServiceDefinition.getServiceContract().getInterfaceClass(),
             parent,
-            wireService,
             wsBinding,
             bus,
             typeHelper);
@@ -79,7 +78,6 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             boundReferenceDefinition.getName(),
             boundReferenceDefinition.getServiceContract().getInterfaceClass(),
             parent,
-            wireService,
             wsBinding,
             bus,
             typeHelper);

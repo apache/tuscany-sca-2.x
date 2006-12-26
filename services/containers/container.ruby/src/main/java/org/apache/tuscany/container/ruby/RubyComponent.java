@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
@@ -78,7 +77,8 @@ public class RubyComponent extends AtomicComponentExtension {
 
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
             for (OutboundWire wire : referenceWires) {
-                Object wireProxy = wireService.createProxy(wire);
+                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+                Object wireProxy = wireService.createProxy(clazz, wire);
                 //since all types that may be used in the reference interface may not be known to Rhino
                 //using the wireProxy as is will fail result in type conversion exceptions in cases where
                 //Rhino does not know enough of the tpypes used.  Hence introduce a interceptor proxy, 

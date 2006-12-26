@@ -26,7 +26,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Default implementation of a reference configured with the
@@ -73,10 +72,6 @@ public class SystemReferenceImpl extends AbstractSCAObject implements SystemRefe
 
     public void setInterface(Class<?> referenceInterface) {
         this.referenceInterface = referenceInterface;
-    }
-
-    public WireInvocationHandler getHandler() {
-        throw new UnsupportedOperationException();
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
