@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -29,9 +27,8 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
@@ -53,7 +50,7 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
     private TargetInvoker invoker;
 
     public void testSerializeDeserialize() throws Throwable {
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(Foo.class, wire, workContext);
         handler.invoke(Foo.class.getMethod("invoke"), null);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -72,17 +69,11 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        ServiceContract<Foo> contract = new ServiceContract<Foo>() {
-        };
-        contract.setInterfaceClass(Foo.class);
-        contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
-
         wire = EasyMock.createMock(InboundWire.class);
         Map<Operation<?>, InboundInvocationChain> map = new HashMap<Operation<?>, InboundInvocationChain>();
         Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null, NO_CONVERSATION);
         map.put(operation, createChain(operation));
 
-        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
         EasyMock.expect(wire.getServiceName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(map).times(2);
         EasyMock.replay(wire);

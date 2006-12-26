@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
@@ -33,6 +31,7 @@ import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -70,7 +69,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
 
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         assertEquals("foo", handler.invoke(echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());
     }
@@ -83,7 +82,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
 
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         try {
             assertEquals("foo", handler.invoke(echo, new Object[]{}));
             fail("Expected " + IllegalArgumentException.class.getName());
@@ -100,7 +99,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
 
         WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
         EasyMock.replay(workContext);
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         assertEquals("foo", handler.invoke(echo, new Object[]{"foo"}));
     }
 
@@ -110,7 +109,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new ServiceContract<Foo>(Foo.class) {
         });
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
@@ -121,7 +120,7 @@ public class JDKInboundInvocationHandlerTestCase extends TestCase {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new ServiceContract<Foo>(Foo.class) {
         });
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(SimpleTarget.class, wire, workContext);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }
