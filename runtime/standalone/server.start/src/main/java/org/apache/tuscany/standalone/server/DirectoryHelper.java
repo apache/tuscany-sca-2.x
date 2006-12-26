@@ -25,13 +25,16 @@ import java.net.URL;
 /**
  * Utility class for directory related operations.
  * 
- * @author $Revision$ $Date$
+ * @version $Revision$ $Date$
  *
  */
 public abstract class DirectoryHelper {
     
     /** Installation directory system property. */
     private static final String INSTALL_DIRECTORY_PROPERTY = "tuscany.installDir";
+    
+    /** Boot directory system property. */
+    private static final String BOOT_DIRECTORY_PROPERTY = "tuscany.bootDir";
     
     /** Boot path. */
     private static final String BOOT_PATH = "boot";
@@ -89,12 +92,20 @@ public abstract class DirectoryHelper {
      */
     static final File getBootDirectory(File installDirectory) {
         
-        File bootDirectory = new File(installDirectory, BOOT_PATH);      
+        File bootDirectory = null;
+        
+        String bootDirectoryPath = System.getProperty(BOOT_DIRECTORY_PROPERTY);
+        if (bootDirectoryPath != null) {
+            bootDirectory = new File(bootDirectoryPath);
+        } else {        
+            bootDirectory = new File(installDirectory, BOOT_PATH);  
+        }
 
         if(!bootDirectory.exists()) {
             throw new IllegalStateException("Boot directory doesn't exist: " + bootDirectory);
         }
         return bootDirectory;
+        
     }
 
 }
