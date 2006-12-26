@@ -20,9 +20,7 @@ package org.apache.tuscany.standalone.server;
 
 import java.io.File;
 
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.ObjectName;
+import org.apache.tuscany.standalone.server.management.jmx.Agent;
 
 /**
  * This class provides the commandline interface for starting the 
@@ -60,11 +58,16 @@ public class TuscanyServer implements TuscanyServerMBean {
     /** Default admin port. */
     private static final int DEFAULT_ADMIN_PORT = 1066;
     
+    /** Agent */
+    private Agent agent;
+    
     /**
      * Constructor initializes all the required classloaders.
      *
      */
-    private TuscanyServer() { 
+    private TuscanyServer(Agent agent) { 
+        
+        this.agent = agent;
         
         File installDirectory = DirectoryHelper.getInstallDirectory();
         File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);
@@ -77,20 +80,19 @@ public class TuscanyServer implements TuscanyServerMBean {
      */
     public static void main(String[] args) throws Exception { 
         
-        TuscanyServer tuscanyServer = TuscanyServer.newInstance();
-        tuscanyServer.start();
+        String managementPort = System.getProperty(ADMIN_PORT_PROPERTY);
+        int port = DEFAULT_ADMIN_PORT;
+        if(managementPort != null) {
+            port = Integer.parseInt(managementPort);
+        }
         
-        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("tuscany");
-        mBeanServer.registerMBean(tuscanyServer, new ObjectName("tuscany:name=TuscanyServer"));
+        Agent agent =  Agent.getInstance(port);
+        agent.start();
+        
+        TuscanyServer tuscanyServer = new TuscanyServer(agent);
+        agent.register(tuscanyServer, "tuscanyServer");
+        tuscanyServer.start();
 
-    }
-    
-    /**
-     * Creates an instance of the server.
-     * @return An instance of the tuscany server.
-     */
-    protected static TuscanyServer newInstance() {
-        return new TuscanyServer();
     }
     
     /**
@@ -106,6 +108,7 @@ public class TuscanyServer implements TuscanyServerMBean {
      *
      */
     public void shutdown() {
+        agent.shutdown();
         System.err.println("shutdown");
     }
 
