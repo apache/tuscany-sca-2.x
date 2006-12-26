@@ -86,10 +86,6 @@ public class AtomicComponentExtensionTestCase extends TestCase {
             return null;
         }
 
-        public List<Class<?>> getServiceInterfaces() {
-            return null;
-        }
-
         public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
             return null;
         }

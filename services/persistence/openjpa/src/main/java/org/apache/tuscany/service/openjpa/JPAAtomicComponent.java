@@ -48,12 +48,10 @@ public class JPAAtomicComponent extends SystemAtomicComponentExtension {
                               String persistenceUnit,
                               Map<Object, Object> configProps,
                               int initLevel) {
-        super(name, null, parent, scopeContainer, initLevel);
+        super(name, parent, scopeContainer, initLevel);
         assert persistenceUnit != null;
         this.persistenceUnit = persistenceUnit;
         this.configProps = configProps;
-        interfazes = new ArrayList<Class<?>>();
-        interfazes.add(EntityManagerFactory.class);
     }
 
     public Object createInstance() throws ObjectCreationException {

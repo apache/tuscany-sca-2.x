@@ -56,7 +56,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
     protected List<String> constructorParamNames;
-    protected List<Class<?>> serviceInterfaces;
     protected Map<String, Member> referenceSites;
     protected Map<String, Member> resourceSites;
     protected Map<String, Member> propertySites;
@@ -82,7 +81,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         instanceFactory = configuration.getInstanceFactory();
         constructorParamNames = configuration.getConstructorParamNames();
         constructorParamTypes = configuration.getConstructorParamTypes();
-        serviceInterfaces = configuration.getServiceInterfaces();
         injectors = new ArrayList<Injector<Object>>();
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
             : new HashMap<String, Member>();
@@ -93,10 +91,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         callbackSites = configuration.getCallbackSite() != null ? configuration.getCallbackSite()
             : new HashMap<String, Member>();
         implementationClass = configuration.getImplementationClass();
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        return serviceInterfaces;
     }
 
     public void init(Object instance) throws TargetInitializationException {

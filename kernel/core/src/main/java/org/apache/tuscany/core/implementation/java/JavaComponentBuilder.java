@@ -169,7 +169,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
 
         for (JavaMappedService service : componentType.getServices().values()) {
-            configuration.addServiceInterface(service.getServiceContract().getInterfaceClass());
             // setup callback injection sites
             if (service.getCallbackReferenceName() != null) {
                 // Only if there is a callback reference in the service

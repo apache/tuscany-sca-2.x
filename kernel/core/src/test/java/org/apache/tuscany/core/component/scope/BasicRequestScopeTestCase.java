@@ -117,7 +117,6 @@ public class BasicRequestScopeTestCase extends TestCase {
     private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
-        configuration.addServiceInterface(RequestScopeInitDestroyComponent.class);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);

@@ -21,7 +21,6 @@ package org.apache.tuscany.core.databinding.impl;
 
 import java.lang.reflect.Type;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
@@ -66,7 +65,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
     }
 
     public void testProcessInclusionOfInterceptor() {
-        
+
         InboundWire inboundWire = createMock(InboundWire.class);
         OutboundWire outboundWire = createMock(OutboundWire.class);
 
@@ -75,7 +74,7 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         Map<Operation<?>, InboundInvocationChain> inChainsMap =
             new Hashtable<Operation<?>, InboundInvocationChain>();
 
-        Operation<Type> operation1 = new Operation<Type>("testMethod", null, null, null); 
+        Operation<Type> operation1 = new Operation<Type>("testMethod", null, null, null);
         operation1.setServiceContract(serviceContract);
         InboundInvocationChainImpl inChain = new InboundInvocationChainImpl(operation1);
         inChainsMap.put(operation1, inChain);
@@ -171,10 +170,6 @@ public class PassByValueWirePostProcessorTestCase extends TestCase {
         }
 
         public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {
-            return null;
-        }
-
-        public List<Class<?>> getServiceInterfaces() {
             return null;
         }
 

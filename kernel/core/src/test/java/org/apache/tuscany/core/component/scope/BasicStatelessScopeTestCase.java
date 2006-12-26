@@ -29,7 +29,6 @@ import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
-import org.apache.tuscany.core.mock.component.RequestScopeInitDestroyComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponent;
 import org.apache.tuscany.core.mock.component.StatelessComponentImpl;
 
@@ -113,7 +112,6 @@ public class BasicStatelessScopeTestCase extends TestCase {
     private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scopeContainer);
-        configuration.addServiceInterface(RequestScopeInitDestroyComponent.class);
         configuration.setInstanceFactory(factory);
         configuration.setName("foo");
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);

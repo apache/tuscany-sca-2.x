@@ -43,21 +43,17 @@ import org.apache.tuscany.container.javascript.rhino.RhinoScriptInstance;
  */
 public class JavaScriptComponent extends AtomicComponentExtension {
 
-    private final List<Class<?>> services;
-
     private final Map<String, Object> properties;
 
     private RhinoScript rhinoScript;
 
     public JavaScriptComponent(String name, RhinoScript rhinoScript, Map<String, Object> properties,
-                               List<Class<?>> services,
                                CompositeComponent parent, ScopeContainer scopeContainer, WireService wireService,
                                WorkContext workContext,
                                ExecutionMonitor monitor) {
         super(name, parent, scopeContainer, wireService, workContext, null, monitor, 0);
 
         this.rhinoScript = rhinoScript;
-        this.services = services;
         this.scope = scopeContainer.getScope();
         this.properties = properties;
     }
@@ -94,10 +90,6 @@ public class JavaScriptComponent extends AtomicComponentExtension {
     }
 
     // TODO: move all the following up to AtomicComponentExtension?
-
-    public List<Class<?>> getServiceInterfaces() {
-        return services;
-    }
 
     public Map<String, Object> getProperties() {
         return properties;

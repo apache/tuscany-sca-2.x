@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.persistence.datasource;
 
-import javax.sql.DataSource;
-
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
 
@@ -35,11 +33,6 @@ public class DataSourceComponentTestCase extends TestCase {
         DataSourceComponent component = new DataSourceComponent(null, null, null, null, 0);
         component.destroy(provider);
         EasyMock.verify(provider);
-    }
-
-    public void testSerivceInterfaces() {
-        DataSourceComponent component = new DataSourceComponent(null, null, null, null, 0);
-        assertEquals(DataSource.class, component.getServiceInterfaces().get(0));
     }
 
 

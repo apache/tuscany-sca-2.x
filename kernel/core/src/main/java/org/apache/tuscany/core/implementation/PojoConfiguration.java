@@ -55,7 +55,6 @@ public class PojoConfiguration {
     private Map<String, Member> propertySites = new HashMap<String, Member>();
     private Map<String, Member> resourceSites = new HashMap<String, Member>();
     private Map<String, Member> callbackSites = new HashMap<String, Member>();
-    private List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>();
     private WireService wireService;
     private WorkContext workContext;
     private WorkScheduler scheduler;
@@ -86,14 +85,6 @@ public class PojoConfiguration {
 
     public void setScopeContainer(ScopeContainer scopeContainer) {
         this.scopeContainer = scopeContainer;
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        return serviceInterfaces;
-    }
-
-    public void addServiceInterface(Class<?> serviceInterface) {
-        serviceInterfaces.add(serviceInterface);
     }
 
     public PojoObjectFactory<?> getInstanceFactory() {

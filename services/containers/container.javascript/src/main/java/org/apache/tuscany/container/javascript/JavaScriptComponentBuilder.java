@@ -103,7 +103,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
             scopeContainer = scopeRegistry.getScopeContainer(scope);
         }
 
-        return new JavaScriptComponent(name, rhinoScript, properties, services, parent, scopeContainer, wireService, workContext , monitor);
+        return new JavaScriptComponent(name, rhinoScript, properties, parent, scopeContainer, wireService, workContext , monitor);
     }
 
     private void enhanceRhinoScript(ServiceDefinition serviceDefn, JavaScriptImplementation implementation) throws BuilderConfigException {

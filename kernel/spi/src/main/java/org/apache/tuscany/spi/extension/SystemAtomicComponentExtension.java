@@ -30,26 +30,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public abstract class SystemAtomicComponentExtension extends AtomicComponentExtension {
-    protected List<Class<?>> interfazes;
 
     public SystemAtomicComponentExtension(String name,
-                                          CompositeComponent parent,
-                                          ScopeContainer scopeContainer,
-                                          int initLevel) {
-        this(name, null, parent, scopeContainer, initLevel);
-    }
-
-    public SystemAtomicComponentExtension(String name,
-                                          List<Class<?>> serviceInterfaces,
                                           CompositeComponent parent,
                                           ScopeContainer scopeContainer,
                                           int initLevel) {
         super(name, parent, scopeContainer, null, null, null, null, initLevel);
-        this.interfazes = serviceInterfaces;
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        return interfazes;
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {

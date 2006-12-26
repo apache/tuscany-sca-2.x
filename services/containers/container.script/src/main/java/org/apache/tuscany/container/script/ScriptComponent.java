@@ -38,7 +38,6 @@ import org.apache.tuscany.spi.wire.WireObjectFactory;
  * @version $Rev$ $Date$
  */
 public class ScriptComponent extends AtomicComponentExtension {
-    private final List<Class<?>> services;
     private ScriptInstanceFactory factory;
 
     public ScriptComponent(ComponentConfiguration config) {
@@ -51,7 +50,6 @@ public class ScriptComponent extends AtomicComponentExtension {
             config.getMonitor(),
             config.getInitLevel());
         this.factory = config.getFactory();
-        this.services = config.getServices();
         this.scope = config.getScopeContainer().getScope();
     }
 
@@ -64,10 +62,6 @@ public class ScriptComponent extends AtomicComponentExtension {
         Method[] methods = operation.getServiceContract().getInterfaceClass().getMethods();
         Method method = findMethod(operation, methods);
         return new ScriptTargetInvoker(method.getName(), this);
-    }
-
-    public List<Class<?>> getServiceInterfaces() {
-        return services;
     }
 
     protected void onReferenceWire(OutboundWire wire) {

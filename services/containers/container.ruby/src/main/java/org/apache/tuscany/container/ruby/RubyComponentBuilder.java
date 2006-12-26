@@ -83,7 +83,6 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
         return new RubyComponent(name,
             rubyScript,
             implementation.getRubyClassName(),
-            services,
             propertyValues,
             parent,
             scopeContainer,

@@ -182,7 +182,6 @@ public class OutboundWireToJavaTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
-        configuration.addServiceInterface(Target.class);
         configuration.setParent(parent);
         configuration.setWorkContext(workContext);
         configuration.setName("source");

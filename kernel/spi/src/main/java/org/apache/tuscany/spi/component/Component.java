@@ -34,11 +34,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public interface Component extends SCAObject {
 
     /**
-     * Returns the service interfaces implemented by the component
-     */
-    List<Class<?>> getServiceInterfaces();
-
-    /**
      * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the destination
      * service of a wire
      */

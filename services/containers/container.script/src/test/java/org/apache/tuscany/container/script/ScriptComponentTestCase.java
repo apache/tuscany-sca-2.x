@@ -19,11 +19,9 @@
 package org.apache.tuscany.container.script;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.model.Scope;
@@ -47,16 +45,6 @@ public class ScriptComponentTestCase extends TestCase {
         operation.setServiceContract(new Contract<Type>(List.class));
         TargetInvoker invoker = component.createTargetInvoker("hashCode", operation, null);
         assertNotNull(invoker);
-    }
-
-    public void testGetServiceInterfaces() {
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        ComponentConfiguration config = new ComponentConfiguration();
-        config.setName("foo");
-        config.setScopeContainer(container);
-        config.setServices(services);
-        ScriptComponent pc = new ScriptComponent(config);
-        assertEquals(services, pc.getServiceInterfaces());
     }
 
     @Override

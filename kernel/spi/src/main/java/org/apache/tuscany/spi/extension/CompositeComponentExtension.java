@@ -232,16 +232,6 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
         return null;
     }
 
-    public List<Class<?>> getServiceInterfaces() {
-        List<Class<?>> serviceInterfaces = new ArrayList<Class<?>>(services.size());
-        synchronized (services) {
-            for (Service service : services) {
-                serviceInterfaces.add(service.getInboundWire().getServiceContract().getInterfaceClass());
-            }
-        }
-        return serviceInterfaces;
-    }
-
     public InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException {
         InboundWire wire = autowireInternal.get(instanceInterface);
         if (wire != null) {
@@ -475,9 +465,8 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
     }
 
     protected void registerAutowire(AtomicComponent component) throws InvalidAutowireInterface {
-        List<Class<?>> services = component.getServiceInterfaces();
-        for (Class<?> service : services) {
-            registerAutowireInternal(service, component);
+        for (InboundWire wire : component.getInboundWires().values()) {
+            registerAutowireInternal(wire.getServiceContract().getInterfaceClass(), component);
         }
     }
 
