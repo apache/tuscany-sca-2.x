@@ -21,6 +21,7 @@ package org.apache.tuscany.standalone.server;
 import java.io.File;
 
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
+import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 
 /**
  * This class provides the commandline interface for starting the 
@@ -53,7 +54,7 @@ import org.apache.tuscany.standalone.server.management.jmx.Agent;
 public class TuscanyServer implements TuscanyServerMBean {
     
     /** Agent */
-    private Agent agent = Agent.getInstance();
+    private Agent agent = RmiAgent.getInstance();
     
     /**
      * 
