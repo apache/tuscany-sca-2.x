@@ -20,6 +20,10 @@ package org.apache.tuscany.standalone.server;
 
 import java.io.File;
 
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.ObjectName;
+
 /**
  * This class provides the commandline interface for starting the 
  * tuscany standalone server. 
@@ -48,7 +52,7 @@ import java.io.File;
  * @version $Rev$ $Date$
  *
  */
-public class TuscanyServer {
+public class TuscanyServer implements TuscanyServerMBean {
     
     /** Administration port system property. */
     private static final String ADMIN_PORT_PROPERTY = "tuscany.adminPort";
@@ -71,10 +75,14 @@ public class TuscanyServer {
      * 
      * @param args Commandline arguments.
      */
-    public static void main(String[] args) { 
+    public static void main(String[] args) throws Exception { 
         
         TuscanyServer tuscanyServer = TuscanyServer.newInstance();
         tuscanyServer.start();
+        
+        MBeanServer mBeanServer = MBeanServerFactory.createMBeanServer("tuscany");
+        mBeanServer.registerMBean(tuscanyServer, new ObjectName("tuscany:name=LoginStats"));
+
     }
     
     /**
@@ -89,8 +97,16 @@ public class TuscanyServer {
      * Starts the server.
      *
      */
-    private void start() {
+    public void start() {
         System.err.println("Started");
+    }
+    
+    /**
+     * Starts the server.
+     *
+     */
+    public void shutdown() {
+        System.err.println("shutdown");
     }
 
 }
