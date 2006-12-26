@@ -100,7 +100,6 @@ public class Axis2ReferenceTestCase extends TestCase {
         contract.setInterfaceClass(Greeter.class);
         return new Axis2Reference(serviceName,
             parent,
-            wireService,
             wsBinding,
             contract, null);
     }

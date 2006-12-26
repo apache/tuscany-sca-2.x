@@ -5,7 +5,6 @@ import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
@@ -19,9 +18,9 @@ public class TestSocketBindingReference extends ReferenceExtension {
                                       String host,
                                       int port,
                                       Class<?> interfaze,
-                                      CompositeComponent parent,
-                                      WireService wireService) {
-        super(name, interfaze, parent, wireService);
+                                      CompositeComponent parent
+    ) {
+        super(name, interfaze, parent);
         this.port = port;
         this.host = host;
     }

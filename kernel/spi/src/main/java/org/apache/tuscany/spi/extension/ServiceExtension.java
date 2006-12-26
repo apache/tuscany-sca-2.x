@@ -29,8 +29,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default implementation of an SCA service
@@ -41,14 +39,12 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
     protected Class<?> interfaze;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected WireService wireService;
     protected ServiceContract<?> bindingServiceContract;
 
-    public ServiceExtension(String name, Class<?> interfaze, CompositeComponent parent, WireService wireService)
+    public ServiceExtension(String name, Class<?> interfaze, CompositeComponent parent)
         throws CoreRuntimeException {
         super(name, parent);
         this.interfaze = interfaze;
-        this.wireService = wireService;
     }
 
     public Scope getScope() {
@@ -69,10 +65,6 @@ public class ServiceExtension extends AbstractSCAObject implements Service {
 
     public void setOutboundWire(OutboundWire outboundWire) {
         this.outboundWire = outboundWire;
-    }
-
-    public WireInvocationHandler getHandler() {
-        return wireService.createHandler(inboundWire);
     }
 
     public Class<?> getInterface() {

@@ -32,10 +32,10 @@ public class WireObjectFactoryTestCase extends TestCase {
     public void testCreateInstance() throws Exception {
         RuntimeWire wire = createMock(RuntimeWire.class);
         WireService service = createMock(WireService.class);
-        service.createProxy(wire);
+        service.createProxy(Object.class, wire);
         expectLastCall().andReturn(null);
         replay(service);
-        WireObjectFactory factory = new WireObjectFactory(wire, service);
+        WireObjectFactory<Object> factory = new WireObjectFactory<Object>(Object.class, wire, service);
         factory.getInstance();
         verify(service);
     }

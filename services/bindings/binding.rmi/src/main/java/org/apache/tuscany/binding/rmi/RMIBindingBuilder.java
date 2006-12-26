@@ -70,7 +70,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
         String svcName = boundReferenceDefinition.getBinding().getServiceName();
         // Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
 
-        return new RMIReference(name, parent, wireService, rmiHost, host, port, svcName,
+        return new RMIReference(name, parent, rmiHost, host, port, svcName,
             boundReferenceDefinition.getServiceContract().getInterfaceClass());
 
     }

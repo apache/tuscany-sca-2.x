@@ -26,7 +26,6 @@ import javax.naming.NamingException;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
@@ -41,13 +40,12 @@ public class JMSService extends ServiceExtension {
 
     public JMSService(String name,
                       CompositeComponent parent,
-                      WireService wireService,
                       JMSBinding jmsBinding,
                       JMSResourceFactory jmsResourceFactory,
                       OperationAndDataBinding requestOperationAndDataBinding,
                       OperationAndDataBinding responseOperationAndDataBinding,
                       Class<?> service) {
-        super(name, service, parent, wireService);
+        super(name, service, parent);
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;

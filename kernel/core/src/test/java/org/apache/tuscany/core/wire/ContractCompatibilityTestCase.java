@@ -353,24 +353,16 @@ public class ContractCompatibilityTestCase extends TestCase {
             super(null, null);
         }
 
-        public <T> T createProxy(Class<T> interfaze, InboundWire wire) throws ProxyCreationException {
+        public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
             throw new UnsupportedOperationException();
         }
 
-        public Object createProxy(RuntimeWire wire) throws ProxyCreationException {
-            throw new UnsupportedOperationException();
-        }
-
-        public Object createCallbackProxy(ServiceContract<?> contract, InboundWire wire) throws ProxyCreationException {
+        public Object createCallbackProxy(Class<?> interfaze, InboundWire wire) throws ProxyCreationException {
             throw new UnsupportedOperationException();
         }
 
 
-        public WireInvocationHandler createHandler(RuntimeWire wire) {
-            throw new UnsupportedOperationException();
-        }
-
-        public WireInvocationHandler createCallbackHandler(InboundWire wire) {
+        public WireInvocationHandler createHandler(Class<?> interfaze, RuntimeWire wire) {
             throw new UnsupportedOperationException();
         }
 

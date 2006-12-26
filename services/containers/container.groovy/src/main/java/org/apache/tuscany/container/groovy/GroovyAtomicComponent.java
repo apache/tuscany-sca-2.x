@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import org.apache.tuscany.spi.model.Operation;
@@ -88,7 +87,8 @@ public class GroovyAtomicComponent extends AtomicComponentExtension {
         // inject references
         for (List<OutboundWire> referenceWires : getOutboundWires().values()) {
             for (OutboundWire wire : referenceWires) {
-                instance.setProperty(wire.getReferenceName(), wireService.createProxy(wire));
+                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+                instance.setProperty(wire.getReferenceName(), wireService.createProxy(clazz, wire));
             }
         }
         return instance;

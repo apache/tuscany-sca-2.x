@@ -25,7 +25,6 @@ import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
@@ -33,8 +32,8 @@ import org.apache.tuscany.spi.wire.WireService;
 public class OSGiReference extends ReferenceExtension {
     //private final String uri;
 
-    public OSGiReference(String name, Class<?> interfaze, CompositeComponent parent, WireService service, String uri) {
-        super(name, interfaze, parent, service);
+    public OSGiReference(String name, Class<?> interfaze, CompositeComponent parent) {
+        super(name, interfaze, parent);
         //this.uri = uri;
     }
 

@@ -21,18 +21,16 @@ package org.apache.tuscany.test.binding;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
- * 
  * @version $Rev$ $Date$
  */
 public class TestBindingService extends ServiceExtension {
     public TestBindingService(String name,
                               Class<?> interfaze,
-                              CompositeComponent parent,
-                              WireService wireService) throws CoreRuntimeException {
-        super(name, interfaze, parent, wireService);
+                              CompositeComponent parent
+    ) throws CoreRuntimeException {
+        super(name, interfaze, parent);
         // do nothing, but this could register with the host environment
     }
 }

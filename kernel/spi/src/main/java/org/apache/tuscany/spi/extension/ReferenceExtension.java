@@ -28,8 +28,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * The default implementation of an SCA reference
@@ -37,20 +35,17 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $Rev$ $Date$
  */
 public abstract class ReferenceExtension extends AbstractSCAObject implements Reference {
-
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
     protected Class<?> referenceInterface;
-    protected WireService wireService;
     protected ServiceContract<?> bindingServiceContract;
 
     protected ReferenceExtension(String name,
                                  Class<?> referenceInterface,
-                                 CompositeComponent parent,
-                                 WireService wireService) {
+                                 CompositeComponent parent
+    ) {
         super(name, parent);
         this.referenceInterface = referenceInterface;
-        this.wireService = wireService;
     }
 
     public Scope getScope() {
@@ -75,10 +70,6 @@ public abstract class ReferenceExtension extends AbstractSCAObject implements Re
 
     public Class<?> getInterface() {
         return referenceInterface;
-    }
-
-    public WireInvocationHandler getHandler() {
-        return wireService.createHandler(inboundWire);
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)

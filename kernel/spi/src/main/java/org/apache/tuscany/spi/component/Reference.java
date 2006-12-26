@@ -23,7 +23,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Manages an SCA reference configured with a binding
@@ -36,13 +35,6 @@ public interface Reference extends SCAObject {
      * Returns the service interface configured for the reference
      */
     Class<?> getInterface();
-
-    /**
-     * Returns the handler responsible for flowing a request through the reference
-     *
-     * @throws TargetException
-     */
-    WireInvocationHandler getHandler();
 
     /**
      * Returns the inbound wire for flowing a request through the reference

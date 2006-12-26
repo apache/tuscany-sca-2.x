@@ -25,7 +25,6 @@ import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -55,54 +54,40 @@ public class JDKWireService extends WireServiceExtension {
     public void init() {
     }
 
-    public <T> T createProxy(Class<T> interfaze, InboundWire wire) throws ProxyCreationException {
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, context);
-        ClassLoader cl = interfaze.getClassLoader();
-        return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
-    }
-
-    public Object createProxy(RuntimeWire wire) throws ProxyCreationException {
+    public <T> T createProxy(Class<T> interfaze, RuntimeWire wire) throws ProxyCreationException {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
-            Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
             JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound, context);
             ClassLoader cl = interfaze.getClassLoader();
-            //FIXME
-            return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
+            return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
-            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outbound, context);
-            Class<?> interfaze = outbound.getServiceContract().getInterfaceClass();
+            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(interfaze, outbound, context);
             ClassLoader cl = interfaze.getClassLoader();
-            return Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler);
+            return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else {
             throw new ProxyCreationException("Invalid wire type", wire.getClass().getName());
         }
     }
 
-    public Object createCallbackProxy(ServiceContract<?> contract, InboundWire wire) throws ProxyCreationException {
-        Class<?> interfaze = contract.getCallbackClass();
+    public Object createCallbackProxy(Class<?> interfaze, InboundWire wire) throws ProxyCreationException {
         ClassLoader cl = interfaze.getClassLoader();
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, context);
         return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
     }
 
-    public WireInvocationHandler createHandler(RuntimeWire wire) {
-        assert wire != null : "Wire was null";
+    public WireInvocationHandler createHandler(Class<?> interfaze, RuntimeWire wire) {
+        assert wire != null;
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
             return new JDKInboundInvocationHandler(inbound, context);
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
-            return new JDKOutboundInvocationHandler(outbound, context);
+            return new JDKOutboundInvocationHandler(interfaze, outbound, context);
         } else {
             throw new ProxyCreationException("Invalid wire type", wire.getClass().getName());
         }
-    }
-
-    public WireInvocationHandler createCallbackHandler(InboundWire wire) {
-        return new JDKCallbackInvocationHandler(wire, context);
     }
 
 }

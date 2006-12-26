@@ -23,7 +23,6 @@ import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * A bindless reference to a target service in the parent composite
@@ -34,9 +33,8 @@ public class CompositeReference extends ReferenceExtension {
 
     public CompositeReference(String name,
                               CompositeComponent parent,
-                              WireService wireService,
                               ServiceContract contract) {
-        super(name, contract.getInterfaceClass(), parent, wireService);
+        super(name, contract.getInterfaceClass(), parent);
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

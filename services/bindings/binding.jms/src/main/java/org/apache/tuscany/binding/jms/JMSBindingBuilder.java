@@ -71,7 +71,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
             getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
 
         Service service =
-            new JMSService(serviceDefinition.getName(), parent, wireService, jmsBinding, jmsResourceFactory,
+            new JMSService(serviceDefinition.getName(), parent, jmsBinding, jmsResourceFactory,
                            requestODB, responseODB, interfaze);
         service.setBindingServiceContract(serviceContract);
 
@@ -112,7 +112,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
             getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
 
         JMSReference reference =
-            new JMSReference(name, parent, wireService, jmsBinding, jmsResourceFactory, requestODB, responseODB,
+            new JMSReference(name, parent, jmsBinding, jmsResourceFactory, requestODB, responseODB,
                              interfaze, requestDest, replyDest);
         reference.setBindingServiceContract(serviceContract);
         return reference;

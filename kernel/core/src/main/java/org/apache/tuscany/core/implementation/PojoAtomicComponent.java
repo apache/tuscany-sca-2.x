@@ -52,7 +52,6 @@ import org.apache.tuscany.core.injection.PojoObjectFactory;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class PojoAtomicComponent extends AtomicComponentExtension {
-
     protected EventInvoker<Object> initInvoker;
     protected EventInvoker<Object> destroyInvoker;
     protected PojoObjectFactory<?> instanceFactory;
@@ -64,6 +63,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     protected Map<String, Member> callbackSites;
     protected List<Injector<Object>> injectors;
     protected Class implementationClass;
+    private List<Class<?>> constructorParamTypes = new ArrayList<Class<?>>();
 
     public PojoAtomicComponent(PojoConfiguration configuration) {
         super(configuration.getName(),
@@ -81,6 +81,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         destroyInvoker = configuration.getDestroyInvoker();
         instanceFactory = configuration.getInstanceFactory();
         constructorParamNames = configuration.getConstructorParamNames();
+        constructorParamTypes = configuration.getConstructorParamTypes();
         serviceInterfaces = configuration.getServiceInterfaces();
         injectors = new ArrayList<Injector<Object>>();
         referenceSites = configuration.getReferenceSite() != null ? configuration.getReferenceSite()
@@ -192,7 +193,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         for (int i = 0; i < constructorParamNames.size(); i++) {
             if (name.equals(constructorParamNames.get(i))) {
                 ObjectFactory[] initializerFactories = instanceFactory.getInitializerFactories();
-                initializerFactories[i] = createWireFactory(wire);
+                initializerFactories[i] = createWireFactory(constructorParamTypes.get(i), wire);
                 break;
             }
         }
@@ -227,10 +228,13 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     }
 
     protected Injector<Object> createInjector(Member member, OutboundWire wire) {
-        ObjectFactory<?> factory = createWireFactory(wire);
         if (member instanceof Field) {
+            Class<?> type = ((Field) member).getType();
+            ObjectFactory<?> factory = createWireFactory(type, wire);
             return new FieldInjector<Object>((Field) member, factory);
         } else if (member instanceof Method) {
+            Class<?> type = ((Method) member).getParameterTypes()[0];
+            ObjectFactory<?> factory = createWireFactory(type, wire);
             return new MethodInjector<Object>((Method) member, factory);
         } else {
             throw new InvalidAccessorException("Member must be a field or method", member.getName());
@@ -242,7 +246,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                                                           List<OutboundWire> wireFactories) {
         List<ObjectFactory<?>> factories = new ArrayList<ObjectFactory<?>>();
         for (OutboundWire wire : wireFactories) {
-            factories.add(createWireFactory(wire));
+            factories.add(createWireFactory(interfaceType, wire));
         }
         if (member instanceof Field) {
             Field field = (Field) member;
@@ -263,6 +267,6 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         }
     }
 
-    protected abstract ObjectFactory<?> createWireFactory(OutboundWire wire);
+    protected abstract ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire);
 
 }

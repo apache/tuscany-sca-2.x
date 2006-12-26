@@ -27,7 +27,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * Default implementation for services configured with the
@@ -68,11 +67,6 @@ public class SystemServiceImpl extends AbstractSCAObject implements SystemServic
 
     public Class<?> getInterface() {
         return inboundWire.getServiceContract().getInterfaceClass();
-    }
-
-    public WireInvocationHandler getHandler() {
-        // system services do not proxy
-        throw new UnsupportedOperationException();
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {

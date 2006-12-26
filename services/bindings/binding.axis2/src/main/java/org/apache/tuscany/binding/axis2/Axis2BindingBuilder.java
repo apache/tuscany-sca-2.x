@@ -125,7 +125,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
             
-            Service service = new Axis2Service(serviceDefinition.getName(), outboundContract, parent, wireService, wsBinding,
+            Service service = new Axis2Service(serviceDefinition.getName(), outboundContract, parent, wsBinding,
                     servletHost, configContext, workContext);
             service.setBindingServiceContract(inboundContract);
             
@@ -175,7 +175,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
             
-            Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wireService, wsBinding,
+            Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wsBinding,
                     inboundContract, workContext);
             reference.setBindingServiceContract(outboundContract);
             

@@ -42,7 +42,6 @@ import org.osoa.sca.annotations.Destroy;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceExtension;
-import org.apache.tuscany.spi.wire.WireService;
 
 import commonj.sdo.helper.TypeHelper;
 import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
@@ -82,11 +81,10 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
     public CeltixService(String theName,
                          Class<?> interfaze,
                          CompositeComponent parent,
-                         WireService wireService,
                          WebServiceBinding binding,
                          Bus bus,
                          TypeHelper theTypeHelper) {
-        super(theName, interfaze, parent, wireService);
+        super(theName, interfaze, parent);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();
@@ -211,7 +209,7 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
         }
         boolean inout = false;
 
- //       Class<?> serviceInterface = this.getInterface();
+        //       Class<?> serviceInterface = this.getInterface();
         // Method meth = getMethod(serviceInterface, operationName.getLocalPart());
 
         // Object proxy = null;

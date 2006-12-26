@@ -102,7 +102,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);
         configuration.setScheduler(workScheduler);
-
         configuration.setImplementationClass(definition.getImplementation().getImplementationClass());
 
         // setup property injection sites
@@ -133,6 +132,9 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         PojoObjectFactory<?> instanceFactory = new PojoObjectFactory(constr);
         configuration.setInstanceFactory(instanceFactory);
         configuration.getConstructorParamNames().addAll(ctorDef.getInjectionNames());
+        for (Class<?> clazz : constr.getParameterTypes()) {
+            configuration.addConstructorParamType(clazz);
+        }
         configuration.setMonitor(monitor);
         configuration.setName(definition.getName());
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
@@ -147,7 +149,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         // handle resources
         for (Resource resource : componentType.getResources().values()) {
-
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
             if (objectFactory != null) {
                 component.addResourceFactory(resource.getName(), objectFactory);
@@ -165,7 +166,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 }
                 component.addResourceFactory(name, factory);
             }
-
         }
 
         for (JavaMappedService service : componentType.getServices().values()) {
@@ -178,7 +178,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         }
 
         component.setAllowsPassByReference(componentType.isAllowsPassByReference());
-        
+
         if (componentType.getConversationIDMember() != null) {
             component.addConversationIDFactory(componentType.getConversationIDMember());
         }

@@ -22,13 +22,12 @@ import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
 
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.builder.BuilderException;
 
 import commonj.sdo.helper.TypeHelper;
 import org.objectweb.celtix.Bus;
@@ -49,11 +48,10 @@ public class CeltixReference<T> extends ReferenceExtension {
     public CeltixReference(String name,
                            Class<T> interfaze,
                            CompositeComponent parent,
-                           WireService wireService,
                            WebServiceBinding binding,
                            Bus theBus,
                            TypeHelper theTypeHelper) {
-        super(name, interfaze, parent, wireService);
+        super(name, interfaze, parent);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();

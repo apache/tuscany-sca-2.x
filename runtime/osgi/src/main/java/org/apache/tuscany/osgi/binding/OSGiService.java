@@ -36,7 +36,7 @@ public class OSGiService extends ServiceExtension {
     private final String osgiServiceName;
     //private final Class<? extends Object> service;
     private OSGiHost host;
-
+    private WireService wireService;
     /**
      * Creates a new service instance
      *
@@ -53,9 +53,10 @@ public class OSGiService extends ServiceExtension {
                        String osgiServiceName,
                        Class<?> service,
                        OSGiHost host) {
-        super(name, service, parent, wireService);
+        super(name, service, parent);
         this.osgiServiceName = osgiServiceName;
         //this.service = service;
+        this.wireService = wireService;
         this.host = host;
     }
 
@@ -63,7 +64,8 @@ public class OSGiService extends ServiceExtension {
         super.start();
         Properties properties = new Properties();
         Object instance;
-        instance = wireService.createProxy(inboundWire);
+        Class<?> clazz = inboundWire.getServiceContract().getInterfaceClass();
+        instance = wireService.createProxy(clazz, inboundWire);
         if (instance instanceof ServiceFactory) {
             host.registerService(osgiServiceName, instance, properties);
         } else {

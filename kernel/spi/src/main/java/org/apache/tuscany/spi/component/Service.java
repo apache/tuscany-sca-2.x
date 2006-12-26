@@ -23,7 +23,6 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 /**
  * The runtime instantiation of an SCA service configured with a binding.
@@ -46,11 +45,6 @@ public interface Service extends SCAObject {
      * @param serviceContract the binding contract
      */
     void setBindingServiceContract(ServiceContract<?> serviceContract);
-
-    /**
-     * Returns the handler responsible for flowing a request through the service
-     */
-    WireInvocationHandler getHandler();
 
     /**
      * Returns the service interface configured for the service

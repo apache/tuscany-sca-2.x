@@ -16,16 +16,14 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
-
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.host.rmi.RMIHost;
 
@@ -43,13 +41,12 @@ public class RMIReference<T> extends ReferenceExtension {
 
     public RMIReference(String name,
                         CompositeComponent parent,
-                        WireService wireService,
                         RMIHost rmiHost,
                         String host,
                         String port,
                         String svcName,
                         Class<T> service) {
-        super(name, service, parent, wireService);
+        super(name, service, parent);
         this.host = host;
         this.port = port;
         this.svcName = svcName;

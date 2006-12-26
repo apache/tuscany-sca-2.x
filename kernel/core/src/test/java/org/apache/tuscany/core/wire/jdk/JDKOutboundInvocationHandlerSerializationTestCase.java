@@ -55,7 +55,8 @@ public class JDKOutboundInvocationHandlerSerializationTestCase extends TestCase 
     private TargetInvoker invoker;
 
     public void testSerializeDeserialize() throws Throwable {
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire, workContext);
+        JDKOutboundInvocationHandler handler =
+            new JDKOutboundInvocationHandler(Foo.class, wire, workContext);
         handler.invoke(Foo.class.getMethod("invoke"), null);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ObjectOutputStream ostream = new ObjectOutputStream(stream);

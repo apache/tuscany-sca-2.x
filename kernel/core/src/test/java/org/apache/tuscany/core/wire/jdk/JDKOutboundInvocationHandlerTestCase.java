@@ -58,7 +58,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.toString());
     }
@@ -68,7 +68,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
         ServiceContract contract = new JavaServiceContract(Foo.class);
         contract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         wire.setServiceContract(contract);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(wire);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, wire, null);
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());
     }
@@ -106,16 +106,16 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
 
         outboundContract.setRemotable(true);
         invoker.setRemotableTest(true);
-        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(outboundWire, wc);
-        handler.invoke(Foo.class.getMethod("test", new Class[]{String.class}), new Object[]{"bar"});
-        String currentConvID = (String)wc.getIdentifier(Scope.CONVERSATION);
+        JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(Foo.class, outboundWire, wc);
+        handler.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
+        String currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);
 
         outboundContract.setRemotable(false);
         invoker.setRemotableTest(false);
-        JDKOutboundInvocationHandler handler2 = new JDKOutboundInvocationHandler(outboundWire, wc);
-        handler2.invoke(Foo.class.getMethod("test", new Class[]{String.class}), new Object[]{"bar"});
-        currentConvID = (String)wc.getIdentifier(Scope.CONVERSATION);
+        JDKOutboundInvocationHandler handler2 = new JDKOutboundInvocationHandler(Foo.class, outboundWire, wc);
+        handler2.invoke(Foo.class.getMethod("test", String.class), new Object[]{"bar"});
+        currentConvID = (String) wc.getIdentifier(Scope.CONVERSATION);
         assertSame(convID, currentConvID);
     }
 
@@ -143,7 +143,7 @@ public class JDKOutboundInvocationHandlerTestCase extends TestCase {
 
         public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
             assertEquals("bar", Array.get(payload, 0));
-            String convID = (String)wc.getIdentifier(Scope.CONVERSATION);
+            String convID = (String) wc.getIdentifier(Scope.CONVERSATION);
             if (remotableTest) {
                 assertNotSame(convID, currentConversationID);
             } else {

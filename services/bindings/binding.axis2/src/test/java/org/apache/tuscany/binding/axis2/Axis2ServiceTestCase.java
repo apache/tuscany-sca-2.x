@@ -33,9 +33,6 @@ import javax.xml.namespace.QName;
 
 import org.xml.sax.InputSource;
 
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
@@ -45,6 +42,9 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.core.component.WorkContextImpl;
 import org.easymock.EasyMock;
 
 public class Axis2ServiceTestCase extends TestCase {
@@ -89,7 +89,7 @@ public class Axis2ServiceTestCase extends TestCase {
 
         //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
-        wireService.createProxy(EasyMock.isA(InboundWire.class));
+        wireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(wireService);
 
@@ -97,7 +97,7 @@ public class Axis2ServiceTestCase extends TestCase {
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         Map<String, Operation<Type>> opMap = new HashMap<String, Operation<Type>>();
-        for(Method m: Greeter.class.getMethods()) {
+        for (Method m : Greeter.class.getMethods()) {
             opMap.put(m.getName(), new Operation<Type>(m.getName(), null, null, null));
         }
         contract.setOperations(opMap);
@@ -118,7 +118,6 @@ public class Axis2ServiceTestCase extends TestCase {
             new Axis2Service(serviceName,
                 contract,
                 null,
-                wireService,
                 wsBinding,
                 tomcatHost,
                 configurationContext, new WorkContextImpl());
