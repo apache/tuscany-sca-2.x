@@ -71,8 +71,8 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
         try {
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
             systemComponent.registerJavaObject(StandaloneRuntimeInfo.COMPONENT_NAME,
-                StandaloneRuntimeInfo.class,
-                (StandaloneRuntimeInfo) runtimeInfo);
+                                               StandaloneRuntimeInfo.class,
+                                               (StandaloneRuntimeInfo)runtimeInfo);
 
             // register the monitor factory provided by the host
             systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
@@ -85,11 +85,12 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
         try {
             // deploy the system scdl
             Deployer deployer = bootstrapper.createDeployer();
-            tuscanySystem = deploySystemScdl(deployer,
-                systemComponent,
-                ComponentNames.TUSCANY_SYSTEM,
-                getSystemScdl(),
-                bootClassLoader);
+            tuscanySystem =
+                deploySystemScdl(deployer,
+                                 systemComponent,
+                                 ComponentNames.TUSCANY_SYSTEM,
+                                 getSystemScdl(),
+                                 bootClassLoader);
             tuscanySystem.start();
 
             // switch to the system deployer
@@ -97,20 +98,23 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             if (!(deployerComponent instanceof AtomicComponent)) {
                 throw new InitializationException("Deployer must be an atomic component");
             }
-            deployer = (Deployer) ((AtomicComponent) deployerComponent).getTargetInstance();
+            deployer = (Deployer)((AtomicComponent)deployerComponent).getTargetInstance();
 
             SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
             if (!(wireServiceComponent instanceof AtomicComponent)) {
                 throw new InitializationException("WireService must be an atomic component");
             }
-            WireService wireService = (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
+            WireService wireService = (WireService)((AtomicComponent)wireServiceComponent).getTargetInstance();
 
-            application = deployApplicationScdl(deployer,
-                runtime.getRootComponent(),
-                getApplicationName(),
-                getApplicationScdl(),
-                getApplicationClassLoader());
-            application.start();
+            if (getApplicationScdl() != null) {
+                application =
+                    deployApplicationScdl(deployer,
+                                          runtime.getRootComponent(),
+                                          getApplicationName(),
+                                          getApplicationScdl(),
+                                          getApplicationClassLoader());
+                application.start();
+            }
 
             context = new CompositeContextImpl(application, wireService);
         } catch (LoaderException ex) {
