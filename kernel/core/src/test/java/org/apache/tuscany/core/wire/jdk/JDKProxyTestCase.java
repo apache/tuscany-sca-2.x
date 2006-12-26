@@ -22,7 +22,6 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -35,13 +34,11 @@ import org.easymock.EasyMock;
  */
 public class JDKProxyTestCase extends TestCase {
     private JDKWireService wireService;
-    private JavaServiceContract serviceContract;
     private InboundWire inboundWire;
     private Map<Operation<?>, InboundInvocationChain> chains;
 
     public void testCreateProxy() {
         EasyMock.expect(inboundWire.getServiceName()).andReturn("service");
-        EasyMock.expect(inboundWire.getServiceContract()).andReturn(serviceContract);
         EasyMock.expect(inboundWire.getInvocationChains()).andReturn(chains);
         EasyMock.replay(inboundWire);
         TestInterface intf = wireService.createProxy(TestInterface.class, inboundWire);
@@ -53,7 +50,6 @@ public class JDKProxyTestCase extends TestCase {
         super.setUp();
         wireService = new JDKWireService();
         inboundWire = EasyMock.createMock(InboundWire.class);
-        serviceContract = new JavaServiceContract(TestInterface.class);
         chains = new HashMap<Operation<?>, InboundInvocationChain>();
     }
 

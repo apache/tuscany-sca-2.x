@@ -58,7 +58,7 @@ public class JDKWireService extends WireServiceExtension {
         assert wire != null : "Wire was null";
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
-            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(inbound, context);
+            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(interfaze, inbound, context);
             ClassLoader cl = interfaze.getClassLoader();
             return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
         } else if (wire instanceof OutboundWire) {
@@ -81,7 +81,7 @@ public class JDKWireService extends WireServiceExtension {
         assert wire != null;
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
-            return new JDKInboundInvocationHandler(inbound, context);
+            return new JDKInboundInvocationHandler(interfaze, inbound, context);
         } else if (wire instanceof OutboundWire) {
             OutboundWire outbound = (OutboundWire) wire;
             return new JDKOutboundInvocationHandler(interfaze, outbound, context);

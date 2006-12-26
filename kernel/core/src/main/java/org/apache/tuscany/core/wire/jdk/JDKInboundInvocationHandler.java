@@ -59,6 +59,7 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
     private transient Map<Method, ChainHolder> chains;
     private transient WorkContext context;
     private String serviceName;
+    private Class<?> interfaze;
 
     /**
      * Constructor used for deserialization only
@@ -66,10 +67,11 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
     public JDKInboundInvocationHandler() {
     }
 
-    public JDKInboundInvocationHandler(InboundWire wire, WorkContext context) {
+    public JDKInboundInvocationHandler(Class<?> interfaze, InboundWire wire, WorkContext context) {
         this.context = context;
         this.serviceName = wire.getServiceName();
-        init(wire);
+        this.interfaze = interfaze;
+        init(interfaze, wire);
     }
 
     public void setWorkContext(WorkContext context) {
@@ -125,10 +127,12 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(serviceName);
+        out.writeObject(interfaze);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         serviceName = (String) in.readObject();
+        interfaze = (Class<?>) in.readObject();
     }
 
     public void reactivate() throws ReactivationException {
@@ -138,13 +142,11 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
             throw new ReactivationException("Current atomic component not set on work context");
         }
         InboundWire wire = owner.getInboundWires().get(serviceName);
-        init(wire);
+        init(interfaze, wire);
     }
 
-    private void init(InboundWire wire) {
+    private void init(Class<?> interfaze, InboundWire wire) {
         this.chains = new HashMap<Method, ChainHolder>();
-        // FIXME: TUSCANY-862 we cannot assume there is a Java interface class
-        Class<?> interfaze = wire.getServiceContract().getInterfaceClass();
         Method[] methods = interfaze.getMethods();
         Map<Method, InboundInvocationChain> invocationChains = WireUtils.createInboundMapping(wire, methods);
         for (Map.Entry<Method, InboundInvocationChain> entry : invocationChains.entrySet()) {

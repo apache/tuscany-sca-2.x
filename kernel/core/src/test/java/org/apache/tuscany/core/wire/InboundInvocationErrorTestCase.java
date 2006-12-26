@@ -92,7 +92,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
         wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
         });
 
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(TestBean.class, wire, workContext);
         try {
             ClassLoader ccl = Thread.currentThread().getContextClassLoader();
             TestBean proxy = (TestBean) Proxy.newProxyInstance(ccl, new Class[]{TestBean.class}, handler);
@@ -116,7 +116,7 @@ public class InboundInvocationErrorTestCase extends TestCase {
         wire.setServiceContract(new ServiceContract<TestBean>(TestBean.class) {
         });
 
-        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(wire, workContext);
+        JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(TestBean.class, wire, workContext);
         try {
             InboundInvocationErrorTestCase.TestBean proxy = (InboundInvocationErrorTestCase.TestBean) Proxy
                 .newProxyInstance(Thread.currentThread().getContextClassLoader(),
