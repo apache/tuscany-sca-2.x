@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.system.component;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -29,12 +30,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Default implementation for services configured with the
- * {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
+ * Default implementation for services configured with the system binding
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemServiceImpl extends AbstractSCAObject implements SystemService {
+public class SystemServiceImpl extends AbstractSCAObject implements Service {
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
     protected ServiceContract<?> serviceContract;

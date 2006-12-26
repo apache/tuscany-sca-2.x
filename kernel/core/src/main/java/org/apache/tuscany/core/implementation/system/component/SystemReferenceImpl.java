@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.system.component;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -28,12 +29,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Default implementation of a reference configured with the
- * {@link org.apache.tuscany.core.implementation.system.model.SystemBinding}
+ * Default implementation of a reference configured with the system binding
  *
  * @version $Rev$ $Date$
  */
-public class SystemReferenceImpl extends AbstractSCAObject implements SystemReference {
+public class SystemReferenceImpl extends AbstractSCAObject implements Reference {
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
 
