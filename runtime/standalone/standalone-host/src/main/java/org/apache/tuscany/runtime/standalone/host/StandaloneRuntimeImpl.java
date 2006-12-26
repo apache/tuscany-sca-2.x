@@ -113,15 +113,12 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             application.start();
 
             context = new CompositeContextImpl(application, wireService);
-        } catch (LoaderException e) {
-            // FIXME do something with this
-            e.printStackTrace();
-        } catch (BuilderException e) {
-            // FIXME do something with this
-            e.printStackTrace();
-        } catch (ComponentException e) {
-            // FIXME do something with this
-            e.printStackTrace();
+        } catch (LoaderException ex) {
+            throw new InitializationException(ex);
+        } catch (BuilderException ex) {
+            throw new InitializationException(ex);
+        } catch (ComponentException ex) {
+            throw new InitializationException(ex);
         }
     }
 
