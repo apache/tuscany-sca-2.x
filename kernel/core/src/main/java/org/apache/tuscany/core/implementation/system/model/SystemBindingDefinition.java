@@ -16,17 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.test.binding;
+package org.apache.tuscany.core.implementation.system.model;
 
-import org.apache.tuscany.spi.model.Binding;
-
+import org.apache.tuscany.spi.model.BindingDefinition;
 
 /**
- * A simple binding for test purposes.
+ * A by-reference binding used by runtime system services
  *
  * @version $$Rev$$ $$Date$$
  */
-public class TestBinding extends Binding {
-
-
+public class SystemBindingDefinition extends BindingDefinition {
 }

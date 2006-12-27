@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.easymock.EasyMock;
 
 /**
@@ -46,7 +46,7 @@ public class SystemBindingBuilderTestCase extends TestCase {
         EasyMock.replay(parent);
         DeploymentContext context = EasyMock.createMock(DeploymentContext.class);
         EasyMock.replay(context);
-        BoundServiceDefinition<SystemBinding> definition = new BoundServiceDefinition<SystemBinding>();
+        BoundServiceDefinition<SystemBindingDefinition> definition = new BoundServiceDefinition<SystemBindingDefinition>();
         definition.setName("bar");
         definition.setTarget(new URI("foo"));
         ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
@@ -60,7 +60,7 @@ public class SystemBindingBuilderTestCase extends TestCase {
 
     public void testRegister() {
         BuilderRegistry registry = EasyMock.createMock(BuilderRegistry.class);
-        registry.register(EasyMock.eq(SystemBinding.class), EasyMock.isA(SystemBindingBuilder.class));
+        registry.register(EasyMock.eq(SystemBindingDefinition.class), EasyMock.isA(SystemBindingBuilder.class));
         EasyMock.replay(registry);
         SystemBindingBuilder builder = new SystemBindingBuilder();
         builder.setBuilderRegistry(registry);

@@ -54,7 +54,7 @@ public class Axis2Reference<T> extends ReferenceExtension {
     @SuppressWarnings("unchecked")
     public Axis2Reference(String theName,
                           CompositeComponent parent,
-                          WebServiceBinding wsBinding,
+                          WebServiceBindingDefinition wsBinding,
                           ServiceContract contract, WorkContext workContext) {
         super(theName, parent);
         this.workContext = workContext;

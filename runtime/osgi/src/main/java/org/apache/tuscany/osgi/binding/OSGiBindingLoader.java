@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class OSGiBindingLoader extends LoaderExtension<OSGiBinding> {
+public class OSGiBindingLoader extends LoaderExtension<OSGiBindingDefinition> {
     public static final QName BINDING_OSGI = new QName("http://tuscany.apache.org/xmlns/osgi/1.0", "binding.osgi");
 
     @Constructor
@@ -50,14 +50,14 @@ public class OSGiBindingLoader extends LoaderExtension<OSGiBinding> {
         return BINDING_OSGI;
     }
 
-    public OSGiBinding load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public OSGiBindingDefinition load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
                             DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         String uri = reader.getAttributeValue(null, "uri");
         String service = reader.getAttributeValue(null, "service");
         LoaderUtil.skipToEndElement(reader);
 
-        OSGiBinding binding = new OSGiBinding();
+        OSGiBindingDefinition binding = new OSGiBindingDefinition();
         binding.setURI(uri);
         binding.setService(service);
         return binding;

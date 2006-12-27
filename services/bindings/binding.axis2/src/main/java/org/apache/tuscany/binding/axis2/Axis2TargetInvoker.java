@@ -28,8 +28,6 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axiom.soap.SOAPFactory;
@@ -114,7 +112,7 @@ public class Axis2TargetInvoker implements TargetInvoker {
             String conversationId = (String) workContext.getIdentifier(Scope.CONVERSATION);
             if(conversationId != null && conversationId.length()!=0){
                 EndpointReference fromEPR= new EndpointReference(AddressingConstants.Final.WSA_ANONYMOUS_URL);
-                fromEPR.addReferenceParameter(WebServiceBinding.CONVERSATION_ID_REFPARM_QN, conversationId);
+                fromEPR.addReferenceParameter(WebServiceBindingDefinition.CONVERSATION_ID_REFPARM_QN, conversationId);
                 options.setFrom(fromEPR);
                 requestMC.setFrom(fromEPR); //who knows why two ways ?
             

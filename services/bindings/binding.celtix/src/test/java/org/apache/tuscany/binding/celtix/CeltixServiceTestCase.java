@@ -127,7 +127,7 @@ public class CeltixServiceTestCase extends TestCase {
             "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
 
-        WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
+        WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
 
         //Create mocked InboundWire, for ServiceExtension.getInterface()
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);

@@ -48,7 +48,7 @@ import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
  * 
  * @version $Rev$ $Date$
  */
-public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
+public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindingDefinition> {
     private static final String OM_DATA_BINDING = OMElement.class.getName();
 
     private ServletHost servletHost;
@@ -87,7 +87,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     @SuppressWarnings("unchecked")
     public Service build(
             CompositeComponent parent,
-            BoundServiceDefinition<WebServiceBinding> serviceDefinition,
+            BoundServiceDefinition<WebServiceBindingDefinition> serviceDefinition,
             DeploymentContext deploymentContext) {
 
         try {
@@ -103,7 +103,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             // There are also cases that interface.java is used.
             
             ServiceContract<?> inboundContract = null;
-            WebServiceBinding wsBinding = serviceDefinition.getBinding();
+            WebServiceBindingDefinition wsBinding = serviceDefinition.getBinding();
             Port port = wsBinding.getWSDLPort();
             if (port == null) {
                 // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
@@ -139,7 +139,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     @SuppressWarnings("unchecked")
     public Reference build(
             CompositeComponent parent,
-            BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
+            BoundReferenceDefinition<WebServiceBindingDefinition> boundReferenceDefinition,
             DeploymentContext deploymentContext) {
 
         try {
@@ -154,7 +154,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             // The WSDL portType from the WSDL Port decides the incoming SOAP message format
 
             ServiceContract<?> outboundContract = inboundContract;
-            WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+            WebServiceBindingDefinition wsBinding = boundReferenceDefinition.getBinding();
             Port port = wsBinding.getWSDLPort();
             if (port == null) {
                 // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
@@ -186,8 +186,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
         }
     }
 
-    protected Class<WebServiceBinding> getBindingType() {
-        return WebServiceBinding.class;
+    protected Class<WebServiceBindingDefinition> getBindingType() {
+        return WebServiceBindingDefinition.class;
     }
 
     protected void initAxis() throws BuilderConfigException {

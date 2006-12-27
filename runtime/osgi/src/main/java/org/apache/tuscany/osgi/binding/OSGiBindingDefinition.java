@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.osgi.binding;
 
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 
 /**
  * Represents a binding to an OSGi service.
  *
  * @version $Rev$ $Date$
  */
-public class OSGiBinding extends Binding {
+public class OSGiBindingDefinition extends BindingDefinition {
     private String uri;
     private String service;
 

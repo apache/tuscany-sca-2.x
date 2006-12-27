@@ -47,7 +47,7 @@ public class CeltixReference<T> extends ReferenceExtension {
 
     public CeltixReference(String name,
                            CompositeComponent parent,
-                           WebServiceBinding binding,
+                           WebServiceBindingDefinition binding,
                            Bus theBus,
                            TypeHelper theTypeHelper) {
         super(name, parent);

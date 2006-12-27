@@ -23,13 +23,13 @@ import junit.framework.TestCase;
 public class JSONRPCBindingTestCase extends TestCase {
 
     public void testGetURI() {
-        JSONRPCBinding jsonBinding = new JSONRPCBinding();
+        JSONRPCBindingDefinition jsonBinding = new JSONRPCBindingDefinition();
         jsonBinding.uri = "test_uri";
         assertEquals("test_uri", jsonBinding.getURI());
     }
 
     public void testSetURI() {
-        JSONRPCBinding jsonBinding = new JSONRPCBinding();
+        JSONRPCBindingDefinition jsonBinding = new JSONRPCBindingDefinition();
         jsonBinding.setURI("test_uri");
         assertEquals("test_uri", jsonBinding.uri);
     }

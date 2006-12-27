@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -63,9 +63,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends Implementation<?>>,
         ComponentBuilder<? extends Implementation<?>>> componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
-    private final Map<Class<? extends Binding>,
-        BindingBuilder<? extends Binding>> bindingBuilders =
-        new HashMap<Class<? extends Binding>, BindingBuilder<? extends Binding>>();
+    private final Map<Class<? extends BindingDefinition>,
+        BindingBuilder<? extends BindingDefinition>> bindingBuilders =
+        new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
     private BindlessBuilder bindlessBuilder;
 
     public BuilderRegistryImpl() {
@@ -98,7 +98,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> void register(BindingBuilder<B> builder) {
+    public <B extends BindingDefinition> void register(BindingBuilder<B> builder) {
         Type[] interfaces = builder.getClass().getGenericInterfaces();
         for (Type type : interfaces) {
             if (!(type instanceof ParameterizedType)) {
@@ -115,7 +115,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         throw new IllegalArgumentException("builder is not generified");
     }
 
-    public <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder) {
+    public <B extends BindingDefinition> void register(Class<B> implClass, BindingBuilder<B> builder) {
         bindingBuilders.put(implClass, builder);
     }
 
@@ -150,7 +150,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> SCAObject build(CompositeComponent parent,
+    public <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
                                                BoundServiceDefinition<B> boundServiceDefinition,
                                                DeploymentContext deploymentContext) throws BuilderException {
         Class<?> bindingClass = boundServiceDefinition.getBinding().getClass();
@@ -168,7 +168,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public <B extends Binding> SCAObject build(CompositeComponent parent,
+    public <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
                                                BoundReferenceDefinition<B> boundReferenceDefinition,
                                                DeploymentContext deploymentContext) throws BuilderException {
         Class<B> bindingClass = (Class<B>) boundReferenceDefinition.getBinding().getClass();

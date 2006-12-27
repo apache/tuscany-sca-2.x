@@ -29,23 +29,23 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 /**
  * @version $Rev$ $Date$
  */
-public class TestBindingBuilder extends BindingBuilderExtension<TestBinding> {
+public class TestBindingBuilder extends BindingBuilderExtension<TestBindingDefinition> {
 
     @SuppressWarnings("unchecked")
     public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<TestBinding> definition,
+                           BoundServiceDefinition<TestBindingDefinition> definition,
                            DeploymentContext context) {
         return new TestBindingService(definition.getName(), parent);
     }
 
     public Reference build(CompositeComponent parent,
-                               BoundReferenceDefinition<TestBinding> definition,
+                               BoundReferenceDefinition<TestBindingDefinition> definition,
                                DeploymentContext context) {
         String name = definition.getName();
         return new TestBindingReference(name, parent);
     }
 
-    protected Class<TestBinding> getBindingType() {
-        return TestBinding.class;
+    protected Class<TestBindingDefinition> getBindingType() {
+        return TestBindingDefinition.class;
     }
 }

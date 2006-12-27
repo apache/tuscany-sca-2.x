@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
@@ -65,7 +65,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         String name = reader.getAttributeValue(null, "name");
         Multiplicity multiplicity =
             StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE);
-        Binding binding = null;
+        BindingDefinition binding = null;
         ServiceContract serviceContract = null;
         while (true) {
             switch (reader.next()) {
@@ -73,8 +73,8 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
                     ModelObject o = registry.load(parent, null, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
                         serviceContract = (ServiceContract) o;
-                    } else if (o instanceof Binding) {
-                        binding = (Binding) o;
+                    } else if (o instanceof BindingDefinition) {
+                        binding = (BindingDefinition) o;
                     }
                     reader.next();
                     break;
@@ -84,7 +84,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
                         referenceDefinition.setMultiplicity(multiplicity);
                         return referenceDefinition;
                     } else {
-                        BoundReferenceDefinition<Binding> referenceDefinition = new BoundReferenceDefinition<Binding>();
+                        BoundReferenceDefinition<BindingDefinition> referenceDefinition = new BoundReferenceDefinition<BindingDefinition>();
                         referenceDefinition.setName(name);
                         referenceDefinition.setServiceContract(serviceContract);
                         referenceDefinition.setMultiplicity(multiplicity);

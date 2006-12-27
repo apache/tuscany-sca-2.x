@@ -39,7 +39,7 @@ import org.osoa.sca.annotations.Scope;
  * Loader for handling <binding.jms> elements based on the 0.96 draft 1 spec.
  */
 @Scope("COMPOSITE")
-public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
+public class JMSBindingLoader0961 extends LoaderExtension<JMSBindingDefinition> {
 
     public static final QName BINDING_JMS =
         new QName("http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT", "binding.jms");
@@ -55,12 +55,12 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         return BINDING_JMS;
     }
 
-    public JMSBinding load(CompositeComponent parent,
+    public JMSBindingDefinition load(CompositeComponent parent,
                            ModelObject modelObject,
                            XMLStreamReader reader,
                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
 
-        JMSBinding jmsBinding = new JMSBinding();
+        JMSBindingDefinition jmsBinding = new JMSBindingDefinition();
 
         String uri = reader.getAttributeValue(null, "uri");
         if (uri != null && uri.length() > 0) {
@@ -126,20 +126,20 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         }
     }
 
-    protected void parseResponse(XMLStreamReader reader, JMSBinding jmsBinding) {
+    protected void parseResponse(XMLStreamReader reader, JMSBindingDefinition jmsBinding) {
         // TODO Auto-generated method stub
 
     }
 
-    protected void parseResourceAdapter(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseResourceAdapter(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
     }
 
-    protected void parseOperation(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseOperation(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
     }
 
-    protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBinding jmsBinding)
+    protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBindingDefinition jmsBinding)
         throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         String use = reader.getAttributeValue(null, "use");
@@ -155,11 +155,11 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         }
     }
 
-    protected void parseHeaders(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseHeaders(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
         // TODO Auto-generated method stub
     }
 
-    protected void parseDestination(XMLStreamReader reader, JMSBinding jmsBinding) throws XMLStreamException {
+    protected void parseDestination(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
         String name = reader.getAttributeValue(null, "name");
         if (name != null && name.length() > 0) {
             jmsBinding.setDestinationName(name);
@@ -167,9 +167,9 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         String type = reader.getAttributeValue(null, "type");
         if (type != null && type.length() > 0) {
             if ("queue".equalsIgnoreCase(type)) {
-                jmsBinding.setDestinationType(JMSBinding.DESTINATION_TYPE_QUEUE);
+                jmsBinding.setDestinationType(JMSBindingDefinition.DESTINATION_TYPE_QUEUE);
             } else if ("topic".equalsIgnoreCase("type")) {
-                jmsBinding.setDestinationType(JMSBinding.DESTINATION_TYPE_TOPIC);
+                jmsBinding.setDestinationType(JMSBindingDefinition.DESTINATION_TYPE_TOPIC);
             } else {
                 throw new RuntimeException("invalid destination type: " + type);
             }
@@ -180,7 +180,7 @@ public class JMSBindingLoader0961 extends LoaderExtension<JMSBinding> {
         }
     }
 
-    protected void parseURI(JMSBinding jmsBinding, String uri) {
+    protected void parseURI(JMSBindingDefinition jmsBinding, String uri) {
         // TODO Auto-generated method stub
     }
 }

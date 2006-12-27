@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -57,13 +57,13 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
             new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
         allComponents.addAll(componentType.getComponents().values());
 
-        List<BoundServiceDefinition<? extends Binding>> allBoundServices =
-            new ArrayList<BoundServiceDefinition<? extends Binding>>();
+        List<BoundServiceDefinition<? extends BindingDefinition>> allBoundServices =
+            new ArrayList<BoundServiceDefinition<? extends BindingDefinition>>();
         List<BindlessServiceDefinition> allBindlessServices = new ArrayList<BindlessServiceDefinition>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                BoundServiceDefinition<? extends Binding> boundService =
-                    (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                BoundServiceDefinition<? extends BindingDefinition> boundService =
+                    (BoundServiceDefinition<? extends BindingDefinition>) serviceDefinition;
                 allBoundServices.add(boundService);
             } else if (serviceDefinition instanceof BindlessServiceDefinition) {
                 allBindlessServices.add((BindlessServiceDefinition) serviceDefinition);
@@ -71,13 +71,13 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         }
 
         // FIXME is this right?
-        List<BoundReferenceDefinition<? extends Binding>> allBoundReferences =
-            new ArrayList<BoundReferenceDefinition<? extends Binding>>();
+        List<BoundReferenceDefinition<? extends BindingDefinition>> allBoundReferences =
+            new ArrayList<BoundReferenceDefinition<? extends BindingDefinition>>();
         List<ReferenceDefinition> allTargetlessReferences = new ArrayList<ReferenceDefinition>();
 
         for (Object referenceTarget : componentType.getReferences().values()) {
             if (referenceTarget instanceof BoundReferenceDefinition<?>) {
-                allBoundReferences.add((BoundReferenceDefinition<? extends Binding>) referenceTarget);
+                allBoundReferences.add((BoundReferenceDefinition<? extends BindingDefinition>) referenceTarget);
             } else if (referenceTarget instanceof ReferenceDefinition) {
                 allTargetlessReferences.add((ReferenceDefinition) referenceTarget);
             }
@@ -85,7 +85,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
 
         String name = componentDefinition.getName();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, connector, null);
-        for (BoundReferenceDefinition<? extends Binding> referenceDefinition : allBoundReferences) {
+        for (BoundReferenceDefinition<? extends BindingDefinition> referenceDefinition : allBoundReferences) {
             try {
                 component.register(builderRegistry.build(component, referenceDefinition, deploymentContext));
             } catch (ComponentRegistrationException e) {
@@ -106,7 +106,7 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                 throw new BuilderInstantiationException("Error registering component", e);
             }
         }
-        for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
+        for (BoundServiceDefinition<? extends BindingDefinition> serviceDefinition : allBoundServices) {
             try {
                 component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
             } catch (ComponentRegistrationException e) {

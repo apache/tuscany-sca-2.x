@@ -38,7 +38,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class JSONRPCBindingLoader extends LoaderExtension<JSONRPCBinding> {
+public class JSONRPCBindingLoader extends LoaderExtension<JSONRPCBindingDefinition> {
     public static final QName BINDING_JSON = new QName(XML_NAMESPACE_1_0, "binding.jsonrpc");
 
     public JSONRPCBindingLoader(@Autowire LoaderRegistry registry) {
@@ -49,9 +49,9 @@ public class JSONRPCBindingLoader extends LoaderExtension<JSONRPCBinding> {
         return BINDING_JSON;
     }
 
-    public JSONRPCBinding load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException,
+    public JSONRPCBindingDefinition load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext) throws XMLStreamException,
             LoaderException {
 
-        return new JSONRPCBinding();
+        return new JSONRPCBindingDefinition();
     }
 }

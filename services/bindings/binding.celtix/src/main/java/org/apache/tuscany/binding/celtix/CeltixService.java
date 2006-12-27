@@ -80,7 +80,7 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
 
     public CeltixService(String theName,
                          CompositeComponent parent,
-                         WebServiceBinding binding,
+                         WebServiceBindingDefinition binding,
                          Bus bus,
                          TypeHelper theTypeHelper) {
         super(theName, parent);

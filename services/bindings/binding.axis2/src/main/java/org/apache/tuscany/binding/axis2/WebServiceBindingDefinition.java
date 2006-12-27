@@ -24,7 +24,7 @@ import javax.wsdl.Port;
 import javax.wsdl.Service;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.osoa.sca.Version;
 
 /**
@@ -32,14 +32,14 @@ import org.osoa.sca.Version;
  *
  * @version $Rev$ $Date$
  */
-public class WebServiceBinding extends Binding {
+public class WebServiceBindingDefinition extends BindingDefinition {
     public static final QName CONVERSATION_ID_REFPARM_QN = new QName(Version.XML_NAMESPACE_1_0,"conversationID");
     private Definition definition;
     private Port port;
     private Service service;
     //private String portURI;
     private String uri;
-    public WebServiceBinding(Definition definition, Port port, String uri, String portURI, Service service) {
+    public WebServiceBindingDefinition(Definition definition, Port port, String uri, String portURI, Service service) {
         this.definition = definition;
         this.port = port;
         this.uri = uri;

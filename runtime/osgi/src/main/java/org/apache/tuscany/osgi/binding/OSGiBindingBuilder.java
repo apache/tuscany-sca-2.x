@@ -33,7 +33,7 @@ import org.apache.tuscany.osgi.OSGiHost;
  *
  * @version $Rev$ $Date$
  */
-public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
+public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBindingDefinition> {
 
     OSGiHost host;
 
@@ -42,12 +42,12 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
         this.host = host;
     }
 
-    protected Class<OSGiBinding> getBindingType() {
-        return OSGiBinding.class;
+    protected Class<OSGiBindingDefinition> getBindingType() {
+        return OSGiBindingDefinition.class;
     }
 
     public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<OSGiBinding> boundServiceDefinition,
+                         BoundServiceDefinition<OSGiBindingDefinition> boundServiceDefinition,
                          DeploymentContext deploymentContext) {
         String name = boundServiceDefinition.getName();
         String osgiServiceName = boundServiceDefinition.getBinding().getService();
@@ -55,13 +55,13 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBinding> {
     }
 
     public OSGiReference build(CompositeComponent parent,
-                               BoundReferenceDefinition<OSGiBinding> boundReferenceDefinition,
+                               BoundReferenceDefinition<OSGiBindingDefinition> boundReferenceDefinition,
                                DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
         return new OSGiReference(name, parent);
     }
 
-    protected Class<? extends Object> getServiceInterface(BoundServiceDefinition<OSGiBinding> boundServiceDefinition) {
+    protected Class<? extends Object> getServiceInterface(BoundServiceDefinition<OSGiBindingDefinition> boundServiceDefinition) {
         return boundServiceDefinition.getServiceContract().getInterfaceClass();
     }
 

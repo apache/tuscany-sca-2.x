@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -52,14 +52,14 @@ public interface Builder {
     /**
      * TODO: JavaDoc this when we know if we will still register Services as contexts
      */
-    <B extends Binding> SCAObject build(CompositeComponent parent,
+    <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
                                         BoundServiceDefinition<B> boundServiceDefinition,
                                         DeploymentContext deploymentContext) throws BuilderException;
 
     /**
      * TODO: JavaDoc this when we know if we will still register References as contexts
      */
-    <B extends Binding> SCAObject build(CompositeComponent parent,
+    <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
                                         BoundReferenceDefinition<B> boundReferenceDefinition,
                                         DeploymentContext deploymentContext) throws BuilderException;
 

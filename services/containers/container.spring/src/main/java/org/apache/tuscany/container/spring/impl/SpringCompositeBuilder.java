@@ -28,7 +28,7 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -61,7 +61,7 @@ public class SpringCompositeBuilder extends ComponentBuilderExtension<SpringImpl
         // We need to set the target invoker as opposed to having the connector do it since the
         // Spring context is "opaque" to the wiring fabric. In other words, the Spring context does not expose
         // its beans as SCA components to the connector to wire the services to
-        for (BoundServiceDefinition<? extends Binding> serviceDefinition : componentType.getServices().values()) {
+        for (BoundServiceDefinition<? extends BindingDefinition> serviceDefinition : componentType.getServices().values()) {
             // call back into builder registry to handle building of services
             Service service = (Service) builderRegistry.build(parent, serviceDefinition, deploymentContext);
             // wire serviceDefinition to bean invokers

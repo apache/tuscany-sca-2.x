@@ -25,7 +25,7 @@ import java.net.URI;
  *
  * @version $Rev$ $Date$
  */
-public class BoundServiceDefinition<B extends Binding> extends ServiceDefinition {
+public class BoundServiceDefinition<B extends BindingDefinition> extends ServiceDefinition {
     private B binding;
     private URI target;
 

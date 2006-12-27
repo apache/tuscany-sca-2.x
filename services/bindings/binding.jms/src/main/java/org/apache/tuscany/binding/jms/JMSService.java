@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.extension.ServiceExtension;
  */
 public class JMSService extends ServiceExtension {
 
-    private JMSBinding jmsBinding;
+    private JMSBindingDefinition jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
     private MessageConsumer consumer;
     protected OperationAndDataBinding requestOperationAndDataBinding;
@@ -40,7 +40,7 @@ public class JMSService extends ServiceExtension {
 
     public JMSService(String name,
                       CompositeComponent parent,
-                      JMSBinding jmsBinding,
+                      JMSBindingDefinition jmsBinding,
                       JMSResourceFactory jmsResourceFactory,
                       OperationAndDataBinding requestOperationAndDataBinding,
                       OperationAndDataBinding responseOperationAndDataBinding,

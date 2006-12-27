@@ -44,7 +44,7 @@ public class JSONRPCBindingBuilderTestCase extends TestCase {
 
     public void testGetBindingType() {
         JSONRPCBindingBuilder bindingBuilder = new JSONRPCBindingBuilder();
-        assertEquals(JSONRPCBinding.class, bindingBuilder.getBindingType());
+        assertEquals(JSONRPCBindingDefinition.class, bindingBuilder.getBindingType());
     }
 
     @SuppressWarnings("unchecked")
@@ -52,8 +52,8 @@ public class JSONRPCBindingBuilderTestCase extends TestCase {
         JSONRPCBindingBuilder bindingBuilder = new JSONRPCBindingBuilder();
         CompositeComponent mockParent = createMock(CompositeComponent.class);
         replay(mockParent);
-        BoundServiceDefinition<JSONRPCBinding> mockServiceDefinition =
-            createMock((new BoundServiceDefinition<JSONRPCBinding>()).getClass());
+        BoundServiceDefinition<JSONRPCBindingDefinition> mockServiceDefinition =
+            createMock((new BoundServiceDefinition<JSONRPCBindingDefinition>()).getClass());
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         try {
             ServiceContract<?> contract = registry.introspect(JSONRPCService.class);

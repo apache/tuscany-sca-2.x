@@ -34,18 +34,18 @@ import org.apache.tuscany.spi.model.ServiceContract;
 
 import org.apache.tuscany.core.implementation.system.component.SystemReferenceImpl;
 import org.apache.tuscany.core.implementation.system.component.SystemServiceImpl;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 
 /**
  * Creates services and references confgured with the system binding
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding>
-    implements BindingBuilder<SystemBinding> {
+public class SystemBindingBuilder extends BindingBuilderExtension<SystemBindingDefinition>
+    implements BindingBuilder<SystemBindingDefinition> {
 
     public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<SystemBinding> definition,
+                         BoundServiceDefinition<SystemBindingDefinition> definition,
                          DeploymentContext deploymentContext) throws BuilderException {
 
         URI uri = definition.getTarget();
@@ -57,14 +57,14 @@ public class SystemBindingBuilder extends BindingBuilderExtension<SystemBinding>
     }
 
     public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<SystemBinding> definition,
+                           BoundReferenceDefinition<SystemBindingDefinition> definition,
                            DeploymentContext deploymentContext) {
         String name = definition.getName();
         return new SystemReferenceImpl(name, parent);
     }
 
     @Override
-    protected Class<SystemBinding> getBindingType() {
-        return SystemBinding.class;
+    protected Class<SystemBindingDefinition> getBindingType() {
+        return SystemBindingDefinition.class;
     }
 }

@@ -39,14 +39,14 @@ import org.objectweb.celtix.Bus;
  *
  * @version $Rev$ $Date$
  */
-public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBinding> {
+public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBindingDefinition> {
 
     private Bus bus;
 
     public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<WebServiceBinding> boundServiceDefinition,
+                         BoundServiceDefinition<WebServiceBindingDefinition> boundServiceDefinition,
                          DeploymentContext deploymentContext) {
-        WebServiceBinding wsBinding = boundServiceDefinition.getBinding();
+        WebServiceBindingDefinition wsBinding = boundServiceDefinition.getBinding();
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if (typeHelper == null) {
             typeHelper = TypeHelper.INSTANCE;
@@ -63,9 +63,9 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
     }
 
     public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<WebServiceBinding> boundReferenceDefinition,
+                           BoundReferenceDefinition<WebServiceBindingDefinition> boundReferenceDefinition,
                            DeploymentContext deploymentContext) {
-        WebServiceBinding wsBinding = boundReferenceDefinition.getBinding();
+        WebServiceBindingDefinition wsBinding = boundReferenceDefinition.getBinding();
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if (typeHelper == null) {
             typeHelper = TypeHelper.INSTANCE;
@@ -81,8 +81,8 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             typeHelper);
     }
 
-    protected Class<WebServiceBinding> getBindingType() {
-        return WebServiceBinding.class;
+    protected Class<WebServiceBindingDefinition> getBindingType() {
+        return WebServiceBindingDefinition.class;
     }
 
     private Bus getBus(WSDLDefinitionRegistry wsdlDefinitionRegistry) {

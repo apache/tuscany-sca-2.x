@@ -23,7 +23,7 @@ package org.apache.tuscany.spi.model;
  *
  * @version $Rev$ $Date$
  */
-public class BoundReferenceDefinition<B extends Binding> extends ReferenceDefinition {
+public class BoundReferenceDefinition<B extends BindingDefinition> extends ReferenceDefinition {
     private B binding;
 
     public B getBinding() {

@@ -27,15 +27,15 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public class RMIBindingBuilderTestCase extends TestCase {
     
     public void testGetBindingType() {
-        assertEquals(RMIBinding.class, new RMIBindingBuilder(null).getBindingType());
+        assertEquals(RMIBindingDefinition.class, new RMIBindingBuilder(null).getBindingType());
     }
 
     @SuppressWarnings("unchecked")
     public void testBuildService() {
         RMIBindingBuilder builder = new RMIBindingBuilder(null);
-        BoundReferenceDefinition<RMIBinding> def = createMock(BoundReferenceDefinition.class);
+        BoundReferenceDefinition<RMIBindingDefinition> def = createMock(BoundReferenceDefinition.class);
         expect(def.getName()).andReturn("petra");
-        RMIBinding binding = new RMIBinding();
+        RMIBindingDefinition binding = new RMIBindingDefinition();
         expect(def.getBinding()).andReturn(binding );
         expect(def.getBinding()).andReturn(binding );
         expect(def.getBinding()).andReturn(binding );

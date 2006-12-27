@@ -35,7 +35,7 @@ import org.osoa.sca.annotations.Constructor;
  * @version $Rev$ $Date$
  */
 
-public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
+public class RMIBindingBuilder extends BindingBuilderExtension<RMIBindingDefinition> {
 
     private RMIHost rmiHost;
 
@@ -44,13 +44,13 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
         this.rmiHost = rHost;
     }
 
-    protected Class<RMIBinding> getBindingType() {
-        return RMIBinding.class;
+    protected Class<RMIBindingDefinition> getBindingType() {
+        return RMIBindingDefinition.class;
     }
 
     @SuppressWarnings({"unchecked"})
     public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<RMIBinding> boundServiceDefinition,
+                           BoundServiceDefinition<RMIBindingDefinition> boundServiceDefinition,
                            DeploymentContext deploymentContext) {
 
         Class intf = boundServiceDefinition.getServiceContract().getInterfaceClass();
@@ -62,7 +62,7 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBinding> {
 
     @SuppressWarnings({"unchecked"})
     public Reference build(CompositeComponent parent,
-                              BoundReferenceDefinition<RMIBinding> boundReferenceDefinition,
+                              BoundReferenceDefinition<RMIBindingDefinition> boundReferenceDefinition,
                               DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
         String host = boundReferenceDefinition.getBinding().getHost();

@@ -24,7 +24,7 @@ import java.net.URISyntaxException;
 
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.InvalidWireException;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -52,10 +52,10 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         //add a service to the composite
         ServiceDefinition serviceDefn = new ServiceDefinition("compositeService1", null, true);
         BindlessServiceDefinition bindlessSvcDefn = new BindlessServiceDefinition("bindlessSvc", null, true, null);
-        BoundServiceDefinition<Binding> boundSvcDefn =
-            new BoundServiceDefinition<Binding>("boundSvc", null, true, null, null);
-        BoundServiceDefinition<Binding> boundSvcDefnWithTarget =
-            new BoundServiceDefinition<Binding>("boundSvcWithTarget", null, true, null, new URI("orgTarget"));
+        BoundServiceDefinition<BindingDefinition> boundSvcDefn =
+            new BoundServiceDefinition<BindingDefinition>("boundSvc", null, true, null, null);
+        BoundServiceDefinition<BindingDefinition> boundSvcDefnWithTarget =
+            new BoundServiceDefinition<BindingDefinition>("boundSvcWithTarget", null, true, null, new URI("orgTarget"));
         componentType.add(serviceDefn);
         componentType.add(boundSvcDefn);
         componentType.add(bindlessSvcDefn);

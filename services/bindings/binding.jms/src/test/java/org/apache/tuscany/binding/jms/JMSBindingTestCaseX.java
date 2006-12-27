@@ -62,7 +62,7 @@ public class JMSBindingTestCaseX extends SCATestCase {
     }
 
     private JMSTargetInvoker createJMSInvoker() throws NamingException, JMSException {
-        JMSBinding binding = new JMSBinding();
+        JMSBindingDefinition binding = new JMSBindingDefinition();
         binding.setInitialContextFactoryName("org.activemq.jndi.ActiveMQInitialContextFactory");
         binding.setConnectionFactoryName("ConnectionFactory");
         binding.setJNDIProviderURL("tcp://localhost:61616");
@@ -103,7 +103,7 @@ public class JMSBindingTestCaseX extends SCATestCase {
     }
 
     private void startBroker() throws Exception {
-        broker = new BrokerContainerImpl("JMS Binding Test");
+        broker = new BrokerContainerImpl("JMS BindingDefinition Test");
         // configure the broker
         broker.addConnector("tcp://localhost:61616");
         broker.setPersistenceAdapter(new VMPersistenceAdapter());

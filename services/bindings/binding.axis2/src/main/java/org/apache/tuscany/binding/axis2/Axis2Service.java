@@ -76,7 +76,7 @@ public class Axis2Service extends ServiceExtension {
 
     private ConfigurationContext configContext;
 
-    private WebServiceBinding binding;
+    private WebServiceBindingDefinition binding;
 
     private Map<Object, InvocationContext> invCtxMap = new HashMap<Object, InvocationContext>();
 
@@ -91,7 +91,7 @@ public class Axis2Service extends ServiceExtension {
     public Axis2Service(String theName,
                         ServiceContract<?> serviceContract,
                         CompositeComponent parent,
-                        WebServiceBinding binding,
+                        WebServiceBindingDefinition binding,
                         ServletHost servletHost,
                         ConfigurationContext configContext, WorkContext workContext) {
 
@@ -131,7 +131,7 @@ public class Axis2Service extends ServiceExtension {
         super.stop();
     }
 
-    private AxisService createAxisService(WebServiceBinding wsBinding) throws AxisFault {
+    private AxisService createAxisService(WebServiceBindingDefinition wsBinding) throws AxisFault {
         Definition definition = wsBinding.getWSDLDefinition();
         WebServicePortMetaData wsdlPortInfo =
             new WebServicePortMetaData(definition, wsBinding.getWSDLPort(), null, false);
@@ -321,7 +321,7 @@ public class Axis2Service extends ServiceExtension {
                     ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters"));
                      rpI.hasNext();) {
                     OMElement rpE = (OMElement) rpI.next();
-                    for (Iterator cidI = rpE.getChildrenWithName(WebServiceBinding.CONVERSATION_ID_REFPARM_QN);
+                    for (Iterator cidI = rpE.getChildrenWithName(WebServiceBindingDefinition.CONVERSATION_ID_REFPARM_QN);
                          cidI.hasNext();) {
                         OMElement cidE = (OMElement) cidI.next();
                         conversationID = cidE.getText();

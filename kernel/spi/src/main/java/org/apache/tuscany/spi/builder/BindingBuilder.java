@@ -22,7 +22,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  *
  * @version $Rev$ $Date$
  */
-public interface BindingBuilder<B extends Binding> {
+public interface BindingBuilder<B extends BindingDefinition> {
     Service build(CompositeComponent parent,
                   BoundServiceDefinition<B> boundServiceDefinition,
                   DeploymentContext deploymentContext) throws BuilderException;

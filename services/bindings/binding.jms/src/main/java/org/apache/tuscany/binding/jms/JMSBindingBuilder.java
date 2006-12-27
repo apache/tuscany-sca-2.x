@@ -38,22 +38,22 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 
-public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
+public class JMSBindingBuilder extends BindingBuilderExtension<JMSBindingDefinition> {
 
     private static final String DEFAULT_JMS_RESOURCE_FACTORY =
         "org.apache.tuscany.binding.jms.SimpleJMSResourceFactory";
 
     private static final String OM_DATA_BINDING = OMElement.class.getName();
 
-    protected Class<JMSBinding> getBindingType() {
-        return JMSBinding.class;
+    protected Class<JMSBindingDefinition> getBindingType() {
+        return JMSBindingDefinition.class;
     }
 
     public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<JMSBinding> serviceDefinition,
+                         BoundServiceDefinition<JMSBindingDefinition> serviceDefinition,
                          DeploymentContext deploymentContext) {
 
-        JMSBinding jmsBinding = serviceDefinition.getBinding();
+        JMSBindingDefinition jmsBinding = serviceDefinition.getBinding();
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
 
         ServiceContract serviceContract = serviceDefinition.getServiceContract();
@@ -79,7 +79,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
     }
 
     public JMSReference build(CompositeComponent parent,
-                           BoundReferenceDefinition<JMSBinding> referenceDefinition,
+                           BoundReferenceDefinition<JMSBindingDefinition> referenceDefinition,
                            DeploymentContext deploymentContext) {
 
         String name = referenceDefinition.getName();
@@ -92,7 +92,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
         }
         serviceContract.setDataBinding(OM_DATA_BINDING);
 
-        JMSBinding jmsBinding = referenceDefinition.getBinding();
+        JMSBindingDefinition jmsBinding = referenceDefinition.getBinding();
         JMSResourceFactory jmsResourceFactory = getJMSResourceFactory(jmsBinding);
 
         Destination requestDest;
@@ -119,12 +119,12 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 
     }
 
-    private JMSResourceFactory getJMSResourceFactory(JMSBinding jmsBinding) {
+    private JMSResourceFactory getJMSResourceFactory(JMSBindingDefinition jmsBinding) {
         String className = jmsBinding.getJmsResourceFactoryName();
         if (className != null && !className.equals("")) {
             try {
                 Class factoryClass = Class.forName(className != null ? className : DEFAULT_JMS_RESOURCE_FACTORY);
-                Constructor constructor = factoryClass.getDeclaredConstructor(new Class[] {JMSBinding.class});
+                Constructor constructor = factoryClass.getDeclaredConstructor(new Class[] {JMSBindingDefinition.class});
                 return (JMSResourceFactory)constructor.newInstance(jmsBinding);
             } catch (ClassNotFoundException e) {
                 throw new JMSBindingException("Error loading the JMSResourceFactory", e);
@@ -147,19 +147,19 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
 
     }
 
-    protected OperationAndDataBinding getRequestOperationAndDatabinding(JMSBinding jmsBinding, ClassLoader cl) {
+    protected OperationAndDataBinding getRequestOperationAndDatabinding(JMSBindingDefinition jmsBinding, ClassLoader cl) {
         String className = jmsBinding.getRequestOperationAndDatabindingName();
         OperationAndDataBinding operationAndDataBinding = instantiateClass(jmsBinding, cl, className);
         return operationAndDataBinding;
     }
 
-    protected OperationAndDataBinding getResponseOperationAndDatabinding(JMSBinding jmsBinding, ClassLoader cl) {
+    protected OperationAndDataBinding getResponseOperationAndDatabinding(JMSBindingDefinition jmsBinding, ClassLoader cl) {
         String className = jmsBinding.getResponseOperationAndDatabindingName();
         OperationAndDataBinding operationAndDataBinding = instantiateClass(jmsBinding, cl, className);
         return operationAndDataBinding;
     }
 
-    protected OperationAndDataBinding instantiateClass(JMSBinding jmsBinding, ClassLoader cl, String className) {
+    protected OperationAndDataBinding instantiateClass(JMSBindingDefinition jmsBinding, ClassLoader cl, String className) {
         OperationAndDataBinding operationAndDataBinding;
         if (cl == null) {
             cl = this.getClass().getClassLoader();
@@ -171,7 +171,7 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBinding> {
             } catch (ClassNotFoundException e) {
                 clazz = this.getClass().getClassLoader().loadClass(className);
             }
-            Constructor constructor = clazz.getDeclaredConstructor(new Class[] {JMSBinding.class});
+            Constructor constructor = clazz.getDeclaredConstructor(new Class[] {JMSBindingDefinition.class});
             operationAndDataBinding = (OperationAndDataBinding)constructor.newInstance(jmsBinding);
 
         } catch (Throwable e) {

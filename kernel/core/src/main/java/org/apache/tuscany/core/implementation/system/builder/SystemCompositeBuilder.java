@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -66,12 +66,12 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
             new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
         allComponents.addAll(componentType.getComponents().values());
 
-        List<BoundServiceDefinition<? extends Binding>> allBoundServices =
-            new ArrayList<BoundServiceDefinition<? extends Binding>>();
+        List<BoundServiceDefinition<? extends BindingDefinition>> allBoundServices =
+            new ArrayList<BoundServiceDefinition<? extends BindingDefinition>>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                BoundServiceDefinition<? extends Binding> boundService =
-                    (BoundServiceDefinition<? extends Binding>) serviceDefinition;
+                BoundServiceDefinition<? extends BindingDefinition> boundService =
+                    (BoundServiceDefinition<? extends BindingDefinition>) serviceDefinition;
                 allBoundServices.add(boundService);
             }
         }
@@ -96,7 +96,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
             }
         }
 
-        for (BoundServiceDefinition<? extends Binding> serviceDefinition : allBoundServices) {
+        for (BoundServiceDefinition<? extends BindingDefinition> serviceDefinition : allBoundServices) {
             SCAObject object;
             try {
                 object = builderRegistry.build(component, serviceDefinition, deploymentContext);

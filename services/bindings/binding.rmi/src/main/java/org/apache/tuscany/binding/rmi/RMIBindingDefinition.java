@@ -16,14 +16,14 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 
 /**
  * Represents a binding to an RMI service.
  *
  * @version $Rev$ $Date$
  */
-public class RMIBinding extends Binding {
+public class RMIBindingDefinition extends BindingDefinition {
     private String host;
 
     private String port;

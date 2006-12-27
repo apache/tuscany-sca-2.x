@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 /**
  * @version $Rev$ $Date$
  */
-public class TestBindingLoader extends LoaderExtension<TestBinding> {
+public class TestBindingLoader extends LoaderExtension<TestBindingDefinition> {
 
     public static final QName BINDING_TEST = new QName(Version.XML_NAMESPACE_1_0, "binding.test");
 
@@ -49,9 +49,9 @@ public class TestBindingLoader extends LoaderExtension<TestBinding> {
         return BINDING_TEST;
     }
 
-    public TestBinding load(CompositeComponent parent,
+    public TestBindingDefinition load(CompositeComponent parent,
                             ModelObject object, XMLStreamReader reader,
                             DeploymentContext context) throws XMLStreamException, LoaderException {
-        return new TestBinding();
+        return new TestBindingDefinition();
     }
 }
