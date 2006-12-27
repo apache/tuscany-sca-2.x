@@ -35,6 +35,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Extension point for creating {@link ScriptComponent}s from an assembly configuration
+ *
+ * @version $Rev$ $Date$
  */
 public class ScriptComponentBuilder extends ComponentBuilderExtension<ScriptImplementation> {
 

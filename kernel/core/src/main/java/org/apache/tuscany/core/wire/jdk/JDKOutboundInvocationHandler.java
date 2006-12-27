@@ -24,7 +24,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -37,18 +36,19 @@ import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetInvocationException;
 import org.apache.tuscany.spi.component.WorkContext;
-import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import static org.apache.tuscany.spi.model.InteractionScope.CONVERSATIONAL;
-import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.AbstractOutboundInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
+import org.apache.tuscany.core.wire.NoMethodForOperationException;
+import org.apache.tuscany.core.wire.WireUtils;
 
 
 /**
@@ -68,7 +68,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
      * to a target of greater scope since the target reference can be maintained by the invoker. When a target invoker
      * is not cacheable, the master associated with the wire chains will be used.
      */
-    private transient Map<Method, ChainHolder> chains;
+    private transient Map<Method, OutboundChainHolder> chains;
     private transient WorkContext workContext;
     private transient Object fromAddress;
     private transient boolean wireContainerIsAtomicComponent;
@@ -92,11 +92,21 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         throws NoMethodForOperationException {
         this.workContext = workContext;
         this.interfaze = interfaze;
-        init(interfaze, wire);
+        init(interfaze, wire, null);
+    }
+
+    public JDKOutboundInvocationHandler(Class<?> interfaze,
+                                        OutboundWire wire,
+                                        Map<Method, OutboundChainHolder> mapping,
+                                        WorkContext workContext)
+        throws NoMethodForOperationException {
+        this.workContext = workContext;
+        this.interfaze = interfaze;
+        init(interfaze, wire, mapping);
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        ChainHolder holder = chains.get(method);
+        OutboundChainHolder holder = chains.get(method);
         if (holder == null) {
             if (method.getParameterTypes().length == 0 && "toString".equals(method.getName())) {
                 return "[Proxy - " + Integer.toHexString(hashCode()) + "]";
@@ -111,10 +121,10 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             }
             throw new TargetInvocationException("Operation not configured", method.getName());
         }
-        OutboundInvocationChain chain = holder.chain;
+        OutboundInvocationChain chain = holder.getChain();
         TargetInvoker invoker;
 
-        if (holder.cachedInvoker == null) {
+        if (holder.getCachedInvoker() == null) {
             assert chain != null;
             if (chain.getTargetInvoker() == null) {
                 String name = chain.getOperation().getName();
@@ -122,8 +132,8 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
             }
             if (chain.getTargetInvoker().isCacheable()) {
                 // clone and store the invoker locally
-                holder.cachedInvoker = (TargetInvoker) chain.getTargetInvoker().clone();
-                invoker = holder.cachedInvoker;
+                holder.setCachedInvoker((TargetInvoker) chain.getTargetInvoker().clone());
+                invoker = holder.getCachedInvoker();
             } else {
                 invoker = chain.getTargetInvoker();
             }
@@ -195,13 +205,14 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         // TODO handle multiplicity
         OutboundWire wire = wires.get(0);
         try {
-            init(interfaze, wire);
+            init(interfaze, wire, null);
         } catch (NoMethodForOperationException e) {
             throw new ReactivationException(e);
         }
     }
 
-    private void init(Class<?> interfaze, OutboundWire wire) throws NoMethodForOperationException {
+    private void init(Class<?> interfaze, OutboundWire wire, Map<Method, OutboundChainHolder> mapping)
+        throws NoMethodForOperationException {
         ServiceContract contract = wire.getServiceContract();
         this.referenceName = wire.getReferenceName();
         SCAObject wireContainer = wire.getContainer();
@@ -214,6 +225,7 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         } else {
             this.callbackClassName = null;
         }
+        // FIXME JFM this should be done during the callback and not be dependent on PojoAtomicComponent
         this.wireContainerIsAtomicComponent = wireContainer instanceof PojoAtomicComponent;
         if (wireContainerIsAtomicComponent && contractHasCallback) {
             this.callbackIsImplemented =
@@ -221,17 +233,10 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         } else {
             this.callbackIsImplemented = false;
         }
-        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
-        this.chains = new HashMap<Method, ChainHolder>(invocationChains.size());
-        // TODO optimize this
-        Method[] methods = interfaze.getMethods();
-        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
-            Operation operation = entry.getKey();
-            Method method = findMethod(operation, methods);
-            if (method == null) {
-                throw new NoMethodForOperationException(operation.getName());
-            }
-            this.chains.put(method, new ChainHolder(entry.getValue()));
+        if (mapping == null) {
+            chains = WireUtils.createInterfaceToWireMapping(interfaze, wire);
+        } else {
+            chains = mapping;
         }
     }
 
@@ -240,19 +245,5 @@ public final class JDKOutboundInvocationHandler extends AbstractOutboundInvocati
         return UUID.randomUUID().toString();
     }
 
-    /**
-     * A holder used to associate an wire chain with a local copy of a target invoker that was previously cloned from
-     * the chain master
-     */
-    private class ChainHolder {
-
-        OutboundInvocationChain chain;
-        TargetInvoker cachedInvoker;
-
-        public ChainHolder(OutboundInvocationChain config) {
-            this.chain = config;
-        }
-
-    }
 
 }

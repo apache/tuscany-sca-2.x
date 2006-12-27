@@ -19,10 +19,8 @@
 package org.apache.tuscany.container.script;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
@@ -30,7 +28,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireObjectFactory;
 
 /**
  * A component implementation for script languages.
@@ -64,6 +61,7 @@ public class ScriptComponent extends AtomicComponentExtension {
         return new ScriptTargetInvoker(method.getName(), this);
     }
 
+    @SuppressWarnings({"unchecked"})
     protected void onReferenceWire(OutboundWire wire) {
         Class<?> clazz = wire.getServiceContract().getInterfaceClass();
         factory.addContextObjectFactory(wire.getReferenceName(), new WireObjectFactory(clazz, wire, wireService));

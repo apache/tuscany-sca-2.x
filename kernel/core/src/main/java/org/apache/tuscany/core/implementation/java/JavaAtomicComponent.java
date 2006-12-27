@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.wire.WireObjectFactory;
+import org.apache.tuscany.core.wire.WireObjectFactory;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;

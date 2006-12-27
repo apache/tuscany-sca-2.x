@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.util.List;
-
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetResolutionException;

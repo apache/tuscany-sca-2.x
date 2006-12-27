@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Init;
@@ -31,6 +33,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
+import org.apache.tuscany.spi.wire.OutboundChainHolder;
 
 import org.apache.tuscany.core.wire.WireServiceExtension;
 
@@ -55,7 +58,28 @@ public class JDKWireService extends WireServiceExtension {
     }
 
     public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {
-        assert wire != null : "Wire was null";
+        assert interfaze != null;
+        assert wire != null;
+        if (wire instanceof InboundWire) {
+            InboundWire inbound = (InboundWire) wire;
+            JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(interfaze, inbound, context);
+            ClassLoader cl = interfaze.getClassLoader();
+            return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
+        } else if (wire instanceof OutboundWire) {
+            OutboundWire outbound = (OutboundWire) wire;
+            JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(interfaze, outbound, context);
+            ClassLoader cl = interfaze.getClassLoader();
+            return interfaze.cast(Proxy.newProxyInstance(cl, new Class[]{interfaze}, handler));
+        } else {
+            throw new ProxyCreationException("Invalid wire type", wire.getClass().getName());
+        }
+    }
+
+    public <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, OutboundChainHolder> mapping)
+        throws ProxyCreationException {
+        assert interfaze != null;
+        assert wire != null;
+        assert mapping != null;
         if (wire instanceof InboundWire) {
             InboundWire inbound = (InboundWire) wire;
             JDKInboundInvocationHandler handler = new JDKInboundInvocationHandler(interfaze, inbound, context);

@@ -38,6 +38,8 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
+import org.apache.tuscany.core.wire.WireUtils;
+
 
 /**
  * Receives a request from a proxy and performs an invocation on an {@link org.apache.tuscany.spi.wire.InboundWire} via

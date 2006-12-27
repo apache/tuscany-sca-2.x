@@ -437,7 +437,8 @@ public abstract class CompositeComponentExtension extends AbstractSCAObject impl
                 return;
             }
             for (InboundWire wire : component.getInboundWires().values()) {
-                if (wire.getServiceContract().getInterfaceClass().isAssignableFrom(interfaze)) {
+                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+                if (clazz.isAssignableFrom(interfaze)) {
                     systemAutowireInternal.put(interfaze, wire);
                     return;
                 }
