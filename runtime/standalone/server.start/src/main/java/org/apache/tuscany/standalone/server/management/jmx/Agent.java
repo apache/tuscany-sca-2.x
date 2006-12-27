@@ -31,20 +31,18 @@ public interface Agent {
      * @param name Object name of the instance.
      * @throws ManagementException If unable to register the object.
      */
-    public abstract void register(Object instance, String name) throws ManagementException;
+    void register(Object instance, String name) throws ManagementException;
 
     /**
      * Starts the JMX server.
      * @throws ManagementException If unable to start the server.
-     *
      */
-    public abstract void start() throws ManagementException;
+    void start() throws ManagementException;
 
     /**
      * Shuts down the JMX server.
      * @throws ManagementException If unable to shutdown the server.
-     *
      */
-    public abstract void shutdown() throws ManagementException;
+    void shutdown() throws ManagementException;
 
 }
