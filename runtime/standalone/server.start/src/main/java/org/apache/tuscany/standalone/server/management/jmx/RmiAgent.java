@@ -83,13 +83,13 @@ public class RmiAgent extends AbstractAgent {
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#start()
+     * @see org.apache.tuscany.standalone.server.management.jmx.AbstractAgent#preStart()
      */
-    public void start() throws ManagementException {
+    @Override
+    public void preStart() throws ManagementException {
 
         try {
             registry = LocateRegistry.createRegistry(port);
-            super.start();
         } catch (RemoteException ex) {
             throw new ManagementException(ex);
         }
@@ -97,15 +97,13 @@ public class RmiAgent extends AbstractAgent {
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#shutdown()
+     * @see org.apache.tuscany.standalone.server.management.jmx.AbstractAgent#postStop()
      */
-    public void shutdown() throws ManagementException {
+    @Override
+    public void postStop() throws ManagementException {
         
         try {
-            
-            super.shutdown();
-            UnicastRemoteObject.unexportObject(registry, true);
-            
+            UnicastRemoteObject.unexportObject(registry, true);            
         } catch (IOException ex) {
             throw new ManagementException(ex);
         }

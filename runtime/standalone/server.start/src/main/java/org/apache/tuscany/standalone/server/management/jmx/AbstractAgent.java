@@ -59,7 +59,7 @@ public abstract class AbstractAgent implements Agent {
     /**
      * @see org.apache.tuscany.standalone.server.management.jmx.Agent#register(java.lang.Object, java.lang.String)
      */
-    public void register(Object instance, String name) throws ManagementException {
+    public final void register(Object instance, String name) throws ManagementException {
         
         try {
             mBeanServer.registerMBean(instance, new ObjectName(DOMAIN + ":name=" + name));
@@ -72,13 +72,15 @@ public abstract class AbstractAgent implements Agent {
     /**
      * @see org.apache.tuscany.standalone.server.management.jmx.Agent#start()
      */
-    public void start() throws ManagementException {
+    public final void start() throws ManagementException {
 
         try {
             
             if(started.get()) {
                 throw new IllegalArgumentException("Agent already started");
             }
+            
+            preStart();
             
             JMXServiceURL url = getAdaptorUrl();
             connectorServer = JMXConnectorServerFactory.newJMXConnectorServer(url, null, mBeanServer);
@@ -98,7 +100,7 @@ public abstract class AbstractAgent implements Agent {
     /**
      * @see org.apache.tuscany.standalone.server.management.jmx.Agent#shutdown()
      */
-    public void shutdown() throws ManagementException {
+    public final void shutdown() throws ManagementException {
         
         try {
             
@@ -107,6 +109,7 @@ public abstract class AbstractAgent implements Agent {
             }
             
             connectorServer.stop();
+            postStop();
             started.set(false);
             
         } catch (IOException ex) {
@@ -128,5 +131,17 @@ public abstract class AbstractAgent implements Agent {
      * @return Adaptor URL.
      */
     protected abstract JMXServiceURL getAdaptorUrl();
+    
+    /**
+     * Any initialiation required for protocol specific agent.
+     *
+     */
+    protected abstract void preStart();
+    
+    /**
+     * Any initialiation required for protocol specific agent.
+     *
+     */
+    protected abstract void postStop();
 
 }
