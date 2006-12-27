@@ -163,7 +163,6 @@ public class TuscanyServer implements TuscanyServerMBean {
      */
     private ClassLoader getTuscanyClassLoader(File bootDir) {
         URL[] urls = LaunchHelper.scanDirectoryForJars(bootDir);
-        System.err.println(Arrays.asList(urls));
         return new URLClassLoader(urls, getClass().getClassLoader());
     }
 
