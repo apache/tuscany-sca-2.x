@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.spi.wire;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
@@ -44,6 +47,18 @@ public interface WireService {
     <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException;
 
     /**
+     * Creates a Java proxy for the given wire
+     *
+     * @param interfaze the interface the proxy implements
+     * @param wire      the wire to proxy @return the proxy
+     * @param mapping   the method to chain holder mapping to use in creating the proxy. Clients may cache and resuse
+     *                  this mapping for performance.
+     * @throws ProxyCreationException
+     */
+    <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, OutboundChainHolder> mapping)
+        throws ProxyCreationException;
+
+    /**
      * Creates a Java proxy for the service contract callback
      *
      * @param interfaze the interface the proxy should implement
@@ -56,7 +71,7 @@ public interface WireService {
      * Creates an {@link WireInvocationHandler} for the given wire
      *
      * @param interfaze the client side interface
-     * @param wire the wire to create the invocation handler for
+     * @param wire      the wire to create the invocation handler for
      * @return the invocation handler
      */
     WireInvocationHandler createHandler(Class<?> interfaze, Wire wire);

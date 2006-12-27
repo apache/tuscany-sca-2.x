@@ -44,6 +44,7 @@ import org.easymock.IAnswer;
  */
 public class JavaReferenceWireTestCase extends TestCase {
 
+    @SuppressWarnings({"unchecked"})
     public void testReferenceSet() throws Exception {
         ScopeContainer scope = createMock();
         scope.start();
@@ -55,11 +56,11 @@ public class JavaReferenceWireTestCase extends TestCase {
         configuration.setScopeContainer(scope);
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         wire.getInvocationChains();
-        EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>());
+        EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>()).atLeastOnce();
         EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
-        EasyMock.expect(service.createProxy(EasyMock.eq(Target.class), EasyMock.eq(wire)))
+        EasyMock.expect(service.createProxy(EasyMock.eq(Target.class), EasyMock.eq(wire), EasyMock.isA(Map.class)))
             .andAnswer(new IAnswer<Target>() {
                 public Target answer() throws Throwable {
                     OutboundWire wire = (OutboundWire) EasyMock.getCurrentArguments()[1];

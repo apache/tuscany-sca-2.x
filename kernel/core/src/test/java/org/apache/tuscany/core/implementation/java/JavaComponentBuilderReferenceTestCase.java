@@ -136,7 +136,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         Map<Operation<?>, OutboundInvocationChain> chains = Collections.emptyMap();
         wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
-        EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
+        EasyMock.expect(wire.getInvocationChains()).andReturn(chains).atLeastOnce();
         JavaServiceContract targetContract = new JavaServiceContract(Target.class);
         targetContract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         EasyMock.expect(wire.getServiceContract()).andReturn(targetContract).atLeastOnce();

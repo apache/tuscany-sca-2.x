@@ -16,27 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.spi.wire;
 
-import org.apache.tuscany.spi.wire.ProxyCreationException;
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
- * Thrown when an {@link org.apache.tuscany.spi.model.Operation} cannot be mapped to a method on an interface 
  * @version $Rev$ $Date$
  */
-public class NoMethodForOperationException extends ProxyCreationException {
-    public NoMethodForOperationException() {
-    }
+public class OutboundChainHolderTestCase extends TestCase {
 
-    public NoMethodForOperationException(String message) {
-        super(message);
-    }
-
-    public NoMethodForOperationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMethodForOperationException(Throwable cause) {
-        super(cause);
+    public void testClone() {
+        OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
+        EasyMock.replay(chain);
+        OutboundChainHolder holder = new OutboundChainHolder(chain);
+        assertNotNull(holder.clone());
     }
 }

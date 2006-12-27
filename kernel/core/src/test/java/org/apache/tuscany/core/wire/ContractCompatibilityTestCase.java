@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.OutboundChainHolder;
 
 import junit.framework.TestCase;
 
@@ -354,6 +356,11 @@ public class ContractCompatibilityTestCase extends TestCase {
         }
 
         public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> T createProxy(Class<T> interfaze, Wire wire, Map<Method, OutboundChainHolder> mapping)
+            throws ProxyCreationException {
             throw new UnsupportedOperationException();
         }
 

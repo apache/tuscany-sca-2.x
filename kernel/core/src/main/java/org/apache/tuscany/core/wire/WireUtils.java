@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.wire.jdk;
+package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -26,6 +26,9 @@ import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundChainHolder;
+import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Utilities for operating on wires
@@ -59,4 +62,30 @@ public final class WireUtils {
         }
         return chains;
     }
+
+
+    /**
+     * Maps methods on an interface to operations on a wire
+     *
+     * @param interfaze the interface to map from
+     * @param wire      the wire to map to
+     * @return a collection of method to operation mappings
+     * @throws NoMethodForOperationException
+     */
+    public static Map<Method, OutboundChainHolder> createInterfaceToWireMapping(Class<?> interfaze, OutboundWire wire)
+        throws NoMethodForOperationException {
+        Map<Operation<?>, OutboundInvocationChain> invocationChains = wire.getInvocationChains();
+        Map<Method, OutboundChainHolder> chains = new HashMap<Method, OutboundChainHolder>(invocationChains.size());
+        Method[] methods = interfaze.getMethods();
+        for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : invocationChains.entrySet()) {
+            Operation operation = entry.getKey();
+            Method method = findMethod(operation, methods);
+            if (method == null) {
+                throw new NoMethodForOperationException(operation.getName());
+            }
+            chains.put(method, new OutboundChainHolder(entry.getValue()));
+        }
+        return chains;
+    }
+
 }
