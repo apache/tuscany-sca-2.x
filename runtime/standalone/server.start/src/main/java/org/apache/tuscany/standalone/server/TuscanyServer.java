@@ -68,9 +68,6 @@ public class TuscanyServer implements TuscanyServerMBean {
     /** Agent */
     private Agent agent = RmiAgent.getInstance();
     
-    /** Context */
-    private SCA context;
-    
     /** Runtime */
     private TuscanyRuntime runtime;
     
@@ -124,9 +121,6 @@ public class TuscanyServer implements TuscanyServerMBean {
             
             runtime.setRuntimeInfo(runtimeInfo);
             runtime.initialize();
-            context = runtime.getContext();
-
-            context.start();
             
         } catch (IOException ex) {
             throw new TuscanyServerException(ex);
@@ -147,7 +141,6 @@ public class TuscanyServer implements TuscanyServerMBean {
     public void shutdown() {        
         
         try {
-            context.stop();
             runtime.destroy();
             agent.shutdown();
         } catch (ShutdownException ex) {
