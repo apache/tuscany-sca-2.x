@@ -45,13 +45,13 @@ import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Parses a <code>WebServiceBinding</code> entry in an assembly XML file
+ * Parses a <code>WebServiceBindingDefinition</code> entry in an assembly XML file
  * 
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
 @SuppressWarnings("deprecation")
-public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
+public class WebServiceBindingLoader extends LoaderExtension<WebServiceBindingDefinition> {
     public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
     private WSDLDefinitionRegistry wsdlDefinitionRegistry;
@@ -67,7 +67,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         return BINDING_WS;
     }
 
-    public WebServiceBinding load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public WebServiceBindingDefinition load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
                                   DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         // not sure what uri was here ? String uri = reader.getAttributeValue(null, "uri");
@@ -84,7 +84,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
     }
 
     @SuppressWarnings("unchecked")
-    private WebServiceBinding createBinding(String uri, String endpoint, String wsdlLocation, DeploymentContext deploymentContext)
+    private WebServiceBindingDefinition createBinding(String uri, String endpoint, String wsdlLocation, DeploymentContext deploymentContext)
         throws WSDLException, IOException, LoaderException {
         // Get the WSDL port namespace and name
         if (uri == null && endpoint != null) {
@@ -136,7 +136,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 throw new IllegalArgumentException("Cannot find WSDL port " + endpoint);
 
             }
-            return new WebServiceBinding(definition, thePort, uri, endpoint, service);
+            return new WebServiceBindingDefinition(definition, thePort, uri, endpoint, service);
         }
         // FIXME: Find the first port?
         throw new LoaderException("Web Service endpoint cannot be resolved: " + endpoint);

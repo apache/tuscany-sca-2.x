@@ -31,12 +31,12 @@ import javax.naming.NamingException;
 
 public class SimpleJMSResourceFactory implements JMSResourceFactory {
 
-    private JMSBinding jmsBinding;
+    private JMSBindingDefinition jmsBinding;
     private Connection con;
     private Context context;
     private boolean isConnectionStarted;
 
-    public SimpleJMSResourceFactory(JMSBinding jmsBinding) {
+    public SimpleJMSResourceFactory(JMSBindingDefinition jmsBinding) {
         this.jmsBinding = jmsBinding;
     }
 

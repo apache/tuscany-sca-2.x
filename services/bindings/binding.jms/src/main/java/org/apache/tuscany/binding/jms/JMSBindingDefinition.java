@@ -20,13 +20,13 @@ package org.apache.tuscany.binding.jms;
 
 import javax.jms.DeliveryMode;
 
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 
 /**
  * Represents a binding to a JMS resource.
  */
 
-public class JMSBinding extends Binding {
+public class JMSBindingDefinition extends BindingDefinition {
 
     public final static int DESTINATION_TYPE_QUEUE = 0;
     public final static int DESTINATION_TYPE_TOPIC = 1;
@@ -70,7 +70,7 @@ public class JMSBinding extends Binding {
     public static final String DEFAULT_ODB_CLASSNAME = DefaultOperationAndDataBinding.class.getName();
     public static final String DEFAULT_OPERATION_PROP_NAME = "scaOperationName";
 
-    public JMSBinding(int destinationType,
+    public JMSBindingDefinition(int destinationType,
                       String destinationName,
                       String connectionFactoryName,
                       String activationSpecName,
@@ -93,7 +93,7 @@ public class JMSBinding extends Binding {
         this.replyTo = replyTo;
     }
 
-    public JMSBinding() {
+    public JMSBindingDefinition() {
         super();
     }
 

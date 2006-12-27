@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.spi.builder;
 
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
 /**
@@ -47,12 +47,12 @@ public interface BuilderRegistry extends Builder {
     /**
      * TODO: JavaDoc this once we know if we will be building contexts for bindings
      */
-    <B extends Binding> void register(BindingBuilder<B> builder);
+    <B extends BindingDefinition> void register(BindingBuilder<B> builder);
 
     /**
      * TODO: JavaDoc this once we know if we will be building contexts for bindings
      */
-    <B extends Binding> void register(Class<B> implClass, BindingBuilder<B> builder);
+    <B extends BindingDefinition> void register(Class<B> implClass, BindingBuilder<B> builder);
 
     /**
      * TODO: Make sure this belongs here

@@ -72,7 +72,7 @@ public class Axis2ServiceTestCase extends TestCase {
 
     private Axis2Service createAxis2Service(String serviceName, ServletHost tomcatHost, boolean callback)
         throws Exception {
-        //Create WebServiceBinding
+        //Create WebServiceBindingDefinition
         String wsdlLocation = "/wsdl/hello_world_doc_lit.wsdl";
         URL url = getClass().getResource(wsdlLocation);
         assertNotNull("Could not find wsdl " + url.toString(), url);
@@ -85,7 +85,7 @@ public class Axis2ServiceTestCase extends TestCase {
         Service wsdlService = wsdlDef.getService(new QName("http://objectweb.org/hello_world_soap_http",
             "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
-        WebServiceBinding wsBinding = new WebServiceBinding(wsdlDef, port, "uri", "portURI", wsdlService);
+        WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
 
         //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);

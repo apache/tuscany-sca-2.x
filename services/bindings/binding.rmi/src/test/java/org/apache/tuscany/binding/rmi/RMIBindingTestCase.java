@@ -21,19 +21,19 @@ import junit.framework.TestCase;
 public class RMIBindingTestCase extends TestCase {
     
     public void testHost() {
-        RMIBinding binding = new RMIBinding();
+        RMIBindingDefinition binding = new RMIBindingDefinition();
         binding.setHost("foo");
         assertEquals("foo", binding.getHost());
     }
 
     public void testPort() {
-        RMIBinding binding = new RMIBinding();
+        RMIBindingDefinition binding = new RMIBindingDefinition();
         binding.setPort("foo");
         assertEquals("foo", binding.getPort());
     }
 
     public void testServiceName() {
-        RMIBinding binding = new RMIBinding();
+        RMIBindingDefinition binding = new RMIBindingDefinition();
         binding.setServiceName("foo");
         assertEquals("foo", binding.getServiceName());
     }

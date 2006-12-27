@@ -18,7 +18,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 /**
  * @version $Rev$ $Date$
  */
-public class TestSocketBindingLoader extends LoaderExtension<TestSocketBinding> {
+public class TestSocketBindingLoader extends LoaderExtension<TestSocketBindingDefinition> {
 
     public static final QName BINDING_TEST = new QName(Version.XML_NAMESPACE_1_0, "binding.socket");
 
@@ -31,7 +31,7 @@ public class TestSocketBindingLoader extends LoaderExtension<TestSocketBinding> 
         return TestSocketBindingLoader.BINDING_TEST;
     }
 
-    public TestSocketBinding load(CompositeComponent parent,
+    public TestSocketBindingDefinition load(CompositeComponent parent,
                                   ModelObject object, XMLStreamReader reader,
                                   DeploymentContext context) throws XMLStreamException, LoaderException {
         String host = reader.getAttributeValue(null, "host");
@@ -41,6 +41,6 @@ public class TestSocketBindingLoader extends LoaderExtension<TestSocketBinding> 
         } catch (NumberFormatException e) {
             throw new LoaderException("Invalid port specified", e);
         }
-        return new TestSocketBinding(host, port);
+        return new TestSocketBindingDefinition(host, port);
     }
 }

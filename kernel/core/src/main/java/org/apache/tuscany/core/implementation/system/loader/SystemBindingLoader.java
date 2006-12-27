@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.osoa.sca.annotations.Constructor;
 
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
@@ -39,7 +39,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
+public class SystemBindingLoader extends LoaderExtension<SystemBindingDefinition> {
     public static final QName SYSTEM_BINDING =
         new QName("http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT", "binding.system");
 
@@ -52,10 +52,10 @@ public class SystemBindingLoader extends LoaderExtension<SystemBinding> {
         return SYSTEM_BINDING;
     }
 
-    public SystemBinding load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
+    public SystemBindingDefinition load(CompositeComponent parent, ModelObject object, XMLStreamReader reader,
                               DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         LoaderUtil.skipToEndElement(reader);
-        return new SystemBinding();
+        return new SystemBindingDefinition();
     }
 }

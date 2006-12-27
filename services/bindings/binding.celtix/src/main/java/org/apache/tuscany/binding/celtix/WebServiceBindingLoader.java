@@ -52,12 +52,12 @@ import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl;
 import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistryImpl.Monitor;
 
 /**
- * Parses a <code>WebServiceBinding</code> entry in an assembly XML file
+ * Parses a <code>WebServiceBindingDefinition</code> entry in an assembly XML file
  *
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> {
+public class WebServiceBindingLoader extends LoaderExtension<WebServiceBindingDefinition> {
     public static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
     protected WSDLDefinitionRegistry wsdlRegistry;
@@ -89,7 +89,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         return BINDING_WS;
     }
 
-    public WebServiceBinding load(CompositeComponent parent,
+    public WebServiceBindingDefinition load(CompositeComponent parent,
 											 ModelObject object,
                                   XMLStreamReader reader,
                                   DeploymentContext deploymentContext)
@@ -107,7 +107,7 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
         }
     }
 
-    private WebServiceBinding createBinding(String port, String portURI, String wsdlLocation,
+    private WebServiceBindingDefinition createBinding(String port, String portURI, String wsdlLocation,
                                             DeploymentContext deploymentContext)
         throws WSDLException, IOException {
         List<Definition> definitions = null;
@@ -186,12 +186,12 @@ public class WebServiceBindingLoader extends LoaderExtension<WebServiceBinding> 
                 throw new IllegalArgumentException("Cannot find WSDL port " + portURI);
 
             }
-            WebServiceBinding wsBinding = new WebServiceBinding(definition, thePort, port, portURI, service);
+            WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(definition, thePort, port, portURI, service);
             wsBinding.setWSDLDefinitionRegistry(wsdlRegistry);
             return wsBinding;
         }
         // FIXME - return a broken binding for now
-        return new WebServiceBinding(null, null, null, portURI, null);
+        return new WebServiceBindingDefinition(null, null, null, portURI, null);
 
     }
 }

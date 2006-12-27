@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
-public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
+public class RMIBindingLoader extends LoaderExtension<RMIBindingDefinition> {
     public static final QName BINDING_RMI = new QName(
         "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");
 
@@ -49,7 +49,7 @@ public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
         return BINDING_RMI;
     }
 
-    public RMIBinding load(CompositeComponent parent,
+    public RMIBindingDefinition load(CompositeComponent parent,
 									ModelObject object,
                            XMLStreamReader reader,
                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
@@ -57,7 +57,7 @@ public class RMIBindingLoader extends LoaderExtension<RMIBinding> {
         String port = reader.getAttributeValue(null, "port");
         String svcName = reader.getAttributeValue(null, "serviceName");
         LoaderUtil.skipToEndElement(reader);
-        RMIBinding binding = new RMIBinding();
+        RMIBindingDefinition binding = new RMIBindingDefinition();
         binding.setHost(host);
         binding.setPort(port);
         binding.setServiceName(svcName);

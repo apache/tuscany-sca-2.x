@@ -42,7 +42,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -82,7 +82,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertNotNull(serviceDefinition);
         assertEquals("service", serviceDefinition.getName());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
-        assertTrue(serviceDefinition.getBinding() instanceof SystemBinding);
+        assertTrue(serviceDefinition.getBinding() instanceof SystemBindingDefinition);
 
         // check parse of <component>
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = composite.getDeclaredComponents();

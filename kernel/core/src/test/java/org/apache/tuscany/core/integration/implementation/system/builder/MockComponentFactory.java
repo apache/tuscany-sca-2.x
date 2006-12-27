@@ -37,7 +37,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.mock.component.SourceImpl;
 import org.apache.tuscany.core.mock.component.Target;
@@ -151,9 +151,9 @@ public final class MockComponentFactory {
     }
 
 
-    public static BoundReferenceDefinition<SystemBinding> createBoundReference() {
-        SystemBinding binding = new SystemBinding();
-        BoundReferenceDefinition<SystemBinding> referenceDefinition = new BoundReferenceDefinition<SystemBinding>();
+    public static BoundReferenceDefinition<SystemBindingDefinition> createBoundReference() {
+        SystemBindingDefinition binding = new SystemBindingDefinition();
+        BoundReferenceDefinition<SystemBindingDefinition> referenceDefinition = new BoundReferenceDefinition<SystemBindingDefinition>();
         referenceDefinition.setBinding(binding);
         referenceDefinition.setName("target");
         ServiceContract<?> contract = new JavaServiceContract();
@@ -165,9 +165,9 @@ public final class MockComponentFactory {
     /**
      * Creates a bound service with the name "service" that is configured to be wired to a target named "target/Target"
      */
-    public static BoundServiceDefinition<SystemBinding> createBoundService() {
-        SystemBinding binding = new SystemBinding();
-        BoundServiceDefinition<SystemBinding> serviceDefinition = new BoundServiceDefinition<SystemBinding>();
+    public static BoundServiceDefinition<SystemBindingDefinition> createBoundService() {
+        SystemBindingDefinition binding = new SystemBindingDefinition();
+        BoundServiceDefinition<SystemBindingDefinition> serviceDefinition = new BoundServiceDefinition<SystemBindingDefinition>();
         serviceDefinition.setBinding(binding);
         serviceDefinition.setName("serviceDefinition");
         ServiceContract<?> contract = new JavaServiceContract();

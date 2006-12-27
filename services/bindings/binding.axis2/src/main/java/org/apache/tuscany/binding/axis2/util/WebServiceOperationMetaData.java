@@ -46,7 +46,7 @@ import javax.xml.namespace.QName;
 public class WebServiceOperationMetaData implements Serializable {
     private static final long serialVersionUID = 2425306250256227724L;
 
-    // WSDL Binding and BindingOperation
+    // WSDL BindingDefinition and BindingOperation
     private Binding binding;
     private BindingOperation bindingOperation;
     // Fields to cache derived metadata

@@ -65,7 +65,7 @@ import org.apache.tuscany.core.implementation.system.loader.SystemBindingLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader;
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.loader.ComponentLoader;
@@ -245,7 +245,7 @@ public class DefaultBootstrapper implements Bootstrapper {
         SystemCompositeBuilder builder = new SystemCompositeBuilder(builderRegistry, createConnector());
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
-        builderRegistry.register(SystemBinding.class, new SystemBindingBuilder());
+        builderRegistry.register(SystemBindingDefinition.class, new SystemBindingBuilder());
         return builderRegistry;
     }
 

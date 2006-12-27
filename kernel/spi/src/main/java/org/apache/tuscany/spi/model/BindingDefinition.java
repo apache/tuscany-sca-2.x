@@ -16,23 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.binding.jsonrpc;
-
-import org.apache.tuscany.spi.model.Binding;
+package org.apache.tuscany.spi.model;
 
 /**
- * Represents a binding to an RMI service.
- * 
+ * The base representation of a binding specified in an assembly
+ *
  * @version $Rev$ $Date$
  */
-public class JSONRPCBinding extends Binding {
-    String uri;
-
-    public String getURI() {
-        return uri;
-    }
-
-    public void setURI(String uri) {
-        this.uri = uri;
-    }
+public abstract class BindingDefinition extends ModelObject {
 }

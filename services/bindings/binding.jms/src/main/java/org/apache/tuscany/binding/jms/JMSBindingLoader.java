@@ -40,7 +40,7 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 @Scope("COMPOSITE")
-public class JMSBindingLoader extends LoaderExtension<JMSBinding> {
+public class JMSBindingLoader extends LoaderExtension<JMSBindingDefinition> {
     public static final QName BINDING_JMS =
         new QName("http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT", "binding.jms");
 
@@ -58,7 +58,7 @@ public class JMSBindingLoader extends LoaderExtension<JMSBinding> {
      * the implementation, especially during the last 2 weeks. I will wait till
      * a draft version is published before I make any changes
      */
-    public JMSBinding load(CompositeComponent parent,
+    public JMSBindingDefinition load(CompositeComponent parent,
                            ModelObject modelObject,
                            XMLStreamReader reader,
                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
@@ -93,7 +93,7 @@ public class JMSBindingLoader extends LoaderExtension<JMSBinding> {
         // OMElement opSecPropertyOM = opSecOM.getFirstChildWithName(new
         // QName("property"));
 
-        JMSBinding binding = new JMSBinding();
+        JMSBindingDefinition binding = new JMSBindingDefinition();
         binding.setActivationSpecName(activationSpecName);
         binding.setConnectionFactoryName(connectionFactoryName);
         binding.setDestinationName(destinationName);

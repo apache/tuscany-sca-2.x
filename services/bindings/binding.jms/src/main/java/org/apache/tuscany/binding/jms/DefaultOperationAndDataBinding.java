@@ -39,7 +39,7 @@ public class DefaultOperationAndDataBinding implements OperationAndDataBinding {
 
     private boolean xmlFormat;
 
-    public DefaultOperationAndDataBinding(JMSBinding jmsBinding) {
+    public DefaultOperationAndDataBinding(JMSBindingDefinition jmsBinding) {
         this.operationPropertyName = jmsBinding.getOperationSelectorPropertyName();
         this.xmlFormat = jmsBinding.isXMLFormat();
     }

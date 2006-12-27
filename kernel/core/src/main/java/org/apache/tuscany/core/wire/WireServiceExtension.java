@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
@@ -46,7 +46,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.QualifiedName;
 
-import org.apache.tuscany.core.implementation.system.model.SystemBinding;
+import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.core.implementation.composite.CompositeService;
 import org.apache.tuscany.core.implementation.composite.CompositeReference;
 
@@ -140,8 +140,8 @@ public abstract class WireServiceExtension implements WireService {
                 // have been registered
                 CompositeComponent compositeComponent = (CompositeComponent) component;
                 if (service instanceof BoundServiceDefinition) {
-                    Binding binding = ((BoundServiceDefinition) service).getBinding();
-                    if (binding instanceof SystemBinding) {
+                    BindingDefinition binding = ((BoundServiceDefinition) service).getBinding();
+                    if (binding instanceof SystemBindingDefinition) {
                         continue;
                     }
                 }

@@ -11,17 +11,17 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 /**
  * @version $Rev$ $Date$
  */
-public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocketBinding> {
+public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocketBindingDefinition> {
 
     public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<TestSocketBinding> definition,
+                         BoundServiceDefinition<TestSocketBindingDefinition> definition,
                          DeploymentContext context) {
         int port = definition.getBinding().getPort();
         return new TestSocketBindingService(definition.getName(), port, parent);
     }
 
     public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<TestSocketBinding> definition,
+                           BoundReferenceDefinition<TestSocketBindingDefinition> definition,
                            DeploymentContext context) {
         String name = definition.getName();
         int port = definition.getBinding().getPort();
@@ -29,7 +29,7 @@ public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocket
         return new TestSocketBindingReference(name, host, port, parent);
     }
 
-    protected Class<TestSocketBinding> getBindingType() {
-        return TestSocketBinding.class;
+    protected Class<TestSocketBindingDefinition> getBindingType() {
+        return TestSocketBindingDefinition.class;
     }
 }

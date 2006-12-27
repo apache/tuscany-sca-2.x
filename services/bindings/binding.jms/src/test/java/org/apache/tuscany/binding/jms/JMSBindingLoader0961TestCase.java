@@ -17,14 +17,14 @@ public class JMSBindingLoader0961TestCase extends TestCase {
     public void testMinimal() throws LoaderException, XMLStreamException {
         String xml = "<binding.jms></binding.jms>";
         XMLStreamReader reader = createReader(xml);
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertNotNull(jmsBinding);
     }
 
     public void testCorrelationScheme() throws LoaderException, XMLStreamException {
         XMLStreamReader reader =
             createReader("<binding.jms correlationScheme=\"RequestMsgIDToCorrelID\"></binding.jms>");
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("RequestMsgIDToCorrelID", jmsBinding.getCorrelationScheme());
 
         reader = createReader("<binding.jms correlationScheme=\"RequestCorrelIDToCorrelID\"></binding.jms>");
@@ -46,31 +46,31 @@ public class JMSBindingLoader0961TestCase extends TestCase {
 
     public void testDestination() throws LoaderException, XMLStreamException {
         XMLStreamReader reader = createReader("<binding.jms><destination name=\"foo\"/></binding.jms>");
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("foo", jmsBinding.getDestinationName());
     }
 
     public void testInitialContextFactory() throws LoaderException, XMLStreamException {
         XMLStreamReader reader = createReader("<binding.jms initialContextFactory=\"myicf\"></binding.jms>");
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("myicf", jmsBinding.getInitialContextFactoryName());
     }
 
     public void testJNDIProviderURL() throws LoaderException, XMLStreamException {
         XMLStreamReader reader = createReader("<binding.jms JNDIProviderURL=\"myURL\"></binding.jms>");
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("myURL", jmsBinding.getJNDIProviderURL());
     }
 
     public void testConnectionFactory() throws LoaderException, XMLStreamException {
         XMLStreamReader reader = createReader("<binding.jms connectionFactory=\"myfactory\"></binding.jms>");
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("myfactory", jmsBinding.getConnectionFactoryName());
     }
 
     public void testActivationSpec() throws LoaderException, XMLStreamException {
         XMLStreamReader reader = createReader("<binding.jms activationSpec=\"myas\"></binding.jms>");
-        JMSBinding jmsBinding = loader.load(null, null, reader, null);
+        JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("myas", jmsBinding.getActivationSpecName());
     }
 

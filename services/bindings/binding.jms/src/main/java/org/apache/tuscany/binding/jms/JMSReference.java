@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public class JMSReference extends ReferenceExtension {
 
-    protected JMSBinding jmsBinding;
+    protected JMSBindingDefinition jmsBinding;
     protected JMSResourceFactory jmsResourceFactory;
     protected OperationAndDataBinding requestOperationAndDataBinding;
     protected OperationAndDataBinding responseOperationAndDataBinding;
@@ -40,7 +40,7 @@ public class JMSReference extends ReferenceExtension {
 
     public JMSReference(String name,
                         CompositeComponent parent,
-                        JMSBinding jmsBinding,
+                        JMSBindingDefinition jmsBinding,
                         JMSResourceFactory jmsResourceFactory,
                         OperationAndDataBinding requestOperationAndDataBinding,
                         OperationAndDataBinding responseOperationAndDataBinding,

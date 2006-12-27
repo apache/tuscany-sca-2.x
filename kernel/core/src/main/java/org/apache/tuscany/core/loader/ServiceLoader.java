@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
@@ -68,7 +68,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String target = null;
-        Binding binding = null;
+        BindingDefinition binding = null;
         ServiceContract serviceContract = null;
         while (true) {
             int i = reader.next();
@@ -83,8 +83,8 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         ModelObject o = registry.load(parent, null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {
                             serviceContract = (ServiceContract) o;
-                        } else if (o instanceof Binding) {
-                            binding = (Binding) o;
+                        } else if (o instanceof BindingDefinition) {
+                            binding = (BindingDefinition) o;
                         }
                     }
                     break;
@@ -101,7 +101,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                             }
 
                             // FIXME need a way to specify "remotable" on a service
-                            return new BoundServiceDefinition<Binding>(name, serviceContract, false, binding,
+                            return new BoundServiceDefinition<BindingDefinition>(name, serviceContract, false, binding,
                                 targetURI);
                         } else if (target != null) {
                             URI targetURI;

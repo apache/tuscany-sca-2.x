@@ -40,7 +40,7 @@ import org.apache.tuscany.container.spring.mock.TestBean;
 import org.apache.tuscany.container.spring.model.SpringComponentType;
 import org.apache.tuscany.container.spring.model.SpringImplementation;
 import org.apache.tuscany.test.ArtifactFactory;
-import org.apache.tuscany.test.binding.TestBinding;
+import org.apache.tuscany.test.binding.TestBindingDefinition;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
@@ -108,9 +108,9 @@ public class SpringCompositeBuilderTestCase extends TestCase {
 
     private SpringComponentType<Property<?>> createComponentType() {
         SpringComponentType<Property<?>> componentType = new SpringComponentType<Property<?>>();
-        BoundServiceDefinition<TestBinding> serviceDefinition = new BoundServiceDefinition<TestBinding>();
+        BoundServiceDefinition<TestBindingDefinition> serviceDefinition = new BoundServiceDefinition<TestBindingDefinition>();
         serviceDefinition.setName("fooService");
-        serviceDefinition.setBinding(new TestBinding());
+        serviceDefinition.setBinding(new TestBindingDefinition());
         try {
             serviceDefinition.setTarget(new URI("testBean"));
         } catch (URISyntaxException e) {

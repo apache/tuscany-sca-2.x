@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.extension.TargetInvokerExtension;
  */
 public class JMSTargetInvoker extends TargetInvokerExtension {
 
-    protected JMSBinding jmsBinding;
+    protected JMSBindingDefinition jmsBinding;
     protected JMSResourceFactory jmsResourceFactory;
 
     protected String operationName;
@@ -46,7 +46,7 @@ public class JMSTargetInvoker extends TargetInvokerExtension {
     protected Destination replyDest;
 
     public JMSTargetInvoker(JMSResourceFactory jmsResourceFactory,
-                            JMSBinding jmsBinding,
+                            JMSBindingDefinition jmsBinding,
                             String operationName,
                             OperationAndDataBinding requestOperationAndDataBinding,
                             OperationAndDataBinding responseOperationAndDataBinding,

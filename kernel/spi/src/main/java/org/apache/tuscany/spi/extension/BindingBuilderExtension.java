@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.Binding;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
@@ -41,7 +41,7 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $$Rev$$ $$Date$$
  */
 @Scope("COMPOSITE")
-public abstract class BindingBuilderExtension<B extends Binding> implements BindingBuilder<B> {
+public abstract class BindingBuilderExtension<B extends BindingDefinition> implements BindingBuilder<B> {
 
     protected BuilderRegistry builderRegistry;
     protected WireService wireService;

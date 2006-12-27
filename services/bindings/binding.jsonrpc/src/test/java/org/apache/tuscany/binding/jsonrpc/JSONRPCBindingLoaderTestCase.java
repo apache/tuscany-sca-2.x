@@ -65,7 +65,7 @@ public class JSONRPCBindingLoaderTestCase extends TestCase {
         replay(mockDeploymentContext);
         
         try {
-            JSONRPCBinding jsonBinding = loader.load(mockParent, mockModelObject, mockReader, mockDeploymentContext);
+            JSONRPCBindingDefinition jsonBinding = loader.load(mockParent, mockModelObject, mockReader, mockDeploymentContext);
             assertNotNull(jsonBinding);
         } catch (LoaderException e) {
             // TODO Auto-generated catch block

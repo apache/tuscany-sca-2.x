@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $Rev$ $Date$
  */
-public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBinding> {
+public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindingDefinition> {
 
     private ServletHost servletHost;
     private WireService wireService;
@@ -52,13 +52,13 @@ public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindin
         return servletHost;
     }
 
-    protected Class<JSONRPCBinding> getBindingType() {
-        return JSONRPCBinding.class;
+    protected Class<JSONRPCBindingDefinition> getBindingType() {
+        return JSONRPCBindingDefinition.class;
     }
 
     @SuppressWarnings("unchecked")
     public Service build(CompositeComponent parent,
-                             BoundServiceDefinition<JSONRPCBinding> serviceDefinition,
+                             BoundServiceDefinition<JSONRPCBindingDefinition> serviceDefinition,
                              DeploymentContext deploymentContext) {
         Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
 
