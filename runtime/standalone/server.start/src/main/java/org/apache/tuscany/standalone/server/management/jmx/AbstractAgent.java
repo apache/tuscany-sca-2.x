@@ -62,7 +62,7 @@ public abstract class AbstractAgent implements Agent {
     public final void register(Object instance, String name) throws ManagementException {
         
         try {
-            mBeanServer.registerMBean(instance, new ObjectName(DOMAIN + ":name=" + name));
+            mBeanServer.registerMBean(instance, new ObjectName(name));
         } catch (Exception ex) {
             throw new ManagementException(ex);
         }
