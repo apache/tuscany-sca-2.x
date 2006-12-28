@@ -64,6 +64,7 @@ public class RmiAgent extends AbstractAgent {
                 port = Integer.parseInt(portValue);
             }
             
+            // service:jmx:rmi:///jndi/rmi://localhost:1099/server
             return new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:" + port + "/server");
             
             
