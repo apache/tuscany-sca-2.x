@@ -23,20 +23,34 @@ import java.net.URI;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.services.management.ManagementService;
 
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+
 /**
  * JMX implementation of the management service.
  * 
  * @version $Revision$ $Date$
  *
  */
-public class JmxManagementService implements ManagementService {
+public abstract class JmxManagementService implements ManagementService {
 
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI, java.lang.String, org.apache.tuscany.spi.component.Component)
      */
     public void registerComponent(URI compositeURI, String name, Component component) {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException();
     }
+    
+    /**
+     * Starts the agent connector for the service.
+     */
+    @Init
+    public abstract void start();
+    
+    /**
+     * Stops the agent connector for the service.
+     */
+    @Destroy
+    public abstract void stop();
 
 }
