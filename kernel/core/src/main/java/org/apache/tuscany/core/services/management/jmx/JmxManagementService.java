@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.services.management.ManagementService;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
 
 /**
  * JMX implementation of the management service.
@@ -33,6 +34,10 @@ import org.osoa.sca.annotations.Init;
  *
  */
 public abstract class JmxManagementService implements ManagementService {
+    
+    /** Istrumentation mode used by the service. */
+    @Property
+    protected InstrumentationMode instrumentationMode;
 
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI, java.lang.String, org.apache.tuscany.spi.component.Component)
