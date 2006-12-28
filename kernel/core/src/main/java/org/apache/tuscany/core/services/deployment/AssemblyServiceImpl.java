@@ -22,15 +22,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.tuscany.host.deployment.AssemblyService;
 import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.host.deployment.UnsupportedContentTypeException;
+import org.apache.tuscany.spi.deployer.ChangeSetHandlerRegistry;
+import org.apache.tuscany.spi.deployer.ChangeSetHandler;
 
 /**
  * @version $Rev$ $Date$
  */
-public class AssemblyServiceImpl implements AssemblyService {
+public class AssemblyServiceImpl implements AssemblyService, ChangeSetHandlerRegistry {
+    private final Map<String, ChangeSetHandler> registry = new HashMap<String, ChangeSetHandler>();
 
     public void applyChanges(URL changeSet) throws DeploymentException, IOException {
         if (changeSet == null) {
@@ -63,5 +68,16 @@ public class AssemblyServiceImpl implements AssemblyService {
         if (contentType == null) {
             throw new IllegalArgumentException("contentType is null");
         }
+
+        ChangeSetHandler handler = registry.get(contentType);
+        if (handler == null) {
+            throw new UnsupportedContentTypeException(contentType);
+        }
+
+        handler.applyChanges(changeSet);
+    }
+
+    public void register(ChangeSetHandler handler) {
+        registry.put(handler.getContentType(), handler);
     }
 }
