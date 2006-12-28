@@ -20,39 +20,26 @@ package org.apache.tuscany.standalone.server.management.jmx.instrument.runtime;
 
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.ShutdownException;
-import org.apache.tuscany.host.runtime.TuscanyRuntime;
 
 /**
+ * 
  * @version $Revision$ $Date$
  *
  */
-public class Runtime implements RuntimeMBean {
-    
-    /**
-     * Delegate runtime.
-     */
-    private TuscanyRuntime delegate;
-    
-    /**
-     * Initializes the delegate.
-     * @param delegate Delegate MBean.
-     */
-    public Runtime(TuscanyRuntime delegate) {
-        this.delegate = delegate;
-    }
+public interface RuntimeMBean {
 
     /**
-     * @see org.apache.tuscany.host.runtime.TuscanyRuntime#destroy()
+     * Initialize a runtime.
+     *
+     * @throws InitializationException if there is an error initializing the runtime
      */
-    public void destroy() throws ShutdownException {
-        delegate.destroy();
-    }
+    void initialize() throws InitializationException;
 
     /**
-     * @see org.apache.tuscany.host.runtime.TuscanyRuntime#initialize()
+     * Destroy the runtime. Any further invocations should result in an error.
+     *
+     * @throws ShutdownException if there is an error destroying the runtime
      */
-    public void initialize() throws InitializationException {
-        delegate.initialize();
-    }
+    void destroy() throws ShutdownException;
 
 }
