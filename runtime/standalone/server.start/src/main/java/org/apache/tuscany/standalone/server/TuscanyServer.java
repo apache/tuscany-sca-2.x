@@ -28,7 +28,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.host.util.LaunchHelper;
@@ -216,7 +215,13 @@ public class TuscanyServer implements TuscanyServerMBean {
         } catch(IOException ex) {
             throw new TuscanyServerException(ex);
         } finally {
-            IOUtils.closeQuietly(in);
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
         
     }
