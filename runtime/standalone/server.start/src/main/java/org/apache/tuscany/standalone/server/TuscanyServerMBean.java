@@ -30,7 +30,7 @@ public interface TuscanyServerMBean {
      * Starts the server.
      *
      */
-    public void start();
+    public void startRuntime(String bootPath);
 
     /**
      * Starts the server.
