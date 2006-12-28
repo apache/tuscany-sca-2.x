@@ -26,6 +26,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +55,7 @@ import javax.management.ReflectionException;
  * available for management.
  * 
  * TODO Find a homw other than server.start for this class.
- * TODO Tidy up, unit tests, exception handling
+ * TODO Tidy up, unit tests
  * 
  * @version $Revsion$ $Date$
  *
@@ -62,17 +63,20 @@ import javax.management.ReflectionException;
 public class ReflectedDynamicMBean implements DynamicMBean {
 
     /** Excluded methods. */
-    private static final List<String> EXCLUDED_METHODS =
+    private static final List<String> DEFAULT_EXCLUDED_METHODS =
         Arrays.asList(new String[] {"wait", "toString", "hashCode", "notify", "equals", "notifyAll", "getClass"});
 
     /** Excluded properties. */
-    private static final List<String> EXCLUDED_PROPERTIES = Arrays.asList(new String[] {"class"});
+    private static final List<String> DEFAULT_EXCLUDED_PROPERTIES = Arrays.asList(new String[] {"class"});
 
     /** Proxied object that is managed. */
     private Object delegate;
 
     /** Runtime type of the managed object. */
     private Class delegateClass;
+    
+    /** Delegate class name. */
+    private String delegateClassName;
 
     /** Cache of property write methods. */
     private Map<String, Method> propertyWriteMethods = new HashMap<String, Method>();
@@ -86,65 +90,74 @@ public class ReflectedDynamicMBean implements DynamicMBean {
     /** Property descriptor cache. */
     private Map<String, PropertyDescriptor> properties = new HashMap<String, PropertyDescriptor>();
 
-    public ReflectedDynamicMBean(Object delegate) {
+    /** Excluded methods. */
+    private final List<String> excludedMethods = new ArrayList<String>();
+
+    /** Excluded properties. */
+    private final List<String> excludedProperties = new ArrayList<String>();
+    
+    /**
+     * Introspects the bean and populate meta information.
+     * @param delegate Proxied managed instance.
+     */
+    private ReflectedDynamicMBean(Object delegate) {
+        this(delegate, new ArrayList<String>(), new ArrayList<String>());
+    }
+    
+    /**
+     * Introspects the bean and populate meta information.
+     * @param delegate Proxied managed instance.
+     * @param excludedMethods Operations excluded from managed view.
+     * @param excludedProperties Properties excluded from managed view.
+     */
+    private ReflectedDynamicMBean(Object delegate, List<String> excludedMethods, List<String> excludedProperties) {
 
         this.delegate = delegate;
         this.delegateClass = delegate.getClass();
+        this.delegateClassName = delegateClass.getName();
 
         BeanInfo beanInfo;
         try {
             beanInfo = Introspector.getBeanInfo(delegateClass);
         } catch (IntrospectionException ex) {
-            throw new RuntimeException(ex);
+            throw new InstrumentationException(ex);
         }
 
         cacheProperties(beanInfo);
 
         cacheMethods(beanInfo);
     }
-
-    private void cacheMethods(BeanInfo beanInfo) {
-        
-        for (MethodDescriptor methodDescriptor : beanInfo.getMethodDescriptors()) {
-
-            Method method = methodDescriptor.getMethod();
-
-            if (EXCLUDED_METHODS.contains(method.getName())) {
-                continue;
-            }
-            int modifiers = method.getModifiers();
-            if (!Modifier.isPublic(modifiers) || Modifier.isStatic(modifiers)) {
-                continue;
-            }
-            if (propertyReadMethods.values().contains(method) || propertyWriteMethods.values().contains(method)) {
-                continue;
-            }
-
-            StringBuilder signature = new StringBuilder(method.getName());
-            signature.append('(');
-            for (Class parameterType : method.getParameterTypes()) {
-                signature.append(parameterType.getName());
-                signature.append(',');
-            }
-            int length = signature.length();
-            if (signature.charAt(signature.length() - 1) == ',') {
-                signature.replace(length - 1, length, ")");
-            } else {
-                signature.append(')');
-            }
-
-            methods.put(signature.toString(), method);
-            
-        }
-        
+    
+    /**
+     * Factory method for creating the management view.
+     * @param delegate Proxied managed instance.
+     * @param excludedMethods Operations excluded from managed view.
+     * @param excludedProperties Properties excluded from managed view.
+     * @return Proxy for the managed instance.
+     */
+    public static ReflectedDynamicMBean newInstance(Object delegate, List<String> excludedMethods, List<String> excludedProperties) {
+        return new ReflectedDynamicMBean(delegate, excludedMethods, excludedProperties);
+    }
+    
+    /**
+     * Factory method for creating the management view.
+     * @param delegate Proxied managed instance.
+     * @return Proxy for the managed instance.
+     */
+    public static ReflectedDynamicMBean newInstance(Object delegate) {
+        return new ReflectedDynamicMBean(delegate);
     }
 
+    /**
+     * Caches managed properties.
+     * @param beanInfo Bean info for the managed instance.
+     */
     private void cacheProperties(BeanInfo beanInfo) {
         for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
 
             String name = propertyDescriptor.getName();
 
-            if (EXCLUDED_PROPERTIES.contains(name)) {
+            if (DEFAULT_EXCLUDED_PROPERTIES.contains(name) || excludedProperties.contains(name)) {
                 continue;
             }
             properties.put(name, propertyDescriptor);
@@ -195,26 +208,25 @@ public class ReflectedDynamicMBean implements DynamicMBean {
 
         try {
 
-            MBeanAttributeInfo[] attributes = new MBeanAttributeInfo[properties.keySet().size()];
+            MBeanAttributeInfo[] attrs = new MBeanAttributeInfo[properties.keySet().size()];
             int count = 0;
             for (String property : properties.keySet()) {
-                attributes[count++] =
-                    new MBeanAttributeInfo(property, "", propertyReadMethods.get(property), propertyWriteMethods
-                        .get(property));
+                Method readMethod = propertyReadMethods.get(property);
+                Method writeMethod = propertyWriteMethods.get(property);
+                attrs[count++] = new MBeanAttributeInfo(property, "", readMethod, writeMethod);
             }
 
-            MBeanOperationInfo[] operations = new MBeanOperationInfo[methods.keySet().size()];
+            MBeanOperationInfo[] ops = new MBeanOperationInfo[methods.keySet().size()];
             count = 0;
             for (Method method : methods.values()) {
-                operations[count++] = new MBeanOperationInfo("", method);
+                ops[count++] = new MBeanOperationInfo("", method);
             }
 
-            MBeanInfo mBeanInfo =
-                new MBeanInfo(delegateClass.getName(), "", attributes, null, operations, null);
+            MBeanInfo mBeanInfo = new MBeanInfo(delegateClassName, "", attrs, null, ops, null);
             return mBeanInfo;
 
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (javax.management.IntrospectionException ex) {
+            throw new InstrumentationException(ex);
         }
         
     }
@@ -224,7 +236,19 @@ public class ReflectedDynamicMBean implements DynamicMBean {
      */
     public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException,
         ReflectionException {
-        return null;
+        
+        Method method = methods.get(actionName);
+        if(method == null) {
+            throw new InstrumentationException("Operation not found: " + actionName);
+        }
+        try {
+            return method.invoke(delegate, params);
+        } catch (IllegalAccessException ex) {
+            throw new ReflectionException(ex);
+        } catch (InvocationTargetException ex) {
+            throw new ReflectionException(ex);
+        }
+        
     }
 
     /**
@@ -252,6 +276,34 @@ public class ReflectedDynamicMBean implements DynamicMBean {
      */
     public AttributeList setAttributes(AttributeList attributes) {
         throw new UnsupportedOperationException();
+    }
+    /**
+     * Caches managed operations.
+     * @param beanInfo Bean info for the managed instance.
+     */
+    private void cacheMethods(BeanInfo beanInfo) {
+        
+        for (MethodDescriptor methodDescriptor : beanInfo.getMethodDescriptors()) {
+
+            Method method = methodDescriptor.getMethod();
+            String name = method.getName();
+            
+            if (DEFAULT_EXCLUDED_METHODS.contains(name) || excludedMethods.contains(name)) {
+                continue;
+            }
+            int modifiers = method.getModifiers();
+            if (!Modifier.isPublic(modifiers) || Modifier.isStatic(modifiers)) {
+                continue;
+            }
+            if (propertyReadMethods.values().contains(method) || propertyWriteMethods.values().contains(method)) {
+                continue;
+            }
+            
+            // TODO Add support for overloaded methods
+            methods.put(name, method);
+            
+        }
+        
     }
 
 }
