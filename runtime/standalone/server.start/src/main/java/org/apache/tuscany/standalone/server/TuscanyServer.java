@@ -36,7 +36,7 @@ import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
-import org.apache.tuscany.standalone.server.management.jmx.instrument.runtime.Runtime;
+import org.apache.tuscany.standalone.server.management.jmx.instrument.reflect.ReflectedDynamicMBean;
 
 /**
  * This class provides the commandline interface for starting the 
@@ -131,7 +131,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             runtime.setRuntimeInfo(runtimeInfo);
             runtime.initialize();
             
-            Runtime mbean = new Runtime(runtime);
+            ReflectedDynamicMBean mbean = new ReflectedDynamicMBean(runtime);
             String runtimeJmxDomain = runtimeProperties.getProperty("jmx.domain");
             if(runtimeJmxDomain == null) {
                 throw new TuscanyServerException("JMX domain not defined for " + bootDirectory);
