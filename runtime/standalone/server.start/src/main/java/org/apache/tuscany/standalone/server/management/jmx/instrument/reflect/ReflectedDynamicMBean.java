@@ -149,33 +149,6 @@ public class ReflectedDynamicMBean implements DynamicMBean {
     }
 
     /**
-     * Caches managed properties.
-     * @param beanInfo Bean info for the managed instance.
-     */
-    private void cacheProperties(BeanInfo beanInfo) {
-        for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
-
-            String name = propertyDescriptor.getName();
-
-            if (DEFAULT_EXCLUDED_PROPERTIES.contains(name) || excludedProperties.contains(name)) {
-                continue;
-            }
-            properties.put(name, propertyDescriptor);
-
-            Method readMethod = propertyDescriptor.getReadMethod();
-            if (readMethod != null && Modifier.isPublic(readMethod.getModifiers())) {
-                propertyReadMethods.put(name, readMethod);
-            }
-
-            Method writeMethod = propertyDescriptor.getWriteMethod();
-            if (writeMethod != null && Modifier.isPublic(writeMethod.getModifiers())) {
-                propertyWriteMethods.put(name, writeMethod);
-            }
-
-        }
-    }
-
-    /**
      * @see javax.management.DynamicMBean#getAttribute(java.lang.String)
      */
     public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
@@ -318,6 +291,33 @@ public class ReflectedDynamicMBean implements DynamicMBean {
             
         }
         
+    }
+
+    /**
+     * Caches managed properties.
+     * @param beanInfo Bean info for the managed instance.
+     */
+    private void cacheProperties(BeanInfo beanInfo) {
+        for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
+
+            String name = propertyDescriptor.getName();
+
+            if (DEFAULT_EXCLUDED_PROPERTIES.contains(name) || excludedProperties.contains(name)) {
+                continue;
+            }
+            properties.put(name, propertyDescriptor);
+
+            Method readMethod = propertyDescriptor.getReadMethod();
+            if (readMethod != null && Modifier.isPublic(readMethod.getModifiers())) {
+                propertyReadMethods.put(name, readMethod);
+            }
+
+            Method writeMethod = propertyDescriptor.getWriteMethod();
+            if (writeMethod != null && Modifier.isPublic(writeMethod.getModifiers())) {
+                propertyWriteMethods.put(name, writeMethod);
+            }
+
+        }
     }
 
 }
