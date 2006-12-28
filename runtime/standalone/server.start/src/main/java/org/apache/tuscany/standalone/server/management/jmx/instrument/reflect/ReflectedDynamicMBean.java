@@ -206,7 +206,6 @@ public class ReflectedDynamicMBean implements DynamicMBean {
             MBeanOperationInfo[] operations = new MBeanOperationInfo[methods.keySet().size()];
             count = 0;
             for (Method method : methods.values()) {
-                System.err.println(method);
                 operations[count++] = new MBeanOperationInfo("", method);
             }
 
