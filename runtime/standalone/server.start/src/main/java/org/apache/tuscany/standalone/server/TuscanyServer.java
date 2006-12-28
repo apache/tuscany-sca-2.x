@@ -20,35 +20,43 @@ package org.apache.tuscany.standalone.server;
 
 import java.beans.Beans;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.host.util.LaunchHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
+import org.apache.tuscany.standalone.server.management.jmx.instrument.runtime.Runtime;
 
 /**
  * This class provides the commandline interface for starting the 
  * tuscany standalone server. 
  * 
  * <p>
- * The class boots the tuscany runtime and delegates the deployment 
- * of application composites to the runtime. This also starts a JMX 
- * server and listens for shutdown command.
+ * The class boots the tuscany server and also starts a JMX server 
+ * and listens for shutdown command. The server itself is available 
+ * by the object name <code>tuscany:type=server,name=tuscanyServer
+ * </code>. It also allows a runtime to be booted given a bootpath. 
+ * The JMX domain in which the runtime is registered si definied in 
+ * the file <code>$bootPath/etc/runtime.properties</code>. The properties
+ * defined are <code>jmx.domain</code> and <code>offline</code>.
  * </p>
  * 
  * <p>
  * The install directory can be specified using the system property 
  * <code>tuscany.installDir</code>. If not specified it is asumed to 
  * be the directory from where the JAR file containing the main class 
- * is loaded. All the boot libraries are expected to be in the 
- * <code>boot</code> directory under the install directory.
+ * is loaded. 
  * </p>
  * 
  * <p>
@@ -64,42 +72,45 @@ import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 public class TuscanyServer implements TuscanyServerMBean {
     
     /** Agent */
-    private Agent agent = RmiAgent.getInstance();
+    private Agent agent;
     
-    /** Runtime */
-    private TuscanyRuntime runtime;
+    /** Install directory */
+    private File installDirectory;
+    
+    /** Base Url */
+    private URL baseUrl;
     
     /**
      * 
      * @param args Commandline arguments.
      */
-    public static void main(String[] args) throws Exception {         
-        TuscanyServer tuscanyServer = new TuscanyServer();
-        tuscanyServer.start();
+    public static void main(String[] args) throws Exception {  
+        new TuscanyServer().start();
     }
     
     /**
      * Constructor initializes all the required classloaders.
+     * @throws MalformedURLException 
      *
      */
-    private TuscanyServer() {
-        
-        agent.start();
-        agent.register(this, "tuscanyServer");
-        
+    private TuscanyServer() throws MalformedURLException {
+        installDirectory = DirectoryHelper.getInstallDirectory();
+        baseUrl = installDirectory.toURI().toURL();
     }
+    
     
     /**
      * Starts the server.
      *
      */
-    public void start() {
+    public void startRuntime(String bootPath) {
         
         try {
             
-            File installDirectory = DirectoryHelper.getInstallDirectory();
-            URL baseUrl = installDirectory.toURI().toURL();
-            File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory);boolean online = !Boolean.parseBoolean(System.getProperty("offline", Boolean.FALSE.toString()));
+            File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, bootPath);
+            Properties runtimeProperties = getRuntimeProperties(bootDirectory);
+            
+            boolean online = !Boolean.parseBoolean(runtimeProperties.getProperty("offline"));
             StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDirectory, installDirectory, online);
 
             ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
@@ -112,13 +123,21 @@ public class TuscanyServer implements TuscanyServerMBean {
 
             String className = System.getProperty("tuscany.launcherClass",
                 "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
-            runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
+            TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
             runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
             runtime.setSystemScdl(systemScdl);
             runtime.setHostClassLoader(hostClassLoader);
             
             runtime.setRuntimeInfo(runtimeInfo);
             runtime.initialize();
+            
+            Runtime mbean = new Runtime(runtime);
+            String runtimeJmxDomain = runtimeProperties.getProperty("jmx.domain");
+            if(runtimeJmxDomain == null) {
+                throw new TuscanyServerException("JMX domain not defined for " + bootDirectory);
+            }
+            String runtimeOn = runtimeJmxDomain + ":type=Runtime,name=Runtime";
+            agent.register(mbean, runtimeOn);
             
         } catch (IOException ex) {
             throw new TuscanyServerException(ex);
@@ -136,14 +155,8 @@ public class TuscanyServer implements TuscanyServerMBean {
      * Starts the server.
      *
      */
-    public void shutdown() {        
-        
-        try {
-            runtime.destroy();
-            agent.shutdown();
-        } catch (ShutdownException ex) {
-            throw new TuscanyServerException(ex);
-        }
+    public void shutdown() {
+        agent.shutdown();
         System.err.println("Shutdown");
     }
 
@@ -165,6 +178,47 @@ public class TuscanyServer implements TuscanyServerMBean {
     private URL getSystemScdl(ClassLoader bootClassLoader) {
         String resource = System.getProperty("tuscany.systemScdlPath", "META-INF/tuscany/system.scdl");
         return bootClassLoader.getResource(resource);
+    }
+    
+    /**
+     * Starts the server and starts the JMX agent.
+     *
+     */
+    private void start() {        
+        agent = RmiAgent.getInstance();
+        agent.start();        
+        agent.register(this, "tuscany:type=server,name=tuscanyServer");
+    }
+    
+    /**
+     * Gets the properties for the runtime.
+     * @param runtimeBootPath Runtime bootpath.
+     * @return Runtime properties.
+     */
+    private Properties getRuntimeProperties(File runtimeBootPath) {
+        
+        File runtimePropertiesFile = new File(runtimeBootPath, "etc");
+        runtimePropertiesFile = new File(runtimePropertiesFile, "runtime.properties");
+        
+        if(!runtimePropertiesFile.exists()) {
+            throw new TuscanyServerException("Runtime properties not found: " + runtimePropertiesFile);
+        }
+        
+        Properties prop = new Properties();
+        InputStream in = null;
+        
+        try {
+            
+            in = new FileInputStream(runtimePropertiesFile);
+            prop.load(in);
+            return prop;
+            
+        } catch(IOException ex) {
+            throw new TuscanyServerException(ex);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+        
     }
 
 }

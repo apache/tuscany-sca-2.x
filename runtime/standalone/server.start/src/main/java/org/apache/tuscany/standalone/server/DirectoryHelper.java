@@ -33,12 +33,6 @@ public abstract class DirectoryHelper {
     /** Installation directory system property. */
     private static final String INSTALL_DIRECTORY_PROPERTY = "tuscany.installDir";
     
-    /** Boot directory system property. */
-    private static final String BOOT_DIRECTORY_PROPERTY = "tuscany.bootDir";
-    
-    /** Boot path. */
-    private static final String BOOT_PATH = "boot";
-    
     /**
      * Utility class constructor.
      *
@@ -88,21 +82,15 @@ public abstract class DirectoryHelper {
      * is expected to be a directory named <code>boot</code> under the install 
      * directory.
      * 
+     * @param installDirectory Tuscany install directory.
+     * @param bootPath Boot path for the runtime.
      * @return Tuscany boot directory.
      */
-    static final File getBootDirectory(File installDirectory) {
+    static final File getBootDirectory(File installDirectory, String bootPath) {
         
-        File bootDirectory = null;
-        
-        String bootDirectoryPath = System.getProperty(BOOT_DIRECTORY_PROPERTY);
-        if (bootDirectoryPath != null) {
-            bootDirectory = new File(bootDirectoryPath);
-        } else {        
-            bootDirectory = new File(installDirectory, BOOT_PATH);  
-        }
-
+        File bootDirectory =  new File(installDirectory, bootPath);  
         if(!bootDirectory.exists()) {
-            throw new IllegalStateException("Boot directory doesn't exist: " + bootDirectory);
+            throw new IllegalStateException("Boot directory doesn't exist: " + bootDirectory.getAbsolutePath());
         }
         return bootDirectory;
         
