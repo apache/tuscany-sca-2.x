@@ -198,7 +198,21 @@ public class ReflectedDynamicMBean implements DynamicMBean {
      * @see javax.management.DynamicMBean#getAttributes(java.lang.String[])
      */
     public AttributeList getAttributes(String[] attributes) {
-        throw new UnsupportedOperationException();
+        
+        AttributeList list = new AttributeList();
+        for(String attribute : attributes) {
+            try {
+                list.add(new Attribute(attribute, getAttribute(attribute)));
+            } catch (AttributeNotFoundException ex) {
+                throw new InstrumentationException(ex);
+            } catch (MBeanException ex) {
+                throw new InstrumentationException(ex);
+            } catch (ReflectionException ex) {
+                throw new InstrumentationException(ex);
+            }
+        }
+        return list;
+        
     }
 
     /**
