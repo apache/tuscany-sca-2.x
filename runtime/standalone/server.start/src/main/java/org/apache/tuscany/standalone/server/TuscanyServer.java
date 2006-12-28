@@ -131,7 +131,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             runtime.setRuntimeInfo(runtimeInfo);
             runtime.initialize();
             
-            ReflectedDynamicMBean mbean = new ReflectedDynamicMBean(runtime);
+            ReflectedDynamicMBean mbean = ReflectedDynamicMBean.newInstance(runtime);
             String runtimeJmxDomain = runtimeProperties.getProperty("jmx.domain");
             if(runtimeJmxDomain == null) {
                 throw new TuscanyServerException("JMX domain not defined for " + bootDirectory);
