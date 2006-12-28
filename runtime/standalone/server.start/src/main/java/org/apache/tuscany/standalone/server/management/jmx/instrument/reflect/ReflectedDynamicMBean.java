@@ -115,6 +115,11 @@ public class ReflectedDynamicMBean implements DynamicMBean {
         this.delegate = delegate;
         this.delegateClass = delegate.getClass();
         this.delegateClassName = delegateClass.getName();
+        
+        this.excludedMethods.addAll(excludedMethods);
+        this.excludedMethods.addAll(DEFAULT_EXCLUDED_METHODS);
+        this.excludedProperties.addAll(excludedProperties);
+        this.excludedProperties.addAll(DEFAULT_EXCLUDED_PROPERTIES);
 
         BeanInfo beanInfo;
         try {
@@ -275,7 +280,7 @@ public class ReflectedDynamicMBean implements DynamicMBean {
             Method method = methodDescriptor.getMethod();
             String name = method.getName();
             
-            if (DEFAULT_EXCLUDED_METHODS.contains(name) || excludedMethods.contains(name)) {
+            if (excludedMethods.contains(name)) {
                 continue;
             }
             int modifiers = method.getModifiers();
@@ -302,7 +307,7 @@ public class ReflectedDynamicMBean implements DynamicMBean {
 
             String name = propertyDescriptor.getName();
 
-            if (DEFAULT_EXCLUDED_PROPERTIES.contains(name) || excludedProperties.contains(name)) {
+            if (excludedProperties.contains(name)) {
                 continue;
             }
             properties.put(name, propertyDescriptor);
