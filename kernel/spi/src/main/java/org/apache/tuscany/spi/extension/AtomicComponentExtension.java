@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -44,7 +43,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class AtomicComponentExtension extends AbstractSCAObject implements AtomicComponent {
+public abstract class AtomicComponentExtension extends AbstractComponentExtension implements AtomicComponent {
 
     protected ScopeContainer scopeContainer;
     protected Scope scope;
