@@ -30,7 +30,6 @@ import org.w3c.dom.Document;
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
-import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
@@ -53,7 +52,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  *
  * @version $$Rev$$ $$Date$$
  */
-public abstract class CompositeComponentExtension extends AbstractSCAObject implements CompositeComponent {
+public abstract class CompositeComponentExtension extends AbstractComponentExtension implements CompositeComponent {
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();

@@ -77,5 +77,11 @@ public interface Component extends SCAObject {
      */
     TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
         throws TargetInvokerCreationException;
+    
+    /**
+     * Gets all the properties for the components.
+     * @return All properties configured for the component.
+     */
+    Map<String, Object> getProperties();
 
 }
