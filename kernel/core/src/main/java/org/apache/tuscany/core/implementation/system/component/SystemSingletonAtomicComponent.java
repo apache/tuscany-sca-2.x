@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
+import org.apache.tuscany.spi.extension.AbstractComponentExtension;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -46,7 +46,7 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractSCAObject implements AtomicComponent {
+public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension implements AtomicComponent {
 
     private T instance;
     private Map<String, InboundWire> inboundWires;
