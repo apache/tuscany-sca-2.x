@@ -28,9 +28,6 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.core.deployer.RootDeploymentContext;
-import org.apache.tuscany.host.deployment.ContentTypes;
-import org.apache.tuscany.host.deployment.DeploymentException;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -43,6 +40,10 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
+import org.apache.tuscany.host.deployment.ContentTypes;
+import org.apache.tuscany.host.deployment.DeploymentException;
 
 /**
  * @version $Rev$ $Date$
@@ -73,34 +74,34 @@ public class XMLChangeSetHandler implements ChangeSetHandler {
             XMLStreamReader xmlReader = xmlFactory.createXMLStreamReader(changeSet);
             while (true) {
                 switch (xmlReader.next()) {
-                case START_ELEMENT:
-                    if (!CHANGESET.equals(xmlReader.getName())) {
-                        throw new InvalidDocumentException(xmlReader.getName().toString());
-                    }
-                    processChanges(xmlReader);
-                    break;
-                case END_DOCUMENT:
-                    return;
+                    case START_ELEMENT:
+                        if (!CHANGESET.equals(xmlReader.getName())) {
+                            throw new InvalidDocumentException(xmlReader.getName().toString());
+                        }
+                        processChanges(xmlReader);
+                        break;
+                    case END_DOCUMENT:
+                        return;
                 }
             }
         } catch (XMLStreamException e) {
-            throw(IOException) new IOException(e.getMessage()).initCause(e);
+            throw (IOException) new IOException(e.getMessage()).initCause(e);
         }
     }
 
     public void processChanges(XMLStreamReader xmlReader) throws XMLStreamException, DeploymentException {
         while (true) {
             switch (xmlReader.next()) {
-            case START_ELEMENT:
-                if (CREATECOMPONENT.equals(xmlReader.getName())) {
-                    createComponent(xmlReader);
-                } else {
-                    // reject unrecognized commands
-                    throw new InvalidDocumentException(xmlReader.getName().toString());
-                }
-                break;
-            case END_ELEMENT:
-                return;
+                case START_ELEMENT:
+                    if (CREATECOMPONENT.equals(xmlReader.getName())) {
+                        createComponent(xmlReader);
+                    } else {
+                        // reject unrecognized commands
+                        throw new InvalidDocumentException(xmlReader.getName().toString());
+                    }
+                    break;
+                case END_ELEMENT:
+                    return;
             }
         }
     }
