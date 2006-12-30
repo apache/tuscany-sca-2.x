@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -47,7 +47,8 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension implements AtomicComponent {
+public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension
+    implements AtomicComponent {
 
     private T instance;
     private Map<String, InboundWire> inboundWires;

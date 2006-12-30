@@ -29,16 +29,16 @@ import javax.management.ReflectionException;
 
 /**
  * Dynamic MBean based on management annotations.
- * 
- * @version $Revision$ $Date$
  *
+ * @version $Revision$ $Date$
  */
 public class AnnotationDrivenDynamicMBean implements DynamicMBean {
 
     /**
      * @see javax.management.DynamicMBean#getAttribute(java.lang.String)
      */
-    public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
+    public Object getAttribute(String attribute)
+        throws AttributeNotFoundException, MBeanException, ReflectionException {
         throw new UnsupportedOperationException();
     }
 
@@ -57,10 +57,10 @@ public class AnnotationDrivenDynamicMBean implements DynamicMBean {
     }
 
     /**
-     * @see javax.management.DynamicMBean#invoke(java.lang.String, java.lang.Object[], java.lang.String[])
+     * @see javax.management.DynamicMBean#invoke(java.lang.String,java.lang.Object[],java.lang.String[])
      */
     public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException,
-        ReflectionException {
+                                                                                        ReflectionException {
         throw new UnsupportedOperationException();
     }
 
@@ -68,7 +68,7 @@ public class AnnotationDrivenDynamicMBean implements DynamicMBean {
      * @see javax.management.DynamicMBean#setAttribute(javax.management.Attribute)
      */
     public void setAttribute(Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException,
-        MBeanException, ReflectionException {
+                                                         MBeanException, ReflectionException {
         throw new UnsupportedOperationException();
     }
 

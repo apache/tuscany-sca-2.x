@@ -20,38 +20,40 @@ package org.apache.tuscany.core.services.management.jmx;
 
 import java.net.URI;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.services.management.ManagementService;
-
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.services.management.ManagementService;
+
 /**
  * JMX implementation of the management service.
- * 
- * @version $Revision$ $Date$
  *
+ * @version $Revision$ $Date$
  */
 public abstract class JmxManagementService implements ManagementService {
-    
-    /** Istrumentation mode used by the service. */
+
+    /**
+     * Istrumentation mode used by the service.
+     */
     @Property
     protected InstrumentationMode instrumentationMode;
 
     /**
-     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI, java.lang.String, org.apache.tuscany.spi.component.Component)
+     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI,
+     *java.lang.String,org.apache.tuscany.spi.component.Component)
      */
     public void registerComponent(URI compositeURI, String name, Component component) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * Starts the agent connector for the service.
      */
     @Init
     public abstract void start();
-    
+
     /**
      * Stops the agent connector for the service.
      */
