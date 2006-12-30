@@ -59,7 +59,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
 
         int initLevel = componentType.getInitLevel();
 
-        // get list of services provided by this component
+        // get list of serviceBindings provided by this component
         Collection<ServiceDefinition> collection = componentType.getServices().values();
         List<Class<?>> services = new ArrayList<Class<?>>(collection.size());
         for (ServiceDefinition serviceDefinition : collection) {

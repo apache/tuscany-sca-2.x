@@ -27,14 +27,14 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.core.binding.local.AbstractCompositeTargetInvoker;
 
 /**
  * Dispatches a callback invocation to the callback instance
  *
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
-
+public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeTargetInvoker {
     private Operation operation;
     private InboundWire inboundWire;
 

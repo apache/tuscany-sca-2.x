@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.core.binding.local.CompositeTargetInvoker;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;

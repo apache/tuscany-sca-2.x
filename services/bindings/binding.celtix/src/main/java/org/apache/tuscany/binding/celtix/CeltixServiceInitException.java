@@ -21,7 +21,7 @@ package org.apache.tuscany.binding.celtix;
 import org.apache.tuscany.spi.CoreRuntimeException;
 
 /**
- * Denotes an exception starting a {@link CeltixService} instance
+ * Denotes an exception starting a {@link CeltixServiceBinding} instance
  *
  * @version $Rev$ $Date$
  */

@@ -48,7 +48,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
     public static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
 
-    @Constructor({"registry"})
+    @Constructor
     public ReferenceLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -84,7 +84,8 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
                         referenceDefinition.setMultiplicity(multiplicity);
                         return referenceDefinition;
                     } else {
-                        BoundReferenceDefinition<BindingDefinition> referenceDefinition = new BoundReferenceDefinition<BindingDefinition>();
+                        BoundReferenceDefinition<BindingDefinition> referenceDefinition =
+                            new BoundReferenceDefinition<BindingDefinition>();
                         referenceDefinition.setName(name);
                         referenceDefinition.setServiceContract(serviceContract);
                         referenceDefinition.setMultiplicity(multiplicity);

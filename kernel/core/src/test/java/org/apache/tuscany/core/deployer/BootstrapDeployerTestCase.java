@@ -20,6 +20,7 @@ package org.apache.tuscany.core.deployer;
 
 import java.net.URL;
 import java.util.Map;
+import java.util.Collection;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
@@ -38,6 +39,7 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.BindingDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -82,7 +84,10 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertNotNull(serviceDefinition);
         assertEquals("service", serviceDefinition.getName());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
-        assertTrue(serviceDefinition.getBinding() instanceof SystemBindingDefinition);
+        Collection<BindingDefinition> bindings = serviceDefinition.getBindings();
+        for (BindingDefinition binding : bindings) {
+            assertTrue(binding instanceof SystemBindingDefinition);
+        }
 
         // check parse of <component>
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = composite.getDeclaredComponents();

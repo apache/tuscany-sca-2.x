@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -51,7 +50,7 @@ public class CompositePropagationTestCase extends TestCase {
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
 
@@ -69,7 +68,7 @@ public class CompositePropagationTestCase extends TestCase {
         expect(component.getName()).andReturn("source").anyTimes();
         component.stop();
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         replay(component);

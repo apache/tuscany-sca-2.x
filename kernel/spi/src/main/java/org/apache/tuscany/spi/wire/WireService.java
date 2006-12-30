@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -126,13 +126,13 @@ public interface WireService {
     void createWires(Reference reference, ServiceContract<?> contract);
 
     /**
-     * Creates wires for a service and injects them on the service
+     * Creates wires for a serviceBinding and injects them on the serviceBinding
      *
-     * @param service    the service
+     * @param serviceBinding    the serviceBinding
      * @param targetName the target nane
-     * @param contract   the service contract
+     * @param contract   the serviceBinding contract
      */
-    void createWires(Service service, String targetName, ServiceContract<?> contract);
+    void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract);
 
     /**
      * Check the compatiblity of the source and the target service contracts.<p> A wire may only connect a source to a

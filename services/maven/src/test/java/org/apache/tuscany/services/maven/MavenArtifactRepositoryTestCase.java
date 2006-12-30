@@ -45,7 +45,7 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
     }
 
     /*
-     * Test method for 'org.apache.tuscany.services.maven.MavenArtifactRepository.resolve(Artifact)'
+     * Test method for 'org.apache.tuscany.serviceBindings.maven.MavenArtifactRepository.resolve(Artifact)'
      */
     public void testResolveArtifact() throws Exception {
 

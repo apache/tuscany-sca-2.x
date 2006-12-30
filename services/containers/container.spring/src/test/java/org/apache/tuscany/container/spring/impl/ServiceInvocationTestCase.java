@@ -21,7 +21,8 @@ package org.apache.tuscany.container.spring.impl;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -50,19 +51,23 @@ public class ServiceInvocationTestCase extends TestCase {
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
         outboundWire.setTargetName(new QualifiedName("foo"));
         ArtifactFactory.terminateWire(outboundWire);
-        Service service =
-            new ServiceExtension("fooService", composite);
-        service.setInboundWire(inboundWire);
-        service.setOutboundWire(outboundWire);
+        ServiceBinding serviceBinding =
+            new ServiceBindingExtension("fooService", composite) {
+            };
+
+        serviceBinding.setInboundWire(inboundWire);
+        serviceBinding.setOutboundWire(outboundWire);
+        Service service = ArtifactFactory.createService("fooService", composite, outboundWire.getServiceContract());
+        service.addServiceBinding(serviceBinding);
         Connector connector = ArtifactFactory.createConnector();
-        outboundWire.setContainer(service);
-        inboundWire.setContainer(service);
+        outboundWire.setContainer(serviceBinding);
+        inboundWire.setContainer(serviceBinding);
         connector.connect(inboundWire, outboundWire, true);
         for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
             chain.setTargetInvoker(composite.createTargetInvoker("foo", chain.getOperation(), null));
         }
         composite.register(service);
-        InboundWire wire = composite.getService("fooService").getInboundWire();
+        InboundWire wire = composite.getService("fooService").getServiceBindings().get(0).getInboundWire();
         TestBean serviceInstance = wireService.createProxy(TestBean.class, wire);
         assertEquals("bar", serviceInstance.echo("bar"));
     }
@@ -81,4 +86,6 @@ public class ServiceInvocationTestCase extends TestCase {
         super.setUp();
         wireService = ArtifactFactory.createWireService();
     }
+
+
 }

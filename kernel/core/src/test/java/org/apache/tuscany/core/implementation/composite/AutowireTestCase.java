@@ -20,11 +20,11 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.wire.InboundWire;
 
@@ -51,7 +51,7 @@ public class AutowireTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         TestUtils.populateInboundWires(component, wires);
         EasyMock.replay(component);
@@ -77,7 +77,7 @@ public class AutowireTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         TestUtils.populateInboundWires(component, wires);
 
@@ -99,20 +99,27 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
+        ServiceBinding serviceBinding = EasyMock.createMock(ServiceBinding.class);
+        InboundWire wire = TestUtils.createInboundWire(Source.class);
+        wire.setContainer(serviceBinding);
+        EasyMock.expect(serviceBinding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(serviceBinding);
+
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(serviceBinding);
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
         EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
-        InboundWire wire = TestUtils.createInboundWire(Source.class);
-        wire.setContainer(service);
-        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
+
+        EasyMock.expect(service.getServiceBindings()).andReturn(bindings).atLeastOnce();
         EasyMock.replay(service);
         parent.register(service);
 
         InboundWire source = parent.resolveSystemExternalAutowire(Source.class);
-        assertSame(service, source.getContainer());
+        assertSame(serviceBinding, source.getContainer());
         InboundWire source2 = parent.resolveSystemExternalAutowire(Source2.class);
         assertNull(source2);
-        EasyMock.verify(service);
+        EasyMock.verify(serviceBinding);
     }
 
     /**
@@ -122,20 +129,27 @@ public class AutowireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("parent", null, null, true);
         parent.start();
 
+        ServiceBinding serviceBinding = EasyMock.createMock(ServiceBinding.class);
+        InboundWire wire = TestUtils.createInboundWire(Source.class);
+        wire.setContainer(serviceBinding);
+        EasyMock.expect(serviceBinding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(serviceBinding);
+
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(serviceBinding);
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
         EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
-        InboundWire wire = TestUtils.createInboundWire(Source.class);
-        wire.setContainer(service);
-        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
+
+        EasyMock.expect(service.getServiceBindings()).andReturn(bindings).atLeastOnce();
         EasyMock.replay(service);
         parent.register(service);
 
         InboundWire source = parent.resolveExternalAutowire(Source.class);
-        assertSame(service, source.getContainer());
+        assertSame(serviceBinding, source.getContainer());
         InboundWire source2 = parent.resolveExternalAutowire(Source2.class);
         assertNull(source2);
-        EasyMock.verify(service);
+        EasyMock.verify(serviceBinding);
     }
 
 

@@ -76,7 +76,7 @@ public class JavaScriptComponentBuilder extends ComponentBuilderExtension<JavaSc
         JavaScriptImplementation implementation = componentDefinition.getImplementation();
         JavaScriptComponentType componentType = implementation.getComponentType();
 
-        // get list of services provided by this component
+        // get list of serviceBindings provided by this component
         Collection<ServiceDefinition> collection = componentType.getServices().values();
         List<Class<?>> services = new ArrayList<Class<?>>(collection.size());
         for (ServiceDefinition serviceDefinition : collection) {

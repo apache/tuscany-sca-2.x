@@ -6,44 +6,40 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
+import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-public class CompositeService extends ServiceExtension {
+/**
+ * The runtime representaion of the local binding
+ *
+ * @version $Rev$ $Date$
+ */
+public class LocalServiceBinding extends ServiceBindingExtension {
 
-    public CompositeService(String name, CompositeComponent parent) {
+    public LocalServiceBinding(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
     }
 
-    /**
-     * A service for a remote binding does not need a target invoker, but a bindless service does because it gets wired
-     * localy from a reference (or from a parent service?!) We just reuse CompositeTargetInvoker for now since it seems
-     * the target invoker we need does the same thing, if this is confirmed we should give it a common name FIXME !!!
-     * Notice that this method is not defined in the SPI !!!
-     */
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException {
         return new CompositeTargetInvoker(operation, outboundWire);
-    }
-
-    /**
-     */
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire);
     }
 
 }

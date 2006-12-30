@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObjectStartException;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.osgi.OSGiHost;
@@ -32,7 +32,7 @@ import org.osgi.framework.ServiceFactory;
 /**
  * @version $Rev$ $Date$
  */
-public class OSGiService extends ServiceExtension {
+public class OSGiServiceBinding extends ServiceBindingExtension {
     private final String osgiServiceName;
     //private final Class<? extends Object> service;
     private OSGiHost host;
@@ -47,7 +47,7 @@ public class OSGiService extends ServiceExtension {
      * @param osgiServiceName the name to publish the service as to the OSGi hose
      * @param host            the OSGi host
      */
-    public OSGiService(String name,
+    public OSGiServiceBinding(String name,
                        CompositeComponent parent,
                        WireService wireService,
                        String osgiServiceName,

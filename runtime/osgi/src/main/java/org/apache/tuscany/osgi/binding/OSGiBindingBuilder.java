@@ -20,7 +20,7 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -46,12 +46,13 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBindingDefin
         return OSGiBindingDefinition.class;
     }
 
-    public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<OSGiBindingDefinition> boundServiceDefinition,
-                         DeploymentContext deploymentContext) {
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition boundServiceDefinition,
+                                OSGiBindingDefinition bindingDefinition,
+                                DeploymentContext deploymentContext) {
         String name = boundServiceDefinition.getName();
-        String osgiServiceName = boundServiceDefinition.getBinding().getService();
-        return new OSGiService(name, parent, wireService, osgiServiceName, host);
+        String osgiServiceName = bindingDefinition.getService();
+        return new OSGiServiceBinding(name, parent, wireService, osgiServiceName, host);
     }
 
     public OSGiReference build(CompositeComponent parent,
@@ -61,7 +62,7 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBindingDefin
         return new OSGiReference(name, parent);
     }
 
-    protected Class<? extends Object> getServiceInterface(BoundServiceDefinition<OSGiBindingDefinition> boundServiceDefinition) {
+    protected Class<? extends Object> getServiceInterface(BoundServiceDefinition boundServiceDefinition) {
         return boundServiceDefinition.getServiceContract().getInterfaceClass();
     }
 

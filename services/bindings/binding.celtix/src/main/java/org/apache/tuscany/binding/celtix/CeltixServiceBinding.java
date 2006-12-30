@@ -41,7 +41,7 @@ import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 
 import commonj.sdo.helper.TypeHelper;
 import org.apache.tuscany.binding.celtix.io.SCAServerDataBindingCallback;
@@ -65,7 +65,7 @@ import org.xmlsoap.schemas.wsdl.http.AddressType;
  *
  * @version $Rev$ $Date$
  */
-public class CeltixService extends ServiceExtension implements ServerBindingEndpointCallback {
+public class CeltixServiceBinding extends ServiceBindingExtension implements ServerBindingEndpointCallback {
 
     private Bus bus;
     private Port port;
@@ -78,7 +78,7 @@ public class CeltixService extends ServiceExtension implements ServerBindingEndp
         new ConcurrentHashMap<QName, ServerDataBindingCallback>();
 
 
-    public CeltixService(String theName,
+    public CeltixServiceBinding(String theName,
                          CompositeComponent parent,
                          WebServiceBindingDefinition binding,
                          Bus bus,

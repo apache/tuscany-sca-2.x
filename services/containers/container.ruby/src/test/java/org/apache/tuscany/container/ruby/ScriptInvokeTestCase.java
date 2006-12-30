@@ -37,9 +37,9 @@ public class ScriptInvokeTestCase extends TestCase {
     public void testBasicScriptInvocation() throws Exception {
 //        ModuleScopeContainer scope = new ModuleScopeContainer(null);
 //        scope.start();
-//        List<Class<?>> services = new ArrayList<Class<?>>();
-//        services.add(Greeting.class);
-//        RubyComponent<Greeting> context = new RubyComponent<Greeting>("source", rhinoScript, services, new HashMap<String, Object>(),
+//        List<Class<?>> serviceBindings = new ArrayList<Class<?>>();
+//        serviceBindings.add(Greeting.class);
+//        RubyComponent<Greeting> context = new RubyComponent<Greeting>("source", rhinoScript, serviceBindings, new HashMap<String, Object>(),
 //                null, scope, ArtifactFactory.createWireService(), null);
 //        scope.register(context);
 //        Greeting object = (Greeting) context.getServiceInstance();

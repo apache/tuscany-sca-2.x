@@ -33,7 +33,7 @@ public interface Connector {
      * Connects the given source's wires to corresponding wires to a target. Wires are connected by bridging invocation
      * chains.
      *
-     * @param source the source, i.e. a <code>Service</code>, <code>Component</code>, or <code>Reference</code>
+     * @param source the source, i.e. a <code>ServiceBinding</code>, <code>Component</code>, or <code>Reference</code>
      * @throws WiringException
      */
     void connect(SCAObject source) throws WiringException;

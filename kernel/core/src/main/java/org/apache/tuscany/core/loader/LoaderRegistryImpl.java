@@ -39,6 +39,7 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
+import org.apache.tuscany.spi.loader.UnrecognizedComponentTypeException;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -163,7 +164,7 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         Class<I> key = (Class<I>) implementation.getClass();
         ComponentTypeLoader<I> loader = (ComponentTypeLoader<I>) componentTypeLoaders.get(key);
         if (loader == null) {
-            throw new UnsupportedOperationException();
+            throw new UnrecognizedComponentTypeException(key);
         }
         loader.load(parent, implementation, deploymentContext);
     }

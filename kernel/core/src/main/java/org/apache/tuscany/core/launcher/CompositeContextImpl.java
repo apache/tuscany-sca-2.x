@@ -30,10 +30,17 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
 
 
+/**
+ * Default implementation of the {@link org.osoa.sca.CompositeContext}
+ *
+ * @version $Rev$ $Date$
+ */
 public class CompositeContextImpl extends SCA implements CompositeContext {
     protected final CompositeComponent composite;
     protected final WireService wireService;
@@ -51,24 +58,12 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         setCompositeContext(null);
     }
 
-    public ServiceReference createServiceReferenceForSession(Object arg0) {
-        return null;
-    }
-
-    public ServiceReference createServiceReferenceForSession(Object arg0, String arg1) {
-        return null;
-    }
-
     public String getCompositeName() {
-        return null;
+        return composite.getName();
     }
 
     public String getCompositeURI() {
-        return null;
-    }
-
-    public RequestContext getRequestContext() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public <T> T locateService(Class<T> serviceInterface, String serviceName) throws ServiceRuntimeException {
@@ -89,8 +84,28 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         return wireService.createProxy(serviceInterface, wire);
     }
 
+    public ServiceReference createServiceReferenceForSession(Object arg0) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ServiceReference createServiceReferenceForSession(Object arg0, String arg1) {
+        throw new UnsupportedOperationException();
+    }
+
+    public RequestContext getRequestContext() {
+        throw new UnsupportedOperationException();
+    }
+
+    public ServiceReference newSession(String arg0) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ServiceReference newSession(String arg0, Object arg1) {
+        throw new UnsupportedOperationException();
+    }
+    
     private InboundWire getInboundWire(SCAObject child, String name, String serviceName) {
-        InboundWire wire;
+        InboundWire wire = null;
         if (child instanceof AtomicComponent) {
             wire = ((AtomicComponent) child).getInboundWire(name);
             if (wire == null) {
@@ -98,7 +113,16 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
                 throw new ServiceRuntimeException("Service not found [" + qName + "]");
             }
         } else if (child instanceof Service) {
-            wire = ((Service) child).getInboundWire();
+            Service service = (Service) child;
+            for (ServiceBinding binding : service.getServiceBindings()) {
+                if (Wire.LOCAL_BINDING.equals(binding.getInboundWire().getBindingType())) {
+                    wire = binding.getInboundWire();
+                    break;
+                }
+            }
+            if (wire == null) {
+                throw new ServiceRuntimeException("Local binding for service not found [" + name + "]");
+            }
         } else if (child instanceof Reference) {
             wire = ((Reference) child).getInboundWire();
         } else if (child == null) {
@@ -107,14 +131,6 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
             throw new ServiceRuntimeException("Invalid service type [" + child.getClass().getName() + "]");
         }
         return wire;
-    }
-
-    public ServiceReference newSession(String arg0) {
-        return null;
-    }
-
-    public ServiceReference newSession(String arg0, Object arg1) {
-        return null;
     }
 
 }

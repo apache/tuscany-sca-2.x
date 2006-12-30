@@ -22,16 +22,26 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class CompositeContextImplTestCase extends TestCase {
+
+    public void testGetName() throws Exception {
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getName()).andReturn("foo");
+        EasyMock.replay(composite);
+        CompositeContextImpl context = new CompositeContextImpl(composite, null);
+        assertEquals("foo", context.getCompositeName());
+    }
 
     public void testAtomicLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
@@ -58,10 +68,14 @@ public class CompositeContextImplTestCase extends TestCase {
 
     public void testServiceLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getBindingType()).andReturn(InboundWire.LOCAL_BINDING);
         EasyMock.replay(wire);
-        Service child = EasyMock.createMock(Service.class);
-        EasyMock.expect(child.getInboundWire()).andReturn(wire);
-        EasyMock.replay(child);
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        binding.setService(EasyMock.isA(Service.class));
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(binding);
+        Service child = new ServiceImpl("Foo", null, null);
+        child.addServiceBinding(binding);
         CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(composite.getChild("Foo")).andReturn(child);
         EasyMock.replay(composite);
@@ -76,7 +90,7 @@ public class CompositeContextImplTestCase extends TestCase {
         EasyMock.verify(service);
         EasyMock.verify(composite);
         EasyMock.verify(wire);
-        EasyMock.verify(child);
+        EasyMock.verify(binding);
     }
 
     public void testReferenceLocate() throws Exception {
@@ -105,10 +119,14 @@ public class CompositeContextImplTestCase extends TestCase {
 
     public void testCompositeLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getBindingType()).andReturn(InboundWire.LOCAL_BINDING);
         EasyMock.replay(wire);
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getInboundWire()).andReturn(wire);
-        EasyMock.replay(service);
+        ServiceBinding serviceBinding = EasyMock.createMock(ServiceBinding.class);
+        serviceBinding.setService(EasyMock.isA(Service.class));
+        EasyMock.expect(serviceBinding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(serviceBinding);
+        Service service = new ServiceImpl("Foo", null, null);
+        service.addServiceBinding(serviceBinding);
         CompositeComponent child = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(child.getChild("Bar")).andReturn(service);
         EasyMock.replay(child);
@@ -127,7 +145,7 @@ public class CompositeContextImplTestCase extends TestCase {
         EasyMock.verify(composite);
         EasyMock.verify(wire);
         EasyMock.verify(child);
-        EasyMock.verify(service);
+        EasyMock.verify(serviceBinding);
     }
 
     private class FooService {

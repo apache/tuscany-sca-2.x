@@ -130,7 +130,7 @@
         <property name="poolSize">10</property>
     </component>
 
-    <component name="workScheduler">
+    <component name="workSchCompositeContextImplTestCaseeduler">
         <system:implementation.system class="org.apache.tuscany.core.services.work.jsr237.Jsr237WorkScheduler"/>
     </component>
 
@@ -146,6 +146,15 @@
     <component name="directoryScanExtender" initLevel="90">
         <system:implementation.system class="org.apache.tuscany.runtime.standalone.host.DirectoryScanExtender"/>
         <property name="path">extensions</property>
+    </component>
+
+    <!-- the local binding -->
+    <component name="localBindingLoader">
+        <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingLoader"/>
+    </component>
+
+    <component name="localBindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingBuilder"/>
     </component>
 
 </composite>

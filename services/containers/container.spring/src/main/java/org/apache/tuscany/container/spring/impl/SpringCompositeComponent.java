@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
@@ -175,14 +175,14 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);
                 }
                 return wireService.createProxy(type, reference.getInboundWire());
-            } else if (object instanceof Service) {
-                Service service = (Service) object;
-                type = service.getInboundWire().getServiceContract().getInterfaceClass();
+            } else if (object instanceof ServiceBinding) {
+                ServiceBinding serviceBinding = (ServiceBinding) object;
+                type = serviceBinding.getInboundWire().getServiceContract().getInterfaceClass();
                 if (requiredType != null && requiredType.isAssignableFrom(type)) {
                     // need null check since Spring may pass in a null
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);
                 }
-                return wireService.createProxy(type, service.getInboundWire());
+                return wireService.createProxy(type, serviceBinding.getInboundWire());
             } else {
                 throw new AssertionError("Illegal object type [" + name + "]");
             }

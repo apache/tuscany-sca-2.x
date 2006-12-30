@@ -20,34 +20,30 @@ package org.apache.tuscany.core.wire;
 
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.model.BindingDefinition;
+import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
+import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
-import org.apache.tuscany.core.implementation.composite.CompositeService;
 import org.apache.tuscany.core.implementation.composite.CompositeReference;
 
 /**
@@ -114,12 +110,7 @@ public abstract class WireServiceExtension implements WireService {
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             // TODO handle policy
-            //TODO statement below could be cleaner
-            if (service instanceof BindlessServiceDefinition) {
-                chain.addInterceptor(new SynchronousBridgingInterceptor());
-            } else {
-                chain.addInterceptor(new InvokerInterceptor());
-            }
+            chain.addInterceptor(new InvokerInterceptor());
             wire.addInvocationChain(operation, chain);
         }
         if (contract.getCallbackName() != null) {
@@ -132,28 +123,24 @@ public abstract class WireServiceExtension implements WireService {
         Implementation<?> implementation = definition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
         for (ServiceDefinition service : componentType.getServices().values()) {
-            InboundWire inboundWire = createWire(service);
-            inboundWire.setContainer(component);
             if (componentType instanceof CompositeComponentType<?, ?, ?>) {
                 // If this is the case, then it means that component has already been returned
                 // by CompositeBuilder and thus its children, in particular composite services,
                 // have been registered
                 CompositeComponent compositeComponent = (CompositeComponent) component;
-                if (service instanceof BoundServiceDefinition) {
-                    BindingDefinition binding = ((BoundServiceDefinition) service).getBinding();
-                    if (binding instanceof SystemBindingDefinition) {
-                        continue;
-                    }
+                Service serviceChild;
+                if (component.isSystem()) {
+                    // FIXME JFM test
+                    serviceChild = (Service) compositeComponent.getSystemChild(service.getName());
+                } else {
+                    serviceChild = (Service) compositeComponent.getChild(service.getName());
                 }
-                Service serviceChild = (Service) compositeComponent.getChild(service.getName());
                 assert serviceChild != null;
-                if (serviceChild instanceof CompositeService) {
-                    serviceChild.setInboundWire(inboundWire);
-                    // Notice that now the more immediate container of the wire is the composite service
-                    inboundWire.setContainer(serviceChild);
-                }
+            } else {
+                InboundWire wire = createWire(service);
+                wire.setContainer(component);
+                component.addInboundWire(wire);
             }
-            component.addInboundWire(inboundWire);
         }
 
         for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
@@ -212,32 +199,34 @@ public abstract class WireServiceExtension implements WireService {
         reference.setOutboundWire(outboundWire);
     }
 
-    public void createWires(Service service, String targetName, ServiceContract<?> contract) {
+    public void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
 
-        // [rfeng] Check if the Reference has the binding contract
-        ServiceContract<?> bindingContract = service.getBindingServiceContract();
+        // [rfeng] Check if the Reference has the serviceBinding contract
+        ServiceContract<?> bindingContract = serviceBinding.getBindingServiceContract();
         if (bindingContract == null) {
             bindingContract = contract;
         }
         inboundWire.setServiceContract(bindingContract);
-        inboundWire.setContainer(service);
+        inboundWire.setContainer(serviceBinding);
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
+            // TODO JFM remove need for this
+            inboundChain.addInterceptor(new SynchronousBridgingInterceptor());
             inboundWire.addInvocationChain(operation, inboundChain);
         }
 
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetName(new QualifiedName(targetName));
-        outboundWire.setContainer(service);
+        outboundWire.setContainer(serviceBinding);
 
         for (Operation<?> operation : contract.getOperations().values()) {
             OutboundInvocationChain outboundChain = createOutboundChain(operation);
             outboundWire.addInvocationChain(operation, outboundChain);
         }
 
-        // Add target callback chain to outbound wire, applicable to both bound and bindless services
+        // Add target callback chain to outbound wire
         if (contract.getCallbackName() != null) {
             outboundWire.setCallbackInterface(contract.getCallbackClass());
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
@@ -248,13 +237,8 @@ public abstract class WireServiceExtension implements WireService {
                 outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
             }
         }
-
-        // Not clear in any case why this is done here and at the parent composite level as well
-        // But for a composite service, make sure that the inbound wire comes from the parent
-        if (!(service instanceof CompositeService)) {
-            service.setInboundWire(inboundWire);
-        }
-        service.setOutboundWire(outboundWire);
+        serviceBinding.setInboundWire(inboundWire);
+        serviceBinding.setOutboundWire(outboundWire);
     }
 
     /**

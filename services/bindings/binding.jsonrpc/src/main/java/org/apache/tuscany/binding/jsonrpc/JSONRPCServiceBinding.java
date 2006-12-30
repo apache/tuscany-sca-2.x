@@ -21,14 +21,14 @@ package org.apache.tuscany.binding.jsonrpc;
 import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * @version $Rev$ $Date$
  */
-public class JSONRPCService extends ServiceExtension {
+public class JSONRPCServiceBinding extends ServiceBindingExtension {
 
     private static int servletRegistrationCount = 0;
 
@@ -38,7 +38,7 @@ public class JSONRPCService extends ServiceExtension {
 
     public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
 
-    public JSONRPCService(String theName, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
+    public JSONRPCServiceBinding(String theName, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
 
         super(theName, parent);
 

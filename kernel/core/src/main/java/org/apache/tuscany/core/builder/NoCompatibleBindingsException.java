@@ -16,18 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.test.binding;
+package org.apache.tuscany.core.builder;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.builder.WiringException;
 
 /**
  * @version $Rev$ $Date$
  */
-public class TestBindingService extends ServiceExtension {
-    public TestBindingService(String name, CompositeComponent parent) throws CoreRuntimeException {
-        super(name, parent);
-        // do nothing, but this could register with the host environment
+public class NoCompatibleBindingsException extends WiringException {
+    public NoCompatibleBindingsException(String sourceName,
+                                         String targetName,
+                                         String serviceName) {
+        super("No compatible bindings for source and target");
+        setSourceName(sourceName);
+        setTargetName(targetName);
+        setTargetServiceName(serviceName);
     }
+
 }

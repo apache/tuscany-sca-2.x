@@ -20,11 +20,11 @@ package org.apache.tuscany.test.binding;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
  * @version $Rev$ $Date$
@@ -32,15 +32,16 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 public class TestBindingBuilder extends BindingBuilderExtension<TestBindingDefinition> {
 
     @SuppressWarnings("unchecked")
-    public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<TestBindingDefinition> definition,
-                           DeploymentContext context) {
-        return new TestBindingService(definition.getName(), parent);
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition definition,
+                                TestBindingDefinition bindingDefinition,
+                                DeploymentContext ctx) {
+        return new TestBindingServiceBinding(definition.getName(), parent);
     }
 
     public Reference build(CompositeComponent parent,
-                               BoundReferenceDefinition<TestBindingDefinition> definition,
-                               DeploymentContext context) {
+                           BoundReferenceDefinition<TestBindingDefinition> definition,
+                           DeploymentContext ctx) {
         String name = definition.getName();
         return new TestBindingReference(name, parent);
     }

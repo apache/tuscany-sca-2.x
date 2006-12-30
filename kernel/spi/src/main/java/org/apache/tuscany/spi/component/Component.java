@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -40,14 +41,9 @@ public interface Component extends SCAObject {
     void addInboundWire(InboundWire wire);
 
     /**
-     * Returns the target-side wire associated with the given service name or null if not found
-     */
-    InboundWire getInboundWire(String serviceName);
-
-    /**
      * Returns a map of inbound wires for a service.
      */
-    Map<String, InboundWire> getInboundWires();
+    Collection<InboundWire> getInboundWires();
 
     /**
      * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a reference

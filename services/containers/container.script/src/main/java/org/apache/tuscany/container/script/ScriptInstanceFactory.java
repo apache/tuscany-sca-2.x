@@ -58,7 +58,7 @@ public class ScriptInstanceFactory implements ObjectFactory<ScriptInstance> {
      *
      * @return a RhinoScriptInstance
      */
-    //public ScriptInstanceImpl createInstance(List<Class<?>> services, Map<String, Object> context) {
+    //public ScriptInstanceImpl createInstance(List<Class<?>> serviceBindings, Map<String, Object> context) {
     public ScriptInstance getInstance() throws ObjectCreationException {
         try {
 

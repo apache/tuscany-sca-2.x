@@ -37,9 +37,9 @@ public class ScriptInvokeTestCase extends TestCase {
     public void testBasicScriptInvocation() throws Exception {
 //        CompositeScopeContainer scope = new CompositeScopeContainer(null);
 //        scope.start();
-//        List<Class<?>> services = new ArrayList<Class<?>>();
-//        services.add(Greeting.class);
-//        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", rhinoScript, services, new HashMap<String, Object>(),
+//        List<Class<?>> serviceBindings = new ArrayList<Class<?>>();
+//        serviceBindings.add(Greeting.class);
+//        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", rhinoScript, serviceBindings, new HashMap<String, Object>(),
 //                null, scope, ArtifactFactory.createWireService(), null);
 //        scope.register(context);
 //        Greeting object = (Greeting) context.getServiceInstance();

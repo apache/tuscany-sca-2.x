@@ -44,7 +44,8 @@ import org.easymock.EasyMock;
 public class CompositeComponentImplSystemWireTestCase extends TestCase {
 
     /**
-     * Verifies system services in a CompositeComponentImpl are wired during the parent composite's prepare callback
+     * Verifies system serviceBindings in a CompositeComponentImpl are wired during the parent composite's prepare
+     * callback
      */
     public void testSystemServiceWire() throws Exception {
         InboundWire inbound = EasyMock.createMock(InboundWire.class);
@@ -71,7 +72,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(wireMap);
         source.getInboundWires();
-        EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.expect(source.isSystem()).andReturn(true).atLeastOnce();
         EasyMock.expect(source.getParent()).andReturn(parent).atLeastOnce();
 
@@ -86,8 +87,8 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getName()).andReturn("target").atLeastOnce();
         EasyMock.expect(target.getInboundWire("bar")).andReturn(inbound).atLeastOnce();
-        Map<String, InboundWire> inboundWires = new HashMap<String, InboundWire>();
-        inboundWires.put("bar", inbound);
+        List<InboundWire> inboundWires = new ArrayList<InboundWire>();
+        inboundWires.add(inbound);
         EasyMock.expect(target.getInboundWires()).andReturn(inboundWires).atLeastOnce();
         EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.expect(target.getParent()).andReturn(parent).atLeastOnce();
@@ -133,8 +134,8 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         CompositeComponent parent = new CompositeComponentImpl("foo", "foo", null, new ConnectorImpl(), null);
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
-        Map<String, InboundWire> inboundWires = new HashMap<String, InboundWire>();
-        inboundWires.put("bar", inbound);
+        List<InboundWire> inboundWires = new ArrayList<InboundWire>();
+        inboundWires.add(inbound);
         source.getInboundWires();
         EasyMock.expectLastCall().andReturn(inboundWires).atLeastOnce();
         EasyMock.expect(source.getOutboundWires()).andReturn(wireMap);
@@ -146,7 +147,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
 
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getName()).andReturn("target").atLeastOnce();
-        inboundWires.put("bar", inbound);
+        inboundWires.add(inbound);
         EasyMock.expect(target.getInboundWires()).andReturn(inboundWires).atLeastOnce();
         EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.replay(target);

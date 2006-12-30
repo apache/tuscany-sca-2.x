@@ -25,9 +25,7 @@ import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -35,6 +33,7 @@ import org.apache.tuscany.spi.wire.WireService;
  * The default implementation f a {@link BindlessBuilder} for a composite
  *
  * @version $Rev$ $Date$
+ * @deprecated
  */
 public class CompositeBindlessBuilder implements BindlessBuilder {
 
@@ -54,12 +53,6 @@ public class CompositeBindlessBuilder implements BindlessBuilder {
     @Init(eager = true)
     public void init() {
         builderRegistry.register(this);
-    }
-
-    public Service build(CompositeComponent parent,
-                         BindlessServiceDefinition definition,
-                         DeploymentContext deploymentContext) {
-        return new CompositeService(definition.getName(), parent);
     }
 
     public Reference build(CompositeComponent parent,

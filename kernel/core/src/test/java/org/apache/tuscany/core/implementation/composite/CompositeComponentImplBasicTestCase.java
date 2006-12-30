@@ -18,12 +18,14 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.util.Collections;
+
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
-import org.apache.tuscany.spi.extension.ServiceExtension;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -43,6 +45,7 @@ import static org.easymock.EasyMock.replay;
  * @version $Rev$ $Date$
  */
 public class CompositeComponentImplBasicTestCase extends TestCase {
+    private AtomicComponent component;
 
     public void testGetScope() {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
@@ -51,31 +54,48 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testGetChildren() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null));
+        composite.register(component);
         Assert.assertEquals(1, composite.getChildren().size());
     }
 
     public void testGetServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        ServiceExtension extension = new ServiceExtension("foo", null);
-        InboundWire wire = TestUtils.createInboundWire(Foo.class);
-        wire.setContainer(extension);
-        extension.setInboundWire(wire);
-        composite.register(extension);
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getServices().size());
     }
 
     public void testGetService() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null));
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        service.start();
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
         composite.start();
         assertNotNull(composite.getService("foo"));
     }
 
     public void testServiceNotFound() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null));
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        service.start();
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
+        EasyMock.replay(service);
+
+        composite.register(service);
         composite.start();
         assertNull(composite.getService("bar"));
     }
@@ -89,7 +109,13 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
 
     public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(new ServiceExtension("foo", null));
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
         composite.register(getReference("bar"));
         Assert.assertEquals(1, composite.getReferences().size());
     }
@@ -129,19 +155,14 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         return reference;
     }
 
-    private Service getService(String name, Class<?> interfaze) throws InvalidServiceContractException {
-        Service service = createMock(Service.class);
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
-        service.getName();
-        expectLastCall().andReturn(name).anyTimes();
-        InboundWire wire = TestUtils.createInboundWire(interfaze);
-        wire.setContainer(service);
-        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
-        replay(service);
-        return service;
-    }
-
-    private interface Foo {
+    protected void setUp() throws Exception {
+        super.setUp();
+        component = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
+        EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
+        component.getInboundWires();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
+        EasyMock.replay(component);
     }
 
     private interface Bar {

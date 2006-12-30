@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -149,8 +150,8 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         }
     }
 
-    public Map<String, InboundWire> getInboundWires() {
-        return Collections.unmodifiableMap(serviceWires);
+    public Collection<InboundWire> getInboundWires() {
+        return Collections.unmodifiableCollection(serviceWires.values());
     }
 
     public void addOutboundWire(OutboundWire wire) {

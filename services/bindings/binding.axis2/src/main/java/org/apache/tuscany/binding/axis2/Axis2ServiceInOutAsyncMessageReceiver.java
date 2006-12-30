@@ -25,7 +25,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.receivers.AbstractMessageReceiver;
-import org.apache.tuscany.binding.axis2.Axis2Service.InvocationContext;
+import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.MessageId;
@@ -34,9 +34,9 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
 
     private Operation<?> operation;
 
-    private Axis2Service service;
+    private Axis2ServiceBinding service;
 
-    public Axis2ServiceInOutAsyncMessageReceiver(Axis2Service service,
+    public Axis2ServiceInOutAsyncMessageReceiver(Axis2ServiceBinding service,
                                                  Operation operation) {
         this.operation = operation;
         this.service = service;
@@ -75,7 +75,7 @@ public class Axis2ServiceInOutAsyncMessageReceiver extends AbstractMessageReceiv
         try {
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
-            String conversationID = service.isConversational() ?  Axis2Service.getConversationID(inMC) : null;
+            String conversationID = service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
             service.invokeTarget(operation, args, messageId, conversationID);
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();

@@ -143,7 +143,7 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
         if (owner == null) {
             throw new ReactivationException("Current atomic component not set on work context");
         }
-        InboundWire wire = owner.getInboundWires().get(serviceName);
+        InboundWire wire = owner.getInboundWire(serviceName);
         init(interfaze, wire);
     }
 
@@ -161,7 +161,6 @@ public final class JDKInboundInvocationHandler extends AbstractInboundInvocation
      * the chain master
      */
     private class ChainHolder {
-
         InboundInvocationChain chain;
         TargetInvoker cachedInvoker;
 

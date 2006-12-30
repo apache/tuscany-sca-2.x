@@ -52,7 +52,7 @@ public class ScriptComponent extends AtomicComponentExtension {
 
     @SuppressWarnings("unchecked")
     public Object createInstance() throws ObjectCreationException {
-        return factory.getInstance(); //(services, context);
+        return factory.getInstance(); //(serviceBindings, context);
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {

@@ -77,10 +77,8 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
         EasyMock.expect(wire.getServiceName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(map).times(2);
         EasyMock.replay(wire);
-        Map<String, InboundWire> wires = new HashMap<String, InboundWire>();
-        wires.put("foo", wire);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires);
+        EasyMock.expect(component.getInboundWire(EasyMock.eq("foo"))).andReturn(wire);
         EasyMock.replay(component);
         workContext = new WorkContextImpl();
         workContext.setCurrentAtomicComponent(component);

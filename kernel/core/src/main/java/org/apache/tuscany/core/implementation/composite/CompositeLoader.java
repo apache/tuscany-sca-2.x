@@ -40,7 +40,6 @@ import org.apache.tuscany.spi.loader.InvalidServiceException;
 import org.apache.tuscany.spi.loader.InvalidWireException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -51,7 +50,6 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.model.WireDefinition;
 import org.apache.tuscany.spi.services.artifact.Artifact;
@@ -90,7 +88,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         while (!done) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, null, reader, deploymentContext);
+                    ModelObject o = registry.load(parent, composite, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         composite.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {
@@ -122,7 +120,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
                     } else if (o instanceof WireDefinition) {
                         composite.add((WireDefinition) o);
                     } else {
-                        // HACK: [rfeng] Add as an unknown model extension
+                        // add as an unknown model extension
                         if (o != null) {
                             composite.getExtensions().put(o.getClass(), o);
                         }
@@ -161,14 +159,6 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             if (serviceDefinition != null) {
                 if (serviceDefinition instanceof BoundServiceDefinition) {
                     ((BoundServiceDefinition) serviceDefinition).setTarget(wire.getTarget());
-                } else if (serviceDefinition instanceof BindlessServiceDefinition) {
-                    ((BindlessServiceDefinition) serviceDefinition).setTarget(wire.getTarget());
-                } else {
-                    ServiceContract<?> contract = serviceDefinition.getServiceContract();
-                    String name = serviceDefinition.getName();
-                    BindlessServiceDefinition bindlessSvcDefn =
-                        new BindlessServiceDefinition(name, contract, false, targetUri);
-                    composite.getDeclaredServices().put(sourceName.getPartName(), bindlessSvcDefn);
                 }
             } else {
                 componentDefinition = composite.getDeclaredComponents().get(sourceName.getPartName());
@@ -208,7 +198,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
     protected void verifyCompositeCompleteness(
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> composite)
         throws InvalidServiceException {
-        // check if all of the composites services have been wired
+        // check if all of the composite services have been wired
         for (ServiceDefinition svcDefn : composite.getDeclaredServices().values()) {
             if (svcDefn instanceof BoundServiceDefinition && ((BoundServiceDefinition) svcDefn).getTarget() == null) {
                 throw new InvalidServiceException("Composite service not wired to a target", svcDefn.getName());

@@ -33,9 +33,9 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
 
     protected Operation<?> operation;
 
-    private Axis2Service axis2Service;
+    private Axis2ServiceBinding axis2Service;
 
-    public Axis2ServiceInOutSyncMessageReceiver(Axis2Service service, Operation<?> operation) {
+    public Axis2ServiceInOutSyncMessageReceiver(Axis2ServiceBinding service, Operation<?> operation) {
         this.axis2Service = service;
         this.operation = operation;
     }
@@ -50,7 +50,7 @@ public class Axis2ServiceInOutSyncMessageReceiver extends AbstractInOutSyncMessa
             OMElement requestOM = inMC.getEnvelope().getBody().getFirstElement();
             Object[] args = new Object[] {requestOM};
             
-            String conversationID = axis2Service.isConversational() ?  Axis2Service.getConversationID(inMC) : null;
+            String conversationID = axis2Service.isConversational() ?  Axis2ServiceBinding.getConversationID(inMC) : null;
 
             OMElement responseOM = (OMElement)axis2Service.invokeTarget(operation, args, null, conversationID);
 

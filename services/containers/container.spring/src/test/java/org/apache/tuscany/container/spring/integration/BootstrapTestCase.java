@@ -3,6 +3,7 @@ package org.apache.tuscany.container.spring.integration;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
 
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -26,7 +27,8 @@ public class BootstrapTestCase extends SCATestCase {
     public void testDemoBoot() throws Exception {
         SpringCompositeComponent comp = (SpringCompositeComponent) component.getChild("Spring");
         Service service = (Service) comp.getChild("fooService");
-        TestBean bean = wireService.createProxy(TestBean.class, service.getInboundWire());
+        ServiceBinding binding = service.getServiceBindings().get(0);
+        TestBean bean = wireService.createProxy(TestBean.class, binding.getInboundWire());
         bean.echo("foo");
         bean.getBean().echo("foo");
     }

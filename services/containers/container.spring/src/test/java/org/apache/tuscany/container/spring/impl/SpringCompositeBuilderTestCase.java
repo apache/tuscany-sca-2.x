@@ -26,8 +26,9 @@ import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
@@ -57,25 +58,28 @@ public class SpringCompositeBuilderTestCase extends TestCase {
     private ComponentDefinition<SpringImplementation> definition;
 
     /**
-     * Verifies that the builder calls back into the registry to load services and wires them to bean targets when no
-     * <code>sca:service</code> tag is specified in the Spring application.xml
+     * Verifies that the builder calls back into the registry to load serviceBindings and wires them to bean targets
+     * when no <code>sca:service</code> tag is specified in the Spring application.xml
      */
     @SuppressWarnings("unchecked")
     public void testImplicitServiceWiring() throws Exception {
         // Create a service instance that the mock builder registry will return
         WireService wireService = ArtifactFactory.createWireService();
-        ServiceExtension service =
-            new ServiceExtension("fooService", null);
-        InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
-        OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
+        ServiceBindingExtension binding =
+            new ServiceBindingExtension("fooServiceBinding", null) {
+            };
+        InboundWire inboundWire = ArtifactFactory.createInboundWire("fooServiceBinding", TestBean.class);
+        OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooServiceBinding", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
-        service.setInboundWire(inboundWire);
-        service.setOutboundWire(outboundWire);
-        inboundWire.setContainer(service);
-        outboundWire.setContainer(service);
+        binding.setInboundWire(inboundWire);
+        binding.setOutboundWire(outboundWire);
+        inboundWire.setContainer(binding);
+        outboundWire.setContainer(binding);
         Connector connector = ArtifactFactory.createConnector();
         connector.connect(inboundWire, outboundWire, true);
 
+        Service service = ArtifactFactory.createService("fooServiceBinding", null, outboundWire.getServiceContract());
+        service.addServiceBinding(binding);
         // Configure the mock builder registry
         BuilderRegistry registry = createMock(BuilderRegistry.class);
         expect(registry.build(isA(CompositeComponent.class),
@@ -91,8 +95,8 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         DeploymentContext context = createNiceMock(DeploymentContext.class);
         CompositeComponent component = (CompositeComponent) builder.build(parent, definition, context);
         component.start();
-        Service fooService = component.getService("fooService");
-        TestBean bean = wireService.createProxy(TestBean.class, fooService.getInboundWire());
+        ServiceBinding fooServiceBinding = component.getService("fooServiceBinding").getServiceBindings().get(0);
+        TestBean bean = wireService.createProxy(TestBean.class, fooServiceBinding.getInboundWire());
         assertEquals("call foo", bean.echo("call foo"));
         verify(registry);
     }
@@ -108,9 +112,9 @@ public class SpringCompositeBuilderTestCase extends TestCase {
 
     private SpringComponentType<Property<?>> createComponentType() {
         SpringComponentType<Property<?>> componentType = new SpringComponentType<Property<?>>();
-        BoundServiceDefinition<TestBindingDefinition> serviceDefinition = new BoundServiceDefinition<TestBindingDefinition>();
+        BoundServiceDefinition serviceDefinition = new BoundServiceDefinition();
         serviceDefinition.setName("fooService");
-        serviceDefinition.setBinding(new TestBindingDefinition());
+        serviceDefinition.addBinding(new TestBindingDefinition());
         try {
             serviceDefinition.setTarget(new URI("testBean"));
         } catch (URISyntaxException e) {

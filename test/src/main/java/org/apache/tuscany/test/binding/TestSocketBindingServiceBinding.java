@@ -11,25 +11,25 @@ import java.util.concurrent.Executors;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 
 /**
- * Implements a very simple remote, socket-based binding for test purposes. This binding exposes services using a socket
+ * Implements a very simple remote, socket-based binding for test purposes. This binding exposes serviceBindings using a socket
  * on a given port. Service operations must take only one paramter that is <code>Serializable</code>.
  *
  * @version $Rev$ $Date$
  */
-public class TestSocketBindingService extends ServiceExtension {
+public class TestSocketBindingServiceBinding extends ServiceBindingExtension {
     private int port;
     private ServerSocket socket;
     private ExecutorService executor;
-    private TestSocketBindingService.ServerRunnable runnable;
+    private TestSocketBindingServiceBinding.ServerRunnable runnable;
 
-    public TestSocketBindingService(String name, int port, CompositeComponent parent) throws CoreRuntimeException {
+    public TestSocketBindingServiceBinding(String name, int port, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
         this.port = port;
     }

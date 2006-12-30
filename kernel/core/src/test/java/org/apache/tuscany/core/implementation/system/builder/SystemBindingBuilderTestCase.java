@@ -23,7 +23,7 @@ import java.net.URI;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -46,16 +46,16 @@ public class SystemBindingBuilderTestCase extends TestCase {
         EasyMock.replay(parent);
         DeploymentContext context = EasyMock.createMock(DeploymentContext.class);
         EasyMock.replay(context);
-        BoundServiceDefinition<SystemBindingDefinition> definition = new BoundServiceDefinition<SystemBindingDefinition>();
+        BoundServiceDefinition definition = new BoundServiceDefinition();
         definition.setName("bar");
         definition.setTarget(new URI("foo"));
         ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
         };
         definition.setServiceContract(contract);
-        Service service = builder.build(parent, definition, context);
-        assertEquals("bar", service.getName());
-        assertEquals(contract, service.getBindingServiceContract());
-        assertEquals(parent, service.getParent());
+        ServiceBinding serviceBinding = builder.build(parent, definition, null, context);
+        assertEquals("bar", serviceBinding.getName());
+        assertEquals(contract, serviceBinding.getBindingServiceContract());
+        assertEquals(parent, serviceBinding.getParent());
     }
 
     public void testRegister() {

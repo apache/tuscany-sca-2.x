@@ -21,17 +21,11 @@ package org.apache.tuscany.binding.axis2;
 import javax.wsdl.Port;
 import javax.wsdl.PortType;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.context.ConfigurationContext;
-import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
-import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
-import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -42,10 +36,17 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.ConfigurationContext;
+import org.apache.tuscany.binding.axis2.util.TuscanyAxisConfigurator;
+import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
+import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
+
 /**
  * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured
  * with the Axis2 binding
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindingDefinition> {
@@ -56,7 +57,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     private ConfigurationContext configContext;
 
     private InterfaceWSDLIntrospector introspector;
-    
+
     private WorkContext workContext;
 
     public Axis2BindingBuilder() throws BuilderConfigException {
@@ -75,20 +76,18 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     public void setIntrospector(InterfaceWSDLIntrospector introspector) {
         this.introspector = introspector;
     }
-    
+
     @Autowire
     public void setWorkContext(WorkContext workContext) {
         this.workContext = workContext;
     }
-    
-    
-    
+
 
     @SuppressWarnings("unchecked")
-    public Service build(
-            CompositeComponent parent,
-            BoundServiceDefinition<WebServiceBindingDefinition> serviceDefinition,
-            DeploymentContext deploymentContext) {
+    public ServiceBinding build(
+        CompositeComponent parent,
+        BoundServiceDefinition serviceDefinition,
+        WebServiceBindingDefinition wsBinding, DeploymentContext deploymentContext) {
 
         try {
             // Set the default databinding
@@ -98,22 +97,21 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
 
             // FIXME: We need to define how the WSDL PortType is honored in the case that
-            // both the binding.ws and interface.wsdl are in place.
+            // both the service.ws and interface.wsdl are in place.
             // The WSDL portType from the WSDL Port decides the incoming SOAP message format
             // There are also cases that interface.java is used.
-            
-            ServiceContract<?> inboundContract = null;
-            WebServiceBindingDefinition wsBinding = serviceDefinition.getBinding();
+
+            ServiceContract<?> inboundContract;
             Port port = wsBinding.getWSDLPort();
             if (port == null) {
-                // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
+                // FIXME: [rfeng] No WSDL is referenced by service.ws, we need to create one from
                 // the outbound service contract if it's JavaServiceContract
                 inboundContract = outboundContract;
-            }            
-            
+            }
+
             PortType portType = wsBinding.getWSDLPort().getBinding().getPortType();
             inboundContract = introspector.introspect(portType);
-            
+
             // FIXME:  
             inboundContract.setInterfaceClass(serviceDefinition.getServiceContract().getInterfaceClass());
             inboundContract.setDataBinding(OM_DATA_BINDING);
@@ -124,13 +122,14 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             } catch (IncompatibleServiceContractException e) {
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
-            
-            Service service = new Axis2Service(serviceDefinition.getName(), outboundContract, parent, wsBinding,
+
+            ServiceBinding serviceBinding =
+                new Axis2ServiceBinding(serviceDefinition.getName(), outboundContract, parent, wsBinding,
                     servletHost, configContext, workContext);
-            service.setBindingServiceContract(inboundContract);
-            
-            return service;
-            
+            serviceBinding.setBindingServiceContract(inboundContract);
+
+            return serviceBinding;
+
         } catch (InvalidServiceContractException e) {
             throw new Axis2BindingBuilderRuntimeException(e);
         }
@@ -138,9 +137,9 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
 
     @SuppressWarnings("unchecked")
     public Reference build(
-            CompositeComponent parent,
-            BoundReferenceDefinition<WebServiceBindingDefinition> boundReferenceDefinition,
-            DeploymentContext deploymentContext) {
+        CompositeComponent parent,
+        BoundReferenceDefinition<WebServiceBindingDefinition> boundReferenceDefinition,
+        DeploymentContext deploymentContext) {
 
         try {
             // Set the default binding
@@ -148,7 +147,7 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             if (WSDLServiceContract.class.isInstance(inboundContract)) {
                 inboundContract.setDataBinding(OM_DATA_BINDING);
             }
-            
+
             // FIXME: We need to define how the WSDL PortType is honored in the case that
             // both the binding.ws and interface.wsdl are in place
             // The WSDL portType from the WSDL Port decides the incoming SOAP message format
@@ -163,24 +162,24 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
             PortType portType = port.getBinding().getPortType();
             outboundContract = introspector.introspect(portType);
-            
+
             // Set the default databinding
             outboundContract.setDataBinding(OM_DATA_BINDING);
             //FIXME ... need to figure out how to specify scope on wsdl.
-            outboundContract.setInteractionScope(inboundContract.getInteractionScope());         
-            
+            outboundContract.setInteractionScope(inboundContract.getInteractionScope());
+
             try {
                 wireService.checkCompatibility(inboundContract, outboundContract, true);
             } catch (IncompatibleServiceContractException e) {
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
-            
+
             Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wsBinding,
-                    inboundContract, workContext);
+                inboundContract, workContext);
             reference.setBindingServiceContract(outboundContract);
-            
+
             return reference;
-            
+
         } catch (InvalidServiceContractException e) {
             throw new Axis2BindingBuilderRuntimeException(e);
         }

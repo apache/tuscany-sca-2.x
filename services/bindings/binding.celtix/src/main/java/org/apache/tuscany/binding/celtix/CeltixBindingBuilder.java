@@ -23,7 +23,7 @@ import java.util.WeakHashMap;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -34,7 +34,7 @@ import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.objectweb.celtix.Bus;
 
 /**
- * Builds a {@link org.apache.tuscany.spi.component.Service} or {@link org.apache.tuscany.spi.component.Reference}
+ * Builds a {@link org.apache.tuscany.spi.component.ServiceBinding} or {@link org.apache.tuscany.spi.component.Reference}
  * configured with the Celtix binding
  *
  * @version $Rev$ $Date$
@@ -43,21 +43,21 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
 
     private Bus bus;
 
-    public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<WebServiceBindingDefinition> boundServiceDefinition,
-                         DeploymentContext deploymentContext) {
-        WebServiceBindingDefinition wsBinding = boundServiceDefinition.getBinding();
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition boundServiceDefinition,
+                                WebServiceBindingDefinition bindingDefinition,
+                                DeploymentContext deploymentContext) {
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if (typeHelper == null) {
             typeHelper = TypeHelper.INSTANCE;
         }
         if (bus == null) {
-            bus = getBus(wsBinding.getWSDLDefinitionRegistry());
+            bus = getBus(bindingDefinition.getWSDLDefinitionRegistry());
         }
-        return new CeltixService(
+        return new CeltixServiceBinding(
             boundServiceDefinition.getName(),
             parent,
-            wsBinding,
+            bindingDefinition,
             bus,
             typeHelper);
     }

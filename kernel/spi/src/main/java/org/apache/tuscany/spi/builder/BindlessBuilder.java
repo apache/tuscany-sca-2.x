@@ -20,23 +20,18 @@ package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 
 /**
- * Responsible for processing a service or reference in an assembly configured without any binding. The builder
- * will create and return corresponding {@link org.apache.tuscany.spi.component.Service} or {@link
+ * Responsible for processing a service or reference in an assembly configured without any binding. The builder will
+ * create and return corresponding {@link org.apache.tuscany.spi.component.ServiceBinding} or {@link
  * org.apache.tuscany.spi.component.Reference}
  *
  * @version $Rev$ $Date$
+ * @deprecated
  */
 public interface BindlessBuilder {
-
-    Service build(CompositeComponent parent,
-                    BindlessServiceDefinition serviceDefinition,
-                    DeploymentContext deploymentContext);
 
     Reference build(CompositeComponent parent,
                     ReferenceDefinition referenceDefinition,

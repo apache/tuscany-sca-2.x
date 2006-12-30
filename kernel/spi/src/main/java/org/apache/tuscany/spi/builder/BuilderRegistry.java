@@ -45,17 +45,15 @@ public interface BuilderRegistry extends Builder {
     <I extends Implementation<?>> void unregister(Class<I> implClass);
 
     /**
-     * TODO: JavaDoc this once we know if we will be building contexts for bindings
-     */
-    <B extends BindingDefinition> void register(BindingBuilder<B> builder);
-
-    /**
-     * TODO: JavaDoc this once we know if we will be building contexts for bindings
+     * Register a binding builder for a binding type
+     *
+     * @param implClass the binding type
+     * @param builder   the buinder to be registered
      */
     <B extends BindingDefinition> void register(Class<B> implClass, BindingBuilder<B> builder);
 
     /**
-     * TODO: Make sure this belongs here
+     * @deprecated
      */
     void register(BindlessBuilder builder);
 
