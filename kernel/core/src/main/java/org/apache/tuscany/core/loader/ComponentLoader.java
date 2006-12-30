@@ -53,9 +53,11 @@ import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
 import org.apache.tuscany.spi.loader.UndefinedReferenceException;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
@@ -83,7 +85,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
 
     private PropertyObjectFactory propertyFactory;
 
-    @Constructor({"registry", "propertyFactory"})
+    @Constructor
     public ComponentLoader(@Autowire LoaderRegistry registry, @Autowire PropertyObjectFactory propertyFactory) {
         super(registry);
         this.propertyFactory = propertyFactory;
@@ -152,6 +154,18 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                 }
                             }
 
+                            for (ServiceDefinition serviceDefinition : type.getServices().values()) {
+                                if (serviceDefinition instanceof BoundServiceDefinition) {
+                                    BoundServiceDefinition bsd = (BoundServiceDefinition) serviceDefinition;
+                                    if (bsd.getBindings().isEmpty()) {
+                                        if (bsd.getBindings().isEmpty()) {
+                                            // TODO implement a more advanced option that allows the runtime to
+                                            // choose a binding
+                                            bsd.addBinding(new LocalBindingDefinition());
+                                        }
+                                    }
+                                }
+                            }
                             validate(componentDefinition);
                             return componentDefinition;
                         }

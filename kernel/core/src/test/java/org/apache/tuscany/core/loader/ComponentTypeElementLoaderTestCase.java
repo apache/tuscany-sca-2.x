@@ -20,7 +20,11 @@ package org.apache.tuscany.core.loader;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.namespace.QName;
 
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
@@ -48,6 +52,27 @@ public class ComponentTypeElementLoaderTestCase extends TestCase {
         // specialized instance 
         ModelObject object = loader.load(null, type, reader, null);
         assertEquals(object, type);
+    }
+
+    public void testComponentTypePassedAsContext() throws Exception {
+        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+            new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
+        EasyMock.expect(registry.load((CompositeComponent) EasyMock.isNull(),
+            EasyMock.isA(ComponentType.class),
+            EasyMock.isA(XMLStreamReader.class),
+            (DeploymentContext) EasyMock.isNull())).andReturn(type);
+        EasyMock.replay(registry);
+        ComponentTypeElementLoader loader = new ComponentTypeElementLoader(registry);
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getName()).andReturn(ComponentTypeElementLoader.COMPONENT_TYPE);
+        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.START_ELEMENT);
+        EasyMock.expect(reader.getName()).andReturn(new QName("foo", "foo"));
+        EasyMock.expect(reader.next()).andReturn(XMLStreamConstants.END_ELEMENT);
+        EasyMock.replay(reader);
+
+        loader.load(null, type, reader, null);
+        EasyMock.verify(registry);
     }
 
     public void testNonSpecializedComponentTypePassedIn() throws Exception {

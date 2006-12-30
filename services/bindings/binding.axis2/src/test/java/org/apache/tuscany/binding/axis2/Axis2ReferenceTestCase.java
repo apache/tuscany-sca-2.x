@@ -56,7 +56,7 @@ public class Axis2ReferenceTestCase extends TestCase {
 
     public void testAsyncTargetInvoker() throws Exception {
         Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
-        //Create a mocked InboundWire, make the call of ServiceExtension.getInterface() returns a Class
+        //Create a mocked InboundWire, make the call of ServiceBindingExtension.getInterface() returns a Class
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         contract.setCallbackName("");
@@ -91,7 +91,7 @@ public class Axis2ReferenceTestCase extends TestCase {
             "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
         WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
-        //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
+        //Create a mocked WireService, make the call of ServiceBindingExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
         EasyMock.replay(wireService);
         CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);

@@ -18,12 +18,6 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import helloworld.HelloWorldRmiService;
-
-import org.apache.tuscany.test.SCATestCase;
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-
 import junit.framework.TestCase;
 
 // TODO: renamed to XXX as it doesn't work for me

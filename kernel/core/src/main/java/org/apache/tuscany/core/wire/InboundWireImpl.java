@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -38,6 +39,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * @version $Rev$ $Date$
  */
 public class InboundWireImpl implements InboundWire {
+    private QName bindingType = LOCAL_BINDING;
     private String serviceName;
     private ServiceContract serviceContract;
     private OutboundWire targetWire;
@@ -47,6 +49,14 @@ public class InboundWireImpl implements InboundWire {
         new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
     private SCAObject container;
     private AtomicComponent targetComponent;
+
+    public QName getBindingType() {
+        return bindingType;
+    }
+
+    public void setBindingType(QName bindingType) {
+        this.bindingType = bindingType;
+    }
 
     public Object getTargetService() throws TargetResolutionException {
         // JFM fixme hack

@@ -68,7 +68,7 @@ public class AutowireResolutionTestCase extends TestCase {
     }
 
     /**
-     * Verify parent resolution strategy for application services
+     * Verify parent resolution strategy for application serviceBindings
      */
     public void testNamespaceIsolationAutowire() throws Exception {
         Foo foo = new Foo() {

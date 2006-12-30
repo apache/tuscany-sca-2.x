@@ -20,7 +20,7 @@ package org.apache.tuscany.binding.jsonrpc;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -57,12 +57,10 @@ public class JSONRPCBindingBuilder extends BindingBuilderExtension<JSONRPCBindin
     }
 
     @SuppressWarnings("unchecked")
-    public Service build(CompositeComponent parent,
-                             BoundServiceDefinition<JSONRPCBindingDefinition> serviceDefinition,
-                             DeploymentContext deploymentContext) {
-        Class<?> interfaze = serviceDefinition.getServiceContract().getInterfaceClass();
-
-        return new JSONRPCService(serviceDefinition.getName(), parent, this.wireService, servletHost);
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition serviceDefinition,
+                                JSONRPCBindingDefinition bindingDefinition, DeploymentContext deploymentContext) {
+        return new JSONRPCServiceBinding(serviceDefinition.getName(), parent, this.wireService, servletHost);
     }
 
 }

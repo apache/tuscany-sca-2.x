@@ -132,6 +132,6 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
         if (owner == null) {
             throw new ReactivationException("Current atomic component not set on work context");
         }
-        wire = owner.getInboundWires().get(serviceName);
+        wire = owner.getInboundWire(serviceName);
     }
 }

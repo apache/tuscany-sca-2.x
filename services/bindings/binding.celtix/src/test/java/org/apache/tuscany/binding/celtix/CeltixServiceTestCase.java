@@ -58,7 +58,7 @@ import org.objectweb.celtix.ws.addressing.EndpointReferenceType;
 public class CeltixServiceTestCase extends TestCase {
 
     public void testGetDataBindingCallback() throws Exception {
-        CeltixService celtixService = createCeltixService();
+        CeltixServiceBinding celtixService = createCeltixService();
         Message msg = new MessageImpl();
         msg.setBody("Hello Celtix");
         Interceptor interceptor = EasyMock.createMock(Interceptor.class);
@@ -87,7 +87,7 @@ public class CeltixServiceTestCase extends TestCase {
     }
 
     @SuppressWarnings({"unchecked"})
-    private CeltixService createCeltixService() throws Exception {
+    private CeltixServiceBinding createCeltixService() throws Exception {
         //Make following call to return a mocked SOAPClientBinding:
         //bus.getBindingManager().getBindingFactory(bindingId).createClientBinding(reference)
         SOAPServerBinding serverBinding = EasyMock.createMock(SOAPServerBinding.class);
@@ -129,20 +129,20 @@ public class CeltixServiceTestCase extends TestCase {
 
         WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
 
-        //Create mocked InboundWire, for ServiceExtension.getInterface()
+        //Create mocked InboundWire, for ServiceBindingExtension.getInterface()
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(contract).anyTimes();
         EasyMock.replay(inboundWire);
 
-        //Create mocked WireService, for ServiceExtension.getServiceInstance()
+        //Create mocked WireService, for ServiceBindingExtension.getServiceInstance()
         WireService wireService = EasyMock.createNiceMock(WireService.class);
         wireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class));
         EasyMock.expectLastCall().andReturn(new GreeterImpl()).anyTimes();
         EasyMock.replay(wireService);
 
-        CeltixService celtixService = new CeltixService("name", null, wsBinding, bus, null);
-        //Not sure how InboundWire is set to CeltixService, is the following way correct?
+        CeltixServiceBinding celtixService = new CeltixServiceBinding("name", null, wsBinding, bus, null);
+        //Not sure how InboundWire is set to CeltixServiceBinding, is the following way correct?
         celtixService.setInboundWire(inboundWire);
         celtixService.start();
 

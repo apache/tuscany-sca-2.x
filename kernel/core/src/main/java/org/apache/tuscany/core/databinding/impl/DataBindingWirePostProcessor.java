@@ -25,7 +25,6 @@ import java.util.Set;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;
@@ -36,10 +35,13 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
 
 /**
- * This processor is responsible to add an interceptor to invocation chain if
- * the source and target operations have different databinding requirements
+ * This processor is responsible to add an interceptor to invocation chain if the source and target operations have
+ * different databinding requirements
+ *
+ * @version $Rev$ $Date$
  */
 public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     private Mediator mediator;

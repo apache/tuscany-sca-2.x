@@ -18,9 +18,8 @@
  */
 package org.apache.tuscany.core.implementation;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -29,7 +28,6 @@ import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
-import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 
 /**
@@ -41,21 +39,20 @@ public final class TestUtils {
     private TestUtils() {
     }
 
-    public static Map<String, InboundWire> populateInboundWires(AtomicComponent component,
-                                                                Map<String, InboundWire> wires)
+    public static List<InboundWire> populateInboundWires(AtomicComponent component, List<InboundWire> wires)
         throws InvalidServiceContractException {
-        for (InboundWire wire : wires.values()) {
+        for (InboundWire wire : wires) {
             wire.setContainer(component);
         }
         return wires;
     }
 
-    public static Map<String, InboundWire> createInboundWires(List<Class<?>> interfazes)
+    public static List<InboundWire> createInboundWires(List<Class<?>> interfazes)
         throws InvalidServiceContractException {
-        Map<String, InboundWire> wires = new HashMap<String, InboundWire>(interfazes.size());
+        List<InboundWire> wires = new ArrayList<InboundWire>(interfazes.size());
         for (Class<?> interfaze : interfazes) {
             InboundWire wire = createInboundWire(interfaze);
-            wires.put(JavaIntrospectionHelper.getBaseName(interfaze), wire);
+            wires.add(wire);
         }
         return wires;
     }

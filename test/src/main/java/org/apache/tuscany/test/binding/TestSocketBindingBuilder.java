@@ -2,7 +2,7 @@ package org.apache.tuscany.test.binding;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -13,16 +13,17 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
  */
 public class TestSocketBindingBuilder extends BindingBuilderExtension<TestSocketBindingDefinition> {
 
-    public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<TestSocketBindingDefinition> definition,
-                         DeploymentContext context) {
-        int port = definition.getBinding().getPort();
-        return new TestSocketBindingService(definition.getName(), port, parent);
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition definition,
+                                TestSocketBindingDefinition bindingDefinition,
+                                DeploymentContext ctx) {
+        int port = bindingDefinition.getPort();
+        return new TestSocketBindingServiceBinding(definition.getName(), port, parent);
     }
 
     public Reference build(CompositeComponent parent,
                            BoundReferenceDefinition<TestSocketBindingDefinition> definition,
-                           DeploymentContext context) {
+                           DeploymentContext ctx) {
         String name = definition.getName();
         int port = definition.getBinding().getPort();
         String host = definition.getBinding().getHost();

@@ -76,9 +76,9 @@ public class RhinoScriptIntrospectorTestCase extends TestCase {
 //        JavaScriptIntrospector introspector = new JavaScriptIntrospector(null);
 //        ComponentType comonentType = introspector.introspectScript(scaConfig, rs.getClassLoader());
 //        assertNotNull(comonentType);
-//        Map services = comonentType.getServices();
-//        assertEquals(1, services.size());
-//        ServiceDefinition serviceDefinition = (ServiceDefinition) services.values().iterator().next();
+//        Map serviceBindings = comonentType.getServices();
+//        assertEquals(1, serviceBindings.size());
+//        ServiceDefinition serviceDefinition = (ServiceDefinition) serviceBindings.values().iterator().next();
 //        ServiceContract serviceContract = serviceDefinition.getServiceContract();
 //        assertTrue(serviceContract instanceof WSDLServiceContract);
 //        WSDLServiceContract wsdlServiceContract = (WSDLServiceContract) serviceContract;

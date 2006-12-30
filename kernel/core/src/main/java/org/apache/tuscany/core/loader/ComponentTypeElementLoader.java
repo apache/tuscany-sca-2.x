@@ -45,7 +45,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
     public static final QName COMPONENT_TYPE = new QName(XML_NAMESPACE_1_0, "componentType");
 
-    @Constructor({"registry"})
+    @Constructor
     public ComponentTypeElementLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -72,7 +72,7 @@ public class ComponentTypeElementLoader extends LoaderExtension<ComponentType> {
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
-                    ModelObject o = registry.load(parent, null, reader, deploymentContext);
+                    ModelObject o = registry.load(parent, componentType, reader, deploymentContext);
                     if (o instanceof ServiceDefinition) {
                         componentType.add((ServiceDefinition) o);
                     } else if (o instanceof ReferenceDefinition) {

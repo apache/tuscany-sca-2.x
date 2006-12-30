@@ -22,21 +22,19 @@ import org.apache.tuscany.binding.rmi.host.RMIHostImpl;
 import org.apache.tuscany.host.rmi.RMIHostRuntimeException;
 import org.easymock.EasyMock;
 
-import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 public class RMIServiceTestCase extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testGetPort() {
-        RMIService s = new RMIService(null, null, null, null, null, null, null, null);
+        RMIServiceBinding s = new RMIServiceBinding(null, null, null, null, null, null, null, null);
         assertEquals(0, s.getPort("0"));
     }
 
     @SuppressWarnings("unchecked")
     public void testGenerateRemoteInterface() {
-        RMIService s = new RMIService("foo27", null, null, null, null, null, null, null);
+        RMIServiceBinding s = new RMIServiceBinding("foo27", null, null, null, null, null, null, null);
         s.generateRemoteInterface(Runnable.class);
     }
 
@@ -44,7 +42,7 @@ public class RMIServiceTestCase extends TestCase {
     public void testCreateRmiService() {
         WireService service = EasyMock.createNiceMock(WireService.class);
         EasyMock.replay(service);
-        RMIService s = new RMIService("bla023", null, service, new RMIHostImpl(), null, "9996", "bla", Runnable.class) {
+        RMIServiceBinding s = new RMIServiceBinding("bla023", null, service, new RMIHostImpl(), null, "9996", "bla", Runnable.class) {
         };
         s.start();
         try {

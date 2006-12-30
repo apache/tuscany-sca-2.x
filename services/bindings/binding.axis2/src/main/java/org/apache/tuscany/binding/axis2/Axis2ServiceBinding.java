@@ -37,7 +37,7 @@ import org.osoa.sca.annotations.Destroy;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.Scope;
@@ -65,11 +65,11 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 
 // org.apache.tuscany.spi.model
 /**
- * An implementation of a {@link ServiceExtension} configured with the Axis2 binding
+ * An implementation of a {@link ServiceBindingExtension} configured with the Axis2 binding
  *
  * @version $Rev$ $Date$
  */
-public class Axis2Service extends ServiceExtension {
+public class Axis2ServiceBinding extends ServiceBindingExtension {
     private ServiceContract<?> serviceContract;
 
     private ServletHost servletHost;
@@ -88,7 +88,7 @@ public class Axis2Service extends ServiceExtension {
 
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
-    public Axis2Service(String theName,
+    public Axis2ServiceBinding(String theName,
                         ServiceContract<?> serviceContract,
                         CompositeComponent parent,
                         WebServiceBindingDefinition binding,

@@ -52,11 +52,10 @@ public class JSONRPCBindingBuilderTestCase extends TestCase {
         JSONRPCBindingBuilder bindingBuilder = new JSONRPCBindingBuilder();
         CompositeComponent mockParent = createMock(CompositeComponent.class);
         replay(mockParent);
-        BoundServiceDefinition<JSONRPCBindingDefinition> mockServiceDefinition =
-            createMock((new BoundServiceDefinition<JSONRPCBindingDefinition>()).getClass());
+        BoundServiceDefinition mockServiceDefinition = createMock((new BoundServiceDefinition()).getClass());
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         try {
-            ServiceContract<?> contract = registry.introspect(JSONRPCService.class);
+            ServiceContract<?> contract = registry.introspect(JSONRPCServiceBinding.class);
 
             expect(mockServiceDefinition.getServiceContract()).andStubReturn(contract);
             expect(mockServiceDefinition.getName()).andReturn("test_service");
@@ -64,9 +63,10 @@ public class JSONRPCBindingBuilderTestCase extends TestCase {
             DeploymentContext mockDeploymentContext = createMock(DeploymentContext.class);
             replay(mockDeploymentContext);
 
-            JSONRPCService jsonService =
-                (JSONRPCService) bindingBuilder.build(mockParent, mockServiceDefinition, mockDeploymentContext);
-            assertEquals(JSONRPCService.class, jsonService.getClass());
+            JSONRPCServiceBinding jsonService =
+                (JSONRPCServiceBinding) bindingBuilder.build(mockParent, mockServiceDefinition, null,
+                    mockDeploymentContext);
+            assertEquals(JSONRPCServiceBinding.class, jsonService.getClass());
 
         } catch (InvalidServiceContractException e) {
             // TODO Auto-generated catch block

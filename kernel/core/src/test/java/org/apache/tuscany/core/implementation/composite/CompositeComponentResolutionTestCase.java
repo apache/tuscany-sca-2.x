@@ -19,8 +19,8 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -47,7 +47,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);
@@ -65,7 +65,7 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(false).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);
@@ -84,7 +84,8 @@ public class CompositeComponentResolutionTestCase extends TestCase {
         EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
         InboundWire wire = TestUtils.createInboundWire(Source.class);
         wire.setContainer(service);
-        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service);
         parent.register(service);
         assertNotNull(parent.getService("source"));
@@ -93,18 +94,19 @@ public class CompositeComponentResolutionTestCase extends TestCase {
     }
 
     public void testSystemGetService() throws Exception {
-        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, true);
+        CompositeComponent parent = new CompositeComponentImpl("foo", null, null, null);
         parent.start();
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(service.isSystem()).andReturn(true).atLeastOnce();
         InboundWire wire = TestUtils.createInboundWire(Source.class);
         wire.setContainer(service);
-        EasyMock.expect(service.getInboundWire()).andReturn(wire).atLeastOnce();
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
         EasyMock.replay(service);
         parent.register(service);
-        assertNotNull(parent.getSystemService("source"));
         assertNull(parent.getService("source"));
+        assertNotNull(parent.getSystemService("source"));
         EasyMock.verify(service);
     }
 

@@ -22,7 +22,7 @@ public class SpringCompositeComponentTestCase extends TestCase {
 //    public void testChildStart() {
 //        AbstractApplicationContext appContext = EasyMock.createNiceMock(AbstractApplicationContext.class);
 //        replay(appContext);
-//        Service service = EasyMock.createMock(Service.class);
+//        ServiceBinding service = EasyMock.createMock(ServiceBinding.class);
 //        EasyMock.expect(service.getName()).andReturn("foo").anyTimes();
 //        service.start();
 //        service.getInterface();

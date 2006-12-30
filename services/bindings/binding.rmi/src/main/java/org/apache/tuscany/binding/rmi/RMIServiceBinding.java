@@ -21,7 +21,7 @@ import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.wire.WireService;
 
 import net.sf.cglib.asm.ClassWriter;
@@ -34,7 +34,7 @@ import org.apache.tuscany.host.rmi.RMIHostException;
 /**
  * @version $Rev$ $Date$
  */
-public class RMIService<T extends Remote> extends ServiceExtension {
+public class RMIServiceBinding<T extends Remote> extends ServiceBindingExtension {
 
     public static final String URI_PREFIX = "//localhost";
     public static final String SLASH = "/";
@@ -51,7 +51,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
     private Class serviceInterface;
     private WireService wireService;
 
-    public RMIService(String name,
+    public RMIServiceBinding(String name,
                       CompositeComponent parent,
                       WireService wireService,
                       RMIHost rHost,
@@ -119,7 +119,7 @@ public class RMIService<T extends Remote> extends ServiceExtension {
         return portNumber;
     }
 
-    // if the interface of the component whose services must be exposed as RMI Service, does not
+    // if the interface of the component whose serviceBindings must be exposed as RMI Service, does not
     // implement java.rmi.Remote, then generate such an interface. This method will stop with
     // just generating the bytecode. Defining the class from the byte code must tbe the responsibility
     // of the caller of this method, since it requires a classloader to be created to define and load

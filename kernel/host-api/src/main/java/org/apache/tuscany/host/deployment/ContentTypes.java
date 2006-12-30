@@ -24,11 +24,12 @@ package org.apache.tuscany.host.deployment;
  * @version $Rev$ $Date$
  */
 public final class ContentTypes {
-    private ContentTypes() {
-    }
-
     /**
      * An Assembly changeSet represented as XML.
      */
     public static final String CHANGESET_XML = "application/x-apache.tuscany.changeSet+xml";
+
+    private ContentTypes() {
+    }
+
 }

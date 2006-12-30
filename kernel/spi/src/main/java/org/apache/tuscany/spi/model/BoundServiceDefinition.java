@@ -19,31 +19,39 @@
 package org.apache.tuscany.spi.model;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
- * Represents a service offered by a component, that has a particular binding associated with it.
+ * Represents a service offered by a component, that has a 1..n bindings associated with it.
  *
  * @version $Rev$ $Date$
  */
-public class BoundServiceDefinition<B extends BindingDefinition> extends ServiceDefinition {
-    private B binding;
+public class BoundServiceDefinition extends ServiceDefinition {
+    private List<BindingDefinition> bindings;
     private URI target;
 
-    public BoundServiceDefinition(String name, ServiceContract contract, boolean remotable, B binding, URI target) {
+    public BoundServiceDefinition(String name,
+                                  ServiceContract contract,
+                                  List<BindingDefinition> bindings,
+                                  boolean remotable,
+                                  URI target) {
         super(name, contract, remotable);
-        this.binding = binding;
         this.target = target;
+        this.bindings = bindings;
     }
 
     public BoundServiceDefinition() {
+        bindings = new ArrayList<BindingDefinition>();
     }
 
-    public B getBinding() {
-        return binding;
+    public List<BindingDefinition> getBindings() {
+        return Collections.unmodifiableList(bindings);
     }
 
-    public void setBinding(B binding) {
-        this.binding = binding;
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
     }
 
     public URI getTarget() {

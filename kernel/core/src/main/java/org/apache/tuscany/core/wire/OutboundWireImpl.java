@@ -21,6 +21,8 @@ package org.apache.tuscany.core.wire;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
@@ -38,6 +40,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  * @version $Rev$ $Date$
  */
 public class OutboundWireImpl implements OutboundWire {
+    private QName bindingType = LOCAL_BINDING;
     private ServiceContract serviceContract;
     private Class<?>[] callbackInterfaces;
     private Map<Operation<?>, OutboundInvocationChain> chains = new HashMap<Operation<?>, OutboundInvocationChain>();
@@ -48,6 +51,14 @@ public class OutboundWireImpl implements OutboundWire {
     private InboundWire targetWire;
     private SCAObject container;
     private boolean autowire;
+
+    public QName getBindingType() {
+        return bindingType;
+    }
+
+    public void setBindingType(QName bindingType) {
+        this.bindingType = bindingType;
+    }
 
     public Object getTargetService() throws TargetResolutionException {
         assert targetWire != null;

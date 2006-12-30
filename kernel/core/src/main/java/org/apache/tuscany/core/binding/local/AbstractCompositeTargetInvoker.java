@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -27,12 +27,11 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Base class for dispatching to a Composite Reference.
+ * Base class for dispatching to a composite reference using the local binding
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractCompositeReferenceTargetInvoker implements TargetInvoker {
-
+public abstract class AbstractCompositeTargetInvoker implements TargetInvoker {
     protected boolean cacheable;
 
     public boolean isCacheable() {
@@ -48,7 +47,7 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
     }
 
     public Object invokeTarget(final Object payload, short sequence) throws InvocationTargetException {
-        throw new InvocationTargetException(new InvocationRuntimeException("Not allowed to invokeTarget with object"));
+        throw new InvocationTargetException(new UnsupportedOperationException());
     }
 
     protected Message invoke(OutboundInvocationChain chain, TargetInvoker invoker, Message msg) throws Throwable {
@@ -72,7 +71,7 @@ public abstract class AbstractCompositeReferenceTargetInvoker implements TargetI
     }
 
     @Override
-    public AbstractCompositeReferenceTargetInvoker clone() throws CloneNotSupportedException {
-        return (AbstractCompositeReferenceTargetInvoker) super.clone();
+    public AbstractCompositeTargetInvoker clone() throws CloneNotSupportedException {
+        return (AbstractCompositeTargetInvoker) super.clone();
     }
 }

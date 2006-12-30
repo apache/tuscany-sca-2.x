@@ -19,15 +19,14 @@
 package org.apache.tuscany.container.spring;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
+import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.container.spring.mock.TestBeanImpl;
 import org.apache.tuscany.test.ArtifactFactory;
@@ -43,22 +42,22 @@ public final class SpringTestUtils {
     private SpringTestUtils() {
     }
 
-    public static <T> Service createService(String name,
-                                               Class<T> serviceInterface,
-                                               CompositeComponent parent,
-                                               WireService wireService)
+    public static <T> ServiceBinding createService(String name,
+                                                   Class<T> serviceInterface,
+                                                   CompositeComponent parent)
         throws InvalidServiceContractException, WiringException {
-        Service service = new ServiceExtension(name, parent);
+        ServiceBinding serviceBinding = new ServiceBindingExtension(name, parent) {
+        };
         InboundWire inboundWire = ArtifactFactory.createInboundWire(name, serviceInterface);
         OutboundWire outboundWire = ArtifactFactory.createOutboundWire(name, serviceInterface);
         ArtifactFactory.terminateWire(outboundWire);
-        service.setInboundWire(inboundWire);
-        service.setOutboundWire(outboundWire);
+        serviceBinding.setInboundWire(inboundWire);
+        serviceBinding.setOutboundWire(outboundWire);
         outboundWire.setTargetName(new QualifiedName("foo"));
         Connector connector = ArtifactFactory.createConnector();
-        connector.connect(service);
+        connector.connect(serviceBinding);
         ArtifactFactory.terminateWire(inboundWire);
-        return service;
+        return serviceBinding;
     }
 
 

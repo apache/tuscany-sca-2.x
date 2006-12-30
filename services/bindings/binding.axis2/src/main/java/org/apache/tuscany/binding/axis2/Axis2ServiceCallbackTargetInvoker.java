@@ -31,13 +31,13 @@ import org.apache.axis2.Constants;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.engine.AxisEngine;
 import org.apache.axis2.util.Utils;
-import org.apache.tuscany.binding.axis2.Axis2Service.InvocationContext;
+import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
 
 public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
-    private Axis2Service service;
+    private Axis2ServiceBinding service;
 
-    public Axis2ServiceCallbackTargetInvoker(Axis2Service service) {
+    public Axis2ServiceCallbackTargetInvoker(Axis2ServiceBinding service) {
         this.service = service;
     }
 

@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.spi.extension;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -30,23 +32,26 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Default implementation for services configured with the system binding
+ * The default implementation of an SCA service
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class SystemServiceImpl extends AbstractSCAObject implements Service {
+public abstract class ServiceBindingExtension extends AbstractSCAObject implements ServiceBinding {
+    protected Service service;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected ServiceContract<?> serviceContract;
+    protected ServiceContract<?> bindingServiceContract;
 
-    public SystemServiceImpl(String name, CompositeComponent parent, ServiceContract<?> serviceContract)
-        throws CoreRuntimeException {
+    public ServiceBindingExtension(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
-        this.serviceContract = serviceContract;
     }
 
     public Scope getScope() {
         return Scope.SYSTEM;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
     }
 
     public InboundWire getInboundWire() {
@@ -54,30 +59,39 @@ public class SystemServiceImpl extends AbstractSCAObject implements Service {
     }
 
     public void setInboundWire(InboundWire wire) {
-        this.inboundWire = wire;
+        inboundWire = wire;
     }
 
     public OutboundWire getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire wire) {
-        this.outboundWire = wire;
+    public void setOutboundWire(OutboundWire outboundWire) {
+        this.outboundWire = outboundWire;
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
 
     public ServiceContract<?> getBindingServiceContract() {
-        return serviceContract;
+        return bindingServiceContract;
     }
 
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {
+        this.bindingServiceContract = serviceContract;
+    }
+
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean isSystem() {
-        return true;
+        return service != null && service.isSystem();
     }
+
+
 }

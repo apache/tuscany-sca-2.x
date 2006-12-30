@@ -22,16 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
-import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -61,17 +60,15 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
                            DeploymentContext deploymentContext) throws BuilderException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
-        // create lists of all components and services in this composite
+        // create lists of all components and serviceBindings in this composite
         List<ComponentDefinition<? extends Implementation<?>>> allComponents =
             new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
         allComponents.addAll(componentType.getComponents().values());
 
-        List<BoundServiceDefinition<? extends BindingDefinition>> allBoundServices =
-            new ArrayList<BoundServiceDefinition<? extends BindingDefinition>>();
+        List<BoundServiceDefinition> allBoundServices = new ArrayList<BoundServiceDefinition>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                BoundServiceDefinition<? extends BindingDefinition> boundService =
-                    (BoundServiceDefinition<? extends BindingDefinition>) serviceDefinition;
+                BoundServiceDefinition boundService = (BoundServiceDefinition) serviceDefinition;
                 allBoundServices.add(boundService);
             }
         }
@@ -96,7 +93,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
             }
         }
 
-        for (BoundServiceDefinition<? extends BindingDefinition> serviceDefinition : allBoundServices) {
+        for (BoundServiceDefinition serviceDefinition : allBoundServices) {
             SCAObject object;
             try {
                 object = builderRegistry.build(component, serviceDefinition, deploymentContext);

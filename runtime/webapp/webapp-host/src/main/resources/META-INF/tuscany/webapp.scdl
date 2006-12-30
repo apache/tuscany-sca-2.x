@@ -159,4 +159,14 @@
     <component name="wireLoader">
         <system:implementation.system class="org.apache.tuscany.core.loader.WireLoader"/>
     </component>
+
+    <!-- the local binding -->
+    <component name="localBindingLoader">
+        <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingLoader"/>
+    </component>
+
+    <component name="localBindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.core.binding.local.LocalBindingBuilder"/>
+    </component>
+
 </composite>

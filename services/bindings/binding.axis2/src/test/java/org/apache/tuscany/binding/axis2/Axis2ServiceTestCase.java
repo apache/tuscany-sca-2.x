@@ -51,11 +51,11 @@ public class Axis2ServiceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
         TestServletHost tomcatHost = new TestServletHost();
-        Axis2Service axis2Service = createAxis2Service("testServiceName", tomcatHost, false);
+        Axis2ServiceBinding axis2Service = createAxis2Service("testServiceName", tomcatHost, false);
         axis2Service.start();
 
         if (true) return;
-        Servlet servlet = tomcatHost.getMapping("testWebAppName/services/testServiceName");
+        Servlet servlet = tomcatHost.getMapping("testWebAppName/serviceBindings/testServiceName");
         assertNotNull(servlet);
 
         //Create mocked HttpRequest and HttpResponse object to test the Axis2Servlet
@@ -66,11 +66,11 @@ public class Axis2ServiceTestCase extends TestCase {
     public void testAsyncMessageReceiver() throws Exception {
 
         TestServletHost tomcatHost = new TestServletHost();
-        Axis2Service axis2Service = createAxis2Service("testServiceName", tomcatHost, true);
+        Axis2ServiceBinding axis2Service = createAxis2Service("testServiceName", tomcatHost, true);
         axis2Service.start();
     }
 
-    private Axis2Service createAxis2Service(String serviceName, ServletHost tomcatHost, boolean callback)
+    private Axis2ServiceBinding createAxis2Service(String serviceName, ServletHost tomcatHost, boolean callback)
         throws Exception {
         //Create WebServiceBindingDefinition
         String wsdlLocation = "/wsdl/hello_world_doc_lit.wsdl";
@@ -87,13 +87,13 @@ public class Axis2ServiceTestCase extends TestCase {
         Port port = wsdlService.getPort("SoapPort");
         WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
 
-        //Create a mocked WireService, make the call of ServiceExtension.getServiceInstance() returns a proxy instance.
+        //Create a mocked WireService, make the call of ServiceBindingExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
         wireService.createProxy(EasyMock.isA(Class.class), EasyMock.isA(InboundWire.class));
         EasyMock.expectLastCall().andReturn(null);
         EasyMock.replay(wireService);
 
-        //Create a mocked InboundWire, make the call of ServiceExtension.getInterface() returns a Class
+        //Create a mocked InboundWire, make the call of ServiceBindingExtension.getInterface() returns a Class
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
         Map<String, Operation<Type>> opMap = new HashMap<String, Operation<Type>>();
@@ -114,8 +114,8 @@ public class Axis2ServiceTestCase extends TestCase {
 
         TuscanyAxisConfigurator tuscanyAxisConfigurator = new TuscanyAxisConfigurator();
         ConfigurationContext configurationContext = tuscanyAxisConfigurator.getConfigurationContext();
-        Axis2Service axis2Service =
-            new Axis2Service(serviceName,
+        Axis2ServiceBinding axis2Service =
+            new Axis2ServiceBinding(serviceName,
                 contract,
                 null,
                 wsBinding,

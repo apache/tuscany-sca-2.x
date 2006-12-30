@@ -26,10 +26,11 @@ import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -46,76 +47,61 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
+    @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<CompositeImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderException {
         CompositeImplementation implementation = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
+        String name = componentDefinition.getName();
+        CompositeComponentImpl component = new CompositeComponentImpl(name, parent, connector, null);
 
-        // create lists of all components, services and references in this composite
-        List<ComponentDefinition<? extends Implementation<?>>> allComponents =
-            new ArrayList<ComponentDefinition<? extends Implementation<?>>>();
-        allComponents.addAll(componentType.getComponents().values());
-
-        List<BoundServiceDefinition<? extends BindingDefinition>> allBoundServices =
-            new ArrayList<BoundServiceDefinition<? extends BindingDefinition>>();
-        List<BindlessServiceDefinition> allBindlessServices = new ArrayList<BindlessServiceDefinition>();
-        for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
-            if (serviceDefinition instanceof BoundServiceDefinition) {
-                BoundServiceDefinition<? extends BindingDefinition> boundService =
-                    (BoundServiceDefinition<? extends BindingDefinition>) serviceDefinition;
-                allBoundServices.add(boundService);
-            } else if (serviceDefinition instanceof BindlessServiceDefinition) {
-                allBindlessServices.add((BindlessServiceDefinition) serviceDefinition);
-            }
-        }
-
-        // FIXME is this right?
-        List<BoundReferenceDefinition<? extends BindingDefinition>> allBoundReferences =
+        List<BoundReferenceDefinition<? extends BindingDefinition>> boundReferences =
             new ArrayList<BoundReferenceDefinition<? extends BindingDefinition>>();
         List<ReferenceDefinition> allTargetlessReferences = new ArrayList<ReferenceDefinition>();
 
         for (Object referenceTarget : componentType.getReferences().values()) {
             if (referenceTarget instanceof BoundReferenceDefinition<?>) {
-                allBoundReferences.add((BoundReferenceDefinition<? extends BindingDefinition>) referenceTarget);
+                boundReferences.add((BoundReferenceDefinition<? extends BindingDefinition>) referenceTarget);
             } else if (referenceTarget instanceof ReferenceDefinition) {
                 allTargetlessReferences.add((ReferenceDefinition) referenceTarget);
             }
         }
 
-        String name = componentDefinition.getName();
-        CompositeComponentImpl component = new CompositeComponentImpl(name, parent, connector, null);
-        for (BoundReferenceDefinition<? extends BindingDefinition> referenceDefinition : allBoundReferences) {
+        for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
             try {
-                component.register(builderRegistry.build(component, referenceDefinition, deploymentContext));
-            } catch (ComponentRegistrationException e) {
-                throw new BuilderInstantiationException("Error registering reference", e);
-            }
-        }
-        for (BindlessServiceDefinition bindlessServiceDef : allBindlessServices) {
-            try {
-                component.register(builderRegistry.build(component, bindlessServiceDef, deploymentContext));
-            } catch (ComponentRegistrationException e) {
-                throw new BuilderInstantiationException("Error registering service", e);
-            }
-        }
-        for (ComponentDefinition<? extends Implementation<?>> child : allComponents) {
-            try {
-                component.register(builderRegistry.build(component, child, deploymentContext));
+                Component child = builderRegistry.build(component, definition, deploymentContext);
+                component.register(child);
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering component", e);
             }
         }
-        for (BoundServiceDefinition<? extends BindingDefinition> serviceDefinition : allBoundServices) {
+        for (ServiceDefinition definition : componentType.getServices().values()) {
             try {
-                component.register(builderRegistry.build(component, serviceDefinition, deploymentContext));
+                if (definition instanceof BoundServiceDefinition) {
+                    BoundServiceDefinition bsd = (BoundServiceDefinition) definition;
+                    Service service = builderRegistry.build(component, bsd, deploymentContext);
+                    component.register(service);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering service", e);
             }
         }
-        for (ReferenceDefinition targetlessReferenceDef : allTargetlessReferences) {
+        for (BoundReferenceDefinition<? extends BindingDefinition> definition : boundReferences) {
             try {
-                component.register(builderRegistry.build(component, targetlessReferenceDef, deploymentContext));
+                SCAObject child = builderRegistry.build(component, definition, deploymentContext);
+                component.register(child);
+            } catch (ComponentRegistrationException e) {
+                throw new BuilderInstantiationException("Error registering reference", e);
+            }
+        }
+        // TODO JFM remove need for targetless references
+        for (ReferenceDefinition definition : allTargetlessReferences) {
+            try {
+                SCAObject child = builderRegistry.build(component, definition, deploymentContext);
+                component.register(child);
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);
             }

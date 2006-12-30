@@ -20,7 +20,7 @@ package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -28,15 +28,27 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 
 /**
  * Responsible for processing a service or reference in an assembly configured with a particular binding. The builder
- * will create and return corresponding {@link org.apache.tuscany.spi.component.Service} or {@link
+ * will create and return corresponding {@link org.apache.tuscany.spi.component.ServiceBinding} or {@link
  * org.apache.tuscany.spi.component.Reference}
  *
  * @version $Rev$ $Date$
  */
 public interface BindingBuilder<B extends BindingDefinition> {
-    Service build(CompositeComponent parent,
-                  BoundServiceDefinition<B> boundServiceDefinition,
-                  DeploymentContext deploymentContext) throws BuilderException;
+
+    /**
+     * Creates a service binding
+     *
+     * @param parent                 the containing composite component
+     * @param boundServiceDefinition the service the binding is configured for
+     * @param bindingDefinition      the binding definition
+     * @param deploymentContext      the current deployment context
+     * @return a service binding
+     * @throws BuilderException
+     */
+    ServiceBinding build(CompositeComponent parent,
+                         BoundServiceDefinition boundServiceDefinition,
+                         B bindingDefinition,
+                         DeploymentContext deploymentContext) throws BuilderException;
 
     Reference build(CompositeComponent parent,
                     BoundReferenceDefinition<B> boundReferenceDefinition,

@@ -21,9 +21,9 @@ package org.apache.tuscany.spi.builder;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -37,12 +37,12 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
  */
 public interface Builder {
     /**
-     * Builds a <code>Component</code> context from a <code>ComponentDefinition</code>
+     * Builds a <code>Component</code> from a <code>ComponentDefinition</code>
      *
      * @param parent              the composite that will be the parent of the newly built component
      * @param componentDefinition the component definition as parsed from an SCA assembly
      * @param deploymentContext   the current deployment context
-     * @return a newly created component
+     * @return the newly created component
      * @throws BuilderException
      */
     <I extends Implementation<?>> Component build(CompositeComponent parent,
@@ -50,30 +50,33 @@ public interface Builder {
                                                   DeploymentContext deploymentContext) throws BuilderException;
 
     /**
-     * TODO: JavaDoc this when we know if we will still register Services as contexts
+     * Builds a <code>Service</code> and its bindings from a <code>BoundServiceDefinition</code>
+     *
+     * @param parent            the composite that will be the parent of the newly built service
+     * @param serviceDefinition the service definition as parsed from an SCA assembly
+     * @param deploymentContext the current deployment context
+     * @return the newly created service
+     * @throws BuilderException
+     */
+    Service build(CompositeComponent parent,
+                  BoundServiceDefinition serviceDefinition,
+                  DeploymentContext deploymentContext) throws BuilderException;
+
+    /**
+     * Builds a <code>Reference</code> and its bindings from a <code>BoundReferenceDefinition</code>
+     *
+     * @param parent              the composite that will be the parent of the newly built reference
+     * @param referenceDefinition the reference definition as parsed from an SCA assembly
+     * @param deploymentContext   the current deployment context
+     * @return the newly created reference
+     * @throws BuilderException
      */
     <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
-                                        BoundServiceDefinition<B> boundServiceDefinition,
-                                        DeploymentContext deploymentContext) throws BuilderException;
+                                                  BoundReferenceDefinition<B> referenceDefinition,
+                                                  DeploymentContext deploymentContext) throws BuilderException;
 
     /**
-     * TODO: JavaDoc this when we know if we will still register References as contexts
-     */
-    <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
-                                        BoundReferenceDefinition<B> boundReferenceDefinition,
-                                        DeploymentContext deploymentContext) throws BuilderException;
-
-    /**
-     * TODO: Make sure that this method belongs here Allow a builder registry to provide building of bindless services
-     * via appropriate registered builder
-     */
-    SCAObject build(CompositeComponent parent,
-                    BindlessServiceDefinition serviceDefinition,
-                    DeploymentContext deploymentContext) throws BuilderException;
-
-    /**
-     * TODO: Make sure that this method belongs here Allow a builder registry to provide building of targetless
-     * references via appropriate registered builder
+     * @deprecated
      */
     SCAObject build(CompositeComponent parent,
                     ReferenceDefinition referenceDefinition,

@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.component;
 
 import java.util.List;
+import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 
@@ -42,6 +43,15 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     void setScopeContainer(ScopeContainer scopeContainer);
 
     /**
+     * Returns an inbound wire associated with the given service and binding type
+     *
+     * @param serviceName the name of the service
+     * @param bindingType the binding type
+     * @return the wire or null if not found
+     */
+    InboundWire getInboundWire(String serviceName, QName bindingType);
+
+    /**
      * Returns the value of a Property of this composite.
      *
      * @param name the name of the Property
@@ -52,10 +62,10 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     /**
      * Registers a child of this composite.
      *
-     * @param context the context to add as a child
+     * @param object the object to add as a child
      * @throws ComponentRegistrationException
      */
-    void register(SCAObject context) throws ComponentRegistrationException;
+    void register(SCAObject object) throws ComponentRegistrationException;
 
     /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
@@ -102,12 +112,12 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     List<SCAObject> getSystemChildren();
 
     /**
-     * Returns the services contained by the composite
+     * Returns the serviceBindings contained by the composite
      */
     List<Service> getServices();
 
     /**
-     * Returns the system services contained by the composite
+     * Returns the system serviceBindings contained by the composite
      */
     List<Service> getSystemServices();
 
@@ -133,7 +143,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
 
     /**
      * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be
-     * services or components in the parent or its ancestors, or references in a sibling component
+     * serviceBindings or components in the parent or its ancestors, or references in a sibling component
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if one is not be found
@@ -143,7 +153,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
 
     /**
      * Invoked by system child components to return a wire to a system target based on matching type. Resolved targets
-     * may be system services or components in the parent or its ancestors, or references in a sibling component
+     * may be system serviceBindings or components in the parent or its ancestors, or references in a sibling component
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if one is not be found
@@ -153,7 +163,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
 
     /**
      * Invoked by a parent component to return an wire to a target in a child based on matching type. Resolved targets
-     * must be services. For example, given a parent P and two siblings, A and B, A would request an autowire by
+     * must be serviceBindings. For example, given a parent P and two siblings, A and B, A would request an autowire by
      * invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on B in order to
      * resolve a target.
      *
@@ -165,9 +175,9 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
 
     /**
      * Invoked by a parent component to return a wire to a system target in a child based on matching type. Resolved
-     * targets must be system services. For example, given a parent P and two siblings, A and B, A would request an
-     * autowire by invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on B
-     * in order to resolve a target.
+     * targets must be system serviceBindings. For example, given a parent P and two siblings, A and B, A would request
+     * an autowire by invoking {@link #resolveAutowire(Class<?>)} on P, which in turn could invoke the present method on
+     * B in order to resolve a target.
      *
      * @param instanceInterface the type of service being requested
      * @return a reference to the requested service or null if one is not be found

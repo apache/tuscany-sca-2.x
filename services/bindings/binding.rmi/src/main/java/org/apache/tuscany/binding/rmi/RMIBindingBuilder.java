@@ -18,16 +18,18 @@ package org.apache.tuscany.binding.rmi;
 
 import java.rmi.Remote;
 
-import org.apache.tuscany.host.rmi.RMIHost;
+import org.osoa.sca.annotations.Constructor;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.osoa.sca.annotations.Constructor;
+
+import org.apache.tuscany.host.rmi.RMIHost;
 
 /**
  * Builds a Service or Reference for an RMI binding.
@@ -49,21 +51,27 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBindingDefinit
     }
 
     @SuppressWarnings({"unchecked"})
-    public Service build(CompositeComponent parent,
-                           BoundServiceDefinition<RMIBindingDefinition> boundServiceDefinition,
-                           DeploymentContext deploymentContext) {
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition boundServiceDefinition,
+                                RMIBindingDefinition bindingDefinition,
+                                DeploymentContext deploymentContext) {
 
         Class intf = boundServiceDefinition.getServiceContract().getInterfaceClass();
 
-        return new RMIService<Remote>(boundServiceDefinition.getName(), parent, wireService, rmiHost,
-            boundServiceDefinition.getBinding().getHost(), boundServiceDefinition.getBinding().getPort(),
-            boundServiceDefinition.getBinding().getServiceName(), intf);
+        return new RMIServiceBinding<Remote>(boundServiceDefinition.getName(),
+            parent,
+            wireService,
+            rmiHost,
+            bindingDefinition.getHost(),
+            bindingDefinition.getPort(),
+            bindingDefinition.getServiceName(),
+            intf);
     }
 
     @SuppressWarnings({"unchecked"})
     public Reference build(CompositeComponent parent,
-                              BoundReferenceDefinition<RMIBindingDefinition> boundReferenceDefinition,
-                              DeploymentContext deploymentContext) {
+                           BoundReferenceDefinition<RMIBindingDefinition> boundReferenceDefinition,
+                           DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
         String host = boundReferenceDefinition.getBinding().getHost();
         String port = boundReferenceDefinition.getBinding().getPort();

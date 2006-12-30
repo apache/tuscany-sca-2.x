@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
@@ -35,8 +35,8 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
- * An extension point for binding builders. When adding support for new bindings, implementations may extend this class
- * as a convenience.
+ * An extension point for binding builders. When adding support for new serviceBindings, implementations may extend this
+ * class as a convenience.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -61,9 +61,10 @@ public abstract class BindingBuilderExtension<B extends BindingDefinition> imple
         builderRegistry.register(getBindingType(), this);
     }
 
-    public Service build(CompositeComponent parent,
-                         BoundServiceDefinition<B> boundServiceDefinition,
-                         DeploymentContext deploymentContext) throws BuilderException {
+    public ServiceBinding build(CompositeComponent parent,
+                                BoundServiceDefinition boundServiceDefinition,
+                                B bindingDefinition,
+                                DeploymentContext deploymentContext) throws BuilderException {
         return null;
     }
 

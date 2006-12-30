@@ -31,7 +31,7 @@ public class ScriptGetterServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    // private static final String SCA_INIT_JS = "SCA = new JSONRpcClient(\"services/HelloWorldService\");";
+    // private static final String SCA_INIT_JS = "SCA = new JSONRpcClient(\"serviceBindings/HelloWorldService\");";
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         URL url = getClass().getResource("jsonrpc.js");

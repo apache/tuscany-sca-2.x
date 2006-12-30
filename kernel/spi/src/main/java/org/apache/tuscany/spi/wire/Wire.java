@@ -18,16 +18,22 @@
  */
 package org.apache.tuscany.spi.wire;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
- * The base wire type used to connect references and services
+ * The base wire type used to connect references and serviceBindings
  *
  * @version $$Rev$$ $$Date$$
  */
 public interface Wire {
+
+    QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "local");
+
+    QName getBindingType();
 
     /**
      * Returns the non-proxied target instance for this wire

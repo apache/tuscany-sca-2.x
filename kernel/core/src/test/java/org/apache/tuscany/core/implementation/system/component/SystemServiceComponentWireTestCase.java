@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -43,11 +43,11 @@ public class SystemServiceComponentWireTestCase extends TestCase {
         EasyMock.replay(outboundWire);
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(new JavaServiceContract(Target.class));
-        Service service = new SystemServiceImpl("service", null, new JavaServiceContract());
-        service.setInboundWire(wire);
-        service.setOutboundWire(outboundWire);
+        ServiceBinding serviceBinding = new SystemServiceBindingImpl("serviceBinding", null, new JavaServiceContract());
+        serviceBinding.setInboundWire(wire);
+        serviceBinding.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);
-        assertSame(target, service.getInboundWire().getTargetService());
+        assertSame(target, serviceBinding.getInboundWire().getTargetService());
         EasyMock.verify(outboundWire);
     }
 }

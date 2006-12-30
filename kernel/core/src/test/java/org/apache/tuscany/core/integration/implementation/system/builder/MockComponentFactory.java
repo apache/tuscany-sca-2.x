@@ -153,7 +153,8 @@ public final class MockComponentFactory {
 
     public static BoundReferenceDefinition<SystemBindingDefinition> createBoundReference() {
         SystemBindingDefinition binding = new SystemBindingDefinition();
-        BoundReferenceDefinition<SystemBindingDefinition> referenceDefinition = new BoundReferenceDefinition<SystemBindingDefinition>();
+        BoundReferenceDefinition<SystemBindingDefinition> referenceDefinition =
+            new BoundReferenceDefinition<SystemBindingDefinition>();
         referenceDefinition.setBinding(binding);
         referenceDefinition.setName("target");
         ServiceContract<?> contract = new JavaServiceContract();
@@ -165,10 +166,10 @@ public final class MockComponentFactory {
     /**
      * Creates a bound service with the name "service" that is configured to be wired to a target named "target/Target"
      */
-    public static BoundServiceDefinition<SystemBindingDefinition> createBoundService() {
+    public static BoundServiceDefinition createBoundService() {
         SystemBindingDefinition binding = new SystemBindingDefinition();
-        BoundServiceDefinition<SystemBindingDefinition> serviceDefinition = new BoundServiceDefinition<SystemBindingDefinition>();
-        serviceDefinition.setBinding(binding);
+        BoundServiceDefinition serviceDefinition = new BoundServiceDefinition();
+        serviceDefinition.addBinding(binding);
         serviceDefinition.setName("serviceDefinition");
         ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(Target.class);

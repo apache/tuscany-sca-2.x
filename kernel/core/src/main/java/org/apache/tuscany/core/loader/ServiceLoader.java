@@ -20,6 +20,8 @@ package org.apache.tuscany.core.loader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -36,9 +38,11 @@ import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.InvalidReferenceException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -52,7 +56,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
     private static final QName SERVICE = new QName(XML_NAMESPACE_1_0, "service");
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
 
-    @Constructor({"registry"})
+    @Constructor
     public ServiceLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
@@ -68,7 +72,7 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String target = null;
-        BindingDefinition binding = null;
+        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
         ServiceContract serviceContract = null;
         while (true) {
             int i = reader.next();
@@ -79,42 +83,33 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                         String text = reader.getElementText();
                         target = text != null ? text.trim() : null;
                     } else {
-
                         ModelObject o = registry.load(parent, null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {
                             serviceContract = (ServiceContract) o;
                         } else if (o instanceof BindingDefinition) {
-                            binding = (BindingDefinition) o;
+                            bindings.add((BindingDefinition) o);
+                        } else {
+                            throw new UnrecognizedElementException(reader.getName());
                         }
                     }
                     break;
                 case END_ELEMENT:
                     if (SERVICE.equals(reader.getName())) {
-                        if (binding != null) {
-                            URI targetURI = null;
-                            if (target != null) {
-                                try {
-                                    targetURI = new URI(target);
-                                } catch (URISyntaxException e) {
-                                    throw new InvalidReferenceException(target, name);
-                                }
-                            }
-
+                        if (object instanceof ComponentType && !(object instanceof CompositeComponentType)) {
+                            // the load is being done for an atomic component type
                             // FIXME need a way to specify "remotable" on a service
-                            return new BoundServiceDefinition<BindingDefinition>(name, serviceContract, false, binding,
-                                targetURI);
-                        } else if (target != null) {
-                            URI targetURI;
+                            return new ServiceDefinition(name, serviceContract, false);
+                        }
+                        URI targetURI = null;
+                        if (target != null) {
                             try {
                                 targetURI = new URI(target);
                             } catch (URISyntaxException e) {
                                 throw new InvalidReferenceException(target, name);
                             }
-                            return new BindlessServiceDefinition(name, serviceContract, false, targetURI);
-                        } else {
-                            // FIXME need a way to specify "remotable" on a service
-                            return new ServiceDefinition(name, serviceContract, false);
                         }
+                        // FIXME need a way to specify "remotable" on a service
+                        return new BoundServiceDefinition(name, serviceContract, bindings, false, targetURI);
                     }
                     break;
             }

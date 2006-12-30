@@ -20,7 +20,6 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -49,7 +48,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
         EasyMock.expect(component1.getName()).andReturn("source").atLeastOnce();
         EasyMock.expect(component1.isSystem()).andReturn(true).atLeastOnce();
         component1.stop();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(interfaces);
+        List<InboundWire> wires = TestUtils.createInboundWires(interfaces);
         TestUtils.populateInboundWires(component1, wires);
         EasyMock.expect(component1.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component1);
@@ -77,7 +76,7 @@ public class DuplicateRegistrationTestCase extends TestCase {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getName()).andReturn("bar").atLeastOnce();
         EasyMock.expect(component.isSystem()).andReturn(true).atLeastOnce();
-        Map<String, InboundWire> wires = TestUtils.createInboundWires(services);
+        List<InboundWire> wires = TestUtils.createInboundWires(services);
         TestUtils.populateInboundWires(component, wires);
         EasyMock.expect(component.getInboundWires()).andReturn(wires).atLeastOnce();
         EasyMock.replay(component);

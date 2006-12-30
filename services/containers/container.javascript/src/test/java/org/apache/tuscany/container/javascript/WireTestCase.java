@@ -69,9 +69,9 @@ public class WireTestCase extends TestCase {
 //        CompositeScopeContainer scope = new CompositeScopeContainer(null);
 //        scope.start();
 //
-//        List<Class<?>> services = new ArrayList<Class<?>>();
-//        services.add(Greeting.class);
-//        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass1, services, properties, null, scope,
+//        List<Class<?>> serviceBindings = new ArrayList<Class<?>>();
+//        serviceBindings.add(Greeting.class);
+//        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass1, serviceBindings, properties, null, scope,
 //                ArtifactFactory.createWireService(), null);
 //        OutboundWire wire = ArtifactFactory.createOutboundWire("wire", Greeting.class);
 //        ArtifactFactory.terminateWire(wire);

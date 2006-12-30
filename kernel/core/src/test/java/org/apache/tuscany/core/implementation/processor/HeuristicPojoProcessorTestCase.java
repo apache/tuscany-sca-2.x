@@ -176,7 +176,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         JavaMappedProperty<?> prop2 = new JavaMappedProperty();
         prop2.setName("string2");
         type.add(prop2);
-        processor.visitEnd(null, ServiceImpl.class, type, null);
+        processor.visitEnd(null, MockService.class, type, null);
         assertEquals(1, type.getServices().size());
     }
 
@@ -257,7 +257,7 @@ public class HeuristicPojoProcessorTestCase extends TestCase {
         String setInvalid3(String str); // return should be void
     }
 
-    public static class ServiceImpl implements PropertyInterface, RefInterface, HeuristicServiceInterface {
+    public static class MockService implements PropertyInterface, RefInterface, HeuristicServiceInterface {
 
         @Property
         public void setString1(String val) {

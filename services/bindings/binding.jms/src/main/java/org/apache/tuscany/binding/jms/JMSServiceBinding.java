@@ -25,12 +25,12 @@ import javax.jms.Session;
 import javax.naming.NamingException;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ServiceExtension;
+import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 
 /**
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
-public class JMSService extends ServiceExtension {
+public class JMSServiceBinding extends ServiceBindingExtension {
 
     private JMSBindingDefinition jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
@@ -38,7 +38,7 @@ public class JMSService extends ServiceExtension {
     protected OperationAndDataBinding requestOperationAndDataBinding;
     protected OperationAndDataBinding responseOperationAndDataBinding;
 
-    public JMSService(String name,
+    public JMSServiceBinding(String name,
                       CompositeComponent parent,
                       JMSBindingDefinition jmsBinding,
                       JMSResourceFactory jmsResourceFactory,
@@ -58,7 +58,7 @@ public class JMSService extends ServiceExtension {
         try {
             registerListerner();
         } catch (Exception e) {
-            throw new JMSBindingException("Error starting JMSService", e);
+            throw new JMSBindingException("Error starting JMSServiceBinding", e);
         }
     }
 
@@ -68,7 +68,7 @@ public class JMSService extends ServiceExtension {
             consumer.close();
             jmsResourceFactory.closeConnection();
         } catch (Exception e) {
-            throw new JMSBindingException("Error stopping JMSService", e);
+            throw new JMSBindingException("Error stopping JMSServiceBinding", e);
         }
 
         super.stop();

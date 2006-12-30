@@ -18,13 +18,11 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
@@ -32,15 +30,16 @@ import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
+import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -50,12 +49,13 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+
 /**
  * The default builder registry in the runtime
  *
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
 public class BuilderRegistryImpl implements BuilderRegistry {
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
@@ -97,24 +97,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         componentBuilders.remove(implClass);
     }
 
-    @SuppressWarnings("unchecked")
-    public <B extends BindingDefinition> void register(BindingBuilder<B> builder) {
-        Type[] interfaces = builder.getClass().getGenericInterfaces();
-        for (Type type : interfaces) {
-            if (!(type instanceof ParameterizedType)) {
-                continue;
-            }
-            ParameterizedType interfaceType = (ParameterizedType) type;
-            if (!BindingBuilder.class.equals(interfaceType.getRawType())) {
-                continue;
-            }
-            Class<B> implClass = (Class<B>) interfaceType.getActualTypeArguments()[0];
-            register(implClass, builder);
-            return;
-        }
-        throw new IllegalArgumentException("builder is not generified");
-    }
-
     public <B extends BindingDefinition> void register(Class<B> implClass, BindingBuilder<B> builder) {
         bindingBuilders.put(implClass, builder);
     }
@@ -149,28 +131,41 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
-                                               BoundServiceDefinition<B> boundServiceDefinition,
-                                               DeploymentContext deploymentContext) throws BuilderException {
-        Class<?> bindingClass = boundServiceDefinition.getBinding().getClass();
-        BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
-        if (bindingBuilder == null) {
-            throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
+    @SuppressWarnings({"unchecked"})
+    public Service build(CompositeComponent parent,
+                         BoundServiceDefinition boundServiceDefinition,
+                         DeploymentContext deploymentContext) throws BuilderException {
+        String name = boundServiceDefinition.getName();
+        ServiceContract<?> serviceContract = boundServiceDefinition.getServiceContract();
+        boolean system = parent.isSystem();
+        URI targetUri = boundServiceDefinition.getTarget();
+        Service service = new ServiceImpl(name, parent, serviceContract, targetUri, system);
+        for (BindingDefinition definition : boundServiceDefinition.getBindings()) {
+            Class<?> bindingClass = definition.getClass();
+            BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
+            if (bindingBuilder == null) {
+                throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
+            }
+            ServiceBinding binding =
+                bindingBuilder.build(parent, boundServiceDefinition, definition, deploymentContext);
+            if (wireService != null) {
+                URI uri = boundServiceDefinition.getTarget();
+                if (uri == null) {
+                    throw new MissingWireTargetException("Service uri not specified");
+                }
+                String path = uri.getPath();
+                ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
+                wireService.createWires(binding, path, contract);
+            }
+            service.addServiceBinding(binding);
         }
-        SCAObject object = bindingBuilder.build(parent, boundServiceDefinition, deploymentContext);
-        if (wireService != null) {
-            String path = boundServiceDefinition.getTarget().getPath();
-            ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
-            wireService.createWires((Service) object, path, contract);
-        }
-        return object;
+        return service;
     }
 
     @SuppressWarnings("unchecked")
     public <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
-                                               BoundReferenceDefinition<B> boundReferenceDefinition,
-                                               DeploymentContext deploymentContext) throws BuilderException {
+                                                         BoundReferenceDefinition<B> boundReferenceDefinition,
+                                                         DeploymentContext deploymentContext) throws BuilderException {
         Class<B> bindingClass = (Class<B>) boundReferenceDefinition.getBinding().getClass();
         BindingBuilder<B> bindingBuilder = (BindingBuilder<B>) bindingBuilders.get(bindingClass);
         SCAObject object;
@@ -178,18 +173,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         // create wires for the component
         if (wireService != null) {
             wireService.createWires((Reference) object, boundReferenceDefinition.getServiceContract());
-        }
-        return object;
-    }
-
-    public SCAObject build(CompositeComponent parent,
-                           BindlessServiceDefinition serviceDefinition,
-                           DeploymentContext deploymentContext) {
-        SCAObject object = bindlessBuilder.build(parent, serviceDefinition, deploymentContext);
-        if (wireService != null) {
-            String path = serviceDefinition.getTarget().getPath();
-            ServiceContract<?> contract = serviceDefinition.getServiceContract();
-            wireService.createWires((Service) object, path, contract);
         }
         return object;
     }

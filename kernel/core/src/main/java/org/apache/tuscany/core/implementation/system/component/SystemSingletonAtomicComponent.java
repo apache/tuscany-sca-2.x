@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -116,8 +117,8 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         inboundWires.put(wire.getServiceName(), wire);
     }
 
-    public Map<String, InboundWire> getInboundWires() {
-        return inboundWires;
+    public Collection<InboundWire> getInboundWires() {
+        return Collections.unmodifiableCollection(inboundWires.values());
     }
 
     public InboundWire getInboundWire(String serviceName) {

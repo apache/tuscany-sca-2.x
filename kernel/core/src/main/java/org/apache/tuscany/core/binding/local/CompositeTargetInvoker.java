@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
@@ -27,18 +27,16 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Dispatches an invocation through a composite service or reference
+ * Dispatches an invocation through a composite service or reference using the local binding
  *
  * @version $Rev$ $Date$
  */
-public class CompositeTargetInvoker extends AbstractCompositeReferenceTargetInvoker {
-
+public class CompositeTargetInvoker extends AbstractCompositeTargetInvoker {
     private OutboundInvocationChain chain;
     private Object fromAddress;
     private boolean contractHasCallback;
 
-    public CompositeTargetInvoker(Operation operation,
-                                  OutboundWire outboundWire) {
+    public CompositeTargetInvoker(Operation operation, OutboundWire outboundWire) {
         assert operation != null;
         chain = outboundWire.getInvocationChains().get(operation);
         fromAddress = (outboundWire.getContainer() == null) ? null : outboundWire.getContainer().getName();

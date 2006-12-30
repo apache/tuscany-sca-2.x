@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
@@ -35,6 +37,7 @@ import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
@@ -61,10 +64,14 @@ public final class ArtifactFactory {
         return new JDKWireService(new WorkContextImpl(), null);
     }
 
+    public static Service createService(String name, CompositeComponent parent, ServiceContract<?> contract) {
+        return new ServiceImpl(name, parent, contract);
+    }
+
     /**
      * Creates an inbound wire. After a wire is returned, client code must call {@link
-     * #terminateWire(org.apache.tuscany.spi.wire.InboundWire)}. These two methods have been separated to allow wires
-     * to be decorated with interceptors or handlers prior to their completion
+     * #terminateWire(org.apache.tuscany.spi.wire.InboundWire)}. These two methods have been separated to allow wires to
+     * be decorated with interceptors or handlers prior to their completion
      *
      * @param serviceName the service name associated with the wire
      * @param interfaze   the interface associated with the wire
@@ -82,8 +89,8 @@ public final class ArtifactFactory {
 
     /**
      * Creates an outbound wire. After a wire is returned, client code must call {@link
-     * #terminateWire(org.apache.tuscany.spi.wire.OutboundWire)}. These two methods have been separated to allow
-     * wires to be decorated with interceptors or handlers prior to their completion
+     * #terminateWire(org.apache.tuscany.spi.wire.OutboundWire)}. These two methods have been separated to allow wires
+     * to be decorated with interceptors or handlers prior to their completion
      *
      * @param refName   the reference name the wire is associated with on the client
      * @param interfaze the interface associated with the wire
@@ -103,14 +110,14 @@ public final class ArtifactFactory {
     /**
      * Finalizes the target wire
      */
-    public static <T> void terminateWire(InboundWire wire) {
+    public static void terminateWire(InboundWire wire) {
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());
         }
     }
 
-    public static <T> void terminateWire(OutboundWire wire) {
+    public static void terminateWire(OutboundWire wire) {
         for (OutboundInvocationChain chain : wire.getInvocationChains().values()) {
             // add tail interceptor
             chain.addInterceptor(new InvokerInterceptor());

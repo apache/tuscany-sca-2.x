@@ -73,7 +73,7 @@ public class OSGiInvoker implements TargetInvoker {
         return false;
     }
 
-    // FIXME I think we can always have this cacheable as OSGi services are thread-safe
+    // FIXME I think we can always have this cacheable as OSGi serviceBindings are thread-safe
     public void setCacheable(boolean cacheable) {
     }
 }

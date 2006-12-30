@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
@@ -397,7 +397,7 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void createWires(Service service, String targetName, ServiceContract<?> contract) {
+        public void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract) {
             throw new UnsupportedOperationException();
         }
 

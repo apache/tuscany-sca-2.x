@@ -37,12 +37,12 @@ public class PropertyTestCase extends TestCase {
     public void testPropertyInjection() throws Exception {
         /*CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        List<Class<?>> services = new ArrayList<Class<?>>();
-        services.add(Greeting.class);
+        List<Class<?>> serviceBindings = new ArrayList<Class<?>>();
+        serviceBindings.add(Greeting.class);
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("property", "bar");
         WireService wireService = ArtifactFactory.createWireService();
-        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass, services, properties, null, scope, wireService, null);
+        JavaScriptComponent<Greeting> context = new JavaScriptComponent<Greeting>("source", implClass, serviceBindings, properties, null, scope, wireService, null);
         scope.register(context);
         Greeting greeting = context.getServiceInstance();
         assertEquals("bar", greeting.greet("foo"));

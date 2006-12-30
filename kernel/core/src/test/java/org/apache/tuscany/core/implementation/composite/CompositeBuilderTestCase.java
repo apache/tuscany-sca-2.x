@@ -19,14 +19,11 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -35,7 +32,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.BindlessServiceDefinition;
+import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -48,7 +45,7 @@ import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
-import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.java.JavaComponentBuilder;
@@ -60,7 +57,6 @@ import org.apache.tuscany.core.mock.component.Target;
 import org.apache.tuscany.core.mock.component.TargetImpl;
 import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
-import org.easymock.IAnswer;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -68,14 +64,8 @@ import org.easymock.IAnswer;
 public class CompositeBuilderTestCase extends TestCase {
     private DeploymentContext deploymentContext;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        ScopeContainer mock = createMock();
-        deploymentContext = new RootDeploymentContext(null, null, mock, null);
-    }
-
     @SuppressWarnings("unchecked")
-    public void testBuildConnect() throws Exception {
+    public void testBuild() throws Exception {
         CompositeComponent parent = new CompositeComponentImpl(null, null, null, null);
 
         CompositeBuilder builder = new CompositeBuilder();
@@ -93,9 +83,6 @@ public class CompositeBuilderTestCase extends TestCase {
         builder.setBuilderRegistry(builderRegistry);
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
-
-        ConnectorImpl connector = new ConnectorImpl();
-        connector.connect(component);
 
         deploymentContext.getCompositeScope().start();
         component.start();
@@ -131,7 +118,7 @@ public class CompositeBuilderTestCase extends TestCase {
         JavaServiceContract targetContract = registry.introspect(Target.class);
         reference.setServiceContract(targetContract);
         innerType.add(reference);
-        BindlessServiceDefinition service = new BindlessServiceDefinition();
+        BoundServiceDefinition service = new BoundServiceDefinition();
         service.setName("InnerSourceService");
         JavaServiceContract sourceContract = registry.introspect(Source.class);
         service.setServiceContract(sourceContract);
@@ -211,26 +198,11 @@ public class CompositeBuilderTestCase extends TestCase {
         return new ComponentDefinition<JavaImplementation>("TargetComponent", targetImpl);
     }
 
-    private ScopeContainer createMock() throws TargetException {
-        ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
-        container.start();
-        container.register(EasyMock.isA(AtomicComponent.class));
-        EasyMock.expectLastCall().anyTimes();
-        EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE).anyTimes();
-        EasyMock.expect(container.getInstance(EasyMock.isA(AtomicComponent.class))).andAnswer(new IAnswer<Object>() {
-            private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
-
-            public Object answer() throws Throwable {
-                AtomicComponent component = (AtomicComponent) EasyMock.getCurrentArguments()[0];
-                Object instance = cache.get(component);
-                if (instance == null) {
-                    instance = component.createInstance();
-                    cache.put(component, instance);
-                }
-                return instance;
-            }
-        });
-        EasyMock.replay(container);
-        return container;
+    protected void setUp() throws Exception {
+        super.setUp();
+        ScopeContainerMonitor monitor = EasyMock.createNiceMock(ScopeContainerMonitor.class);
+        CompositeScopeContainer container = new CompositeScopeContainer(monitor);
+        deploymentContext = new RootDeploymentContext(null, null, container, null);
     }
+    
 }

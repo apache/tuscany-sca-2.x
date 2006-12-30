@@ -4,11 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.SCAExternalizable;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InboundWire;
 
@@ -42,10 +40,8 @@ public class JDKCallbackInvocationHandlerSerializationTestCase extends TestCase 
         wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getServiceName()).andReturn("foo").atLeastOnce();
         EasyMock.replay(wire);
-        Map<String, InboundWire> wires = new HashMap<String, InboundWire>();
-        wires.put("foo", wire);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(component.getInboundWires()).andReturn(wires);
+        EasyMock.expect(component.getInboundWire(EasyMock.eq("foo"))).andReturn(wire);
         EasyMock.replay(component);
         workContext = new WorkContextImpl();
         workContext.setCurrentAtomicComponent(component);
