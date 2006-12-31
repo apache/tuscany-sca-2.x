@@ -20,10 +20,13 @@ package org.apache.tuscany.core.services.management.jmx;
 
 import java.net.URI;
 
+import javax.management.MBeanServer;
+
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.services.management.ManagementService;
 
@@ -33,12 +36,19 @@ import org.apache.tuscany.spi.services.management.ManagementService;
  * @version $Revision$ $Date$
  */
 public abstract class JmxManagementService implements ManagementService {
+    
+    /**
+     * MBean server used by the JMX management service.
+     */
+    private MBeanServer mBeanServer;
 
     /**
-     * Istrumentation mode used by the service.
+     * Initializes the MBean server.
+     * @param runtimeInfo JMX runtime info.
      */
-    @Property
-    protected InstrumentationMode instrumentationMode;
+    public JmxManagementService(@Autowire JmxRuntimeInfo runtimeInfo) {
+        this.mBeanServer = runtimeInfo.getMBeanServer();
+    }
 
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI,

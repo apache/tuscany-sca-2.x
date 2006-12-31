@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.services.management.jmx;
+package org.apache.tuscany.core.services.management.jmx.instrument;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
