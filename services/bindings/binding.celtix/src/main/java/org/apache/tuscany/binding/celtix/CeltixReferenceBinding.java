@@ -24,7 +24,7 @@ import javax.wsdl.Service;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -33,11 +33,11 @@ import commonj.sdo.helper.TypeHelper;
 import org.objectweb.celtix.Bus;
 
 /**
- * The implementation of a {@link org.apache.tuscany.spi.component.Reference} configured with the Celtix binding
+ * The implementation of a {@link org.apache.tuscany.spi.component.ReferenceBinding} configured with the Celtix binding
  *
  * @version $Rev$ $Date$
  */
-public class CeltixReference<T> extends ReferenceExtension {
+public class CeltixReferenceBinding<T> extends ReferenceBindingExtension {
 
     private Bus bus;
     private Port port;
@@ -45,7 +45,7 @@ public class CeltixReference<T> extends ReferenceExtension {
     private Service wsdlService;
     private TypeHelper typeHelper;
 
-    public CeltixReference(String name,
+    public CeltixReferenceBinding(String name,
                            CompositeComponent parent,
                            WebServiceBindingDefinition binding,
                            Bus theBus,

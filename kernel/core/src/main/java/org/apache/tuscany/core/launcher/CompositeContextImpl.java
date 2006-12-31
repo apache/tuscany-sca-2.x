@@ -27,7 +27,7 @@ import org.osoa.sca.ServiceRuntimeException;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -123,8 +123,8 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
             if (wire == null) {
                 throw new ServiceRuntimeException("Local binding for service not found [" + name + "]");
             }
-        } else if (child instanceof Reference) {
-            wire = ((Reference) child).getInboundWire();
+        } else if (child instanceof ReferenceBinding) {
+            wire = ((ReferenceBinding) child).getInboundWire();
         } else if (child == null) {
             throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
         } else {

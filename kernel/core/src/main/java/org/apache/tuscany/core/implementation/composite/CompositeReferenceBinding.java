@@ -19,8 +19,10 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
-import org.apache.tuscany.core.binding.local.CompositeTargetInvoker;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
+import org.apache.tuscany.core.binding.local.LocalTargetInvoker;
+import org.apache.tuscany.core.binding.local.LocalCallbackTargetInvoker;
+
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -28,19 +30,20 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * A bindless reference to a target service in the parent composite
  *
+ * @deprecated
  * @version $Rev$ $Date$
  */
-public class CompositeReference extends ReferenceExtension {
+public class CompositeReferenceBinding extends ReferenceBindingExtension {
 
-    public CompositeReference(String name, CompositeComponent parent) {
+    public CompositeReferenceBinding(String name, CompositeComponent parent) {
         super(name, parent);
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeTargetInvoker(operation, outboundWire);
+        return new LocalTargetInvoker(operation, outboundWire);
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        return new CompositeReferenceCallbackTargetInvoker(operation, inboundWire);
+        return new LocalCallbackTargetInvoker(operation, inboundWire);
     }
 }

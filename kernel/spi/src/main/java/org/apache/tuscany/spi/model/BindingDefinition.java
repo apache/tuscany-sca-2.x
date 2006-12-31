@@ -18,10 +18,28 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.net.URI;
+
 /**
  * The base representation of a binding specified in an assembly
  *
  * @version $Rev$ $Date$
  */
 public abstract class BindingDefinition extends ModelObject {
+    private URI targetUri;
+
+    protected BindingDefinition() {
+    }
+
+    public BindingDefinition(URI targetUri) {
+        this.targetUri = targetUri;
+    }
+
+    public URI getTargetUri() {
+        return targetUri;
+    }
+
+    public void setTargetUri(URI targetUri) {
+        this.targetUri = targetUri;
+    }
 }

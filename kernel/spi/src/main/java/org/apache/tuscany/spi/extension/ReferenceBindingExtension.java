@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.spi.extension;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -29,20 +31,26 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Default implementation of a reference configured with the system binding
+ * The default implementation of an SCA reference
  *
  * @version $Rev$ $Date$
  */
-public class SystemReferenceImpl extends AbstractSCAObject implements Reference {
+public abstract class ReferenceBindingExtension extends AbstractSCAObject implements ReferenceBinding {
+    protected Reference reference;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
+    protected ServiceContract<?> bindingServiceContract;
 
-    public SystemReferenceImpl(String name, CompositeComponent parent) {
+    protected ReferenceBindingExtension(String name, CompositeComponent parent) {
         super(name, parent);
     }
 
     public Scope getScope() {
         return Scope.SYSTEM;
+    }
+
+    public void setReference(Reference reference) {
+        this.reference = reference;
     }
 
     public void setInboundWire(InboundWire wire) {
@@ -57,31 +65,26 @@ public class SystemReferenceImpl extends AbstractSCAObject implements Reference 
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire wire) {
-        this.outboundWire = wire;
+    public void setOutboundWire(OutboundWire outboundWire) {
+        this.outboundWire = outboundWire;
     }
 
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
-        throw new UnsupportedOperationException();
-    }
-
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        throw new UnsupportedOperationException();
-    }
-
-    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+        throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
 
     public ServiceContract<?> getBindingServiceContract() {
-        throw new UnsupportedOperationException();
+        return bindingServiceContract;
     }
 
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {
-        throw new UnsupportedOperationException();
+        this.bindingServiceContract = serviceContract;
     }
 
+    @Override
     public boolean isSystem() {
-        return true;
+        return reference != null && reference.isSystem();
     }
+
 }

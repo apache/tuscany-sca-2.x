@@ -22,14 +22,11 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -44,7 +41,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.implementation.composite.CompositeReference;
+import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 
 /**
  * Base class for wire service extensions
@@ -123,24 +120,9 @@ public abstract class WireServiceExtension implements WireService {
         Implementation<?> implementation = definition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
         for (ServiceDefinition service : componentType.getServices().values()) {
-            if (componentType instanceof CompositeComponentType<?, ?, ?>) {
-                // If this is the case, then it means that component has already been returned
-                // by CompositeBuilder and thus its children, in particular composite services,
-                // have been registered
-                CompositeComponent compositeComponent = (CompositeComponent) component;
-                Service serviceChild;
-                if (component.isSystem()) {
-                    // FIXME JFM test
-                    serviceChild = (Service) compositeComponent.getSystemChild(service.getName());
-                } else {
-                    serviceChild = (Service) compositeComponent.getChild(service.getName());
-                }
-                assert serviceChild != null;
-            } else {
-                InboundWire wire = createWire(service);
-                wire.setContainer(component);
-                component.addInboundWire(wire);
-            }
+            InboundWire wire = createWire(service);
+            wire.setContainer(component);
+            component.addInboundWire(wire);
         }
 
         for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
@@ -150,53 +132,48 @@ public abstract class WireServiceExtension implements WireService {
             OutboundWire wire = createWire(referenceTarget, mappedReference);
             wire.setContainer(component);
             component.addOutboundWire(wire);
-            if (componentType instanceof CompositeComponentType<?, ?, ?>) {
-                // If this is the case, then it means that component has already been returned
-                // by CompositeBuilder and thus its children, in particular composite references,
-                // have been registered
-                CompositeComponent compositeComponent = (CompositeComponent) component;
-                Reference reference = (Reference) compositeComponent.getChild(referenceTarget.getReferenceName());
-                assert reference != null;
-                if (reference instanceof CompositeReference) {
-                    reference.setOutboundWire(wire);
-                    // Notice that now the more immediate container of the wire is the composite reference
-                    wire.setContainer(reference);
-                }
-            }
         }
     }
 
-    public void createWires(Reference reference, ServiceContract<?> contract) {
+    public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, QualifiedName targetName) {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setServiceContract(contract);
-        inboundWire.setContainer(reference);
+        inboundWire.setContainer(referenceBinding);
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             inboundWire.addInvocationChain(operation, chain);
         }
         OutboundWire outboundWire = new OutboundWireImpl();
+        outboundWire.setTargetName(targetName);
 
         // [rfeng] Check if the Reference has the binding contract
-        ServiceContract<?> bindingContract = reference.getBindingServiceContract();
+        ServiceContract<?> bindingContract = referenceBinding.getBindingServiceContract();
         if (bindingContract == null) {
             bindingContract = contract;
         }
         outboundWire.setServiceContract(bindingContract);
-        outboundWire.setContainer(reference);
+        outboundWire.setContainer(referenceBinding);
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             OutboundInvocationChain chain = createOutboundChain(operation);
-            chain.addInterceptor(new InvokerInterceptor());
+            if (referenceBinding instanceof LocalReferenceBinding) {
+                // Not ideal but the local binding case is special as its inbound and outbound wires are connected
+                // before the outbound wire is connected to the reference target. This requires the binding outbound
+                // chain to have an interceptor to connect to from the binding inbound chain. This outbound
+                // interceptor will then be bridged to the head target interceptor 
+                chain.addInterceptor(new SynchronousBridgingInterceptor());
+            } else {
+                chain.addInterceptor(new InvokerInterceptor());
+            }
             outboundWire.addInvocationChain(operation, chain);
         }
 
         // Notice that we skip inboundWire.setCallbackReferenceName
         // First, an inbound wire's callbackReferenceName is only retrieved by JavaAtomicComponent
         // to create a callback injector based on the callback reference member; a composite reference
-        // should not need to do that
-        // Second, a reference definition does not have a callback reference name like a service
-        // definition does
-        reference.setInboundWire(inboundWire);
-        reference.setOutboundWire(outboundWire);
+        // should not need to do that. Second, a reference definition does not have a callback reference name
+        // like a service definition does
+        referenceBinding.setInboundWire(inboundWire);
+        referenceBinding.setOutboundWire(outboundWire);
     }
 
     public void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract) {

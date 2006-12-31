@@ -20,7 +20,7 @@ package org.apache.tuscany.core.launcher;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -96,7 +96,7 @@ public class CompositeContextImplTestCase extends TestCase {
     public void testReferenceLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.replay(wire);
-        Reference child = EasyMock.createMock(Reference.class);
+        ReferenceBinding child = EasyMock.createMock(ReferenceBinding.class);
         EasyMock.expect(child.getInboundWire()).andReturn(wire);
         EasyMock.replay(child);
         CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);

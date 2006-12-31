@@ -78,9 +78,10 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBindingDefinit
         return serviceBinding;
     }
 
-    public JMSReference build(CompositeComponent parent,
-                              BoundReferenceDefinition<JMSBindingDefinition> referenceDefinition,
-                              DeploymentContext deploymentContext) {
+    public JMSReferenceBinding build(CompositeComponent parent,
+                                     BoundReferenceDefinition referenceDefinition,
+                                     JMSBindingDefinition jmsBinding,
+                                     DeploymentContext deploymentContext) {
 
         String name = referenceDefinition.getName();
         Class<?> interfaze = referenceDefinition.getServiceContract().getInterfaceClass();
@@ -92,7 +93,6 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBindingDefinit
         }
         serviceContract.setDataBinding(OM_DATA_BINDING);
 
-        JMSBindingDefinition jmsBinding = referenceDefinition.getBinding();
         JMSResourceFactory jmsResourceFactory = getJMSResourceFactory(jmsBinding);
 
         Destination requestDest;
@@ -111,8 +111,8 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBindingDefinit
         OperationAndDataBinding responseODB =
             getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
 
-        JMSReference reference =
-            new JMSReference(name, parent, jmsBinding, jmsResourceFactory, requestODB, responseODB,
+        JMSReferenceBinding reference =
+            new JMSReferenceBinding(name, parent, jmsBinding, jmsResourceFactory, requestODB, responseODB,
                 requestDest, replyDest);
         reference.setBindingServiceContract(serviceContract);
         return reference;

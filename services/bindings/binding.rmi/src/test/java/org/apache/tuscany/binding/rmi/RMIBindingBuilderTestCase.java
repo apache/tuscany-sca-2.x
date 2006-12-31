@@ -16,33 +16,36 @@
  */
 package org.apache.tuscany.binding.rmi;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.createMock;
-import static org.easymock.classextension.EasyMock.replay;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
+import junit.framework.TestCase;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
+
 public class RMIBindingBuilderTestCase extends TestCase {
-    
+
     public void testGetBindingType() {
         assertEquals(RMIBindingDefinition.class, new RMIBindingBuilder(null).getBindingType());
     }
 
-    @SuppressWarnings("unchecked")
     public void testBuildService() {
         RMIBindingBuilder builder = new RMIBindingBuilder(null);
-        BoundReferenceDefinition<RMIBindingDefinition> def = createMock(BoundReferenceDefinition.class);
+        BoundReferenceDefinition def = createMock(BoundReferenceDefinition.class);
         expect(def.getName()).andReturn("petra");
         RMIBindingDefinition binding = new RMIBindingDefinition();
-        expect(def.getBinding()).andReturn(binding );
-        expect(def.getBinding()).andReturn(binding );
-        expect(def.getBinding()).andReturn(binding );
+        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+        bindings.add(binding);
+        expect(def.getBindings()).andReturn(bindings).times(3);
         ServiceContract sc = createMock(ServiceContract.class);
         expect(def.getServiceContract()).andReturn(sc);
         replay(def);
-        Object ref = builder.build(null, def, null);
-        assertTrue(ref instanceof RMIReference);
+        Object ref = builder.build(null, def, binding, null);
+        assertTrue(ref instanceof RMIReferenceBinding);
     }
 }

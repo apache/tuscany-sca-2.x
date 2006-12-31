@@ -53,11 +53,13 @@ import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
 import org.apache.tuscany.spi.loader.UndefinedReferenceException;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
+import org.apache.tuscany.spi.model.BindingDefinition;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
@@ -66,6 +68,7 @@ import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
 
@@ -159,8 +162,18 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                     BoundServiceDefinition bsd = (BoundServiceDefinition) serviceDefinition;
                                     if (bsd.getBindings().isEmpty()) {
                                         if (bsd.getBindings().isEmpty()) {
-                                            // TODO implement a more advanced option that allows the runtime to
-                                            // choose a binding
+                                            // TODO JFM implement capability for the runtime to choose a binding
+                                            bsd.addBinding(new LocalBindingDefinition());
+                                        }
+                                    }
+                                }
+                            }
+                            for (ReferenceDefinition referenceDefinition : type.getReferences().values()) {
+                                if (referenceDefinition instanceof BoundReferenceDefinition) {
+                                    BoundReferenceDefinition bsd = (BoundReferenceDefinition) referenceDefinition;
+                                    if (bsd.getBindings().isEmpty()) {
+                                        if (bsd.getBindings().isEmpty()) {
+                                            // TODO JFM implement capability for the runtime to choose a binding
                                             bsd.addBinding(new LocalBindingDefinition());
                                         }
                                     }
@@ -244,14 +257,38 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         if (!componentType.getReferences().containsKey(name)) {
             throw new UndefinedReferenceException(name);
         }
-        ReferenceTarget referenceTarget = new ReferenceTarget();
-        referenceTarget.setReferenceName(name);
-        try {
-            referenceTarget.addTarget(new URI(target));
-        } catch (URISyntaxException e) {
-            throw new InvalidReferenceException(e);
+        if (componentType instanceof CompositeComponentType) {
+            ReferenceDefinition definition = componentType.getReferences().get(name);
+            assert definition instanceof BoundReferenceDefinition;
+            BoundReferenceDefinition brd = (BoundReferenceDefinition) definition;
+            if (brd.getBindings().isEmpty()) {
+                // TODO JFM allow selection of a default binding
+                try {
+                    LocalBindingDefinition binding = new LocalBindingDefinition(new URI(target));
+                    brd.addBinding(binding);
+                } catch (URISyntaxException e) {
+                    throw new InvalidReferenceException(e);
+                }
+            } else {
+                for (BindingDefinition binding : brd.getBindings()) {
+                    try {
+                        // FIXME this is bad - clarify in the spec how URIs are overriden
+                        binding.setTargetUri(new URI(target));
+                    } catch (URISyntaxException e) {
+                        throw new LoaderException(e);
+                    }
+                }
+            }
+        } else {
+            ReferenceTarget referenceTarget = new ReferenceTarget();
+            referenceTarget.setReferenceName(name);
+            try {
+                referenceTarget.addTarget(new URI(target));
+            } catch (URISyntaxException e) {
+                throw new InvalidReferenceException(e);
+            }
+            componentDefinition.add(referenceTarget);
         }
-        componentDefinition.add(referenceTarget);
     }
 
     @SuppressWarnings("unchecked")

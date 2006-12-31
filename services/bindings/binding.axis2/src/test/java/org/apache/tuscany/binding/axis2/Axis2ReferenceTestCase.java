@@ -46,7 +46,7 @@ import org.easymock.EasyMock;
 public class Axis2ReferenceTestCase extends TestCase {
 
     public void testInvokeService() throws Exception {
-        Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
+        Axis2ReferenceBinding axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
         ServiceContract contract = new JavaServiceContract();
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker targetInvoker = axis2Reference.createTargetInvoker(contract, operation);
@@ -55,7 +55,7 @@ public class Axis2ReferenceTestCase extends TestCase {
     }
 
     public void testAsyncTargetInvoker() throws Exception {
-        Axis2Reference axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
+        Axis2ReferenceBinding axis2Reference = createAxis2Reference("testWebAppName", "testServiceName");
         //Create a mocked InboundWire, make the call of ServiceBindingExtension.getInterface() returns a Class
         InboundWire inboundWire = EasyMock.createNiceMock(InboundWire.class);
         JavaServiceContract contract = new JavaServiceContract(Greeter.class);
@@ -76,7 +76,7 @@ public class Axis2ReferenceTestCase extends TestCase {
         assertTrue(asyncTargetInvoker instanceof Axis2AsyncTargetInvoker);
     }
 
-    private Axis2Reference createAxis2Reference(String webAppName, String serviceName) throws Exception {
+    private Axis2ReferenceBinding createAxis2Reference(String webAppName, String serviceName) throws Exception {
         //Create WebServiceBindingDefinition
         String wsdlLocation = "/wsdl/hello_world_doc_lit.wsdl";
         URL url = getClass().getResource(wsdlLocation);
@@ -98,7 +98,7 @@ public class Axis2ReferenceTestCase extends TestCase {
         // TODO figure out what to do with the service contract
         ServiceContract<?> contract = new WSDLServiceContract();
         contract.setInterfaceClass(Greeter.class);
-        return new Axis2Reference(serviceName,
+        return new Axis2ReferenceBinding(serviceName,
             parent,
             wsBinding,
             contract, null);

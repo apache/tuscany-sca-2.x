@@ -25,80 +25,74 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * The runtime instantiation of an SCA service binding.
+ * Manages an SCA reference configured with a binding
  *
  * @version $Rev$ $Date$
  */
-public interface ServiceBinding extends SCAObject {
+public interface ReferenceBinding extends SCAObject {
 
     /**
-     * Sets the parent service for the binding
+     * Sets the parent reference for the binding
      *
-     * @param service the parent service for the binding
+     * @param reference the parent reference for the binding
      */
-    void setService(Service service);
+    void setReference(Reference reference);
 
     /**
-     * Get the ServiceContract for the binding
-     *
-     * @return the ServiceContract for the binding
-     */
-    ServiceContract<?> getBindingServiceContract();
-
-    /**
-     * Set the ServiceContract for the binding. This contract will be used for the inbound wire. If not set, it will be
-     * the same as the ServideContract from the interface.
-     *
-     * @param serviceContract the binding contract
-     */
-    void setBindingServiceContract(ServiceContract<?> serviceContract);
-
-    /**
-     * Returns the inbound wire for flowing a request through the service
-     *
-     * @return the inbound wire for flowing a request through the service
+     * Returns the inbound wire for flowing a request through the reference
      */
     InboundWire getInboundWire();
 
     /**
-     * Sets the inbound wire for flowing a request through the service
-     *
-     * @param wire the inbound wire for flowing a request through the service
+     * Sets the inbound wire for flowing a request through the reference
      */
     void setInboundWire(InboundWire wire);
 
     /**
-     * Returns the outbound wire for flowing a request out of the service
-     *
-     * @return the outbound wire for flowing a request out of the service
+     * Returns the outbound wire used by the reference to connect to a target
      */
     OutboundWire getOutboundWire();
 
     /**
-     * Sets the outbound wire for flowing a request out of the service
-     *
-     * @param wire the outbound wire for flowing a request out of the service
+     * Sets the outbound wire used by the reference to connect to a target
      */
     void setOutboundWire(OutboundWire wire);
 
     /**
-     * Returns the target invoker for dispatching callback invocations
+     * Callback to create a {@link org.apache.tuscany.spi.wire.TargetInvoker} which dispatches to the target service of
+     * the reference
      *
-     * @param contract  the callback contract
-     * @param operation the callback operation the target invoker dispatches to
+     * @param contract  the service contract to invoke on
+     * @param operation the operation to invoke
      * @throws TargetInvokerCreationException
      */
     TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException;
 
     /**
-     * Returns the target invoker for dispatching callback invocations
+     * Creates a target invoker for callbacks
      *
-     * @param contract  the callback contract
-     * @param operation the callback operation the target invoker dispatches to
+     * @param contract  the service contract to invoke on
+     * @param operation the operation to invoke
      * @throws TargetInvokerCreationException
      */
     TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException;
+
+    /**
+     * Get the ServiceContract for the binding
+     *
+     * @return
+     */
+    ServiceContract<?> getBindingServiceContract();
+
+
+    /**
+     * Set the ServiceContract for the binding. This contract will be used for the outbound wire. If not set, it will be
+     * the same as the ServideContract from the interface.
+     *
+     * @param serviceContract
+     */
+    void setBindingServiceContract(ServiceContract<?> serviceContract);
 
 }

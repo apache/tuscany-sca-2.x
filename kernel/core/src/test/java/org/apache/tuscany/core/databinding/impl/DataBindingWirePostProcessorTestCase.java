@@ -33,7 +33,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -121,11 +121,11 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         InboundWire inboundWire = createMock(InboundWire.class);
         OutboundWire outboundWire = createMock(OutboundWire.class);
 
-        Reference reference = createMock(Reference.class);
+        ReferenceBinding referenceBinding = createMock(ReferenceBinding.class);
         CompositeComponent composite = createMock(CompositeComponent.class);
-        expect(reference.getParent()).andReturn(composite);
-        expect(inboundWire.getContainer()).andReturn(reference).anyTimes();
-        expect(outboundWire.getContainer()).andReturn(reference).anyTimes();
+        expect(referenceBinding.getParent()).andReturn(composite);
+        expect(inboundWire.getContainer()).andReturn(referenceBinding).anyTimes();
+        expect(outboundWire.getContainer()).andReturn(referenceBinding).anyTimes();
 
         Map<Operation<?>, OutboundInvocationChain> outboundChains =
             new HashMap<Operation<?>, OutboundInvocationChain>();
@@ -167,7 +167,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         expect(inboundWire.getServiceContract()).andReturn(contract);
         expect(inboundChain.getTailInterceptor()).andReturn(null);
 
-        EasyMock.replay(composite, reference, inboundWire, outboundWire, inboundChain, outboundChain);
+        EasyMock.replay(composite, referenceBinding, inboundWire, outboundWire, inboundChain, outboundChain);
 
         processor.process(inboundWire, outboundWire);
     }

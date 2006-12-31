@@ -76,8 +76,12 @@ public class ServiceDefinition extends ModelObject {
         return callbackRefName;
     }
 
-    public void setCallbackReferenceName(String callbackRefName) {
-        this.callbackRefName = callbackRefName;
+    /**
+     * Sets the callback name
+     * @param name
+     */
+    public void setCallbackReferenceName(String name) {
+        this.callbackRefName = name;
     }
 
 }

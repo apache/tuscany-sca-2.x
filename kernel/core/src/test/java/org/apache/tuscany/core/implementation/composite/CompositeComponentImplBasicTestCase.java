@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -143,15 +144,18 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     }
 
     private Reference getReference(String name) throws InvalidServiceContractException {
-        Reference reference = EasyMock.createNiceMock(Reference.class);
-        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
+        ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
+        EasyMock.expect(binding.isSystem()).andReturn(false).atLeastOnce();
         InboundWire wire = TestUtils.createInboundWire(Bar.class);
-        wire.setContainer(reference);
-        EasyMock.expect(reference.getInboundWire()).andReturn(wire).atLeastOnce();
+        wire.setContainer(binding);
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
 
-        reference.getName();
+        binding.getName();
         expectLastCall().andReturn(name).anyTimes();
-        replay(reference);
+        replay(binding);
+
+        Reference reference = new ReferenceImpl(name, null, wire.getServiceContract());
+        reference.addReferenceBinding(binding);
         return reference;
     }
 

@@ -74,19 +74,21 @@ public interface Component extends SCAObject {
      */
     TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
         throws TargetInvokerCreationException;
-    
+
     /**
      * Gets the component definition associated with the component.
+     *
      * @return Definition associated with the component.
      */
     ComponentDefinition getComponentDefinition();
-    
+
     /**
      * Gets the component definition associated with the component.
+     *
      * @param definition Definition associated with the component.
-     * TODO This shouldn't be mutable, rather set during construction. However,
-     * passing it in the constructor of the implementing class has implications 
-     * in the usage of various types in the inheritance tree.
+     * TODO This shouldn't be mutable, rather set during
+     *                   construction. However, passing it in the constructor of the implementing class has implications
+     *                   in the usage of various types in the inheritance tree.
      * @deprecated Remove this when immutability is enforced in the implemenation tree.
      */
     void setComponentDefinition(ComponentDefinition definition);

@@ -43,7 +43,7 @@ public class SystemServiceComponentWireTestCase extends TestCase {
         EasyMock.replay(outboundWire);
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(new JavaServiceContract(Target.class));
-        ServiceBinding serviceBinding = new SystemServiceBindingImpl("serviceBinding", null, new JavaServiceContract());
+        ServiceBinding serviceBinding = new SystemServiceBinding("serviceBinding", null, new JavaServiceContract());
         serviceBinding.setInboundWire(wire);
         serviceBinding.setOutboundWire(outboundWire);
         wire.setTargetWire(outboundWire);

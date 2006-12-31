@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -52,7 +53,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.implementation.composite.CompositeReference;
+import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 import org.apache.tuscany.core.wire.LoopBackWire;
 import org.apache.tuscany.core.wire.NonBlockingBridgingInterceptor;
 import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
@@ -183,10 +184,10 @@ public class ConnectorImpl implements Connector {
                 } catch (TargetInvokerCreationException e) {
                     throw new WireConnectException("Error connecting source and target", sourceWire, targetWire, e);
                 }
-            } else if (target instanceof Reference) {
-                Reference reference = (Reference) target;
+            } else if (target instanceof ReferenceBinding) {
+                ReferenceBinding referenceBinding = (ReferenceBinding) target;
                 try {
-                    invoker = reference.createTargetInvoker(targetWire.getServiceContract(), inboundOperation);
+                    invoker = referenceBinding.createTargetInvoker(targetWire.getServiceContract(), inboundOperation);
                 } catch (TargetInvokerCreationException e) {
                     String targetName = targetWire.getContainer().getName();
                     throw new WireConnectException("Error processing inbound wire", null, null, targetName, null, e);
@@ -253,11 +254,24 @@ public class ConnectorImpl implements Connector {
                         e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
-            } else if (source instanceof CompositeReference) {
-                CompositeReference compRef = (CompositeReference) source;
+            } else if (source instanceof Reference) {
+                Reference reference = (Reference) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
-                TargetInvoker invoker = compRef.createCallbackTargetInvoker(sourceContract, operation);
-                connect(outboundChain, inboundChain, invoker, false);
+                for (ReferenceBinding binding : reference.getReferenceBindings()) {
+                    // FIXME JFM why is this only specific to local bindings and not generalized to all bindings?
+                    if (binding instanceof LocalReferenceBinding) {
+                        TargetInvoker invoker;
+                        try {
+                            invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
+                        } catch (TargetInvokerCreationException e) {
+                            throw new WireConnectException("Error connecting source and target",
+                                sourceWire,
+                                targetWire,
+                                e);
+                        }
+                        connect(outboundChain, inboundChain, invoker, false);
+                    }
+                }
             } else if (source instanceof Service) {
                 Service service = (Service) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
@@ -347,41 +361,50 @@ public class ConnectorImpl implements Connector {
 
     private void handleReference(Reference reference) throws WiringException {
         CompositeComponent parent = reference.getParent();
-        InboundWire inboundWire = reference.getInboundWire();
-        Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
-        for (InboundInvocationChain chain : inboundChains.values()) {
-            //TODO handle async
-            // add target invoker on inbound side
-            ServiceContract contract = inboundWire.getServiceContract();
-            Operation operation = chain.getOperation();
-            TargetInvoker invoker;
-            try {
-                invoker = reference.createTargetInvoker(contract, operation);
-            } catch (TargetInvokerCreationException e) {
-                String targetName = inboundWire.getContainer().getName();
-                throw new WireConnectException("Error processing inbound wire",
-                    null,
-                    null,
-                    targetName,
-                    null,
-                    e);
+        for (ReferenceBinding binding : reference.getReferenceBindings()) {
+            InboundWire inboundWire = binding.getInboundWire();
+            Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
+            for (InboundInvocationChain chain : inboundChains.values()) {
+                //TODO handle async
+                // add target invoker on inbound side
+                ServiceContract contract = inboundWire.getServiceContract();
+                Operation operation = chain.getOperation();
+                TargetInvoker invoker;
+                try {
+                    invoker = binding.createTargetInvoker(contract, operation);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = inboundWire.getContainer().getName();
+                    throw new WireConnectException("Error processing inbound wire",
+                        null,
+                        null,
+                        targetName,
+                        null,
+                        e);
+                }
+                chain.setTargetInvoker(invoker);
+                chain.prepare();
             }
-            chain.setTargetInvoker(invoker);
-            chain.prepare();
-        }
-        OutboundWire outboundWire = reference.getOutboundWire();
-        // connect the reference's inbound and outbound wires
-        connect(inboundWire, outboundWire, true);
+            OutboundWire outboundWire = binding.getOutboundWire();
+            // connect the reference's inbound and outbound wires
+            connect(inboundWire, outboundWire, true);
 
-        if (reference instanceof CompositeReference) {
-            // For a composite reference only, since its outbound wire comes
-            // from its parent composite,
-            // the corresponding target would not lie in its parent but
-            // rather in its parent's parent
-            parent = parent.getParent();
-            assert parent != null : "Parent of parent was null";
-            SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
-            connect(parent, outboundWire, target);
+            if (binding instanceof LocalReferenceBinding) {
+                String targetName = outboundWire.getTargetName().getPartName();
+                String serviceName = outboundWire.getTargetName().getPortName();
+                // A reference configured with the local binding is alwaysconnected to a target that is a sibling
+                // of the reference's parent composite.
+                parent = parent.getParent();
+                if (parent == null) {
+                    throw new TargetServiceNotFoundException("Reference target not found",
+                        reference.getName(),
+                        null,
+                        targetName,
+                        serviceName);
+                }
+                SCAObject target = parent.getChild(targetName);
+                connect(parent, outboundWire, target);
+            }
+
         }
     }
 
@@ -463,8 +486,20 @@ public class ConnectorImpl implements Connector {
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(sourceWire, targetWire, optimizable);
         } else if (target instanceof Reference) {
-            InboundWire targetWire = ((Reference) target).getInboundWire();
-            assert targetWire != null;
+            InboundWire targetWire = null;
+            Reference reference = (Reference) target;
+            for (ReferenceBinding binding : reference.getReferenceBindings()) {
+                InboundWire candidate = binding.getInboundWire();
+                if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
+                    targetWire = candidate;
+                    break;
+                }
+            }
+            if (targetWire == null) {
+                throw new NoCompatibleBindingsException(source.getName(),
+                    targetName.getPartName(),
+                    targetName.getPortName());
+            }
             checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(sourceWire, targetWire, optimizable);

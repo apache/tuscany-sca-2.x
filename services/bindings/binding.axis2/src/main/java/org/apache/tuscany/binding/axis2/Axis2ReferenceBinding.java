@@ -24,7 +24,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -45,14 +45,14 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
 /**
  * Axis2Reference uses Axis2 to invoke a remote web service
  */
-public class Axis2Reference<T> extends ReferenceExtension {
+public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
     private WorkContext workContext;
 
     @SuppressWarnings("unchecked")
-    public Axis2Reference(String theName,
+    public Axis2ReferenceBinding(String theName,
                           CompositeComponent parent,
                           WebServiceBindingDefinition wsBinding,
                           ServiceContract contract, WorkContext workContext) {

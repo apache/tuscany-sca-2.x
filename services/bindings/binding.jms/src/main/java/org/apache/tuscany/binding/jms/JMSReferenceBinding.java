@@ -21,7 +21,7 @@ package org.apache.tuscany.binding.jms;
 import javax.jms.Destination;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
-public class JMSReference extends ReferenceExtension {
+public class JMSReferenceBinding extends ReferenceBindingExtension {
 
     protected JMSBindingDefinition jmsBinding;
     protected JMSResourceFactory jmsResourceFactory;
@@ -38,7 +38,7 @@ public class JMSReference extends ReferenceExtension {
     protected Destination requestDest;
     protected Destination replyDest;
 
-    public JMSReference(String name,
+    public JMSReferenceBinding(String name,
                         CompositeComponent parent,
                         JMSBindingDefinition jmsBinding,
                         JMSResourceFactory jmsResourceFactory,

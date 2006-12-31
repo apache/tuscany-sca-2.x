@@ -41,6 +41,7 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
@@ -77,9 +78,6 @@ public class CompositeBuilderTestCase extends TestCase {
         jBuilder.setWireService(wireService);
         builderRegistry.register(JavaImplementation.class, jBuilder);
         builderRegistry.register(CompositeImplementation.class, builder);
-        CompositeBindlessBuilder bindlessBuilder = new CompositeBindlessBuilder();
-        bindlessBuilder.setWireService(wireService);
-        builderRegistry.register(bindlessBuilder);
         builder.setBuilderRegistry(builderRegistry);
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
@@ -112,7 +110,7 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> innerType =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
         innerType.add(createInnerSourceComponentDef());
-        ReferenceDefinition reference = new ReferenceDefinition();
+        BoundReferenceDefinition reference = new BoundReferenceDefinition();
         reference.setName("TargetComponentRef");
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         JavaServiceContract targetContract = registry.introspect(Target.class);

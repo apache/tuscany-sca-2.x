@@ -166,15 +166,20 @@ public class SpringCompositeComponent extends CompositeComponentExtension {
             if (object == null) {
                 return null;
             }
-            Class<?> type;
+            Class<?> type = null;
             if (object instanceof Reference) {
                 Reference reference = (Reference) object;
-                type = reference.getInboundWire().getServiceContract().getInterfaceClass();
+                InboundWire wire = null;
+                if (!reference.getReferenceBindings().isEmpty()) {
+                    // FIXME JFM provide a better way for the runtime to select the binding as opposed to the first one
+                    wire = reference.getReferenceBindings().get(0).getInboundWire();
+                    type = wire.getServiceContract().getInterfaceClass();
+                }
                 if (requiredType != null && requiredType.isAssignableFrom(type)) {
                     // need null check since Spring may pass in a null
                     throw new BeanNotOfRequiredTypeException(name, requiredType, type);
                 }
-                return wireService.createProxy(type, reference.getInboundWire());
+                return wireService.createProxy(type, wire);
             } else if (object instanceof ServiceBinding) {
                 ServiceBinding serviceBinding = (ServiceBinding) object;
                 type = serviceBinding.getInboundWire().getServiceContract().getInterfaceClass();

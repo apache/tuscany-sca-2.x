@@ -19,7 +19,7 @@ package org.apache.tuscany.binding.rmi;
 import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -30,7 +30,7 @@ import org.apache.tuscany.host.rmi.RMIHost;
 /**
  * @version $Rev$ $Date$
  */
-public class RMIReference<T> extends ReferenceExtension {
+public class RMIReferenceBinding extends ReferenceBindingExtension {
     private final String host;
 
     private final String port;
@@ -39,13 +39,12 @@ public class RMIReference<T> extends ReferenceExtension {
 
     private RMIHost rmiHost;
 
-    public RMIReference(String name,
-                        CompositeComponent parent,
-                        RMIHost rmiHost,
-                        String host,
-                        String port,
-                        String svcName,
-                        Class<T> service) {
+    public RMIReferenceBinding(String name,
+                               CompositeComponent parent,
+                               RMIHost rmiHost,
+                               String host,
+                               String port,
+                               String svcName) {
         super(name, parent);
         this.host = host;
         this.port = port;

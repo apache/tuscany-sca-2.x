@@ -24,7 +24,7 @@ import javax.wsdl.PortType;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -44,7 +44,7 @@ import org.apache.tuscany.idl.wsdl.InterfaceWSDLIntrospector;
 import org.apache.tuscany.idl.wsdl.WSDLServiceContract;
 
 /**
- * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.Reference} configured
+ * Builds a {@link org.osoa.sca.annotations.Service} or {@link org.apache.tuscany.spi.component.ReferenceBinding} configured
  * with the Axis2 binding
  *
  * @version $Rev$ $Date$
@@ -136,9 +136,10 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     @SuppressWarnings("unchecked")
-    public Reference build(
+    public ReferenceBinding build(
         CompositeComponent parent,
-        BoundReferenceDefinition<WebServiceBindingDefinition> boundReferenceDefinition,
+        BoundReferenceDefinition boundReferenceDefinition,
+        WebServiceBindingDefinition wsBinding,
         DeploymentContext deploymentContext) {
 
         try {
@@ -153,7 +154,6 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             // The WSDL portType from the WSDL Port decides the incoming SOAP message format
 
             ServiceContract<?> outboundContract = inboundContract;
-            WebServiceBindingDefinition wsBinding = boundReferenceDefinition.getBinding();
             Port port = wsBinding.getWSDLPort();
             if (port == null) {
                 // FIXME: [rfeng] No WSDL is referenced by binding.ws, we need to create one from
@@ -174,11 +174,11 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
 
-            Reference reference = new Axis2Reference(boundReferenceDefinition.getName(), parent, wsBinding,
+            ReferenceBinding referenceBinding = new Axis2ReferenceBinding(boundReferenceDefinition.getName(), parent, wsBinding,
                 inboundContract, workContext);
-            reference.setBindingServiceContract(outboundContract);
+            referenceBinding.setBindingServiceContract(outboundContract);
 
-            return reference;
+            return referenceBinding;
 
         } catch (InvalidServiceContractException e) {
             throw new Axis2BindingBuilderRuntimeException(e);

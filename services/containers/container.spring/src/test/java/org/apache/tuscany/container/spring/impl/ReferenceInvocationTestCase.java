@@ -19,7 +19,10 @@
 package org.apache.tuscany.container.spring.impl;
 
 import java.net.URL;
+import java.util.List;
+import java.util.ArrayList;
 
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -48,10 +51,17 @@ public class ReferenceInvocationTestCase extends TestCase {
         EasyMock.expect(inboundWire.getServiceContract()).andReturn(new ServiceContract(TestBean.class) {
         }).atLeastOnce();
         EasyMock.replay(inboundWire);
-        Reference reference = createMock(Reference.class);
-        expect(reference.getName()).andReturn("bar").anyTimes();
+        ReferenceBinding referenceBinding = createMock(ReferenceBinding.class);
+        expect(referenceBinding.isSystem()).andReturn(false).atLeastOnce();
+        expect(referenceBinding.getInboundWire()).andStubReturn(inboundWire);
+        referenceBinding.start();
+        replay(referenceBinding);
+
+        Reference reference = EasyMock.createMock(Reference.class);
         expect(reference.isSystem()).andReturn(false).atLeastOnce();
-        expect(reference.getInboundWire()).andStubReturn(inboundWire);
+        expect(reference.getName()).andReturn("bar").anyTimes();
+        List<ReferenceBinding> bindings = new ArrayList <ReferenceBinding>();
+        expect(reference.getReferenceBindings()).andReturn(bindings);
         reference.start();
         replay(reference);
         parent.register(reference);

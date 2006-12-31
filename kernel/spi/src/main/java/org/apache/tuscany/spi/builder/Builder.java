@@ -20,15 +20,13 @@ package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
 
 /**
  * Implementations build <code>SCAObject</code> types from model objects.
@@ -39,46 +37,38 @@ public interface Builder {
     /**
      * Builds a <code>Component</code> from a <code>ComponentDefinition</code>
      *
-     * @param parent              the composite that will be the parent of the newly built component
-     * @param componentDefinition the component definition as parsed from an SCA assembly
-     * @param deploymentContext   the current deployment context
+     * @param parent     the composite that will be the parent of the newly built component
+     * @param definition the component definition as parsed from an SCA assembly
+     * @param context    the current deployment context
      * @return the newly created component
      * @throws BuilderException
      */
     <I extends Implementation<?>> Component build(CompositeComponent parent,
-                                                  ComponentDefinition<I> componentDefinition,
-                                                  DeploymentContext deploymentContext) throws BuilderException;
+                                                  ComponentDefinition<I> definition,
+                                                  DeploymentContext context) throws BuilderException;
 
     /**
      * Builds a <code>Service</code> and its bindings from a <code>BoundServiceDefinition</code>
      *
-     * @param parent            the composite that will be the parent of the newly built service
-     * @param serviceDefinition the service definition as parsed from an SCA assembly
-     * @param deploymentContext the current deployment context
+     * @param parent     the composite that will be the parent of the newly built service
+     * @param definition the service definition as parsed from an SCA assembly
+     * @param context    the current deployment context
      * @return the newly created service
      * @throws BuilderException
      */
-    Service build(CompositeComponent parent,
-                  BoundServiceDefinition serviceDefinition,
-                  DeploymentContext deploymentContext) throws BuilderException;
+    Service build(CompositeComponent parent, BoundServiceDefinition definition, DeploymentContext context)
+        throws BuilderException;
 
     /**
      * Builds a <code>Reference</code> and its bindings from a <code>BoundReferenceDefinition</code>
      *
-     * @param parent              the composite that will be the parent of the newly built reference
-     * @param referenceDefinition the reference definition as parsed from an SCA assembly
-     * @param deploymentContext   the current deployment context
+     * @param parent     the composite that will be the parent of the newly built reference
+     * @param definition the reference definition as parsed from an SCA assembly
+     * @param context    the current deployment context
      * @return the newly created reference
      * @throws BuilderException
      */
-    <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
-                                                  BoundReferenceDefinition<B> referenceDefinition,
-                                                  DeploymentContext deploymentContext) throws BuilderException;
+    Reference build(CompositeComponent parent, BoundReferenceDefinition definition, DeploymentContext context)
+        throws BuilderException;
 
-    /**
-     * @deprecated
-     */
-    SCAObject build(CompositeComponent parent,
-                    ReferenceDefinition referenceDefinition,
-                    DeploymentContext deploymentContext) throws BuilderException;
 }

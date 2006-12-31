@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.Type;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -37,12 +37,12 @@ import org.easymock.IAnswer;
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceCallbackTargetInvokerThrowableTestCase extends TestCase {
+public class LocalCallbackTargetInvokerThrowableTestCase extends TestCase {
     private InboundWire wire;
     private Message message;
     private OutboundInvocationChain chain;
     private Interceptor head;
-    private CompositeReferenceCallbackTargetInvoker invoker;
+    private LocalCallbackTargetInvoker invoker;
 
     /**
      * Verfies an exception thrown in the target is propagated to the client correctly
@@ -87,7 +87,7 @@ public class CompositeReferenceCallbackTargetInvokerThrowableTestCase extends Te
         wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
         EasyMock.replay(wire);
-        invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);
+        invoker = new LocalCallbackTargetInvoker(operation, wire);
     }
 
     private class InsidiousException extends Throwable {

@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -32,8 +32,8 @@ import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 
-import org.apache.tuscany.core.implementation.system.component.SystemReferenceImpl;
-import org.apache.tuscany.core.implementation.system.component.SystemServiceBindingImpl;
+import org.apache.tuscany.core.implementation.system.component.SystemReferenceBinding;
+import org.apache.tuscany.core.implementation.system.component.SystemServiceBinding;
 import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 
 /**
@@ -54,14 +54,15 @@ public class SystemBindingBuilder extends BindingBuilderExtension<SystemBindingD
             throw new MissingWireTargetException("Target URI not specified", definition.getName());
         }
         ServiceContract<?> contract = definition.getServiceContract();
-        return new SystemServiceBindingImpl(definition.getName(), parent, contract);
+        return new SystemServiceBinding(definition.getName(), parent, contract);
     }
 
-    public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<SystemBindingDefinition> definition,
-                           DeploymentContext deploymentContext) {
+    public ReferenceBinding build(CompositeComponent parent,
+                                  BoundReferenceDefinition definition,
+                                  SystemBindingDefinition bindingDefinition,
+                                  DeploymentContext deploymentContext) {
         String name = definition.getName();
-        return new SystemReferenceImpl(name, parent);
+        return new SystemReferenceBinding(name, parent);
     }
 
     @Override

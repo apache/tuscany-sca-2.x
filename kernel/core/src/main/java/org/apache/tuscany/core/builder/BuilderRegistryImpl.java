@@ -22,10 +22,11 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.osoa.sca.annotations.Init;
+
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
-import org.apache.tuscany.spi.builder.BindlessBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
@@ -33,7 +34,7 @@ import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -44,10 +45,11 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
-import org.osoa.sca.annotations.Init;
+
+import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
+import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 
 /**
  * The default builder registry in the runtime
@@ -55,124 +57,66 @@ import org.osoa.sca.annotations.Init;
  * @version $Rev$ $Date$
  */
 public class BuilderRegistryImpl implements BuilderRegistry {
-    
-    /**
-     * Wire service used by the builder.
-     */
     protected WireService wireService;
-    
-    /**
-     * Scope registry used by the builder.
-     */
     protected ScopeRegistry scopeRegistry;
 
-    /**
-     * Map of component builders.
-     */
-    private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders =
+    private final Map<Class<? extends Implementation<?>>,
+        ComponentBuilder<? extends Implementation<?>>> componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
-    
-    /**
-     * Map of binding builders.
-     */
-    private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
+    private final Map<Class<? extends BindingDefinition>,
+        BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
-    
-    /**
-     * Bindless builder.
-     */
-    private BindlessBuilder bindlessBuilder;
 
-    /**
-     * Default constructor.
-     *
-     */
     public BuilderRegistryImpl() {
     }
 
-    /**
-     * Initializes the scope registry.
-     * 
-     * @param scopeRegistry Scope registry to use.
-     */
     public BuilderRegistryImpl(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
 
-    /**
-     * Initiakization method.
-     *
-     */
     @Init(eager = true)
     public void init() {
     }
 
-    /**
-     * Method for auto-wiring scope registry.
-     * @param scopeRegistry Scope registry to use.
-     */
     @Autowire
     public void setScopeRegistry(ScopeRegistry scopeRegistry) {
         this.scopeRegistry = scopeRegistry;
     }
 
-    /**
-     * Method for auto-wiring wire service.
-     * @param scopeRegistry Wire service to use.
-     */
     @Autowire
     public void setWireService(WireService wireService) {
         this.wireService = wireService;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.BuilderRegistry#register(java.lang.Class, org.apache.tuscany.spi.builder.ComponentBuilder)
-     */
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
         componentBuilders.put(implClass, builder);
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.BuilderRegistry#unregister(java.lang.Class)
-     */
     public <I extends Implementation<?>> void unregister(Class<I> implClass) {
         componentBuilders.remove(implClass);
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.BuilderRegistry#register(java.lang.Class, org.apache.tuscany.spi.builder.BindingBuilder)
-     */
     public <B extends BindingDefinition> void register(Class<B> implClass, BindingBuilder<B> builder) {
         bindingBuilders.put(implClass, builder);
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.BuilderRegistry#register(org.apache.tuscany.spi.builder.BindlessBuilder)
-     */
-    public void register(BindlessBuilder builder) {
-        bindlessBuilder = builder;
-    }
-
-    /**
-     * @see org.apache.tuscany.spi.builder.Builder#build(org.apache.tuscany.spi.component.CompositeComponent, org.apache.tuscany.spi.model.ComponentDefinition, org.apache.tuscany.spi.deployer.DeploymentContext)
-     */
     @SuppressWarnings("unchecked")
     public <I extends Implementation<?>> Component build(CompositeComponent parent,
                                                          ComponentDefinition<I> componentDefinition,
-                                                         DeploymentContext deploymentContext) throws BuilderException {
+                                                         DeploymentContext context) throws BuilderException {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
-        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>)componentBuilders.get(implClass);
+        //noinspection SuspiciousMethodCalls
+        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         try {
             if (componentBuilder == null) {
                 String name = implClass.getName();
                 throw new NoRegisteredBuilderException("No builder registered for implementation", name);
             }
 
-            Component component = componentBuilder.build(parent, componentDefinition, deploymentContext);
+            Component component = componentBuilder.build(parent, componentDefinition, context);
             if (component != null) {
                 component.setComponentDefinition(componentDefinition);
             }
-
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
@@ -186,10 +130,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.Builder#build(org.apache.tuscany.spi.component.CompositeComponent, org.apache.tuscany.spi.model.BoundServiceDefinition, org.apache.tuscany.spi.deployer.DeploymentContext)
-     */
-    @SuppressWarnings( {"unchecked"})
+    @SuppressWarnings({"unchecked"})
     public Service build(CompositeComponent parent,
                          BoundServiceDefinition boundServiceDefinition,
                          DeploymentContext deploymentContext) throws BuilderException {
@@ -200,6 +141,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Service service = new ServiceImpl(name, parent, serviceContract, targetUri, system);
         for (BindingDefinition definition : boundServiceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
+            //noinspection SuspiciousMethodCalls
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
             if (bindingBuilder == null) {
                 throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
@@ -220,35 +162,34 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         return service;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.builder.Builder#build(org.apache.tuscany.spi.component.CompositeComponent, org.apache.tuscany.spi.model.BoundReferenceDefinition, org.apache.tuscany.spi.deployer.DeploymentContext)
-     */
     @SuppressWarnings("unchecked")
-    public <B extends BindingDefinition> SCAObject build(CompositeComponent parent,
-                                                         BoundReferenceDefinition<B> boundReferenceDefinition,
-                                                         DeploymentContext deploymentContext) throws BuilderException {
-        Class<B> bindingClass = (Class<B>)boundReferenceDefinition.getBinding().getClass();
-        BindingBuilder<B> bindingBuilder = (BindingBuilder<B>)bindingBuilders.get(bindingClass);
-        SCAObject object;
-        object = bindingBuilder.build(parent, boundReferenceDefinition, deploymentContext);
-        // create wires for the component
-        if (wireService != null) {
-            wireService.createWires((Reference)object, boundReferenceDefinition.getServiceContract());
-        }
-        return object;
-    }
+    public Reference build(CompositeComponent parent,
+                           BoundReferenceDefinition referenceDefinition,
+                           DeploymentContext context) throws BuilderException {
 
-    /**
-     * @see org.apache.tuscany.spi.builder.Builder#build(org.apache.tuscany.spi.component.CompositeComponent, org.apache.tuscany.spi.model.ReferenceDefinition, org.apache.tuscany.spi.deployer.DeploymentContext)
-     */
-    public SCAObject build(CompositeComponent parent,
-                           ReferenceDefinition referenceDefinition,
-                           DeploymentContext deploymentContext) {
-        SCAObject object = bindlessBuilder.build(parent, referenceDefinition, deploymentContext);
-        if (wireService != null) {
-            wireService.createWires((Reference)object, referenceDefinition.getServiceContract());
+        String name = referenceDefinition.getName();
+        ServiceContract<?> contract = referenceDefinition.getServiceContract();
+        Reference reference = new ReferenceImpl(name, parent, contract);
+        for (BindingDefinition bindingDefinition : referenceDefinition.getBindings()) {
+            Class<?> bindingClass = bindingDefinition.getClass();
+            //noinspection SuspiciousMethodCalls
+            BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
+            ReferenceBinding binding = bindingBuilder.build(parent, referenceDefinition, bindingDefinition, context);
+            // create wires for the component
+            if (wireService != null) {
+                URI targetUri = bindingDefinition.getTargetUri();
+                // it is possible for a binding to not have a URI
+                QualifiedName targetName = null;
+                if (targetUri != null) {
+                    targetName = new QualifiedName(targetUri.getPath());
+                }
+                wireService.createWires(binding, contract, targetName);
+
+            }
+            reference.addReferenceBinding(binding);
+
         }
-        return object;
+        return reference;
     }
 
 }

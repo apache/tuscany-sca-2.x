@@ -19,7 +19,7 @@
 package org.apache.tuscany.spi.builder;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
@@ -29,7 +29,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 /**
  * Responsible for processing a service or reference in an assembly configured with a particular binding. The builder
  * will create and return corresponding {@link org.apache.tuscany.spi.component.ServiceBinding} or {@link
- * org.apache.tuscany.spi.component.Reference}
+ * org.apache.tuscany.spi.component.ReferenceBinding}
  *
  * @version $Rev$ $Date$
  */
@@ -50,7 +50,8 @@ public interface BindingBuilder<B extends BindingDefinition> {
                          B bindingDefinition,
                          DeploymentContext deploymentContext) throws BuilderException;
 
-    Reference build(CompositeComponent parent,
-                    BoundReferenceDefinition<B> boundReferenceDefinition,
-                    DeploymentContext deploymentContext) throws BuilderException;
+    ReferenceBinding build(CompositeComponent parent,
+                           BoundReferenceDefinition boundReferenceDefinition,
+                           B bindingDefinition,
+                           DeploymentContext deploymentContext) throws BuilderException;
 }

@@ -18,19 +18,15 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -47,7 +43,6 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
  */
 public class CompositeBuilder extends ComponentBuilderExtension<CompositeImplementation> {
 
-    @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<CompositeImplementation> componentDefinition,
                            DeploymentContext deploymentContext) throws BuilderException {
@@ -55,18 +50,6 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
         CompositeComponentType<?, ?, ?> componentType = implementation.getComponentType();
         String name = componentDefinition.getName();
         CompositeComponentImpl component = new CompositeComponentImpl(name, parent, connector, null);
-
-        List<BoundReferenceDefinition<? extends BindingDefinition>> boundReferences =
-            new ArrayList<BoundReferenceDefinition<? extends BindingDefinition>>();
-        List<ReferenceDefinition> allTargetlessReferences = new ArrayList<ReferenceDefinition>();
-
-        for (Object referenceTarget : componentType.getReferences().values()) {
-            if (referenceTarget instanceof BoundReferenceDefinition<?>) {
-                boundReferences.add((BoundReferenceDefinition<? extends BindingDefinition>) referenceTarget);
-            } else if (referenceTarget instanceof ReferenceDefinition) {
-                allTargetlessReferences.add((ReferenceDefinition) referenceTarget);
-            }
-        }
 
         for (ComponentDefinition<? extends Implementation<?>> definition : componentType.getComponents().values()) {
             try {
@@ -89,19 +72,15 @@ public class CompositeBuilder extends ComponentBuilderExtension<CompositeImpleme
                 throw new BuilderInstantiationException("Error registering service", e);
             }
         }
-        for (BoundReferenceDefinition<? extends BindingDefinition> definition : boundReferences) {
+        for (ReferenceDefinition definition : componentType.getReferences().values()) {
             try {
-                SCAObject child = builderRegistry.build(component, definition, deploymentContext);
-                component.register(child);
-            } catch (ComponentRegistrationException e) {
-                throw new BuilderInstantiationException("Error registering reference", e);
-            }
-        }
-        // TODO JFM remove need for targetless references
-        for (ReferenceDefinition definition : allTargetlessReferences) {
-            try {
-                SCAObject child = builderRegistry.build(component, definition, deploymentContext);
-                component.register(child);
+                if (definition instanceof BoundReferenceDefinition) {
+                    BoundReferenceDefinition brd = (BoundReferenceDefinition) definition;
+                    Reference child = builderRegistry.build(component, brd, deploymentContext);
+                    component.register(child);
+                } else {
+                    throw new UnsupportedOperationException();
+                }
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);
             }

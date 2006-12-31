@@ -40,7 +40,7 @@ public class CompositeReferenceTestCase extends TestCase {
     public void testCreateTargetInvoker() throws Exception {
 
         MyServiceContract serviceContract = new MyServiceContract();
-        CompositeReference compositeReference = new CompositeReference("testCompositeReferemce", null);
+        CompositeReferenceBinding compositeReference = new CompositeReferenceBinding("testCompositeReferemce", null);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         OutboundInvocationChain chain = EasyMock.createMock(OutboundInvocationChain.class);
         EasyMock.replay(chain);
@@ -58,7 +58,7 @@ public class CompositeReferenceTestCase extends TestCase {
 
     public void testCreateCallbackTargetInvoker() throws Exception {
         MyServiceContract serviceContract = new MyServiceContract();
-        CompositeReference compositeReference = new CompositeReference("testCompositeReferemce", null);
+        CompositeReferenceBinding compositeReference = new CompositeReferenceBinding("testCompositeReferemce", null);
         Operation operation = new Operation<Type>("sayHi", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker targetInvoker = compositeReference.createCallbackTargetInvoker(serviceContract, operation);
         assertNotNull(targetInvoker);

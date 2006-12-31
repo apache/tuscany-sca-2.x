@@ -31,12 +31,12 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $Rev$ $Date$
  */
-public class CompositeTargetInvoker extends AbstractCompositeTargetInvoker {
+public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
     private OutboundInvocationChain chain;
     private Object fromAddress;
     private boolean contractHasCallback;
 
-    public CompositeTargetInvoker(Operation operation, OutboundWire outboundWire) {
+    public LocalTargetInvoker(Operation operation, OutboundWire outboundWire) {
         assert operation != null;
         chain = outboundWire.getInvocationChains().get(operation);
         fromAddress = (outboundWire.getContainer() == null) ? null : outboundWire.getContainer().getName();
@@ -44,8 +44,8 @@ public class CompositeTargetInvoker extends AbstractCompositeTargetInvoker {
     }
 
     @Override
-    public CompositeTargetInvoker clone() throws CloneNotSupportedException {
-        return (CompositeTargetInvoker) super.clone();
+    public LocalTargetInvoker clone() throws CloneNotSupportedException {
+        return (LocalTargetInvoker) super.clone();
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
