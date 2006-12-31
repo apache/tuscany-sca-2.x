@@ -40,9 +40,9 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
     private final MBeanServer mBeanServer;
 
     /**
-     * Default domain.
+     * Management domain.
      */
-    private final String defaultDomain;
+    private final String managementDomain;
 
     /**
      * Initializes the runtime info instance.
@@ -52,16 +52,17 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
      * @param installDirectory Install directory.
      * @param online Onlne indicator.
      * @param mBeanServer MBean server.
+     * @param managementDomain Management doamin for the runtime.
      */
     public JmxRuntimeInfoImpl(final File applicationRootDirectory,
                               final URL baseUrl,
                               final File installDirectory,
                               final boolean online,
                               final MBeanServer mBeanServer,
-                              final String defaultDomain) {
+                              final String managementDomain) {
         super(applicationRootDirectory, baseUrl, installDirectory, online);
         this.mBeanServer = mBeanServer;
-        this.defaultDomain = defaultDomain;
+        this.managementDomain = managementDomain;
     }
 
     /**
@@ -76,8 +77,8 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
      * 
      * @return Default domain used by the host.
      */
-    public final String getDefaultDomain() {
-        return defaultDomain;
+    public final String getManagementDomain() {
+        return managementDomain;
     }
 
 }

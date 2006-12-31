@@ -53,7 +53,7 @@ public abstract class JmxManagementService implements ManagementService {
      */
     public JmxManagementService(@Autowire final JmxRuntimeInfo runtimeInfo) {
         this.mBeanServer = runtimeInfo.getMBeanServer();
-        this.defaultDomain = runtimeInfo.getDefaultDomain();
+        this.defaultDomain = runtimeInfo.getManagementDomain();
     }
 
     /**

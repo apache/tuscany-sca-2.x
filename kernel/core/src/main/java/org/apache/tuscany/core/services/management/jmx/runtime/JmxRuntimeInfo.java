@@ -37,9 +37,9 @@ public interface JmxRuntimeInfo extends RuntimeInfo {
     MBeanServer getMBeanServer();
     
     /**
-     * Returns the default domain used by the host.
-     * @return Default domain used by the host.
+     * Returns the management domain used by the runtime.
+     * @return Management domain used by the runtime.
      */
-    String getDefaultDomain();
+    String getManagementDomain();
 
 }
