@@ -18,11 +18,11 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import java.util.Map;
-
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * 
@@ -31,22 +31,45 @@ import org.apache.tuscany.spi.component.CompositeComponent;
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
 
+    /** Component Definition */
+    private ComponentDefinition<Implementation<?>> componentDefinition;
+    
     /**
      * Initializes component name and parent.
      * 
      * @param name Name of the component.
      * @param parent Parent of the component.
+     * @param componentDefinition Definition of this component.
+     */
+    public AbstractComponentExtension(String name, CompositeComponent parent, ComponentDefinition<Implementation<?>> componentDefinition) {
+        super(name, parent);
+        this.componentDefinition = componentDefinition;
+    }
+    
+    /**
+     * Initializes component name and parent.
+     * 
+     * @param name Name of the component.
+     * @param parent Parent of the component.
+     * @param componentDefinition Definition of this component.
+     * @deprecated Use <code>AbstractComponentExtension(String name, CompositeComponent parent, ComponentDefinition<Implementation<?>> componentDefinition)</code>. 
      */
     public AbstractComponentExtension(String name, CompositeComponent parent) {
         super(name, parent);
     }
 
     /**
-     * @see org.apache.tuscany.spi.component.Component#getProperties()
+     * @see org.apache.tuscany.spi.component.Component#getComponentDefinition()
      */
+    public ComponentDefinition<Implementation<?>> getComponentDefinition() {
+        return componentDefinition;
+    }
 
-    public Map<String, Object> getProperties() {
-        return null;
+    /**
+     * @see org.apache.tuscany.spi.component.Component#setComponentDefinition(org.apache.tuscany.spi.model.ComponentDefinition)
+     */
+    public void setComponentDefinition(ComponentDefinition<Implementation<?>> componentDefinition) {
+        this.componentDefinition = componentDefinition;
     }
 
 }

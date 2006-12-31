@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -75,9 +77,19 @@ public interface Component extends SCAObject {
         throws TargetInvokerCreationException;
     
     /**
-     * Gets all the properties for the components.
-     * @return All properties configured for the component.
+     * Gets the component definition associated with the component.
+     * @return Definition associated with the component.
      */
-    Map<String, Object> getProperties();
+    ComponentDefinition<Implementation<?>> getComponentDefinition();
+    
+    /**
+     * Gets the component definition associated with the component.
+     * @param definition Definition associated with the component.
+     * TODO This shouldn't be mutable, rather set during construction. However,
+     * passing it in the constructor of the implementing class has implications 
+     * in the usage of various types in the inheritance tree.
+     * @deprecated Remove this when immutability is enforced in the implemenation tree.
+     */
+    void setComponentDefinition(ComponentDefinition<Implementation<?>> definition);
 
 }
