@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -80,7 +79,7 @@ public interface Component extends SCAObject {
      * Gets the component definition associated with the component.
      * @return Definition associated with the component.
      */
-    ComponentDefinition<Implementation<?>> getComponentDefinition();
+    ComponentDefinition getComponentDefinition();
     
     /**
      * Gets the component definition associated with the component.
@@ -90,6 +89,6 @@ public interface Component extends SCAObject {
      * in the usage of various types in the inheritance tree.
      * @deprecated Remove this when immutability is enforced in the implemenation tree.
      */
-    void setComponentDefinition(ComponentDefinition<Implementation<?>> definition);
+    void setComponentDefinition(ComponentDefinition definition);
 
 }
