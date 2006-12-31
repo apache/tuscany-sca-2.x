@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.model.BindingDefinition;
 
 
@@ -28,4 +30,10 @@ import org.apache.tuscany.spi.model.BindingDefinition;
  */
 public class LocalBindingDefinition extends BindingDefinition {
 
+    public LocalBindingDefinition() {
+    }
+
+    public LocalBindingDefinition(URI targetUri) {
+        super(targetUri);
+    }
 }

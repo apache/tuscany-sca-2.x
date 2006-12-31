@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.loader;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -33,8 +35,11 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -65,33 +70,28 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         String name = reader.getAttributeValue(null, "name");
         Multiplicity multiplicity =
             StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE);
-        BindingDefinition binding = null;
-        ServiceContract serviceContract = null;
+        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
+        ServiceContract<?> contract = null;
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(parent, null, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
-                        serviceContract = (ServiceContract) o;
+                        contract = (ServiceContract) o;
                     } else if (o instanceof BindingDefinition) {
-                        binding = (BindingDefinition) o;
+                        bindings.add((BindingDefinition) o);
+                    } else {
+                        throw new UnrecognizedElementException(reader.getName());
                     }
-                    reader.next();
                     break;
                 case END_ELEMENT:
-                    if (binding == null) {
-                        ReferenceDefinition referenceDefinition = new ReferenceDefinition(name, serviceContract);
+                    if (object instanceof ComponentType && !(object instanceof CompositeComponentType)) {
+                        // loading a reference in a component type side file
+                        ReferenceDefinition referenceDefinition = new ReferenceDefinition(name, contract);
                         referenceDefinition.setMultiplicity(multiplicity);
-                        return referenceDefinition;
-                    } else {
-                        BoundReferenceDefinition<BindingDefinition> referenceDefinition =
-                            new BoundReferenceDefinition<BindingDefinition>();
-                        referenceDefinition.setName(name);
-                        referenceDefinition.setServiceContract(serviceContract);
-                        referenceDefinition.setMultiplicity(multiplicity);
-                        referenceDefinition.setBinding(binding);
                         return referenceDefinition;
                     }
+                    return new BoundReferenceDefinition(name, contract, bindings, multiplicity);
             }
         }
     }

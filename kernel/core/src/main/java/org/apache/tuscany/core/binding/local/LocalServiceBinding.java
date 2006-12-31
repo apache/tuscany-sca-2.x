@@ -27,7 +27,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * The runtime representaion of the local binding
+ * The runtime representaion of the local service binding
  *
  * @version $Rev$ $Date$
  */
@@ -39,7 +39,7 @@ public class LocalServiceBinding extends ServiceBindingExtension {
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException {
-        return new CompositeTargetInvoker(operation, outboundWire);
+        return new LocalTargetInvoker(operation, outboundWire);
     }
 
 }

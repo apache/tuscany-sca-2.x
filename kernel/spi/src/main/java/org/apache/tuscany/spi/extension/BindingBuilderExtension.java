@@ -19,14 +19,13 @@
 package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
@@ -40,7 +39,6 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("COMPOSITE")
 public abstract class BindingBuilderExtension<B extends BindingDefinition> implements BindingBuilder<B> {
 
     protected BuilderRegistry builderRegistry;
@@ -68,9 +66,10 @@ public abstract class BindingBuilderExtension<B extends BindingDefinition> imple
         return null;
     }
 
-    public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<B> boundReferenceDefinition,
-                           DeploymentContext deploymentContext) throws BuilderException {
+    public ReferenceBinding build(CompositeComponent parent,
+                                  BoundReferenceDefinition boundReferenceDefinition,
+                                  B bindingDefinition,
+                                  DeploymentContext deploymentContext) throws BuilderException {
         return null;
     }
 

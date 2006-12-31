@@ -25,7 +25,7 @@ import java.util.Set;
 import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.Operation;
@@ -80,6 +80,10 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
         Object targetAddress = source.getContainer().getName();
         Map<Operation<?>, OutboundInvocationChain> callbackChains =
             target.getSourceCallbackInvocationChains(targetAddress);
+        if (callbackChains == null) {
+            // callback chains could be null
+            return;
+        }
         for (Map.Entry<Operation<?>, OutboundInvocationChain> entry : callbackChains.entrySet()) {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
@@ -103,7 +107,7 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
     public void process(InboundWire source, OutboundWire target) {
         SCAObject container = source.getContainer();
         // Either Service or Reference
-        boolean isReference = container instanceof Reference;
+        boolean isReference = container instanceof ReferenceBinding;
 
         Map<Operation<?>, InboundInvocationChain> chains = source.getInvocationChains();
         for (Map.Entry<Operation<?>, InboundInvocationChain> entry : chains.entrySet()) {

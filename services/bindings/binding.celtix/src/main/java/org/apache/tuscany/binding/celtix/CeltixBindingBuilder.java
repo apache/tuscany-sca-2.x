@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -34,7 +34,7 @@ import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
 import org.objectweb.celtix.Bus;
 
 /**
- * Builds a {@link org.apache.tuscany.spi.component.ServiceBinding} or {@link org.apache.tuscany.spi.component.Reference}
+ * Builds a {@link org.apache.tuscany.spi.component.ServiceBinding} or {@link org.apache.tuscany.spi.component.ReferenceBinding}
  * configured with the Celtix binding
  *
  * @version $Rev$ $Date$
@@ -62,10 +62,10 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
             typeHelper);
     }
 
-    public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<WebServiceBindingDefinition> boundReferenceDefinition,
-                           DeploymentContext deploymentContext) {
-        WebServiceBindingDefinition wsBinding = boundReferenceDefinition.getBinding();
+    public ReferenceBinding build(CompositeComponent parent,
+                                  BoundReferenceDefinition boundReferenceDefinition,
+                                  WebServiceBindingDefinition wsBinding,
+                                  DeploymentContext deploymentContext) {
         TypeHelper typeHelper = (TypeHelper) deploymentContext.getExtension(TypeHelper.class.getName());
         if (typeHelper == null) {
             typeHelper = TypeHelper.INSTANCE;
@@ -73,7 +73,7 @@ public class CeltixBindingBuilder extends BindingBuilderExtension<WebServiceBind
         if (bus == null) {
             bus = getBus(wsBinding.getWSDLDefinitionRegistry());
         }
-        return new CeltixReference(
+        return new CeltixReferenceBinding(
             boundReferenceDefinition.getName(),
             parent,
             wsBinding,

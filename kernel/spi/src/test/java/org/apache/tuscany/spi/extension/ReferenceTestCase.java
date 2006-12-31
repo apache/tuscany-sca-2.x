@@ -44,7 +44,7 @@ import static org.easymock.EasyMock.replay;
 public class ReferenceTestCase extends TestCase {
 
     public void testScope() throws Exception {
-        TestReference ref = new TestReference();
+        TestReferenceBinding ref = new TestReferenceBinding();
         assertEquals(Scope.SYSTEM, ref.getScope());
     }
 
@@ -68,14 +68,14 @@ public class ReferenceTestCase extends TestCase {
         replay(chain);
         replay(wire);
         replay(outboundWire);
-        TestReference ref = new TestReference();
+        TestReferenceBinding ref = new TestReferenceBinding();
         ref.setInboundWire(wire);
         ref.setOutboundWire(outboundWire);
         ref.prepare();
     }
 
-    private class TestReference extends ReferenceExtension {
-        public TestReference() {
+    private class TestReferenceBinding extends ReferenceBindingExtension {
+        public TestReferenceBinding() {
             super(null, null);
         }
 

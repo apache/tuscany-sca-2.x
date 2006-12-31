@@ -52,9 +52,4 @@ public interface BuilderRegistry extends Builder {
      */
     <B extends BindingDefinition> void register(Class<B> implClass, BindingBuilder<B> builder);
 
-    /**
-     * @deprecated
-     */
-    void register(BindlessBuilder builder);
-
 }

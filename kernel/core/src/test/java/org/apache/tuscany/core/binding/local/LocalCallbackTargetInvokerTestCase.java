@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -35,12 +35,12 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceCallbackTargetInvokerTestCase extends TestCase {
+public class LocalCallbackTargetInvokerTestCase extends TestCase {
     private InboundWire wire;
     private Message message;
     private OutboundInvocationChain chain;
     private Interceptor head;
-    private CompositeReferenceCallbackTargetInvoker invoker;
+    private LocalCallbackTargetInvoker invoker;
 
     /**
      * Verfies the normal execution path through a callback
@@ -75,7 +75,7 @@ public class CompositeReferenceCallbackTargetInvokerTestCase extends TestCase {
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
         EasyMock.replay(wire);
 
-        invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);
+        invoker = new LocalCallbackTargetInvoker(operation, wire);
     }
 
 

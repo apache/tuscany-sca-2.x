@@ -1,7 +1,7 @@
 package org.apache.tuscany.test.binding;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -9,9 +9,9 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * @version $Rev$ $Date$
  */
-public class TestBindingReference extends ReferenceExtension {
+public class TestReferenceBinding extends ReferenceBindingExtension {
 
-    public TestBindingReference(String name, CompositeComponent parent) {
+    public TestReferenceBinding(String name, CompositeComponent parent) {
         super(name, parent);
     }
 

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
@@ -46,6 +46,7 @@ import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.wire.OutboundChainHolder;
+import org.apache.tuscany.spi.QualifiedName;
 
 import junit.framework.TestCase;
 
@@ -393,7 +394,8 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void createWires(Reference reference, ServiceContract<?> contract) {
+        public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract,
+                                QualifiedName targetName) {
             throw new UnsupportedOperationException();
         }
 

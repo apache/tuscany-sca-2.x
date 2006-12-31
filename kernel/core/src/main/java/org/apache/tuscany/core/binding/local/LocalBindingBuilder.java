@@ -20,7 +20,7 @@ package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -47,9 +47,10 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
     }
 
 
-    public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<LocalBindingDefinition> boundReferenceDefinition,
-                           DeploymentContext deploymentContext) throws BuilderException {
-        throw new UnsupportedOperationException();
+    public ReferenceBinding build(CompositeComponent parent,
+                                  BoundReferenceDefinition boundReferenceDefinition,
+                                  LocalBindingDefinition bindingDefinition,
+                                  DeploymentContext deploymentContext) throws BuilderException {
+        return new LocalReferenceBinding(boundReferenceDefinition.getName(), parent);
     }
 }

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -45,6 +47,14 @@ public class LocalBindingLoader implements StAXElementLoader {
                             ModelObject object,
                             XMLStreamReader reader,
                             DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+        String uri = reader.getAttributeValue(null, "uri");
+        if (uri != null) {
+            try {
+                return new LocalBindingDefinition(new URI(uri));
+            } catch (URISyntaxException e) {
+                throw new LoaderException(e);
+            }
+        }
         return new LocalBindingDefinition();
     }
 }

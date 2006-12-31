@@ -32,10 +32,10 @@ import org.easymock.IAnswer;
 /**
  * @version $Rev$ $Date$
  */
-public class AbstractCompositeTargetInvokerTestCase extends TestCase {
+public class AbstractLocalTargetInvokerTestCase extends TestCase {
 
     public void testInvokerWithInterceptor() throws Throwable {
-        AbstractCompositeTargetInvoker invoker = new MockTargetInvoker();
+        AbstractLocalTargetInvoker invoker = new MockTargetInvoker();
         Interceptor interceptor = EasyMock.createMock(Interceptor.class);
         interceptor.invoke(EasyMock.isA(Message.class));
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
@@ -57,7 +57,7 @@ public class AbstractCompositeTargetInvokerTestCase extends TestCase {
     }
 
     public void testShortCircuitInvoke() throws Throwable {
-        AbstractCompositeTargetInvoker invoker = new MockTargetInvoker();
+        AbstractLocalTargetInvoker invoker = new MockTargetInvoker();
         TargetInvoker targetInvoker = EasyMock.createMock(TargetInvoker.class);
         EasyMock.expect(targetInvoker.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
         EasyMock.replay(targetInvoker);
@@ -69,7 +69,7 @@ public class AbstractCompositeTargetInvokerTestCase extends TestCase {
         EasyMock.verify(targetInvoker);
     }
 
-    private class MockTargetInvoker extends AbstractCompositeTargetInvoker {
+    private class MockTargetInvoker extends AbstractLocalTargetInvoker {
         public Message invoke(Message msg) throws InvocationRuntimeException {
             return null;
         }

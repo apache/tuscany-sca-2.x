@@ -18,19 +18,35 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * Represents a reference configured with a binding in a composite
+ * Represents a reference in a composite
  *
  * @version $Rev$ $Date$
  */
-public class BoundReferenceDefinition<B extends BindingDefinition> extends ReferenceDefinition {
-    private B binding;
+public class BoundReferenceDefinition extends ReferenceDefinition {
+    private List<BindingDefinition> bindings;
 
-    public B getBinding() {
-        return binding;
+    public BoundReferenceDefinition(String name, ServiceContract contract,
+                                    List<BindingDefinition> bindings,
+                                    Multiplicity multiplicity) {
+        super(name, contract);
+        this.bindings = bindings;
+        setMultiplicity(multiplicity);
     }
 
-    public void setBinding(B binding) {
-        this.binding = binding;
+    public BoundReferenceDefinition() {
+        bindings = new ArrayList<BindingDefinition>();
+    }
+
+    public List<BindingDefinition> getBindings() {
+        return Collections.unmodifiableList(bindings);
+    }
+
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
     }
 }

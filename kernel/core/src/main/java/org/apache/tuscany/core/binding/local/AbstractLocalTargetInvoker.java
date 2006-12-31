@@ -31,7 +31,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractCompositeTargetInvoker implements TargetInvoker {
+public abstract class AbstractLocalTargetInvoker implements TargetInvoker {
     protected boolean cacheable;
 
     public boolean isCacheable() {
@@ -71,7 +71,7 @@ public abstract class AbstractCompositeTargetInvoker implements TargetInvoker {
     }
 
     @Override
-    public AbstractCompositeTargetInvoker clone() throws CloneNotSupportedException {
-        return (AbstractCompositeTargetInvoker) super.clone();
+    public AbstractLocalTargetInvoker clone() throws CloneNotSupportedException {
+        return (AbstractLocalTargetInvoker) super.clone();
     }
 }

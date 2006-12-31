@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
@@ -42,23 +43,31 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ComponentTypeLoaderNoBindingTestCase extends TestCase {
+public class ComponentLoaderNoBindingTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
     private ComponentLoader loader;
     private XMLStreamReader reader;
     private BoundServiceDefinition service;
+    private BoundReferenceDefinition reference;
 
     public void testNoServiceBinding() throws Exception {
         loader.load(null, null, reader, null);
         assert service.getBindings().get(0) instanceof LocalBindingDefinition;
     }
 
+    public void testNoReferenceBinding() throws Exception {
+        loader.load(null, null, reader, null);
+        assert reference.getBindings().get(0) instanceof LocalBindingDefinition;
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         service = new BoundServiceDefinition();
+        reference = new BoundReferenceDefinition();
         PojoComponentType<BoundServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<BoundServiceDefinition, ReferenceDefinition, Property<?>>();
         type.add(service);
+        type.add(reference);
         JavaImplementation impl = new JavaImplementation();
         impl.setComponentType(type);
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);

@@ -21,8 +21,9 @@ package org.apache.tuscany.spi.wire;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Operation;
@@ -120,17 +121,19 @@ public interface WireService {
     /**
      * Creates wires for a reference and injects them on the reference
      *
-     * @param reference the reference
-     * @param contract  the model artifact representing the service contract for the reference
+     * @param referenceBinding the reference
+     * @param contract         the model artifact representing the service contract for the reference
+     * @param targetName       the qualified target name or null if the reference referes to a target outside the SCA
+     *                         domain
      */
-    void createWires(Reference reference, ServiceContract<?> contract);
+    void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, QualifiedName targetName);
 
     /**
      * Creates wires for a serviceBinding and injects them on the serviceBinding
      *
-     * @param serviceBinding    the serviceBinding
-     * @param targetName the target nane
-     * @param contract   the serviceBinding contract
+     * @param serviceBinding the serviceBinding
+     * @param targetName     the target nane
+     * @param contract       the serviceBinding contract
      */
     void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract);
 

@@ -19,7 +19,7 @@
 package org.apache.tuscany.test.binding;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -39,11 +39,12 @@ public class TestBindingBuilder extends BindingBuilderExtension<TestBindingDefin
         return new TestBindingServiceBinding(definition.getName(), parent);
     }
 
-    public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<TestBindingDefinition> definition,
-                           DeploymentContext ctx) {
+    public ReferenceBinding build(CompositeComponent parent,
+                                  BoundReferenceDefinition definition,
+                                  TestBindingDefinition bindingDefinition,
+                                  DeploymentContext ctx) {
         String name = definition.getName();
-        return new TestBindingReference(name, parent);
+        return new TestReferenceBinding(name, parent);
     }
 
     protected Class<TestBindingDefinition> getBindingType() {

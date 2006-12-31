@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
 import java.util.Map;
 
@@ -27,26 +27,20 @@ import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.core.binding.local.AbstractCompositeTargetInvoker;
 
 /**
  * Dispatches a callback invocation to the callback instance
  *
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeTargetInvoker {
+public class LocalCallbackTargetInvoker extends AbstractLocalTargetInvoker {
     private Operation operation;
     private InboundWire inboundWire;
 
-    public CompositeReferenceCallbackTargetInvoker(Operation operation, InboundWire inboundWire) {
+    public LocalCallbackTargetInvoker(Operation operation, InboundWire inboundWire) {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.inboundWire = inboundWire;
-    }
-
-    @Override
-    public CompositeReferenceCallbackTargetInvoker clone() throws CloneNotSupportedException {
-        return (CompositeReferenceCallbackTargetInvoker) super.clone();
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
@@ -71,4 +65,10 @@ public class CompositeReferenceCallbackTargetInvoker extends AbstractCompositeTa
         TargetInvoker invoker = chain.getTargetInvoker();
         return invoke(chain, invoker, msg);
     }
+
+    @Override
+    public LocalCallbackTargetInvoker clone() throws CloneNotSupportedException {
+        return (LocalCallbackTargetInvoker) super.clone();
+    }
+
 }

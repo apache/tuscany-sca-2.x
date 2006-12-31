@@ -18,18 +18,37 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.spi.model.ModelObject;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class LocalBindingLoaderTestCase extends TestCase {
 
-    public void testLoader() throws Exception {
+    public void testLoaderNoUri() throws Exception {
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("uri"))).andReturn(null);
+        EasyMock.replay(reader);
         LocalBindingLoader loader = new LocalBindingLoader();
-        ModelObject o = loader.load(null, null, null, null);
+        ModelObject o = loader.load(null, null, reader, null);
         assertEquals(LocalBindingDefinition.class, o.getClass());
+        EasyMock.verify(reader);
     }
+
+    public void testLoaderUri() throws Exception {
+        XMLStreamReader reader = EasyMock.createMock(XMLStreamReader.class);
+        EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.eq("uri"))).andReturn("foo");
+        EasyMock.replay(reader);
+        LocalBindingLoader loader = new LocalBindingLoader();
+        ModelObject o = loader.load(null, null, reader, null);
+        assertEquals(LocalBindingDefinition.class, o.getClass());
+        assertEquals("foo", ((LocalBindingDefinition) o).getTargetUri().toString());
+        EasyMock.verify(reader);
+    }
+
 }

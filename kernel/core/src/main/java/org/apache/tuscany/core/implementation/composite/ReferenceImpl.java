@@ -18,42 +18,38 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
- * The default implementation of a {@link Service}
+ * The default implementation of a {@link org.apache.tuscany.spi.component.Reference}
  *
  * @version $Rev$ $Date$
  */
-public class ServiceImpl extends AbstractSCAObject implements Service {
+public class ReferenceImpl extends AbstractSCAObject implements Reference {
     private ServiceContract<?> serviceContract;
-    private List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+    private List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
     private boolean system;
-    private URI targetUri;
 
-    public ServiceImpl(String name, CompositeComponent parent, ServiceContract<?> contract) {
-        this(name, parent, contract, null, false);
+    public ReferenceImpl(String name, CompositeComponent parent, ServiceContract<?> contract) {
+        this(name, parent, contract, false);
     }
 
-    public ServiceImpl(String name,
-                       CompositeComponent parent,
-                       ServiceContract<?> contract,
-                       URI targetUri,
-                       boolean system) {
+    public ReferenceImpl(String name,
+                         CompositeComponent parent,
+                         ServiceContract<?> contract,
+                         boolean system) {
         super(name, parent);
         this.serviceContract = contract;
         this.system = system;
-        this.targetUri = targetUri;
     }
 
     public Scope getScope() {
@@ -64,29 +60,25 @@ public class ServiceImpl extends AbstractSCAObject implements Service {
         return serviceContract;
     }
 
-    public URI getTargetUri() {
-        return targetUri;
-    }
-
-    public List<ServiceBinding> getServiceBindings() {
+    public List<ReferenceBinding> getReferenceBindings() {
         return Collections.unmodifiableList(bindings);
     }
 
-    public void addServiceBinding(ServiceBinding binding) {
-        binding.setService(this);
+    public void addReferenceBinding(ReferenceBinding binding) {
+        binding.setReference(this);
         bindings.add(binding);
     }
 
     public void start() {
         super.start();
-        for (ServiceBinding binding : bindings) {
+        for (ReferenceBinding binding : bindings) {
             binding.start();
         }
     }
 
     public void stop() {
         super.stop();
-        for (ServiceBinding binding : bindings) {
+        for (ReferenceBinding binding : bindings) {
             binding.stop();
         }
     }

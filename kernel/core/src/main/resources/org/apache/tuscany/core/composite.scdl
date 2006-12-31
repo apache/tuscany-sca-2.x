@@ -42,7 +42,4 @@
     <component name="composite.builder">
         <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeBuilder"/>
     </component>
-    <component name="composite.bindlessbuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.CompositeBindlessBuilder"/>
-    </component>
 </composite>

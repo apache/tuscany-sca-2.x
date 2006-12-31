@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.rmi.Remote;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.extension.ReferenceExtension;
+import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -29,10 +29,10 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 /**
  * @version $Rev$ $Date$
  */
-public class OSGiReference extends ReferenceExtension {
+public class OSGiReferenceBinding extends ReferenceBindingExtension {
     //private final String uri;
 
-    public OSGiReference(String name, CompositeComponent parent) {
+    public OSGiReferenceBinding(String name, CompositeComponent parent) {
         super(name, parent);
         //this.uri = uri;
     }

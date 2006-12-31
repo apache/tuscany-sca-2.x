@@ -30,6 +30,7 @@ import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -47,6 +48,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
@@ -81,19 +83,22 @@ public class ConnectorImplTestCase extends TestCase {
         outboundWire.setTargetName(FOO_TARGET);
         outboundWire.addInvocationChain(operation, outboundChain);
 
-        Reference reference = EasyMock.createMock(Reference.class);
-        EasyMock.expect(reference.getParent()).andReturn(null);
-        EasyMock.expect(reference.createTargetInvoker(contract, operation)).andReturn(null);
-        EasyMock.expect(reference.getInboundWire()).andReturn(inboundWire);
-        EasyMock.expect(reference.getOutboundWire()).andReturn(outboundWire);
-        EasyMock.expect(reference.isSystem()).andReturn(false);
-        EasyMock.replay(reference);
+        ReferenceBinding referenceBinding = EasyMock.createMock(ReferenceBinding.class);
+        referenceBinding.setReference(EasyMock.isA(Reference.class));
+        EasyMock.expect(referenceBinding.createTargetInvoker(contract, operation)).andReturn(null);
+        EasyMock.expect(referenceBinding.getInboundWire()).andReturn(inboundWire);
+        EasyMock.expect(referenceBinding.getOutboundWire()).andReturn(outboundWire);
+        EasyMock.expect(referenceBinding.isSystem()).andReturn(false);
+        EasyMock.replay(referenceBinding);
+        inboundWire.setContainer(referenceBinding);
+        outboundWire.setContainer(referenceBinding);
 
-        inboundWire.setContainer(reference);
-        outboundWire.setContainer(reference);
+        Reference reference = new ReferenceImpl("foo", null, contract);
+        reference.addReferenceBinding(referenceBinding);
+
         connector.connect(reference);
 
-        EasyMock.verify(reference);
+        EasyMock.verify(referenceBinding);
         Interceptor interceptor = inboundChain.getHeadInterceptor();
         assertTrue(interceptor instanceof SynchronousBridgingInterceptor);
         Message resp = interceptor.invoke(new MessageImpl());
@@ -265,7 +270,7 @@ public class ConnectorImplTestCase extends TestCase {
         EasyMock.expect(component.getName()).andReturn("foo");
         EasyMock.replay(component);
 
-        Reference target = EasyMock.createMock(Reference.class);
+        ReferenceBinding target = EasyMock.createMock(ReferenceBinding.class);
         EasyMock.expect(target.createTargetInvoker(EasyMock.isA(ServiceContract.class), EasyMock.isA(Operation.class)))
             .andReturn(new MockInvoker());
         EasyMock.replay(target);

@@ -30,7 +30,8 @@ public class BootstrapTestCase extends SCATestCase {
         ServiceBinding binding = service.getServiceBindings().get(0);
         TestBean bean = wireService.createProxy(TestBean.class, binding.getInboundWire());
         bean.echo("foo");
-        bean.getBean().echo("foo");
+        TestBean bean2 = bean.getBean();
+        bean2.echo("foo");
     }
 
     protected void setUp() throws Exception {

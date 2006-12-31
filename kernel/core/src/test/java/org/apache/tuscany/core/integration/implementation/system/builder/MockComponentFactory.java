@@ -151,11 +151,10 @@ public final class MockComponentFactory {
     }
 
 
-    public static BoundReferenceDefinition<SystemBindingDefinition> createBoundReference() {
+    public static BoundReferenceDefinition createBoundReference() {
         SystemBindingDefinition binding = new SystemBindingDefinition();
-        BoundReferenceDefinition<SystemBindingDefinition> referenceDefinition =
-            new BoundReferenceDefinition<SystemBindingDefinition>();
-        referenceDefinition.setBinding(binding);
+        BoundReferenceDefinition referenceDefinition = new BoundReferenceDefinition();
+        referenceDefinition.addBinding(binding);
         referenceDefinition.setName("target");
         ServiceContract<?> contract = new JavaServiceContract();
         contract.setInterfaceClass(Target.class);

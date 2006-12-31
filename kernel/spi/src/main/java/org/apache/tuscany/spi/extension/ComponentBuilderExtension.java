@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.extension;
 
 import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
@@ -28,9 +27,9 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.Implementation;
-import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.api.annotation.Monitor;
 
@@ -40,9 +39,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev$$ $$Date$$
  */
-@Scope("COMPOSITE")
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
-
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
     protected WireService wireService;

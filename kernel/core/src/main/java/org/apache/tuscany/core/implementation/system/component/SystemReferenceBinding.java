@@ -18,12 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -32,44 +30,33 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * Runtime artifact for the system binding
+ * Default implementation of a reference configured with the system binding
  *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public class SystemServiceBindingImpl extends AbstractSCAObject implements ServiceBinding {
-    protected Service service;
+public class SystemReferenceBinding extends AbstractSCAObject implements ReferenceBinding {
+    protected Reference reference;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected ServiceContract<?> serviceContract;
 
-    public SystemServiceBindingImpl(String name, CompositeComponent parent, ServiceContract<?> serviceContract)
-        throws CoreRuntimeException {
+    public SystemReferenceBinding(String name, CompositeComponent parent) {
         super(name, parent);
-        this.serviceContract = serviceContract;
-    }
-
-    public void setService(Service service) {
-        this.service = service;
-    }
-
-    public ServiceContract<?> getServiceContract() {
-        return serviceContract;
-    }
-
-    public void setServiceContract(ServiceContract<?> serviceContract) {
-        this.serviceContract = serviceContract;
     }
 
     public Scope getScope() {
         return Scope.SYSTEM;
     }
 
-    public InboundWire getInboundWire() {
-        return inboundWire;
-    }
-
     public void setInboundWire(InboundWire wire) {
         this.inboundWire = wire;
+    }
+
+    public void setReference(Reference reference) {
+        this.reference = reference;
+    }
+
+    public InboundWire getInboundWire() {
+        return inboundWire;
     }
 
     public OutboundWire getOutboundWire() {
@@ -80,8 +67,7 @@ public class SystemServiceBindingImpl extends AbstractSCAObject implements Servi
         this.outboundWire = wire;
     }
 
-    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException {
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
         throw new UnsupportedOperationException();
     }
 
@@ -89,8 +75,12 @@ public class SystemServiceBindingImpl extends AbstractSCAObject implements Servi
         throw new UnsupportedOperationException();
     }
 
+    public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
+        throw new UnsupportedOperationException();
+    }
+
     public ServiceContract<?> getBindingServiceContract() {
-        return serviceContract;
+        throw new UnsupportedOperationException();
     }
 
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {
@@ -99,6 +89,7 @@ public class SystemServiceBindingImpl extends AbstractSCAObject implements Servi
 
     @Override
     public boolean isSystem() {
-        return service != null && service.isSystem();
+        return reference != null && reference.isSystem();
     }
+
 }

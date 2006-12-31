@@ -55,11 +55,11 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBindingDefin
         return new OSGiServiceBinding(name, parent, wireService, osgiServiceName, host);
     }
 
-    public OSGiReference build(CompositeComponent parent,
-                               BoundReferenceDefinition<OSGiBindingDefinition> boundReferenceDefinition,
-                               DeploymentContext deploymentContext) {
+    public OSGiReferenceBinding build(CompositeComponent parent,
+                                      BoundReferenceDefinition<OSGiBindingDefinition> boundReferenceDefinition,
+                                      OSGiBindingDefinition bindingDefinition, DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
-        return new OSGiReference(name, parent);
+        return new OSGiReferenceBinding(name, parent);
     }
 
     protected Class<? extends Object> getServiceInterface(BoundServiceDefinition boundServiceDefinition) {

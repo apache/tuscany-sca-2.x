@@ -1,4 +1,4 @@
-package org.apache.tuscany.core.implementation.composite;
+package org.apache.tuscany.core.binding.local;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -17,11 +17,11 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase extends TestCase {
+public class LocalCallbackTargetInvokerInvocationExceptionTestCase extends TestCase {
     private InboundWire wire;
     private Message message;
     private OutboundInvocationChain chain;
-    private CompositeReferenceCallbackTargetInvoker invoker;
+    private LocalCallbackTargetInvoker invoker;
 
     /**
      * Verfies an InvocationTargetException thrown when invoking the target is propagated to the client correctly and
@@ -55,7 +55,7 @@ public class CompositeReferenceCallbackTargetInvokerInvocationExceptionTestCase 
         wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getSourceCallbackInvocationChains(targetAddress)).andReturn(chains);
         EasyMock.replay(wire);
-        invoker = new CompositeReferenceCallbackTargetInvoker(operation, wire);
+        invoker = new LocalCallbackTargetInvoker(operation, wire);
     }
 
     private class SomeException extends Exception {

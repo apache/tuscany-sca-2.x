@@ -16,11 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.extension;
+package org.apache.tuscany.core.implementation.system.component;
 
+import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -30,50 +32,73 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
- * The default implementation of an SCA reference
+ * Runtime artifact for the system binding
  *
- * @version $Rev$ $Date$
+ * @version $$Rev$$ $$Date$$
  */
-public abstract class ReferenceExtension extends AbstractSCAObject implements Reference {
+public class SystemServiceBinding extends AbstractSCAObject implements ServiceBinding {
+    protected Service service;
     protected InboundWire inboundWire;
     protected OutboundWire outboundWire;
-    protected ServiceContract<?> bindingServiceContract;
+    protected ServiceContract<?> serviceContract;
 
-    protected ReferenceExtension(String name, CompositeComponent parent) {
+    public SystemServiceBinding(String name, CompositeComponent parent, ServiceContract<?> serviceContract)
+        throws CoreRuntimeException {
         super(name, parent);
+        this.serviceContract = serviceContract;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
+    }
+
+    public ServiceContract<?> getServiceContract() {
+        return serviceContract;
+    }
+
+    public void setServiceContract(ServiceContract<?> serviceContract) {
+        this.serviceContract = serviceContract;
     }
 
     public Scope getScope() {
         return Scope.SYSTEM;
     }
 
-    public void setInboundWire(InboundWire wire) {
-        this.inboundWire = wire;
-    }
-
     public InboundWire getInboundWire() {
         return inboundWire;
+    }
+
+    public void setInboundWire(InboundWire wire) {
+        this.inboundWire = wire;
     }
 
     public OutboundWire getOutboundWire() {
         return outboundWire;
     }
 
-    public void setOutboundWire(OutboundWire outboundWire) {
-        this.outboundWire = outboundWire;
+    public void setOutboundWire(OutboundWire wire) {
+        this.outboundWire = wire;
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+    public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException {
         throw new UnsupportedOperationException();
     }
 
+    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
+        throw new UnsupportedOperationException();
+    }
+
     public ServiceContract<?> getBindingServiceContract() {
-        return bindingServiceContract;
+        return serviceContract;
     }
 
     public void setBindingServiceContract(ServiceContract<?> serviceContract) {
-        this.bindingServiceContract = serviceContract;
+        throw new UnsupportedOperationException();
     }
 
+    @Override
+    public boolean isSystem() {
+        return service != null && service.isSystem();
+    }
 }

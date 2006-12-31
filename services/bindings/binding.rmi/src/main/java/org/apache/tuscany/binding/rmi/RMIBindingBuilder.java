@@ -22,7 +22,7 @@ import org.osoa.sca.annotations.Constructor;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
@@ -68,19 +68,15 @@ public class RMIBindingBuilder extends BindingBuilderExtension<RMIBindingDefinit
             intf);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition<RMIBindingDefinition> boundReferenceDefinition,
-                           DeploymentContext deploymentContext) {
+    public ReferenceBinding build(CompositeComponent parent,
+                                  BoundReferenceDefinition boundReferenceDefinition,
+                                  RMIBindingDefinition bindingDefinition,
+                                  DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
-        String host = boundReferenceDefinition.getBinding().getHost();
-        String port = boundReferenceDefinition.getBinding().getPort();
-        String svcName = boundReferenceDefinition.getBinding().getServiceName();
-        // Class<?> interfaze = boundReferenceDefinition.getServiceContract().getInterfaceClass();
-
-        return new RMIReference(name, parent, rmiHost, host, port, svcName,
-            boundReferenceDefinition.getServiceContract().getInterfaceClass());
-
+        String host = bindingDefinition.getHost();
+        String port = bindingDefinition.getPort();
+        String svcName = bindingDefinition.getServiceName();
+        return new RMIReferenceBinding(name, parent, rmiHost, host, port, svcName);
     }
 
 }
