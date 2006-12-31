@@ -22,7 +22,6 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Implementation;
 
 /**
  * 
@@ -32,7 +31,7 @@ import org.apache.tuscany.spi.model.Implementation;
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
 
     /** Component Definition */
-    private ComponentDefinition<Implementation<?>> componentDefinition;
+    private ComponentDefinition componentDefinition;
     
     /**
      * Initializes component name and parent.
@@ -41,7 +40,7 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
      * @param parent Parent of the component.
      * @param componentDefinition Definition of this component.
      */
-    public AbstractComponentExtension(String name, CompositeComponent parent, ComponentDefinition<Implementation<?>> componentDefinition) {
+    public AbstractComponentExtension(String name, CompositeComponent parent, ComponentDefinition componentDefinition) {
         super(name, parent);
         this.componentDefinition = componentDefinition;
     }
@@ -61,14 +60,14 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
     /**
      * @see org.apache.tuscany.spi.component.Component#getComponentDefinition()
      */
-    public ComponentDefinition<Implementation<?>> getComponentDefinition() {
+    public ComponentDefinition getComponentDefinition() {
         return componentDefinition;
     }
 
     /**
      * @see org.apache.tuscany.spi.component.Component#setComponentDefinition(org.apache.tuscany.spi.model.ComponentDefinition)
      */
-    public void setComponentDefinition(ComponentDefinition<Implementation<?>> componentDefinition) {
+    public void setComponentDefinition(ComponentDefinition componentDefinition) {
         this.componentDefinition = componentDefinition;
     }
 
