@@ -20,22 +20,21 @@ package org.apache.tuscany.standalone.server;
 
 import java.beans.Beans;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Properties;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.host.util.LaunchHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
-import org.apache.tuscany.standalone.server.management.jmx.instrument.reflect.ReflectedDynamicMBean;
 
 /**
  * This class provides the commandline interface for starting the 
@@ -79,6 +78,9 @@ public class TuscanyServer implements TuscanyServerMBean {
     /** Base Url */
     private URL baseUrl;
     
+    /** Started runtimes. */
+    private Map<String, TuscanyRuntime> bootedRuntimes = new ConcurrentHashMap<String, TuscanyRuntime>();
+    
     /**
      * 
      * @param args Commandline arguments.
@@ -97,19 +99,15 @@ public class TuscanyServer implements TuscanyServerMBean {
         baseUrl = installDirectory.toURI().toURL();
     }
     
-    
     /**
-     * Starts the server.
-     *
+     * @see org.apache.tuscany.standalone.server.TuscanyServerMBean#startRuntime(java.lang.String, boolean)
      */
-    public void startRuntime(String bootPath) {
+    public void startRuntime(String bootPath, boolean online) {
         
         try {
             
             File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, bootPath);
-            Properties runtimeProperties = getRuntimeProperties(bootDirectory);
             
-            boolean online = !Boolean.parseBoolean(runtimeProperties.getProperty("offline"));
             StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDirectory, installDirectory, online);
 
             ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
@@ -130,23 +128,35 @@ public class TuscanyServer implements TuscanyServerMBean {
             runtime.setRuntimeInfo(runtimeInfo);
             runtime.initialize();
             
-            ReflectedDynamicMBean mbean = ReflectedDynamicMBean.newInstance(runtime);
-            String runtimeJmxDomain = runtimeProperties.getProperty("jmx.domain");
-            if(runtimeJmxDomain == null) {
-                throw new TuscanyServerException("JMX domain not defined for " + bootDirectory);
-            }
-            String runtimeOn = runtimeJmxDomain + ":type=Runtime,name=Runtime";
-            agent.register(mbean, runtimeOn);
+            bootedRuntimes.put(bootPath, runtime);
             
+        } catch (InitializationException ex) {
+            throw new TuscanyServerException(ex);
         } catch (IOException ex) {
             throw new TuscanyServerException(ex);
         } catch (ClassNotFoundException ex) {
             throw new TuscanyServerException(ex);
-        } catch (InitializationException ex) {
-            throw new TuscanyServerException(ex);
         }
         
         System.err.println("Started");
+        
+    }
+
+    /**
+     * @see org.apache.tuscany.standalone.server.TuscanyServerMBean#shutdownRuntime(java.lang.String)
+     */
+    public void shutdownRuntime(String bootPath) {
+        
+        try {
+            TuscanyRuntime runtime = bootedRuntimes.get(bootPath);
+            if(runtime != null) {
+                runtime.destroy();
+                bootedRuntimes.remove(runtime);
+                runtime = null;
+            }
+        } catch(ShutdownException ex) {
+            throw new TuscanyServerException(ex);
+        }
         
     }
     
@@ -155,8 +165,14 @@ public class TuscanyServer implements TuscanyServerMBean {
      *
      */
     public void shutdown() {
+        
+        for(String bootPath : bootedRuntimes.keySet()) {
+            shutdownRuntime(bootPath);
+        }
         agent.shutdown();
         System.err.println("Shutdown");
+        System.exit(0);
+        
     }
 
     /**
@@ -187,43 +203,6 @@ public class TuscanyServer implements TuscanyServerMBean {
         agent = RmiAgent.getInstance();
         agent.start();        
         agent.register(this, "tuscany:type=server,name=tuscanyServer");
-    }
-    
-    /**
-     * Gets the properties for the runtime.
-     * @param runtimeBootPath Runtime bootpath.
-     * @return Runtime properties.
-     */
-    private Properties getRuntimeProperties(File runtimeBootPath) {
-        
-        File runtimePropertiesFile = new File(runtimeBootPath, "etc");
-        runtimePropertiesFile = new File(runtimePropertiesFile, "runtime.properties");
-        
-        if(!runtimePropertiesFile.exists()) {
-            throw new TuscanyServerException("Runtime properties not found: " + runtimePropertiesFile);
-        }
-        
-        Properties prop = new Properties();
-        InputStream in = null;
-        
-        try {
-            
-            in = new FileInputStream(runtimePropertiesFile);
-            prop.load(in);
-            return prop;
-            
-        } catch(IOException ex) {
-            throw new TuscanyServerException(ex);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    // ignore
-                }
-            }
-        }
-        
     }
 
 }

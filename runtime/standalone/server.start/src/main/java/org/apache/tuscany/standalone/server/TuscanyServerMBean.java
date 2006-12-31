@@ -27,10 +27,19 @@ package org.apache.tuscany.standalone.server;
 public interface TuscanyServerMBean {
 
     /**
-     * Starts the server.
-     *
+     * Starts a runtime specified by the bootpath.
+     * 
+     * @param bootPath Bootpath for the runtime.
+     * @param online Whether the runtime will resolve dependencies on the fly.
      */
-    public void startRuntime(String bootPath);
+    public void startRuntime(String bootPath, boolean online);
+
+    /**
+     * Shuts down a runtime specified by the bootpath.
+     * 
+     * @param bootPath Bootpath for the runtime.
+     */
+    public void shutdownRuntime(String bootPath);
 
     /**
      * Starts the server.
