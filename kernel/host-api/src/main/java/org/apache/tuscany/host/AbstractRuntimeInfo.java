@@ -31,22 +31,22 @@ public abstract class AbstractRuntimeInfo implements RuntimeInfo {
     /**
      * Application root directory.
      */
-    private File applicationRootDirectory;
+    private final File applicationRootDirectory;
     
     /**
      * Base URL.
      */
-    private URL baseUrl;
+    private final URL baseUrl;
     
     /**
      * Install directory.
      */
-    private File installDirectory;
+    private final File installDirectory;
     
     /**
      * Online indicator.
      */
-    private boolean online;
+    private final boolean online;
 
     /**
      * Initializes the runtime info instance.
@@ -66,28 +66,28 @@ public abstract class AbstractRuntimeInfo implements RuntimeInfo {
     /**
      * @see org.apache.tuscany.host.RuntimeInfo#getApplicationRootDirectory()
      */
-    public File getApplicationRootDirectory() {
+    public final File getApplicationRootDirectory() {
         return applicationRootDirectory;
     }
 
     /**
      * @see org.apache.tuscany.host.RuntimeInfo#getBaseURL()
      */
-    public URL getBaseURL() {
+    public final URL getBaseURL() {
         return baseUrl;
     }
 
     /**
      * @see org.apache.tuscany.host.RuntimeInfo#getInstallDirectory()
      */
-    public File getInstallDirectory() {
+    public final File getInstallDirectory() {
         return installDirectory;
     }
 
     /**
      * @see org.apache.tuscany.host.RuntimeInfo#isOnline()
      */
-    public boolean isOnline() {
+    public final boolean isOnline() {
         return online;
     }
 
