@@ -62,24 +62,22 @@ import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
  * <code>tuscany.adminPort</tuscany>.If not specified the default port 
  * that is used is <code>1099</code>
  * 
- * 
- * 
  * @version $Rev$ $Date$
  *
  */
 public class TuscanyServer implements TuscanyServerMBean {
     
     /** Agent */
-    private Agent agent;
+    private final Agent agent;
     
     /** Install directory */
-    private File installDirectory;
+    private final File installDirectory;
     
     /** Base Url */
-    private URL baseUrl;
+    private final URL baseUrl;
     
     /** Started runtimes. */
-    private Map<String, TuscanyRuntime> bootedRuntimes = new ConcurrentHashMap<String, TuscanyRuntime>();
+    private final Map<String, TuscanyRuntime> bootedRuntimes = new ConcurrentHashMap<String, TuscanyRuntime>();
     
     /**
      * 
@@ -96,31 +94,32 @@ public class TuscanyServer implements TuscanyServerMBean {
      */
     private TuscanyServer() throws MalformedURLException {
         installDirectory = DirectoryHelper.getInstallDirectory();
-        baseUrl = installDirectory.toURI().toURL();
+        baseUrl = installDirectory.toURI().toURL(); 
+        agent = RmiAgent.getInstance();
     }
     
     /**
      * @see org.apache.tuscany.standalone.server.TuscanyServerMBean#startRuntime(java.lang.String, boolean)
      */
-    public void startRuntime(String bootPath, boolean online) {
+    public final void startRuntime(final String bootPath, final boolean online, final String managementDomain) {
         
         try {
             
-            File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, bootPath);
+            final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, bootPath);
             
-            StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDirectory, installDirectory, online);
+            final StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDirectory, installDirectory, online);
 
-            ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
-            ClassLoader bootClassLoader = getTuscanyClassLoader(bootDirectory);
+            final ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
+            final ClassLoader bootClassLoader = getTuscanyClassLoader(bootDirectory);
             
-            URL systemScdl = getSystemScdl(bootClassLoader);
+            final URL systemScdl = getSystemScdl(bootClassLoader);
             if(systemScdl == null) {
                 throw new TuscanyServerException("Unable to find system scdl");
             }
 
-            String className = System.getProperty("tuscany.launcherClass",
+            final String className = System.getProperty("tuscany.launcherClass",
                 "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
-            TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
+            final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
             runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
             runtime.setSystemScdl(systemScdl);
             runtime.setHostClassLoader(hostClassLoader);
@@ -145,7 +144,7 @@ public class TuscanyServer implements TuscanyServerMBean {
     /**
      * @see org.apache.tuscany.standalone.server.TuscanyServerMBean#shutdownRuntime(java.lang.String)
      */
-    public void shutdownRuntime(String bootPath) {
+    public final void shutdownRuntime(String bootPath) {
         
         try {
             TuscanyRuntime runtime = bootedRuntimes.get(bootPath);
@@ -164,7 +163,7 @@ public class TuscanyServer implements TuscanyServerMBean {
      * Starts the server.
      *
      */
-    public void shutdown() {
+    public final void shutdown() {
         
         for(String bootPath : bootedRuntimes.keySet()) {
             shutdownRuntime(bootPath);
@@ -199,8 +198,7 @@ public class TuscanyServer implements TuscanyServerMBean {
      * Starts the server and starts the JMX agent.
      *
      */
-    private void start() {        
-        agent = RmiAgent.getInstance();
+    private void start() {       
         agent.start();        
         agent.register(this, "tuscany:type=server,name=tuscanyServer");
     }
