@@ -20,11 +20,14 @@ package org.apache.tuscany.core.services.management.jmx;
 
 import java.net.URI;
 
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
 import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-
+import org.apache.tuscany.core.services.management.jmx.instrument.InstrumentedComponent;
 import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
@@ -40,34 +43,44 @@ public abstract class JmxManagementService implements ManagementService {
     /**
      * MBean server used by the JMX management service.
      */
-    private MBeanServer mBeanServer;
+    private final MBeanServer mBeanServer;
+    
+    /**
+     * Default domain used by the host.
+     */
+    private final String defaultDomain;
 
     /**
      * Initializes the MBean server.
      * @param runtimeInfo JMX runtime info.
      */
-    public JmxManagementService(@Autowire JmxRuntimeInfo runtimeInfo) {
+    public JmxManagementService(@Autowire final JmxRuntimeInfo runtimeInfo) {
         this.mBeanServer = runtimeInfo.getMBeanServer();
+        this.defaultDomain = runtimeInfo.getDefaultDomain();
     }
 
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI,
      *java.lang.String,org.apache.tuscany.spi.component.Component)
      */
-    public void registerComponent(URI compositeURI, String name, Component component) {
-        throw new UnsupportedOperationException();
+    public final void registerComponent(URI compositeURI, String name, Component component) {
+        
+        try {
+            ObjectName on = new ObjectName(defaultDomain + ":" + "type=component,name=" + name + ",uri=" + compositeURI);
+            InstrumentedComponent mbean = new InstrumentedComponent(component);            
+            mBeanServer.registerMBean(mbean, on);
+        } catch (MalformedObjectNameException ex) {
+            throw new JmxException(ex);
+        } catch (NullPointerException ex) {
+            throw new JmxException(ex);
+        } catch (InstanceAlreadyExistsException ex) {
+            throw new JmxException(ex);
+        } catch (MBeanRegistrationException ex) {
+            throw new JmxException(ex);
+        } catch (NotCompliantMBeanException ex) {
+            throw new JmxException(ex);
+        }
+        
     }
-
-    /**
-     * Starts the agent connector for the service.
-     */
-    @Init
-    public abstract void start();
-
-    /**
-     * Stops the agent connector for the service.
-     */
-    @Destroy
-    public abstract void stop();
 
 }

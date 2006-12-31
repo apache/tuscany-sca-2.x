@@ -29,14 +29,20 @@ import org.apache.tuscany.host.AbstractRuntimeInfo;
 /**
  * Implementation for the <code>JmxRuntimeInfo</code> interface.
  * 
- * @version $Revision$ $Date$
+ * @version $Revision$ $Date: 2006-12-31 20:23:49 +0000 (Sun, 31 Dec
+ *          2006) $
  */
 public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntimeInfo {
-    
+
     /**
      * MBean server reference.
      */
     private final MBeanServer mBeanServer;
+
+    /**
+     * Default domain.
+     */
+    private final String defaultDomain;
 
     /**
      * Initializes the runtime info instance.
@@ -47,9 +53,15 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
      * @param online Onlne indicator.
      * @param mBeanServer MBean server.
      */
-    public JmxRuntimeInfoImpl(File applicationRootDirectory, URL baseUrl, File installDirectory, boolean online, MBeanServer mBeanServer) {
+    public JmxRuntimeInfoImpl(final File applicationRootDirectory,
+                              final URL baseUrl,
+                              final File installDirectory,
+                              final boolean online,
+                              final MBeanServer mBeanServer,
+                              final String defaultDomain) {
         super(applicationRootDirectory, baseUrl, installDirectory, online);
         this.mBeanServer = mBeanServer;
+        this.defaultDomain = defaultDomain;
     }
 
     /**
@@ -57,6 +69,15 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
      */
     public final MBeanServer getMBeanServer() {
         return mBeanServer;
+    }
+
+    /**
+     * Returns the default domain used by the host.
+     * 
+     * @return Default domain used by the host.
+     */
+    public final String getDefaultDomain() {
+        return defaultDomain;
     }
 
 }
