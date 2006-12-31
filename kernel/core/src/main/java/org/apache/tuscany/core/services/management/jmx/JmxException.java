@@ -16,30 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.services.management.jmx.runtime;
+package org.apache.tuscany.core.services.management.jmx;
 
-import javax.management.MBeanServer;
-
-import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
- * Runtime info that gives access to the underlying JMX MBean server.
+ * Maps JMX exceptions to runtime exceptions.
  * 
  * @version $Revision$ $Date$
- *
  */
-public interface JmxRuntimeInfo extends RuntimeInfo {
-    
+@SuppressWarnings("serial")
+public class JmxException extends TuscanyRuntimeException {
+
     /**
-     * Returns a reference to the mbean server used by the host.
-     * @return A reference to the host mbean server.
+     * Initializes the root cause.
+     * @param cause Initializes the root cause.
      */
-    MBeanServer getMBeanServer();
-    
-    /**
-     * Returns the default domain used by the host.
-     * @return Default domain used by the host.
-     */
-    String getDefaultDomain();
+    public JmxException(Throwable cause) {
+        super(cause);
+    }
 
 }
