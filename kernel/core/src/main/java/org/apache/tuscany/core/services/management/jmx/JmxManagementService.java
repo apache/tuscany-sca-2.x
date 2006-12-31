@@ -20,11 +20,8 @@ package org.apache.tuscany.core.services.management.jmx;
 
 import java.net.URI;
 
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
+import javax.management.JMException;
 import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 
 import org.apache.tuscany.core.services.management.jmx.instrument.InstrumentedComponent;
@@ -62,22 +59,15 @@ public abstract class JmxManagementService implements ManagementService {
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI,
      *java.lang.String,org.apache.tuscany.spi.component.Component)
+     * @throws JmxException In case of an unexpected JMX exception.
      */
-    public final void registerComponent(URI compositeURI, String name, Component component) {
+    public final void registerComponent(URI compositeURI, String name, Component component) throws JmxException {
         
         try {
             ObjectName on = new ObjectName(defaultDomain + ":" + "type=component,name=" + name + ",uri=" + compositeURI);
             InstrumentedComponent mbean = new InstrumentedComponent(component);            
             mBeanServer.registerMBean(mbean, on);
-        } catch (MalformedObjectNameException ex) {
-            throw new JmxException(ex);
-        } catch (NullPointerException ex) {
-            throw new JmxException(ex);
-        } catch (InstanceAlreadyExistsException ex) {
-            throw new JmxException(ex);
-        } catch (MBeanRegistrationException ex) {
-            throw new JmxException(ex);
-        } catch (NotCompliantMBeanException ex) {
+        } catch (JMException ex) {
             throw new JmxException(ex);
         }
         
