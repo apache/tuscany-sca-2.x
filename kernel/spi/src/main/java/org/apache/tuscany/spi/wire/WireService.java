@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.ComponentDefinition;
@@ -103,12 +103,12 @@ public interface WireService {
     InboundWire createWire(ServiceDefinition service);
 
     /**
-     * Creates wires for a component and injects them on the component
+     * Creates wires for an atomic component and injects them on the component
      *
      * @param component  the component
      * @param definition the model artifact representing the component
      */
-    void createWires(Component component, ComponentDefinition<?> definition);
+    void createWires(AtomicComponent component, ComponentDefinition<?> definition);
 
     /**
      * Creates wires for a reference and injects them on the reference
