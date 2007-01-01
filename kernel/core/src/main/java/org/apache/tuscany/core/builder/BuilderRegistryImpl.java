@@ -115,7 +115,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
             Component component = componentBuilder.build(parent, componentDefinition, context);
             if (component != null) {
-                component.setComponentDefinition(componentDefinition);
+                component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
             }
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";

@@ -31,8 +31,6 @@ import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.w3c.dom.Document;
 
@@ -56,8 +54,7 @@ public class InstrumentedComponent implements DynamicMBean {
      */
     @SuppressWarnings("unchecked")
     public InstrumentedComponent(final Component component) {
-        ComponentDefinition<Implementation<?>> componentDefinition = component.getComponentDefinition();
-        this.properties = componentDefinition.getPropertyValues();
+        this.properties = component.getDefaultPropertyValues();
     }
     
     /**
