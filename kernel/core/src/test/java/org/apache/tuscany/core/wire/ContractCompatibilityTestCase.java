@@ -386,10 +386,6 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
-            throw new UnsupportedOperationException();
-        }
-
         public void createWires(Component component, ComponentDefinition<?> definition) {
             throw new UnsupportedOperationException();
         }

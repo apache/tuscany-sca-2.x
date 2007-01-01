@@ -94,21 +94,13 @@ public interface WireService {
     InboundInvocationChain createInboundChain(Operation<?> operation);
 
     /**
-     * Creates a wire for flowing inbound invocations to a service
+     * Creates a wire for flowing inbound invocations to a service. The returned inbound chain will always contain at
+     * least one interceptor in order for outbound wires to connect to it.
      *
      * @param service the model representation of the service
      * @return the wire for flowing inbound invocations to a service
      */
     InboundWire createWire(ServiceDefinition service);
-
-    /**
-     * Creates a wire for flowing outbound invocations to a reference
-     *
-     * @param reference the model artifact representing the reference on the source side
-     * @param def       the model artifact representing the target reference
-     * @return the wire for flowing outbound invocations to a reference
-     */
-    //OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def);
 
     /**
      * Creates wires for a component and injects them on the component

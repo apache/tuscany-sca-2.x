@@ -65,40 +65,6 @@ public abstract class WireServiceExtension implements WireService {
         return new InboundInvocationChainImpl(operation);
     }
 
-    public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
-        if (!def.isAutowire() && reference.getTargets().size() != 1) {
-            //TODO multiplicity
-            throw new UnsupportedOperationException();
-        }
-        ServiceContract<?> contract = def.getServiceContract();
-        OutboundWire wire = new OutboundWireImpl();
-        if (!def.isAutowire()) {
-            QualifiedName qName = new QualifiedName(reference.getTargets().get(0).toString());
-            wire.setTargetName(qName);
-        } else {
-            wire.setAutowire(true);
-        }
-        wire.setServiceContract(contract);
-        wire.setReferenceName(reference.getReferenceName());
-        for (Operation<?> operation : contract.getOperations().values()) {
-            //TODO handle policy
-            OutboundInvocationChain chain = createOutboundChain(operation);
-            wire.addInvocationChain(operation, chain);
-
-        }
-        if (contract.getCallbackName() != null) {
-            wire.setCallbackInterface(contract.getCallbackClass());
-            for (Operation<?> operation : contract.getCallbackOperations().values()) {
-                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
-                // TODO handle policy
-                //TODO statement below could be cleaner
-                callbackTargetChain.addInterceptor(new InvokerInterceptor());
-                wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
-            }
-        }
-        return wire;
-    }
-
     public InboundWire createWire(ServiceDefinition service) {
         InboundWire wire = new InboundWireImpl();
         ServiceContract<?> contract = service.getServiceContract();
@@ -119,12 +85,13 @@ public abstract class WireServiceExtension implements WireService {
     public void createWires(Component component, ComponentDefinition<?> definition) {
         Implementation<?> implementation = definition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
+        // create incoming service wires
         for (ServiceDefinition service : componentType.getServices().values()) {
             InboundWire wire = createWire(service);
             wire.setContainer(component);
             component.addInboundWire(wire);
         }
-
+        // create outgoing reference wires
         for (ReferenceTarget referenceTarget : definition.getReferenceTargets().values()) {
             Map<String, ? extends ReferenceDefinition> references = componentType.getReferences();
             ReferenceDefinition mappedReference = references.get(referenceTarget.getReferenceName());
@@ -178,7 +145,6 @@ public abstract class WireServiceExtension implements WireService {
 
     public void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract) {
         InboundWire inboundWire = new InboundWireImpl();
-
         // [rfeng] Check if the Reference has the serviceBinding contract
         ServiceContract<?> bindingContract = serviceBinding.getBindingServiceContract();
         if (bindingContract == null) {
@@ -274,6 +240,47 @@ public abstract class WireServiceExtension implements WireService {
                     targetOperation);
             }
         }
+    }
+
+    /**
+     * Creates a wire for flowing outbound invocations from a reference
+     *
+     * @param target     the reference definition
+     * @param definition the reference target configuration
+     * @return the wire the outbound wire
+     */
+    protected OutboundWire createWire(ReferenceTarget target, ReferenceDefinition definition) {
+        if (!definition.isAutowire() && target.getTargets().size() != 1) {
+            //TODO multiplicity
+            throw new UnsupportedOperationException();
+        }
+        ServiceContract<?> contract = definition.getServiceContract();
+        OutboundWire wire = new OutboundWireImpl();
+        if (!definition.isAutowire()) {
+            QualifiedName qName = new QualifiedName(target.getTargets().get(0).toString());
+            wire.setTargetName(qName);
+        } else {
+            wire.setAutowire(true);
+        }
+        wire.setServiceContract(contract);
+        wire.setReferenceName(target.getReferenceName());
+        for (Operation<?> operation : contract.getOperations().values()) {
+            //TODO handle policy
+            OutboundInvocationChain chain = createOutboundChain(operation);
+            wire.addInvocationChain(operation, chain);
+
+        }
+        if (contract.getCallbackName() != null) {
+            wire.setCallbackInterface(contract.getCallbackClass());
+            for (Operation<?> operation : contract.getCallbackOperations().values()) {
+                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
+                // TODO handle policy
+                //TODO statement below could be cleaner
+                callbackTargetChain.addInterceptor(new InvokerInterceptor());
+                wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
+            }
+        }
+        return wire;
     }
 
 }
