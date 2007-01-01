@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.services.management;
 
-import java.net.URI;
-
 import org.apache.tuscany.spi.component.Component;
 
 /**
@@ -35,10 +33,9 @@ public interface ManagementService {
     /**
      * Registers a component for management.
      * 
-     * @param compositeURI Composite URI for the component.
      * @param name Name of the component.
      * @param component Component to be registered.
      */
-    void registerComponent(URI compositeURI, String name, Component component);
+    void registerComponent(String name, Component component);
 
 }
