@@ -37,12 +37,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
-            <artifactId>standalone-api</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tuscany.sca.services</groupId>
             <artifactId>maven</artifactId>
             <version>${sca.version}</version>
