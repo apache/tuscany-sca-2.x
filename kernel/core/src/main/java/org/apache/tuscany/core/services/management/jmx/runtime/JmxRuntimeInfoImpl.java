@@ -47,20 +47,18 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
     /**
      * Initializes the runtime info instance.
      * 
-     * @param applicationRootDirectory Application root directory.
      * @param baseUrl Base Url.
      * @param installDirectory Install directory.
      * @param online Onlne indicator.
      * @param mBeanServer MBean server.
      * @param managementDomain Management doamin for the runtime.
      */
-    public JmxRuntimeInfoImpl(final File applicationRootDirectory,
-                              final URL baseUrl,
+    public JmxRuntimeInfoImpl(final URL baseUrl,
                               final File installDirectory,
                               final boolean online,
                               final MBeanServer mBeanServer,
                               final String managementDomain) {
-        super(applicationRootDirectory, baseUrl, installDirectory, online);
+        super(null, baseUrl, installDirectory, online);
         this.mBeanServer = mBeanServer;
         this.managementDomain = managementDomain;
     }
