@@ -123,7 +123,7 @@ public class TuscanyServer implements TuscanyServerMBean {
 
             final String className =
                 System.getProperty("tuscany.launcherClass",
-                                   "org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeImpl");
+                                   "org.apache.tuscany.runtime.standalone.jmx.JmxRuntimeImpl");
             final TuscanyRuntime runtime = (TuscanyRuntime)Beans.instantiate(bootClassLoader, className);
             runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
             runtime.setSystemScdl(systemScdl);
@@ -135,10 +135,16 @@ public class TuscanyServer implements TuscanyServerMBean {
             bootedRuntimes.put(bootPath, runtime);
 
         } catch (InitializationException ex) {
+            ex.printStackTrace();
             throw new TuscanyServerException(ex);
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new TuscanyServerException(ex);
         } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            throw new TuscanyServerException(ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             throw new TuscanyServerException(ex);
         }
 
