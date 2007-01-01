@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.standalone.server.management.jmx;
 
+import javax.management.MBeanServer;
+
 /**
  * Interface to a JMX agent.
  * @version $Revision$ $Date$
@@ -44,5 +46,11 @@ public interface Agent {
      * @throws ManagementException If unable to shutdown the server.
      */
     void shutdown() throws ManagementException;
+    
+    /**
+     * Gets the MBean server used by the agent.
+     * @return MBean server used by the agent.
+     */
+    MBeanServer getMBeanServer();
 
 }

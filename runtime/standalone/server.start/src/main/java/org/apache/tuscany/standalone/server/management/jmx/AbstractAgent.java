@@ -55,6 +55,13 @@ public abstract class AbstractAgent implements Agent {
     protected AbstractAgent() throws ManagementException {        
         mBeanServer = MBeanServerFactory.createMBeanServer(DOMAIN);        
     }
+    
+    /**
+     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#getMBeanServer()
+     */
+    public MBeanServer getMBeanServer() {
+        return mBeanServer;
+    }
 
     /**
      * @see org.apache.tuscany.standalone.server.management.jmx.Agent#register(java.lang.Object, java.lang.String)
