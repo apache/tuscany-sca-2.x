@@ -18,16 +18,17 @@
  */
 package org.apache.tuscany.core.wire;
 
-import java.lang.reflect.Type;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
@@ -37,13 +38,12 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
+import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
 import org.apache.tuscany.spi.wire.WireService;
-import org.apache.tuscany.spi.wire.OutboundChainHolder;
-import org.apache.tuscany.spi.QualifiedName;
 
 import junit.framework.TestCase;
 
@@ -392,7 +392,7 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract) {
+        public void createWires(ServiceBinding serviceBinding, ServiceContract<?> contract, String targetName) {
             throw new UnsupportedOperationException();
         }
 

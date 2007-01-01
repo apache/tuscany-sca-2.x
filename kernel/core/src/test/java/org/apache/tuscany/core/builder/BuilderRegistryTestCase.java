@@ -67,8 +67,8 @@ public class BuilderRegistryTestCase extends TestCase {
     public void testBindingBuilderDispatch() throws Exception {
         WireService wireService = EasyMock.createMock(WireService.class);
         wireService.createWires(EasyMock.isA(ServiceBinding.class),
-            EasyMock.isA(String.class),
-            (ServiceContract) EasyMock.isNull());
+            (ServiceContract) EasyMock.isNull(), EasyMock.isA(String.class)
+        );
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(wireService);
         registry.setWireService(wireService);

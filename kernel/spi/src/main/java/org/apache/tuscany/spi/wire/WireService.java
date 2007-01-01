@@ -103,7 +103,7 @@ public interface WireService {
     InboundWire createWire(ServiceDefinition service);
 
     /**
-     * Creates wires for an atomic component and injects them on the component
+     * Creates and injects wires for an atomic component
      *
      * @param component  the component
      * @param definition the model artifact representing the component
@@ -111,7 +111,7 @@ public interface WireService {
     void createWires(AtomicComponent component, ComponentDefinition<?> definition);
 
     /**
-     * Creates wires for a reference and injects them on the reference
+     * Creates and injects wires for a reference binding
      *
      * @param referenceBinding the reference
      * @param contract         the model artifact representing the service contract for the reference
@@ -121,13 +121,13 @@ public interface WireService {
     void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, QualifiedName targetName);
 
     /**
-     * Creates wires for a serviceBinding and injects them on the serviceBinding
+     * Creates and injects wires for a service binding
      *
      * @param serviceBinding the serviceBinding
-     * @param targetName     the target nane
      * @param contract       the serviceBinding contract
+     * @param targetName     the target nane
      */
-    void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract);
+    void createWires(ServiceBinding serviceBinding, ServiceContract<?> contract, String targetName);
 
     /**
      * Check the compatiblity of the source and the target service contracts.<p> A wire may only connect a source to a
