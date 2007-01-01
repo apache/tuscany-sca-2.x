@@ -20,31 +20,45 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ComponentType;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Property;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Message;
+import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WireServiceExtensionTestCase extends TestCase {
-    private WireService wireService;
+    private TestWireService wireService;
     private Operation<Type> operation;
+    private ServiceContract<Type> contract;
+    private Operation<Type> callbackOperation;
 
     public void testCreateInboundChain() throws Exception {
         InboundInvocationChain chain = wireService.createInboundChain(operation);
@@ -56,27 +70,116 @@ public class WireServiceExtensionTestCase extends TestCase {
         assertEquals(operation, chain.getOperation());
     }
 
-    public void testCreateWireServiceDefinition() throws Exception {
-        ServiceDefinition definition = new ServiceDefinition();
-        definition.setName("foo");
-        ServiceContract<Type> contract = new ServiceContract<Type>() {
-        };
-        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
-        operations.put("foo", operation);
-        contract.setOperations(operations);
-        definition.setServiceContract(contract);
+    public void testCreateServiceWire() throws Exception {
+        ServiceDefinition definition = new ServiceDefinition("foo", contract, false);
+        TargetInvoker invoker = EasyMock.createMock(TargetInvoker.class);
+        MessageImpl resp = new MessageImpl();
+        EasyMock.expect(invoker.invoke(EasyMock.isA(Message.class))).andReturn(resp);
+        EasyMock.replay(invoker);
         InboundWire wire = wireService.createWire(definition);
         assertEquals("foo", wire.getServiceName());
         assertEquals(1, wire.getInvocationChains().size());
         assertEquals(contract, wire.getServiceContract());
         InboundInvocationChain chain = wire.getInvocationChains().get(operation);
         assertEquals(operation, chain.getOperation());
+        // verify the chain is invokable
+        MessageImpl msg = new MessageImpl();
+        msg.setTargetInvoker(invoker);
+        assertNotNull(chain.getHeadInterceptor().invoke(msg));
+        EasyMock.verify(invoker);
+    }
+
+    public void testCreateReferenceWire() throws Exception {
+        ReferenceDefinition definition = new ReferenceDefinition("foo", contract);
+        ReferenceTarget target = new ReferenceTarget();
+        target.addTarget(new URI("bar"));
+        target.setReferenceName("refName");
+
+        OutboundWire wire = wireService.createWire(target, definition);
+        assertEquals("refName", wire.getReferenceName());
+        assertEquals("bar", wire.getTargetName().toString());
+        assertFalse(wire.isAutowire());
+        assertEquals(1, wire.getInvocationChains().size());
+        assertEquals(contract, wire.getServiceContract());
+        OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
+        assertEquals(operation, chain.getOperation());
+        assertNull(chain.getHeadInterceptor());
+        assertEquals(Callback.class, wire.getCallbackInterface());
+        assertEquals(1, wire.getTargetCallbackInvocationChains().size());
+        InboundInvocationChain callbackChain = wire.getTargetCallbackInvocationChains().get(callbackOperation);
+        assertEquals(callbackOperation, callbackChain.getOperation());
+
+        TargetInvoker invoker = EasyMock.createMock(TargetInvoker.class);
+        MessageImpl resp = new MessageImpl();
+        EasyMock.expect(invoker.invoke(EasyMock.isA(Message.class))).andReturn(resp);
+        EasyMock.replay(invoker);
+        // verify the callback chain is invokable
+        MessageImpl msg = new MessageImpl();
+        msg.setTargetInvoker(invoker);
+        assertNotNull(callbackChain.getHeadInterceptor().invoke(msg));
+        EasyMock.verify(invoker);
+    }
+
+    public void testCreateAutowireReferenceWire() throws Exception {
+        ReferenceDefinition definition = new ReferenceDefinition("foo", contract);
+        definition.setAutowire(true);
+        ReferenceTarget target = new ReferenceTarget();
+        target.setReferenceName("refName");
+        OutboundWire wire = wireService.createWire(target, definition);
+        assertTrue(wire.isAutowire());
+        assertEquals("refName", wire.getReferenceName());
+        assertEquals(contract, wire.getServiceContract());
+        assertEquals(Callback.class, wire.getCallbackInterface());
+    }
+
+    public void testCreateComponentWires() throws Exception {
+        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+            new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition("refName", contract);
+        type.add(referenceDefinition);
+        ServiceDefinition serviceDefinition = new ServiceDefinition("foo", contract, false);
+        type.add(serviceDefinition);
+
+        Implementation<ComponentType> impl = new Implementation<ComponentType>() {
+        };
+        impl.setComponentType(type);
+
+        ComponentDefinition<Implementation<ComponentType>> definition =
+            new ComponentDefinition<Implementation<ComponentType>>("Foo", impl);
+        ReferenceTarget target = new ReferenceTarget();
+        target.addTarget(new URI("bar"));
+        target.setReferenceName("refName");
+        definition.add(target);
+
+        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
+        component.addInboundWire(EasyMock.isA(InboundWire.class));
+        component.addOutboundWire(EasyMock.isA(OutboundWire.class));
+        EasyMock.replay(component);
+
+        wireService.createWires(component, definition);
+        EasyMock.verify(component);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
         wireService = new TestWireService(new WorkContextImpl());
+
         operation = new Operation<Type>("foo", null, null, null);
+        callbackOperation = new Operation<Type>("foo", null, null, null);
+        Map<String, Operation<Type>> operations = new HashMap<String, Operation<Type>>();
+        operations.put("foo", operation);
+        Map<String, Operation<Type>> callbackOperations = new HashMap<String, Operation<Type>>();
+        callbackOperations.put("foo", callbackOperation);
+        contract = new ServiceContract<Type>() {
+        };
+        contract.setOperations(operations);
+        contract.setCallbackClass(Callback.class);
+        contract.setCallbackName(Callback.class.getName());
+        contract.setCallbackOperations(callbackOperations);
+    }
+
+    private interface Callback {
+
     }
 
     private class TestWireService extends WireServiceExtension {
@@ -99,6 +202,11 @@ public class WireServiceExtensionTestCase extends TestCase {
 
         public WireInvocationHandler createHandler(Class<?> interfaze, Wire wire) {
             return null;
+        }
+
+
+        public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
+            return super.createWire(reference, def);
         }
     }
 }
