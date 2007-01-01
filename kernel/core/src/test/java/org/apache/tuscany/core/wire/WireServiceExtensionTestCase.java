@@ -24,7 +24,14 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -33,6 +40,7 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -160,6 +168,42 @@ public class WireServiceExtensionTestCase extends TestCase {
         EasyMock.verify(component);
     }
 
+    public void testCreateReferenceBindingWire() throws Exception {
+        ReferenceBinding binding = new MockReferenceBinding();
+        QualifiedName qName = new QualifiedName("target");
+
+        wireService.createWires(binding, contract, qName);
+
+        InboundWire inboundWire = binding.getInboundWire();
+        assertEquals(1, inboundWire.getInvocationChains().size());
+        assertEquals(contract, inboundWire.getServiceContract());
+        assertEquals(binding, inboundWire.getContainer());
+
+        OutboundWire outboundWire = binding.getOutboundWire();
+        assertEquals("target", outboundWire.getTargetName().toString());
+        assertEquals(1, outboundWire.getInvocationChains().size());
+        assertEquals(contract, outboundWire.getServiceContract());
+        assertEquals(binding, outboundWire.getContainer());
+    }
+
+    public void testCreateServiceBindingWire() throws Exception {
+        ServiceBinding binding = new MockServiceBinding();
+
+        wireService.createWires(binding, contract, "target");
+
+        InboundWire inboundWire = binding.getInboundWire();
+        assertEquals(1, inboundWire.getInvocationChains().size());
+        assertEquals(contract, inboundWire.getServiceContract());
+        assertEquals(binding, inboundWire.getContainer());
+
+        OutboundWire outboundWire = binding.getOutboundWire();
+        assertEquals("target", outboundWire.getTargetName().toString());
+        assertEquals(1, outboundWire.getInvocationChains().size());
+        assertEquals(contract, outboundWire.getServiceContract());
+        assertEquals(binding, outboundWire.getContainer());
+        assertEquals(1, outboundWire.getTargetCallbackInvocationChains().size());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         wireService = new TestWireService(new WorkContextImpl());
@@ -209,4 +253,110 @@ public class WireServiceExtensionTestCase extends TestCase {
             return super.createWire(reference, def);
         }
     }
+
+    private class MockReferenceBinding extends AbstractSCAObject implements ReferenceBinding {
+        private ServiceContract<?> BindingServiceContract;
+        private InboundWire inboundWire;
+        private OutboundWire outboundWire;
+
+        public MockReferenceBinding() {
+            super("foo", null);
+        }
+
+        public ServiceContract<?> getBindingServiceContract() {
+            return BindingServiceContract;
+        }
+
+        public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
+            BindingServiceContract = bindingServiceContract;
+        }
+
+        public void setReference(Reference reference) {
+
+        }
+
+        public InboundWire getInboundWire() {
+            return inboundWire;
+        }
+
+        public void setInboundWire(InboundWire inboundWire) {
+            this.inboundWire = inboundWire;
+        }
+
+        public OutboundWire getOutboundWire() {
+            return outboundWire;
+        }
+
+        public void setOutboundWire(OutboundWire outboundWire) {
+            this.outboundWire = outboundWire;
+        }
+
+        public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
+            throws TargetInvokerCreationException {
+            return null;
+        }
+
+        public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+            throws TargetInvokerCreationException {
+            return null;
+        }
+
+        public Scope getScope() {
+            return null;
+        }
+    }
+
+    private class MockServiceBinding extends AbstractSCAObject implements ServiceBinding {
+        private InboundWire inboundWire;
+        private OutboundWire outboundWire;
+        private ServiceContract<?> BindingServiceContract;
+
+
+        public MockServiceBinding() {
+            super("foo", null);
+        }
+
+        public void setService(Service service) {
+        }
+
+        public ServiceContract<?> getBindingServiceContract() {
+            return BindingServiceContract;
+        }
+
+        public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
+            BindingServiceContract = bindingServiceContract;
+        }
+
+        public InboundWire getInboundWire() {
+            return inboundWire;
+        }
+
+        public void setInboundWire(InboundWire inboundWire) {
+            this.inboundWire = inboundWire;
+        }
+
+        public OutboundWire getOutboundWire() {
+            return outboundWire;
+        }
+
+        public void setOutboundWire(OutboundWire outboundWire) {
+            this.outboundWire = outboundWire;
+        }
+
+        public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
+            throws TargetInvokerCreationException {
+            return null;
+        }
+
+        public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
+            throws TargetInvokerCreationException {
+            return null;
+        }
+
+        public Scope getScope() {
+            return null;
+        }
+    }
+
+
 }

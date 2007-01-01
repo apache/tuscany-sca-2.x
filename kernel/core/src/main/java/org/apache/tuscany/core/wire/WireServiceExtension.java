@@ -21,10 +21,10 @@ package org.apache.tuscany.core.wire;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -143,7 +143,7 @@ public abstract class WireServiceExtension implements WireService {
         referenceBinding.setOutboundWire(outboundWire);
     }
 
-    public void createWires(ServiceBinding serviceBinding, String targetName, ServiceContract<?> contract) {
+    public void createWires(ServiceBinding serviceBinding, ServiceContract<?> contract, String targetName) {
         InboundWire inboundWire = new InboundWireImpl();
         // [rfeng] Check if the Reference has the serviceBinding contract
         ServiceContract<?> bindingContract = serviceBinding.getBindingServiceContract();

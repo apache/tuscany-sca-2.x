@@ -156,7 +156,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                 }
                 String path = uri.getPath();
                 ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
-                wireService.createWires(binding, path, contract);
+                wireService.createWires(binding, contract, path);
             }
             service.addServiceBinding(binding);
         }
