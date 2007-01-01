@@ -74,10 +74,6 @@ public class JmxRuntimeImpl extends AbstractRuntime {
         RuntimeInfo runtimeInfo = getRuntimeInfo();
         try {
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
-            systemComponent.registerJavaObject(JmxRuntimeInfo.COMPONENT_NAME,
-                                               JmxRuntimeInfo.class,
-                                               (JmxRuntimeInfo)runtimeInfo);
-
             // register the monitor factory provided by the host
             systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
         } catch (ComponentRegistrationException e) {
