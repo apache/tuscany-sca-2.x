@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.services.management.jmx;
 
-import java.net.URI;
-
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -57,14 +55,13 @@ public abstract class JmxManagementService implements ManagementService {
     }
 
     /**
-     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.net.URI,
-     *java.lang.String,org.apache.tuscany.spi.component.Component)
+     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.lang.String,org.apache.tuscany.spi.component.Component)
      * @throws JmxException In case of an unexpected JMX exception.
      */
-    public final void registerComponent(URI compositeURI, String name, Component component) throws JmxException {
+    public final void registerComponent(String name, Component component) throws JmxException {
         
         try {
-            ObjectName on = new ObjectName(defaultDomain + ":" + "type=component,name=" + name + ",uri=" + compositeURI);
+            ObjectName on = new ObjectName(defaultDomain + ":" + "type=component,name=" + name);
             InstrumentedComponent mbean = new InstrumentedComponent(component);            
             mBeanServer.registerMBean(mbean, on);
         } catch (JMException ex) {
