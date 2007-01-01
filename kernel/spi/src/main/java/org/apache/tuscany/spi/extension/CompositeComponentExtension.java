@@ -191,6 +191,9 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         } else if (child instanceof AtomicComponent) {
             AtomicComponent atomic = (AtomicComponent)child;
             registerAutowire(atomic);
+            if(managementService != null) {
+                managementService.registerComponent(atomic.getName(), atomic);
+            }
         } else if (child instanceof CompositeComponent) {
             CompositeComponent component = (CompositeComponent)child;
             if (lifecycleState == RUNNING && component.getLifecycleState() == UNINITIALIZED) {
