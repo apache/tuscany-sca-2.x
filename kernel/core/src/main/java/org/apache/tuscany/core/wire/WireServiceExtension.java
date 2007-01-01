@@ -21,10 +21,10 @@ package org.apache.tuscany.core.wire;
 import java.util.Map;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -82,7 +82,7 @@ public abstract class WireServiceExtension implements WireService {
         return wire;
     }
 
-    public void createWires(Component component, ComponentDefinition<?> definition) {
+    public void createWires(AtomicComponent component, ComponentDefinition<?> definition) {
         Implementation<?> implementation = definition.getImplementation();
         ComponentType<?, ?, ?> componentType = implementation.getComponentType();
         // create incoming service wires

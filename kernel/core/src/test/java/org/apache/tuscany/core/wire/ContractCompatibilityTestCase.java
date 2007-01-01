@@ -25,22 +25,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
-import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
@@ -386,7 +383,7 @@ public class ContractCompatibilityTestCase extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public void createWires(Component component, ComponentDefinition<?> definition) {
+        public void createWires(AtomicComponent component, ComponentDefinition<?> definition) {
             throw new UnsupportedOperationException();
         }
 

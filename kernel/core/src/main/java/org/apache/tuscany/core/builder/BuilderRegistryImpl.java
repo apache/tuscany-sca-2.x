@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.MissingWireTargetException;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -120,8 +121,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
-            if (wireService != null) {
-                wireService.createWires(component, componentDefinition);
+            if (wireService != null && component instanceof AtomicComponent) {
+                wireService.createWires((AtomicComponent) component, componentDefinition);
             }
             return component;
         } catch (BuilderException e) {

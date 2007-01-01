@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -92,12 +93,12 @@ public class BuilderRegistryTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testComponentImplementationDispatch() throws Exception {
         WireService wireService = EasyMock.createMock(WireService.class);
-        wireService.createWires(EasyMock.isA(Component.class),
+        wireService.createWires(EasyMock.isA(AtomicComponent.class),
             EasyMock.isA(ComponentDefinition.class));
         EasyMock.replay(wireService);
         registry.setWireService(wireService);
 
-        Component component = EasyMock.createNiceMock(Component.class);
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
         EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
