@@ -31,6 +31,11 @@
         <system:implementation.system class="org.apache.tuscany.core.deployer.DeployerImpl"/>
     </component>
 
+    <!-- Management service -->
+    <component name="managementService">
+        <system:implementation.system class="org.apache.tuscany.core.services.management.jmx.JmxManagementService"/>
+    </component>
+
     <!-- Work management -->
     <component name="workContext">
         <system:implementation.system class="org.apache.tuscany.core.component.WorkContextImpl"/>
