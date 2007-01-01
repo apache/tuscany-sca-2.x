@@ -18,10 +18,12 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.util.Map;
+
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.PropertyValue;
 
 /**
  * 
@@ -30,45 +32,32 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
 
-    /** Component Definition */
-    private ComponentDefinition componentDefinition;
+    /** Default property values. */
+    private Map<String, PropertyValue<?>> defaultPropertyValues;
     
     /**
      * Initializes component name and parent.
      * 
      * @param name Name of the component.
      * @param parent Parent of the component.
-     * @param componentDefinition Definition of this component.
-     */
-    public AbstractComponentExtension(String name, CompositeComponent parent, ComponentDefinition componentDefinition) {
-        super(name, parent);
-        this.componentDefinition = componentDefinition;
-    }
-    
-    /**
-     * Initializes component name and parent.
-     * 
-     * @param name Name of the component.
-     * @param parent Parent of the component.
-     * @param componentDefinition Definition of this component.
-     * @deprecated Use <code>AbstractComponentExtension(String name, CompositeComponent parent, ComponentDefinition<Implementation<?>> componentDefinition)</code>. 
+     * @param componentDefinition Definition of this component. 
      */
     public AbstractComponentExtension(String name, CompositeComponent parent) {
         super(name, parent);
     }
 
     /**
-     * @see org.apache.tuscany.spi.component.Component#getComponentDefinition()
+     * @see org.apache.tuscany.spi.component.Component#getDefaultPropertyValues()
      */
-    public ComponentDefinition getComponentDefinition() {
-        return componentDefinition;
+    public Map<String, PropertyValue<?>> getDefaultPropertyValues() {
+        return defaultPropertyValues;
     }
 
     /**
-     * @see org.apache.tuscany.spi.component.Component#setComponentDefinition(org.apache.tuscany.spi.model.ComponentDefinition)
+     * @see org.apache.tuscany.spi.component.Component#setDefaultPropertyValues(java.util.Map)
      */
-    public void setComponentDefinition(ComponentDefinition componentDefinition) {
-        this.componentDefinition = componentDefinition;
+    public void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues) {
+        this.defaultPropertyValues = defaultPropertyValues;
     }
 
 }
