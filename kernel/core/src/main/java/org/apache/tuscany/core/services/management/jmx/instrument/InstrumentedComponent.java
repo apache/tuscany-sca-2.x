@@ -49,12 +49,18 @@ public class InstrumentedComponent implements DynamicMBean {
     private final Map<String, PropertyValue<?>> properties;
     
     /**
+     * Name of the component.
+     */
+    private String componentName;
+    
+    /**
      * Initializes the property values.
      * @param component Component that is being managed.
      */
     @SuppressWarnings("unchecked")
     public InstrumentedComponent(final Component component) {
         this.properties = component.getDefaultPropertyValues();
+        this.componentName = component.getName();
     }
     
     /**
@@ -78,8 +84,6 @@ public class InstrumentedComponent implements DynamicMBean {
             try {
                 list.add(new Attribute(attribute, getAttribute(attribute)));
             } catch(AttributeNotFoundException ex) {
-                // Crap throws clauses in JMX API. why can't getAttributes method
-                // has the same throws clause as getAttribute?
                 throw new InstrumentationException(ex);
             }
         }
@@ -103,7 +107,7 @@ public class InstrumentedComponent implements DynamicMBean {
             attributes[i++] = new MBeanAttributeInfo(propertyValue.getName(), Document.class.getName(), null, true, false, false);
         }
         
-        return new MBeanInfo(null, null, attributes, constructors, operations, notifications);
+        return new MBeanInfo(componentName, null, attributes, constructors, operations, notifications);
         
     }
 
