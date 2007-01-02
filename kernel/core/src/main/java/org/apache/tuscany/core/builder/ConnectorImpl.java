@@ -420,6 +420,13 @@ public class ConnectorImpl implements Connector {
                         serviceName);
                 }
                 SCAObject target = parent.getChild(targetName);
+                if (target instanceof Reference) {
+                    throw new InvalidTargetTypeException("Invalid target type",
+                        reference.getName(),
+                        null,
+                        targetName,
+                        serviceName);
+                }
                 connect(reference, outboundWire, target);
             }
 
