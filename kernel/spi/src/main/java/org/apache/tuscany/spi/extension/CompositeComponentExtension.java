@@ -249,6 +249,12 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     public Service getService(String name) {
+        if (name == null) {
+            if (services.size() != 1) {
+                return null;
+            }
+            return services.get(0);
+        }
         SCAObject object = children.get(name);
         if (object instanceof Service) {
             return (Service) object;
@@ -257,6 +263,12 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     public Service getSystemService(String name) {
+        if (name == null) {
+            if (systemServices.size() != 1) {
+                return null;
+            }
+            return systemServices.get(0);
+        }
         SCAObject object = systemChildren.get(name);
         if (object instanceof Service) {
             return (Service) object;
