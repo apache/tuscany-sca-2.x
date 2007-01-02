@@ -37,8 +37,10 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractConnectorImplTestCase extends TestCase {
-    protected static final String FOO_SERVICE = "FooService";
-    protected static final QualifiedName FOO_TARGET = new QualifiedName("target/FooService");
+    protected static final String TARGET = "target";
+    protected static final QualifiedName TARGET_NAME = new QualifiedName(TARGET);
+    protected static final String TARGET_SERVICE = "FooService";
+    protected static final QualifiedName TARGET_SERVICE_NAME = new QualifiedName("target/FooService");
     protected static final String RESPONSE = "response";
 
     protected ConnectorImpl connector;
@@ -63,14 +65,15 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         targetWire.setServiceContract(contract);
         targetWire.addInvocationChain(operation, chain);
 
+        MockInvoker mockInvoker = new MockInvoker();
+
         // create the target
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
-        target.getInboundWire(EasyMock.eq(FOO_SERVICE));
+        target.getInboundWire(EasyMock.eq(TARGET_SERVICE));
         EasyMock.expectLastCall().andReturn(targetWire).atLeastOnce();
-        target.createTargetInvoker(EasyMock.eq(FOO_SERVICE), EasyMock.eq(operation), EasyMock.eq(targetWire));
-        AbstractConnectorImplTestCase.MockInvoker mockInvoker = new AbstractConnectorImplTestCase.MockInvoker();
+        target.createTargetInvoker(EasyMock.eq(TARGET_SERVICE), EasyMock.eq(operation), EasyMock.eq(targetWire));
         EasyMock.expectLastCall().andReturn(mockInvoker);
         EasyMock.replay(target);
         targetWire.setContainer(target);
@@ -82,14 +85,14 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
 
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setTargetName(FOO_TARGET);
+        outboundWire.setTargetName(TARGET_SERVICE_NAME);
         outboundWire.setServiceContract(contract);
         outboundWire.addInvocationChain(operation, outboundChain);
 
         Map<String, List<OutboundWire>> outboundWires = new HashMap<String, List<OutboundWire>>();
         List<OutboundWire> list = new ArrayList<OutboundWire>();
         list.add(outboundWire);
-        outboundWires.put(FOO_SERVICE, list);
+        outboundWires.put(TARGET_SERVICE, list);
 
         // create the source
         AtomicComponent source = EasyMock.createMock(AtomicComponent.class);

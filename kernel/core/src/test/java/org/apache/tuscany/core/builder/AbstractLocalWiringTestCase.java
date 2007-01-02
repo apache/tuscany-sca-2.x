@@ -28,8 +28,6 @@ import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractLocalWiringTestCase extends AbstractConnectorImplTestCase {
-    protected static final String TARGET = "target";
-    protected static final QualifiedName TARGET_NAME = new QualifiedName(TARGET);
     protected ReferenceBinding referenceBinding;
 
 
@@ -70,14 +68,14 @@ public abstract class AbstractLocalWiringTestCase extends AbstractConnectorImplT
         return service;
     }
 
-    protected Reference createLocalReference(CompositeComponent parent) throws Exception {
-        ReferenceBinding referenceBinding = createLocalReferenceBinding();
+    protected Reference createLocalReference(CompositeComponent parent, QualifiedName target) throws Exception {
+        ReferenceBinding referenceBinding = createLocalReferenceBinding(target);
         Reference reference = new ReferenceImpl("foo", parent, contract);
         reference.addReferenceBinding(referenceBinding);
         return reference;
     }
 
-    protected ReferenceBinding createLocalReferenceBinding()
+    protected ReferenceBinding createLocalReferenceBinding(QualifiedName target)
         throws TargetInvokerCreationException {
         referenceBinding = new LocalReferenceBinding("local", null);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
@@ -91,7 +89,7 @@ public abstract class AbstractLocalWiringTestCase extends AbstractConnectorImplT
         outboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(TARGET_NAME);
+        outboundWire.setTargetName(target);
         outboundWire.addInvocationChain(operation, outboundChain);
         outboundWire.setContainer(referenceBinding);
 

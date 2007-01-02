@@ -63,7 +63,7 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
 
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setTargetName(FOO_TARGET);
+        outboundWire.setTargetName(TARGET_SERVICE_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
         outboundWire.setServiceContract(contract);
 
@@ -114,7 +114,7 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
 
         MessageImpl msg = new MessageImpl();
         Map<String, List<OutboundWire>> wires = source.getOutboundWires();
-        OutboundWire wire = wires.get(FOO_SERVICE).get(0);
+        OutboundWire wire = wires.get(TARGET_SERVICE).get(0);
         OutboundInvocationChain chain = wire.getInvocationChains().get(operation);
         msg.setTargetInvoker(chain.getTargetInvoker());
         Message resp = chain.getHeadInterceptor().invoke(msg);
@@ -129,7 +129,7 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, chain);
-        wire.setServiceName(FOO_SERVICE);
+        wire.setServiceName(TARGET_SERVICE);
         List<InboundWire> wires = new ArrayList<InboundWire>();
         wires.add(wire);
 
@@ -139,7 +139,8 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expectLastCall().andReturn(Collections.emptyMap());
         source.getInboundWires();
         EasyMock.expectLastCall().andReturn(wires);
-        source.createTargetInvoker(EasyMock.eq(FOO_SERVICE), EasyMock.eq(operation), (InboundWire) EasyMock.isNull());
+        source
+            .createTargetInvoker(EasyMock.eq(TARGET_SERVICE), EasyMock.eq(operation), (InboundWire) EasyMock.isNull());
         EasyMock.expectLastCall().andReturn(new MockInvoker());
         EasyMock.replay(source);
 
