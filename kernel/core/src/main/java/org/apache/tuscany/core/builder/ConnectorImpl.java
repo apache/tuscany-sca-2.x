@@ -433,44 +433,44 @@ public class ConnectorImpl implements Connector {
         }
     }
 
-    private void handleAtomic(AtomicComponent sourceComponent) throws WiringException {
-        CompositeComponent parent = sourceComponent.getParent();
+    private void handleAtomic(AtomicComponent component) throws WiringException {
+        CompositeComponent parent = component.getParent();
         assert parent != null;
         // connect outbound wires for component references to their targets
-        for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
+        for (List<OutboundWire> referenceWires : component.getOutboundWires().values()) {
             for (OutboundWire outboundWire : referenceWires) {
                 try {
-                    if (sourceComponent.isSystem()) {
+                    if (component.isSystem()) {
                         if (outboundWire.isAutowire()) {
                             autowire(outboundWire, parent);
 
                         } else {
                             SCAObject target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
-                            connect(sourceComponent, outboundWire, target);
+                            connect(component, outboundWire, target);
                         }
                     } else {
                         if (outboundWire.isAutowire()) {
                             autowire(outboundWire, parent);
                         } else {
                             SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
-                            connect(sourceComponent, outboundWire, target);
+                            connect(component, outboundWire, target);
                         }
                     }
                 } catch (WiringException e) {
-                    e.addContextName(sourceComponent.getName());
+                    e.addContextName(component.getName());
                     e.addContextName(parent.getName());
                     throw e;
                 }
             }
         }
         // connect inbound wires
-        for (InboundWire inboundWire : sourceComponent.getInboundWires()) {
+        for (InboundWire inboundWire : component.getInboundWires()) {
             for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
                 Operation<?> operation = chain.getOperation();
                 String serviceName = inboundWire.getServiceName();
                 TargetInvoker invoker;
                 try {
-                    invoker = sourceComponent.createTargetInvoker(serviceName, operation, null);
+                    invoker = component.createTargetInvoker(serviceName, operation, null);
                 } catch (TargetInvokerCreationException e) {
                     String targetName = inboundWire.getContainer().getName();
                     throw new WireConnectException("Error processing inbound wire",
