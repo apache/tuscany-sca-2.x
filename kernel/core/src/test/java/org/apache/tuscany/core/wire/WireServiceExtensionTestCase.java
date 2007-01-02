@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -57,6 +56,7 @@ import org.apache.tuscany.spi.wire.WireInvocationHandler;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
+import org.apache.tuscany.core.mock.binding.MockServiceBinding;
 import org.easymock.EasyMock;
 
 /**
@@ -273,58 +273,6 @@ public class WireServiceExtensionTestCase extends TestCase {
 
         public void setReference(Reference reference) {
 
-        }
-
-        public InboundWire getInboundWire() {
-            return inboundWire;
-        }
-
-        public void setInboundWire(InboundWire inboundWire) {
-            this.inboundWire = inboundWire;
-        }
-
-        public OutboundWire getOutboundWire() {
-            return outboundWire;
-        }
-
-        public void setOutboundWire(OutboundWire outboundWire) {
-            this.outboundWire = outboundWire;
-        }
-
-        public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
-            throws TargetInvokerCreationException {
-            return null;
-        }
-
-        public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-            throws TargetInvokerCreationException {
-            return null;
-        }
-
-        public Scope getScope() {
-            return null;
-        }
-    }
-
-    private class MockServiceBinding extends AbstractSCAObject implements ServiceBinding {
-        private InboundWire inboundWire;
-        private OutboundWire outboundWire;
-        private ServiceContract<?> bindingServiceContract;
-
-
-        public MockServiceBinding() {
-            super("foo", null);
-        }
-
-        public void setService(Service service) {
-        }
-
-        public ServiceContract<?> getBindingServiceContract() {
-            return bindingServiceContract;
-        }
-
-        public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
-            this.bindingServiceContract = bindingServiceContract;
         }
 
         public InboundWire getInboundWire() {
