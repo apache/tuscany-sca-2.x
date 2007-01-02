@@ -6,6 +6,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
@@ -31,6 +32,23 @@ import org.easymock.IAnswer;
 public class LocalReferenceWiringTestCase extends AbstractLocalWiringTestCase {
     private Service service;
     private Reference reference;
+    private AtomicComponent atomicComponent;
+
+    /**
+     * Verifies the case where inbound and outbound reference wires are connected followed by the outbound reference
+     * wire being connected to a target that is an atomic component and child of the reference's parent composite. This
+     * wiring scenario occurs when a reference is configured with the local binding.
+     */
+    public void testConnectLocalReferenceBindingToAtomicComponentService() throws Exception {
+        createLocalReferenceToSiblingAtomicConfiguration();
+        connector.connect(reference);
+        InboundInvocationChain chain = referenceBinding.getInboundWire().getInvocationChains().get(operation);
+        Interceptor interceptor = chain.getHeadInterceptor();
+        MessageImpl msg = new MessageImpl();
+        msg.setTargetInvoker(new MockInvoker());
+        Message resp = interceptor.invoke(msg);
+        assertEquals(RESPONSE, resp.getBody());
+    }
 
     /**
      * Verifies the case where inbound and outbound reference wires are connected followed by the outbound reference
@@ -58,6 +76,31 @@ public class LocalReferenceWiringTestCase extends AbstractLocalWiringTestCase {
         }
     }
 
+    /**
+     * Verifies a connection to a service offered by a sibling composite of the reference's parent
+     *
+     * @throws Exception
+     */
+    public void testConnectLocalReferenceBindingToSiblingCompositeService() throws Exception {
+        createLocalReferenceToSiblingCompositeServiceConfiguration();
+        connector.connect(reference);
+        InboundInvocationChain chain = referenceBinding.getInboundWire().getInvocationChains().get(operation);
+        Interceptor interceptor = chain.getHeadInterceptor();
+        MessageImpl msg = new MessageImpl();
+        msg.setTargetInvoker(new MockInvoker());
+        Message resp = interceptor.invoke(msg);
+        assertEquals(RESPONSE, resp.getBody());
+    }
+
+    public void testConnectLocalReferenceBindingToSiblingCompositeServiceNoMatchingBinding() throws Exception {
+        createLocalReferenceToSiblingCompositeServiceConfigurationNoMatchingBinding();
+        try {
+            connector.connect(reference);
+            fail();
+        } catch (NoCompatibleBindingsException e) {
+            // expected
+        }
+    }
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -78,7 +121,7 @@ public class LocalReferenceWiringTestCase extends AbstractLocalWiringTestCase {
         EasyMock.replay(parent);
 
         service = createLocalService(topComposite);
-        reference = createLocalReference(parent);
+        reference = createLocalReference(parent, AbstractLocalWiringTestCase.TARGET_NAME);
     }
 
     private void createLocalReferenceToInvalidServiceConfiguration() throws Exception {
@@ -95,11 +138,82 @@ public class LocalReferenceWiringTestCase extends AbstractLocalWiringTestCase {
         EasyMock.expect(parent.getParent()).andReturn(topComposite);
         EasyMock.replay(parent);
 
-        service = createService(topComposite);
-        reference = createLocalReference(parent);
+        service = createService();
+        reference = createLocalReference(parent, AbstractLocalWiringTestCase.TARGET_NAME);
     }
 
-    protected Service createService(CompositeComponent parent) throws WireConnectException {
+    private void createLocalReferenceToSiblingCompositeServiceConfiguration() throws Exception {
+        final CompositeComponent sibling = EasyMock.createMock(CompositeComponent.class);
+        sibling.getService(TARGET_SERVICE);
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                return service;
+            }
+        });
+        EasyMock.replay(sibling);
+
+        CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
+        topComposite.getChild(TARGET);
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                return sibling;
+            }
+        });
+        EasyMock.replay(topComposite);
+
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getParent()).andReturn(topComposite);
+        EasyMock.replay(parent);
+
+        service = createLocalService(topComposite);
+        reference = createLocalReference(parent, TARGET_SERVICE_NAME);
+    }
+
+    private void createLocalReferenceToSiblingCompositeServiceConfigurationNoMatchingBinding() throws Exception {
+        final CompositeComponent sibling = EasyMock.createMock(CompositeComponent.class);
+        sibling.getService(TARGET_SERVICE);
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                return service;
+            }
+        });
+        EasyMock.replay(sibling);
+
+        CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
+        topComposite.getChild(TARGET);
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                return sibling;
+            }
+        });
+        EasyMock.replay(topComposite);
+
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getParent()).andReturn(topComposite);
+        EasyMock.replay(parent);
+
+        service = createService();
+        reference = createLocalReference(parent, TARGET_SERVICE_NAME);
+    }
+
+    private void createLocalReferenceToSiblingAtomicConfiguration() throws Exception {
+        final CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
+        topComposite.getChild(TARGET);
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                return atomicComponent;
+            }
+        });
+        EasyMock.replay(topComposite);
+
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getParent()).andReturn(topComposite).atLeastOnce();
+        EasyMock.replay(parent);
+        atomicComponent = createAtomicTarget();
+        reference = createLocalReference(parent, TARGET_SERVICE_NAME);
+    }
+
+    private Service createService() throws WireConnectException {
         QName qName = new QName("foo", "bar");
         ServiceBinding serviceBinding = new MockServiceBinding();
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);

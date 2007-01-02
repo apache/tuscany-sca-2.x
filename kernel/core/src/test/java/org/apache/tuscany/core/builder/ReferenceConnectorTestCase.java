@@ -60,7 +60,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         outboundChain.addInterceptor(new InvokerInterceptor());
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
-        outboundWire.setTargetName(FOO_TARGET);
+        outboundWire.setTargetName(TARGET_SERVICE_NAME);
         outboundWire.setContainer(source);
         outboundWire.addInvocationChain(operation, outboundChain);
 
@@ -102,7 +102,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         OutboundWire outboundWire = new OutboundWireImpl();
         outboundWire.setServiceContract(contract);
         outboundWire.setContainer(source);
-        outboundWire.setTargetName(FOO_TARGET);
+        outboundWire.setTargetName(TARGET_SERVICE_NAME);
         outboundWire.addInvocationChain(operation, outboundChain);
 
         ReferenceBinding referenceBinding = EasyMock.createMock(ReferenceBinding.class);
@@ -151,7 +151,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         OutboundInvocationChain sourceChain = new OutboundInvocationChainImpl(operation);
         OutboundWire sourceWire = new OutboundWireImpl();
         sourceWire.setServiceContract(contract);
-        sourceWire.setTargetName(FOO_TARGET);
+        sourceWire.setTargetName(TARGET_SERVICE_NAME);
         sourceWire.addInvocationChain(operation, sourceChain);
         sourceWire.setContainer(component);
         sourceWire.setContainer(source);
