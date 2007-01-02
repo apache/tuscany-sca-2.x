@@ -1,31 +1,26 @@
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
-import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
-import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
-import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
-import org.apache.tuscany.core.wire.OutboundWireImpl;
-import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.apache.tuscany.core.binding.local.LocalServiceBinding;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
+import org.apache.tuscany.core.implementation.composite.ServiceImpl;
+import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.InboundWireImpl;
+import org.apache.tuscany.core.wire.InvokerInterceptor;
+import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 
 /**
  * Verifies various wiring "scenarios" or paths through the connector
@@ -33,8 +28,8 @@ import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractLocalWiringTestCase extends AbstractConnectorImplTestCase {
-    protected static String TARGET = "target";
-    protected static QualifiedName TARGET_NAME = new QualifiedName(TARGET);
+    protected static final String TARGET = "target";
+    protected static final QualifiedName TARGET_NAME = new QualifiedName(TARGET);
     protected ReferenceBinding referenceBinding;
 
 
@@ -47,6 +42,7 @@ public abstract class AbstractLocalWiringTestCase extends AbstractConnectorImplT
      * chain for invocation testing without needing to wire the service to a target
      *
      * @throws org.apache.tuscany.core.builder.WireConnectException
+     *
      */
     protected Service createLocalService(CompositeComponent parent) throws WireConnectException {
         LocalServiceBinding serviceBinding = new LocalServiceBinding(TARGET, parent);

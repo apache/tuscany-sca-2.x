@@ -255,7 +255,7 @@ public class WireServiceExtensionTestCase extends TestCase {
     }
 
     private class MockReferenceBinding extends AbstractSCAObject implements ReferenceBinding {
-        private ServiceContract<?> BindingServiceContract;
+        private ServiceContract<?> bindingServiceContract;
         private InboundWire inboundWire;
         private OutboundWire outboundWire;
 
@@ -264,11 +264,11 @@ public class WireServiceExtensionTestCase extends TestCase {
         }
 
         public ServiceContract<?> getBindingServiceContract() {
-            return BindingServiceContract;
+            return bindingServiceContract;
         }
 
         public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
-            BindingServiceContract = bindingServiceContract;
+            this.bindingServiceContract = bindingServiceContract;
         }
 
         public void setReference(Reference reference) {
@@ -309,7 +309,7 @@ public class WireServiceExtensionTestCase extends TestCase {
     private class MockServiceBinding extends AbstractSCAObject implements ServiceBinding {
         private InboundWire inboundWire;
         private OutboundWire outboundWire;
-        private ServiceContract<?> BindingServiceContract;
+        private ServiceContract<?> bindingServiceContract;
 
 
         public MockServiceBinding() {
@@ -320,11 +320,11 @@ public class WireServiceExtensionTestCase extends TestCase {
         }
 
         public ServiceContract<?> getBindingServiceContract() {
-            return BindingServiceContract;
+            return bindingServiceContract;
         }
 
         public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
-            BindingServiceContract = bindingServiceContract;
+            this.bindingServiceContract = bindingServiceContract;
         }
 
         public InboundWire getInboundWire() {
