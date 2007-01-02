@@ -1,5 +1,6 @@
 package org.apache.tuscany.core.builder;
 
+import java.util.Collections;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -107,6 +108,16 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
             connector.connect(reference);
             fail();
         } catch (NoCompatibleBindingsException e) {
+            // expected
+        }
+    }
+
+    public void testConnectLocalReferenceBindingToInvalidTarget() throws Exception {
+        createLocalReferenceToInvalidTarget();
+        try {
+            connector.connect(reference);
+            fail();
+        } catch (InvalidTargetTypeException e) {
             // expected
         }
     }
@@ -220,6 +231,21 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         EasyMock.replay(parent);
         atomicComponent = createAtomicTarget();
         reference = createLocalReference(parent, TARGET_SERVICE_NAME);
+    }
+
+    private void createLocalReferenceToInvalidTarget() throws Exception {
+        CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
+        Reference reference = EasyMock.createNiceMock(Reference.class);
+        reference.getReferenceBindings();
+        EasyMock.expectLastCall().andReturn(Collections.emptyList());
+        EasyMock.replay(reference);
+        EasyMock.expect(topComposite.getChild(TARGET)).andReturn(reference);
+        EasyMock.replay(topComposite);
+
+        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(parent.getParent()).andReturn(topComposite);
+        EasyMock.replay(parent);
+        this.reference = createLocalReference(parent, TARGET_NAME);
     }
 
     private Service createService() throws WireConnectException {
