@@ -495,120 +495,14 @@ public class ConnectorImpl implements Connector {
     protected void connect(SCAObject source, OutboundWire sourceWire, SCAObject target) throws WiringException {
         assert sourceWire.getTargetName() != null;
         QualifiedName targetName = sourceWire.getTargetName();
-
         if (target instanceof AtomicComponent) {
-            AtomicComponent targetComponent = (AtomicComponent) target;
-            InboundWire targetWire = targetComponent.getInboundWire(targetName.getPortName());
-            if (targetWire == null) {
-                String sourceName = sourceWire.getContainer().getName();
-                String sourceReference = sourceWire.getReferenceName();
-                throw new TargetServiceNotFoundException("Target service not found",
-                    sourceName,
-                    sourceReference,
-                    targetName.getPartName(),
-                    targetName.getPortName());
-            }
-            checkIfWireable(sourceWire, targetWire);
-            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-            connect(sourceWire, targetWire, optimizable);
+            connect(source, sourceWire, (AtomicComponent) target);
         } else if (target instanceof Reference) {
-            InboundWire targetWire = null;
-            Reference reference = (Reference) target;
-            for (ReferenceBinding binding : reference.getReferenceBindings()) {
-                InboundWire candidate = binding.getInboundWire();
-                if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                    targetWire = candidate;
-                    break;
-                }
-            }
-            if (targetWire == null) {
-                throw new NoCompatibleBindingsException(source.getName(),
-                    targetName.getPartName(),
-                    targetName.getPortName());
-            }
-            checkIfWireable(sourceWire, targetWire);
-            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-            connect(sourceWire, targetWire, optimizable);
+            connect(source, sourceWire, (Reference) target);
         } else if (target instanceof CompositeComponent) {
-            CompositeComponent composite = (CompositeComponent) target;
-            InboundWire targetWire = null;
-            // target is a composite service, connect to it
-            if (source.isSystem()) {
-                Service service = composite.getSystemService(targetName.getPortName());
-                if (service != null) {
-                    for (ServiceBinding binding : service.getServiceBindings()) {
-                        InboundWire candidate = binding.getInboundWire();
-                        if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                            targetWire = candidate;
-                            break;
-                        }
-                    }
-                    if (targetWire == null) {
-                        throw new NoCompatibleBindingsException(source.getName(),
-                            targetName.getPartName(),
-                            targetName.getPortName());
-                    }
-                    Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                    Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
-                    if (sourceInterface.isAssignableFrom(targetInterface)) {
-                        target = service;
-                    } else {
-                        targetWire = null;
-                    }
-                }
-            } else {
-                Service service = composite.getService(targetName.getPortName());
-                if (service != null) {
-                    for (ServiceBinding binding : service.getServiceBindings()) {
-                        InboundWire candidate = binding.getInboundWire();
-                        if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                            targetWire = candidate;
-                            break;
-                        }
-                    }
-                    if (targetWire == null) {
-                        throw new NoCompatibleBindingsException(source.getName(),
-                            targetName.getPartName(),
-                            targetName.getPortName());
-                    }
-                    Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                    Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
-                    if (sourceInterface.isAssignableFrom(targetInterface)) {
-                        target = service;
-                    } else {
-                        targetWire = null;
-                    }
-                }
-            }
-            if (targetWire == null) {
-                String sourceName = sourceWire.getContainer().getName();
-                String sourceReference = sourceWire.getReferenceName();
-                throw new TargetServiceNotFoundException("Target service not found",
-                    sourceName,
-                    sourceReference,
-                    targetName.getPartName(),
-                    targetName.getPortName());
-            }
-            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-            connect(sourceWire, targetWire, optimizable);
+            connect(source, sourceWire, (CompositeComponent) target);
         } else if (target instanceof Service) {
-            InboundWire targetWire = null;
-            Service service = (Service) target;
-            for (ServiceBinding binding : service.getServiceBindings()) {
-                InboundWire candidate = binding.getInboundWire();
-                if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                    targetWire = candidate;
-                    break;
-                }
-            }
-            if (targetWire == null) {
-                throw new NoCompatibleBindingsException(source.getName(),
-                    targetName.getPartName(),
-                    targetName.getPortName());
-            }
-            checkIfWireable(sourceWire, targetWire);
-            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-            connect(sourceWire, targetWire, optimizable);
+            connect(source, sourceWire, (Service) target);
         } else if (target == null) {
             String sourceName = sourceWire.getContainer().getName();
             String sourceReference = sourceWire.getReferenceName();
@@ -626,6 +520,131 @@ public class ConnectorImpl implements Connector {
                 targetName.getPartName(),
                 targetName.getPortName());
         }
+    }
+
+    protected void connect(SCAObject source, OutboundWire sourceWire, AtomicComponent target)
+        throws WiringException {
+        assert sourceWire.getTargetName() != null;
+        QualifiedName targetName = sourceWire.getTargetName();
+
+        InboundWire targetWire = target.getInboundWire(targetName.getPortName());
+        if (targetWire == null) {
+            String sourceName = sourceWire.getContainer().getName();
+            String sourceReference = sourceWire.getReferenceName();
+            throw new TargetServiceNotFoundException("Target service not found",
+                sourceName,
+                sourceReference,
+                targetName.getPartName(),
+                targetName.getPortName());
+        }
+        checkIfWireable(sourceWire, targetWire);
+        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+        connect(sourceWire, targetWire, optimizable);
+    }
+
+    protected void connect(SCAObject source, OutboundWire sourceWire, Reference target) throws WiringException {
+        assert sourceWire.getTargetName() != null;
+        QualifiedName targetName = sourceWire.getTargetName();
+        InboundWire targetWire = null;
+        for (ReferenceBinding binding : target.getReferenceBindings()) {
+            InboundWire candidate = binding.getInboundWire();
+            if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
+                targetWire = candidate;
+                break;
+            }
+        }
+        if (targetWire == null) {
+            throw new NoCompatibleBindingsException(source.getName(),
+                targetName.getPartName(),
+                targetName.getPortName());
+        }
+        checkIfWireable(sourceWire, targetWire);
+        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+        connect(sourceWire, targetWire, optimizable);
+    }
+
+    protected void connect(SCAObject source, OutboundWire sourceWire, Service target) throws WiringException {
+        assert sourceWire.getTargetName() != null;
+        QualifiedName targetName = sourceWire.getTargetName();
+        InboundWire targetWire = null;
+        for (ServiceBinding binding : target.getServiceBindings()) {
+            InboundWire candidate = binding.getInboundWire();
+            if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
+                targetWire = candidate;
+                break;
+            }
+        }
+        if (targetWire == null) {
+            throw new NoCompatibleBindingsException(source.getName(),
+                targetName.getPartName(),
+                targetName.getPortName());
+        }
+        checkIfWireable(sourceWire, targetWire);
+        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+        connect(sourceWire, targetWire, optimizable);
+    }
+
+    protected void connect(SCAObject source, OutboundWire sourceWire, CompositeComponent target)
+        throws WiringException {
+        assert sourceWire.getTargetName() != null;
+        QualifiedName targetName = sourceWire.getTargetName();
+        InboundWire targetWire = null;
+        // target is a composite service, connect to it
+        Service service;
+        if (source.isSystem()) {
+            service = target.getSystemService(targetName.getPortName());
+            if (service != null) {
+                for (ServiceBinding binding : service.getServiceBindings()) {
+                    InboundWire candidate = binding.getInboundWire();
+                    if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
+                        targetWire = candidate;
+                        break;
+                    }
+                }
+                if (targetWire == null) {
+                    throw new NoCompatibleBindingsException(source.getName(),
+                        targetName.getPartName(),
+                        targetName.getPortName());
+                }
+                Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                if (!sourceInterface.isAssignableFrom(targetInterface)) {
+                    targetWire = null;
+                }
+            }
+        } else {
+            service = target.getService(targetName.getPortName());
+            if (service != null) {
+                for (ServiceBinding binding : service.getServiceBindings()) {
+                    InboundWire candidate = binding.getInboundWire();
+                    if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
+                        targetWire = candidate;
+                        break;
+                    }
+                }
+                if (targetWire == null) {
+                    throw new NoCompatibleBindingsException(source.getName(),
+                        targetName.getPartName(),
+                        targetName.getPortName());
+                }
+                Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
+                Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
+                if (!sourceInterface.isAssignableFrom(targetInterface)) {
+                    targetWire = null;
+                }
+            }
+        }
+        if (targetWire == null) {
+            String sourceName = sourceWire.getContainer().getName();
+            String sourceReference = sourceWire.getReferenceName();
+            throw new TargetServiceNotFoundException("Target service not found",
+                sourceName,
+                sourceReference,
+                targetName.getPartName(),
+                targetName.getPortName());
+        }
+        boolean optimizable = isOptimizable(source.getScope(), service.getScope());
+        connect(sourceWire, targetWire, optimizable);
     }
 
     protected void autowire(OutboundWire outboundWire, CompositeComponent parent)
