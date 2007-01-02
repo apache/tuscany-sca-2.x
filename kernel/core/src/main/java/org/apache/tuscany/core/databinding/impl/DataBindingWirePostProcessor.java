@@ -22,20 +22,18 @@ package org.apache.tuscany.core.databinding.impl;
 import java.util.Map;
 import java.util.Set;
 
-import org.osoa.sca.annotations.Constructor;
-
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WirePostProcessorExtension;
+import org.osoa.sca.annotations.Constructor;
 
 /**
  * This processor is responsible to add an interceptor to invocation chain if the source and target operations have
@@ -58,8 +56,8 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
                 getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
-            String sourceDataBinding = getDataBinding(sourceOperation);
-            String targetDataBinding = getDataBinding(targetOperation);
+            String sourceDataBinding = sourceOperation.getDataBinding();
+            String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null || targetDataBinding == null
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side because multiple
@@ -89,8 +87,8 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
             Operation<?> targetOperation =
                 getTargetOperation(source.getTargetCallbackInvocationChains().keySet(), sourceOperation
                     .getName());
-            String sourceDataBinding = getDataBinding(sourceOperation);
-            String targetDataBinding = getDataBinding(targetOperation);
+            String sourceDataBinding = sourceOperation.getDataBinding();
+            String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null || targetDataBinding == null
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side because multiple
@@ -114,8 +112,8 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
             Operation<?> sourceOperation = entry.getKey();
             Operation<?> targetOperation =
                 getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
-            String sourceDataBinding = getDataBinding(sourceOperation);
-            String targetDataBinding = getDataBinding(targetOperation);
+            String sourceDataBinding = sourceOperation.getDataBinding();
+            String targetDataBinding = targetOperation.getDataBinding();
             if (sourceDataBinding == null || targetDataBinding == null
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side
@@ -145,15 +143,6 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
             }
         }
         return null;
-    }
-
-    private String getDataBinding(Operation<?> operation) {
-        String dataBinding = operation.getDataBinding();
-        if (dataBinding == null) {
-            ServiceContract<?> serviceContract = operation.getServiceContract();
-            dataBinding = serviceContract.getDataBinding();
-        }
-        return dataBinding;
     }
 
 }
