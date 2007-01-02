@@ -29,7 +29,11 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class WireConnectException extends WiringException {
 
-    protected WireConnectException(String message,
+    public WireConnectException(String message) {
+        super(message);
+    }
+
+    public WireConnectException(String message,
                                    String sourceName,
                                    String referenceName,
                                    String targetName,

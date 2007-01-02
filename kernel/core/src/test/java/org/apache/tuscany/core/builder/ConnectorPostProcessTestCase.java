@@ -21,14 +21,14 @@ package org.apache.tuscany.core.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
-import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
@@ -58,7 +58,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
         WireService wireService = createMock(WireService.class);
         wireService.checkCompatibility((ServiceContract<?>) EasyMock.anyObject(),
             (ServiceContract<?>) EasyMock.anyObject(), EasyMock.eq(false));
-        expectLastCall().anyTimes();    
+        expectLastCall().anyTimes();
         replay(wireService);
         ConnectorImpl connector = new ConnectorImpl(wireService, registry, null, null);
         connector.connect(iwire, owire, false);
@@ -66,9 +66,13 @@ public class ConnectorPostProcessTestCase extends TestCase {
     }
 
     public void testOutboundToInboundPostProcessCalled() throws Exception {
-        Component source = createNiceMock(Component.class);
+        AtomicComponent source = createNiceMock(AtomicComponent.class);
         expect(source.getName()).andReturn("Component");
         replay(source);
+
+        AtomicComponent target = createNiceMock(AtomicComponent.class);
+        expect(target.getName()).andReturn("Component");
+        replay(target);
 
         OutboundWire owire = createNiceMock(OutboundWire.class);
         EasyMock.expect(owire.getContainer()).andReturn(source);
@@ -80,6 +84,7 @@ public class ConnectorPostProcessTestCase extends TestCase {
         replay(owire);
         InboundWire iwire = createNiceMock(InboundWire.class);
         expect(iwire.getSourceCallbackInvocationChains("Component")).andReturn(chains);
+        EasyMock.expect(iwire.getContainer()).andReturn(target);
         replay(iwire);
         WirePostProcessorRegistry registry = createMock(WirePostProcessorRegistry.class);
         registry.process(EasyMock.eq(owire), EasyMock.eq(iwire));

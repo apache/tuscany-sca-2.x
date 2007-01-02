@@ -106,7 +106,10 @@ public class ConnectorImpl implements Connector {
                 postProcessorRegistry.process(sourceWire, targetWire);
             }
             return;
-        } else if (optimizable && sourceWire.getContainer().isSystem() && targetWire.getContainer().isSystem()) {
+        } else if (optimizable && sourceWire.getContainer() != null
+            && sourceWire.getContainer().isSystem()
+            && targetWire.getContainer() != null
+            && targetWire.getContainer().isSystem()) {
             // system services are directly wired withut invocation chains
             // JFM FIXME test this
             sourceWire.setTargetWire(targetWire);
@@ -137,7 +140,9 @@ public class ConnectorImpl implements Connector {
     public void connect(OutboundWire sourceWire, InboundWire targetWire, boolean optimizable)
         throws WiringException {
         SCAObject source = sourceWire.getContainer();
+        assert source != null;
         SCAObject target = targetWire.getContainer();
+        assert target != null;
         ServiceContract contract = sourceWire.getServiceContract();
         Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
@@ -150,7 +155,11 @@ public class ConnectorImpl implements Connector {
                 postProcessorRegistry.process(sourceWire, targetWire);
             }
             return;
-        } else if (optimizable && sourceWire.getContainer().isSystem() && targetWire.getContainer().isSystem()) {
+        } else if (optimizable
+            && sourceWire.getContainer() != null
+            && sourceWire.getContainer().isSystem()
+            && targetWire.getContainer() != null 
+            && targetWire.getContainer().isSystem()) {
             // JFM FIXME test this
             sourceWire.setTargetWire(targetWire);
             return;
@@ -309,9 +318,11 @@ public class ConnectorImpl implements Connector {
     protected void connect(OutboundInvocationChain sourceChain,
                            InboundInvocationChain targetChain,
                            TargetInvoker invoker,
-                           boolean nonBlocking) {
+                           boolean nonBlocking) throws WireConnectException {
         Interceptor head = targetChain.getHeadInterceptor();
-        assert head != null;
+        if (head == null) {
+            throw new WireConnectException("Inbound chain must contain at least one interceptor");
+        }
         if (nonBlocking) {
             sourceChain.setTargetInterceptor(new NonBlockingBridgingInterceptor(scheduler, workContext, head));
         } else {
@@ -328,9 +339,14 @@ public class ConnectorImpl implements Connector {
      * @param sourceChain the source chain to connect
      * @param targetChain the target chain to connect
      */
-    protected void connect(InboundInvocationChain sourceChain, OutboundInvocationChain targetChain) {
+    protected void connect(InboundInvocationChain sourceChain, OutboundInvocationChain targetChain)
+        throws WireConnectException {
+        Interceptor head = targetChain.getHeadInterceptor();
+        if (head == null) {
+            throw new WireConnectException("Outbound chain must contain at least one interceptor");
+        }
         // invocations from inbound to outbound chains are always synchronous as they occur in services and references
-        sourceChain.addInterceptor(new SynchronousBridgingInterceptor(targetChain.getHeadInterceptor()));
+        sourceChain.addInterceptor(new SynchronousBridgingInterceptor(head));
     }
 
     /**
@@ -341,6 +357,7 @@ public class ConnectorImpl implements Connector {
      */
     private void handleService(Service service) throws WiringException {
         CompositeComponent parent = service.getParent();
+        assert parent != null;
         for (ServiceBinding binding : service.getServiceBindings()) {
             InboundWire inboundWire = binding.getInboundWire();
             OutboundWire outboundWire = binding.getOutboundWire();
@@ -361,6 +378,7 @@ public class ConnectorImpl implements Connector {
 
     private void handleReference(Reference reference) throws WiringException {
         CompositeComponent parent = reference.getParent();
+        assert parent != null;
         for (ReferenceBinding binding : reference.getReferenceBindings()) {
             InboundWire inboundWire = binding.getInboundWire();
             Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
@@ -391,7 +409,7 @@ public class ConnectorImpl implements Connector {
             if (binding instanceof LocalReferenceBinding) {
                 String targetName = outboundWire.getTargetName().getPartName();
                 String serviceName = outboundWire.getTargetName().getPortName();
-                // A reference configured with the local binding is alwaysconnected to a target that is a sibling
+                // A reference configured with the local binding is always connected to a target that is a sibling
                 // of the reference's parent composite.
                 parent = parent.getParent();
                 if (parent == null) {
@@ -402,7 +420,7 @@ public class ConnectorImpl implements Connector {
                         serviceName);
                 }
                 SCAObject target = parent.getChild(targetName);
-                connect(parent, outboundWire, target);
+                connect(reference, outboundWire, target);
             }
 
         }
@@ -410,6 +428,7 @@ public class ConnectorImpl implements Connector {
 
     private void handleAtomic(AtomicComponent sourceComponent) throws WiringException {
         CompositeComponent parent = sourceComponent.getParent();
+        assert parent != null;
         // connect outbound wires for component references to their targets
         for (List<OutboundWire> referenceWires : sourceComponent.getOutboundWires().values()) {
             for (OutboundWire outboundWire : referenceWires) {
@@ -569,6 +588,25 @@ public class ConnectorImpl implements Connector {
                     targetName.getPartName(),
                     targetName.getPortName());
             }
+            boolean optimizable = isOptimizable(source.getScope(), target.getScope());
+            connect(sourceWire, targetWire, optimizable);
+        } else if (target instanceof Service) {
+            // xcv
+            InboundWire targetWire = null;
+            Service service = (Service) target;
+            for (ServiceBinding binding : service.getServiceBindings()) {
+                InboundWire candidate = binding.getInboundWire();
+                if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
+                    targetWire = candidate;
+                    break;
+                }
+            }
+            if (targetWire == null) {
+                throw new NoCompatibleBindingsException(source.getName(),
+                    targetName.getPartName(),
+                    targetName.getPortName());
+            }
+            checkIfWireable(sourceWire, targetWire);
             boolean optimizable = isOptimizable(source.getScope(), target.getScope());
             connect(sourceWire, targetWire, optimizable);
         } else if (target == null) {
