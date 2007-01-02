@@ -299,6 +299,10 @@ public class WSDLOperation {
             if (element == null) {
                 return null;
             }
+            if(element.isNillable()) {
+                // Wrapper element cannot be nillable
+                return null;
+            }
             XmlSchemaType type = element.getSchemaType();
             if (type == null) {
                 String qName = element.getQName().toString();
@@ -330,7 +334,7 @@ public class WSDLOperation {
                     return null;
                 }
                 XmlSchemaElement childElement = (XmlSchemaElement) schemaObject;
-                if (childElement.getName() == null || childElement.getRefName() != null || childElement.isNillable()) {
+                if (childElement.getName() == null || childElement.getRefName() != null) {
                     return null;
                 }
                 // TODO: Do we support maxOccurs >1 ?
