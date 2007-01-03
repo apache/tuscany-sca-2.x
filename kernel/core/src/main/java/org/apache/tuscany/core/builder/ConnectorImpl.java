@@ -69,18 +69,8 @@ public class ConnectorImpl implements Connector {
     private WireService wireService;
     private WorkContext workContext;
     private WorkScheduler scheduler;
-    private boolean optimizeWires = true;
 
     public ConnectorImpl() {
-    }
-
-    /**
-     * Constructor for testing
-     *
-     * @param optimizeWires if false, turns wire optimizations off
-     */
-    public ConnectorImpl(boolean optimizeWires) {
-        this.optimizeWires = optimizeWires;
     }
 
     @Constructor
@@ -114,8 +104,7 @@ public class ConnectorImpl implements Connector {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
             return;
-        } else if (optimizeWires
-            && optimizable
+        } else if (optimizable
             && WireUtils.isOptimizable(sourceWire)
             && WireUtils.isOptimizable(targetWire)) {
             if (postProcessorRegistry != null) {
@@ -163,8 +152,7 @@ public class ConnectorImpl implements Connector {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
             return;
-        } else if (optimizeWires
-            && optimizable
+        } else if (optimizable
             && WireUtils.isOptimizable(sourceWire)
             && WireUtils.isOptimizable(targetWire)) {
             if (postProcessorRegistry != null) {
