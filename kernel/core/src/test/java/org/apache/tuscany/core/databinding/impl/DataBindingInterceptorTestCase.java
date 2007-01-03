@@ -19,8 +19,6 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +28,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.Mediator;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
@@ -44,17 +43,9 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 
 /**
- * 
+ * @version $Rev$ $Date$
  */
 public class DataBindingInterceptorTestCase extends TestCase {
-    private DataBindingInteceptor interceptor;
-
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     @SuppressWarnings("unchecked")
     public final void testInvoke() {
@@ -88,7 +79,7 @@ public class DataBindingInterceptorTestCase extends TestCase {
         EasyMock.expect(outboundWire.getContainer()).andReturn(component);
         EasyMock.replay(outboundWire, inboundWire, composite, component);
 
-        interceptor = new DataBindingInteceptor(outboundWire, operation1, inboundWire, operation2);
+        DataBindingInteceptor interceptor = new DataBindingInteceptor(outboundWire, operation1, operation2);
         Mediator mediator = createMock(Mediator.class);
         Object[] source = new Object[]{"<foo>bar</foo>"};
         Foo foo = new Foo();
@@ -120,6 +111,10 @@ public class DataBindingInterceptorTestCase extends TestCase {
         String result = (String) msg.getBody();
         Assert.assertEquals(source[0], result);
         EasyMock.verify(mediator, msg, next);
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
     }
 
     private static class Foo {

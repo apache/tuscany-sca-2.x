@@ -58,13 +58,16 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
+            if (sourceDataBinding == null && targetDataBinding == null) {
+                continue;
+            }
             if (sourceDataBinding == null || targetDataBinding == null
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
@@ -89,13 +92,16 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                     .getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
+            if (sourceDataBinding == null && targetDataBinding == null) {
+                continue;
+            }
             if (sourceDataBinding == null || targetDataBinding == null
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side because multiple
                 // references can be wired
                 // to the same service
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, targetOperation);
                 interceptor.setMediator(mediator);
                 entry.getValue().addInterceptor(0, interceptor);
             }
@@ -114,11 +120,14 @@ public class DataBindingWirePostProcessor extends WirePostProcessorExtension {
                 getTargetOperation(target.getInvocationChains().keySet(), sourceOperation.getName());
             String sourceDataBinding = sourceOperation.getDataBinding();
             String targetDataBinding = targetOperation.getDataBinding();
+            if (sourceDataBinding == null && targetDataBinding == null) {
+                continue;
+            }
             if (sourceDataBinding == null || targetDataBinding == null
                 || !sourceDataBinding.equals(targetDataBinding)) {
                 // Add the interceptor to the source side
                 DataBindingInteceptor interceptor =
-                    new DataBindingInteceptor(source, sourceOperation, target, targetOperation);
+                    new DataBindingInteceptor(source, sourceOperation, targetOperation);
                 interceptor.setMediator(mediator);
                 if (isReference) {
                     // FIXME: We need a better way to position the interceptors
