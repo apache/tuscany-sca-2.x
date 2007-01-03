@@ -39,6 +39,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     private WireService wireService;
     // the cache of proxy interface method to operation mappings
     private Map<Method, OutboundChainHolder> mappings;
+    //private boolean optimizable;
 
     /**
      * Constructor.
@@ -57,6 +58,15 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     }
 
     public T getInstance() throws ObjectCreationException {
+// JFM TODO enable
+//        if (optimizable || wire.isOptimizable()) {
+//            optimizable = true;
+//            try {
+//                return interfaze.cast(wire.getTargetService());
+//            } catch (TargetResolutionException e) {
+//                throw new ObjectCreationException(e);
+//            }
+//        }
         // clone the cached mappings
         Map<Method, OutboundChainHolder> newChains = new HashMap<Method, OutboundChainHolder>(mappings.size());
         for (Map.Entry<Method, OutboundChainHolder> entry : mappings.entrySet()) {

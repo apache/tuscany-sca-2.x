@@ -19,11 +19,11 @@
 package org.apache.tuscany.core.wire;
 
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -65,6 +65,11 @@ public class NonBlockingBridgingInterceptorTestCase extends TestCase {
         interceptor.invoke(msg);
         verify(context);
         verify(next);
+    }
+
+    public void testOptimizable() {
+        NonBlockingBridgingInterceptor interceptor = new NonBlockingBridgingInterceptor(null, null);
+        assertFalse(interceptor.isOptimizable());
     }
 
 }

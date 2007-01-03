@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.util.Collections;
-
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
@@ -60,14 +58,14 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
 
     public void testOutboundToInboundOptimization() throws Exception {
         AtomicComponent container = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.expect(container.isSystem()).andReturn(true);
+        EasyMock.replay(container);
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        outboundWire.getInvocationChains();
-        EasyMock.expectLastCall().andReturn(Collections.emptyMap());
-        outboundWire.setTargetWire(inboundWire);
+        outboundWire.setTargetWire(EasyMock.eq(inboundWire));
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(null);
-        EasyMock.expect(outboundWire.getContainer()).andReturn(container);
+        EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.replay(outboundWire);
 
         connector.connect(outboundWire, inboundWire, true);

@@ -20,7 +20,6 @@ package org.apache.tuscany.core.wire;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -150,21 +149,9 @@ public class OutboundWireImpl implements OutboundWire {
         for (OutboundInvocationChain chain : chains.values()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
-                while (current != null && current != chain.getTargetInterceptor()) {
-                    if (!current.isOptimizable()) {
-                        return false;
-                    }
-                    current = current.getNext();
+                if (current == null) {
+                    break;
                 }
-            }
-        }
-
-        for (InboundInvocationChain chain : callbackTargetChains.values()) {
-            if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {
-                return false;
-            }
-            if (chain.getHeadInterceptor() != null) {
-                Interceptor current = chain.getHeadInterceptor();
                 while (current != null) {
                     if (!current.isOptimizable()) {
                         return false;
@@ -173,8 +160,8 @@ public class OutboundWireImpl implements OutboundWire {
                 }
             }
         }
-
-        return true;
+        // if there is a callback, the wire is never optimizable since the callback target needs to be disambiguated
+        return callbackTargetChains.isEmpty();
     }
 
     public SCAObject getContainer() {

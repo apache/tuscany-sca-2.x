@@ -133,12 +133,16 @@ public abstract class WireServiceExtension implements WireService {
             }
             outboundWire.addInvocationChain(operation, chain);
         }
-
-        // Notice that we skip inboundWire.setCallbackReferenceName
-        // First, an inbound wire's callbackReferenceName is only retrieved by JavaAtomicComponent
-        // to create a callback injector based on the callback reference member; a composite reference
-        // should not need to do that. Second, a reference definition does not have a callback reference name
-        // like a service definition does
+        // Add target callback chain to outbound wire
+        if (contract.getCallbackName() != null) {
+            outboundWire.setCallbackInterface(contract.getCallbackClass());
+            for (Operation<?> operation : contract.getCallbackOperations().values()) {
+                InboundInvocationChain callbackTargetChain = createInboundChain(operation);
+                // TODO handle policy
+                callbackTargetChain.addInterceptor(new InvokerInterceptor());
+                outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
+            }
+        }
         referenceBinding.setInboundWire(inboundWire);
         referenceBinding.setOutboundWire(outboundWire);
     }

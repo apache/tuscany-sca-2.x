@@ -99,21 +99,17 @@ public class ConnectorImpl implements Connector {
         throws WiringException {
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
-        if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
+        if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
+            return;
+        } else if (optimizable && sourceWire.isOptimizable() && targetWire.isOptimizable()) {
             if (postProcessorRegistry != null) {
                 // run wire post-processors
                 postProcessorRegistry.process(sourceWire, targetWire);
             }
-            return;
-        } else if (optimizable && sourceWire.getContainer() != null
-            && sourceWire.getContainer().isSystem()
-            && targetWire.getContainer() != null
-            && targetWire.getContainer().isSystem()) {
-            // system services are directly wired withut invocation chains
-            // JFM FIXME test this
-            sourceWire.setTargetWire(targetWire);
-            return;
+            if (sourceWire.isOptimizable() && targetWire.isOptimizable()) {
+                sourceWire.setTargetWire(targetWire);
+            }
         }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
             // match invocation chains
@@ -123,6 +119,7 @@ public class ConnectorImpl implements Connector {
             }
             connect(inboundChain, outboundChain);
         }
+
         if (postProcessorRegistry != null) {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
@@ -146,23 +143,18 @@ public class ConnectorImpl implements Connector {
         ServiceContract contract = sourceWire.getServiceContract();
         Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         // perform optimization, if possible
-        // REVIEW: (kentaminator@gmail.com) shouldn't this check whether the interceptors in the
-        // source & target chains are marked as optimizable?  (and if so, optimize them away?)
-        if (optimizable && sourceWire.getInvocationChains().isEmpty() && targetChains.isEmpty()) {
+        if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
+            return;
+        } else if (optimizable && sourceWire.isOptimizable() && targetWire.isOptimizable()) {
             if (postProcessorRegistry != null) {
                 // run wire post-processors
                 postProcessorRegistry.process(sourceWire, targetWire);
             }
-            return;
-        } else if (optimizable
-            && sourceWire.getContainer() != null
-            && sourceWire.getContainer().isSystem()
-            && targetWire.getContainer() != null
-            && targetWire.getContainer().isSystem()) {
-            // JFM FIXME test this
-            sourceWire.setTargetWire(targetWire);
-            return;
+            if (sourceWire.isOptimizable() && targetWire.isOptimizable()) {
+                // JFM FIXME test this
+                sourceWire.setTargetWire(targetWire);
+            }
         }
         // match outbound to inbound chains
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
@@ -263,42 +255,38 @@ public class ConnectorImpl implements Connector {
                         e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
-            } else if (source instanceof Reference) {
-                Reference reference = (Reference) source;
+            } else if (source instanceof ReferenceBinding) {
+                //Reference reference = (Reference) source;
+                ReferenceBinding binding = (ReferenceBinding) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
-                for (ReferenceBinding binding : reference.getReferenceBindings()) {
-                    // FIXME JFM why is this only specific to local bindings and not generalized to all bindings?
-                    if (binding instanceof LocalReferenceBinding) {
-                        TargetInvoker invoker;
-                        try {
-                            invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
-                        } catch (TargetInvokerCreationException e) {
-                            throw new WireConnectException("Error connecting source and target",
-                                sourceWire,
-                                targetWire,
-                                e);
-                        }
-                        connect(outboundChain, inboundChain, invoker, false);
-                    }
+                TargetInvoker invoker;
+                try {
+                    invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
+                } catch (TargetInvokerCreationException e) {
+                    throw new WireConnectException("Error connecting source and target",
+                        sourceWire,
+                        targetWire,
+                        e);
                 }
-            } else if (source instanceof Service) {
-                Service service = (Service) source;
+                connect(outboundChain, inboundChain, invoker, false);
+            } else if (source instanceof ServiceBinding) {
+                ServiceBinding binding = (ServiceBinding) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
-                for (ServiceBinding binding : service.getServiceBindings()) {
-                    TargetInvoker invoker;
-                    try {
-                        invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
-                    } catch (TargetInvokerCreationException e) {
-                        String targetName = sourceWire.getContainer().getName();
-                        throw new WireConnectException("Error processing callback wire",
-                            null,
-                            null,
-                            targetName,
-                            null,
-                            e);
-                    }
-                    connect(outboundChain, inboundChain, invoker, false);
+                TargetInvoker invoker;
+                try {
+                    invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = sourceWire.getContainer().getName();
+                    throw new WireConnectException("Error processing callback wire",
+                        null,
+                        null,
+                        targetName,
+                        null,
+                        e);
                 }
+                connect(outboundChain, inboundChain, invoker, false);
+            } else {
+                throw new AssertionError();
             }
         }
         if (postProcessorRegistry != null) {
@@ -427,7 +415,7 @@ public class ConnectorImpl implements Connector {
                         targetName,
                         serviceName);
                 }
-                connect(reference, outboundWire, target);
+                connect(binding, outboundWire, target);
             }
 
         }
