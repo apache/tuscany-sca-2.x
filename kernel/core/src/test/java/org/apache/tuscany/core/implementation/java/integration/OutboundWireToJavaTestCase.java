@@ -177,7 +177,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
 
     private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
                                                               InvalidServiceContractException, WiringException {
-        ConnectorImpl connector = new ConnectorImpl();
+        ConnectorImpl connector = new ConnectorImpl(false);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(scope);

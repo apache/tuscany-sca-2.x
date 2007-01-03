@@ -26,6 +26,7 @@ import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
@@ -86,6 +87,55 @@ public final class WireUtils {
             chains.put(method, new OutboundChainHolder(entry.getValue()));
         }
         return chains;
+    }
+
+    /**
+     * Determines if the given wire is optimizable, i.e. its invocation chains may be bypassed during an invocation.
+     * This is typically calculated during the connect phase to optimize away invocation chains.
+     *
+     * @param wire the wire
+     * @return true if the wire is optimizable
+     */
+    public static boolean isOptimizable(OutboundWire wire) {
+
+        for (OutboundInvocationChain chain : wire.getInvocationChains().values()) {
+            if (chain.getHeadInterceptor() != null) {
+                Interceptor current = chain.getHeadInterceptor();
+                if (current == null) {
+                    break;
+                }
+                while (current != null) {
+                    if (!current.isOptimizable()) {
+                        return false;
+                    }
+                    current = current.getNext();
+                }
+            }
+        }
+        // if there is a callback, the wire is never optimizable since the callback target needs to be disambiguated
+        return wire.getTargetCallbackInvocationChains().isEmpty();
+    }
+
+    /**
+     * Determines if the given wire is optimizable, i.e. its invocation chains may be bypassed during an invocation.
+     * This is typically calculated during the connect phase to optimize away invocation chains.
+     *
+     * @param wire the wire
+     * @return true if the wire is optimizable
+     */
+    public static boolean isOptimizable(InboundWire wire) {
+        for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
+            if (chain.getHeadInterceptor() != null) {
+                Interceptor current = chain.getHeadInterceptor();
+                while (current != null) {
+                    if (!current.isOptimizable()) {
+                        return false;
+                    }
+                    current = current.getNext();
+                }
+            }
+        }
+        return true;
     }
 
 }

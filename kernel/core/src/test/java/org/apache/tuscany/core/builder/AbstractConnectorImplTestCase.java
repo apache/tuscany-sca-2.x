@@ -59,7 +59,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        connector = new ConnectorImpl();
+        connector = new ConnectorImpl(false);
         contract = new JavaServiceContract(AbstractConnectorImplTestCase.Foo.class);
         operation = new Operation<Type>("bar", null, null, null);
     }

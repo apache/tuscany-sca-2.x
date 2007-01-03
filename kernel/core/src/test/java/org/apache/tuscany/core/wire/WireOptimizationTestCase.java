@@ -18,21 +18,18 @@
  */
 package org.apache.tuscany.core.wire;
 
-import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
-
 import java.lang.reflect.Type;
 
 import org.apache.tuscany.spi.model.Operation;
+import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 /**
  * Verifies wire optimization analysis
@@ -51,7 +48,7 @@ public class WireOptimizationTestCase extends TestCase {
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertTrue(wire.isOptimizable());
+        assertTrue(WireUtils.isOptimizable(wire));
     }
 
     public void testSourceWireNonInterceptorOptimization() throws Exception {
@@ -59,7 +56,7 @@ public class WireOptimizationTestCase extends TestCase {
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
+        assertFalse(WireUtils.isOptimizable(wire));
     }
 
     public void testTargetWireInterceptorOptimization() throws Exception {
@@ -67,7 +64,7 @@ public class WireOptimizationTestCase extends TestCase {
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertTrue(wire.isOptimizable());
+        assertTrue(WireUtils.isOptimizable(wire));
     }
 
     public void testTargetWireNonInterceptorOptimization() throws Exception {
@@ -75,18 +72,7 @@ public class WireOptimizationTestCase extends TestCase {
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
-    }
-
-    public void testTargetWireNonTargetInvokerOptimization() throws Exception {
-        InboundWire wire = new InboundWireImpl();
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
-        EasyMock.replay(invoker);
-        invoker.setCacheable(false);
-        chain.setTargetInvoker(invoker);
-        wire.addInvocationChain(operation, chain);
-        assertFalse(wire.isOptimizable());
+        assertFalse(WireUtils.isOptimizable(wire));
     }
 
     protected void tearDown() throws Exception {
