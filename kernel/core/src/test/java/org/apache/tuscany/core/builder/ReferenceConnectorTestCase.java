@@ -66,7 +66,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expect(referenceBinding.createTargetInvoker(contract, operation)).andReturn(null);
         EasyMock.expect(referenceBinding.getInboundWire()).andReturn(inboundWire);
         EasyMock.expect(referenceBinding.getOutboundWire()).andReturn(outboundWire);
-        EasyMock.expect(referenceBinding.isSystem()).andReturn(false);
+        EasyMock.expect(referenceBinding.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.replay(referenceBinding);
         inboundWire.setContainer(referenceBinding);
         outboundWire.setContainer(referenceBinding);

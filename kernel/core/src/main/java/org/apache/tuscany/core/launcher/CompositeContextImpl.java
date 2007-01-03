@@ -81,6 +81,14 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         } else {
             wire = getInboundWire(child, name, qName.getPortName());
         }
+        // TODO JFM enable
+//        if (wire.isOptimizable()) {
+//            try {
+//                return serviceInterface.cast(wire.getTargetService());
+//            } catch (TargetResolutionException e) {
+//                throw new ServiceRuntimeException(e);
+//            }
+//        }
         return wireService.createProxy(serviceInterface, wire);
     }
 
@@ -103,7 +111,7 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
     public ServiceReference newSession(String arg0, Object arg1) {
         throw new UnsupportedOperationException();
     }
-    
+
     private InboundWire getInboundWire(SCAObject child, String name, String serviceName) {
         InboundWire wire = null;
         if (child instanceof AtomicComponent) {

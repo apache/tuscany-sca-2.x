@@ -86,6 +86,7 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         // create source component mock
         JavaAtomicComponent source = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(source.getName()).andReturn("source").atLeastOnce();
+        EasyMock.expect(source.isSystem()).andReturn(false).atLeastOnce();
         EasyMock.replay(source);
 
         owire = MockFactory.createOutboundWire("foo", Foo.class);

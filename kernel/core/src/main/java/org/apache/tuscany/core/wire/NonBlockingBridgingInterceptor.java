@@ -101,7 +101,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
     }
 
     public boolean isOptimizable() {
-        return true;
+        return false;
     }
 
     private static class ContextBinder extends SCA {

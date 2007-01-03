@@ -44,8 +44,7 @@ import org.easymock.EasyMock;
 public class CompositeComponentImplSystemWireTestCase extends TestCase {
 
     /**
-     * Verifies system serviceBindings in a CompositeComponentImpl are wired during the parent composite's prepare
-     * callback
+     * Verifies system services in a CompositeComponentImpl are wired during the parent composite's prepare callback
      */
     public void testSystemServiceWire() throws Exception {
         InboundWire inbound = EasyMock.createMock(InboundWire.class);
@@ -58,8 +57,6 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         EasyMock.expect(outbound.getTargetName()).andReturn(qName).atLeastOnce();
         EasyMock.expect(outbound.isAutowire()).andReturn(false);
 
-        outbound.getInvocationChains();
-        EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outbound.setTargetWire(EasyMock.eq(inbound));
         EasyMock.expect(outbound.getServiceContract()).andReturn(new JavaServiceContract(Foo.class)).atLeastOnce();
         List<OutboundWire> wires = new ArrayList<OutboundWire>();
@@ -79,7 +76,7 @@ public class CompositeComponentImplSystemWireTestCase extends TestCase {
         source.prepare();
         EasyMock.replay(source);
 
-        EasyMock.expect(outbound.getContainer()).andReturn(source);
+        EasyMock.expect(outbound.getContainer()).andReturn(source).atLeastOnce();
         EasyMock.replay(outbound);
 
         parent.register(source);

@@ -18,17 +18,11 @@
  */
 package org.apache.tuscany.core.builder;
 
-import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
@@ -42,10 +36,6 @@ import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.easymock.EasyMock;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
 
 /**
  * Verifies connection strategies between {@link org.apache.tuscany.spi.wire.OutboundInvocationChain}s and {@link
@@ -55,20 +45,22 @@ import static org.easymock.EasyMock.verify;
  */
 public class InboundtoOutboundConnectTestCase extends TestCase {
     private Operation operation;
+    private ConnectorImpl connector;
 
-    public void testNoInterceptorsNoHandlers() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
-        InboundInvocationChain inboundChain = setupInbound(null);
-        OutboundInvocationChain outboundChain = setupOutbound(null);
-        String[] val = new String[]{"foo"};
-        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
-        expect(invoker.invokeTarget(EasyMock.eq(val), EasyMock.eq(NONE))).andReturn(val);
-        replay(invoker);
+    public void testNoInterceptors() throws Exception {
+        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
+        OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
+        outboundChain.addInterceptor(new InvokerInterceptor());
+        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
+        EasyMock.expect(invoker.invoke(EasyMock.isA(Message.class))).andReturn(new MessageImpl());
+        EasyMock.replay(invoker);
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
         inboundChain.prepare();
-        inboundChain.getTargetInvoker().invokeTarget(val, NONE);
-        verify(invoker);
+        Message msg = new MessageImpl();
+        msg.setTargetInvoker(invoker);
+        inboundChain.getHeadInterceptor().invoke(msg);
+        EasyMock.verify(invoker);
     }
 
 
@@ -76,17 +68,15 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
      * Verifies an invocation with a single source interceptor
      */
     public void testSourceInterceptor() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
-        List<Interceptor> interceptors = new ArrayList<Interceptor>();
-        interceptors.add(interceptor);
-
-        InboundInvocationChain inboundChain = setupInbound(interceptors);
-        OutboundInvocationChain outboundChain = setupOutbound(null);
+        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
+        inboundChain.addInterceptor(interceptor);
+        OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
+        outboundChain.addInterceptor(new InvokerInterceptor());
         Message msg = new MessageImpl();
-        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
-        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
-        replay(invoker);
+        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
+        EasyMock.expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        EasyMock.replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
@@ -94,24 +84,22 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
-        verify(invoker);
+        EasyMock.verify(invoker);
     }
 
     /**
      * Verifies an invocation with a single target interceptor
      */
     public void testTargetInterceptor() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
         MockSyncInterceptor interceptor = new MockSyncInterceptor();
-        List<Interceptor> interceptors = new ArrayList<Interceptor>();
-        interceptors.add(interceptor);
-
-        InboundInvocationChain inboundChain = setupInbound(interceptors);
-        OutboundInvocationChain outboundChain = setupOutbound(null);
+        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
+        inboundChain.addInterceptor(interceptor);
+        OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
+        outboundChain.addInterceptor(new InvokerInterceptor());
         Message msg = new MessageImpl();
-        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
-        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
-        replay(invoker);
+        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
+        EasyMock.expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        EasyMock.replay(invoker);
         assertEquals(0, interceptor.getCount());
         connector.connect(inboundChain, outboundChain);
         inboundChain.setTargetInvoker(invoker);
@@ -119,27 +107,24 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         msg.setTargetInvoker(inboundChain.getTargetInvoker());
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, interceptor.getCount());
-        verify(invoker);
+        EasyMock.verify(invoker);
     }
 
     /**
      * Verifies an invocation with a source and target interceptor
      */
     public void testSourceTargetInterceptor() throws Exception {
-        ConnectorImpl connector = new ConnectorImpl();
         MockSyncInterceptor sourceInterceptor = new MockSyncInterceptor();
-        List<Interceptor> sourceInterceptors = new ArrayList<Interceptor>();
-        sourceInterceptors.add(sourceInterceptor);
         MockSyncInterceptor targetInterceptor = new MockSyncInterceptor();
-        List<Interceptor> targetInterceptors = new ArrayList<Interceptor>();
-        targetInterceptors.add(targetInterceptor);
-
-        OutboundInvocationChain outboundChain = setupOutbound(sourceInterceptors);
-        InboundInvocationChain inboundChain = setupInbound(targetInterceptors);
+        OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
+        outboundChain.addInterceptor(sourceInterceptor);
+        outboundChain.addInterceptor(new InvokerInterceptor());
+        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
+        inboundChain.addInterceptor(targetInterceptor);
         Message msg = new MessageImpl();
-        TargetInvoker invoker = createNiceMock(TargetInvoker.class);
-        expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
-        replay(invoker);
+        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
+        EasyMock.expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        EasyMock.replay(invoker);
         assertEquals(0, sourceInterceptor.getCount());
         assertEquals(0, targetInterceptor.getCount());
         connector.connect(inboundChain, outboundChain);
@@ -149,34 +134,28 @@ public class InboundtoOutboundConnectTestCase extends TestCase {
         assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
         assertEquals(1, sourceInterceptor.getCount());
         assertEquals(1, targetInterceptor.getCount());
-        verify(invoker);
+        EasyMock.verify(invoker);
     }
 
-    public InboundInvocationChain setupInbound(List<Interceptor> interceptors) {
-
-        InboundInvocationChainImpl chain = new InboundInvocationChainImpl(operation);
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
-                chain.addInterceptor(interceptor);
-            }
-        }
-        return chain;
-    }
-
-    public OutboundInvocationChain setupOutbound(List<Interceptor> interceptors) {
-
-        OutboundInvocationChainImpl chain = new OutboundInvocationChainImpl(operation);
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
-                chain.addInterceptor(interceptor);
-            }
-        }
-        chain.addInterceptor(new InvokerInterceptor()); // add tail interceptor
-        return chain;
+    public void testOptimizeSet() throws Exception {
+        OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
+        outboundChain.addInterceptor(new InvokerInterceptor());
+        InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
+        Message msg = new MessageImpl();
+        TargetInvoker invoker = EasyMock.createNiceMock(TargetInvoker.class);
+        EasyMock.expect(invoker.invoke(EasyMock.eq(msg))).andReturn(msg);
+        EasyMock.replay(invoker);
+        connector.connect(inboundChain, outboundChain);
+        inboundChain.setTargetInvoker(invoker);
+        inboundChain.prepare();
+        msg.setTargetInvoker(inboundChain.getTargetInvoker());
+        assertEquals(msg, inboundChain.getHeadInterceptor().invoke(msg));
+        EasyMock.verify(invoker);
     }
 
     protected void setUp() throws Exception {
         super.setUp();
+        connector = new ConnectorImpl();
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         ServiceContract<?> contract;
         try {

@@ -63,4 +63,9 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
             return faultMsg;
         }
     }
+
+
+    public boolean isOptimizable() {
+        return true;
+    }
 }

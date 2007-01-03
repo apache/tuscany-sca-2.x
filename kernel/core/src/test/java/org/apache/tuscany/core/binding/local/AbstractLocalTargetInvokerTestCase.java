@@ -19,13 +19,13 @@
 package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.wire.Interceptor;
-import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.mock.wire.MockTargetInvoker;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 
@@ -69,9 +69,4 @@ public class AbstractLocalTargetInvokerTestCase extends TestCase {
         EasyMock.verify(targetInvoker);
     }
 
-    private class MockTargetInvoker extends AbstractLocalTargetInvoker {
-        public Message invoke(Message msg) throws InvocationRuntimeException {
-            return null;
-        }
-    }
 }
