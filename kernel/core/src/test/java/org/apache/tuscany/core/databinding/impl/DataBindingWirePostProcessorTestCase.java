@@ -19,9 +19,6 @@
 
 package org.apache.tuscany.core.databinding.impl;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.w3c.dom.Node;
 
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -45,11 +42,14 @@ import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
+
+import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.w3c.dom.Node;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
 
 /**
- * 
+ * @version $Rev$ $Date$
  */
 public class DataBindingWirePostProcessorTestCase extends TestCase {
     private DataBindingWirePostProcessor processor;
@@ -88,7 +88,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         OutboundInvocationChain outboundChain = createMock(OutboundInvocationChain.class);
         outboundChains.put(op1, outboundChain);
         expect(outboundWire.getInvocationChains()).andReturn(outboundChains);
-        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)EasyMock.anyObject());
+        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
 
         Map<Operation<?>, InboundInvocationChain> inboundChains =
             new HashMap<Operation<?>, InboundInvocationChain>();
@@ -142,7 +142,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         OutboundInvocationChain outboundChain = createMock(OutboundInvocationChain.class);
         outboundChains.put(op1, outboundChain);
         expect(outboundWire.getInvocationChains()).andReturn(outboundChains).anyTimes();
-        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)EasyMock.anyObject());
+        outboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
 
         Map<Operation<?>, InboundInvocationChain> inboundChains =
             new HashMap<Operation<?>, InboundInvocationChain>();
@@ -216,7 +216,7 @@ public class DataBindingWirePostProcessorTestCase extends TestCase {
         InboundInvocationChain inboundChain = createMock(InboundInvocationChain.class);
         inboundChains.put(op2, inboundChain);
         expect(inboundWire.getInvocationChains()).andReturn(inboundChains).anyTimes();
-        inboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor)EasyMock.anyObject());
+        inboundChain.addInterceptor(EasyMock.anyInt(), (Interceptor) EasyMock.anyObject());
 
         ServiceContract<Type> contract = new JavaServiceContract();
         Map<String, Operation<Type>> operations = Collections.emptyMap();

@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * An interceptor to transform data accross databindings on the wire
+ *
+ * @version $Rev$ $Date$
  */
 public class DataBindingInteceptor implements Interceptor {
     private Interceptor next;
@@ -44,8 +46,7 @@ public class DataBindingInteceptor implements Interceptor {
 
     private Mediator mediator;
 
-    public DataBindingInteceptor(Wire sourceWire, Operation<?> sourceOperation, Wire targetWire,
-                                 Operation<?> targetOperation) {
+    public DataBindingInteceptor(Wire sourceWire, Operation<?> sourceOperation, Operation<?> targetOperation) {
         super();
         // this.sourceWire = sourceWire;
         this.sourceOperation = sourceOperation;
