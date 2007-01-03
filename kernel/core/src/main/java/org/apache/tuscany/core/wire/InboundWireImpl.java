@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -49,6 +48,7 @@ public class InboundWireImpl implements InboundWire {
         new HashMap<Object, Map<Operation<?>, OutboundInvocationChain>>();
     private SCAObject container;
     private AtomicComponent targetComponent;
+    private boolean optimizable;
 
     public QName getBindingType() {
         return bindingType;
@@ -133,21 +133,11 @@ public class InboundWireImpl implements InboundWire {
     }
 
     public boolean isOptimizable() {
-        for (InboundInvocationChain chain : chains.values()) {
-            if (chain.getTargetInvoker() != null && !chain.getTargetInvoker().isOptimizable()) {
-                return false;
-            }
-            if (chain.getHeadInterceptor() != null) {
-                Interceptor current = chain.getHeadInterceptor();
-                while (current != null) {
-                    if (!current.isOptimizable()) {
-                        return false;
-                    }
-                    current = current.getNext();
-                }
-            }
-        }
-        return true;
+        return optimizable;
+    }
+
+    public void setOptimizable(boolean optimizable) {
+        this.optimizable = optimizable;
     }
 
     public SCAObject getContainer() {

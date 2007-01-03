@@ -57,6 +57,7 @@ import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 import org.apache.tuscany.core.wire.LoopBackWire;
 import org.apache.tuscany.core.wire.NonBlockingBridgingInterceptor;
 import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
+import org.apache.tuscany.core.wire.WireUtils;
 
 /**
  * The default connector implmentation
@@ -68,8 +69,18 @@ public class ConnectorImpl implements Connector {
     private WireService wireService;
     private WorkContext workContext;
     private WorkScheduler scheduler;
+    private boolean optimizeWires = true;
 
     public ConnectorImpl() {
+    }
+
+    /**
+     * Constructor for testing
+     *
+     * @param optimizeWires if false, turns wire optimizations off
+     */
+    public ConnectorImpl(boolean optimizeWires) {
+        this.optimizeWires = optimizeWires;
     }
 
     @Constructor
@@ -101,15 +112,20 @@ public class ConnectorImpl implements Connector {
         // perform optimization, if possible
         if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
+            // system services do not need to have their chains processed, return
             return;
-        } else if (optimizable && sourceWire.isOptimizable() && targetWire.isOptimizable()) {
+        } else if (optimizeWires
+            && optimizable
+            && WireUtils.isOptimizable(sourceWire)
+            && WireUtils.isOptimizable(targetWire)) {
             if (postProcessorRegistry != null) {
                 // run wire post-processors
                 postProcessorRegistry.process(sourceWire, targetWire);
             }
-            if (sourceWire.isOptimizable() && targetWire.isOptimizable()) {
+            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
                 sourceWire.setTargetWire(targetWire);
             }
+            // don not return yet, as invocation chains still need to be processed
         }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
             // match invocation chains
@@ -145,15 +161,20 @@ public class ConnectorImpl implements Connector {
         // perform optimization, if possible
         if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
+            // system services do not need to have their chains processed, return
             return;
-        } else if (optimizable && sourceWire.isOptimizable() && targetWire.isOptimizable()) {
+        } else if (optimizeWires
+            && optimizable
+            && WireUtils.isOptimizable(sourceWire)
+            && WireUtils.isOptimizable(targetWire)) {
             if (postProcessorRegistry != null) {
                 // run wire post-processors
                 postProcessorRegistry.process(sourceWire, targetWire);
             }
-            if (sourceWire.isOptimizable() && targetWire.isOptimizable()) {
-                // JFM FIXME test this
+            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
+                sourceWire.setOptimizable(true);
                 sourceWire.setTargetWire(targetWire);
+                // don not return yet, as invocation chains still need to be processed
             }
         }
         // match outbound to inbound chains
@@ -371,7 +392,6 @@ public class ConnectorImpl implements Connector {
             InboundWire inboundWire = binding.getInboundWire();
             Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
             for (InboundInvocationChain chain : inboundChains.values()) {
-                //TODO handle async
                 // add target invoker on inbound side
                 ServiceContract contract = inboundWire.getServiceContract();
                 Operation operation = chain.getOperation();
@@ -475,7 +495,7 @@ public class ConnectorImpl implements Connector {
     }
 
     /**
-     * Connects an outbound wire to its target in a composite.  Valid targets are services and references.
+     * Connects an outbound wire to its target in a composite.
      *
      * @param sourceWire the source wire to connect
      * @throws WiringException

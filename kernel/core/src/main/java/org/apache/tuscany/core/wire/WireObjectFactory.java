@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.WireService;
@@ -39,7 +40,7 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     private WireService wireService;
     // the cache of proxy interface method to operation mappings
     private Map<Method, OutboundChainHolder> mappings;
-    //private boolean optimizable;
+    private boolean optimizable;
 
     /**
      * Constructor.
@@ -58,15 +59,19 @@ public class WireObjectFactory<T> implements ObjectFactory<T> {
     }
 
     public T getInstance() throws ObjectCreationException {
-// JFM TODO enable
-//        if (optimizable || wire.isOptimizable()) {
-//            optimizable = true;
-//            try {
-//                return interfaze.cast(wire.getTargetService());
-//            } catch (TargetResolutionException e) {
-//                throw new ObjectCreationException(e);
-//            }
-//        }
+        // note optimization must be done lazily as wire object factories are created during the build phase prior
+        // to the outbound and inbound wires being connected
+        if ((optimizable
+            || wire.isOptimizable())
+            && wire.getServiceContract().getInterfaceClass() != null
+            && interfaze.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
+            optimizable = true;
+            try {
+                return interfaze.cast(wire.getTargetService());
+            } catch (TargetResolutionException e) {
+                throw new ObjectCreationException(e);
+            }
+        }
         // clone the cached mappings
         Map<Method, OutboundChainHolder> newChains = new HashMap<Method, OutboundChainHolder>(mappings.size());
         for (Map.Entry<Method, OutboundChainHolder> entry : mappings.entrySet()) {

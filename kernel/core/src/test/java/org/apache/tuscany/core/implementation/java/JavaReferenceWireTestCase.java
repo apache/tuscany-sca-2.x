@@ -58,6 +58,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         wire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>()).atLeastOnce();
         EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         WireService service = EasyMock.createMock(WireService.class);
         EasyMock.expect(service.createProxy(EasyMock.eq(Target.class), EasyMock.eq(wire), EasyMock.isA(Map.class)))

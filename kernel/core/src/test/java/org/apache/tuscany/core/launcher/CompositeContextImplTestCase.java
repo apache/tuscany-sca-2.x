@@ -25,6 +25,8 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
@@ -45,6 +47,7 @@ public class CompositeContextImplTestCase extends TestCase {
 
     public void testAtomicLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         AtomicComponent child = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(child.getInboundWire(FooService.class.getName())).andReturn(wire);
@@ -66,9 +69,91 @@ public class CompositeContextImplTestCase extends TestCase {
         EasyMock.verify(child);
     }
 
+    /**
+     * Verifies the locateService checks for wire optimizations and if possible, avoids proxying the target instance
+     */
+    public void testOptimizedAtomicLocate() throws Exception {
+        ServiceContract<?> contract = new JavaServiceContract(FooService.class);
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.isOptimizable()).andReturn(true);
+        EasyMock.expect(wire.getTargetService()).andReturn(new FooService());
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
+        EasyMock.replay(wire);
+        AtomicComponent child = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(child.getInboundWire(FooService.class.getName())).andReturn(wire);
+        EasyMock.replay(child);
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getChild("Foo")).andReturn(child);
+        EasyMock.replay(composite);
+
+        WireService service = EasyMock.createMock(WireService.class);
+        EasyMock.replay(service);
+        CompositeContextImpl context = new CompositeContextImpl(composite, service);
+        context.locateService(FooService.class, "Foo");
+        EasyMock.verify(service);
+        EasyMock.verify(composite);
+        EasyMock.verify(wire);
+        EasyMock.verify(child);
+    }
+
+    public void testCannotOptimizeAtomicLocate() throws Exception {
+        ServiceContract<?> contract = new JavaServiceContract(Object.class);
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.isOptimizable()).andReturn(true);
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
+        EasyMock.replay(wire);
+        AtomicComponent child = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(child.getInboundWire(FooService.class.getName())).andReturn(wire);
+        EasyMock.replay(child);
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getChild("Foo")).andReturn(child);
+        EasyMock.replay(composite);
+
+        WireService service = EasyMock.createMock(WireService.class);
+        EasyMock.expect(service.createProxy(EasyMock.eq(FooService.class), EasyMock.eq(wire)))
+            .andReturn(new FooService() {
+            });
+        EasyMock.replay(service);
+
+        CompositeContextImpl context = new CompositeContextImpl(composite, service);
+        context.locateService(FooService.class, "Foo");
+        EasyMock.verify(service);
+        EasyMock.verify(composite);
+        EasyMock.verify(wire);
+        EasyMock.verify(child);
+    }
+
+    public void testNoWireJavaInterfaceAtomicLocate() throws Exception {
+        ServiceContract<?> contract = new JavaServiceContract();
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.isOptimizable()).andReturn(true);
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract);
+        EasyMock.replay(wire);
+        AtomicComponent child = EasyMock.createMock(AtomicComponent.class);
+        EasyMock.expect(child.getInboundWire(FooService.class.getName())).andReturn(wire);
+        EasyMock.replay(child);
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getChild("Foo")).andReturn(child);
+        EasyMock.replay(composite);
+
+        WireService service = EasyMock.createMock(WireService.class);
+        EasyMock.expect(service.createProxy(EasyMock.eq(FooService.class), EasyMock.eq(wire)))
+            .andReturn(new FooService() {
+            });
+        EasyMock.replay(service);
+
+        CompositeContextImpl context = new CompositeContextImpl(composite, service);
+        context.locateService(FooService.class, "Foo");
+        EasyMock.verify(service);
+        EasyMock.verify(composite);
+        EasyMock.verify(wire);
+        EasyMock.verify(child);
+    }
+
     public void testServiceLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getBindingType()).andReturn(InboundWire.LOCAL_BINDING);
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
         binding.setService(EasyMock.isA(Service.class));
@@ -95,6 +180,7 @@ public class CompositeContextImplTestCase extends TestCase {
 
     public void testReferenceLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         ReferenceBinding child = EasyMock.createMock(ReferenceBinding.class);
         EasyMock.expect(child.getInboundWire()).andReturn(wire);
@@ -116,10 +202,10 @@ public class CompositeContextImplTestCase extends TestCase {
         EasyMock.verify(child);
     }
 
-
     public void testCompositeLocate() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getBindingType()).andReturn(InboundWire.LOCAL_BINDING);
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
         EasyMock.replay(wire);
         ServiceBinding serviceBinding = EasyMock.createMock(ServiceBinding.class);
         serviceBinding.setService(EasyMock.isA(Service.class));

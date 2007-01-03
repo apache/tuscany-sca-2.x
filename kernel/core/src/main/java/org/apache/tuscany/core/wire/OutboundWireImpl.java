@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -50,6 +49,14 @@ public class OutboundWireImpl implements OutboundWire {
     private InboundWire targetWire;
     private SCAObject container;
     private boolean autowire;
+    private boolean optimizable;
+
+    public OutboundWireImpl() {
+    }
+
+    public void setOptimizable(boolean optimizable) {
+        this.optimizable = optimizable;
+    }
 
     public QName getBindingType() {
         return bindingType;
@@ -146,22 +153,23 @@ public class OutboundWireImpl implements OutboundWire {
     }
 
     public boolean isOptimizable() {
-        for (OutboundInvocationChain chain : chains.values()) {
-            if (chain.getHeadInterceptor() != null) {
-                Interceptor current = chain.getHeadInterceptor();
-                if (current == null) {
-                    break;
-                }
-                while (current != null) {
-                    if (!current.isOptimizable()) {
-                        return false;
-                    }
-                    current = current.getNext();
-                }
-            }
-        }
-        // if there is a callback, the wire is never optimizable since the callback target needs to be disambiguated
-        return callbackTargetChains.isEmpty();
+        return optimizable;
+//        for (OutboundInvocationChain chain : chains.values()) {
+//            if (chain.getHeadInterceptor() != null) {
+//                Interceptor current = chain.getHeadInterceptor();
+//                if (current == null) {
+//                    break;
+//                }
+//                while (current != null) {
+//                    if (!current.isOptimizable()) {
+//                        return false;
+//                    }
+//                    current = current.getNext();
+//                }
+//            }
+//        }
+//        // if there is a callback, the wire is never optimizable since the callback target needs to be disambiguated
+//        return callbackTargetChains.isEmpty();
     }
 
     public SCAObject getContainer() {

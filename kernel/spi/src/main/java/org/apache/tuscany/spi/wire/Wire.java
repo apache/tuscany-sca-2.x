@@ -60,9 +60,16 @@ public interface Wire {
     void addInterface(Class<?> claz);
 
     /**
-     * Returns true if the wire and all of its interceptors and handlers can be optimized
+     * Returns true if its invocation chains may be bypassed
      */
     boolean isOptimizable();
+
+    /**
+     * Determines if the wire may be optimized
+     *
+     * @param optimizable true if the wire is optimizable
+     */
+    void setOptimizable(boolean optimizable);
 
     /**
      * Returns the SCAObject that contains this wire

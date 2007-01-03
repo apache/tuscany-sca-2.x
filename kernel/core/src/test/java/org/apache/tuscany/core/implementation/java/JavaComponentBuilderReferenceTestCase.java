@@ -137,6 +137,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getReferenceName()).andReturn("target").atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains).atLeastOnce();
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
         JavaServiceContract targetContract = new JavaServiceContract(Target.class);
         targetContract.setInteractionScope(InteractionScope.NONCONVERSATIONAL);
         EasyMock.expect(wire.getServiceContract()).andReturn(targetContract).atLeastOnce();

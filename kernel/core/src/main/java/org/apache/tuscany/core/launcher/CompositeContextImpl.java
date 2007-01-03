@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
+import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireService;
@@ -81,14 +82,15 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         } else {
             wire = getInboundWire(child, name, qName.getPortName());
         }
-        // TODO JFM enable
-//        if (wire.isOptimizable()) {
-//            try {
-//                return serviceInterface.cast(wire.getTargetService());
-//            } catch (TargetResolutionException e) {
-//                throw new ServiceRuntimeException(e);
-//            }
-//        }
+        if (wire.isOptimizable()
+            && wire.getServiceContract().getInterfaceClass() != null
+            && serviceInterface.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
+            try {
+                return serviceInterface.cast(wire.getTargetService());
+            } catch (TargetResolutionException e) {
+                throw new ServiceRuntimeException(e);
+            }
+        }
         return wireService.createProxy(serviceInterface, wire);
     }
 
