@@ -30,7 +30,8 @@ import java.util.List;
 public class BoundReferenceDefinition extends ReferenceDefinition {
     private List<BindingDefinition> bindings;
 
-    public BoundReferenceDefinition(String name, ServiceContract contract,
+    public BoundReferenceDefinition(String name,
+                                    ServiceContract contract,
                                     List<BindingDefinition> bindings,
                                     Multiplicity multiplicity) {
         super(name, contract);
