@@ -265,7 +265,6 @@ public class ConnectorImpl implements Connector {
                 }
                 connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof ReferenceBinding) {
-                //Reference reference = (Reference) source;
                 ReferenceBinding binding = (ReferenceBinding) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
                 TargetInvoker invoker;
@@ -325,7 +324,7 @@ public class ConnectorImpl implements Connector {
         } else {
             sourceChain.setTargetInterceptor(new SynchronousBridgingInterceptor(head));
         }
-        sourceChain.prepare(); //FIXME prepare should be moved out
+        sourceChain.prepare(); 
         sourceChain.setTargetInvoker(invoker);
     }
 
@@ -344,142 +343,6 @@ public class ConnectorImpl implements Connector {
         }
         // invocations from inbound to outbound chains are always synchronous as they occur in services and references
         sourceChain.addInterceptor(new SynchronousBridgingInterceptor(head));
-    }
-
-    /**
-     * Connects wires from a service to a target
-     *
-     * @param service the service
-     * @throws WiringException if an exception connecting the service wires is encountered
-     */
-    private void handleService(Service service) throws WiringException {
-        CompositeComponent parent = service.getParent();
-        assert parent != null;
-        for (ServiceBinding binding : service.getServiceBindings()) {
-            InboundWire inboundWire = binding.getInboundWire();
-            OutboundWire outboundWire = binding.getOutboundWire();
-            // For a composite reference only, since its outbound wire comes from its parent composite,
-            // the corresponding target would not lie in its parent but rather in its parent's parent
-            SCAObject target;
-            if (service.isSystem()) {
-                target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
-            } else {
-                target = parent.getChild(outboundWire.getTargetName().getPartName());
-            }
-            // connect the outbound service wire to the target
-            connect(binding, outboundWire, target);
-            // NB: this connect must be done after the outbound service chain is connected to its target above
-            connect(inboundWire, outboundWire, true);
-        }
-    }
-
-    private void handleReference(Reference reference) throws WiringException {
-        CompositeComponent parent = reference.getParent();
-        assert parent != null;
-        for (ReferenceBinding binding : reference.getReferenceBindings()) {
-            InboundWire inboundWire = binding.getInboundWire();
-            Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
-            for (InboundInvocationChain chain : inboundChains.values()) {
-                // add target invoker on inbound side
-                ServiceContract contract = inboundWire.getServiceContract();
-                Operation operation = chain.getOperation();
-                TargetInvoker invoker;
-                try {
-                    invoker = binding.createTargetInvoker(contract, operation);
-                } catch (TargetInvokerCreationException e) {
-                    String targetName = inboundWire.getContainer().getName();
-                    throw new WireConnectException("Error processing inbound wire",
-                        null,
-                        null,
-                        targetName,
-                        null,
-                        e);
-                }
-                chain.setTargetInvoker(invoker);
-                chain.prepare();
-            }
-            OutboundWire outboundWire = binding.getOutboundWire();
-            // connect the reference's inbound and outbound wires
-            connect(inboundWire, outboundWire, true);
-
-            if (binding instanceof LocalReferenceBinding) {
-                String targetName = outboundWire.getTargetName().getPartName();
-                String serviceName = outboundWire.getTargetName().getPortName();
-                // A reference configured with the local binding is always connected to a target that is a sibling
-                // of the reference's parent composite.
-                parent = parent.getParent();
-                if (parent == null) {
-                    throw new TargetServiceNotFoundException("Reference target parent not found",
-                        reference.getName(),
-                        null,
-                        targetName,
-                        serviceName);
-                }
-                SCAObject target = parent.getChild(targetName);
-                if (target instanceof Reference) {
-                    throw new InvalidTargetTypeException("Invalid target type",
-                        reference.getName(),
-                        null,
-                        targetName,
-                        serviceName);
-                }
-                connect(binding, outboundWire, target);
-            }
-
-        }
-    }
-
-    private void handleAtomic(AtomicComponent component) throws WiringException {
-        CompositeComponent parent = component.getParent();
-        assert parent != null;
-        // connect outbound wires for component references to their targets
-        for (List<OutboundWire> referenceWires : component.getOutboundWires().values()) {
-            for (OutboundWire outboundWire : referenceWires) {
-                try {
-                    if (component.isSystem()) {
-                        if (outboundWire.isAutowire()) {
-                            autowire(outboundWire, parent);
-
-                        } else {
-                            SCAObject target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
-                            connect(component, outboundWire, target);
-                        }
-                    } else {
-                        if (outboundWire.isAutowire()) {
-                            autowire(outboundWire, parent);
-                        } else {
-                            SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
-                            connect(component, outboundWire, target);
-                        }
-                    }
-                } catch (WiringException e) {
-                    e.addContextName(component.getName());
-                    e.addContextName(parent.getName());
-                    throw e;
-                }
-            }
-        }
-        // connect inbound wires
-        for (InboundWire inboundWire : component.getInboundWires()) {
-            for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                Operation<?> operation = chain.getOperation();
-                String serviceName = inboundWire.getServiceName();
-                TargetInvoker invoker;
-                try {
-                    invoker = component.createTargetInvoker(serviceName, operation, null);
-                } catch (TargetInvokerCreationException e) {
-                    String targetName = inboundWire.getContainer().getName();
-                    throw new WireConnectException("Error processing inbound wire",
-                        null,
-                        null,
-                        targetName,
-                        serviceName,
-                        e);
-                }
-                chain.setTargetInvoker(invoker);
-                chain.prepare();
-            }
-        }
     }
 
     /**
@@ -645,11 +508,10 @@ public class ConnectorImpl implements Connector {
 
     protected void autowire(OutboundWire outboundWire, CompositeComponent parent)
         throws WiringException {
-        // JFM FIXME test
+        // JFM FIXME test coverage for this method
         InboundWire targetWire;
         try {
             Class interfaze = outboundWire.getServiceContract().getInterfaceClass();
-            // JFM FIXME test this
             if (CompositeComponent.class.equals(interfaze)) {
                 JavaServiceContract contract = new JavaServiceContract(CompositeComponent.class);
                 targetWire = new LoopBackWire();
@@ -674,9 +536,7 @@ public class ConnectorImpl implements Connector {
                 e);
         }
         if (targetWire == null) {
-            // jfm fixme test
-            // autowire may return null if it is optional. It is up to the client to decide if
-            // an error should be thrown
+            // autowire may return null if it is optional. The client must decide if an error should be thrown
             return;
         }
         Scope sourceScope = outboundWire.getContainer().getScope();
@@ -733,4 +593,138 @@ public class ConnectorImpl implements Connector {
             }
     }
 
+    /**
+     * Connects wires from a service to a target
+     *
+     * @param service the service
+     * @throws WiringException if an exception connecting the service wires is encountered
+     */
+    private void handleService(Service service) throws WiringException {
+        CompositeComponent parent = service.getParent();
+        assert parent != null;
+        for (ServiceBinding binding : service.getServiceBindings()) {
+            InboundWire inboundWire = binding.getInboundWire();
+            OutboundWire outboundWire = binding.getOutboundWire();
+            // For a composite reference only, since its outbound wire comes from its parent composite,
+            // the corresponding target would not lie in its parent but rather in its parent's parent
+            SCAObject target;
+            if (service.isSystem()) {
+                target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
+            } else {
+                target = parent.getChild(outboundWire.getTargetName().getPartName());
+            }
+            // connect the outbound service wire to the target
+            connect(binding, outboundWire, target);
+            // NB: this connect must be done after the outbound service chain is connected to its target above
+            connect(inboundWire, outboundWire, true);
+        }
+    }
+
+    private void handleReference(Reference reference) throws WiringException {
+        CompositeComponent parent = reference.getParent();
+        assert parent != null;
+        for (ReferenceBinding binding : reference.getReferenceBindings()) {
+            InboundWire inboundWire = binding.getInboundWire();
+            Map<Operation<?>, InboundInvocationChain> inboundChains = inboundWire.getInvocationChains();
+            for (InboundInvocationChain chain : inboundChains.values()) {
+                // add target invoker on inbound side
+                ServiceContract contract = inboundWire.getServiceContract();
+                Operation operation = chain.getOperation();
+                TargetInvoker invoker;
+                try {
+                    invoker = binding.createTargetInvoker(contract, operation);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = inboundWire.getContainer().getName();
+                    throw new WireConnectException("Error processing inbound wire",
+                        null,
+                        null,
+                        targetName,
+                        null,
+                        e);
+                }
+                chain.setTargetInvoker(invoker);
+                chain.prepare();
+            }
+            OutboundWire outboundWire = binding.getOutboundWire();
+            // connect the reference's inbound and outbound wires
+            connect(inboundWire, outboundWire, true);
+
+            if (binding instanceof LocalReferenceBinding) {
+                String targetName = outboundWire.getTargetName().getPartName();
+                String serviceName = outboundWire.getTargetName().getPortName();
+                // A reference configured with the local binding is always connected to a target that is a sibling
+                // of the reference's parent composite.
+                parent = parent.getParent();
+                if (parent == null) {
+                    throw new TargetServiceNotFoundException("Reference target parent not found",
+                        reference.getName(),
+                        null,
+                        targetName,
+                        serviceName);
+                }
+                SCAObject target = parent.getChild(targetName);
+                if (target instanceof Reference) {
+                    throw new InvalidTargetTypeException("Invalid target type",
+                        reference.getName(),
+                        null,
+                        targetName,
+                        serviceName);
+                }
+                connect(binding, outboundWire, target);
+            }
+        }
+    }
+
+    private void handleAtomic(AtomicComponent component) throws WiringException {
+        CompositeComponent parent = component.getParent();
+        assert parent != null;
+        // connect outbound wires for component references to their targets
+        for (List<OutboundWire> referenceWires : component.getOutboundWires().values()) {
+            for (OutboundWire outboundWire : referenceWires) {
+                try {
+                    if (component.isSystem()) {
+                        if (outboundWire.isAutowire()) {
+                            autowire(outboundWire, parent);
+
+                        } else {
+                            SCAObject target = parent.getSystemChild(outboundWire.getTargetName().getPartName());
+                            connect(component, outboundWire, target);
+                        }
+                    } else {
+                        if (outboundWire.isAutowire()) {
+                            autowire(outboundWire, parent);
+                        } else {
+                            SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
+                            connect(component, outboundWire, target);
+                        }
+                    }
+                } catch (WiringException e) {
+                    e.addContextName(component.getName());
+                    e.addContextName(parent.getName());
+                    throw e;
+                }
+            }
+        }
+        // connect inbound wires
+        for (InboundWire inboundWire : component.getInboundWires()) {
+            for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                Operation<?> operation = chain.getOperation();
+                String serviceName = inboundWire.getServiceName();
+                TargetInvoker invoker;
+                try {
+                    invoker = component.createTargetInvoker(serviceName, operation, null);
+                } catch (TargetInvokerCreationException e) {
+                    String targetName = inboundWire.getContainer().getName();
+                    throw new WireConnectException("Error processing inbound wire",
+                        null,
+                        null,
+                        targetName,
+                        serviceName,
+                        e);
+                }
+                chain.setTargetInvoker(invoker);
+                chain.prepare();
+            }
+        }
+    }
 }
