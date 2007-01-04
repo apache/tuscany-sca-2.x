@@ -74,7 +74,7 @@ public class CompositeContextImpl extends SCA implements CompositeContext {
         InboundWire wire;
         if (child instanceof CompositeComponent) {
             CompositeComponent childComposite = (CompositeComponent) child;
-            child = childComposite.getChild(qName.getPortName());
+            child = childComposite.getService(qName.getPortName());
             if (child == null) {
                 throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
             }
