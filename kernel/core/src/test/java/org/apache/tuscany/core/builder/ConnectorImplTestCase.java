@@ -20,6 +20,7 @@ package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -118,6 +119,15 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
             connector.connect(inboundChain, outboundChain);
             fail();
         } catch (WireConnectException e) {
+            // expected
+        }
+    }
+
+    public void testInvalidConnectObject() throws Exception {
+        try {
+            connector.connect(EasyMock.createNiceMock(SCAObject.class));
+            fail();
+        } catch (AssertionError e) {
             // expected
         }
     }
