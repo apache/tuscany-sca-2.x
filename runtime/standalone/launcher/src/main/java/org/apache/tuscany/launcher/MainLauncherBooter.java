@@ -33,6 +33,7 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.host.util.LaunchHelper;
+import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 
@@ -53,7 +54,7 @@ public class MainLauncherBooter {
         }
         MainLauncherBooter booter = new MainLauncherBooter();
 
-        File installDir = getInstallDirectory();
+        File installDir = DirectoryHelper.getInstallDirectory(MainLauncherBooter.class);
         URL baseUrl = installDir.toURI().toURL();
         File bootDir = getBootDirectory(installDir);
 
@@ -73,7 +74,7 @@ public class MainLauncherBooter {
         URL applicationScdl = booter.getApplicationScdl(applicationClassLoader);
 
         String className = System.getProperty("tuscany.launcherClass",
-            "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
+                                              "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
         TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
         runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setSystemScdl(systemScdl);
@@ -166,29 +167,6 @@ public class MainLauncherBooter {
     protected URL getApplicationScdl(ClassLoader applicationClassLoader) {
         String resource = System.getProperty("tuscany.applicationScdlPath", "META-INF/sca/default.scdl");
         return applicationClassLoader.getResource(resource);
-    }
-
-    public static File getInstallDirectory() {
-        // use system property if defined
-        String property = System.getProperty("tuscany.installDir");
-        if (property != null) {
-            return new File(property);
-        }
-
-        // use the parent of directory containing this command
-        URL url = MainLauncherBooter.class.getResource("MainLauncherBooter.class");
-        if (!"jar".equals(url.getProtocol())) {
-            throw new IllegalStateException("Must be run from a jar: " + url);
-        }
-
-        String jarLocation = url.toString();
-        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
-        if (!jarLocation.startsWith("file:")) {
-            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
-        }
-
-        File jarFile = new File(URI.create(jarLocation));
-        return jarFile.getParentFile().getParentFile();
     }
 
     public static File getBootDirectory(File installDirectory) {
