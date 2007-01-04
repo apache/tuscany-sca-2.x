@@ -119,7 +119,8 @@ public class ConnectorImpl implements Connector {
         // perform optimization, if possible
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)) {
+            && WireUtils.isOptimizable(targetWire)
+            && targetWire.getContainer() instanceof AtomicComponent) {
             sourceWire.setTargetWire(targetWire);
         }
     }
@@ -287,7 +288,8 @@ public class ConnectorImpl implements Connector {
         // perform optimization, if possible
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)) {
+            && WireUtils.isOptimizable(targetWire)
+            && targetWire.getContainer() instanceof AtomicComponent) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
@@ -556,7 +558,7 @@ public class ConnectorImpl implements Connector {
 
     protected boolean isOptimizable(Scope pReferrer, Scope pReferee) {
         if (pReferrer == Scope.UNDEFINED
-            || pReferee == Scope.UNDEFINED 
+            || pReferee == Scope.UNDEFINED
             || pReferrer == Scope.CONVERSATION
             || pReferee == Scope.CONVERSATION) {
             return false;
