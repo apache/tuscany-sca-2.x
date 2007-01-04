@@ -57,25 +57,37 @@ public class IncompatibleInterfacesException extends WiringException {
     public IncompatibleInterfacesException(InboundWire source, OutboundWire target) {
         super("Incompatible source and target interfaces");
         setTargetServiceName(source.getServiceName());
-        setSourceName(source.getContainer().getName());
+        if (source.getContainer() != null) {
+            setSourceName(source.getContainer().getName());
+        }
         setReferenceName(target.getReferenceName());
-        setTargetName(target.getContainer().getName());
+        if (target.getContainer() != null) {
+            setTargetName(target.getContainer().getName());
+        }
     }
 
     public IncompatibleInterfacesException(OutboundWire source, InboundWire target) {
         super("Incompatible source and target interfaces");
         setTargetServiceName(target.getServiceName());
-        setSourceName(source.getContainer().getName());
+        if (source.getContainer() != null) {
+            setSourceName(source.getContainer().getName());
+        }
         setReferenceName(source.getReferenceName());
-        setTargetName(target.getContainer().getName());
+        if (target.getContainer() != null) {
+            setTargetName(target.getContainer().getName());
+        }
     }
 
     public IncompatibleInterfacesException(OutboundWire source, InboundWire target, Throwable throwable) {
         super("Incompatible source and target interfaces", throwable);
         setTargetServiceName(target.getServiceName());
-        setSourceName(source.getContainer().getName());
+        if (source.getContainer() != null) {
+            setSourceName(source.getContainer().getName());
+        }
         setReferenceName(source.getReferenceName());
-        setTargetName(target.getContainer().getName());
+        if (target.getContainer() != null) {
+            setTargetName(target.getContainer().getName());
+        }
     }
 
 }
