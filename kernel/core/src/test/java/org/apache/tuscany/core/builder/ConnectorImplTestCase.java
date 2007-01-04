@@ -18,9 +18,12 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.lang.reflect.Type;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -34,8 +37,8 @@ import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
-import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
+import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
 import org.easymock.EasyMock;
 
 /**
@@ -151,6 +154,39 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         connector.connect(outboundWire, inboundWire, true);
         EasyMock.verify(outboundWire);
         EasyMock.verify(container);
+    }
+
+    public void testIncompatibleInboundOutboundWiresConnect() throws Exception {
+        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.addInvocationChain(operation, new InboundInvocationChainImpl(operation));
+        OutboundWire outboundWire = new OutboundWireImpl();
+        try {
+            connector.connect(inboundWire, outboundWire, false);
+            fail();
+        } catch (IncompatibleInterfacesException e) {
+            // expected
+        }
+
+    }
+
+    public void testIncompatibleOutboundInboundWiresConnect() throws Exception {
+        SCAObject container = EasyMock.createNiceMock(SCAObject.class);
+        EasyMock.expect(container.isSystem()).andReturn(false);
+        EasyMock.replay(container);
+        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setContainer(container);
+        OutboundWire outboundWire = new OutboundWireImpl();
+        outboundWire.setContainer(container);
+        outboundWire.addInvocationChain(operation, new OutboundInvocationChainImpl(operation));
+        try {
+            connector.connect(outboundWire, inboundWire, false);
+            fail();
+        } catch (IncompatibleInterfacesException e) {
+            // expected
+        }
+
     }
 
     public void testInvalidConnectObject() throws Exception {
