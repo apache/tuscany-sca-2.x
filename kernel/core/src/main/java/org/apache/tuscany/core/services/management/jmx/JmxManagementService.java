@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.services.management.ManagementService;
  *
  * @version $Revision$ $Date$
  */
-public abstract class JmxManagementService implements ManagementService {
+public class JmxManagementService implements ManagementService {
     
     /**
      * MBean server used by the JMX management service.
