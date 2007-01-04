@@ -38,6 +38,7 @@ import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 
 import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfoImpl;
+import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 
 /**
  * This class provides the commandline interface for starting the 
@@ -96,14 +97,11 @@ public class TuscanyServer implements TuscanyServerMBean {
      *
      */
     private TuscanyServer() throws MalformedURLException {
-        installDirectory = DirectoryHelper.getInstallDirectory();
+        installDirectory = DirectoryHelper.getInstallDirectory(TuscanyServer.class);
         baseUrl = installDirectory.toURI().toURL();
         agent = RmiAgent.getInstance();
     }
 
-    /**
-     * @see org.apache.tuscany.standalone.server.TuscanyServerMBean#startRuntime(java.lang.String, boolean)
-     */
     public final void startRuntime(final String bootPath, final boolean online, final String managementDomain) {
 
         try {
