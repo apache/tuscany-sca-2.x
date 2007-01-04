@@ -99,7 +99,6 @@ public class ConnectorImpl implements Connector {
     public void connect(InboundWire sourceWire, OutboundWire targetWire, boolean optimizable)
         throws WiringException {
         Map<Operation<?>, OutboundInvocationChain> targetChains = targetWire.getInvocationChains();
-        // perform optimization, if possible
         if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
@@ -117,12 +116,11 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
+        // perform optimization, if possible
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
             && WireUtils.isOptimizable(targetWire)) {
-            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
-                sourceWire.setTargetWire(targetWire);
-            }
+            sourceWire.setTargetWire(targetWire);
         }
     }
 
@@ -142,7 +140,6 @@ public class ConnectorImpl implements Connector {
         assert target != null;
         ServiceContract contract = sourceWire.getServiceContract();
         Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
-        // perform optimization, if possible
         if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
@@ -284,13 +281,12 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
+        // perform optimization, if possible
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
             && WireUtils.isOptimizable(targetWire)) {
-            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
-                sourceWire.setOptimizable(true);
-                sourceWire.setTargetWire(targetWire);
-            }
+            sourceWire.setOptimizable(true);
+            sourceWire.setTargetWire(targetWire);
         }
     }
 
