@@ -19,8 +19,13 @@
 package org.apache.tuscany.runtime.standalone;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.jar.JarFile;
 
 /**
  * Utility class for installation directory related operations.
@@ -110,4 +115,44 @@ public final class DirectoryHelper {
 
     }
 
+    /**
+     * Create a classloader from all the jar files or subdirectories in a directory.
+     * The classpath for the returned classloader will comprise all jar files and subdirectories
+     * of the supplied directory. Hidden files and those that do not contain a valid manifest will
+     * be silently ignored.
+     *
+     * @param parent    the parent for the new classloader
+     * @param directory the directory to scan
+     * @return a classloader whose classpath includes all jar files and subdirectories of the supplied directory
+     */
+    public static ClassLoader createClassLoader(ClassLoader parent, File directory) {
+        File[] jars = directory.listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                if (file.isHidden()) {
+                    return false;
+                }
+                if (file.isDirectory()) {
+                    return true;
+                }
+                try {
+                    JarFile jar = new JarFile(file);
+                    return jar.getManifest() != null;
+                } catch (IOException e) {
+                    return false;
+                }
+            }
+        });
+
+        URL[] urls = new URL[jars.length];
+        for (int i = 0; i < jars.length; i++) {
+            try {
+                urls[i] = jars[i].toURI().toURL();
+            } catch (MalformedURLException e) {
+                // toURI should have escaped the URL
+                throw new AssertionError();
+            }
+        }
+
+        return new URLClassLoader(urls, parent);
+    }
 }

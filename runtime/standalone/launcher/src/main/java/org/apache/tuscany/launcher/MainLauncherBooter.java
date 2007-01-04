@@ -32,7 +32,6 @@ import java.util.jar.Manifest;
 import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
-import org.apache.tuscany.host.util.LaunchHelper;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
@@ -67,7 +66,7 @@ public class MainLauncherBooter {
         System.arraycopy(args, 1, appArgs, 0, appArgs.length);
 
         ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
-        ClassLoader bootClassLoader = booter.getTuscanyClassLoader(bootDir);
+        ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDir);
         ClassLoader applicationClassLoader = new URLClassLoader(new URL[]{applicationURL}, hostClassLoader);
 
         URL systemScdl = booter.getSystemScdl(bootClassLoader);
@@ -124,11 +123,6 @@ public class MainLauncherBooter {
         } finally {
             Thread.currentThread().setContextClassLoader(oldCL);
         }
-    }
-
-    protected ClassLoader getTuscanyClassLoader(File bootDir) {
-        URL[] urls = LaunchHelper.scanDirectoryForJars(bootDir);
-        return new URLClassLoader(urls, getClass().getClassLoader());
     }
 
     /**

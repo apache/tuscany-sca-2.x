@@ -23,68 +23,70 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.management.MBeanServer;
 
+import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfoImpl;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
-import org.apache.tuscany.host.util.LaunchHelper;
+import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 
-import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfoImpl;
-import org.apache.tuscany.runtime.standalone.DirectoryHelper;
-
 /**
- * This class provides the commandline interface for starting the 
- * tuscany standalone server. 
- * 
- * <p>
- * The class boots the tuscany server and also starts a JMX server 
- * and listens for shutdown command. The server itself is available 
+ * This class provides the commandline interface for starting the
+ * tuscany standalone server.
+ * <p/>
+ * <p/>
+ * The class boots the tuscany server and also starts a JMX server
+ * and listens for shutdown command. The server itself is available
  * by the object name <code>tuscany:type=server,name=tuscanyServer
- * </code>. It also allows a runtime to be booted given a bootpath. 
- * The JMX domain in which the runtime is registered si definied in 
+ * </code>. It also allows a runtime to be booted given a bootpath.
+ * The JMX domain in which the runtime is registered si definied in
  * the file <code>$bootPath/etc/runtime.properties</code>. The properties
  * defined are <code>jmx.domain</code> and <code>offline</code>.
  * </p>
- * 
- * <p>
- * The install directory can be specified using the system property 
- * <code>tuscany.installDir</code>. If not specified it is asumed to 
- * be the directory from where the JAR file containing the main class 
- * is loaded. 
+ * <p/>
+ * <p/>
+ * The install directory can be specified using the system property
+ * <code>tuscany.installDir</code>. If not specified it is asumed to
+ * be the directory from where the JAR file containing the main class
+ * is loaded.
  * </p>
- * 
- * <p>
+ * <p/>
+ * <p/>
  * The administration port can be specified using the system property
- * <code>tuscany.adminPort</tuscany>.If not specified the default port 
+ * <code>tuscany.adminPort</tuscany>.If not specified the default port
  * that is used is <code>1099</code>
- * 
- * @version $Rev$ $Date$
  *
+ * @version $Rev$ $Date$
  */
 public class TuscanyServer implements TuscanyServerMBean {
 
-    /** Agent */
+    /**
+     * Agent
+     */
     private final Agent agent;
 
-    /** Install directory */
+    /**
+     * Install directory
+     */
     private final File installDirectory;
 
-    /** Base Url */
+    /**
+     * Base Url
+     */
     private final URL baseUrl;
 
-    /** Started runtimes. */
+    /**
+     * Started runtimes.
+     */
     private final Map<String, TuscanyRuntime> bootedRuntimes = new ConcurrentHashMap<String, TuscanyRuntime>();
 
     /**
-     * 
      * @param args Commandline arguments.
      */
     public static void main(String[] args) throws Exception {
@@ -93,8 +95,8 @@ public class TuscanyServer implements TuscanyServerMBean {
 
     /**
      * Constructor initializes all the required classloaders.
-     * @throws MalformedURLException 
      *
+     * @throws MalformedURLException
      */
     private TuscanyServer() throws MalformedURLException {
         installDirectory = DirectoryHelper.getInstallDirectory(TuscanyServer.class);
@@ -112,7 +114,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             final RuntimeInfo runtimeInfo = new JmxRuntimeInfoImpl(baseUrl, installDirectory, online, mBeanServer, managementDomain);
 
             final ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
-            final ClassLoader bootClassLoader = getTuscanyClassLoader(bootDirectory);
+            final ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDirectory);
 
             final URL systemScdl = getSystemScdl(bootClassLoader);
             if (systemScdl == null) {
@@ -122,7 +124,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             final String className =
                 System.getProperty("tuscany.launcherClass",
                                    "org.apache.tuscany.runtime.standalone.jmx.JmxRuntimeImpl");
-            final TuscanyRuntime runtime = (TuscanyRuntime)Beans.instantiate(bootClassLoader, className);
+            final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
             runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
             runtime.setSystemScdl(systemScdl);
             runtime.setHostClassLoader(hostClassLoader);
@@ -170,7 +172,6 @@ public class TuscanyServer implements TuscanyServerMBean {
 
     /**
      * Starts the server.
-     *
      */
     public final void shutdown() {
 
@@ -184,17 +185,8 @@ public class TuscanyServer implements TuscanyServerMBean {
     }
 
     /**
-     * Gets the tuscany classloader.
-     * @param bootDir Boot directory.
-     * @return Tuscany classloader.
-     */
-    private ClassLoader getTuscanyClassLoader(File bootDir) {
-        URL[] urls = LaunchHelper.scanDirectoryForJars(bootDir);
-        return new URLClassLoader(urls, getClass().getClassLoader());
-    }
-
-    /**
      * Gets the system SCDL.
+     *
      * @param bootClassLoader Boot classloader.
      * @return URL to the system SCDL.
      */
@@ -205,7 +197,6 @@ public class TuscanyServer implements TuscanyServerMBean {
 
     /**
      * Starts the server and starts the JMX agent.
-     *
      */
     private void start() {
         agent.start();
