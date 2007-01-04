@@ -67,7 +67,9 @@ public class OutboundWireImpl implements OutboundWire {
     }
 
     public Object getTargetService() throws TargetResolutionException {
-        assert targetWire != null;
+        if (targetWire == null) {
+            return null;
+        }
         // optimized, no interceptors or handlers on either end
         return targetWire.getTargetService();
     }
