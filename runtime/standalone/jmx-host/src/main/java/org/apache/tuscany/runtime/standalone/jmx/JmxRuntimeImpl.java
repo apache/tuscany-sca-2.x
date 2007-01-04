@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.services.management.ManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -42,6 +43,7 @@ import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.runtime.InitializationException;
 
+import org.apache.tuscany.core.services.management.jmx.JmxManagementService;
 import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 
 /**
@@ -71,11 +73,15 @@ public class JmxRuntimeImpl extends AbstractRuntime {
         systemComponent = runtime.getSystemComponent();
 
         // register the runtime info provided by the host
-        RuntimeInfo runtimeInfo = getRuntimeInfo();
+        JmxRuntimeInfo runtimeInfo = (JmxRuntimeInfo)getRuntimeInfo();
+
+        ManagementService mgs = new JmxManagementService(runtimeInfo);
+        
         try {
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
-            // register the monitor factory provided by the host
             systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+            systemComponent.registerJavaObject("ManagementService", ManagementService.class, mgs);
+            
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
