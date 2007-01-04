@@ -214,7 +214,7 @@ public class CompositeContextImplTestCase extends TestCase {
         Service service = new ServiceImpl("Foo", null, null);
         service.addServiceBinding(serviceBinding);
         CompositeComponent child = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(child.getChild("Bar")).andReturn(service);
+        EasyMock.expect(child.getService("Bar")).andReturn(service);
         EasyMock.replay(child);
         CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(composite.getChild("Foo")).andReturn(child);
