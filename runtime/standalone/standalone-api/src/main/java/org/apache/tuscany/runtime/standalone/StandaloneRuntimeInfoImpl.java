@@ -21,38 +21,18 @@ package org.apache.tuscany.runtime.standalone;
 import java.io.File;
 import java.net.URL;
 
+import org.apache.tuscany.host.AbstractRuntimeInfo;
+
 /**
  * @version $Rev$ $Date$
  */
-public class StandaloneRuntimeInfoImpl implements StandaloneRuntimeInfo {
-    private final File installDirectory;
-    private final File applicationRootDirectory;
-    private final URL baseURL;
-    private final boolean online;
+public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements StandaloneRuntimeInfo {
 
     public StandaloneRuntimeInfoImpl(URL baseURL, 
                                      File installDirectory,
                                      File applicationRootDirectory,
                                      boolean online) {
-        this.baseURL = baseURL;
-        this.installDirectory = installDirectory;
-        this.applicationRootDirectory = applicationRootDirectory;
-        this.online = online;
+        super(applicationRootDirectory, baseURL, installDirectory, online);
     }
-
-    public File getInstallDirectory() {
-        return installDirectory;
-    }
-
-    public File getApplicationRootDirectory() {
-        return applicationRootDirectory;
-    }
-
-    public URL getBaseURL() {
-        return baseURL;
-    }
-
-    public boolean isOnline() {
-        return online;
-    }
+    
 }
