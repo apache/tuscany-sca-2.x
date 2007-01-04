@@ -28,6 +28,15 @@ import org.apache.tuscany.host.AbstractRuntimeInfo;
  */
 public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements StandaloneRuntimeInfo {
 
+    /**
+     * Initializes the base URL, install directory, application root directory and
+     * online mode.
+     * 
+     * @param baseURL Base URL for the runtime.
+     * @param installDirectory Installation directory.
+     * @param applicationRootDirectory Application root directory.
+     * @param online Online mode.
+     */
     public StandaloneRuntimeInfoImpl(URL baseURL, 
                                      File installDirectory,
                                      File applicationRootDirectory,
