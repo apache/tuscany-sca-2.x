@@ -104,17 +104,6 @@ public class ConnectorImpl implements Connector {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
             return;
-        } else if (optimizable
-            && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)) {
-            if (postProcessorRegistry != null) {
-                // run wire post-processors
-                postProcessorRegistry.process(sourceWire, targetWire);
-            }
-            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
-                sourceWire.setTargetWire(targetWire);
-            }
-            // don not return yet, as invocation chains still need to be processed
         }
         for (InboundInvocationChain inboundChain : sourceWire.getInvocationChains().values()) {
             // match invocation chains
@@ -124,10 +113,16 @@ public class ConnectorImpl implements Connector {
             }
             connect(inboundChain, outboundChain);
         }
-
         if (postProcessorRegistry != null) {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
+        }
+        if (optimizable
+            && WireUtils.isOptimizable(sourceWire)
+            && WireUtils.isOptimizable(targetWire)) {
+            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
+                sourceWire.setTargetWire(targetWire);
+            }
         }
     }
 
@@ -152,18 +147,6 @@ public class ConnectorImpl implements Connector {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
             return;
-        } else if (optimizable
-            && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)) {
-            if (postProcessorRegistry != null) {
-                // run wire post-processors
-                postProcessorRegistry.process(sourceWire, targetWire);
-            }
-            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
-                sourceWire.setOptimizable(true);
-                sourceWire.setTargetWire(targetWire);
-                // don not return yet, as invocation chains still need to be processed
-            }
         }
         // match outbound to inbound chains
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
@@ -301,6 +284,14 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
+        if (optimizable
+            && WireUtils.isOptimizable(sourceWire)
+            && WireUtils.isOptimizable(targetWire)) {
+            if (WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
+                sourceWire.setOptimizable(true);
+                sourceWire.setTargetWire(targetWire);
+            }
+        }
     }
 
     /**
@@ -324,7 +315,7 @@ public class ConnectorImpl implements Connector {
         } else {
             sourceChain.setTargetInterceptor(new SynchronousBridgingInterceptor(head));
         }
-        sourceChain.prepare(); 
+        sourceChain.prepare();
         sourceChain.setTargetInvoker(invoker);
     }
 
