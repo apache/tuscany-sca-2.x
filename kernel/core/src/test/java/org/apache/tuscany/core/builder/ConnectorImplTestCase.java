@@ -19,9 +19,11 @@
 package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
@@ -70,6 +72,26 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         outboundWire.setTargetWire(EasyMock.eq(inboundWire));
+        EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
+        EasyMock.replay(outboundWire);
+
+        connector.connect(outboundWire, inboundWire, true);
+        EasyMock.verify(outboundWire);
+    }
+
+    public void testOutboundToInboundNoOptimizationNonAtomicTarget() throws Exception {
+        ReferenceBinding container = EasyMock.createNiceMock(ReferenceBinding.class);
+        EasyMock.expect(container.isSystem()).andReturn(false);
+        EasyMock.replay(container);
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setContainer(container);
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
+        outboundWire.getInvocationChains();
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
+        outboundWire.getTargetCallbackInvocationChains();
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
+
         EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.replay(outboundWire);
 
