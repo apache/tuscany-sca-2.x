@@ -160,41 +160,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.verify(container);
     }
 
-    public void testOutboundInboundCallbackConnect() throws Exception {
-        AtomicComponent container = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(container.isSystem()).andReturn(false).anyTimes();
-        EasyMock.expect(container.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(container.createTargetInvoker(EasyMock.eq("bar"),
-            EasyMock.isA(Operation.class),
-            (InboundWire) EasyMock.isNull())).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
-        EasyMock.replay(container);
-        Operation<Type> operation = new Operation<Type>("bar", null, null, null);
-        ServiceContract<Type> contract = new JavaServiceContract();
-        Map<String, Operation<Type>> ops = new HashMap<String, Operation<Type>>();
-        ops.put("bar", operation);
-        contract.setCallbackOperations(ops);
-        InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setContainer(container);
-        inboundWire.setServiceContract(contract);
-        OutboundWire outboundWire = new OutboundWireImpl();
-        outboundWire.setContainer(container);
-        outboundWire.setServiceContract(contract);
-
-        InboundInvocationChain inboundChain = EasyMock.createMock(InboundInvocationChain.class);
-        EasyMock.expect(inboundChain.getOperation()).andReturn(operation).anyTimes();
-        Interceptor interceptor = EasyMock.createNiceMock(Interceptor.class);
-        EasyMock.expect(inboundChain.getHeadInterceptor()).andReturn(interceptor);
-        EasyMock.replay(inboundChain);
-        Map<Operation<?>, InboundInvocationChain> chains = new HashMap<Operation<?>, InboundInvocationChain>();
-        chains.put(operation, inboundChain);
-        outboundWire.addTargetCallbackInvocationChains(chains);
-
-        connector.connect(outboundWire, inboundWire, true);
-        EasyMock.verify(inboundChain);
-        EasyMock.verify(container);
-
-    }
-
     public void testIncompatibleInboundOutboundWiresConnect() throws Exception {
         Operation<Type> operation = new Operation<Type>("bar", null, null, null);
         InboundWire inboundWire = new InboundWireImpl();

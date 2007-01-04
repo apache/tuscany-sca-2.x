@@ -63,7 +63,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         super.setUp();
         WireService wireService = new JDKWireService(null, null);
         connector = new ConnectorImpl(wireService, null, null, null);
-        contract = new JavaServiceContract(AbstractConnectorImplTestCase.Foo.class);
+        contract = new JavaServiceContract(Foo.class);
         operation = new Operation<Type>("bar", null, null, null);
     }
 
