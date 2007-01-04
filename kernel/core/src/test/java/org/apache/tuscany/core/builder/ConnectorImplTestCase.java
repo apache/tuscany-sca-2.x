@@ -35,6 +35,7 @@ import org.apache.tuscany.core.wire.InboundWireImpl;
 import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
+import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.easymock.EasyMock;
 
 /**
@@ -65,7 +66,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         outboundWire.setTargetWire(EasyMock.eq(inboundWire));
-        EasyMock.expect(outboundWire.getServiceContract()).andReturn(null);
         EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.replay(outboundWire);
 
@@ -121,6 +121,36 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         } catch (WireConnectException e) {
             // expected
         }
+    }
+
+    public void testInboundOutboundSystemWireOptimization() throws Exception {
+        SCAObject container = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(container.isSystem()).andReturn(true);
+        EasyMock.replay(container);
+        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
+        inboundWire.setTargetWire(EasyMock.isA(OutboundWire.class));
+        EasyMock.expect(inboundWire.getContainer()).andReturn(container).atLeastOnce();
+        EasyMock.replay(inboundWire);
+        OutboundWire outboundWire = new OutboundWireImpl();
+        outboundWire.setContainer(container);
+        connector.connect(inboundWire, outboundWire, true);
+        EasyMock.verify(inboundWire);
+        EasyMock.verify(container);
+    }
+
+    public void testOutboundInboundSystemWireOptimization() throws Exception {
+        SCAObject container = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(container.isSystem()).andReturn(true);
+        EasyMock.replay(container);
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        outboundWire.setTargetWire(EasyMock.isA(InboundWire.class));
+        EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
+        EasyMock.replay(outboundWire);
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setContainer(container);
+        connector.connect(outboundWire, inboundWire, true);
+        EasyMock.verify(outboundWire);
+        EasyMock.verify(container);
     }
 
     public void testInvalidConnectObject() throws Exception {
