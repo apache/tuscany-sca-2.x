@@ -39,6 +39,9 @@
     <component name="implementation.Init">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.InitProcessor"/>
     </component>
+    <component name="implementation.EagerInit">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.EagerInitProcessor"/>
+    </component>
     <component name="implementation.Scope">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ScopeProcessor"/>
     </component>
