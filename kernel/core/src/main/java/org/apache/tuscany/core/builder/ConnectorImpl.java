@@ -555,7 +555,10 @@ public class ConnectorImpl implements Connector {
     }
 
     protected boolean isOptimizable(Scope pReferrer, Scope pReferee) {
-        if (pReferrer == Scope.UNDEFINED || pReferee == Scope.UNDEFINED) {
+        if (pReferrer == Scope.UNDEFINED
+            || pReferee == Scope.UNDEFINED 
+            || pReferrer == Scope.CONVERSATION
+            || pReferee == Scope.CONVERSATION) {
             return false;
         }
         if (pReferee == pReferrer) {
@@ -563,7 +566,7 @@ public class ConnectorImpl implements Connector {
         } else if (pReferrer == Scope.STATELESS) {
             return true;
         } else if (pReferee == Scope.STATELESS) {
-            return true;
+            return false;
         } else if (pReferrer == Scope.REQUEST && pReferee == Scope.SESSION) {
             return true;
         } else if (pReferrer == Scope.REQUEST && pReferee == Scope.COMPOSITE) {
