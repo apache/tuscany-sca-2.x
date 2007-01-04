@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
@@ -41,6 +42,7 @@ import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
+import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.easymock.EasyMock;
 
 /**
@@ -59,7 +61,8 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        connector = new ConnectorImpl();
+        WireService wireService = new JDKWireService(null, null);
+        connector = new ConnectorImpl(wireService, null, null, null);
         contract = new JavaServiceContract(AbstractConnectorImplTestCase.Foo.class);
         operation = new Operation<Type>("bar", null, null, null);
     }
