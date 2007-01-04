@@ -19,15 +19,12 @@
 package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.model.Operation;
-import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -190,6 +187,58 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         } catch (IncompatibleInterfacesException e) {
             // expected
         }
+
+    }
+
+    public void testIsOptimizable() {
+        assertTrue(connector.isOptimizable(Scope.STATELESS, Scope.STATELESS));
+        assertTrue(connector.isOptimizable(Scope.STATELESS, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.STATELESS, Scope.CONVERSATION));
+        assertTrue(connector.isOptimizable(Scope.STATELESS, Scope.REQUEST));
+        assertTrue(connector.isOptimizable(Scope.STATELESS, Scope.SESSION));
+        assertTrue(connector.isOptimizable(Scope.STATELESS, Scope.SYSTEM));
+
+        assertTrue(connector.isOptimizable(Scope.COMPOSITE, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.COMPOSITE, Scope.CONVERSATION));
+        assertFalse(connector.isOptimizable(Scope.COMPOSITE, Scope.REQUEST));
+        assertFalse(connector.isOptimizable(Scope.COMPOSITE, Scope.SESSION));
+        assertFalse(connector.isOptimizable(Scope.COMPOSITE, Scope.STATELESS));
+        assertTrue(connector.isOptimizable(Scope.COMPOSITE, Scope.SYSTEM));
+
+        assertFalse(connector.isOptimizable(Scope.CONVERSATION, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.CONVERSATION, Scope.CONVERSATION));
+        assertFalse(connector.isOptimizable(Scope.CONVERSATION, Scope.REQUEST));
+        assertFalse(connector.isOptimizable(Scope.CONVERSATION, Scope.SESSION));
+        assertFalse(connector.isOptimizable(Scope.CONVERSATION, Scope.STATELESS));
+        assertFalse(connector.isOptimizable(Scope.CONVERSATION, Scope.SYSTEM));
+
+        assertTrue(connector.isOptimizable(Scope.REQUEST, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.REQUEST, Scope.CONVERSATION));
+        assertTrue(connector.isOptimizable(Scope.REQUEST, Scope.REQUEST));
+        assertTrue(connector.isOptimizable(Scope.REQUEST, Scope.SESSION));
+        assertFalse(connector.isOptimizable(Scope.REQUEST, Scope.STATELESS));
+        assertTrue(connector.isOptimizable(Scope.REQUEST, Scope.SYSTEM));
+
+        assertTrue(connector.isOptimizable(Scope.SESSION, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.SESSION, Scope.CONVERSATION));
+        assertFalse(connector.isOptimizable(Scope.SESSION, Scope.REQUEST));
+        assertTrue(connector.isOptimizable(Scope.SESSION, Scope.SESSION));
+        assertFalse(connector.isOptimizable(Scope.SESSION, Scope.STATELESS));
+        assertTrue(connector.isOptimizable(Scope.SESSION, Scope.SYSTEM));
+
+        assertTrue(connector.isOptimizable(Scope.SYSTEM, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.SYSTEM, Scope.CONVERSATION));
+        assertFalse(connector.isOptimizable(Scope.SYSTEM, Scope.REQUEST));
+        assertFalse(connector.isOptimizable(Scope.SYSTEM, Scope.SESSION));
+        assertFalse(connector.isOptimizable(Scope.SYSTEM, Scope.STATELESS));
+        assertTrue(connector.isOptimizable(Scope.SYSTEM, Scope.SYSTEM));
+
+        assertFalse(connector.isOptimizable(Scope.UNDEFINED, Scope.COMPOSITE));
+        assertFalse(connector.isOptimizable(Scope.UNDEFINED, Scope.CONVERSATION));
+        assertFalse(connector.isOptimizable(Scope.UNDEFINED, Scope.REQUEST));
+        assertFalse(connector.isOptimizable(Scope.UNDEFINED, Scope.SESSION));
+        assertFalse(connector.isOptimizable(Scope.UNDEFINED, Scope.STATELESS));
+        assertFalse(connector.isOptimizable(Scope.UNDEFINED, Scope.SYSTEM));
 
     }
 
