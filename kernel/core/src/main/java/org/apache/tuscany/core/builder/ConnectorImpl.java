@@ -138,13 +138,13 @@ public class ConnectorImpl implements Connector {
         assert source != null;
         SCAObject target = targetWire.getContainer();
         assert target != null;
-        ServiceContract contract = sourceWire.getServiceContract();
         Map<Operation<?>, InboundInvocationChain> targetChains = targetWire.getInvocationChains();
         if (sourceWire.getContainer() != null && sourceWire.getContainer().isSystem()) {
             sourceWire.setTargetWire(targetWire);
             // system services do not need to have their chains processed, return
             return;
         }
+        ServiceContract contract = sourceWire.getServiceContract();
         // match outbound to inbound chains
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
             Operation<?> operation = outboundChain.getOperation();
