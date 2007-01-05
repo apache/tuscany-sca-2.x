@@ -41,7 +41,7 @@ import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
  *
  * @version $Rev$ $Date$
  */
-public class MainLauncherBooter {
+public class Main {
     /**
      * Main method.
      *
@@ -51,9 +51,9 @@ public class MainLauncherBooter {
         if (args.length == 0) {
             usage();
         }
-        MainLauncherBooter booter = new MainLauncherBooter();
+        Main booter = new Main();
 
-        File installDir = DirectoryHelper.getInstallDirectory(MainLauncherBooter.class);
+        File installDir = DirectoryHelper.getInstallDirectory(Main.class);
         URL baseUrl = installDir.toURI().toURL();
         File bootDir = getBootDirectory(installDir);
 
@@ -95,7 +95,7 @@ public class MainLauncherBooter {
     }
 
     private static void usage() {
-        ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherBooter.class.getName());
+        ResourceBundle bundle = ResourceBundle.getBundle(Main.class.getName());
         System.err.println(bundle.getString("org.apache.tuscany.launcher.Usage"));
         System.exit(1);
     }
@@ -106,7 +106,7 @@ public class MainLauncherBooter {
         Manifest manifest = new JarFile(applicationJar).getManifest();
         String mainClassName = manifest.getMainAttributes().getValue("Main-Class");
         if (mainClassName == null) {
-            ResourceBundle bundle = ResourceBundle.getBundle(MainLauncherBooter.class.getName());
+            ResourceBundle bundle = ResourceBundle.getBundle(Main.class.getName());
             String s = bundle.getString("org.apache.tuscany.launcher.NoMain-Class");
             throw new IllegalArgumentException(String.format(s, applicationJar.toString()));
         }
@@ -139,7 +139,7 @@ public class MainLauncherBooter {
             return new File(property);
         }
 
-        URL url = MainLauncherBooter.class.getResource("MainLauncherBooter.class");
+        URL url = Main.class.getResource("Main.class");
         if (!"jar".equals(url.getProtocol())) {
             throw new IllegalStateException("Must be run from a jar: " + url);
         }
