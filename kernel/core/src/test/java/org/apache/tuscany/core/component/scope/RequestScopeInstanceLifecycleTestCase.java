@@ -45,7 +45,6 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         Foo comp = new Foo();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstance()).andReturn(comp);
-        EasyMock.expect(component.isEagerInit()).andReturn(false).atLeastOnce();
         component.init(EasyMock.eq(comp));
         component.destroy(EasyMock.eq(comp));
         EasyMock.replay(component);
@@ -64,11 +63,11 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
         scope.start();
 
-        AtomicComponent oneComponent = createComponent(false);
+        AtomicComponent oneComponent = createComponent();
         scope.register(oneComponent);
-        AtomicComponent twoComponent = createComponent(false);
+        AtomicComponent twoComponent = createComponent();
         scope.register(twoComponent);
-        AtomicComponent threeComponent = createComponent(false);
+        AtomicComponent threeComponent = createComponent();
         scope.register(threeComponent);
 
         scope.onEvent(new RequestStart(this));
@@ -95,35 +94,14 @@ public class RequestScopeInstanceLifecycleTestCase extends TestCase {
         EasyMock.verify(threeComponent);
     }
 
-    public void testEagerInitDestroyOrder() throws Exception {
-        WorkContext ctx = new WorkContextImpl();
-        RequestScopeContainer scope = new RequestScopeContainer(ctx, null);
-        scope.start();
-
-        AtomicComponent oneComponent = createComponent(true);
-        scope.register(oneComponent);
-        AtomicComponent twoComponent = createComponent(true);
-        scope.register(twoComponent);
-        AtomicComponent threeComponent = createComponent(true);
-        scope.register(threeComponent);
-
-        scope.onEvent(new RequestStart(this));
-        scope.onEvent(new RequestEnd(this));
-        scope.stop();
-        EasyMock.verify(oneComponent);
-        EasyMock.verify(twoComponent);
-        EasyMock.verify(threeComponent);
-    }
-
     @SuppressWarnings("unchecked")
-    private AtomicComponent createComponent(boolean init) throws TargetException {
+    private AtomicComponent createComponent() throws TargetException {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.createInstance()).andStubAnswer(new IAnswer() {
             public Object answer() throws Throwable {
                 return new OrderedInitPojoImpl();
             }
         });
-        EasyMock.expect(component.isEagerInit()).andReturn(init).atLeastOnce();
         component.init(EasyMock.isA(OrderedInitPojoImpl.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer() {
             public Object answer() throws Throwable {

@@ -24,7 +24,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
@@ -34,7 +33,6 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
 import org.apache.tuscany.core.component.event.RequestEnd;
-import org.apache.tuscany.core.component.event.RequestStart;
 
 /**
  * A scope context which manages atomic component instances keyed on the current request context
@@ -57,19 +55,7 @@ public class RequestScopeContainer extends AbstractScopeContainer {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof RequestStart) {
-            for (Map.Entry<AtomicComponent, Map<Thread, InstanceWrapper>> entry : contexts.entrySet()) {
-                if (entry.getKey().isEagerInit()) {
-                    try {
-                        getInstance(entry.getKey());
-                    } catch (TargetResolutionException e) {
-                        monitor.eagerInitializationError(e);
-                    } catch (ObjectCreationException e) {
-                        monitor.eagerInitializationError(e);
-                    }
-                }
-            }
-        } else if (event instanceof RequestEnd) {
+        if (event instanceof RequestEnd) {
             shutdownInstances(Thread.currentThread());
         }
     }

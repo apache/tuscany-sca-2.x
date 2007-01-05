@@ -35,24 +35,6 @@ import org.easymock.EasyMock;
  */
 public class RequestScopeInitDestroyErrorTestCase extends TestCase {
 
-    public void testInitializeErrorMonitor() throws Exception {
-        ScopeContainerMonitor monitor;
-        monitor = EasyMock.createMock(ScopeContainerMonitor.class);
-        monitor.eagerInitializationError(EasyMock.isA(ObjectCreationException.class));
-        EasyMock.replay(monitor);
-        RequestScopeContainer scope = new RequestScopeContainer(new WorkContextImpl(), monitor);
-        scope.start();
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        component.addListener(EasyMock.isA(RuntimeEventListener.class));
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(component.createInstance()).andThrow(new ObjectCreationException(""));
-        EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.replay(component);
-        scope.register(component);
-        scope.onEvent(new RequestStart(this));
-        EasyMock.verify(monitor);
-    }
-
     public void testDestroyErrorMonitor() throws Exception {
         ScopeContainerMonitor monitor;
         monitor = EasyMock.createMock(ScopeContainerMonitor.class);
@@ -64,13 +46,13 @@ public class RequestScopeInitDestroyErrorTestCase extends TestCase {
         component.addListener(EasyMock.isA(RuntimeEventListener.class));
         EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(component.createInstance()).andReturn(new Object());
-        EasyMock.expect(component.isEagerInit()).andReturn(true);
         component.init(EasyMock.isA(Object.class));
         component.destroy(EasyMock.isA(Object.class));
         EasyMock.expectLastCall().andThrow(new TargetDestructionException("", ""));
         EasyMock.replay(component);
         scope.register(component);
         scope.onEvent(new RequestStart(this));
+        scope.getInstance(component);
         scope.onEvent(new RequestEnd(this));
         EasyMock.verify(monitor);
     }
