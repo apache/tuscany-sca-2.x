@@ -40,9 +40,9 @@ public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
     private MBeanServer mBeanServer;
     
     /**
-     * Default domain used by the host.
+     * Management domain used by the runtime.
      */
-    private String defaultDomain;
+    private String managementDomain;
 
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.lang.String,org.apache.tuscany.spi.component.Component)
@@ -51,7 +51,7 @@ public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
     public final void registerComponent(String name, Component component) throws JmxException {
         
         try {
-            ObjectName on = new ObjectName(defaultDomain + ":" + "type=component,name=" + name);
+            ObjectName on = new ObjectName(managementDomain + ":" + "type=component,name=" + name);
             InstrumentedComponent mbean = new InstrumentedComponent(component);            
             mBeanServer.registerMBean(mbean, on);
         } catch (JMException ex) {
@@ -66,7 +66,7 @@ public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
      */
     public void setRuntimeIno(final JmxRuntimeInfo runtimeInfo) {
         this.mBeanServer = runtimeInfo.getMBeanServer();
-        this.defaultDomain = runtimeInfo.getManagementDomain();
+        this.managementDomain = runtimeInfo.getManagementDomain();
     }
 
 }
