@@ -29,6 +29,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
@@ -82,6 +83,7 @@ import org.objectweb.howl.log.LogRecordSizeException;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class JournalStore implements Store {
     private static final int UNITIALIZED = -99;
 
@@ -325,7 +327,7 @@ public class JournalStore implements Store {
      * @throws JournalIinitializationException
      *
      */
-    @Init(eager = true)
+    @Init
     public void init() throws JournalIinitializationException {
         try {
             cache = new ConcurrentHashMap<RecordKey, RecordEntry>();
