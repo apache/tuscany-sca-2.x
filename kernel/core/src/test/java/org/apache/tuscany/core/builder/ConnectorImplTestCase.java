@@ -79,6 +79,31 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.verify(outboundWire);
     }
 
+    /**
+     * Verifies that stateless targets with a destructor are not optimized as the destructor callback event must be
+     * issued by the TargetInvoker after it dispatches to the target
+     */
+    public void testOutboundToInboundNoOptimizationBecauseStatelessDestructor() throws Exception {
+        AtomicComponent container = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.expect(container.isSystem()).andReturn(false);
+        EasyMock.expect(container.getScope()).andReturn(Scope.STATELESS);
+        EasyMock.expect(container.isDestroyable()).andReturn(true);
+        EasyMock.replay(container);
+        InboundWire inboundWire = new InboundWireImpl();
+        inboundWire.setContainer(container);
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
+        outboundWire.getInvocationChains();
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
+        outboundWire.getTargetCallbackInvocationChains();
+        EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
+        EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
+        EasyMock.replay(outboundWire);
+
+        connector.connect(outboundWire, inboundWire, true);
+        EasyMock.verify(outboundWire);
+    }
+
     public void testOutboundToInboundNoOptimizationNonAtomicTarget() throws Exception {
         ReferenceBinding container = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.expect(container.isSystem()).andReturn(false);
@@ -91,7 +116,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
-
         EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.replay(outboundWire);
 

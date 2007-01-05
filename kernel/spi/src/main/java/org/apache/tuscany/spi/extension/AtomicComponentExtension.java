@@ -45,7 +45,6 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class AtomicComponentExtension extends AbstractComponentExtension implements AtomicComponent {
-
     protected ScopeContainer scopeContainer;
     protected Scope scope;
     protected Map<String, InboundWire> serviceWires = new HashMap<String, InboundWire>();
@@ -103,6 +102,10 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     public boolean isEagerInit() {
         return initLevel > 0;
+    }
+
+    public boolean isDestroyable() {
+        return false;
     }
 
     public long getMaxIdleTime() {
