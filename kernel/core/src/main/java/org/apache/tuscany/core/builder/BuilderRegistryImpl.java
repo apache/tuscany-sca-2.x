@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -57,6 +57,7 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class BuilderRegistryImpl implements BuilderRegistry {
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
@@ -68,24 +69,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
 
-    public BuilderRegistryImpl() {
-    }
-
-    public BuilderRegistryImpl(ScopeRegistry scopeRegistry) {
+    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry, @Autowire WireService wireService) {
         this.scopeRegistry = scopeRegistry;
-    }
-
-    @Init(eager = true)
-    public void init() {
-    }
-
-    @Autowire
-    public void setScopeRegistry(ScopeRegistry scopeRegistry) {
-        this.scopeRegistry = scopeRegistry;
-    }
-
-    @Autowire
-    public void setWireService(WireService wireService) {
         this.wireService = wireService;
     }
 

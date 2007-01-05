@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BindingBuilder;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
@@ -55,11 +56,12 @@ import org.easymock.EasyMock;
  */
 public class BuilderRegistryTestCase extends TestCase {
     private DeploymentContext deploymentContext;
-    private BuilderRegistryImpl registry;
+    //private BuilderRegistryImpl registry;
     private CompositeComponent parent;
 
     public void testRegistration() throws Exception {
         MockBuilder builder = new MockBuilder();
+        BuilderRegistry registry = new BuilderRegistryImpl(null, null);
         registry.register(CompositeImplementation.class, builder);
         CompositeImplementation implementation = new CompositeImplementation();
         ComponentDefinition<CompositeImplementation> componentDefinition =
@@ -76,7 +78,7 @@ public class BuilderRegistryTestCase extends TestCase {
         );
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(wireService);
-        registry.setWireService(wireService);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -103,7 +105,7 @@ public class BuilderRegistryTestCase extends TestCase {
         );
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(wireService);
-        registry.setWireService(wireService);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -128,7 +130,7 @@ public class BuilderRegistryTestCase extends TestCase {
         wireService.createWires(EasyMock.isA(AtomicComponent.class),
             EasyMock.isA(ComponentDefinition.class));
         EasyMock.replay(wireService);
-        registry.setWireService(wireService);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
 
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
@@ -149,7 +151,6 @@ public class BuilderRegistryTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        registry = new BuilderRegistryImpl();
         deploymentContext = new RootDeploymentContext(null, null, null, null);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.replay(parent);
