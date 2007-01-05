@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Resource;
@@ -47,6 +48,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class JDBCStore implements Store {
     private DataSource dataSource;
     private StoreMonitor monitor;
@@ -98,7 +100,7 @@ public class JDBCStore implements Store {
         return reaperInterval;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         this.scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.scheduleWithFixedDelay(new Reaper(), reaperInterval, reaperInterval, TimeUnit.MILLISECONDS);
