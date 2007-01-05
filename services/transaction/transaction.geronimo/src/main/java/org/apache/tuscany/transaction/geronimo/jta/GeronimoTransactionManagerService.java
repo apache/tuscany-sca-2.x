@@ -30,6 +30,7 @@ import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAException;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Service;
@@ -50,6 +51,7 @@ import org.apache.tuscany.transaction.geronimo.TransactionServiceShutdownExcepti
  * @version $Rev$ $Date$
  */
 @Service(interfaces = {TransactionManager.class, ExtendedTransactionManager.class})
+@EagerInit
 public class GeronimoTransactionManagerService implements TransactionManager, ExtendedTransactionManager {
     private ResourceHostRegistry hostRegistry;
     private ExtendedTransactionManager transactionManager;
@@ -79,7 +81,7 @@ public class GeronimoTransactionManagerService implements TransactionManager, Ex
         this.timeout = timeout;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() throws XAException {
         XidFactoryImpl factory = new XidFactoryImpl();
         // FIXME fix passing in null ResourceManagers for recovery
