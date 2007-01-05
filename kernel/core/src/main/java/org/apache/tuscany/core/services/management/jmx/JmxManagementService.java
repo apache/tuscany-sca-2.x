@@ -24,7 +24,6 @@ import javax.management.ObjectName;
 
 import org.apache.tuscany.core.services.management.jmx.instrument.InstrumentedComponent;
 import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.services.management.ManagementService;
 
@@ -33,26 +32,17 @@ import org.apache.tuscany.spi.services.management.ManagementService;
  *
  * @version $Revision$ $Date$
  */
-public class JmxManagementService implements ManagementService {
+public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
     
     /**
      * MBean server used by the JMX management service.
      */
-    private final MBeanServer mBeanServer;
+    private MBeanServer mBeanServer;
     
     /**
      * Default domain used by the host.
      */
-    private final String defaultDomain;
-
-    /**
-     * Initializes the MBean server.
-     * @param runtimeInfo JMX runtime info.
-     */
-    public JmxManagementService(@Autowire final JmxRuntimeInfo runtimeInfo) {
-        this.mBeanServer = runtimeInfo.getMBeanServer();
-        this.defaultDomain = runtimeInfo.getManagementDomain();
-    }
+    private String defaultDomain;
 
     /**
      * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.lang.String,org.apache.tuscany.spi.component.Component)
@@ -68,6 +58,15 @@ public class JmxManagementService implements ManagementService {
             throw new JmxException(ex);
         }
         
+    }
+
+    /**
+     * Initializes the mbean server and management domain.
+     * @param runtimeInfo Runtime info for the management service.
+     */
+    public void setRuntimeIno(final JmxRuntimeInfo runtimeInfo) {
+        this.mBeanServer = runtimeInfo.getMBeanServer();
+        this.defaultDomain = runtimeInfo.getManagementDomain();
     }
 
 }
