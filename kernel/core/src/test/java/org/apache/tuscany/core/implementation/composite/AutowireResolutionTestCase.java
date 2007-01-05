@@ -47,8 +47,7 @@ public class AutowireResolutionTestCase extends TestCase {
 
     public void testResolvedByAutowire() throws Exception {
         CompositeComponent parent = createMock(CompositeComponent.class);
-        InboundWire wire = TestUtils.createInboundWire(Foo.class);
-        wire.setContainer(parent);
+        InboundWire wire = TestUtils.createInboundWire(Foo.class, parent);
         EasyMock.expect(parent.resolveAutowire(eq(Foo.class))).andReturn(wire);
         replay(parent);
         CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
@@ -58,8 +57,7 @@ public class AutowireResolutionTestCase extends TestCase {
 
     public void testSystemResolvedByAutowire() throws Exception {
         CompositeComponent parent = createMock(CompositeComponent.class);
-        InboundWire wire = TestUtils.createInboundWire(Foo.class);
-        wire.setContainer(parent);
+        InboundWire wire = TestUtils.createInboundWire(Foo.class, parent);
         EasyMock.expect(parent.resolveSystemAutowire(eq(Foo.class))).andReturn(wire);
         replay(parent);
         CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
