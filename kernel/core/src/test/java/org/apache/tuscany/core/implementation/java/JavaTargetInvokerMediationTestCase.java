@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import java.lang.reflect.Method;
 
 import static org.apache.tuscany.spi.wire.TargetInvoker.NONE;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -44,6 +45,7 @@ public class JavaTargetInvokerMediationTestCase extends TestCase {
         EasyMock.replay(target);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(target);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(hello, component, null, null, null);
         assertEquals("foo", invoker.invokeTarget("foo", NONE));

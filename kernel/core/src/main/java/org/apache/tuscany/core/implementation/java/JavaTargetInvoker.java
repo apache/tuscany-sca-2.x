@@ -24,12 +24,13 @@ import java.util.Set;
 
 import org.osoa.sca.NoRegisteredCallbackException;
 
+import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.InvalidConversationSequenceException;
 import org.apache.tuscany.spi.component.TargetException;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.extension.TargetInvokerExtension;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.findClosestMatchingMethod;
@@ -45,6 +46,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
     protected JavaAtomicComponent component;
     protected Object target;
     protected Class callbackClass;
+    protected boolean stateless;
 
     public JavaTargetInvoker(Method operation,
                              JavaAtomicComponent component,
@@ -56,6 +58,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
         assert operation != null : "Operation method cannot be null";
         this.operation = operation;
         this.component = component;
+        stateless = Scope.STATELESS == component.getScope();
         this.callbackClass = callbackClass;
     }
 
@@ -72,8 +75,8 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             Object instance = getInstance(sequence);
             if (callbackClass != null && !callbackClass.isInstance(instance)) {
                 throw new InvocationTargetException(
-                    new NoRegisteredCallbackException("Instance is does not implement callback: "
-                        + callbackClass.toString()));
+                    new NoRegisteredCallbackException("Instance is does not implement callback ["
+                        + callbackClass.toString() + "]"));
             }
             if (!operation.getDeclaringClass().isInstance(instance)) {
                 Set<Method> methods = getAllUniquePublicProtectedMethods(instance.getClass());
@@ -89,7 +92,10 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
             } else {
                 ret = operation.invoke(instance, (Object[]) payload);
             }
-            if (sequence == END) {
+            if (stateless) {
+                // notify a stateless instance of a destruction event after the invoke
+                component.destroy(instance);
+            } else if (sequence == END) {
                 // if end conversation, remove resource
                 component.removeInstance();
             }

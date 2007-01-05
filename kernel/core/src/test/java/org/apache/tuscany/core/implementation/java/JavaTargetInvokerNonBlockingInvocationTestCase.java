@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
@@ -33,6 +34,8 @@ import org.easymock.classextension.EasyMock;
 
 /**
  * Verifies dispatching invocations to a Java implementation instance
+ *
+ * @version $Rev$ $Date$
  */
 public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
 
@@ -57,6 +60,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         EasyMock.replay(target);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(target);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         ExecutionMonitor monitor = EasyMock.createMock(ExecutionMonitor.class);
         EasyMock.replay(monitor);
@@ -96,6 +100,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         TestBean bean = new TestBean();
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(echoMethod, component, wire, context, monitor);
         Object ret = invoker.invokeTarget("foo", NONE);
@@ -106,6 +111,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         TestBean bean = new TestBean();
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(arrayMethod, component, wire, context, monitor);
 
@@ -122,6 +128,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         TestBean bean = new TestBean();
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(nullParamMethod, component, wire, context, monitor);
         Object ret = invoker.invokeTarget(null, NONE);
@@ -133,6 +140,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         TestBean bean = new TestBean();
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(primitiveMethod, component, wire, context, monitor);
         Object ret = invoker.invokeTarget(new Integer[]{1}, NONE);
@@ -144,6 +152,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         TestBean bean = new TestBean();
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(checkedMethod, component, wire, context, monitor);
         try {
@@ -162,6 +171,7 @@ public class JavaTargetInvokerNonBlockingInvocationTestCase extends TestCase {
         TestBean bean = new TestBean();
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(bean);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(runtimeMethod, component, wire, context, monitor);
         try {

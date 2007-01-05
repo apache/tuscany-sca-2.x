@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -79,6 +80,7 @@ public class OneWayWireToJavaInvocationTestCase extends TestCase {
         EasyMock.expectLastCall().once();
         EasyMock.replay(target);
         component = EasyMock.createMock(JavaAtomicComponent.class);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.expect(component.getTargetInstance()).andReturn(target);
         EasyMock.replay(component);
         Method method = AsyncTarget.class.getMethod("invoke");
