@@ -16,36 +16,39 @@
  */
 package org.apache.tuscany.binding.jms;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLParserWrapper;
-import org.apache.axiom.om.impl.llom.factory.OMXMLBuilderFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.osoa.sca.annotations.Scope;
 
 /**
- * Loader for handling <binding.jms> elements.
- * 
- * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
+ * Loader for handling <binding.jms> elements based on the 0.96 draft 1 spec.
  */
 @Scope("COMPOSITE")
 public class JMSBindingLoader extends LoaderExtension<JMSBindingDefinition> {
-    public static final QName BINDING_JMS =
-        new QName("http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT", "binding.jms");
 
-    public JMSBindingLoader(@Autowire
-    LoaderRegistry registry) {
+    public static final QName BINDING_JMS =
+        new QName(XML_NAMESPACE_1_0, "binding.jms");
+
+    public static final List<String> VALID_CORRELATION_SCHEMES =
+        Arrays.asList(new String[] {"requestmsgidtocorrelid", "requestcorrelidtocorrelid", "none"});
+
+    public JMSBindingLoader(@Autowire LoaderRegistry registry) {
         super(registry);
     }
 
@@ -53,80 +56,144 @@ public class JMSBindingLoader extends LoaderExtension<JMSBindingDefinition> {
         return BINDING_JMS;
     }
 
-    /**
-     * FIXME 21.10.2006 rajith The spec has changed quite a bit since I started
-     * the implementation, especially during the last 2 weeks. I will wait till
-     * a draft version is published before I make any changes
-     */
     public JMSBindingDefinition load(CompositeComponent parent,
                            ModelObject modelObject,
                            XMLStreamReader reader,
                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
 
-        OMXMLParserWrapper builder = OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(), reader);
-        OMElement omElement = builder.getDocumentElement();
+        JMSBindingDefinition jmsBinding = new JMSBindingDefinition();
 
-        // OMElement connectionOM = omElement.getFirstChildWithName(new
-        // QName("connection.jms"));
-        OMElement connectionOM = omElement;
+        String uri = reader.getAttributeValue(null, "uri");
+        if (uri != null && uri.length() > 0) {
+            parseURI(jmsBinding, uri);
+        }
 
-        String activationSpecName = connectionOM.getAttributeValue(new QName("activationSpecName"));
-        String destinationName = connectionOM.getAttributeValue(new QName("destinationName"));
-        String connectionFactoryName = connectionOM.getAttributeValue(new QName("connectionFactoryName"));
-        String initialContextFactoryName = connectionOM.getAttributeValue(new QName("initialContextFactoryName"));
-        String jNDIProviderURL = connectionOM.getAttributeValue(new QName("providerURL"));
-        String deliveryMode = connectionOM.getAttributeValue(new QName(null, "deliveryMode"));
-        String timeToLive = connectionOM.getAttributeValue(new QName(null, "timeToLive"));
-        String priority = connectionOM.getAttributeValue(new QName(null, "priority"));
-        String replyTo = connectionOM.getAttributeValue(new QName(null, "replyTo"));
-        String jmsResourceFactoryName = connectionOM.getAttributeValue(new QName(null, "jmsResourceFactory"));
-
-        LoaderUtil.skipToEndElement(reader);
-
-        // builder =
-        // OMXMLBuilderFactory.createStAXOMBuilder(OMAbstractFactory.getOMFactory(),
-        // reader);
-        // OMElement opSecOM = builder.getDocumentElement();
-        // omElement.getFirstChildWithName(new QName("operationSelector"));
-        String operationSelector = ""; // opSecOM.getAttributeValue(new
-                                        // QName("name"));
-        // OMElement opSecPropertyOM = opSecOM.getFirstChildWithName(new
-        // QName("property"));
-
-        JMSBindingDefinition binding = new JMSBindingDefinition();
-        binding.setActivationSpecName(activationSpecName);
-        binding.setConnectionFactoryName(connectionFactoryName);
-        binding.setDestinationName(destinationName);
-        binding.setInitialContextFactoryName(initialContextFactoryName);
-        binding.setJNDIProviderURL(jNDIProviderURL);
-        binding.setReplyTo(replyTo);
-        binding.setJmsResourceFactoryName(jmsResourceFactoryName);
-        binding.setOperationSelectorName(operationSelector);
-
-        if (deliveryMode != null && deliveryMode.trim().equals("")) {
-            try {
-                binding.setDeliveryMode(Integer.parseInt(deliveryMode));
-            } catch (Exception e) {
-
+        String correlationScheme = reader.getAttributeValue(null, "correlationScheme");
+        if (correlationScheme != null && correlationScheme.length() > 0) {
+            if (VALID_CORRELATION_SCHEMES.contains(correlationScheme.toLowerCase())) {
+                jmsBinding.setCorrelationScheme(correlationScheme);
+            } else {
+                throw new LoaderException("invalid correlationScheme: " + correlationScheme);
             }
         }
 
-        if (priority != null && priority.trim().equals("")) {
-            try {
-                binding.setPriority(Integer.parseInt(priority));
-            } catch (Exception e) {
-
-            }
+        String initialContextFactory = reader.getAttributeValue(null, "initialContextFactory");
+        if (initialContextFactory != null && initialContextFactory.length() > 0) {
+            jmsBinding.setInitialContextFactoryName(initialContextFactory);
         }
 
-        if (timeToLive != null && timeToLive.trim().equals("")) {
-            try {
-                binding.setTimeToLive(Integer.parseInt(timeToLive));
-            } catch (Exception e) {
-
-            }
+        String jndiProviderURL = reader.getAttributeValue(null, "JNDIProviderURL");
+        if (jndiProviderURL != null && jndiProviderURL.length() > 0) {
+            jmsBinding.setJNDIProviderURL(jndiProviderURL);
         }
 
-        return binding;
+        while (true) {
+            switch (reader.next()) {
+                case START_ELEMENT:
+                    String elementName = reader.getName().getLocalPart();
+                    if ("destination".equals(elementName)) {
+                        parseDestination(reader, jmsBinding);
+                    } else if ("connectionFactory".equals(elementName)) {
+                        parseConnectionFactory(reader, jmsBinding);
+                    } else if ("activationSpec".equals(elementName)) {
+                        parseActivationSpec(reader, jmsBinding);
+                    } else if ("response".equals(elementName)) {
+                        parseResponse(reader, jmsBinding);
+                    } else if ("headers".equals(elementName)) {
+                        parseHeaders(reader, jmsBinding);
+                    } else if ("operationAndDataBinding".equals(elementName)) {
+                        parseOperationAndDataBinding(reader, jmsBinding);
+                    } else if ("operation".equals(elementName)) {
+                        parseOperation(reader, jmsBinding);
+                    } else if ("resourceAdapter".equals(elementName)) {
+                        parseResourceAdapter(reader, jmsBinding);
+                    }
+                    reader.next();
+                    break;
+
+                case END_ELEMENT:
+                    QName x = reader.getName();
+                    if (x.equals(BINDING_JMS)) {
+                        return jmsBinding;
+                    }
+                    throw new RuntimeException("Incomplete binding.jms definition");
+            }
+        }
+    }
+
+    protected void parseActivationSpec(XMLStreamReader reader, JMSBindingDefinition jmsBinding) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null && name.length() > 0) {
+            jmsBinding.setActivationSpecName(name);
+        } else {
+            throw new RuntimeException("missing ActivationSpec name");
+        }
+    }
+
+    protected void parseConnectionFactory(XMLStreamReader reader, JMSBindingDefinition jmsBinding) {
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null && name.length() > 0) {
+            jmsBinding.setConnectionFactoryName(name);
+        } else {
+            throw new RuntimeException("missing connectionFactory name");
+        }
+    }
+
+    protected void parseResponse(XMLStreamReader reader, JMSBindingDefinition jmsBinding) {
+        // TODO Auto-generated method stub
+
+    }
+
+    protected void parseResourceAdapter(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
+        // TODO Auto-generated method stub
+    }
+
+    protected void parseOperation(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
+        // TODO Auto-generated method stub
+    }
+
+    protected void parseOperationAndDataBinding(XMLStreamReader reader, JMSBindingDefinition jmsBinding)
+        throws XMLStreamException {
+        String name = reader.getAttributeValue(null, "name");
+        String use = reader.getAttributeValue(null, "use");
+        if (name != null && name.length() > 0) {
+            if ("request".equalsIgnoreCase(use)) {
+                jmsBinding.setRequestOperationAndDatabindingName(name);
+            } else if ("response".equalsIgnoreCase(use)) {
+                jmsBinding.setResponseOperationAndDatabindingName(name);
+            } else {
+                jmsBinding.setRequestOperationAndDatabindingName(name);
+                jmsBinding.setResponseOperationAndDatabindingName(name);
+            }
+        }
+    }
+
+    protected void parseHeaders(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
+        // TODO Auto-generated method stub
+    }
+
+    protected void parseDestination(XMLStreamReader reader, JMSBindingDefinition jmsBinding) throws XMLStreamException {
+        String name = reader.getAttributeValue(null, "name");
+        if (name != null && name.length() > 0) {
+            jmsBinding.setDestinationName(name);
+        }
+        String type = reader.getAttributeValue(null, "type");
+        if (type != null && type.length() > 0) {
+            if ("queue".equalsIgnoreCase(type)) {
+                jmsBinding.setDestinationType(JMSBindingDefinition.DESTINATION_TYPE_QUEUE);
+            } else if ("topic".equalsIgnoreCase("type")) {
+                jmsBinding.setDestinationType(JMSBindingDefinition.DESTINATION_TYPE_TOPIC);
+            } else {
+                throw new RuntimeException("invalid destination type: " + type);
+            }
+        }
+        String create = reader.getAttributeValue(null, "create");
+        if (create != null && create.length() > 0) {
+            jmsBinding.setCreateDestination(create);
+        }
+    }
+
+    protected void parseURI(JMSBindingDefinition jmsBinding, String uri) {
+        // TODO Auto-generated method stub
     }
 }

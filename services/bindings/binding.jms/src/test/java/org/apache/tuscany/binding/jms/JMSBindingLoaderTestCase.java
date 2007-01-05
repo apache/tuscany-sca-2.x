@@ -9,10 +9,11 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 import org.apache.tuscany.spi.loader.LoaderException;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
-public class JMSBindingLoader0961TestCase extends TestCase {
+public class JMSBindingLoaderTestCase extends TestCase {
 
-    private JMSBindingLoader0961 loader;
+    private JMSBindingLoader loader;
 
     public void testMinimal() throws LoaderException, XMLStreamException {
         String xml = "<binding.jms></binding.jms>";
@@ -63,13 +64,13 @@ public class JMSBindingLoader0961TestCase extends TestCase {
     }
 
     public void testConnectionFactory() throws LoaderException, XMLStreamException {
-        XMLStreamReader reader = createReader("<binding.jms connectionFactory=\"myfactory\"></binding.jms>");
+        XMLStreamReader reader = createReader("<binding.jms> <connectionFactory name=\"myfactory\"/> </binding.jms>");
         JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("myfactory", jmsBinding.getConnectionFactoryName());
     }
 
     public void testActivationSpec() throws LoaderException, XMLStreamException {
-        XMLStreamReader reader = createReader("<binding.jms activationSpec=\"myas\"></binding.jms>");
+        XMLStreamReader reader = createReader("<binding.jms> <activationSpec name=\"myas\"/></binding.jms>");
         JMSBindingDefinition jmsBinding = loader.load(null, null, reader, null);
         assertEquals("myas", jmsBinding.getActivationSpecName());
     }
@@ -77,7 +78,7 @@ public class JMSBindingLoader0961TestCase extends TestCase {
     private XMLStreamReader createReader(String xml) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
 
-        String xxx = "<xxx xmlns=\"http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT\">" + xml + "</xxx>";
+        String xxx = "<xxx xmlns=\"" + XML_NAMESPACE_1_0 + "\">" + xml + "</xxx>";
         XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xxx));
         reader.nextTag();
         reader.nextTag();
@@ -85,6 +86,6 @@ public class JMSBindingLoader0961TestCase extends TestCase {
     }
 
     protected void setUp() throws Exception {
-        this.loader = new JMSBindingLoader0961(null);
+        this.loader = new JMSBindingLoader(null);
     }
 }
