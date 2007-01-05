@@ -31,6 +31,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.osoa.sca.annotations.EagerInit;
 
 import commonj.sdo.DataObject;
 import commonj.sdo.Property;
@@ -43,6 +44,7 @@ import org.osoa.sca.annotations.Destroy;
  * A SDO model-based Loader to load DataObject from the XML stream
  *
  */
+@EagerInit
 public class DataObjectLoader implements StAXElementLoader<ModelObject> {
     protected LoaderRegistry registry;
     private QName propertyQName;
@@ -73,7 +75,7 @@ public class DataObjectLoader implements StAXElementLoader<ModelObject> {
         this.registry = registry;
     }
 
-    @Init(eager = true)
+    @Init
     public void start() {
         registry.registerLoader(propertyQName, this);
     }
