@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -34,6 +35,7 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public abstract class ImplementationProcessorExtension implements ImplementationProcessor {
     private IntrospectionRegistry registry;
 
@@ -42,7 +44,7 @@ public abstract class ImplementationProcessorExtension implements Implementation
         this.registry = registry;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         registry.registerProcessor(this);
     }
@@ -58,10 +60,10 @@ public abstract class ImplementationProcessorExtension implements Implementation
         throws ProcessingException {
     }
 
-    public <T>  void visitSuperClass(CompositeComponent parent, Class<T> clazz,
-                                     PojoComponentType<JavaMappedService,
-                                         JavaMappedReference, JavaMappedProperty<?>> type,
-                                     DeploymentContext context)
+    public <T> void visitSuperClass(CompositeComponent parent, Class<T> clazz,
+                                    PojoComponentType<JavaMappedService,
+                                        JavaMappedReference, JavaMappedProperty<?>> type,
+                                    DeploymentContext context)
         throws ProcessingException {
     }
 
@@ -71,10 +73,10 @@ public abstract class ImplementationProcessorExtension implements Implementation
         throws ProcessingException {
     }
 
-    public <T>  void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
-                                      PojoComponentType<JavaMappedService,
-                                          JavaMappedReference, JavaMappedProperty<?>> type,
-                                      DeploymentContext context)
+    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
+                                     PojoComponentType<JavaMappedService,
+                                         JavaMappedReference, JavaMappedProperty<?>> type,
+                                     DeploymentContext context)
         throws ProcessingException {
     }
 
@@ -83,9 +85,9 @@ public abstract class ImplementationProcessorExtension implements Implementation
                            DeploymentContext context) throws ProcessingException {
     }
 
-    public <T>  void visitEnd(CompositeComponent parent, Class<T> clazz,
-                              PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                              DeploymentContext context) throws ProcessingException {
+    public <T> void visitEnd(CompositeComponent parent, Class<T> clazz,
+                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                             DeploymentContext context) throws ProcessingException {
 
     }
 }

@@ -18,17 +18,23 @@
  */
 package org.apache.tuscany.spi.databinding.extension;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Service;
 
 /**
  * Base Implementation of Transformer which provides the registration to the transformer registry
+ *
+ * @version $Rev$ $Date$
  */
-@org.osoa.sca.annotations.Scope("COMPOSITE")
 @Service(Transformer.class)
+@Scope("COMPOSITE")
+@EagerInit
 public abstract class TransformerExtension<S, T> implements Transformer {
 
     protected TransformerRegistry registry;
@@ -36,20 +42,21 @@ public abstract class TransformerExtension<S, T> implements Transformer {
     protected TransformerExtension() {
         super();
     }
-    
+
     @Autowire
     public void setTransformerRegistry(TransformerRegistry registry) {
         this.registry = registry;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         registry.registerTransformer(this);
     }
 
     protected abstract Class getSourceType();
+
     protected abstract Class getTargetType();
-    
+
     public String getSourceDataBinding() {
         return getSourceType().getName();
     }
@@ -61,6 +68,6 @@ public abstract class TransformerExtension<S, T> implements Transformer {
     public int getWeight() {
         // default to 50
         return 50;
-    }    
-    
+    }
+
 }
