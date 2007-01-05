@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -35,6 +35,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev$$ $$Date$$
  */
+@EagerInit
 public class HttpSessionScopeObjectFactory implements ObjectFactory<HttpSessionScopeContainer> {
     private WorkContext context;
     private ScopeContainerMonitor monitor;
@@ -46,11 +47,6 @@ public class HttpSessionScopeObjectFactory implements ObjectFactory<HttpSessionS
         this.context = context;
         this.monitor = monitor;
     }
-
-    @Init(eager = true)
-    public void init() {
-    }
-
 
     public HttpSessionScopeContainer getInstance() throws ObjectCreationException {
         return new HttpSessionScopeContainer(context, monitor);

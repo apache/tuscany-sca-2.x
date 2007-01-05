@@ -19,12 +19,11 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -57,8 +56,7 @@ public final class MockFactory {
                                                                      Class<?> targetClass,
                                                                      ScopeContainer targetScopeContainer)
         throws NoSuchMethodException {
-        List<Class<?>> sourceInterfaces = new ArrayList<Class<?>>();
-        sourceInterfaces.add(sourceClass);
+
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         AtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
         PojoConfiguration sourceConfig = new PojoConfiguration();
@@ -68,17 +66,21 @@ public final class MockFactory {
         //create target wire
         Method[] sourceMethods = sourceClass.getMethods();
         Class[] interfaces = targetClass.getInterfaces();
+        EagerInit eager = targetClass.getAnnotation(EagerInit.class);
+        if (eager != null) {
+            sourceConfig.setInitLevel(eager.value());
+        }
+
         Method setter = null;
         for (Class interfaze : interfaces) {
+
             for (Method method : sourceMethods) {
                 if (method.getParameterTypes().length == 1) {
                     if (interfaze.isAssignableFrom(method.getParameterTypes()[0])) {
                         setter = method;
                     }
                 }
-                Init init;
-                if ((init = method.getAnnotation(Init.class)) != null) {
-                    sourceConfig.setInitLevel(init.eager() ? 50 : 0);
+                if (method.getAnnotation(Init.class) != null) {
                     sourceConfig.setInitInvoker(new MethodEventInvoker<Object>(method));
 
                 } else if (method.getAnnotation(Destroy.class) != null) {
@@ -115,13 +117,14 @@ public final class MockFactory {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setScopeContainer(container);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
+        EagerInit eager = clazz.getAnnotation(EagerInit.class);
+        if (eager != null) {
+            configuration.setInitLevel(eager.value());
+        }
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
-            Init init;
-            if ((init = method.getAnnotation(Init.class)) != null) {
-                configuration.setInitLevel(init.eager() ? 50 : 0);
+            if (method.getAnnotation(Init.class) != null) {
                 configuration.setInitInvoker(new MethodEventInvoker<Object>(method));
-
             } else if (method.getAnnotation(Destroy.class) != null) {
                 configuration.setDestroyInvoker(new MethodEventInvoker<Object>(method));
             }

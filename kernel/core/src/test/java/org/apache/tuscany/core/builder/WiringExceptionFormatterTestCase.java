@@ -24,12 +24,14 @@ import java.io.StringWriter;
 import org.apache.tuscany.spi.builder.WiringException;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class WiringExceptionFormatterTestCase extends TestCase {
-    WiringExceptionFormatter formatter = new WiringExceptionFormatter();
+    WiringExceptionFormatter formatter = new WiringExceptionFormatter(EasyMock.createNiceMock(FormatterRegistry.class));
 
     public void testFormat() throws Exception {
         WiringException e = new MockWiringException("message",

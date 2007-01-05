@@ -20,8 +20,9 @@ package org.apache.tuscany.core.builder;
 
 import java.io.PrintWriter;
 
+import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.WiringException;
@@ -34,24 +35,17 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class WiringExceptionFormatter implements ExceptionFormatter {
     private FormatterRegistry factory;
 
-    public WiringExceptionFormatter() {
+    public WiringExceptionFormatter(@Autowire FormatterRegistry factory) {
+        this.factory = factory;
+        factory.register(this);
     }
 
     public boolean canFormat(Class<?> type) {
         return WiringException.class.isAssignableFrom(type);
-    }
-
-    @Autowire(required = false)
-    public void setRegistry(FormatterRegistry factory) {
-        this.factory = factory;
-    }
-
-    @Init(eager = true)
-    public void init() {
-        factory.register(this);
     }
 
     @Destroy

@@ -22,14 +22,18 @@ package org.apache.tuscany.core.databinding.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osoa.sca.annotations.EagerInit;
+
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.model.DataType;
-import org.osoa.sca.annotations.Init;
 
 /**
  * The default implementation of a data binding registry
+ *
+ * @version $Rev$ $Date$
  */
+@EagerInit
 public class DataBindingRegistryImpl implements DataBindingRegistry {
     private final Map<String, DataBinding> bindings = new HashMap<String, DataBinding>();
 
@@ -51,12 +55,8 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
         return bindings.remove(id.toLowerCase());
     }
 
-    @Init(eager = true)
-    public void init() {
-    }
-
     public DataType introspectType(Class<?> javaType) {
-        DataType dataType = null;
+        DataType dataType;
         for (DataBinding binding : bindings.values()) {
             dataType = binding.introspect(javaType);
             if (dataType != null) {
@@ -67,7 +67,7 @@ public class DataBindingRegistryImpl implements DataBindingRegistry {
     }
 
     public DataType introspectType(Object value) {
-        DataType dataType = null;
+        DataType dataType;
         for (DataBinding binding : bindings.values()) {
             dataType = binding.introspect(value);
             if (dataType != null) {
