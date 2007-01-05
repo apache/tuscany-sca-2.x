@@ -57,10 +57,6 @@ public class InitProcessor extends ImplementationProcessorExtension {
         if (Modifier.isProtected(method.getModifiers())) {
             method.setAccessible(true);
         }
-        // TODO support init level specification
-        if (annotation.eager()) {
-            type.setInitLevel(50);
-        }
         type.setInitMethod(method);
     }
 }

@@ -22,12 +22,12 @@ import java.lang.reflect.Method;
 
 import org.osoa.sca.annotations.Init;
 
-import org.apache.tuscany.spi.implementation.java.JavaMappedService;
-
-import junit.framework.TestCase;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
+import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+
+import junit.framework.TestCase;
 
 /**
  * @version $Rev$ $Date$
@@ -41,7 +41,7 @@ public class InitProcessorTestCase extends TestCase {
         Method method = InitProcessorTestCase.Foo.class.getMethod("init");
         processor.visitMethod(null, method, type, null);
         assertNotNull(type.getInitMethod());
-        assertEquals(50, type.getInitLevel());
+        assertEquals(0, type.getInitLevel());
     }
 
     public void testBadInit() throws Exception {
@@ -74,7 +74,7 @@ public class InitProcessorTestCase extends TestCase {
 
 
     private class Foo {
-        @Init(eager = true)
+        @Init
         public void init() {
         }
     }
