@@ -28,7 +28,8 @@
 
     <!-- Foundation implementation processors -->
     <component name="implementation.ImplementationProcessorService">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl"/>
     </component>
     <component name="implementation.Constructor">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConstructorProcessor"/>
@@ -46,7 +47,8 @@
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ScopeProcessor"/>
     </component>
     <component name="implementation.AllowsPassByReference">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.AllowsPassByReferenceProcessor"/>
+        <system:implementation.system
+            class="org.apache.tuscany.core.implementation.processor.AllowsPassByReferenceProcessor"/>
     </component>
     <component name="implementation.Property">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.PropertyProcessor"/>
@@ -69,4 +71,8 @@
     <component name="implementation.Conversation">
         <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ConversationProcessor"/>
     </component>
+    <component name="implementation.ContextProcessor">
+        <system:implementation.system class="org.apache.tuscany.core.implementation.processor.ContextProcessor"/>
+    </component>
+
 </composite>
