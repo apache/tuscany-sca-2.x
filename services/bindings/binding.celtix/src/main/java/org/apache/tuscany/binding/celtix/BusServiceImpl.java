@@ -21,14 +21,14 @@ package org.apache.tuscany.binding.celtix;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
-
-import org.objectweb.celtix.Bus;
-import org.objectweb.celtix.BusException;
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
+
+import org.apache.tuscany.idl.wsdl.WSDLDefinitionRegistry;
+import org.objectweb.celtix.Bus;
+import org.objectweb.celtix.BusException;
 
 /**
  * The default implementation of the Celtix Bus system service
@@ -36,37 +36,25 @@ import org.osoa.sca.annotations.Scope;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
+@EagerInit
 public class BusServiceImpl implements BusService {
-
     protected WSDLDefinitionRegistry wsdlRegistry;
     private Bus bus;
+
+    public BusServiceImpl(@Property(override = "may")WSDLDefinitionRegistry wsdlRegistry) throws BusException {
+        this.wsdlRegistry = wsdlRegistry;
+        Map<String, Object> properties = new WeakHashMap<String, Object>();
+        properties.put("celtix.WSDLManager", new TuscanyWSDLManager(wsdlRegistry));
+        bus = Bus.init(new String[0], properties);
+    }
 
     public Bus getBus() {
         return bus;
     }
 
     /**
-     * FIXME the annotation processing framework must inject this
-     * @param wsdlReg
-     */
-    @Property (override = "must")
-    public void setWsdlRegistry(WSDLDefinitionRegistry wsdlReg) {
-        wsdlRegistry = wsdlReg;
-    }
-
-    /**
-     * Initializes the bus, set to be called when the runtime initializes the Celtix system composite
-     * @throws BusException
-     */
-    @Init(eager = true)
-    public void init() throws BusException {
-        Map<String, Object> properties = new WeakHashMap<String, Object>();
-        properties.put("celtix.WSDLManager", new TuscanyWSDLManager(wsdlRegistry));
-        bus = Bus.init(new String[0], properties);
-    }
-
-    /**
      * Shuts down the bus, called when the runtime stops the Celtix system composite
+     *
      * @throws BusException
      */
     @Destroy
