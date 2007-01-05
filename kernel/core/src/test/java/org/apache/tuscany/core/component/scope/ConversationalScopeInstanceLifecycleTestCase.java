@@ -118,32 +118,6 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         EasyMock.verify(threeComponent);
     }
 
-    public void txestEagerInitDestroyOrder() throws Exception {
-        StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
-        monitor.start(EasyMock.isA(String.class));
-        monitor.stop(EasyMock.isA(String.class));
-        MemoryStore store = new MemoryStore(monitor);
-        WorkContext ctx = new WorkContextImpl();
-        ConversationalScopeContainer scope = new ConversationalScopeContainer(store, ctx, null);
-        scope.start();
-
-        AtomicComponent oneComponent = createComponent(true);
-        scope.register(oneComponent);
-        AtomicComponent twoComponent = createComponent(true);
-        scope.register(twoComponent);
-        AtomicComponent threeComponent = createComponent(true);
-        scope.register(threeComponent);
-
-        String convID = "ConvID";
-        ctx.setIdentifier(Scope.CONVERSATION, convID);
-        scope.onEvent(new ConversationStart(this, convID));
-        scope.onEvent(new ConversationEnd(this, convID));
-        scope.stop();
-        EasyMock.verify(oneComponent);
-        EasyMock.verify(twoComponent);
-        EasyMock.verify(threeComponent);
-    }
-
     @SuppressWarnings("unchecked")
     private AtomicComponent createComponent(boolean init) throws TargetException {
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
