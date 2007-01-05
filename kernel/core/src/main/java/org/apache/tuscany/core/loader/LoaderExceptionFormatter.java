@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderException;
@@ -16,24 +17,17 @@ import org.apache.tuscany.host.monitor.FormatterRegistry;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class LoaderExceptionFormatter implements ExceptionFormatter {
     private FormatterRegistry factory;
 
-    public LoaderExceptionFormatter() {
+    public LoaderExceptionFormatter(@Autowire FormatterRegistry factory) {
+        this.factory = factory;
+        factory.register(this);
     }
 
     public boolean canFormat(Class<?> type) {
         return LoaderException.class.isAssignableFrom(type);
-    }
-
-    @Autowire
-    public void setRegistry(FormatterRegistry factory) {
-        this.factory = factory;
-    }
-
-    @Init(eager = true)
-    public void init() {
-        factory.register(this);
     }
 
     @Destroy

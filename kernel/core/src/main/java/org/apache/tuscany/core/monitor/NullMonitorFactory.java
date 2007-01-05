@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.host.MonitorFactory;
 
@@ -32,6 +32,7 @@ import org.apache.tuscany.host.MonitorFactory;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class NullMonitorFactory implements MonitorFactory {
     /**
      * Singleton wire hander that does nothing.
@@ -41,10 +42,6 @@ public class NullMonitorFactory implements MonitorFactory {
             return null;
         }
     };
-
-    @Init(eager = true)
-    public void init() {
-    }
 
     public void initialize(Map<String, Object> configProperties) {
     }

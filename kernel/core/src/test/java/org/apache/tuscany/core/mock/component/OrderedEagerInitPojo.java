@@ -21,15 +21,17 @@ package org.apache.tuscany.core.mock.component;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.EagerInit;
 
 @Scope("COMPOSITE")
+@EagerInit
 public class OrderedEagerInitPojo {
 
     private static final Object LOCK = new Object();
     private static int numberInstantied;
     private int initOrder;
 
-    @Init(eager = true)
+    @Init
     public void init() {
         synchronized (LOCK) {
             ++numberInstantied;

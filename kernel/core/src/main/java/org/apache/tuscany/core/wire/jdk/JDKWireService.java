@@ -18,22 +18,22 @@
  */
 package org.apache.tuscany.core.wire.jdk;
 
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.osoa.sca.annotations.Constructor;
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.policy.PolicyBuilderRegistry;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundChainHolder;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.ProxyCreationException;
 import org.apache.tuscany.spi.wire.Wire;
 import org.apache.tuscany.spi.wire.WireInvocationHandler;
-import org.apache.tuscany.spi.wire.OutboundChainHolder;
 
 import org.apache.tuscany.core.wire.WireServiceExtension;
 
@@ -42,6 +42,7 @@ import org.apache.tuscany.core.wire.WireServiceExtension;
  *
  * @version $$Rev$$ $$Date$$
  */
+@EagerInit
 public class JDKWireService extends WireServiceExtension {
 
     public JDKWireService() {
@@ -51,10 +52,6 @@ public class JDKWireService extends WireServiceExtension {
     @Constructor
     public JDKWireService(@Autowire WorkContext context, @Autowire PolicyBuilderRegistry policyRegistry) {
         super(context, policyRegistry);
-    }
-
-    @Init(eager = true)
-    public void init() {
     }
 
     public <T> T createProxy(Class<T> interfaze, Wire wire) throws ProxyCreationException {

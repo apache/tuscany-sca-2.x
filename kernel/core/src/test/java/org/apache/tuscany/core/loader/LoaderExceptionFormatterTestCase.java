@@ -24,6 +24,8 @@ import java.io.StringWriter;
 import org.apache.tuscany.spi.loader.LoaderException;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
 
 /**
  * @version $Rev$ $Date$
@@ -31,7 +33,8 @@ import junit.framework.TestCase;
 public class LoaderExceptionFormatterTestCase extends TestCase {
 
     public void testLog() {
-        LoaderExceptionFormatter formatter = new LoaderExceptionFormatter();
+        FormatterRegistry registry = EasyMock.createNiceMock(FormatterRegistry.class);
+        LoaderExceptionFormatter formatter = new LoaderExceptionFormatter(registry);
         LoaderException e = new LoaderException("test");
         StringWriter writer = new StringWriter();
         PrintWriter pw = new PrintWriter(writer);
