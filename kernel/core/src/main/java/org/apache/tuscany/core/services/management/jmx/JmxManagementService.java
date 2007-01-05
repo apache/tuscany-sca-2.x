@@ -26,7 +26,6 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.services.management.ManagementService;
 
 import org.apache.tuscany.core.services.management.jmx.instrument.InstrumentedComponent;
-import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 
 /**
  * JMX implementation of the management service.
