@@ -84,7 +84,6 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBindingDefinit
                                      DeploymentContext deploymentContext) {
 
         String name = referenceDefinition.getName();
-        Class<?> interfaze = referenceDefinition.getServiceContract().getInterfaceClass();
         ServiceContract serviceContract;
         try {
             serviceContract = (ServiceContract) referenceDefinition.getServiceContract().clone();

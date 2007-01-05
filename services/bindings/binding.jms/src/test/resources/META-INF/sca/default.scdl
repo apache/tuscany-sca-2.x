@@ -19,11 +19,9 @@
 
     <service name="GreetingJMSService">
         <interface.java class="org.apache.tuscany.binding.jms.GreetingService"/>
-        <binding.jms xmlns="http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT" >
-        	<connection.jms destinationName="greetingServiceQueue"
-        	                connectionFactoryName="ConnectionFactory"
-        	                initialContextFactoryName="org.activemq.jndi.ActiveMQInitialContextFactory"
-        	                providerURL="tcp://localhost:61616" />   
+        <binding.jms initialContextFactory="org.activemq.jndi.ActiveMQInitialContextFactory" JNDIProviderURL="tcp://localhost:61616" >
+           <destination name="greetingServiceQueue" />
+           <connectionFactory name="ConnectionFactory" />
         </binding.jms>
         <reference>GretingServiceComponent</reference>
     </service>
@@ -39,22 +37,18 @@
     
     <reference name="GreetingJMSReference">
         <interface.java class="org.apache.tuscany.binding.jms.GreetingService"/>
-        <binding.jms xmlns="http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT" >
-        	<connection.jms destinationName="dynamicQueues/greetingServiceQueue"
-        	                connectionFactoryName="ConnectionFactory"
-        	                initialContextFactoryName="org.activemq.jndi.ActiveMQInitialContextFactory"
-        	                providerURL="tcp://localhost:61616" />        	                 
+        <binding.jms initialContextFactory="org.activemq.jndi.ActiveMQInitialContextFactory" JNDIProviderURL="tcp://localhost:61616" >
+           <destination name="dynamicQueues/greetingServiceQueue" />
+           <connectionFactory name="ConnectionFactory" />
         </binding.jms>
     </reference>
     
     <service name="HelloworldJMSService">
         <interface.wsdl interface="http://helloworld#wsdl.interface(HelloWorld)" 
             wsdli:wsdlLocation="http://helloworld wsdl/helloworld.wsdl" />
-        <binding.jms xmlns="http://tuscany.apache.org/xmlns/binding/jms/1.0-SNAPSHOT" >
-        	<connection.jms destinationName="HelloworldServiceQueue"
-        	                connectionFactoryName="ConnectionFactory"
-        	                initialContextFactoryName="org.activemq.jndi.ActiveMQInitialContextFactory"
-        	                providerURL="tcp://localhost:61616" />   
+        <binding.jms initialContextFactory="org.activemq.jndi.ActiveMQInitialContextFactory" JNDIProviderURL="tcp://localhost:61616" >
+           <destination name="HelloworldServiceQueue" />
+           <connectionFactory name="ConnectionFactory" />
         </binding.jms>
         <reference>HelloworldComponent</reference>
     </service>
