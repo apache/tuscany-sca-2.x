@@ -111,7 +111,7 @@ public final class DirectoryHelper {
      * @throws FileNotFoundException if the directory does not exist
      */
     public static File getProfileDirectory(File installDir, String profileName) throws FileNotFoundException {
-        String propName = "tuscany.profilePath." + profileName;
+        String propName = "tuscany.profileDir." + profileName;
         String profilePath = System.getProperty(propName);
         File profileDir;
         if (profilePath != null) {
