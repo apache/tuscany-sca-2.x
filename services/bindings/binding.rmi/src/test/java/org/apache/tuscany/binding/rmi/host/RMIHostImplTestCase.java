@@ -26,7 +26,7 @@ import org.apache.tuscany.host.rmi.RMIHostRuntimeException;
 public class RMIHostImplTestCase extends TestCase {
 
     public void testInit() {
-        new RMIHostImpl().init();
+        new RMIHostImpl();
     }
 
     public void testFindServiceBadHost() throws RMIHostRuntimeException, RMIHostException {

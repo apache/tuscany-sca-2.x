@@ -25,16 +25,20 @@ import java.rmi.registry.Registry;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Scope;
+
 import org.apache.tuscany.host.rmi.RMIHost;
 import org.apache.tuscany.host.rmi.RMIHostException;
 import org.apache.tuscany.host.rmi.RMIHostRuntimeException;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Scope;
 
 /**
  * This class provides an implementation for the RMI Host SPIs
+ *
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
+@EagerInit
 public class RMIHostImpl implements RMIHost {
 
     // map of RMI registries started and running
@@ -47,22 +51,18 @@ public class RMIHostImpl implements RMIHost {
          */
     }
 
-    @Init(eager = true)
-    public void init() {
-    }
-
     public void registerService(String serviceName, int port, Remote serviceObject) throws RMIHostException,
-                                                                                   RMIHostRuntimeException {
+                                                                                           RMIHostRuntimeException {
         Registry registry;
         try {
             registry = rmiRegistries.get(Integer.toString(port));
             if (registry == null) {
                 registry = LocateRegistry.createRegistry(port);
                 rmiRegistries.put(Integer.toString(port),
-                                  registry);
+                    registry);
             }
             registry.bind(serviceName,
-                          serviceObject);
+                serviceObject);
         } catch (AlreadyBoundException e) {
             throw new RMIHostException(e.getMessage());
         } catch (RemoteException e) {
@@ -74,14 +74,14 @@ public class RMIHostImpl implements RMIHost {
     }
 
     public void registerService(String serviceName, Remote serviceObject) throws RMIHostException,
-                                                                         RMIHostRuntimeException {
+                                                                                 RMIHostRuntimeException {
         registerService(serviceName,
-                        RMI_DEFAULT_PORT,
-                        serviceObject);
+            RMI_DEFAULT_PORT,
+            serviceObject);
     }
 
     public void unregisterService(String serviceName, int port) throws RMIHostException,
-                                                               RMIHostRuntimeException {
+                                                                       RMIHostRuntimeException {
         Registry registry;
 
         try {
@@ -89,7 +89,7 @@ public class RMIHostImpl implements RMIHost {
             if (registry == null) {
                 registry = LocateRegistry.createRegistry(port);
                 rmiRegistries.put(Integer.toString(port),
-                                  registry);
+                    registry);
             }
             registry.unbind(serviceName);
         } catch (RemoteException e) {
@@ -102,23 +102,23 @@ public class RMIHostImpl implements RMIHost {
     }
 
     public void unregisterService(String serviceName) throws RMIHostException,
-                                                     RMIHostRuntimeException {
+                                                             RMIHostRuntimeException {
         unregisterService(serviceName,
-                          RMI_DEFAULT_PORT);
+            RMI_DEFAULT_PORT);
 
     }
 
     public Remote findService(String host, String port, String svcName) throws RMIHostException,
-                                                                       RMIHostRuntimeException {
+                                                                               RMIHostRuntimeException {
         Registry registry;
         Remote remoteService = null;
         host = (host == null || host.length() <= 0) ? "localhost" : host;
         int portNumber = (port == null || port.length() <= 0) ? RMI_DEFAULT_PORT : Integer
-                .decode(port);
+            .decode(port);
 
         try {
             registry = LocateRegistry.getRegistry(host,
-                                                  portNumber);
+                portNumber);
 
             if (registry != null) {
                 remoteService = registry.lookup(svcName);
