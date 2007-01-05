@@ -21,15 +21,18 @@ package org.apache.tuscany.container.javascript.utils.xmlfromxsd;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.xmlbeans.XmlObject;
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Scope;
+
+import org.apache.xmlbeans.XmlObject;
 
 /**
  * An implementation for the XMLInstnaceRegistry
  *
+ * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
+@EagerInit
 public class XmlInstanceRegistryImpl implements XmlInstanceRegistry {
 
     private Hashtable<String, Map<String, XmlObject>> wsdlXmlInstances;
@@ -42,10 +45,6 @@ public class XmlInstanceRegistryImpl implements XmlInstanceRegistry {
         XMLfromXSDConfiguration generationConfig = new XMLfromXSDConfiguration();
         xmlGenerator = XMLGeneratorFactory.getInstance().createGenerator(XMLGenerator.XMLBEANS_BASED);
         xmlGenerator.setConfig(generationConfig);
-    }
-
-    @Init(eager = true)
-    public void init() {
     }
 
     /* (non-Javadoc)
