@@ -26,12 +26,15 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.IncompatibleServiceContractException;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.host.monitor.FormatterRegistry;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class IncompatibleServiceContractExceptionFormatterTestCase extends TestCase {
-    IncompatibleServiceContractExceptionFormatter formatter = new IncompatibleServiceContractExceptionFormatter();
+    FormatterRegistry registry = EasyMock.createNiceMock(FormatterRegistry.class);
+    IncompatibleServiceContractExceptionFormatter formatter = new IncompatibleServiceContractExceptionFormatter(registry);
 
     public void testFormat() throws Exception {
         ServiceContract<Object> source = new ServiceContract<Object>() {

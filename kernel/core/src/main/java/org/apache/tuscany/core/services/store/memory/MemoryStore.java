@@ -25,6 +25,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Scope;
@@ -44,6 +45,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  * @version $Rev$ $Date$
  */
 @Scope("COMPOSITE")
+@EagerInit
 public class MemoryStore implements Store {
     private Map<SCAObject, Map<String, Record>> store;
     // TODO integrate with a core threading scheme
@@ -87,7 +89,7 @@ public class MemoryStore implements Store {
         return reaperInterval;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         scheduler.scheduleWithFixedDelay(new Reaper(), reaperInterval, reaperInterval, TimeUnit.MILLISECONDS);
         monitor.start("In-memory store started");

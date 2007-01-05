@@ -29,7 +29,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -38,8 +38,8 @@ import org.apache.tuscany.spi.loader.InvalidConfigurationException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.StAXElementLoader;
-import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.loader.UnrecognizedComponentTypeException;
+import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 
@@ -48,6 +48,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public class LoaderRegistryImpl implements LoaderRegistry {
     private Monitor monitor;
     private final Map<QName, StAXElementLoader<? extends ModelObject>> loaders =
@@ -56,22 +57,8 @@ public class LoaderRegistryImpl implements LoaderRegistry {
         ComponentTypeLoader<? extends Implementation<?>>> componentTypeLoaders =
         new HashMap<Class<? extends Implementation<?>>, ComponentTypeLoader<? extends Implementation<?>>>();
 
-
-    public LoaderRegistryImpl() {
-    }
-
-    public LoaderRegistryImpl(Monitor monitor) {
+    public LoaderRegistryImpl(@org.apache.tuscany.api.annotation.Monitor Monitor monitor) {
         this.monitor = monitor;
-    }
-
-    @org.apache.tuscany.api.annotation.Monitor
-    public void setMonitor(Monitor monitor) {
-        this.monitor = monitor;
-    }
-
-    @Init(eager = true)
-    public void init() {
-
     }
 
     public <T extends ModelObject> void registerLoader(QName element, StAXElementLoader<T> loader) {
