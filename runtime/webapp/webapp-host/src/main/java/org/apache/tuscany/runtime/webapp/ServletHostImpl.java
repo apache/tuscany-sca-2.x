@@ -21,18 +21,15 @@ package org.apache.tuscany.runtime.webapp;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.tuscany.core.component.event.HttpRequestEnded;
-import org.apache.tuscany.core.component.event.HttpRequestStart;
-import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
-import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import org.osoa.sca.annotations.EagerInit;
+import org.osoa.sca.annotations.Service;
+
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
@@ -43,13 +40,20 @@ import org.apache.tuscany.spi.event.EventPublisher;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.model.Scope;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Service;
+
+import org.apache.tuscany.core.component.event.HttpRequestEnded;
+import org.apache.tuscany.core.component.event.HttpRequestStart;
+import org.apache.tuscany.core.component.event.HttpSessionEnd;
+import org.apache.tuscany.core.component.event.HttpSessionStart;
+import org.apache.tuscany.host.servlet.ServletRequestInjector;
 
 /**
  * A <code>ServletHost</code> implementation that forwards requests to registered servlets
+ *
+ * @version $Rev$ $Date$
  */
 @Service(ServletHost.class)
+@EagerInit
 public class ServletHostImpl implements ServletHost, ServletRequestInjector, EventPublisher {
     protected Map<String, Servlet> servlets;
     protected ScopeRegistry registry;
@@ -69,10 +73,6 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector, Eve
         this.workContext = workContext;
     }
 
-    @Init(eager = true)
-    public void init() {
-    }
-
     public void service(ServletRequest req, ServletResponse resp) throws ServletException, IOException {
         assert req instanceof HttpServletRequest : "implementation only supports HttpServletRequest";
         String path = ((HttpServletRequest) req).getPathInfo();
@@ -89,10 +89,10 @@ public class ServletHostImpl implements ServletHost, ServletRequestInjector, Eve
         }
         servlets.put(path, servlet);
     }
-    
+
     public boolean isMappingRegistered(String mapping) {
         return servlets.containsKey(mapping);
-        
+
     }
 
     public Servlet unregisterMapping(String path) {
