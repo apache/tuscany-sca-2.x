@@ -3,7 +3,6 @@ package org.apache.tuscany.core.loader;
 import java.io.PrintWriter;
 
 import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.annotation.Autowire;

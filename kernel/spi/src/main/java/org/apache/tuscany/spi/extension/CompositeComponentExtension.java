@@ -301,7 +301,8 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         // FIXME JNB make this faster and thread safe
         for (Map.Entry<Class, InboundWire> service : systemAutowireInternal.entrySet()) {
             if (instanceInterface.isAssignableFrom(service.getKey())) {
-                return service.getValue();            }
+                return service.getValue();
+            }
         }
         if (getParent() != null) {
             return getParent().resolveSystemAutowire(instanceInterface);

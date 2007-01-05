@@ -20,17 +20,14 @@ package org.apache.tuscany.core.services.management.jmx.runtime;
 
 import java.io.File;
 import java.net.URL;
-
 import javax.management.MBeanServer;
 
-import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 import org.apache.tuscany.host.AbstractRuntimeInfo;
 
 /**
  * Implementation for the <code>JmxRuntimeInfo</code> interface.
- * 
- * @version $Revision$ $Date: 2006-12-31 20:23:49 +0000 (Sun, 31 Dec
- *          2006) $
+ *
+ * @version $Revision$ $Date$
  */
 public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntimeInfo {
 
@@ -46,11 +43,11 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
 
     /**
      * Initializes the runtime info instance.
-     * 
-     * @param baseUrl Base Url.
+     *
+     * @param baseUrl          Base Url.
      * @param installDirectory Install directory.
-     * @param online Onlne indicator.
-     * @param mBeanServer MBean server.
+     * @param online           Onlne indicator.
+     * @param mBeanServer      MBean server.
      * @param managementDomain Management doamin for the runtime.
      */
     public JmxRuntimeInfoImpl(final URL baseUrl,
@@ -72,7 +69,7 @@ public class JmxRuntimeInfoImpl extends AbstractRuntimeInfo implements JmxRuntim
 
     /**
      * Returns the default domain used by the host.
-     * 
+     *
      * @return Default domain used by the host.
      */
     public final String getManagementDomain() {

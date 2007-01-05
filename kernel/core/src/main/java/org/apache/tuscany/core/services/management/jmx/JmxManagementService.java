@@ -22,10 +22,11 @@ import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.tuscany.core.services.management.jmx.instrument.InstrumentedComponent;
-import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.services.management.ManagementService;
+
+import org.apache.tuscany.core.services.management.jmx.instrument.InstrumentedComponent;
+import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 
 /**
  * JMX implementation of the management service.
@@ -33,35 +34,37 @@ import org.apache.tuscany.spi.services.management.ManagementService;
  * @version $Revision$ $Date$
  */
 public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
-    
+
     /**
      * MBean server used by the JMX management service.
      */
     private MBeanServer mBeanServer;
-    
+
     /**
      * Management domain used by the runtime.
      */
     private String managementDomain;
 
     /**
-     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(java.lang.String,org.apache.tuscany.spi.component.Component)
      * @throws JmxException In case of an unexpected JMX exception.
+     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(
+     *java.lang.String,org.apache.tuscany.spi.component.Component)
      */
     public final void registerComponent(String name, Component component) throws JmxException {
-        
+
         try {
             ObjectName on = new ObjectName(managementDomain + ":" + "type=component,name=" + name);
-            InstrumentedComponent mbean = new InstrumentedComponent(component);            
+            InstrumentedComponent mbean = new InstrumentedComponent(component);
             mBeanServer.registerMBean(mbean, on);
         } catch (JMException ex) {
             throw new JmxException(ex);
         }
-        
+
     }
 
     /**
      * Initializes the mbean server and management domain.
+     *
      * @param runtimeInfo Runtime info for the management service.
      */
     public void setRuntimeIno(final JmxRuntimeInfo runtimeInfo) {

@@ -20,7 +20,6 @@ package org.apache.tuscany.core.builder;
 
 import java.io.PrintWriter;
 
-import org.osoa.sca.annotations.Constructor;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 
