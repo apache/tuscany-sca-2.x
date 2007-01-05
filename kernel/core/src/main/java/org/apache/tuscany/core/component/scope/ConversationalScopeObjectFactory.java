@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -36,6 +36,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev: 450456 $$ $$Date: 2006-09-27 10:28:36 -0400 (Wed, 27 Sep 2006) $$
  */
+@EagerInit
 public class ConversationalScopeObjectFactory implements ObjectFactory<ConversationalScopeContainer> {
     private WorkContext context;
     private Store store;
@@ -50,11 +51,6 @@ public class ConversationalScopeObjectFactory implements ObjectFactory<Conversat
         this.store = store;
         this.monitor = monitor;
     }
-
-    @Init(eager = true)
-    public void init() {
-    }
-
 
     public ConversationalScopeContainer getInstance() throws ObjectCreationException {
         return new ConversationalScopeContainer(store, context, monitor);

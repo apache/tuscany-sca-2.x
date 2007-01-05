@@ -21,17 +21,18 @@ package org.apache.tuscany.core.databinding.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osoa.sca.annotations.EagerInit;
+
 import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.TransformerRegistry;
-import org.osoa.sca.annotations.Init;
 
+/**
+ * @version $Rev$ $Date$
+ */
+@EagerInit
 public class TransformerRegistryImpl implements TransformerRegistry {
 
     private final DirectedGraph<Object, Transformer> graph = new DirectedGraph<Object, Transformer>();
-
-    @Init(eager = true)
-    public void init() {
-    }
 
     public void registerTransformer(String sourceType, String resultType, int weight, Transformer transformer) {
         graph.addEdge(sourceType, resultType, transformer, weight);
@@ -39,9 +40,9 @@ public class TransformerRegistryImpl implements TransformerRegistry {
 
     public void registerTransformer(Transformer transformer) {
         graph.addEdge(transformer.getSourceDataBinding(),
-                      transformer.getTargetDataBinding(),
-                      transformer,
-                      transformer.getWeight());
+            transformer.getTargetDataBinding(),
+            transformer,
+            transformer.getWeight());
     }
 
     public boolean unregisterTransformer(String sourceType, String resultType) {

@@ -18,7 +18,7 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.ObjectFactory;
@@ -34,6 +34,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev$$ $$Date$$
  */
+@EagerInit
 public class CompositeScopeObjectFactory implements ObjectFactory<CompositeScopeContainer> {
     private ScopeContainerMonitor monitor;
 
@@ -41,10 +42,6 @@ public class CompositeScopeObjectFactory implements ObjectFactory<CompositeScope
                                        @Monitor ScopeContainerMonitor monitor) {
         registry.registerFactory(Scope.COMPOSITE, this);
         this.monitor = monitor;
-    }
-
-    @Init(eager = true)
-    public void init() {
     }
 
     public CompositeScopeContainer getInstance() throws ObjectCreationException {
