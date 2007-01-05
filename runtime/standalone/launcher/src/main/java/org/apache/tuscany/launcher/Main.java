@@ -18,13 +18,13 @@
  */
 package org.apache.tuscany.launcher;
 
-import java.beans.Beans;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -46,52 +46,83 @@ public class Main {
      * Main method.
      *
      * @param args the command line args
+     * @throws Throwable if there are problems launching the runtime or application
      */
     public static void main(String[] args) throws Throwable {
         if (args.length == 0) {
             usage();
         }
-        Main booter = new Main();
 
-        File installDir = DirectoryHelper.getInstallDirectory(Main.class);
-        URL baseUrl = installDir.toURI().toURL();
-        File bootDir = getBootDirectory(installDir);
-
-        boolean online = !Boolean.parseBoolean(System.getProperty("offline", Boolean.FALSE.toString()));
-        StandaloneRuntimeInfo runtimeInfo = new StandaloneRuntimeInfoImpl(baseUrl, installDir, installDir, online);
+        StandaloneRuntimeInfo runtimeInfo = createRuntimeInfo();
+        TuscanyRuntime runtime = createRuntime(runtimeInfo);
 
         File applicationJar = new File(args[0]);
         URL applicationURL = applicationJar.toURI().toURL();
         String[] appArgs = new String[args.length - 1];
         System.arraycopy(args, 1, appArgs, 0, appArgs.length);
 
-        ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
-        ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDir);
-        ClassLoader applicationClassLoader = new URLClassLoader(new URL[]{applicationURL}, hostClassLoader);
+        ClassLoader applicationClassLoader =
+            new URLClassLoader(new URL[]{applicationURL}, runtime.getHostClassLoader());
 
-        URL systemScdl = booter.getSystemScdl(bootClassLoader);
-        URL applicationScdl = booter.getApplicationScdl(applicationClassLoader);
+        URL applicationScdl = getApplicationScdl(applicationClassLoader);
 
-        String className = System.getProperty("tuscany.launcherClass",
-                                              "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
-        TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
-        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
-        runtime.setSystemScdl(systemScdl);
-        runtime.setHostClassLoader(hostClassLoader);
         runtime.setApplicationName("application");
         runtime.setApplicationScdl(applicationScdl);
         runtime.setApplicationClassLoader(applicationClassLoader);
-        runtime.setRuntimeInfo(runtimeInfo);
         runtime.initialize();
         SCA context = runtime.getContext();
 
         try {
             context.start();
-            booter.runApplication(applicationJar, applicationClassLoader, appArgs);
+            runApplication(applicationJar, applicationClassLoader, appArgs);
         } finally {
             context.stop();
             runtime.destroy();
         }
+    }
+
+    static StandaloneRuntimeInfo createRuntimeInfo() throws IOException {
+        // get profile to use, defaulting to "launcher"
+        String profile = System.getProperty("tuscany.profile", "launcher");
+
+        File installDir = DirectoryHelper.getInstallDirectory(Main.class);
+        File profileDir = DirectoryHelper.getProfileDirectory(installDir, profile);
+
+        // load properties for this runtime
+        File propFile = new File(profileDir, "etc/runtime.properties");
+        Properties props = DirectoryHelper.loadProperties(propFile, System.getProperties());
+
+        // online unless the offline property is set
+        boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
+
+        return new StandaloneRuntimeInfoImpl(profile, installDir, profileDir, null, online, props);
+    }
+
+    static TuscanyRuntime createRuntime(StandaloneRuntimeInfo runtimeInfo) throws Exception {
+        File installDir = runtimeInfo.getInstallDirectory();
+        File profileDir = runtimeInfo.getProfileDirectory();
+        URL profileURL = DirectoryHelper.toURL(profileDir);
+        ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
+
+        // create the classloader for booting the runtime
+        String bootPath = runtimeInfo.getProperty("tuscany.bootDir", null);
+        File bootDir = DirectoryHelper.getBootDirectory(installDir, profileDir, bootPath);
+        ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDir);
+
+        // locate the system SCDL
+        URL systemSCDL = new URL(profileURL, runtimeInfo.getProperty("tuscany.systemSCDL", "system.scdl"));
+
+        // locate the implementation
+        String className = runtimeInfo.getProperty("tuscany.runtimeClass",
+                                                   "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
+        Class<?> implClass = Class.forName(className, true, bootClassLoader);
+        
+        TuscanyRuntime runtime = (TuscanyRuntime) implClass.newInstance();
+        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
+        runtime.setHostClassLoader(hostClassLoader);
+        runtime.setSystemScdl(systemSCDL);
+        runtime.setRuntimeInfo(runtimeInfo);
+        return runtime;
     }
 
     private static void usage() {
@@ -100,7 +131,7 @@ public class Main {
         System.exit(1);
     }
 
-    protected void runApplication(File applicationJar, ClassLoader applicationClassLoader, String[] args)
+    static void runApplication(File applicationJar, ClassLoader applicationClassLoader, String[] args)
         throws Throwable {
 
         Manifest manifest = new JarFile(applicationJar).getManifest();
@@ -125,50 +156,8 @@ public class Main {
         }
     }
 
-    /**
-     * Find the directory containing the bootstrap jars. If the <code>tuscany.bootDir</code> system property is set then
-     * its value is used as the boot directory. Otherwise, we locate a jar file containing this class and return a
-     * "boot" directory that is a sibling to the directory that contains it. This class must be loaded from a jar file
-     * located on the local filesystem.
-     *
-     * @return the directory of the bootstrap jars
-     */
-    protected File findBootDir() {
-        String property = System.getProperty("tuscany.bootDir");
-        if (property != null) {
-            return new File(property);
-        }
-
-        URL url = Main.class.getResource("Main.class");
-        if (!"jar".equals(url.getProtocol())) {
-            throw new IllegalStateException("Must be run from a jar: " + url);
-        }
-        String jarLocation = url.toString();
-        jarLocation = jarLocation.substring(4, jarLocation.lastIndexOf("!/"));
-        if (!jarLocation.startsWith("file:")) {
-            throw new IllegalStateException("Must be run from a local filesystem: " + jarLocation);
-        }
-
-        File jarFile = new File(URI.create(jarLocation));
-        return new File(jarFile.getParentFile().getParentFile(), "boot");
-    }
-
-    protected URL getSystemScdl(ClassLoader bootClassLoader) {
-        String resource = System.getProperty("tuscany.systemScdlPath", "META-INF/tuscany/system.scdl");
-        return bootClassLoader.getResource(resource);
-    }
-
-    protected URL getApplicationScdl(ClassLoader applicationClassLoader) {
+    static URL getApplicationScdl(ClassLoader applicationClassLoader) {
         String resource = System.getProperty("tuscany.applicationScdlPath", "META-INF/sca/default.scdl");
         return applicationClassLoader.getResource(resource);
-    }
-
-    public static File getBootDirectory(File installDirectory) {
-        // use system property if defined
-        String property = System.getProperty("tuscany.bootDir");
-        if (property != null) {
-            return new File(property);
-        }
-        return new File(installDirectory, "boot");
     }
 }

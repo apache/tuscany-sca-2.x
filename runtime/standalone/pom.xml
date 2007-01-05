@@ -39,22 +39,7 @@
         <module>server.start</module>
         <module>server.shutdown</module>
         <module>plugin.standalone</module>
+        <module>assembly</module>
+        <module>smoketest</module>
     </modules>
-
-    <build>
-        <defaultGoal>install</defaultGoal>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-SNAPSHOT</version>
-                <configuration>
-                    <finalName>tuscany-sca-standalone-${sca.version}</finalName>
-                    <descriptors>
-                        <descriptor>standalone.xml</descriptor>
-                    </descriptors>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

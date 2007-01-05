@@ -1,0 +1,1 @@
+usage: java [jvm-options] -jar launcher.jar <jar> [args...]
