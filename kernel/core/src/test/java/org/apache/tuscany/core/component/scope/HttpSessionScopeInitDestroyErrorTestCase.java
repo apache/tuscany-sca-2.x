@@ -18,11 +18,12 @@
  */
 package org.apache.tuscany.core.component.scope;
 
-import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -35,30 +36,13 @@ import org.easymock.EasyMock;
  */
 public class HttpSessionScopeInitDestroyErrorTestCase extends TestCase {
 
-    public void testInitializeErrorMonitor() throws Exception {
-        ScopeContainerMonitor monitor;
-        monitor = EasyMock.createMock(ScopeContainerMonitor.class);
-        monitor.eagerInitializationError(EasyMock.isA(ObjectCreationException.class));
-        EasyMock.replay(monitor);
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(new WorkContextImpl(), monitor);
-        scope.start();
-        AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
-        component.addListener(EasyMock.isA(RuntimeEventListener.class));
-        EasyMock.expect(component.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(component.createInstance()).andThrow(new ObjectCreationException(""));
-        EasyMock.expect(component.isEagerInit()).andReturn(true);
-        EasyMock.replay(component);
-        scope.register(component);
-        scope.onEvent(new HttpSessionStart(this, new Object()));
-        EasyMock.verify(monitor);
-    }
-
     public void testDestroyErrorMonitor() throws Exception {
         ScopeContainerMonitor monitor;
         monitor = EasyMock.createMock(ScopeContainerMonitor.class);
         monitor.destructionError(EasyMock.isA(TargetDestructionException.class));
         EasyMock.replay(monitor);
-        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(new WorkContextImpl(), monitor);
+        WorkContext workContext = new WorkContextImpl();
+        HttpSessionScopeContainer scope = new HttpSessionScopeContainer(workContext, monitor);
         scope.start();
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         component.addListener(EasyMock.isA(RuntimeEventListener.class));
@@ -72,6 +56,8 @@ public class HttpSessionScopeInitDestroyErrorTestCase extends TestCase {
         scope.register(component);
         Object id = new Object();
         scope.onEvent(new HttpSessionStart(this, id));
+        workContext.setIdentifier(Scope.SESSION, id);
+        scope.getInstance(component);
         scope.onEvent(new HttpSessionEnd(this, id));
         EasyMock.verify(monitor);
     }
