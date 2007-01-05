@@ -18,31 +18,22 @@
  */
 package org.apache.tuscany.spi.services.management;
 
-import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.component.Component;
 
 /**
- * Interface for the management service abstraction. The implementaion 
- * could be based on a variety of technologies including JMX, WSDM, 
+ * Interface for the management service abstraction. The implementaion
+ * could be based on a variety of technologies including JMX, WSDM,
  * SNMP etc.
- * 
- * @version $Revision$ $Date$
  *
+ * @version $Revision$ $Date$
  */
-public interface ManagementService<R extends RuntimeInfo> {
-    
+public interface ManagementService {
+
     /**
      * Registers a component for management.
-     * 
-     * @param name Name of the component.
+     *
+     * @param name      Name of the component.
      * @param component Component to be registered.
      */
     void registerComponent(String name, Component component);
-    
-    /**
-     * Sets the runtime info used by the management service.
-     * @param runtimeInfo Runtime info for the management service.
-     */
-    void setRuntimeIno(R runtimeInfo);
-
 }

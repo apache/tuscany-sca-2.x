@@ -75,7 +75,8 @@ public class JmxRuntimeImpl extends AbstractRuntime {
         // register the runtime info provided by the host
         JmxRuntimeInfo runtimeInfo = (JmxRuntimeInfo)getRuntimeInfo();
 
-        ManagementService mgs = new JmxManagementService(runtimeInfo);
+        ManagementService mgs = new JmxManagementService(runtimeInfo.getMBeanServer(),
+                                                         runtimeInfo.getManagementDomain());
         
         try {
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
