@@ -23,7 +23,6 @@
     <formats>
         <format>zip</format>
         <format>tar.gz</format>
-        <format>dir</format>
     </formats>
 
     <files>
@@ -47,33 +46,43 @@
         </fileSet>
     </fileSets>
 
-    <moduleSets>
-        <!-- moduleSet for executable commands placed in the bin directory -->
-        <moduleSet>
+    <dependencySets>
+        <!-- copy executable commands to the bin directory without version info -->
+        <dependencySet>
             <includes>
                 <include>org.apache.tuscany.sca.runtime.standalone:launcher</include>
             </includes>
-            <binaries>
-                <!-- copy jars to bin directory without dependencies or version information -->
-                <outputDirectory>bin</outputDirectory>
-                <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
-                <unpack>false</unpack>
-                <includeDependencies>false</includeDependencies>
-                <fileMode>775</fileMode>
-            </binaries>
-        </moduleSet>
+            <excludes>
+                <exclude>org.apache.tuscany.sca.runtime.standalone:standalone-api</exclude>
+            </excludes>
+            <outputDirectory>bin</outputDirectory>
+            <outputFileNameMapping>${artifactId}.${extension}</outputFileNameMapping>
+            <fileMode>755</fileMode>
+        </dependencySet>
 
-        <!-- moduleSet for dependencies used by the executable commands -->
-        <moduleSet>
+        <!-- copy dependencies used by the executable commands to the lib directory -->
+        <dependencySet>
             <includes>
-                <include>org.apache.tuscany.sca.runtime.standalone:launcher</include>
+                <include>org.apache.tuscany.sca.runtime.standalone:standalone-api</include>
+                <include>org.osoa:sca-api-r0.95</include>
+                <include>org.apache.tuscany.sca.kernel:tuscany-api</include>
+                <include>org.apache.tuscany.sca.kernel:tuscany-host-api</include>
             </includes>
-            <binaries>
-                <outputDirectory>lib</outputDirectory>
-                <unpack>false</unpack>
-                <fileMode>664</fileMode>
-            </binaries>
-        </moduleSet>
-    </moduleSets>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+
+        <!-- copy boot dependencies to launcher profile -->
+        <dependencySet>
+            <includes>
+                <include>org.apache.tuscany.sca.runtime.standalone:standalone-host</include>
+            </includes>
+            <excludes>
+                <exclude>org.apache.tuscany.sca.runtime.standalone:standalone-api</exclude>
+                <exclude>org.apache.tuscany.sca.kernel:tuscany-host-api</exclude>
+                <exclude>junit:junit</exclude>
+            </excludes>
+            <outputDirectory>profiles/launcher/boot</outputDirectory>
+        </dependencySet>
+    </dependencySets>
 </assembly>
 

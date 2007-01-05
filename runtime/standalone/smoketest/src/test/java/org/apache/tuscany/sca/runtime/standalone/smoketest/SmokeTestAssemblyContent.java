@@ -16,38 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.runtime.standalone;
+package org.apache.tuscany.sca.runtime.standalone.smoketest;
 
 import java.io.File;
-
-import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * @version $Rev$ $Date$
  */
-public interface StandaloneRuntimeInfo extends RuntimeInfo {
-    static String COMPONENT_NAME = "StandaloneRuntimeInfo";
-
-    /**
-     * Returns the name of this runtime's profile.
-     *
-     * @return the name of this runtime's profile
-     */
-    String getProfileName();
-
-    /**
-     * Returns the directory containing this runtime's profile.
-     *
-     * @return the directory containing this runtime's profile
-     */
-    File getProfileDirectory();
-
-    /**
-     * Return the value of the named property.
-     *
-     * @param name         the name of the property
-     * @param defaultValue default value to return if the property is not defined
-     * @return the value of the named property
-     */
-    String getProperty(String name, String defaultValue);
+public class SmokeTestAssemblyContent extends CommandTestCase {
+    public void testLegalFilesArePresent() {
+        assertTrue(installDir.exists());
+        assertTrue(installDir.isDirectory());
+        assertTrue(new File(installDir, "LICENSE.txt").exists());
+        assertTrue(new File(installDir, "NOTICE.txt").exists());
+    }
 }

@@ -19,7 +19,7 @@
 package org.apache.tuscany.runtime.standalone;
 
 import java.io.File;
-import java.net.URL;
+import java.util.Properties;
 
 import org.apache.tuscany.host.AbstractRuntimeInfo;
 
@@ -27,21 +27,43 @@ import org.apache.tuscany.host.AbstractRuntimeInfo;
  * @version $Rev$ $Date$
  */
 public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements StandaloneRuntimeInfo {
+    private final String profileName;
+    private final File profileDirectory;
+    private final Properties properties;
 
     /**
      * Initializes the base URL, install directory, application root directory and
      * online mode.
-     * 
-     * @param baseURL Base URL for the runtime.
-     * @param installDirectory Installation directory.
+     *
+     * @param profileName              the runtime's profile name
+     * @param installDirectory         directory containing the standalone installation
+     * @param profileDirectory         directory containing this runtime's profile
      * @param applicationRootDirectory Application root directory.
-     * @param online Online mode.
+     * @param online                   true if this runtime should consider itself online
+     * @param properties               properties for this runtime
      */
-    public StandaloneRuntimeInfoImpl(URL baseURL, 
+    public StandaloneRuntimeInfoImpl(String profileName,
                                      File installDirectory,
+                                     File profileDirectory,
                                      File applicationRootDirectory,
-                                     boolean online) {
-        super(applicationRootDirectory, baseURL, installDirectory, online);
+                                     boolean online,
+                                     Properties properties) {
+        super(applicationRootDirectory, DirectoryHelper.toURL(installDirectory), installDirectory, online);
+        this.profileName = profileName;
+        this.profileDirectory = profileDirectory;
+        this.properties = properties;
+
     }
-    
+
+    public String getProfileName() {
+        return profileName;
+    }
+
+    public File getProfileDirectory() {
+        return profileDirectory;
+    }
+
+    public String getProperty(String name, String defaultValue) {
+        return properties.getProperty(name, defaultValue);
+    }
 }

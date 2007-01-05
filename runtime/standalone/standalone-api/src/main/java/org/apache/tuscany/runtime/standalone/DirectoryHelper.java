@@ -20,11 +20,14 @@ package org.apache.tuscany.runtime.standalone;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Properties;
 import java.util.jar.JarFile;
 
 /**
@@ -71,7 +74,7 @@ public final class DirectoryHelper {
         String name = clazz.getName();
         int last = name.lastIndexOf('.');
         if (last != -1) {
-            name = name.substring(last +1);
+            name = name.substring(last + 1);
         }
         name = name + ".class";
 
@@ -97,6 +100,33 @@ public final class DirectoryHelper {
     }
 
     /**
+     * Get the directory associated with a runtime profile.
+     * If the system property <code>tuscany.profileDir.${profileName}</code> is set then its value
+     * is used as the value for the profile directory. Otherwise, the directory ${installDir}/profiles/${profileName}
+     * is used.
+     *
+     * @param installDir  the installation directory
+     * @param profileName tha name of the profile
+     * @return the directory for the the specified profile
+     * @throws FileNotFoundException if the directory does not exist
+     */
+    public static File getProfileDirectory(File installDir, String profileName) throws FileNotFoundException {
+        String propName = "tuscany.profilePath." + profileName;
+        String profilePath = System.getProperty(propName);
+        File profileDir;
+        if (profilePath != null) {
+            profileDir = new File(profilePath);
+        } else {
+            profileDir = new File(new File(installDir, "profiles"), profileName);
+        }
+
+        if (!profileDir.isDirectory()) {
+            throw new FileNotFoundException("Unable to locate profile directory: " + profileDir.toString());
+        }
+        return profileDir;
+    }
+
+    /**
      * Gets the boot directory where all the boot libraries are stored. This
      * is expected to be a directory named <code>boot</code> under the install
      * directory.
@@ -113,6 +143,35 @@ public final class DirectoryHelper {
         }
         return bootDirectory;
 
+    }
+
+    /**
+     * Gets the boot directory for the specified profile.
+     * If the bootPath is not null then it is used to specify the location of the boot directory
+     * relative to the profile directory. Otherwise, if there is a directory named "boot" relative
+     * to the profile or install directory then it is used.
+     *
+     * @param installDir the installation directory
+     * @param profileDir the profile directory
+     * @param bootPath   the path to the boot directory
+     * @return the boot directory
+     * @throws FileNotFoundException if the boot directory does not exist
+     */
+    public static File getBootDirectory(File installDir, File profileDir, String bootPath)
+        throws FileNotFoundException {
+        File bootDir;
+        if (bootPath != null) {
+            bootDir = new File(profileDir, bootPath);
+        } else {
+            bootDir = new File(profileDir, "boot");
+            if (!bootDir.isDirectory()) {
+                bootDir = new File(installDir, "boot");
+            }
+        }
+        if (!bootDir.isDirectory()) {
+            throw new FileNotFoundException("Unable to locate boot directory: " + bootDir);
+        }
+        return bootDir;
     }
 
     /**
@@ -154,5 +213,45 @@ public final class DirectoryHelper {
         }
 
         return new URLClassLoader(urls, parent);
+    }
+
+    /**
+     * Load properties from the specified file.
+     * If the file does not exist then an empty properties object is returned.
+     *
+     * @param propFile the file to load from
+     * @param defaults defaults for the properties
+     * @return a Properties object loaded from the file
+     * @throws IOException if there was a problem loading the properties
+     */
+    public static Properties loadProperties(File propFile, Properties defaults) throws IOException {
+        Properties props = defaults == null ? new Properties() : new Properties(defaults);
+        FileInputStream is;
+        try {
+            is = new FileInputStream(propFile);
+        } catch (FileNotFoundException e) {
+            return props;
+        }
+        try {
+            props.load(is);
+            return props;
+        } finally {
+            is.close();
+        }
+    }
+
+    /**
+     * Convert a File to a URL. Equivalent to file.toURI().toURL()
+     *
+     * @param file the file to convert
+     * @return the URL for the File
+     */
+    public static URL toURL(File file) {
+        try {
+            return file.toURI().toURL();
+        } catch (MalformedURLException e) {
+            // toURI should have escaped this
+            throw new AssertionError();
+        }
     }
 }
