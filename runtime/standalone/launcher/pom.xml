@@ -57,7 +57,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.apache.tuscany.launcher.MainLauncherBooter</mainClass>
+                            <mainClass>org.apache.tuscany.launcher.Main</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>../lib/</classpathPrefix>
                         </manifest>
