@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 
-import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
@@ -277,65 +276,63 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     public InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        InboundWire wire = autowireInternal.get(instanceInterface);
-        if (wire != null) {
-            SCAObject parent = wire.getContainer();
+        // FIXME JNB make this faster and thread safe
+        for (Map.Entry<Class, InboundWire> service : autowireInternal.entrySet()) {
+            if (instanceInterface.isAssignableFrom(service.getKey())) {
+                InboundWire wire = service.getValue();
+                SCAObject parent = wire.getContainer();
 
-            if (parent instanceof AtomicComponent || parent instanceof ReferenceBinding
-                || parent instanceof ServiceBinding) {
-                return wire;
-            } else {
-                throw new IllegalTargetException("Autowire target must be a system type", parent.getName());
+                if (parent instanceof AtomicComponent
+                    || parent instanceof ReferenceBinding
+                    || parent instanceof ServiceBinding) {
+                    return wire;
+                } else {
+                    throw new IllegalTargetException("Autowire target must be a system type", parent.getName());
+                }
             }
-        } else {
-            // resolve to parent
-            if (getParent() == null) {
-                return null;
-            }
+        }
+        if (getParent() != null) {
             return getParent().resolveAutowire(instanceInterface);
         }
+        return null;
     }
 
     public InboundWire resolveSystemAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        InboundWire wire = systemAutowireInternal.get(instanceInterface);
-        if (wire != null) {
-            return wire;
-        } else {
-            // resolve to parent
-            if (getParent() != null) {
-                return getParent().resolveSystemAutowire(instanceInterface);
-            } else {
-                return null;
-            }
+        // FIXME JNB make this faster and thread safe
+        for (Map.Entry<Class, InboundWire> service : systemAutowireInternal.entrySet()) {
+            if (instanceInterface.isAssignableFrom(service.getKey())) {
+                return service.getValue();            }
         }
+        if (getParent() != null) {
+            return getParent().resolveSystemAutowire(instanceInterface);
+        }
+        return null;
     }
 
     public InboundWire resolveExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        InboundWire wire = autowireExternal.get(instanceInterface);
-        if (wire != null) {
-            try {
-                return wire;
-            } catch (CoreRuntimeException e) {
-                e.addContextName(getName());
-                throw e;
+        // FIXME JNB make this faster and thread safe
+        for (Map.Entry<Class, InboundWire> service : autowireExternal.entrySet()) {
+            if (instanceInterface.isAssignableFrom(service.getKey())) {
+                return service.getValue();
             }
-        } else {
-            return null;
         }
+        if (getParent() != null) {
+            return getParent().resolveAutowire(instanceInterface);
+        }
+        return null;
     }
 
     public InboundWire resolveSystemExternalAutowire(Class<?> instanceInterface) throws TargetResolutionException {
-        InboundWire wire = systemAutowireExternal.get(instanceInterface);
-        if (wire != null) {
-            try {
-                return wire;
-            } catch (CoreRuntimeException e) {
-                e.addContextName(getName());
-                throw e;
+        // FIXME JNB make this faster and thread safe
+        for (Map.Entry<Class, InboundWire> service : systemAutowireExternal.entrySet()) {
+            if (instanceInterface.isAssignableFrom(service.getKey())) {
+                return service.getValue();
             }
-        } else {
-            return null;
         }
+        if (getParent() != null) {
+            return getParent().resolveAutowire(instanceInterface);
+        }
+        return null;
     }
 
     public void prepare() throws PrepareException {
