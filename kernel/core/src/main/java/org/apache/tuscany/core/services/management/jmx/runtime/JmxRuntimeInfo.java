@@ -31,7 +31,7 @@ import org.apache.tuscany.host.RuntimeInfo;
 public interface JmxRuntimeInfo extends RuntimeInfo {
     
     /** Component name. */
-    static String COMPONENT_NAME = "JmxRuntimeInfo";
+    String COMPONENT_NAME = "JmxRuntimeInfo";
     
     /**
      * Returns a reference to the mbean server used by the host.

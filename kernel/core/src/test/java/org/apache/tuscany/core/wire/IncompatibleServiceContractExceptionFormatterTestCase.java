@@ -34,7 +34,8 @@ import org.easymock.EasyMock;
  */
 public class IncompatibleServiceContractExceptionFormatterTestCase extends TestCase {
     FormatterRegistry registry = EasyMock.createNiceMock(FormatterRegistry.class);
-    IncompatibleServiceContractExceptionFormatter formatter = new IncompatibleServiceContractExceptionFormatter(registry);
+    IncompatibleServiceContractExceptionFormatter formatter =
+        new IncompatibleServiceContractExceptionFormatter(registry);
 
     public void testFormat() throws Exception {
         ServiceContract<Object> source = new ServiceContract<Object>() {

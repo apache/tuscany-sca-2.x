@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.services.management.jmx.instrument;
 
 import java.util.Map;
-
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
@@ -30,15 +29,15 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 
-import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.model.PropertyValue;
 import org.w3c.dom.Document;
 
+import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.model.PropertyValue;
+
 /**
- * This is Ruscany component exposed as a dynamic MBean. Currently 
- * it only supports a read-only vew of all the properties on the 
- * component.
- * 
+ * This is Ruscany component exposed as a dynamic MBean. Currently it only supports a read-only vew of all the
+ * properties on the component.
+ *
  * @version $Revision$ $Date$
  */
 public class InstrumentedComponent implements DynamicMBean {
@@ -47,14 +46,15 @@ public class InstrumentedComponent implements DynamicMBean {
      * Properties available on the component.
      */
     private final Map<String, PropertyValue<?>> properties;
-    
+
     /**
      * Name of the component.
      */
     private String componentName;
-    
+
     /**
      * Initializes the property values.
+     *
      * @param component Component that is being managed.
      */
     @SuppressWarnings("unchecked")
@@ -62,13 +62,13 @@ public class InstrumentedComponent implements DynamicMBean {
         this.properties = component.getDefaultPropertyValues();
         this.componentName = component.getName();
     }
-    
+
     /**
      * @see javax.management.DynamicMBean#getAttribute(java.lang.String)
      */
     public final Object getAttribute(final String attribute) throws AttributeNotFoundException {
         PropertyValue<?> propertyValue = properties.get(attribute);
-        if(propertyValue != null) {
+        if (propertyValue != null) {
             return propertyValue.getValue();
         }
         throw new AttributeNotFoundException(attribute + " not found.");
@@ -78,41 +78,42 @@ public class InstrumentedComponent implements DynamicMBean {
      * @see javax.management.DynamicMBean#getAttributes(java.lang.String[])
      */
     public final AttributeList getAttributes(final String[] attributes) {
-        
+
         AttributeList list = new AttributeList();
-        for(String attribute : attributes) {
+        for (String attribute : attributes) {
             try {
                 list.add(new Attribute(attribute, getAttribute(attribute)));
-            } catch(AttributeNotFoundException ex) {
+            } catch (AttributeNotFoundException ex) {
                 throw new InstrumentationException(ex);
             }
         }
         return list;
-        
+
     }
 
     /**
      * @see javax.management.DynamicMBean#getMBeanInfo()
      */
     public final MBeanInfo getMBeanInfo() {
-        
+
         final MBeanConstructorInfo[] constructors = null;
         final MBeanOperationInfo[] operations = null;
         final MBeanNotificationInfo[] notifications = null;
-        
+
         final MBeanAttributeInfo[] attributes = new MBeanAttributeInfo[properties.size()];
-        
+
         int i = 0;
-        for(PropertyValue<?> propertyValue : properties.values()) {
-            attributes[i++] = new MBeanAttributeInfo(propertyValue.getName(), Document.class.getName(), null, true, false, false);
+        for (PropertyValue<?> propertyValue : properties.values()) {
+            attributes[i++] =
+                new MBeanAttributeInfo(propertyValue.getName(), Document.class.getName(), null, true, false, false);
         }
-        
+
         return new MBeanInfo(componentName, null, attributes, constructors, operations, notifications);
-        
+
     }
 
     /**
-     * @see javax.management.DynamicMBean#invoke(java.lang.String, java.lang.Object[], java.lang.String[])
+     * @see javax.management.DynamicMBean#invoke(java.lang.String,java.lang.Object[],java.lang.String[])
      */
     public final Object invoke(final String actionName, final Object[] params, final String[] signature) {
         throw new UnsupportedOperationException("Managed ops not supported");
