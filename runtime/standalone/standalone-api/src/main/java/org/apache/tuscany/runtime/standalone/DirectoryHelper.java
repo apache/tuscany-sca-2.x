@@ -71,7 +71,7 @@ public final class DirectoryHelper {
         String name = clazz.getName();
         int last = name.lastIndexOf('.');
         if (last != -1) {
-            name = name.substring(last);
+            name = name.substring(last +1);
         }
         name = name + ".class";
 
