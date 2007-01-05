@@ -93,6 +93,11 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         implementationClass = configuration.getImplementationClass();
     }
 
+
+    public boolean isDestroyable() {
+        return destroyInvoker != null;
+    }
+
     public void init(Object instance) throws TargetInitializationException {
         if (initInvoker != null) {
             try {

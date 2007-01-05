@@ -116,11 +116,15 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
-        // perform optimization, if possible
+        // perform optimization, if possible. Atomic component's do not have outbound target wires, but keep the check
+        // perform optimization, if possible. Note that optimizations on stateless targets are not performed if they
+        // receive destroy events since a destruction notification must be given through a proxy
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
             && WireUtils.isOptimizable(targetWire)
-            && targetWire.getContainer() instanceof AtomicComponent) {
+            && targetWire.getContainer() instanceof AtomicComponent
+            && targetWire.getContainer().getScope() == Scope.STATELESS
+            && !((AtomicComponent) targetWire.getContainer()).isDestroyable()) {
             sourceWire.setTargetWire(targetWire);
         }
     }
@@ -285,11 +289,14 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
-        // perform optimization, if possible
+        // perform optimization, if possible. Note that optimizations on stateless targets are not performed if they
+        // receive destroy events since a destruction notification must be given through a proxy
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
             && WireUtils.isOptimizable(targetWire)
-            && targetWire.getContainer() instanceof AtomicComponent) {
+            && targetWire.getContainer() instanceof AtomicComponent
+            && targetWire.getContainer().getScope() == Scope.STATELESS
+            && !((AtomicComponent) targetWire.getContainer()).isDestroyable()) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
