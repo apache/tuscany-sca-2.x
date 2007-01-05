@@ -24,7 +24,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
@@ -34,7 +33,6 @@ import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
-import org.apache.tuscany.core.component.event.HttpSessionStart;
 
 /**
  * A scope context which manages atomic component instances keyed on HTTP session
@@ -57,21 +55,7 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof HttpSessionStart) {
-            Object key = ((HttpSessionStart) event).getId();
-            workContext.setIdentifier(Scope.SESSION, key);
-            for (Map.Entry<AtomicComponent, Map<Object, InstanceWrapper>> entry : contexts.entrySet()) {
-                if (entry.getKey().isEagerInit()) {
-                    try {
-                        getInstance(entry.getKey(), key, true);
-                    } catch (ObjectCreationException e) {
-                        monitor.eagerInitializationError(e);
-                    } catch (TargetResolutionException e) {
-                        monitor.eagerInitializationError(e);
-                    }
-                }
-            }
-        } else if (event instanceof HttpSessionEnd) {
+        if (event instanceof HttpSessionEnd) {
             Object key = ((HttpSessionEnd) event).getId();
             shutdownInstances(key);
             workContext.clearIdentifier(key);
@@ -96,11 +80,10 @@ public class HttpSessionScopeContainer extends AbstractScopeContainer {
     public void register(AtomicComponent component) {
         contexts.put(component, new ConcurrentHashMap<Object, InstanceWrapper>());
         component.addListener(this);
-
     }
 
-    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create) throws
-                                                                                            TargetResolutionException {
+    protected InstanceWrapper getInstanceWrapper(AtomicComponent component, boolean create)
+        throws TargetResolutionException {
         Object key = workContext.getIdentifier(Scope.SESSION);
         assert key != null : "HTTP session key not bound in work context";
         return getInstance(component, key, create);
