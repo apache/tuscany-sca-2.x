@@ -44,6 +44,6 @@ public class EagerInitProcessor extends ImplementationProcessorExtension {
         if (annotation == null) {
             return;
         }
-        type.setInitLevel(annotation.level());
+        type.setInitLevel(annotation.value());
     }
 }

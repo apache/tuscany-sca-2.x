@@ -72,8 +72,7 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeBuilder builder = new CompositeBuilder();
         WireService wireService = new JDKWireService();
         builder.setWireService(wireService);
-        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl();
-        builderRegistry.setWireService(wireService);
+        BuilderRegistryImpl builderRegistry = new BuilderRegistryImpl(null, wireService);
         JavaComponentBuilder jBuilder = new JavaComponentBuilder();
         jBuilder.setWireService(wireService);
         builderRegistry.register(JavaImplementation.class, jBuilder);

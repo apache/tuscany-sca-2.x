@@ -35,7 +35,7 @@ public class EagerInitProcessorTestCase extends TestCase {
     private class NoLevel {
     }
 
-    @EagerInit(level = 1)
+    @EagerInit(1)
     private class Level {
     }
 
