@@ -42,7 +42,17 @@ public class EagerInitProcessor extends ImplementationProcessorExtension {
         super.visitClass(parent, clazz, type, context);
         EagerInit annotation = clazz.getAnnotation(EagerInit.class);
         if (annotation == null) {
-            return;
+            Class<?> superClass = clazz.getSuperclass();
+            while (!Object.class.equals(superClass)) {
+                annotation = superClass.getAnnotation(EagerInit.class);
+                if (annotation != null) {
+                    break;
+                }
+                superClass = superClass.getSuperclass();
+            }
+            if (annotation == null) {
+                return;
+            }
         }
         type.setInitLevel(annotation.value());
     }
