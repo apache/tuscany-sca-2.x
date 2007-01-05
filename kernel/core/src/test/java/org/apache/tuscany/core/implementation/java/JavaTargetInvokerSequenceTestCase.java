@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.java;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -39,6 +40,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.replay(foo);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(foo);
+        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null, null);
         Message msg = new MessageImpl();
@@ -57,6 +59,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.replay(foo);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getTargetInstance()).andReturn(foo);
+        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null, null);
         Message msg = new MessageImpl();
@@ -75,6 +78,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.replay(foo);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
+        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null, null);
         Message msg = new MessageImpl();
@@ -94,6 +98,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.replay(foo);
         JavaAtomicComponent component = EasyMock.createMock(JavaAtomicComponent.class);
         EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
+        EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         component.removeInstance();
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null, null);
