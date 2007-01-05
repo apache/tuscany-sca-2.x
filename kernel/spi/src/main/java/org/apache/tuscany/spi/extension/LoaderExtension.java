@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.EagerInit;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
@@ -33,6 +34,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public abstract class LoaderExtension<T extends ModelObject> implements StAXElementLoader<T> {
     /**
      * The LoaderRegistry that this loader should register with; usually set by injection. This registry may also be
@@ -54,7 +56,7 @@ public abstract class LoaderExtension<T extends ModelObject> implements StAXElem
      * type returned by {@link #getXMLType()}. Implementations may override this to register the loader as a handler for
      * multiple XML types.
      */
-    @Init(eager = true)
+    @Init
     public void start() {
         registry.registerLoader(getXMLType(), this);
     }

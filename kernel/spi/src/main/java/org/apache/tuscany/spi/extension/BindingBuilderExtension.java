@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -39,6 +40,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $$Rev$$ $$Date$$
  */
+@EagerInit
 public abstract class BindingBuilderExtension<B extends BindingDefinition> implements BindingBuilder<B> {
 
     protected BuilderRegistry builderRegistry;
@@ -54,7 +56,7 @@ public abstract class BindingBuilderExtension<B extends BindingDefinition> imple
         this.wireService = wireService;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         builderRegistry.register(getBindingType(), this);
     }

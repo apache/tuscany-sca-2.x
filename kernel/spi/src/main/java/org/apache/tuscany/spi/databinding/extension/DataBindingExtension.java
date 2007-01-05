@@ -28,6 +28,7 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 import org.osoa.sca.annotations.Service;
@@ -43,8 +44,9 @@ import org.apache.tuscany.spi.model.DataType;
  *
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
 @Service(DataBinding.class)
+@Scope("COMPOSITE")
+@EagerInit
 public abstract class DataBindingExtension implements DataBinding {
 
     protected DataBindingRegistry registry;
@@ -78,7 +80,7 @@ public abstract class DataBindingExtension implements DataBinding {
         this.registry = registry;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         registry.register(this);
     }

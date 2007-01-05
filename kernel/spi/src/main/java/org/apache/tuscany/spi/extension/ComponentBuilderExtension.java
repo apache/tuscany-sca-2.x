@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -39,6 +40,7 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $$Rev$$ $$Date$$
  */
+@EagerInit
 public abstract class ComponentBuilderExtension<I extends Implementation<?>> implements ComponentBuilder<I> {
     protected BuilderRegistry builderRegistry;
     protected ScopeRegistry scopeRegistry;
@@ -89,7 +91,7 @@ public abstract class ComponentBuilderExtension<I extends Implementation<?>> imp
         this.monitor = monitor;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         builderRegistry.register(getImplementationType(), this);
     }

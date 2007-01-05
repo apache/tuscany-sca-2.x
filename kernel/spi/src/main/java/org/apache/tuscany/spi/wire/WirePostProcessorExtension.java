@@ -18,17 +18,18 @@
  */
 package org.apache.tuscany.spi.wire;
 
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Scope;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 
-@Scope("COMPOSITE")
 /**
  * @version $Rev$ $Date$
  */
+@Scope("COMPOSITE")
+@EagerInit
 public abstract class WirePostProcessorExtension implements WirePostProcessor {
-
     protected WirePostProcessorRegistry registry;
 
     @Autowire
@@ -36,7 +37,7 @@ public abstract class WirePostProcessorExtension implements WirePostProcessor {
         this.registry = registry;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         registry.register(this);
     }

@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.idl.java;
 
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 import org.apache.tuscany.spi.annotation.Autowire;
@@ -27,6 +28,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
  *
  * @version $Rev$ $Date$
  */
+@EagerInit
 public abstract class JavaInterfaceProcessorExtension implements JavaInterfaceProcessor {
 
     protected JavaInterfaceProcessorRegistry registry;
@@ -36,7 +38,7 @@ public abstract class JavaInterfaceProcessorExtension implements JavaInterfacePr
         this.registry = registry;
     }
 
-    @Init(eager = true)
+    @Init
     public void init() {
         registry.registerProcessor(this);
     }
