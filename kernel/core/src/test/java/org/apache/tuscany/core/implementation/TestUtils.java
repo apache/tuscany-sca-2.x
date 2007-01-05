@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -61,6 +62,13 @@ public final class TestUtils {
         InboundWire wire = new InboundWireImpl();
         JavaServiceContract contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
+        return wire;
+    }
+
+    public static InboundWire createInboundWire(Class<?> interfaze, CompositeComponent parent)
+        throws InvalidServiceContractException {
+        InboundWire wire = createInboundWire(interfaze);
+        wire.setContainer(parent);
         return wire;
     }
 }
