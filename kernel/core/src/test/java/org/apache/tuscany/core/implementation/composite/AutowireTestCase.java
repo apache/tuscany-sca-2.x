@@ -59,6 +59,8 @@ public class AutowireTestCase extends TestCase {
         parent.register(component);
         InboundWire source = parent.resolveSystemAutowire(Source.class);
         assertNotNull(source);
+        InboundWire sourceBase = parent.resolveSystemAutowire(SourceBase.class);
+        assertSame(source, sourceBase);
         InboundWire source2 = parent.resolveSystemAutowire(Source2.class);
         assertSame(source.getContainer(), source2.getContainer());
         assertNull(parent.resolveSystemExternalAutowire(Source.class));
@@ -87,6 +89,8 @@ public class AutowireTestCase extends TestCase {
 
         InboundWire source = parent.resolveAutowire(Source.class);
         assertNotNull(source);
+        InboundWire sourceBase = parent.resolveAutowire(SourceBase.class);
+        assertSame(source, sourceBase);
         InboundWire source2 = parent.resolveAutowire(Source2.class);
         assertSame(source.getContainer(), source2.getContainer());
         assertNull(parent.resolveExternalAutowire(Source.class));
@@ -118,6 +122,8 @@ public class AutowireTestCase extends TestCase {
 
         InboundWire source = parent.resolveSystemExternalAutowire(Source.class);
         assertSame(serviceBinding, source.getContainer());
+        InboundWire sourceBase = parent.resolveSystemExternalAutowire(SourceBase.class);
+        assertSame(source, sourceBase);
         InboundWire source2 = parent.resolveSystemExternalAutowire(Source2.class);
         assertNull(source2);
         EasyMock.verify(serviceBinding);
@@ -148,6 +154,8 @@ public class AutowireTestCase extends TestCase {
 
         InboundWire source = parent.resolveExternalAutowire(Source.class);
         assertSame(serviceBinding, source.getContainer());
+        InboundWire sourceBase = parent.resolveExternalAutowire(SourceBase.class);
+        assertSame(source, sourceBase);
         InboundWire source2 = parent.resolveExternalAutowire(Source2.class);
         assertNull(source2);
         EasyMock.verify(serviceBinding);
@@ -174,6 +182,8 @@ public class AutowireTestCase extends TestCase {
 
         InboundWire source = parent.resolveSystemAutowire(Source.class);
         assertNotNull(source);
+        InboundWire sourceBase = parent.resolveSystemAutowire(SourceBase.class);
+        assertSame(source, sourceBase);
         EasyMock.verify(binding);
     }
 
@@ -197,6 +207,8 @@ public class AutowireTestCase extends TestCase {
 
         InboundWire source = parent.resolveAutowire(Source.class);
         assertNotNull(source);
+        InboundWire sourceBase = parent.resolveAutowire(SourceBase.class);
+        assertSame(source, sourceBase);
         EasyMock.verify(binding);
     }
 
@@ -206,8 +218,10 @@ public class AutowireTestCase extends TestCase {
         }
     }
 
-    public static interface Source {
+    public static interface SourceBase {
+    }
 
+    public static interface Source extends SourceBase {
     }
 
     public static interface Source2 {
