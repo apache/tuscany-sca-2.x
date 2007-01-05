@@ -33,17 +33,29 @@ import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
  *
  * @version $Revision$ $Date$
  */
-public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
+public class JmxManagementService implements ManagementService {
 
     /**
      * MBean server used by the JMX management service.
      */
-    private MBeanServer mBeanServer;
+    private final MBeanServer mBeanServer;
 
     /**
      * Management domain used by the runtime.
      */
-    private String managementDomain;
+    private final String managementDomain;
+
+
+    /**
+     * Constructor that initializes the MBeanServer and domain to use for registering components.
+     *
+     * @param mBeanServer the MBeanServer components should be registered with
+     * @param managementDomain the JMX domain to use when generating ObjectNames
+     */
+    public JmxManagementService(MBeanServer mBeanServer, String managementDomain) {
+        this.mBeanServer = mBeanServer;
+        this.managementDomain = managementDomain;
+    }
 
     /**
      * @throws JmxException In case of an unexpected JMX exception.
@@ -61,15 +73,4 @@ public class JmxManagementService implements ManagementService<JmxRuntimeInfo> {
         }
 
     }
-
-    /**
-     * Initializes the mbean server and management domain.
-     *
-     * @param runtimeInfo Runtime info for the management service.
-     */
-    public void setRuntimeIno(final JmxRuntimeInfo runtimeInfo) {
-        this.mBeanServer = runtimeInfo.getMBeanServer();
-        this.managementDomain = runtimeInfo.getManagementDomain();
-    }
-
 }
