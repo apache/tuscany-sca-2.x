@@ -25,15 +25,20 @@ import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
+import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.implementation.java.Resource;
+import org.apache.tuscany.spi.wire.WireService;
+
+import org.apache.tuscany.core.injection.ContextObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.DeploymentContext;
 
 /**
  * Processes {@link @Context} annotations on a component implementation and adds a {@link JavaMappedProperty} to the
@@ -42,8 +47,15 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
  * @version $Rev$ $Date$
  */
 public class ContextProcessor extends ImplementationProcessorExtension {
+    private WireService wireService;
 
-    public void visitMethod(CompositeComponent parent, Method method,
+    @Autowire
+    public void setWireService(WireService wireService) {
+        this.wireService = wireService;
+    }
+
+    public void visitMethod(CompositeComponent parent,
+                            Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                             DeploymentContext context)
         throws ProcessingException {
@@ -59,35 +71,41 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             if (name.startsWith("set")) {
                 name = JavaIntrospectionHelper.toPropertyName(name);
             }
-            JavaMappedProperty property = new JavaMappedProperty();
-            property.setName(name);
-            property.setMember(method);
-            throw new UnsupportedOperationException();
-            // TODO pass in composite context
-            //SingletonObjectFactory factory = new SingletonObjectFactory(compositeContext);
-            //property.setDefaultValueFactory(factory);
-            //type.getProperties().put(name,property);
+            Resource resource = new Resource();
+            resource.setName(name);
+            resource.setMember(method);
+            resource.setObjectFactory(new ContextObjectFactory(parent, wireService));
+            type.getResources().put(name, resource);
         } else if (RequestContext.class.equals(paramType)) {
             String name = method.getName();
             if (name.startsWith("set")) {
                 name = JavaIntrospectionHelper.toPropertyName(name);
             }
-            JavaMappedProperty property = new JavaMappedProperty();
-            property.setName(name);
-            property.setMember(method);
+            Resource resource = new Resource();
+            resource.setName(name);
+            resource.setMember(method);
             throw new UnsupportedOperationException();
-            // TODO pass in request context
-            //property.setDefaultValueFactory(factory);
-            //type.getProperties().put(name,property);
         } else {
             throw new UnknownContextTypeException(paramType.getName());
         }
-
     }
 
     public void visitField(CompositeComponent parent, Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
-        super.visitField(parent, field, type, context);
+        if (field.getAnnotation(Context.class) == null) {
+            return;
+        }
+        Class<?> paramType = field.getType();
+        if (CompositeContext.class.equals(paramType)) {
+            String name = field.getName();
+            Resource resource = new Resource();
+            resource.setName(name);
+            resource.setMember(field);
+            resource.setObjectFactory(new ContextObjectFactory(parent, wireService));
+            type.getResources().put(name, resource);
+        } else {
+            throw new UnknownContextTypeException(paramType.getName());
+        }
     }
 }
