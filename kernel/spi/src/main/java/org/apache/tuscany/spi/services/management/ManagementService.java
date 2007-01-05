@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.services.management;
 
+import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.component.Component;
 
 /**
@@ -28,7 +29,7 @@ import org.apache.tuscany.spi.component.Component;
  * @version $Revision$ $Date$
  *
  */
-public interface ManagementService {
+public interface ManagementService<R extends RuntimeInfo> {
     
     /**
      * Registers a component for management.
@@ -37,5 +38,11 @@ public interface ManagementService {
      * @param component Component to be registered.
      */
     void registerComponent(String name, Component component);
+    
+    /**
+     * Sets the runtime info used by the management service.
+     * @param runtimeInfo Runtime info for the management service.
+     */
+    void setRuntimeIno(R runtimeInfo);
 
 }
