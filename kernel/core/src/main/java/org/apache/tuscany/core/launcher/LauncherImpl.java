@@ -35,6 +35,7 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.services.management.ManagementService;
 
 import org.apache.tuscany.api.TuscanyException;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -79,7 +80,8 @@ public class LauncherImpl implements Launcher {
         }
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", systemClassLoader);
-        Bootstrapper bootstrapper = new DefaultBootstrapper(monitor, xmlFactory);
+        ManagementService managementService = null;
+        Bootstrapper bootstrapper = new DefaultBootstrapper(monitor, xmlFactory, managementService);
         Deployer bootDeployer = bootstrapper.createDeployer();
 
         // create and start the core runtime
