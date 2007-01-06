@@ -36,22 +36,28 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.services.management.ManagementService;
 
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * Produces system composite components by evaluating an assembly.
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemCompositeImplementation> {
+    private ManagementService managementService;
+
     public SystemCompositeBuilder() {
     }
 
-    public SystemCompositeBuilder(BuilderRegistry builderRegistry, Connector connector) {
+    public SystemCompositeBuilder(BuilderRegistry builderRegistry,
+                                  Connector connector,
+                                  ManagementService managementService) {
         this.builderRegistry = builderRegistry;
         this.connector = connector;
+        this.managementService = managementService;
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +74,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         List<BoundServiceDefinition> allBoundServices = new ArrayList<BoundServiceDefinition>();
         for (ServiceDefinition serviceDefinition : componentType.getServices().values()) {
             if (serviceDefinition instanceof BoundServiceDefinition) {
-                BoundServiceDefinition boundService = (BoundServiceDefinition) serviceDefinition;
+                BoundServiceDefinition boundService = (BoundServiceDefinition)serviceDefinition;
                 allBoundServices.add(boundService);
             }
         }
@@ -76,6 +82,7 @@ public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemComp
         // create the composite component
         String name = componentDefinition.getName();
         CompositeComponent component = new CompositeComponentImpl(name, parent, connector, true);
+        component.setManagementService(managementService);
         for (ComponentDefinition<? extends Implementation> childComponentDefinition : allComponents) {
             Component child;
             try {
