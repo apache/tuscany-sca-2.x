@@ -27,11 +27,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 
-import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.jmx.info.JmxRuntimeInfoImpl;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
@@ -105,7 +105,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, profileName);
 
             final MBeanServer mBeanServer = agent.getMBeanServer();            
-            final RuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer, managementDomain);
+            final StandaloneRuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer, managementDomain);
 
             final ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
             final ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDirectory);
@@ -116,7 +116,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             }
 
             final String className =
-                System.getProperty("tuscany.launcherClass",
+                runtimeInfo.getProperty("tuscany.launcherClass",
                                    "org.apache.tuscany.runtime.standalone.jmx.JmxRuntimeImpl");
             final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
             runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
