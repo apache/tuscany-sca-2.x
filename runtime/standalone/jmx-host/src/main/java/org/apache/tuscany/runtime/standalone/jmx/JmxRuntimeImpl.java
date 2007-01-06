@@ -22,6 +22,8 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
 
+import org.apache.tuscany.runtime.standalone.jmx.info.JmxRuntimeInfo;
+import org.apache.tuscany.runtime.standalone.jmx.management.JmxManagementService;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -42,9 +44,6 @@ import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.runtime.InitializationException;
-
-import org.apache.tuscany.core.services.management.jmx.JmxManagementService;
-import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfo;
 
 /**
  * JMX runtime implementation.
