@@ -18,8 +18,10 @@
  */
 package org.apache.tuscany.core.component;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -37,6 +39,7 @@ public class WorkContextImpl implements WorkContext {
     private static final Object CORRELATION_ID = new Object();
     private static final Object CALLBACK_ROUTING_CHAIN = new Object();
     private static final Object CURRENT_ATOMIC = new Object();
+    private static final Object CURRENT_SERVICE_NAMES = new Object();
 
     // [rfeng] We cannot use InheritableThreadLocal for message ids here since it's shared by parent and children
     private ThreadLocal<Map<Object, Object>> workContext = new ThreadLocal<Map<Object, Object>>();
@@ -137,6 +140,64 @@ public class WorkContextImpl implements WorkContext {
 
     public void clearIdentifiers() {
         inheritableContext.remove();
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public String popServiceName() {
+        Map<Object, Object> map = inheritableContext.get();
+        if (map == null) {
+            return null;
+        }
+        List<String> stack = (List) map.get(CURRENT_SERVICE_NAMES);
+        if (stack == null || stack.size() < 1) {
+            return null;
+        }
+        String name = stack.remove(stack.size() - 1);
+        if (stack.size() == 0) {
+            // cleanup to avoid leaks
+            map.remove(CURRENT_SERVICE_NAMES);
+        }
+        return name;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public String getCurrentServiceName() {
+        Map<Object, Object> map = inheritableContext.get();
+        if (map == null) {
+            return null;
+        }
+        List<String> stack = (List) map.get(CURRENT_SERVICE_NAMES);
+        if (stack == null || stack.size() < 1) {
+            return null;
+        }
+        return stack.get(stack.size() - 1);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void pushServiceName(String name) {
+        Map<Object, Object> map = inheritableContext.get();
+        List<String> names;
+        if (map == null) {
+            map = new IdentityHashMap<Object, Object>();
+            inheritableContext.set(map);
+            names = new ArrayList<String>();
+            map.put(CURRENT_SERVICE_NAMES, names);
+        } else {
+            names = (List<String>) map.get(CURRENT_SERVICE_NAMES);
+            if (names == null) {
+                names = new ArrayList<String>();
+                map.put(CURRENT_SERVICE_NAMES, names);
+            }
+        }
+        names.add(name);
+    }
+
+    public void clearServiceNames() {
+        Map<Object, Object> map = inheritableContext.get();
+        if (map == null) {
+            return;
+        }
+        map.remove(CURRENT_SERVICE_NAMES);
     }
 
     private Map<Object, Object> getWorkContextMap() {

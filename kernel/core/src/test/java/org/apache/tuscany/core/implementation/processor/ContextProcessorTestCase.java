@@ -22,9 +22,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.osoa.sca.CompositeContext;
+import org.osoa.sca.RequestContext;
 import org.osoa.sca.annotations.Context;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
@@ -41,7 +43,7 @@ public class ContextProcessorTestCase extends TestCase {
     private ContextProcessor processor;
     private CompositeComponent composite;
 
-    public void testMethod() throws Exception {
+    public void testCompositeContextMethod() throws Exception {
         Method method = Foo.class.getMethod("setContext", CompositeContext.class);
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
@@ -49,12 +51,28 @@ public class ContextProcessorTestCase extends TestCase {
         assertNotNull(type.getResources().get("context"));
     }
 
-    public void testField() throws Exception {
+    public void testCompositeContextField() throws Exception {
         Field field = Foo.class.getDeclaredField("context");
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         processor.visitField(composite, field, type, null);
         assertNotNull(type.getResources().get("context"));
+    }
+
+    public void testRequestContextMethod() throws Exception {
+        Method method = Foo.class.getMethod("setRequestContext", RequestContext.class);
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitMethod(composite, method, type, null);
+        assertNotNull(type.getResources().get("requestContext"));
+    }
+
+    public void testRequestContextField() throws Exception {
+        Field field = Foo.class.getDeclaredField("requestContext");
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        processor.visitField(composite, field, type, null);
+        assertNotNull(type.getResources().get("requestContext"));
     }
 
     public void testInvalidParamType() throws Exception {
@@ -126,6 +144,7 @@ public class ContextProcessorTestCase extends TestCase {
         super.setUp();
         processor = new ContextProcessor();
         processor.setWireService(EasyMock.createNiceMock(WireService.class));
+        processor.setWorkContext(EasyMock.createNiceMock(WorkContext.class));
         composite = EasyMock.createNiceMock(CompositeComponent.class);
     }
 
@@ -137,6 +156,9 @@ public class ContextProcessorTestCase extends TestCase {
         protected Object badContext;
 
         protected CompositeContext noContext;
+
+        @Context
+        protected RequestContext requestContext;
 
         @Context
         public void setContext(CompositeContext context) {
@@ -162,5 +184,9 @@ public class ContextProcessorTestCase extends TestCase {
 
         }
 
+        @Context
+        public void setRequestContext(RequestContext requestContext) {
+            this.requestContext = requestContext;
+        }
     }
 }

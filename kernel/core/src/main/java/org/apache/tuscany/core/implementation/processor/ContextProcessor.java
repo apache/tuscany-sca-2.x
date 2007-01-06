@@ -27,6 +27,7 @@ import org.osoa.sca.annotations.Context;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -37,7 +38,8 @@ import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.injection.ContextObjectFactory;
+import org.apache.tuscany.core.injection.CompositeContextObjectFactory;
+import org.apache.tuscany.core.injection.RequestContextObjectFactory;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
 
 /**
@@ -48,10 +50,16 @@ import org.apache.tuscany.core.util.JavaIntrospectionHelper;
  */
 public class ContextProcessor extends ImplementationProcessorExtension {
     private WireService wireService;
+    private WorkContext workContext;
 
     @Autowire
     public void setWireService(WireService wireService) {
         this.wireService = wireService;
+    }
+
+    @Autowire
+    public void setWorkContext(WorkContext workContext) {
+        this.workContext = workContext;
     }
 
     public void visitMethod(CompositeComponent parent,
@@ -74,7 +82,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             Resource resource = new Resource();
             resource.setName(name);
             resource.setMember(method);
-            resource.setObjectFactory(new ContextObjectFactory(parent, wireService));
+            resource.setObjectFactory(new CompositeContextObjectFactory(parent, wireService));
             type.getResources().put(name, resource);
         } else if (RequestContext.class.equals(paramType)) {
             String name = method.getName();
@@ -84,7 +92,8 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             Resource resource = new Resource();
             resource.setName(name);
             resource.setMember(method);
-            throw new UnsupportedOperationException();
+            resource.setObjectFactory(new RequestContextObjectFactory(workContext));
+            type.getResources().put(name, resource);
         } else {
             throw new UnknownContextTypeException(paramType.getName());
         }
@@ -102,7 +111,17 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             Resource resource = new Resource();
             resource.setName(name);
             resource.setMember(field);
-            resource.setObjectFactory(new ContextObjectFactory(parent, wireService));
+            resource.setObjectFactory(new CompositeContextObjectFactory(parent, wireService));
+            type.getResources().put(name, resource);
+        } else if (RequestContext.class.equals(paramType)) {
+            String name = field.getName();
+            if (name.startsWith("set")) {
+                name = JavaIntrospectionHelper.toPropertyName(name);
+            }
+            Resource resource = new Resource();
+            resource.setName(name);
+            resource.setMember(field);
+            resource.setObjectFactory(new RequestContextObjectFactory(workContext));
             type.getResources().put(name, resource);
         } else {
             throw new UnknownContextTypeException(paramType.getName());

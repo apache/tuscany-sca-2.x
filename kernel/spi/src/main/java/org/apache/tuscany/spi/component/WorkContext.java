@@ -88,4 +88,29 @@ public interface WorkContext {
      */
     void clearIdentifiers();
 
+    /**
+     * Removes and returns the name of the last remotable service to handle the current request
+     *
+     * @return the name of the last remotable service to handle the current request or null
+     */
+    String popServiceName();
+
+    /**
+     * Returns the name of the last remotable service to handle the current request
+     *
+     * @return the name of the last remotable service to handle the current request or null
+     */
+    String getCurrentServiceName();
+
+    /**
+     * Adds the name of the last remotable service to handle the current request
+     *
+     * @param name the name of the last remotable service to handle the current request or null
+     */
+    void pushServiceName(String name);
+
+    /**
+     * Clears the stack of current service names
+     */
+    void clearServiceNames();
 }

@@ -33,11 +33,11 @@ import org.apache.tuscany.core.implementation.composite.ManagedCompositeContext;
  *
  * @version $Rev$ $Date$
  */
-public class ContextObjectFactory implements ObjectFactory<CompositeContext> {
+public class CompositeContextObjectFactory implements ObjectFactory<CompositeContext> {
     private CompositeComponent composite;
     private WireService wireService;
 
-    public ContextObjectFactory(CompositeComponent composite, WireService wireService) {
+    public CompositeContextObjectFactory(CompositeComponent composite, WireService wireService) {
         assert composite != null;
         assert wireService != null;
         this.composite = composite;

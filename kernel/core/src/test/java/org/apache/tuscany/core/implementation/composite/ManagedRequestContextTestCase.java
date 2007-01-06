@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.core.implementation.composite;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.wire.WireService;
+import org.osoa.sca.RequestContext;
+
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -27,12 +28,15 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ContextObjectFactoryTestCase extends TestCase {
+public class ManagedRequestContextTestCase extends TestCase {
 
-    public void testCreation() throws Exception {
-        CompositeComponent composite = EasyMock.createNiceMock(CompositeComponent.class);
-        WireService wireService = EasyMock.createNiceMock(WireService.class);
-        CompositeContextObjectFactory factory = new CompositeContextObjectFactory(composite, wireService);
-        assertNotNull(factory.getInstance());
+    public void testGetServiceName() {
+        WorkContext workContext = EasyMock.createMock(WorkContext.class);
+        EasyMock.expect(workContext.getCurrentServiceName()).andReturn("foo");
+        EasyMock.replay(workContext);
+        RequestContext context = new ManagedRequestContext(workContext);
+        assertEquals("foo", context.getServiceName());
+        EasyMock.verify(workContext);
     }
+
 }

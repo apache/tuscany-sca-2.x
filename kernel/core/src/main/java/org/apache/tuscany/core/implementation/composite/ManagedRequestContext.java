@@ -16,23 +16,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.injection;
+package org.apache.tuscany.core.implementation.composite;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.wire.WireService;
+import javax.security.auth.Subject;
 
-import junit.framework.TestCase;
-import org.easymock.EasyMock;
+import org.osoa.sca.RequestContext;
+import org.osoa.sca.ServiceReference;
+
+import org.apache.tuscany.spi.component.WorkContext;
 
 /**
  * @version $Rev$ $Date$
  */
-public class ContextObjectFactoryTestCase extends TestCase {
+public class ManagedRequestContext implements RequestContext {
+    private WorkContext workContext;
 
-    public void testCreation() throws Exception {
-        CompositeComponent composite = EasyMock.createNiceMock(CompositeComponent.class);
-        WireService wireService = EasyMock.createNiceMock(WireService.class);
-        CompositeContextObjectFactory factory = new CompositeContextObjectFactory(composite, wireService);
-        assertNotNull(factory.getInstance());
+    public ManagedRequestContext(WorkContext workContext) {
+        this.workContext = workContext;
+    }
+
+    public Subject getSecuritySubject() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String getServiceName() {
+        return workContext.getCurrentServiceName();
+    }
+
+    public ServiceReference getServiceReference() {
+        throw new UnsupportedOperationException();
     }
 }
