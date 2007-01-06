@@ -59,55 +59,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         Assert.assertEquals(1, composite.getChildren().size());
     }
 
-    public void testGetServices() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
-        service.getServiceBindings();
-        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
-        EasyMock.replay(service);
-        composite.register(service);
-        composite.register(getReference("bar"));
-        Assert.assertEquals(1, composite.getServices().size());
-    }
-
-    public void testGetService() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
-        service.start();
-        service.getServiceBindings();
-        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
-        EasyMock.replay(service);
-        composite.register(service);
-        composite.start();
-        assertNotNull(composite.getService("foo"));
-    }
-
-    public void testServiceNotFound() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        Service service = EasyMock.createMock(Service.class);
-        EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
-        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
-        service.start();
-        service.getServiceBindings();
-        EasyMock.expectLastCall().andReturn(Collections.emptyList()).atLeastOnce();
-        EasyMock.replay(service);
-
-        composite.register(service);
-        composite.start();
-        assertNull(composite.getService("bar"));
-    }
-
-    public void testNotService() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(getReference("foo"));
-        composite.start();
-        assertNull(composite.getService("foo"));
-    }
-
     public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service = EasyMock.createMock(Service.class);
@@ -118,7 +69,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         EasyMock.replay(service);
         composite.register(service);
         composite.register(getReference("bar"));
-        Assert.assertEquals(1, composite.getReferences().size());
     }
 
     public void testOnEvent() {

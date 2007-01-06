@@ -2,6 +2,7 @@ package org.apache.tuscany.core.builder;
 
 import java.util.Collections;
 
+import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -11,11 +12,10 @@ import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.Interceptor;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
-import org.apache.tuscany.spi.QualifiedName;
 
+import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 
 /**
  * Verifies various wiring "scenarios" or paths through the connector
@@ -91,7 +91,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         try {
             connector.connect(reference);
             fail();
-        } catch (NoCompatibleBindingsException e) {
+        } catch (TargetServiceNotFoundException e) {
             // expected
         }
     }
@@ -111,7 +111,15 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
     }
 
     private void createLocalReferenceToServiceConfiguration() throws Exception {
-        CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
+        final CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
+
+        topComposite.getInboundWire(TARGET);
+        EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                return createLocalInboundWire(topComposite);
+            }
+        });
+        service = createLocalService(topComposite);
         topComposite.getChild(TARGET);
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
@@ -124,7 +132,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         EasyMock.expect(parent.getParent()).andReturn(topComposite);
         EasyMock.replay(parent);
 
-        service = createLocalService(topComposite);
+        //service = createLocalService(topComposite);
         reference = createLocalReference(parent, TARGET_NAME);
     }
 
@@ -148,10 +156,11 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
 
     private void createLocalReferenceToSiblingCompositeServiceConfiguration() throws Exception {
         final CompositeComponent sibling = EasyMock.createMock(CompositeComponent.class);
-        sibling.getService(TARGET_SERVICE);
+        //final InboundWire wire = createLocalInboundWire(sibling);
+        sibling.getInboundWire(TARGET_SERVICE);
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
-                return service;
+                return localServiceInboundWire;
             }
         });
         EasyMock.replay(sibling);
@@ -175,10 +184,10 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
 
     private void createLocalReferenceToSiblingCompositeServiceConfigurationNoMatchingBinding() throws Exception {
         final CompositeComponent sibling = EasyMock.createMock(CompositeComponent.class);
-        sibling.getService(TARGET_SERVICE);
+        sibling.getInboundWire(TARGET_SERVICE);
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
-                return service;
+                return null;
             }
         });
         EasyMock.replay(sibling);

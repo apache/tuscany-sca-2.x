@@ -58,6 +58,8 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
     protected ConnectorImpl connector;
     protected ServiceContract contract;
     protected Operation<Type> operation;
+    protected InboundWire localServiceInboundWire;
+    protected InboundWireImpl serviceInboundWire;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -65,10 +67,6 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         connector = new ConnectorImpl(wireService, null, null, null);
         contract = new JavaServiceContract(Foo.class);
         operation = new Operation<Type>("bar", null, null, null);
-    }
-
-    protected interface Foo {
-        String echo();
     }
 
     protected AtomicComponent createAtomicTarget() throws Exception {
@@ -128,11 +126,11 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         ServiceBinding serviceBinding = new MockServiceBinding();
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
-        InboundWireImpl targetInboundWire = new InboundWireImpl();
-        targetInboundWire.setBindingType(qName);
-        targetInboundWire.setServiceContract(contract);
-        targetInboundWire.addInvocationChain(operation, targetInboundChain);
-        targetInboundWire.setContainer(serviceBinding);
+        serviceInboundWire = new InboundWireImpl();
+        serviceInboundWire.setBindingType(qName);
+        serviceInboundWire.setServiceContract(contract);
+        serviceInboundWire.addInvocationChain(operation, targetInboundChain);
+        serviceInboundWire.setContainer(serviceBinding);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
@@ -143,7 +141,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         targetOutboundWire.setContainer(serviceBinding);
         targetOutboundWire.setBindingType(qName);
 
-        serviceBinding.setInboundWire(targetInboundWire);
+        serviceBinding.setInboundWire(serviceInboundWire);
         serviceBinding.setOutboundWire(targetOutboundWire);
         // manually connect the service chains
         connector.connect(targetInboundChain, targetOutboundChain);
@@ -163,10 +161,10 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         LocalServiceBinding serviceBinding = new LocalServiceBinding(TARGET, parent);
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
-        InboundWire targetInboundWire = new InboundWireImpl();
-        targetInboundWire.setServiceContract(contract);
-        targetInboundWire.addInvocationChain(operation, targetInboundChain);
-        targetInboundWire.setContainer(serviceBinding);
+        localServiceInboundWire = new InboundWireImpl();
+        localServiceInboundWire.setServiceContract(contract);
+        localServiceInboundWire.addInvocationChain(operation, targetInboundChain);
+        localServiceInboundWire.setContainer(serviceBinding);
 
         OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
         // place an invoker interceptor on the end
@@ -176,7 +174,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
         targetOutboundWire.setContainer(serviceBinding);
 
-        serviceBinding.setInboundWire(targetInboundWire);
+        serviceBinding.setInboundWire(localServiceInboundWire);
         serviceBinding.setOutboundWire(targetOutboundWire);
         // manually connect the service chains
         connector.connect(targetInboundChain, targetOutboundChain);
@@ -189,10 +187,10 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         throws TargetInvokerCreationException {
         ReferenceBinding referenceBinding = new LocalReferenceBinding("local", null);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
-        InboundWire inboundWire = new InboundWireImpl();
-        inboundWire.setServiceContract(contract);
-        inboundWire.setContainer(referenceBinding);
-        inboundWire.addInvocationChain(operation, inboundChain);
+        InboundWire referenceInboundWire = new InboundWireImpl();
+        referenceInboundWire.setServiceContract(contract);
+        referenceInboundWire.setContainer(referenceBinding);
+        referenceInboundWire.addInvocationChain(operation, inboundChain);
 
         OutboundInvocationChain outboundChain = new OutboundInvocationChainImpl(operation);
         // Outbound chains always contains at least one interceptor
@@ -203,12 +201,31 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         outboundWire.addInvocationChain(operation, outboundChain);
         outboundWire.setContainer(referenceBinding);
 
-        referenceBinding.setInboundWire(inboundWire);
+        referenceBinding.setInboundWire(referenceInboundWire);
         referenceBinding.setOutboundWire(outboundWire);
 
         return referenceBinding;
     }
 
+    protected InboundWire createLocalInboundWire(CompositeComponent parent) throws WireConnectException {
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
+        chain.addInterceptor(new SynchronousBridgingInterceptor());
+        InboundWire wire = new InboundWireImpl();
+        wire.setServiceContract(contract);
+        wire.setContainer(new LocalReferenceBinding("", parent));
+        wire.addInvocationChain(operation, chain);
+
+        OutboundInvocationChain targetOutboundChain = new OutboundInvocationChainImpl(operation);
+        // place an invoker interceptor on the end
+        targetOutboundChain.addInterceptor(new InvokerInterceptor());
+        OutboundWire targetOutboundWire = new OutboundWireImpl();
+        targetOutboundWire.setServiceContract(contract);
+        targetOutboundWire.addInvocationChain(operation, targetOutboundChain);
+
+        // manually connect the service chains
+        connector.connect(chain, targetOutboundChain);
+        return wire;
+    }
 
     protected static class MockInvoker implements TargetInvoker {
         public Object invokeTarget(final Object payload, final short sequence) throws InvocationTargetException {
@@ -262,6 +279,10 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         public boolean isOptimizable() {
             return false;
         }
+    }
+
+    protected interface Foo {
+        String echo();
     }
 
 }

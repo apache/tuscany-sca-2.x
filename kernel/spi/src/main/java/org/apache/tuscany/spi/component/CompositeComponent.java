@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -110,34 +111,19 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     List<SCAObject> getSystemChildren();
 
     /**
-     * Returns the serviceBindings contained by the composite
+     * Returns the internal system wire associated with the given service name or null if not found
+     *
+     * @param serviceName the service name
+     * @return the system wire or null if not found
      */
-    List<Service> getServices();
+    InboundWire getInboundSystemWire(String serviceName);
 
     /**
-     * Returns the system serviceBindings contained by the composite
+     * Returns all internal wires for system services contained by this composite
+     *
+     * @return all internal wires for system services contained by this composite
      */
-    List<Service> getSystemServices();
-
-    /**
-     * Returns the service associated with the given name
-     */
-    Service getService(String name);
-
-    /**
-     * Returns the system service associated with the given name
-     */
-    Service getSystemService(String name);
-
-    /**
-     * Returns the references contained by the composite
-     */
-    List<Reference> getReferences();
-
-    /**
-     * Returns the system references contained by the composite
-     */
-    List<Reference> getSystemReferences();
+    Collection<InboundWire> getInboundSystemWires();
 
     /**
      * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be

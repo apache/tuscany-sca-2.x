@@ -95,8 +95,7 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         DeploymentContext context = createNiceMock(DeploymentContext.class);
         CompositeComponent component = (CompositeComponent) builder.build(parent, definition, context);
         component.start();
-        ServiceBinding fooServiceBinding = component.getService("fooServiceBinding").getServiceBindings().get(0);
-        TestBean bean = wireService.createProxy(TestBean.class, fooServiceBinding.getInboundWire());
+        TestBean bean = wireService.createProxy(TestBean.class, component.getInboundWire("fooServiceBinding"));
         assertEquals("call foo", bean.echo("call foo"));
         verify(registry);
     }
