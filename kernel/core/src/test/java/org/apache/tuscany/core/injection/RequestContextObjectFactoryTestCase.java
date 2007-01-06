@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.core.injection;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.wire.WireService;
+import org.apache.tuscany.spi.component.WorkContext;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -27,12 +26,12 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ContextObjectFactoryTestCase extends TestCase {
+public class RequestContextObjectFactoryTestCase extends TestCase {
 
-    public void testCreation() throws Exception {
-        CompositeComponent composite = EasyMock.createNiceMock(CompositeComponent.class);
-        WireService wireService = EasyMock.createNiceMock(WireService.class);
-        CompositeContextObjectFactory factory = new CompositeContextObjectFactory(composite, wireService);
+    public void testInstanceCreate() {
+        WorkContext workContext = EasyMock.createNiceMock(WorkContext.class);
+        RequestContextObjectFactory factory = new RequestContextObjectFactory(workContext);
         assertNotNull(factory.getInstance());
     }
+
 }
