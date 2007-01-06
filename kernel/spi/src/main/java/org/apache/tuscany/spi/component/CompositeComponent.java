@@ -23,6 +23,7 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import org.apache.tuscany.spi.event.RuntimeEventListener;
+import org.apache.tuscany.spi.services.management.ManagementService;
 import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
@@ -33,6 +34,13 @@ import org.apache.tuscany.spi.wire.InboundWire;
  * @version $Rev$ $Date$
  */
 public interface CompositeComponent extends Component, RuntimeEventListener {
+
+    /**
+     * Sets the management service associated with the composite
+     *
+     * @param managementService the management service associated with the composite
+     */
+    void setManagementService(ManagementService managementService);
 
     /**
      * Sets the scope container associated with the composite
