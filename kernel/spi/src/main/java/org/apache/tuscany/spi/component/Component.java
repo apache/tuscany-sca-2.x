@@ -36,6 +36,11 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public interface Component extends SCAObject {
 
     /**
+     * Returns the internal wire associated with the given service name or null if not found
+     */
+    InboundWire getInboundWire(String serviceName);
+
+    /**
      * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the destination
      * service of a wire
      */
