@@ -24,11 +24,10 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
+import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.VoidService;
-
-import org.apache.tuscany.core.services.extension.AbstractExtensionDeployer;
-import org.apache.tuscany.host.RuntimeInfo;
 
 /**
  * Service that extends the runtime by loading composites located in a directory.
@@ -37,10 +36,10 @@ import org.apache.tuscany.host.RuntimeInfo;
  */
 @EagerInit
 public class DirectoryScanExtender extends AbstractExtensionDeployer implements VoidService {
-    private final RuntimeInfo runtimeInfo;
+    private final StandaloneRuntimeInfo runtimeInfo;
     private final String path;
 
-    public DirectoryScanExtender(@Autowire RuntimeInfo runtimeInfo,
+    public DirectoryScanExtender(@Autowire StandaloneRuntimeInfo runtimeInfo,
                                  @Property(name = "path")String path) {
         this.runtimeInfo = runtimeInfo;
         this.path = path;

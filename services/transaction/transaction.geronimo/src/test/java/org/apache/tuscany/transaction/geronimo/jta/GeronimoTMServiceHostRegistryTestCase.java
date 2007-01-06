@@ -21,13 +21,13 @@ package org.apache.tuscany.transaction.geronimo.jta;
 import java.io.File;
 import javax.transaction.TransactionManager;
 
-import org.apache.tuscany.spi.host.ResourceHostRegistry;
-
 import junit.framework.TestCase;
 import org.apache.geronimo.transaction.manager.XidFactoryImpl;
-import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.transaction.geronimo.TestUtils;
 import org.easymock.EasyMock;
+
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.spi.host.ResourceHostRegistry;
+import org.apache.tuscany.transaction.geronimo.TestUtils;
 
 /**
  * @version $Rev$ $Date$
@@ -49,7 +49,7 @@ public class GeronimoTMServiceHostRegistryTestCase extends TestCase {
         registry.registerResource(EasyMock.eq(TransactionManager.class), EasyMock.isA(TransactionManager.class));
         registry.unregisterResource(EasyMock.eq(TransactionManager.class));
         EasyMock.replay(registry);
-        RuntimeInfo info = EasyMock.createMock(RuntimeInfo.class);
+        StandaloneRuntimeInfo info = EasyMock.createMock(StandaloneRuntimeInfo.class);
         EasyMock.expect(info.getInstallDirectory()).andReturn(new File("."));
         EasyMock.replay(info);
         GeronimoTransactionLogService logService = new GeronimoTransactionLogService(info, new XidFactoryImpl());

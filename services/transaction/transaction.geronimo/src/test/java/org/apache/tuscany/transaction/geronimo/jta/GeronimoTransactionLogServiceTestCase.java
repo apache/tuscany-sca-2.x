@@ -22,9 +22,10 @@ import java.io.File;
 
 import junit.framework.TestCase;
 import org.apache.geronimo.transaction.manager.XidFactoryImpl;
-import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.transaction.geronimo.TestUtils;
 import org.easymock.EasyMock;
+
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
+import org.apache.tuscany.transaction.geronimo.TestUtils;
 
 /**
  * @version $Rev$ $Date$
@@ -51,7 +52,7 @@ public class GeronimoTransactionLogServiceTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         TestUtils.cleanupLog();
-        RuntimeInfo info = EasyMock.createMock(RuntimeInfo.class);
+        StandaloneRuntimeInfo info = EasyMock.createMock(StandaloneRuntimeInfo.class);
         EasyMock.expect(info.getInstallDirectory()).andReturn(new File("."));
         EasyMock.replay(info);
         service = new GeronimoTransactionLogService(info, new XidFactoryImpl());

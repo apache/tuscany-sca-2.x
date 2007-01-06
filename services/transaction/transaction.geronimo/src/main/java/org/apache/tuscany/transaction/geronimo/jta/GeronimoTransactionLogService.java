@@ -25,9 +25,9 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 
 import org.apache.geronimo.transaction.manager.XidFactory;
-import org.apache.tuscany.host.RuntimeInfo;
 import org.objectweb.howl.log.Configuration;
 
 /**
@@ -37,7 +37,7 @@ import org.objectweb.howl.log.Configuration;
  */
 public class GeronimoTransactionLogService {
     private XidFactory xidFactory;
-    private RuntimeInfo info;
+    private StandaloneRuntimeInfo info;
     private HOWLLog log;
     private String logFileDir = ".";
     private int maxBlocksPerFile = -1;
@@ -52,7 +52,7 @@ public class GeronimoTransactionLogService {
     private boolean checksumEnabled = true;
     private String bufferClassName = "org.objectweb.howl.log.BlockLogBuffer";
 
-    public GeronimoTransactionLogService(@Autowire RuntimeInfo info, @Autowire XidFactory xidFactory) {
+    public GeronimoTransactionLogService(@Autowire StandaloneRuntimeInfo info, @Autowire XidFactory xidFactory) {
         this.info = info;
         this.xidFactory = xidFactory;
     }

@@ -29,6 +29,13 @@ public interface StandaloneRuntimeInfo extends RuntimeInfo {
     static String COMPONENT_NAME = "StandaloneRuntimeInfo";
 
     /**
+     * Return the directory where the standalone distribution was installed.
+     *
+     * @return the directory where the standalone distribution was installed
+     */
+    File getInstallDirectory();
+
+    /**
      * Returns the name of this runtime's profile.
      *
      * @return the name of this runtime's profile
