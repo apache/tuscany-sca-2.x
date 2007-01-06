@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 
-import org.apache.tuscany.core.services.management.jmx.runtime.JmxRuntimeInfoImpl;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
+import org.apache.tuscany.runtime.standalone.jmx.info.JmxRuntimeInfoImpl;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 
@@ -104,14 +104,14 @@ public class TuscanyServer implements TuscanyServerMBean {
         agent = RmiAgent.getInstance();
     }
 
-    public final void startRuntime(final String bootPath, final boolean online, final String managementDomain) {
+    public final void startRuntime(final String profileName, final boolean online, final String managementDomain) {
 
         try {
 
-            final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, bootPath);
+            final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, profileName);
 
-            final MBeanServer mBeanServer = agent.getMBeanServer();
-            final RuntimeInfo runtimeInfo = new JmxRuntimeInfoImpl(baseUrl, installDirectory, online, mBeanServer, managementDomain);
+            final MBeanServer mBeanServer = agent.getMBeanServer();            
+            final RuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer, managementDomain);
 
             final ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
             final ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDirectory);
@@ -132,7 +132,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             runtime.setRuntimeInfo(runtimeInfo);
             runtime.initialize();
 
-            bootedRuntimes.put(bootPath, runtime);
+            bootedRuntimes.put(profileName, runtime);
 
         } catch (InitializationException ex) {
             ex.printStackTrace();
