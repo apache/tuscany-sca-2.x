@@ -24,8 +24,7 @@ package org.apache.tuscany.sca.runtime.standalone.smoketest;
 public class Main {
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.out.print("No Args");
-            System.out.flush();
+            System.out.println("No Args");
             System.exit(0);
         }
         System.exit(10);
