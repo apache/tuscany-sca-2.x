@@ -74,7 +74,7 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
      */
     public URL getBaseURL() {
         try {
-            return getInstallDirectory().toURL();
+            return installDirectory.toURL();
         } catch (MalformedURLException e) {
             // TODO Decide on how to handle the exception
             throw new RuntimeException(e);

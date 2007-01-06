@@ -33,13 +33,6 @@ public interface RuntimeInfo {
     String COMPONENT_NAME = "RuntimeInfo";
 
     /**
-     * Return the directory where the running runtime was installed.
-     *
-     * @return the directory where the runtime was installed
-     */
-    File getInstallDirectory();
-
-    /**
      * Return the root directory used to resolve application file paths.
      *
      * @return the directory used to resolve application file paths.
