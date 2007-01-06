@@ -102,7 +102,8 @@ public class TuscanyServer implements TuscanyServerMBean {
 
         try {
 
-            final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, profileName);
+            final File profileDirectory = DirectoryHelper.getProfileDirectory(installDirectory, profileName);
+            final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, profileDirectory, null);
 
             final MBeanServer mBeanServer = agent.getMBeanServer();            
             final StandaloneRuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer, managementDomain);
