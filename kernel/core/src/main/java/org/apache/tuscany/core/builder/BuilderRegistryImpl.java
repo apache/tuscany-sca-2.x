@@ -47,6 +47,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.services.management.ManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
@@ -61,17 +62,20 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 public class BuilderRegistryImpl implements BuilderRegistry {
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
+    private ManagementService managementService;
 
-    private final Map<Class<? extends Implementation<?>>,
-        ComponentBuilder<? extends Implementation<?>>> componentBuilders =
+    private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
-    private final Map<Class<? extends BindingDefinition>,
-        BindingBuilder<? extends BindingDefinition>> bindingBuilders =
+    private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
 
-    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry, @Autowire WireService wireService) {
+    public BuilderRegistryImpl(@Autowire
+    ScopeRegistry scopeRegistry, @Autowire
+    WireService wireService, @Autowire
+    ManagementService managementService) {
         this.scopeRegistry = scopeRegistry;
         this.wireService = wireService;
+        this.managementService = managementService;
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -92,7 +96,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                          DeploymentContext context) throws BuilderException {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
         //noinspection SuspiciousMethodCalls
-        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
+        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>)componentBuilders.get(implClass);
         try {
             if (componentBuilder == null) {
                 String name = implClass.getName();
@@ -103,11 +107,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             if (component != null) {
                 component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
             }
+            if (managementService != null && component instanceof CompositeComponent) {
+                ((CompositeComponent)component).setManagementService(managementService);
+            }
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
             if (wireService != null && component instanceof AtomicComponent) {
-                wireService.createWires((AtomicComponent) component, componentDefinition);
+                wireService.createWires((AtomicComponent)component, componentDefinition);
             }
             return component;
         } catch (BuilderException e) {

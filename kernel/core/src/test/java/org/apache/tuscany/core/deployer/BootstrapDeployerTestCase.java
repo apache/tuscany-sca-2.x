@@ -161,7 +161,7 @@ public class BootstrapDeployerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory);
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory, null);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new RootDeploymentContext(null, xmlFactory, null, null);
         implementation = new SystemCompositeImplementation();
