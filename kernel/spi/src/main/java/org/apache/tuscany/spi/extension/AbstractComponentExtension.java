@@ -26,36 +26,29 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.model.PropertyValue;
 
 /**
- * 
  * @version Provides support for property accessors.
- *
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
 
-    /** Default property values. */
+    /**
+     * Default property values.
+     */
     private Map<String, PropertyValue<?>> defaultPropertyValues;
-    
+
     /**
      * Initializes component name and parent.
-     * 
-     * @param name Name of the component.
+     *
+     * @param name   Name of the component.
      * @param parent Parent of the component.
-     * @param componentDefinition Definition of this component. 
      */
     public AbstractComponentExtension(String name, CompositeComponent parent) {
         super(name, parent);
     }
 
-    /**
-     * @see org.apache.tuscany.spi.component.Component#getDefaultPropertyValues()
-     */
     public Map<String, PropertyValue<?>> getDefaultPropertyValues() {
         return defaultPropertyValues;
     }
 
-    /**
-     * @see org.apache.tuscany.spi.component.Component#setDefaultPropertyValues(java.util.Map)
-     */
     public void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues) {
         this.defaultPropertyValues = defaultPropertyValues;
     }

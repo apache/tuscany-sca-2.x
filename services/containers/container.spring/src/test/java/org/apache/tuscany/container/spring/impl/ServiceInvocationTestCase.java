@@ -67,7 +67,7 @@ public class ServiceInvocationTestCase extends TestCase {
             chain.setTargetInvoker(composite.createTargetInvoker("foo", chain.getOperation(), null));
         }
         composite.register(service);
-        InboundWire wire = composite.getService("fooService").getServiceBindings().get(0).getInboundWire();
+        InboundWire wire = composite.getInboundWire("fooService");
         TestBean serviceInstance = wireService.createProxy(TestBean.class, wire);
         assertEquals("bar", serviceInstance.echo("bar"));
     }

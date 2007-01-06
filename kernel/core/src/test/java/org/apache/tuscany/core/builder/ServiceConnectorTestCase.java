@@ -1,3 +1,21 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.apache.tuscany.core.builder;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -31,12 +49,9 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
-    private AtomicComponent atomicTarget;
     private CompositeComponent parent;
-    private CompositeComponent compositeTarget;
     private InboundInvocationChain inboundChain;
     private ServiceBinding sourceServiceBinding;
-    private Reference referenceTarget;
 
     public void testConnectServiceToAtomicComponent() throws Exception {
         configureAtomicTarget();
@@ -104,7 +119,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
 
-        atomicTarget = EasyMock.createMock(AtomicComponent.class);
+        AtomicComponent atomicTarget = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(atomicTarget.getInboundWire(EasyMock.isA(String.class))).andReturn(inboundWire).atLeastOnce();
         EasyMock.expect(atomicTarget.getScope()).andReturn(Scope.COMPOSITE);
         EasyMock.expect(atomicTarget.createTargetInvoker(EasyMock.isA(String.class),
@@ -126,9 +141,10 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setServiceContract(contract);
         inboundWire.addInvocationChain(operation, inboundChain);
 
-        compositeTarget = EasyMock.createMock(CompositeComponent.class);
+        CompositeComponent compositeTarget = EasyMock.createMock(CompositeComponent.class);
         Service service = createLocalService(compositeTarget);
-        EasyMock.expect(compositeTarget.getService(TARGET_SERVICE)).andReturn(service);
+        ServiceBinding binding = service.getServiceBindings().get(0);
+        EasyMock.expect(compositeTarget.getInboundWire(TARGET_SERVICE)).andReturn(binding.getInboundWire());
         EasyMock.replay(compositeTarget);
 
         inboundWire.setContainer(compositeTarget);
@@ -141,7 +157,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
 
     private void configureReferenceTarget() throws Exception {
         ReferenceBinding binding = createLocalReferenceBinding(TARGET_NAME);
-        referenceTarget = new ReferenceImpl(TARGET, parent, contract);
+        Reference referenceTarget = new ReferenceImpl(TARGET, parent, contract);
         referenceTarget.addReferenceBinding(binding);
         // put a terminating interceptor on the outbound wire of the reference for testing an invocation
         binding.getOutboundWire().getInvocationChains().get(operation).addInterceptor(new InvokerInterceptor());

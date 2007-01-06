@@ -3,6 +3,7 @@ package org.apache.tuscany.core.implementation.composite;
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.RequestContext;
 import org.osoa.sca.ServiceReference;
+import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -210,7 +211,7 @@ public class AbstractCompositeContextTestCase extends TestCase {
         Service service = new ServiceImpl("Foo", null, null);
         service.addServiceBinding(serviceBinding);
         CompositeComponent child = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(child.getService("Bar")).andReturn(service);
+        EasyMock.expect(child.getChild("Bar")).andReturn(service);
         EasyMock.replay(child);
         CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(composite.getChild("Foo")).andReturn(child);
@@ -229,6 +230,26 @@ public class AbstractCompositeContextTestCase extends TestCase {
         EasyMock.verify(wire);
         EasyMock.verify(child);
         EasyMock.verify(serviceBinding);
+    }
+
+    public void testCompositeLocateNotAService() throws Exception {
+        CompositeComponent child = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(child.getChild("Bar")).andReturn(EasyMock.createNiceMock(AtomicComponent.class));
+        EasyMock.replay(child);
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getChild("Foo")).andReturn(child);
+        EasyMock.replay(composite);
+
+        WireService wireService = EasyMock.createNiceMock(WireService.class);
+        CompositeContextImpl context = new CompositeContextImpl(composite, wireService);
+        try {
+            context.locateService(FooService.class, "Foo/Bar");
+            //fail
+        } catch (ServiceRuntimeException e) {
+            //expected
+        }
+        EasyMock.verify(composite);
+        EasyMock.verify(child);
     }
 
     private class FooService {

@@ -446,62 +446,24 @@ public class ConnectorImpl implements Connector {
         throws WiringException {
         assert sourceWire.getTargetName() != null;
         QualifiedName targetName = sourceWire.getTargetName();
-        InboundWire targetWire = null;
+        InboundWire targetWire;
         // target is a composite service, connect to it
-        Service service;
         if (source.isSystem()) {
-            service = target.getSystemService(targetName.getPortName());
-            if (service != null) {
-                for (ServiceBinding binding : service.getServiceBindings()) {
-                    InboundWire candidate = binding.getInboundWire();
-                    if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                        targetWire = candidate;
-                        break;
-                    }
-                }
-                if (targetWire == null) {
-                    throw new NoCompatibleBindingsException(source.getName(),
-                        targetName.getPartName(),
-                        targetName.getPortName());
-                }
-                Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
-                if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                    targetWire = null;
-                }
-            }
+            targetWire = target.getInboundSystemWire(targetName.getPortName());
         } else {
-            service = target.getService(targetName.getPortName());
-            if (service != null) {
-                for (ServiceBinding binding : service.getServiceBindings()) {
-                    InboundWire candidate = binding.getInboundWire();
-                    if (sourceWire.getBindingType().equals(candidate.getBindingType())) {
-                        targetWire = candidate;
-                        break;
-                    }
-                }
-                if (targetWire == null) {
-                    throw new NoCompatibleBindingsException(source.getName(),
-                        targetName.getPartName(),
-                        targetName.getPortName());
-                }
-                Class<?> sourceInterface = sourceWire.getServiceContract().getInterfaceClass();
-                Class<?> targetInterface = targetWire.getServiceContract().getInterfaceClass();
-                if (!sourceInterface.isAssignableFrom(targetInterface)) {
-                    targetWire = null;
-                }
-            }
+            targetWire = target.getInboundWire(targetName.getPortName());
         }
         if (targetWire == null) {
             String sourceName = sourceWire.getContainer().getName();
             String sourceReference = sourceWire.getReferenceName();
-            throw new TargetServiceNotFoundException("Target service not found",
+            throw new TargetServiceNotFoundException("Target service does not exist or is not configured with a " 
+                + "local binding",
                 sourceName,
                 sourceReference,
                 targetName.getPartName(),
                 targetName.getPortName());
         }
-        boolean optimizable = isOptimizable(source.getScope(), service.getScope());
+        boolean optimizable = isOptimizable(source.getScope(), Scope.SYSTEM);
         connect(sourceWire, targetWire, optimizable);
     }
 
