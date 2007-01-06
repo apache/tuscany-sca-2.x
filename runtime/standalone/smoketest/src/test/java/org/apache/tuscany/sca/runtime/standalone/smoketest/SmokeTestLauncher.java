@@ -24,6 +24,7 @@ import java.io.File;
  * @version $Rev$ $Date$
  */
 public class SmokeTestLauncher extends CommandTestCase {
+    private static final String LF = System.getProperty("line.separator");
     private File launcher;
     private File testJar;
 
@@ -49,7 +50,7 @@ public class SmokeTestLauncher extends CommandTestCase {
         pb.directory(installDir);
         Process process = pb.start();
         try {
-            compareOutput("No Args", process.getInputStream());
+            compareOutput("No Args" + LF, process.getInputStream());
             process.waitFor();
             assertEquals(0, process.exitValue());
         } finally {
