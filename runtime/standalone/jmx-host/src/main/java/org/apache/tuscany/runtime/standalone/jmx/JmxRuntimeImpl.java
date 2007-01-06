@@ -65,22 +65,23 @@ public class JmxRuntimeImpl extends AbstractRuntime {
         MonitorFactory mf = getMonitorFactory();
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
+        // register the runtime info provided by the host
+        JmxRuntimeInfo runtimeInfo = (JmxRuntimeInfo)getRuntimeInfo();
 
-        Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory);
+        ManagementService managementService = new JmxManagementService(runtimeInfo.getMBeanServer(),
+                                                         runtimeInfo.getManagementDomain());
+        
+        Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
         runtime = bootstrapper.createRuntime();
         runtime.start();
         systemComponent = runtime.getSystemComponent();
 
-        // register the runtime info provided by the host
-        JmxRuntimeInfo runtimeInfo = (JmxRuntimeInfo)getRuntimeInfo();
-
-        ManagementService mgs = new JmxManagementService(runtimeInfo.getMBeanServer(),
-                                                         runtimeInfo.getManagementDomain());
+        
         
         try {
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
             systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
-            systemComponent.registerJavaObject("ManagementService", ManagementService.class, mgs);
+            systemComponent.registerJavaObject("ManagementService", ManagementService.class, managementService);
             
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
