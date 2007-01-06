@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.component;
 
 import java.util.List;
-import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 
@@ -41,15 +40,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * @param scopeContainer the scope container associated with the composite
      */
     void setScopeContainer(ScopeContainer scopeContainer);
-
-    /**
-     * Returns an inbound wire associated with the given service and binding type
-     *
-     * @param serviceName the name of the service
-     * @param bindingType the binding type
-     * @return the wire or null if not found
-     */
-    InboundWire getInboundWire(String serviceName, QName bindingType);
 
     /**
      * Returns the value of a Property of this composite.

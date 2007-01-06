@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.component;
 
 import org.apache.tuscany.spi.ObjectCreationException;
-import org.apache.tuscany.spi.wire.InboundWire;
 
 /**
  * The runtime instantiation of an SCA atomic, or leaf-type, component
@@ -95,17 +94,11 @@ public interface AtomicComponent extends Component {
     void removeInstance() throws ComponentException;
 
     /**
-     * Returns the wire associated with the given service name or null if not found
-     */
-    InboundWire getInboundWire(String serviceName);
-    
-    /**
      * Returns the target instance associated with the component. A target instance is the actual object a request is
      * dispatched to sans wire chain.
      *
      * @throws TargetResolutionException
-     *
      */
     Object getTargetInstance() throws TargetResolutionException;
-    
+
 }

@@ -18,15 +18,20 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
+import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
@@ -80,6 +85,30 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         composite.register(service2);
         assertNull(composite.getService(null));
         assertNull(composite.getSystemService(null));
+    }
+
+    public void testInboundWire() throws Exception {
+        ServiceContract<?> contract = new ServiceContract(Object.class) {
+        };
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
+        wire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.replay(wire);
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(binding);
+
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(binding);
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
+        assertNotNull(composite.getInboundWire("service"));
     }
 
     protected void setUp() throws Exception {

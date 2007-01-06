@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.namespace.QName;
 
 import org.w3c.dom.Document;
 
@@ -50,6 +49,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.management.ManagementService;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * An extension point for composite components, which new types may extend
@@ -220,7 +220,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         //TODO implement
     }
 
-    public InboundWire getInboundWire(String serviceName, QName bindingType) {
+    public InboundWire getInboundWire(String serviceName) {
         SCAObject object = children.get(serviceName);
         if (!(object instanceof Service)) {
             return null;
@@ -228,7 +228,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         Service service = (Service) object;
         for (ServiceBinding binding : service.getServiceBindings()) {
             InboundWire wire = binding.getInboundWire();
-            if (bindingType.equals(wire.getBindingType())) {
+            if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
                 return wire;
             }
         }
