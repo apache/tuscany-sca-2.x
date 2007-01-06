@@ -50,6 +50,12 @@ public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements St
                                      Properties properties) {
         super(applicationRootDirectory, DirectoryHelper.toURL(installDirectory), installDirectory, online);
         this.profileName = profileName;
+        
+        /*
+         * TODO The next two should be derived here from the profile name.
+         * This will help in duplicating the code in individual runtimes.
+         * Discuss with Jeremy: Meeraj 06/01/07. 
+         */
         this.profileDirectory = profileDirectory;
         this.properties = properties;
 
