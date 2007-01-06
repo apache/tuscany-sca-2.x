@@ -41,6 +41,7 @@ import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
+import org.apache.tuscany.spi.services.management.ManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -79,7 +80,8 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
 
-        Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory);
+        ManagementService managementService = null;
+        Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
         runtime = bootstrapper.createRuntime();
         runtime.start();
         systemComponent = runtime.getSystemComponent();
