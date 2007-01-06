@@ -77,11 +77,6 @@ public class TuscanyServer implements TuscanyServerMBean {
     private final File installDirectory;
 
     /**
-     * Base Url
-     */
-    private final URL baseUrl;
-
-    /**
      * Started runtimes.
      */
     private final Map<String, TuscanyRuntime> bootedRuntimes = new ConcurrentHashMap<String, TuscanyRuntime>();
@@ -100,7 +95,6 @@ public class TuscanyServer implements TuscanyServerMBean {
      */
     private TuscanyServer() throws MalformedURLException {
         installDirectory = DirectoryHelper.getInstallDirectory(TuscanyServer.class);
-        baseUrl = installDirectory.toURI().toURL();
         agent = RmiAgent.getInstance();
     }
 
