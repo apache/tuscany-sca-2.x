@@ -31,9 +31,8 @@ public interface TuscanyServerMBean {
      * 
      * @param profileName Profile for the runtime.
      * @param online Whether the runtime will resolve dependencies on the fly.
-     * @param managementDomain Management domain for the runtime.
      */
-    public void startRuntime(String profileName, boolean online, String managementDomain);
+    public void startRuntime(String profileName, boolean online);
 
     /**
      * Shuts down a runtime specified by the bootpath.

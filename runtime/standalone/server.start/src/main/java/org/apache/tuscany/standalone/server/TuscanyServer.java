@@ -98,7 +98,13 @@ public class TuscanyServer implements TuscanyServerMBean {
         agent = RmiAgent.getInstance();
     }
 
-    public final void startRuntime(final String profileName, final boolean online, final String managementDomain) {
+    /**
+     * Starts a runtime specified by the bootpath.
+     * 
+     * @param profileName Profile for the runtime.
+     * @param online Whether the runtime will resolve dependencies on the fly.
+     */
+    public final void startRuntime(final String profileName, final boolean online) {
 
         try {
 
@@ -106,7 +112,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, profileDirectory, null);
 
             final MBeanServer mBeanServer = agent.getMBeanServer();            
-            final StandaloneRuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer, managementDomain);
+            final StandaloneRuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer);
 
             final TuscanyRuntime runtime = createRuntime(bootDirectory, runtimeInfo);
             runtime.initialize();
