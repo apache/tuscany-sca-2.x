@@ -276,7 +276,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
         BuilderRegistryImpl builderRegistry =
-            new BuilderRegistryImpl(scopeRegistry, new JDKWireService(), managementService);
+            new BuilderRegistryImpl(scopeRegistry, new JDKWireService());
         SystemCompositeBuilder builder =
             new SystemCompositeBuilder(builderRegistry, createConnector(), managementService);
         builderRegistry.register(SystemCompositeImplementation.class, builder);

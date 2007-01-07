@@ -47,7 +47,6 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.apache.tuscany.spi.services.management.ManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
@@ -55,14 +54,13 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 
 /**
  * The default builder registry in the runtime
- *
+ * 
  * @version $Rev$ $Date$
  */
 @EagerInit
 public class BuilderRegistryImpl implements BuilderRegistry {
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
-    private ManagementService managementService;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
@@ -71,11 +69,9 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     public BuilderRegistryImpl(@Autowire
     ScopeRegistry scopeRegistry, @Autowire
-    WireService wireService, @Autowire
-    ManagementService managementService) {
+    WireService wireService) {
         this.scopeRegistry = scopeRegistry;
         this.wireService = wireService;
-        this.managementService = managementService;
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -95,7 +91,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                          ComponentDefinition<I> componentDefinition,
                                                          DeploymentContext context) throws BuilderException {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
-        //noinspection SuspiciousMethodCalls
+        // noinspection SuspiciousMethodCalls
         ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>)componentBuilders.get(implClass);
         try {
             if (componentBuilder == null) {
@@ -106,9 +102,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             Component component = componentBuilder.build(parent, componentDefinition, context);
             if (component != null) {
                 component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
-            }
-            if (managementService != null && component instanceof CompositeComponent) {
-                ((CompositeComponent)component).setManagementService(managementService);
             }
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
@@ -134,7 +127,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Service service = new ServiceImpl(name, parent, serviceContract, targetUri, system);
         for (BindingDefinition definition : boundServiceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
-            //noinspection SuspiciousMethodCalls
+            // noinspection SuspiciousMethodCalls
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
             if (bindingBuilder == null) {
                 throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
@@ -165,7 +158,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         Reference reference = new ReferenceImpl(name, parent, contract);
         for (BindingDefinition bindingDefinition : referenceDefinition.getBindings()) {
             Class<?> bindingClass = bindingDefinition.getClass();
-            //noinspection SuspiciousMethodCalls
+            // noinspection SuspiciousMethodCalls
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
             ReferenceBinding binding = bindingBuilder.build(parent, referenceDefinition, bindingDefinition, context);
             // create wires for the component
