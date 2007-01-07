@@ -72,20 +72,20 @@ public class JmxRuntimeInfoImpl extends StandaloneRuntimeInfoImpl implements Jmx
      */
     public static JmxRuntimeInfoImpl newInstance(final String profileName,
                                                  final File installDirectory,
-                                                 final boolean online,
                                                  final MBeanServer mBeanServer)
     throws JmxException {
         
-        // TODO This logic should move to super class's constructor
-        File profileDirectory;
         try {
-            profileDirectory = DirectoryHelper.getProfileDirectory(installDirectory, profileName);
+            
+            File profileDirectory = DirectoryHelper.getProfileDirectory(installDirectory, profileName);
             
             // Load properties for this runtime
             File propFile = new File(profileDirectory, "etc/runtime.properties");
             Properties props = DirectoryHelper.loadProperties(propFile, System.getProperties());
             
+            boolean online = !Boolean.parseBoolean(props.getProperty("offline", "true"));
             return new JmxRuntimeInfoImpl(profileName, installDirectory, profileDirectory, online, props, mBeanServer);
+        
         } catch (IOException ex) {
             throw new JmxHostException(ex);
         }
