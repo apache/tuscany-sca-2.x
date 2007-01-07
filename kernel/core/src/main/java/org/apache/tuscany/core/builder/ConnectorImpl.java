@@ -353,12 +353,10 @@ public class ConnectorImpl implements Connector {
     protected void connect(SCAObject source, OutboundWire sourceWire, SCAObject target) throws WiringException {
         assert sourceWire.getTargetName() != null;
         QualifiedName targetName = sourceWire.getTargetName();
-        if (target instanceof AtomicComponent) {
-            connect(source, sourceWire, (AtomicComponent) target);
+        if (target instanceof Component) {
+            connect(source, sourceWire, (Component) target);
         } else if (target instanceof Reference) {
             connect(source, sourceWire, (Reference) target);
-        } else if (target instanceof CompositeComponent) {
-            connect(source, sourceWire, (CompositeComponent) target);
         } else if (target instanceof Service) {
             connect(source, sourceWire, (Service) target);
         } else if (target == null) {
@@ -378,26 +376,6 @@ public class ConnectorImpl implements Connector {
                 targetName.getPartName(),
                 targetName.getPortName());
         }
-    }
-
-    protected void connect(SCAObject source, OutboundWire sourceWire, AtomicComponent target)
-        throws WiringException {
-        assert sourceWire.getTargetName() != null;
-        QualifiedName targetName = sourceWire.getTargetName();
-
-        InboundWire targetWire = target.getInboundWire(targetName.getPortName());
-        if (targetWire == null) {
-            String sourceName = sourceWire.getContainer().getName();
-            String sourceReference = sourceWire.getReferenceName();
-            throw new TargetServiceNotFoundException("Target service not found",
-                sourceName,
-                sourceReference,
-                targetName.getPartName(),
-                targetName.getPortName());
-        }
-        checkIfWireable(sourceWire, targetWire);
-        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
-        connect(sourceWire, targetWire, optimizable);
     }
 
     protected void connect(SCAObject source, OutboundWire sourceWire, Reference target) throws WiringException {
@@ -442,28 +420,29 @@ public class ConnectorImpl implements Connector {
         connect(sourceWire, targetWire, optimizable);
     }
 
-    protected void connect(SCAObject source, OutboundWire sourceWire, CompositeComponent target)
+    protected void connect(SCAObject source, OutboundWire sourceWire, Component target)
         throws WiringException {
         assert sourceWire.getTargetName() != null;
         QualifiedName targetName = sourceWire.getTargetName();
         InboundWire targetWire;
-        // target is a composite service, connect to it
-        if (source.isSystem()) {
-            targetWire = target.getInboundSystemWire(targetName.getPortName());
+        // FIXME JFM should we move getInboundSystemWire up to Component?
+        if (target instanceof CompositeComponent && source.isSystem()) {
+            targetWire = ((CompositeComponent) target).getInboundSystemWire(targetName.getPortName());
         } else {
             targetWire = target.getInboundWire(targetName.getPortName());
         }
         if (targetWire == null) {
             String sourceName = sourceWire.getContainer().getName();
             String sourceReference = sourceWire.getReferenceName();
-            throw new TargetServiceNotFoundException("Target service does not exist or is not configured with a " 
+            throw new TargetServiceNotFoundException("Target service does not exist or is not configured with a "
                 + "local binding",
                 sourceName,
                 sourceReference,
                 targetName.getPartName(),
                 targetName.getPortName());
         }
-        boolean optimizable = isOptimizable(source.getScope(), Scope.SYSTEM);
+        checkIfWireable(sourceWire, targetWire);
+        boolean optimizable = isOptimizable(source.getScope(), target.getScope());
         connect(sourceWire, targetWire, optimizable);
     }
 

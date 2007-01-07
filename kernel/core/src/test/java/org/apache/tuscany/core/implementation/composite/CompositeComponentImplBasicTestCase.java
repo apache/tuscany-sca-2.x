@@ -53,12 +53,6 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         Assert.assertEquals(Scope.SYSTEM, composite.getScope());
     }
 
-    public void testGetChildren() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
-        composite.register(component);
-        Assert.assertEquals(1, composite.getChildren().size());
-    }
-
     public void testReferencesServices() throws Exception {
         CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
         Service service = EasyMock.createMock(Service.class);

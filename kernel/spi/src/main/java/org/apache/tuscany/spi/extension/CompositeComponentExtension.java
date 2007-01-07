@@ -20,7 +20,6 @@ package org.apache.tuscany.spi.extension;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -129,14 +128,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     public SCAObject getSystemChild(String name) {
         assert name != null;
         return systemChildren.get(name);
-    }
-
-    public List<SCAObject> getSystemChildren() {
-        return Collections.unmodifiableList(new ArrayList<SCAObject>(systemChildren.values()));
-    }
-
-    public List<SCAObject> getChildren() {
-        return Collections.unmodifiableList(new ArrayList<SCAObject>(children.values()));
     }
 
     public void register(SCAObject child) throws ComponentRegistrationException {
@@ -254,18 +245,6 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         synchronized (services) {
             List<InboundWire> map = new ArrayList<InboundWire>();
             for (Service service : services) {
-                for (ServiceBinding binding : service.getServiceBindings()) {
-                    map.add(binding.getInboundWire());
-                }
-            }
-            return map;
-        }
-    }
-
-    public Collection<InboundWire> getInboundSystemWires() {
-        synchronized (systemServices) {
-            List<InboundWire> map = new ArrayList<InboundWire>();
-            for (Service service : systemServices) {
                 for (ServiceBinding binding : service.getServiceBindings()) {
                     map.add(binding.getInboundWire());
                 }

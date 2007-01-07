@@ -58,10 +58,13 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
     }
 
     public <T> T locateService(Class<T> serviceInterface, String serviceName) throws ServiceRuntimeException {
-        String name = serviceInterface.getName();
         QualifiedName qName = new QualifiedName(serviceName);
+        if (qName.getPortName() == null) {
+            String name = serviceInterface.getName();
+            qName = new QualifiedName(qName.getPartName(), name);
+        }
         SCAObject child = composite.getChild(qName.getPartName());
-        InboundWire wire = getInboundWire(child, name, qName.getPortName());
+        InboundWire wire = getInboundWire(child, qName);
         if (wire.isOptimizable()
             && wire.getServiceContract().getInterfaceClass() != null
             && serviceInterface.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
@@ -74,12 +77,11 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
         return wireService.createProxy(serviceInterface, wire);
     }
 
-    protected InboundWire getInboundWire(SCAObject child, String name, String serviceName) {
+    protected InboundWire getInboundWire(SCAObject child, QualifiedName qName) {
         InboundWire wire = null;
         if (child instanceof Component) {
-            wire = ((Component) child).getInboundWire(name);
+            wire = ((Component) child).getInboundWire(qName.getPortName());
             if (wire == null) {
-                String qName = serviceName + QualifiedName.NAME_SEPARATOR + name;
                 throw new ServiceRuntimeException("Service not found [" + qName + "]");
             }
         } else if (child instanceof Service) {
@@ -91,7 +93,7 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
                 }
             }
             if (wire == null) {
-                throw new ServiceRuntimeException("Local binding for service not found [" + name + "]");
+                throw new ServiceRuntimeException("Local binding for service not found [" + qName + "]");
             }
         } else if (child instanceof Reference) {
             Reference service = (Reference) child;
@@ -102,10 +104,10 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
                 }
             }
             if (wire == null) {
-                throw new ServiceRuntimeException("Local binding for service not found [" + name + "]");
+                throw new ServiceRuntimeException("Local binding for service not found [" + qName + "]");
             }
         } else if (child == null) {
-            throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
+            throw new ServiceRuntimeException("Service not found [" + qName + "]");
         } else {
             throw new ServiceRuntimeException("Invalid service type [" + child.getClass().getName() + "]");
         }

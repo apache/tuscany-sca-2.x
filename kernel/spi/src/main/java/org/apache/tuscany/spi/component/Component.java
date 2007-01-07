@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public interface Component extends SCAObject {
 
     /**
-     * Returns the internal wire associated with the given service name or null if not found
+     * Returns the wire associated with the given service name or null if not found
      */
     InboundWire getInboundWire(String serviceName);
 

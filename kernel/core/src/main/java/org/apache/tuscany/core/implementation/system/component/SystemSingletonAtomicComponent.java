@@ -49,7 +49,6 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
  */
 public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComponentExtension
     implements AtomicComponent {
-
     private T instance;
     private Map<String, InboundWire> inboundWires;
     private WireService wireService = new JDKWireService();
