@@ -19,8 +19,8 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.services</groupId>
-        <artifactId>services</artifactId>
+        <groupId>org.apache.tuscany.sca.services</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -36,15 +36,15 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>jetty</groupId>
+            <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty</artifactId>
-            <version>6.0.0beta17</version>
+            <version>6.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>jetty</groupId>
+            <groupId>org.mortbay.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <version>6.0.0beta16</version>
+            <version>6.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
