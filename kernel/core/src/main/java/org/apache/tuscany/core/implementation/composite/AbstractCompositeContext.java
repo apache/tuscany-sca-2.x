@@ -23,7 +23,7 @@ import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.QualifiedName;
-import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -60,16 +60,7 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
         String name = serviceInterface.getName();
         QualifiedName qName = new QualifiedName(serviceName);
         SCAObject child = composite.getChild(qName.getPartName());
-        InboundWire wire;
-        if (child instanceof CompositeComponent) {
-            CompositeComponent childComposite = (CompositeComponent) child;
-            wire = childComposite.getInboundWire(qName.getPortName());
-            if (wire == null) {
-                throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
-            }
-        } else {
-            wire = getInboundWire(child, name, qName.getPortName());
-        }
+        InboundWire wire = getInboundWire(child, name, qName.getPortName());
         if (wire.isOptimizable()
             && wire.getServiceContract().getInterfaceClass() != null
             && serviceInterface.isAssignableFrom(wire.getServiceContract().getInterfaceClass())) {
@@ -84,8 +75,8 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
 
     protected InboundWire getInboundWire(SCAObject child, String name, String serviceName) {
         InboundWire wire = null;
-        if (child instanceof AtomicComponent) {
-            wire = ((AtomicComponent) child).getInboundWire(name);
+        if (child instanceof Component) {
+            wire = ((Component) child).getInboundWire(name);
             if (wire == null) {
                 String qName = serviceName + QualifiedName.NAME_SEPARATOR + name;
                 throw new ServiceRuntimeException("Service not found [" + qName + "]");
