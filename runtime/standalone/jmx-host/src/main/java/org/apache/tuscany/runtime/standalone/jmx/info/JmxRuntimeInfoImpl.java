@@ -19,7 +19,6 @@
 package org.apache.tuscany.runtime.standalone.jmx.info;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -43,11 +42,6 @@ public class JmxRuntimeInfoImpl extends StandaloneRuntimeInfoImpl implements Jmx
     private final MBeanServer mBeanServer;
 
     /**
-     * Management domain.
-     */
-    private final String managementDomain;
-
-    /**
      * Initializes the runtime info instance.
      *
      * @param profileName              the runtime's profile name
@@ -63,11 +57,9 @@ public class JmxRuntimeInfoImpl extends StandaloneRuntimeInfoImpl implements Jmx
                                final File profileDirectory,
                                final boolean online,
                                final Properties properties,
-                               final MBeanServer mBeanServer,
-                               final String managementDomain) {
+                               final MBeanServer mBeanServer) {
         super(profileName, installDirectory, profileDirectory, null, online, properties);
         this.mBeanServer = mBeanServer;
-        this.managementDomain = managementDomain;
     }
     
     /**
@@ -77,13 +69,11 @@ public class JmxRuntimeInfoImpl extends StandaloneRuntimeInfoImpl implements Jmx
      * @param installDirectory         directory containing the standalone installation
      * @param online                   true if this runtime should consider itself online
      * @param mBeanServer              mbean server.
-     * @param managementDomain         management domain for the runtime.
      */
-    public static JmxRuntimeInfoImpl newInstance(String profileName,
-                              File installDirectory,
-                              boolean online,
-                              final MBeanServer mBeanServer,
-                              final String managementDomain)
+    public static JmxRuntimeInfoImpl newInstance(final String profileName,
+                                                 final File installDirectory,
+                                                 final boolean online,
+                                                 final MBeanServer mBeanServer)
     throws JmxException {
         
         // TODO This logic should move to super class's constructor
@@ -95,7 +85,7 @@ public class JmxRuntimeInfoImpl extends StandaloneRuntimeInfoImpl implements Jmx
             File propFile = new File(profileDirectory, "etc/runtime.properties");
             Properties props = DirectoryHelper.loadProperties(propFile, System.getProperties());
             
-            return new JmxRuntimeInfoImpl(profileName, installDirectory, profileDirectory, online, props, mBeanServer, managementDomain);
+            return new JmxRuntimeInfoImpl(profileName, installDirectory, profileDirectory, online, props, mBeanServer);
         } catch (IOException ex) {
             throw new JmxHostException(ex);
         }
@@ -115,7 +105,7 @@ public class JmxRuntimeInfoImpl extends StandaloneRuntimeInfoImpl implements Jmx
      * @return Default domain used by the host.
      */
     public final String getManagementDomain() {
-        return managementDomain;
+        return getProfileName();
     }
 
 }
