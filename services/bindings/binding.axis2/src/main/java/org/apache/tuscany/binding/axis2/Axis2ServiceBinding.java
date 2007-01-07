@@ -117,12 +117,12 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
         Axis2ServiceServlet servlet = new Axis2ServiceServlet();
         servlet.init(configContext);
         configContext.setContextRoot(getName());
-        servletHost.registerMapping("/" + getName(), servlet);
+        servletHost.registerMapping("/services/" + getName(), servlet);
     }
 
     @Destroy
     public void stop() {
-        servletHost.unregisterMapping("/" + getName());
+        servletHost.unregisterMapping("/services/" + getName());
         try {
             configContext.getAxisConfiguration().removeService(getName());
         } catch (AxisFault e) {
