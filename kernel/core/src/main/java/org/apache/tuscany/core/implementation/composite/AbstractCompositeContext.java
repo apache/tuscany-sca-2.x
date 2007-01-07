@@ -63,13 +63,10 @@ public abstract class AbstractCompositeContext extends SCA implements CompositeC
         InboundWire wire;
         if (child instanceof CompositeComponent) {
             CompositeComponent childComposite = (CompositeComponent) child;
-            child = childComposite.getChild(qName.getPortName());
-            if (child == null) {
+            wire = childComposite.getInboundWire(qName.getPortName());
+            if (wire == null) {
                 throw new ServiceRuntimeException("Service not found [" + serviceName + "]");
-            } else if (!(child instanceof Service)) {
-                throw new ServiceRuntimeException("Child not a service [" + serviceName + "]");
             }
-            wire = getInboundWire(child, name, "");
         } else {
             wire = getInboundWire(child, name, qName.getPortName());
         }

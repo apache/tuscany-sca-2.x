@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
@@ -61,6 +63,26 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         EasyMock.replay(service);
         composite.register(service);
         assertEquals(wire, composite.getInboundWire(null));
+    }
+
+    public void testNoLocalBinding() throws Exception {
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
+        EasyMock.expect(wire.getBindingType()).andReturn(new QName("foo","foo")).atLeastOnce();
+        EasyMock.replay(wire);
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(binding);
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        service.getServiceBindings();
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(binding);
+        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
+        assertNull(composite.getInboundWire("service"));
     }
 
     public void testDefaultSystemInboundWire() throws Exception {
