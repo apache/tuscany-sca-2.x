@@ -61,7 +61,7 @@ public class BuilderRegistryTestCase extends TestCase {
 
     public void testRegistration() throws Exception {
         MockBuilder builder = new MockBuilder();
-        BuilderRegistry registry = new BuilderRegistryImpl(null, null, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, null);
         registry.register(CompositeImplementation.class, builder);
         CompositeImplementation implementation = new CompositeImplementation();
         ComponentDefinition<CompositeImplementation> componentDefinition =
@@ -78,7 +78,7 @@ public class BuilderRegistryTestCase extends TestCase {
         );
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(wireService);
-        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -105,7 +105,7 @@ public class BuilderRegistryTestCase extends TestCase {
         );
         EasyMock.expectLastCall().times(2);
         EasyMock.replay(wireService);
-        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
@@ -130,7 +130,7 @@ public class BuilderRegistryTestCase extends TestCase {
         wireService.createWires(EasyMock.isA(AtomicComponent.class),
             EasyMock.isA(ComponentDefinition.class));
         EasyMock.replay(wireService);
-        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService, null);
+        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
 
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
