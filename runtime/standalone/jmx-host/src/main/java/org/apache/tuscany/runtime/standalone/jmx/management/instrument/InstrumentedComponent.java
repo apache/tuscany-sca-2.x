@@ -29,8 +29,6 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanNotificationInfo;
 import javax.management.MBeanOperationInfo;
 
-import org.w3c.dom.Document;
-
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.PropertyValue;
 
@@ -69,7 +67,7 @@ public class InstrumentedComponent implements DynamicMBean {
     public final Object getAttribute(final String attribute) throws AttributeNotFoundException {
         PropertyValue<?> propertyValue = properties.get(attribute);
         if (propertyValue != null) {
-            return propertyValue.getValue();
+            return propertyValue.getValueFactory().getInstance();
         }
         throw new AttributeNotFoundException(attribute + " not found.");
     }
@@ -105,7 +103,7 @@ public class InstrumentedComponent implements DynamicMBean {
         int i = 0;
         for (PropertyValue<?> propertyValue : properties.values()) {
             attributes[i++] =
-                new MBeanAttributeInfo(propertyValue.getName(), Document.class.getName(), null, true, false, false);
+                new MBeanAttributeInfo(propertyValue.getName(), String.class.getName(), null, true, false, false);
         }
 
         return new MBeanInfo(componentName, null, attributes, constructors, operations, notifications);

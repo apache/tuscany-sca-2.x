@@ -62,7 +62,7 @@ public class JmxManagementService implements ManagementService {
      */
     public final void registerComponent(String name, Component component) throws JmxException {
 
-        try {
+        try {            
             ObjectName on = new ObjectName(managementDomain + ":" + "type=component,name=" + name);
             InstrumentedComponent mbean = new InstrumentedComponent(component);
             mBeanServer.registerMBean(mbean, on);
