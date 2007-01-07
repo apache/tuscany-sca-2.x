@@ -3,6 +3,7 @@ package org.apache.tuscany.core.builder;
 import java.util.Collections;
 
 import org.apache.tuscany.spi.QualifiedName;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -163,6 +164,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
                 return localServiceInboundWire;
             }
         });
+        EasyMock.expect(sibling.getScope()).andReturn(Scope.SYSTEM).anyTimes();
         EasyMock.replay(sibling);
 
         CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);

@@ -134,7 +134,7 @@ public class AbstractCompositeContextTestCase extends TestCase {
 
         WireService service = EasyMock.createMock(WireService.class);
         EasyMock.expect(
-            service.createProxy(EasyMock.eq(AbstractCompositeContextTestCase.FooService.class), EasyMock.eq(wire)))
+            service.createProxy(EasyMock.eq(FooService.class), EasyMock.eq(wire)))
             .andReturn(new AbstractCompositeContextTestCase.FooService() {
             });
         EasyMock.replay(service);
@@ -224,6 +224,31 @@ public class AbstractCompositeContextTestCase extends TestCase {
         EasyMock.replay(wireService);
         CompositeContextImpl context = new CompositeContextImpl(composite, wireService);
         context.locateService(AbstractCompositeContextTestCase.FooService.class, "Foo/Bar");
+        EasyMock.verify(wireService);
+        EasyMock.verify(composite);
+        EasyMock.verify(wire);
+        EasyMock.verify(child);
+    }
+
+    public void testCompositeLocateNoService() throws Exception {
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.isOptimizable()).andReturn(false);
+        EasyMock.replay(wire);
+        CompositeComponent child = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(child.getInboundWire(FooService.class.getName())).andReturn(wire);
+        EasyMock.replay(child);
+        CompositeComponent composite = EasyMock.createMock(CompositeComponent.class);
+        EasyMock.expect(composite.getChild("Foo")).andReturn(child);
+        EasyMock.replay(composite);
+
+        WireService wireService = EasyMock.createMock(WireService.class);
+        EasyMock.expect(
+            wireService.createProxy(EasyMock.eq(AbstractCompositeContextTestCase.FooService.class), EasyMock.eq(wire)))
+            .andReturn(new AbstractCompositeContextTestCase.FooService() {
+            });
+        EasyMock.replay(wireService);
+        CompositeContextImpl context = new CompositeContextImpl(composite, wireService);
+        context.locateService(FooService.class, "Foo");
         EasyMock.verify(wireService);
         EasyMock.verify(composite);
         EasyMock.verify(wire);

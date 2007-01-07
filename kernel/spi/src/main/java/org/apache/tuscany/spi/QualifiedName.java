@@ -44,7 +44,7 @@ public class QualifiedName {
         }
         int pos = qualifiedName.indexOf(QualifiedName.NAME_SEPARATOR);
         switch (pos) {
-            case -1:
+            case-1:
                 partName = qualifiedName;
                 break;
             case 0:
@@ -55,6 +55,17 @@ public class QualifiedName {
                 break;
         }
         qName = qualifiedName;
+    }
+
+    /**
+     * Constructs a qualified name using the given part/port combination
+     *
+     * @param partName the part name
+     * @param portName the port name
+     */
+    public QualifiedName(String partName, String portName) {
+        this.partName = partName;
+        this.portName = portName;
     }
 
     /**

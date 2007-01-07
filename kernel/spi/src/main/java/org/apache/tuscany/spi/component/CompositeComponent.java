@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.spi.component;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -45,7 +44,7 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
 
     /**
      * Sets the scope container associated with the composite
-     *
+     * TODO move to Component
      * @param scopeContainer the scope container associated with the composite
      */
     void setScopeContainer(ScopeContainer scopeContainer);
@@ -66,6 +65,14 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      */
     void register(SCAObject object) throws ComponentRegistrationException;
 
+    /**
+     * Returns the internal system wire associated with the given service name or null if not found
+     *
+     * @param serviceName the service name
+     * @return the system wire or null if not found
+     */
+    InboundWire getInboundSystemWire(String serviceName);
+    
     /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
      * create the initial configuration components.
@@ -99,31 +106,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * Returns the system child associated with a given name
      */
     SCAObject getSystemChild(String name);
-
-    /**
-     * Returns the children contained by the composite
-     */
-    List<SCAObject> getChildren();
-
-    /**
-     * Returns the system children contained by the composite
-     */
-    List<SCAObject> getSystemChildren();
-
-    /**
-     * Returns the internal system wire associated with the given service name or null if not found
-     *
-     * @param serviceName the service name
-     * @return the system wire or null if not found
-     */
-    InboundWire getInboundSystemWire(String serviceName);
-
-    /**
-     * Returns all internal wires for system services contained by this composite
-     *
-     * @return all internal wires for system services contained by this composite
-     */
-    Collection<InboundWire> getInboundSystemWires();
 
     /**
      * Invoked by child components to return an wire to a target based on matching type. Resolved targets may be

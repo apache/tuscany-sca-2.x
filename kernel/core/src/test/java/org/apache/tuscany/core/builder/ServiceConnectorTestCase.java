@@ -145,6 +145,7 @@ public class ServiceConnectorTestCase extends AbstractConnectorImplTestCase {
         Service service = createLocalService(compositeTarget);
         ServiceBinding binding = service.getServiceBindings().get(0);
         EasyMock.expect(compositeTarget.getInboundWire(TARGET_SERVICE)).andReturn(binding.getInboundWire());
+        EasyMock.expect(compositeTarget.getScope()).andReturn(Scope.SYSTEM).anyTimes();
         EasyMock.replay(compositeTarget);
 
         inboundWire.setContainer(compositeTarget);
