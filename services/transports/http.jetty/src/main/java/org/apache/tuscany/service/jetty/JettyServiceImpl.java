@@ -20,20 +20,14 @@ package org.apache.tuscany.service.jetty;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.resource.spi.work.Work;
 import javax.servlet.Servlet;
 
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Scope;
-import org.osoa.sca.annotations.Service;
-
-import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.api.annotation.Monitor;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.host.ServletHost;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
-
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandler;
@@ -42,10 +36,16 @@ import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.servlet.ServletMapping;
+import org.mortbay.jetty.servlet.SessionHandler;
 import org.mortbay.log.Log;
 import org.mortbay.log.Logger;
 import org.mortbay.thread.BoundedThreadPool;
 import org.mortbay.thread.ThreadPool;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 /**
  * Implements an HTTP transport service using Jetty.
@@ -182,11 +182,17 @@ public class JettyServiceImpl implements JettyService {
                 connector.setPort(httpPort);
                 server.setConnectors(new Connector[]{connector});
             }
+
             ContextHandler contextHandler = new ContextHandler();
             contextHandler.setContextPath(ROOT);
             server.setHandler(contextHandler);
+
+            SessionHandler sessionHandler = new SessionHandler();
             servletHandler = new ServletHandler();
-            contextHandler.setHandler(servletHandler);
+            sessionHandler.addHandler(servletHandler);
+
+            contextHandler.setHandler(sessionHandler);
+
             server.setStopAtShutdown(true);
             server.setSendServerVersion(sendServerVersion);
             monitor.started();
@@ -213,12 +219,17 @@ public class JettyServiceImpl implements JettyService {
         ServletHolder holder = new ServletHolder(servlet);
         servletHandler.addServlet(holder);
         ServletMapping mapping = new ServletMapping();
-        mapping.setServletName(holder.getClassName());
+        mapping.setServletName(holder.getName());
         mapping.setPathSpec(path);
         servletHandler.addServletMapping(mapping);
     }
 
-    public void unregisterMapping(String string) {
+    public Servlet unregisterMapping(String string) {
+//        throw new UnsupportedOperationException();
+        return null;
+    }
+
+    public boolean isMappingRegistered(String path) {
         throw new UnsupportedOperationException();
     }
 

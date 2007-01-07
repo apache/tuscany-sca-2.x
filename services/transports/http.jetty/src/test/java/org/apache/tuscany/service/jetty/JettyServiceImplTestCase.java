@@ -80,6 +80,23 @@ public class JettyServiceImplTestCase extends TestCase {
         assertTrue(servlet.invoked);
     }
 
+    public void testRequestSession() throws Exception {
+        JettyServiceImpl service = new JettyServiceImpl(monitor, scheduler);
+        service.setDebug(true);
+        service.setHttpPort(HTTP_PORT);
+        service.init();
+        TestServlet servlet = new TestServlet();
+        service.registerMapping("/", servlet);
+        Socket client = new Socket("127.0.0.1", HTTP_PORT);
+        OutputStream os = client.getOutputStream();
+        os.write(REQUEST1.getBytes());
+        os.flush();
+        read(client);
+        service.destroy();
+        assertTrue(servlet.invoked);
+        assertNotNull(servlet.sessionId);
+    }
+
     public void testUseWorkScheduler() throws Exception {
         JettyServiceImpl service = new JettyServiceImpl(monitor, scheduler);
         service.setDebug(true);
@@ -122,6 +139,7 @@ public class JettyServiceImplTestCase extends TestCase {
         //executor.submit();
     }
 
+    @SuppressWarnings("unchecked")
     protected void setUp() throws Exception {
         super.setUp();
         monitor = createMock(TransportMonitor.class);
@@ -156,10 +174,13 @@ public class JettyServiceImplTestCase extends TestCase {
     }
 
     private class TestServlet extends HttpServlet {
+        private static final long serialVersionUID = 1L;
         boolean invoked;
+        String sessionId;
 
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
             invoked = true;
+            sessionId = req.getSession().getId();
             OutputStream writer = resp.getOutputStream();
             try {
                 writer.write("result".getBytes());
