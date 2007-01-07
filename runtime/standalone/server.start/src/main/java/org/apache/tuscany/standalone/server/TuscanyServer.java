@@ -108,23 +108,7 @@ public class TuscanyServer implements TuscanyServerMBean {
             final MBeanServer mBeanServer = agent.getMBeanServer();            
             final StandaloneRuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, online, mBeanServer, managementDomain);
 
-            final ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
-            final ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDirectory);
-
-            final URL systemScdl = getSystemScdl(bootClassLoader);
-            if (systemScdl == null) {
-                throw new TuscanyServerException("Unable to find system scdl");
-            }
-
-            final String className =
-                runtimeInfo.getProperty("tuscany.launcherClass",
-                                   "org.apache.tuscany.runtime.standalone.jmx.JmxRuntimeImpl");
-            final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
-            runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
-            runtime.setSystemScdl(systemScdl);
-            runtime.setHostClassLoader(hostClassLoader);
-
-            runtime.setRuntimeInfo(runtimeInfo);
+            final TuscanyRuntime runtime = createRuntime(bootDirectory, runtimeInfo);
             runtime.initialize();
 
             bootedRuntimes.put(profileName, runtime);
@@ -180,14 +164,45 @@ public class TuscanyServer implements TuscanyServerMBean {
     }
 
     /**
+     * Creates the runtime.
+     * 
+     * @param bootDirectory Boot directory for the runtime.
+     * @param runtimeInfo Runtime info.
+     * @return Runtime.
+     */
+    private TuscanyRuntime createRuntime(final File bootDirectory, final StandaloneRuntimeInfo runtimeInfo) throws IOException, ClassNotFoundException {
+        
+        final URL profileUrl = runtimeInfo.getProfileDirectory().toURL();
+        final ClassLoader hostClassLoader = ClassLoader.getSystemClassLoader();
+        final ClassLoader bootClassLoader = DirectoryHelper.createClassLoader(hostClassLoader, bootDirectory);
+
+        final URL systemScdl = getSystemScdl(profileUrl, runtimeInfo);
+        if (systemScdl == null) {
+            throw new TuscanyServerException("Unable to find system scdl");
+        }
+
+        final String className =
+            runtimeInfo.getProperty("tuscany.launcherClass",
+                               "org.apache.tuscany.runtime.standalone.jmx.JmxRuntimeImpl");
+        final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
+        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
+        runtime.setSystemScdl(systemScdl);
+        runtime.setHostClassLoader(hostClassLoader);
+
+        runtime.setRuntimeInfo(runtimeInfo);
+        return runtime;
+        
+    }
+
+    /**
      * Gets the system SCDL.
      *
      * @param bootClassLoader Boot classloader.
      * @return URL to the system SCDL.
+     * @throws MalformedURLException 
      */
-    private URL getSystemScdl(ClassLoader bootClassLoader) {
-        String resource = System.getProperty("tuscany.systemScdlPath", "META-INF/tuscany/system.scdl");
-        return bootClassLoader.getResource(resource);
+    private URL getSystemScdl(URL profileUrl, StandaloneRuntimeInfo runtimeInfo) throws MalformedURLException {
+        return new URL(profileUrl, runtimeInfo.getProperty("tuscany.systemSCDL", "system.scdl"));
     }
 
     /**
