@@ -22,8 +22,6 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
 
-import org.apache.tuscany.runtime.standalone.jmx.info.JmxRuntimeInfo;
-import org.apache.tuscany.runtime.standalone.jmx.management.JmxManagementService;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
@@ -34,7 +32,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.services.management.ManagementService;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -65,11 +63,8 @@ public class JmxRuntimeImpl extends AbstractRuntime {
         MonitorFactory mf = getMonitorFactory();
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
-        // register the runtime info provided by the host
-        JmxRuntimeInfo runtimeInfo = (JmxRuntimeInfo)getRuntimeInfo();
-
-        ManagementService managementService = new JmxManagementService(runtimeInfo.getMBeanServer(),
-                                                         runtimeInfo.getManagementDomain());
+        
+        TuscanyManagementService managementService = (TuscanyManagementService)getManagementService();
         
         Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
         runtime = bootstrapper.createRuntime();
@@ -79,9 +74,9 @@ public class JmxRuntimeImpl extends AbstractRuntime {
         
         
         try {
-            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
+            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, getRuntimeInfo());
             systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
-            systemComponent.registerJavaObject("ManagementService", ManagementService.class, managementService);
+            systemComponent.registerJavaObject("ManagementService", TuscanyManagementService.class, managementService);
             
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
