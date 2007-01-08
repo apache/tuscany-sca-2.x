@@ -63,6 +63,7 @@
         <module>maven</module>
         <module>persistence</module>
         <module>transaction</module>
+        <module>management</module>
 <!--
         <module>transports/http.jetty</module>
 -->
