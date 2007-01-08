@@ -24,15 +24,18 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.management.MBeanServer;
 
+import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.ShutdownException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
-import org.apache.tuscany.runtime.standalone.jmx.info.JmxRuntimeInfoImpl;
+import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
+import org.apache.tuscany.runtime.standalone.jmx.management.JmxManagementService;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 
@@ -111,9 +114,10 @@ public class TuscanyServer implements TuscanyServerMBean {
             final File bootDirectory = DirectoryHelper.getBootDirectory(installDirectory, profileDirectory, null);
 
             final MBeanServer mBeanServer = agent.getMBeanServer();            
-            final StandaloneRuntimeInfo runtimeInfo = JmxRuntimeInfoImpl.newInstance(profileName, installDirectory, mBeanServer);
-
+            final StandaloneRuntimeInfo runtimeInfo = createRuntimeInfo(profileName);
+            final ManagementService<?> managementService = new JmxManagementService(mBeanServer, profileName);
             final TuscanyRuntime runtime = createRuntime(bootDirectory, runtimeInfo);
+            runtime.setManagementService(managementService);
             runtime.initialize();
 
             bootedRuntimes.put(profileName, runtime);
@@ -169,6 +173,31 @@ public class TuscanyServer implements TuscanyServerMBean {
     }
 
     /**
+     * TODO Share this code with launcher.
+     * 
+     * Creates the runtime info.
+     * 
+     * @param profile profile for which runtime info is created.
+     * @return Runtime info.
+     * @throws IOException If unable to read the runtime properties.
+     */
+    private StandaloneRuntimeInfo createRuntimeInfo(String profile) throws IOException {
+        
+        File profileDir = DirectoryHelper.getProfileDirectory(installDirectory, profile);
+
+        // load properties for this runtime
+        File propFile = new File(profileDir, "etc/runtime.properties");
+        Properties props = DirectoryHelper.loadProperties(propFile, System.getProperties());
+
+        // online unless the offline property is set
+        boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
+
+        return new StandaloneRuntimeInfoImpl(profile, installDirectory, profileDir, null, online, props);
+    }
+
+    /**
+     * TODO Share this code with launcher.
+     * 
      * Creates the runtime.
      * 
      * @param bootDirectory Boot directory for the runtime.
