@@ -40,64 +40,64 @@ public class BasicRequestScopeTestCase extends TestCase {
     private PojoObjectFactory<?> factory;
 
     public void testLifecycleManagement() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
+        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
+        scopeContainer.start();
+        AtomicComponent component = createComponent(scopeContainer);
         // start the request
         RequestScopeInitDestroyComponent o1 =
-            (RequestScopeInitDestroyComponent) scopeContext.getInstance(component);
+            (RequestScopeInitDestroyComponent) scopeContainer.getInstance(component);
         assertTrue(o1.isInitialized());
         assertFalse(o1.isDestroyed());
         RequestScopeInitDestroyComponent o2 =
-            (RequestScopeInitDestroyComponent) scopeContext.getInstance(component);
+            (RequestScopeInitDestroyComponent) scopeContainer.getInstance(component);
         assertSame(o1, o2);
-        scopeContext.onEvent(new RequestEnd(this));
+        scopeContainer.onEvent(new RequestEnd(this));
         assertTrue(o1.isDestroyed());
-        scopeContext.stop();
+        scopeContainer.stop();
     }
 
     public void testGetAssociatedInstance() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
+        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
+        scopeContainer.start();
+        AtomicComponent component = createComponent(scopeContainer);
         // start the request
-        scopeContext.getInstance(component);
-        scopeContext.getAssociatedInstance(component);
-        scopeContext.stop();
+        scopeContainer.getInstance(component);
+        scopeContainer.getAssociatedInstance(component);
+        scopeContainer.stop();
     }
 
     public void testGetAssociatedInstanceNonExistent() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
-        scopeContext.start();
-        AtomicComponent component = createComponent(scopeContext);
+        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
+        scopeContainer.start();
+        AtomicComponent component = createComponent(scopeContainer);
         // start the request
         try {
-            scopeContext.getAssociatedInstance(component);
+            scopeContainer.getAssociatedInstance(component);
             fail();
         } catch (TargetNotFoundException e) {
             // expected
         }
-        scopeContext.stop();
+        scopeContainer.stop();
     }
 
     public void testRequestIsolation() throws Exception {
-        RequestScopeContainer scopeContext = new RequestScopeContainer(null, null);
-        scopeContext.start();
+        RequestScopeContainer scopeContainer = new RequestScopeContainer(null, null);
+        scopeContainer.start();
 
-        AtomicComponent component = createComponent(scopeContext);
+        AtomicComponent component = createComponent(scopeContainer);
 
         RequestScopeInitDestroyComponent o1 =
-            (RequestScopeInitDestroyComponent) scopeContext.getInstance(component);
+            (RequestScopeInitDestroyComponent) scopeContainer.getInstance(component);
         assertTrue(o1.isInitialized());
-        scopeContext.onEvent(new RequestEnd(this));
+        scopeContainer.onEvent(new RequestEnd(this));
         assertTrue(o1.isDestroyed());
 
         RequestScopeInitDestroyComponent o2 =
-            (RequestScopeInitDestroyComponent) scopeContext.getInstance(component);
+            (RequestScopeInitDestroyComponent) scopeContainer.getInstance(component);
         assertNotSame(o1, o2);
-        scopeContext.onEvent(new RequestEnd(this));
+        scopeContainer.onEvent(new RequestEnd(this));
         assertTrue(o2.isDestroyed());
-        scopeContext.stop();
+        scopeContainer.stop();
     }
 
     protected void setUp() throws Exception {
@@ -116,13 +116,13 @@ public class BasicRequestScopeTestCase extends TestCase {
 
     private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scopeContainer);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         configuration.setName("foo");
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
-        scopeContainer.register(component);
+        component.setScopeContainer(scopeContainer);
+        component.start();
         return component;
     }
 }

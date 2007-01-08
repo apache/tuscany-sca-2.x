@@ -49,13 +49,13 @@ public class HttpSessionScopeRestartTestCase extends TestCase {
         MethodEventInvoker<Object> destroyInvoker =
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scope);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.setScopeContainer(scope);
         component.start();
 
         Object session = new Object();

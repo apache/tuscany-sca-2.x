@@ -111,11 +111,10 @@ public class BasicStatelessScopeTestCase extends TestCase {
 
     private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scopeContainer);
         configuration.setInstanceFactory(factory);
         configuration.setName("foo");
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
-        scopeContainer.register(component);
+        component.setScopeContainer(scopeContainer);
         return component;
     }
 }

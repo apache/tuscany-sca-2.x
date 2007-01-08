@@ -68,7 +68,7 @@ public class JavaScriptIntrospector {
 
     private void introspectScope(JavaScriptComponentType componentType, Scope scope) {
         if (scope != null) {
-            componentType.setLifecycleScope(scope);
+            componentType.setImplementationScope(scope);
         }
     }
 

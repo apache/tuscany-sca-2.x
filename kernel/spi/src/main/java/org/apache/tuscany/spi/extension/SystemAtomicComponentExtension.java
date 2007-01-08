@@ -19,7 +19,6 @@
 package org.apache.tuscany.spi.extension;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -31,9 +30,8 @@ public abstract class SystemAtomicComponentExtension extends AtomicComponentExte
 
     public SystemAtomicComponentExtension(String name,
                                           CompositeComponent parent,
-                                          ScopeContainer scopeContainer,
                                           int initLevel) {
-        super(name, parent, scopeContainer, null, null, null, null, initLevel);
+        super(name, parent, null, null, null, null, initLevel);
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {

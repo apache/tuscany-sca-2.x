@@ -23,12 +23,14 @@ import java.util.Map;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.PropertyValue;
 
 /**
  * @version Provides support for property accessors.
  */
 public abstract class AbstractComponentExtension extends AbstractSCAObject implements Component {
+    protected ScopeContainer scopeContainer;
 
     /**
      * Default property values.
@@ -43,6 +45,10 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
      */
     public AbstractComponentExtension(String name, CompositeComponent parent) {
         super(name, parent);
+    }
+
+    public void setScopeContainer(ScopeContainer scopeContainer) {
+        this.scopeContainer = scopeContainer;
     }
 
     public Map<String, PropertyValue<?>> getDefaultPropertyValues() {

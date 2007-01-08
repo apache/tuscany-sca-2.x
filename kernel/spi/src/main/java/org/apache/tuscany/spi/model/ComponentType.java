@@ -37,12 +37,27 @@ import java.util.Map;
  */
 public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefinition, P extends Property<?>>
     extends ModelObject {
+    protected Scope implementationScope = Scope.UNDEFINED;
     private int initLevel;
     private long maxAge = -1;
     private long maxIdleTime = -1;
     private final Map<String, S> services = new HashMap<String, S>();
     private final Map<String, R> references = new HashMap<String, R>();
     private final Map<String, P> properties = new HashMap<String, P>();
+
+    /**
+     * Returns the component implementation scope
+     */
+    public Scope getImplementationScope() {
+        return implementationScope;
+    }
+
+    /**
+     * Sets the component implementation scope
+     */
+    public void setImplementationScope(Scope implementationScope) {
+        this.implementationScope = implementationScope;
+    }
 
     /**
      * Returns the default initialization level for components of this type. A value greater than zero indicates that

@@ -77,14 +77,6 @@ public class GroovyConfiguration {
         this.parent = parent;
     }
 
-    public ScopeContainer getScopeContainer() {
-        return scopeContainer;
-    }
-
-    public void setScopeContainer(ScopeContainer scopeContainer) {
-        this.scopeContainer = scopeContainer;
-    }
-
     public List<Class<?>> getServiceInterfaces() {
         return serviceInterfaces;
     }

@@ -31,11 +31,13 @@ import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.MissingWireTargetException;
+import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -46,6 +48,7 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -54,7 +57,7 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 
 /**
  * The default builder registry in the runtime
- * 
+ *
  * @version $Rev$ $Date$
  */
 @EagerInit
@@ -62,7 +65,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     protected WireService wireService;
     protected ScopeRegistry scopeRegistry;
 
-    private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>> componentBuilders =
+    private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
+    componentBuilders =
         new HashMap<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>();
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
@@ -92,7 +96,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                                                          DeploymentContext context) throws BuilderException {
         Class<?> implClass = componentDefinition.getImplementation().getClass();
         // noinspection SuspiciousMethodCalls
-        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>)componentBuilders.get(implClass);
+        ComponentBuilder<I> componentBuilder = (ComponentBuilder<I>) componentBuilders.get(implClass);
         try {
             if (componentBuilder == null) {
                 String name = implClass.getName();
@@ -102,12 +106,22 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             Component component = componentBuilder.build(parent, componentDefinition, context);
             if (component != null) {
                 component.setDefaultPropertyValues(componentDefinition.getPropertyValues());
+                Scope scope = componentDefinition.getImplementation().getComponentType().getImplementationScope();
+                if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
+                    component.setScopeContainer(context.getCompositeScope());
+                } else {
+                    ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
+                    if (scopeContainer == null) {
+                        throw new ScopeNotFoundException(scope.toString());
+                    }
+                    component.setScopeContainer(scopeContainer);
+                }
             }
             ComponentType<?, ?, ?> componentType = componentDefinition.getImplementation().getComponentType();
             assert componentType != null : "Component type must be set";
             // create wires for the component
             if (wireService != null && component instanceof AtomicComponent) {
-                wireService.createWires((AtomicComponent)component, componentDefinition);
+                wireService.createWires((AtomicComponent) component, componentDefinition);
             }
             return component;
         } catch (BuilderException e) {

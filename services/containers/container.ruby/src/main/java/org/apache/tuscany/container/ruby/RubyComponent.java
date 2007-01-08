@@ -54,15 +54,13 @@ public class RubyComponent extends AtomicComponentExtension {
                          String rubyClassName,
                          Map<String, Object> propValues,
                          CompositeComponent parent,
-                         ScopeContainer scopeContainer,
                          WireService wireService,
                          WorkContext workContext,
                          ExecutionMonitor monitor) {
-        super(name, parent, scopeContainer, wireService, workContext, null, monitor, 0);
+        super(name, parent, wireService, workContext, null, monitor, 0);
 
         this.rubyScript = rubyScript;
         this.rubyClassName = rubyClassName;
-        this.scope = scopeContainer.getScope();
         //this.properties = new HashMap<String, Object>();
         this.properties = propValues;
     }

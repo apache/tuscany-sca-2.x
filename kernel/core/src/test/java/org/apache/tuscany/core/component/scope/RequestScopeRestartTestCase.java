@@ -47,28 +47,28 @@ public class RequestScopeRestartTestCase extends TestCase {
         MethodEventInvoker<Object> destroyInvoker =
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scope);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
-        AtomicComponent context = new SystemAtomicComponentImpl(configuration);
-        context.start();
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.setScopeContainer(scope);
+        component.start();
 
-        Object instance = context.getTargetInstance();
-        assertSame(instance, context.getTargetInstance());
+        Object instance = component.getTargetInstance();
+        assertSame(instance, component.getTargetInstance());
 
         scope.onEvent(new RequestEnd(this));
         scope.stop();
-        context.stop();
+        component.stop();
 
         scope.start();
-        context.start();
-        assertNotSame(instance, context.getTargetInstance());
+        component.start();
+        assertNotSame(instance, component.getTargetInstance());
         scope.onEvent(new RequestEnd(this));
         scope.stop();
-        context.stop();
+        component.stop();
     }
 
     public static class InitDestroyOnce {

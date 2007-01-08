@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -53,6 +54,7 @@ import static org.easymock.EasyMock.reportMatcher;
 import static org.easymock.EasyMock.verify;
 import org.easymock.IAnswer;
 import org.easymock.IArgumentMatcher;
+import org.easymock.EasyMock;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -94,9 +96,9 @@ public class WireTestCase extends TestCase {
         configuration.setName("source");
         configuration.setGroovyClass(implClass1);
         configuration.setServices(services);
-        configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
+        component.setScopeContainer(scopeContainer);
         OutboundWire wire = createOutboundWire("wire", Greeting.class);
         terminateWire(wire);
 
@@ -145,9 +147,9 @@ public class WireTestCase extends TestCase {
         configuration.setName("source");
         configuration.setGroovyClass(implClass2);
         configuration.setServices(services);
-        configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
+        component.setScopeContainer(scopeContainer);
         Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker invoker = component.createTargetInvoker(null, operation, null);
         assertEquals("foo", invoker.invokeTarget(new String[]{"foo"}, TargetInvoker.NONE));
@@ -164,9 +166,9 @@ public class WireTestCase extends TestCase {
         configuration.setName("source");
         configuration.setGroovyClass(implClass2);
         configuration.setServices(services);
-        configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
+        component.setScopeContainer(scopeContainer);
         InboundWire wire = createInboundWire("Greeting", Greeting.class);
         terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
@@ -189,6 +191,7 @@ public class WireTestCase extends TestCase {
                 return ((AtomicComponent) getCurrentArguments()[0]).createInstance();
             }
         });
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).anyTimes();
         replay(scopeContainer);
         wireService = ArtifactFactory.createWireService();
     }

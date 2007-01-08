@@ -36,6 +36,13 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 public interface Component extends SCAObject {
 
     /**
+     * Sets the scope container associated with the component
+     *
+     * @param scopeContainer the scope container associated with the component
+     */
+    void setScopeContainer(ScopeContainer scopeContainer);
+
+    /**
      * Returns the wire associated with the given service name or null if not found
      */
     InboundWire getInboundWire(String serviceName);

@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.SystemAtomicComponentExtension;
@@ -43,16 +42,14 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
      * @param name            the name of the component
      * @param instanceFactory the provider factory
      * @param parent          the parent composite
-     * @param scopeContainer  the scope container for implementation instances
      * @param initLevel       the initialization level
      */
     public DataSourceComponent(String name,
                                ProviderObjectFactory instanceFactory,
                                CompositeComponent parent,
-                               ScopeContainer scopeContainer,
                                int initLevel) {
 
-        super(name, parent, scopeContainer, initLevel);
+        super(name, parent, initLevel);
         this.instanceFactory = instanceFactory;
     }
 

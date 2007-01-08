@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import groovy.lang.GroovyClassLoader;
@@ -88,14 +87,6 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         configuration.setName(name);
         configuration.setGroovyClass(groovyClass);
         configuration.setParent(parent);
-        // get the scope container for this component's scope
-        Scope scope = componentType.getLifecycleScope();
-        if (Scope.COMPOSITE == scope) {
-            configuration.setScopeContainer(deploymentContext.getCompositeScope());
-        } else {
-            configuration.setScopeContainer(scopeRegistry.getScopeContainer(scope));
-        }
-
 
         configuration.setWireService(wireService);
         configuration.setWorkContext(workContext);

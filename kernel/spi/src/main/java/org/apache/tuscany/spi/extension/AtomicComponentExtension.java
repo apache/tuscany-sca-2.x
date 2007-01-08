@@ -19,11 +19,11 @@
 package org.apache.tuscany.spi.extension;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -60,19 +60,17 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent parent,
-                                       ScopeContainer scopeContainer,
                                        WireService wireService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
                                        ExecutionMonitor monitor,
                                        int initLevel) {
-        this(name, parent, scopeContainer, wireService, workContext, workScheduler, monitor, initLevel, -1, -1);
+        this(name, parent, wireService, workContext, workScheduler, monitor, initLevel, -1, -1);
 
     }
 
     protected AtomicComponentExtension(String name,
                                        CompositeComponent parent,
-                                       ScopeContainer scopeContainer,
                                        WireService wireService,
                                        WorkContext workContext,
                                        WorkScheduler workScheduler,
@@ -82,7 +80,6 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
                                        long maxAge) {
         super(name, parent);
         assert !(maxIdleTime > 0 && maxAge > 0);
-        this.scopeContainer = scopeContainer;
         this.wireService = wireService;
         this.workContext = workContext;
         this.workScheduler = workScheduler;
@@ -122,6 +119,12 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
 
     public void setAllowsPassByReference(boolean allowsPassByReference) {
         this.allowsPassByReference = allowsPassByReference;
+    }
+
+
+    public void setScopeContainer(ScopeContainer scopeContainer) {
+        this.scopeContainer = scopeContainer;
+        scope = scopeContainer.getScope();
     }
 
     public void start() throws CoreRuntimeException {

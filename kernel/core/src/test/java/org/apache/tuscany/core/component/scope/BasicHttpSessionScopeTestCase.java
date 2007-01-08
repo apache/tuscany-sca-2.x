@@ -133,13 +133,13 @@ public class BasicHttpSessionScopeTestCase extends TestCase {
 
     private AtomicComponent createComponent(ScopeContainer scopeContainer) {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scopeContainer);
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         configuration.setName("foo");
-        SystemAtomicComponentImpl context = new SystemAtomicComponentImpl(configuration);
-        context.start();
-        return context;
+        SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
+        component.setScopeContainer(scopeContainer);
+        component.start();
+        return component;
     }
 }

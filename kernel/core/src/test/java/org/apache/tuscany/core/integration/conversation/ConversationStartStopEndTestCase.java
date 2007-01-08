@@ -110,9 +110,9 @@ public class ConversationStartStopEndTestCase extends AbstractConversationTestCa
     private JavaAtomicComponent createAtomicComponent() throws Exception {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName("target");
-        configuration.setScopeContainer(container);
         configuration.setInstanceFactory(new MockPojoFactory(Object.class.getConstructor()));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setScopeContainer(container);
         component.start();
         return component;
     }

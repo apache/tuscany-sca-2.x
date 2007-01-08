@@ -61,6 +61,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
     private Constructor<SourceImpl> constructor;
     private CompositeComponent parent;
     private OutboundWire wire;
+    private ScopeContainer scopeContainer;
 
     public void testBuildReference() throws Exception {
 
@@ -85,6 +86,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         builder.setWireService(wireService);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        component.setScopeContainer(scopeContainer);
         component.addOutboundWire(wire);
         deploymentContext.getCompositeScope().start();
         component.start();
@@ -105,13 +107,13 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
 
 
     private void createDeploymentContext() throws Exception {
-        ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
-        scope.start();
-        scope.stop();
-        scope.register(EasyMock.isA(AtomicComponent.class));
+        scopeContainer = EasyMock.createMock(ScopeContainer.class);
+        scopeContainer.start();
+        scopeContainer.stop();
+        scopeContainer.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
-        EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        scope.getInstance(EasyMock.isA(AtomicComponent.class));
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
+        scopeContainer.getInstance(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().andAnswer(new IAnswer<Object>() {
             private Map<AtomicComponent, Object> cache = new HashMap<AtomicComponent, Object>();
 
@@ -125,9 +127,9 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
                 return instance;
             }
         }).anyTimes();
-        EasyMock.replay(scope);
+        EasyMock.replay(scopeContainer);
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(scope).atLeastOnce();
+        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(scopeContainer).atLeastOnce();
         EasyMock.replay(deploymentContext);
     }
 

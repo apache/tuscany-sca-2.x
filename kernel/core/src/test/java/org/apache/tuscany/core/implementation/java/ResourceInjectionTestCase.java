@@ -20,8 +20,8 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -44,10 +44,10 @@ public class ResourceInjectionTestCase extends TestCase {
         Field field = Foo.class.getDeclaredField("resource");
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName("component");
-        configuration.setScopeContainer(containter);
         configuration.setInstanceFactory(new PojoObjectFactory<Foo>(ctor));
         configuration.addResourceSite("bar", field);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setScopeContainer(containter);
 
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn("result");
@@ -70,12 +70,12 @@ public class ResourceInjectionTestCase extends TestCase {
         Constructor<FooConstructor> ctor = FooConstructor.class.getConstructor(String.class);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName("component");
-        configuration.setScopeContainer(containter);
         configuration.setInstanceFactory(new PojoObjectFactory<FooConstructor>(ctor));
         List<String> ctorNames = new ArrayList<String>();
         ctorNames.add("bar");
         configuration.setConstructorParamNames(ctorNames);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setScopeContainer(containter);
 
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn("result");

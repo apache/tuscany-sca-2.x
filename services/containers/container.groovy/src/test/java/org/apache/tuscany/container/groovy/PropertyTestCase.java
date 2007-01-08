@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tuscany.spi.ObjectFactory;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 
@@ -36,6 +37,7 @@ import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import org.easymock.IAnswer;
+import org.easymock.EasyMock;
 
 /**
  * @version $$Rev$$ $$Date$$
@@ -63,9 +65,9 @@ public class PropertyTestCase extends TestCase {
         configuration.setName("source");
         configuration.setGroovyClass(implClass);
         configuration.setServices(services);
-        configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
+        component.setScopeContainer(scopeContainer);
         ObjectFactory<?> factory = createMock(ObjectFactory.class);
         expect((String) factory.getInstance()).andReturn("bar");
         replay(factory);
@@ -85,6 +87,7 @@ public class PropertyTestCase extends TestCase {
                 return ((AtomicComponent) getCurrentArguments()[0]).createInstance();
             }
         });
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).anyTimes();
         replay(scopeContainer);
     }
 }

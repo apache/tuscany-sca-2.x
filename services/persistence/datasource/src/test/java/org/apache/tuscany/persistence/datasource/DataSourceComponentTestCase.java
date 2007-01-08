@@ -30,7 +30,7 @@ public class DataSourceComponentTestCase extends TestCase {
         DataSourceProvider provider = EasyMock.createMock(DataSourceProvider.class);
         provider.close();
         EasyMock.replay(provider);
-        DataSourceComponent component = new DataSourceComponent(null, null, null, null, 0);
+        DataSourceComponent component = new DataSourceComponent(null, null, null, 0);
         component.destroy(provider);
         EasyMock.verify(provider);
     }

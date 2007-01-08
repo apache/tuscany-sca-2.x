@@ -121,7 +121,6 @@ public class WireTestCase extends TestCase {
             null,
             properties,
             null,
-            scope,
             ArtifactFactory.createWireService(),
             null,
             null);
@@ -156,10 +155,10 @@ public class WireTestCase extends TestCase {
             null,
             properties,
             null,
-            scope,
             ArtifactFactory.createWireService(),
             null,
             null);
+        context.setScopeContainer(scope);
         scope.register(context);
 
         InboundWire wire = ArtifactFactory.createInboundWire("Greeting",

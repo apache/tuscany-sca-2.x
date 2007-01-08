@@ -26,9 +26,8 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 
 public class JavaScriptComponentType extends ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> {
 
-    private Scope lifecycleScope = Scope.COMPOSITE;
-
     public JavaScriptComponentType() {
+        implementationScope = Scope.COMPOSITE;
     }
 
     @SuppressWarnings("unchecked")
@@ -36,22 +35,15 @@ public class JavaScriptComponentType extends ComponentType<ServiceDefinition, Re
         // TODO: A bit hacky but this is so the non-JavaScript .componentType side file can be used for now
         setInitLevel(ct.getInitLevel());
         for (Object property : ct.getProperties().values()) {
-            add((Property)property);
+            add((Property) property);
         }
         for (Object reference : ct.getReferences().values()) {
-            add((ReferenceDefinition)reference);
+            add((ReferenceDefinition) reference);
         }
         for (Object service : ct.getServices().values()) {
-            add((ServiceDefinition)service);
+            add((ServiceDefinition) service);
         }
-    }
-    
-    public Scope getLifecycleScope() {
-        return lifecycleScope;
-    }
-
-    public void setLifecycleScope(Scope lifecycleScope) {
-        this.lifecycleScope = lifecycleScope;
+        implementationScope = Scope.COMPOSITE;
     }
 
 }

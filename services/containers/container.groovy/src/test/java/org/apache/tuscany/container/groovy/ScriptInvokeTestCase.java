@@ -23,12 +23,14 @@ import java.util.List;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.model.Scope;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import static org.apache.tuscany.test.ArtifactFactory.createWireService;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.getCurrentArguments;
@@ -56,9 +58,9 @@ public class ScriptInvokeTestCase extends TestCase {
         configuration.setName("source");
         configuration.setGroovyClass(implClass);
         configuration.setServices(services);
-        configuration.setScopeContainer(scopeContainer);
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
+        component.setScopeContainer(scopeContainer);
         GroovyObject object = component.getTargetInstance();
         assertEquals("foo", object.invokeMethod("greet", "foo"));
     }
@@ -74,6 +76,7 @@ public class ScriptInvokeTestCase extends TestCase {
                 return ((AtomicComponent) getCurrentArguments()[0]).createInstance();
             }
         });
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).anyTimes();
         replay(scopeContainer);
     }
 }

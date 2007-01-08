@@ -25,19 +25,10 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 public class RubyComponentType extends
-        ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> {
-
-    private Scope lifecycleScope = Scope.COMPOSITE;
+    ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> {
 
     public RubyComponentType() {
-    }
-
-    public Scope getLifecycleScope() {
-        return lifecycleScope;
-    }
-
-    public void setLifecycleScope(Scope lifecycleScope) {
-        this.lifecycleScope = lifecycleScope;
+        implementationScope = Scope.STATELESS;
     }
 
 }

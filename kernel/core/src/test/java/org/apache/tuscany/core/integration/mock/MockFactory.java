@@ -118,7 +118,6 @@ public final class MockFactory {
         targetComponent.addInboundWire(inboundWire);
         inboundWire.setContainer(targetComponent);
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(sourceScope);
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
@@ -127,6 +126,7 @@ public final class MockFactory {
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(sourceName);
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
+        sourceComponent.setScopeContainer(sourceScope);
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
         sourceComponent.addOutboundWire(outboundWire);
         outboundWire.setContainer(sourceComponent);
@@ -171,7 +171,6 @@ public final class MockFactory {
         targetComponent.addInboundWire(inboundWire);
         inboundWire.setContainer(targetComponent);
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(sourceScope);
         configuration.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
         for (Map.Entry<String, Member> entry : members.entrySet()) {
@@ -181,6 +180,7 @@ public final class MockFactory {
         configuration.setName(sourceName);
 
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
+        sourceComponent.setScopeContainer(sourceScope);
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, null);
         outboundWire.setContainer(sourceComponent);
         outboundWire.setTargetName(new QualifiedName(targetName + "/" + serviceName));
@@ -233,12 +233,13 @@ public final class MockFactory {
     private static <T> JavaAtomicComponent createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
         throws NoSuchMethodException {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scope);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
         configuration.setName(name);
-        return new JavaAtomicComponent(configuration);
+        JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setScopeContainer(scope);
+        return component;
     }
 
     private static Map<Operation<?>, OutboundInvocationChain> createOutboundChains(Class<?> interfaze,

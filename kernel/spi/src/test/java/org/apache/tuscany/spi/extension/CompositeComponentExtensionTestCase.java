@@ -21,7 +21,6 @@ package org.apache.tuscany.spi.extension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -68,7 +67,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     public void testNoLocalBinding() throws Exception {
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getBindingType()).andReturn(new QName("foo","foo")).atLeastOnce();
+        EasyMock.expect(wire.getBindingType()).andReturn(new QName("foo", "foo")).atLeastOnce();
         EasyMock.replay(wire);
         ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
         EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();

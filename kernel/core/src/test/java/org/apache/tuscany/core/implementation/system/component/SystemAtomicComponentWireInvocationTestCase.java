@@ -43,11 +43,11 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         scope.start();
         Target target = new TargetImpl();
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scope);
         configuration.addReferenceSite("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
         configuration.setName("source");
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.setScopeContainer(scope);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(outboundWire.getReferenceName()).andReturn("setTarget").atLeastOnce();
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);

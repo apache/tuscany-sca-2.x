@@ -40,7 +40,6 @@ public class ScriptComponent extends AtomicComponentExtension {
     public ScriptComponent(ComponentConfiguration config) {
         super(config.getName(),
             config.getParent(),
-            config.getScopeContainer(),
             config.getWireService(),
             config.getWorkContext(),
             config.getWorkScheduler(),

@@ -43,13 +43,6 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
     void setManagementService(ManagementService managementService);
 
     /**
-     * Sets the scope container associated with the composite
-     * TODO move to Component
-     * @param scopeContainer the scope container associated with the composite
-     */
-    void setScopeContainer(ScopeContainer scopeContainer);
-
-    /**
      * Returns the value of a Property of this composite.
      *
      * @param name the name of the Property

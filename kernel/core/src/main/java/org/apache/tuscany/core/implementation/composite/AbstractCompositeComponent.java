@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.extension.CompositeComponentExtension;
@@ -53,7 +52,6 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
     protected final Object lock = new Object();
     // Indicates whether the composite context has been initialized
     protected boolean initialized;
-    protected ScopeContainer scopeContainer;
 
 
     /**
@@ -67,12 +65,6 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
                                       Connector connector,
                                       Map<String, Document> propertyValues) {
         super(name, parent, connector, propertyValues);
-    }
-
-    public void setScopeContainer(ScopeContainer scopeContainer) {
-        assert this.scopeContainer == null;
-        this.scopeContainer = scopeContainer;
-        addListener(scopeContainer);
     }
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
@@ -91,9 +83,6 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
                 throw new IllegalStateException("Composite not in UNINITIALIZED state");
             }
 
-            if (scopeContainer != null) {
-                scopeContainer.start();
-            }
             for (SCAObject child : systemChildren.values()) {
                 child.start();
             }
@@ -112,17 +101,13 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
             return;
         }
 
-        publish(new CompositeStop(this, this));
         for (SCAObject child : children.values()) {
             child.stop();
         }
         for (SCAObject child : systemChildren.values()) {
             child.stop();
         }
-        if (scopeContainer != null) {
-            scopeContainer.stop();
-        }
-
+        publish(new CompositeStop(this, this));
         // need to block a start until reset is complete
         initializeLatch = new CountDownLatch(2);
         lifecycleState = STOPPING;

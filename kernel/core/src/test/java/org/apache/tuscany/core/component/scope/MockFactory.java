@@ -60,7 +60,6 @@ public final class MockFactory {
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         AtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
         PojoConfiguration sourceConfig = new PojoConfiguration();
-        sourceConfig.setScopeContainer(sourceScopeContainer);
         sourceConfig.setInstanceFactory(new PojoObjectFactory(sourceClass.getConstructor()));
 
         //create target wire
@@ -96,6 +95,7 @@ public final class MockFactory {
         sourceConfig.addReferenceSite(setter.getName(), setter);
         sourceConfig.setName(source);
         AtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
+        sourceComponent.setScopeContainer(sourceScopeContainer);
         QualifiedName targetName = new QualifiedName(target);
         OutboundWire wire = new OutboundWireImpl();
         wire.setReferenceName(setter.getName());
@@ -115,7 +115,6 @@ public final class MockFactory {
     public static AtomicComponent createAtomicComponent(String name, ScopeContainer container, Class<?> clazz)
         throws NoSuchMethodException {
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(container);
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         EagerInit eager = clazz.getAnnotation(EagerInit.class);
         if (eager != null) {
@@ -130,7 +129,9 @@ public final class MockFactory {
             }
         }
         configuration.setName(name);
-        return new SystemAtomicComponentImpl(configuration);
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.setScopeContainer(container);
+        return component;
     }
 
 }
