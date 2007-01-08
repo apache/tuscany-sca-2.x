@@ -35,7 +35,7 @@ import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService
 import org.apache.tuscany.spi.implementation.java.Introspector;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
-import org.apache.tuscany.spi.services.management.ManagementService;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
@@ -90,7 +90,7 @@ import org.apache.tuscany.host.MonitorFactory;
 public class DefaultBootstrapper implements Bootstrapper {
     private final MonitorFactory monitorFactory;
     private final XMLInputFactory xmlFactory;
-    private final ManagementService managementService;
+    private final TuscanyManagementService managementService;
 
     /**
      * Create a default bootstrapper.
@@ -103,7 +103,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
-                               ManagementService managementService) {
+                               TuscanyManagementService managementService) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
         this.managementService = managementService;
