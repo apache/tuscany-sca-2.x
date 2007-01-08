@@ -24,6 +24,7 @@ import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.management.ManagementService;
 
 /**
  * @version $Rev$ $Date$
@@ -92,6 +93,20 @@ public interface TuscanyRuntime {
      * @return the default MonitorFactory for this runtime
      */
     MonitorFactory createDefaultMonitorFactory();
+
+    /**
+     * Sets the ManagementService that this runtime should use.
+     *
+     * @param managementService the ManagementService that this runtime should use
+     */
+    void setManagementService(ManagementService<?> managementService);
+
+    /**
+     * Returns the ManagementService that this runtime is using.
+     *
+     * @return the ManagementService that this runtime is using
+     */
+    ManagementService<?> getManagementService();
 
     /**
      * Initialize a runtime.
