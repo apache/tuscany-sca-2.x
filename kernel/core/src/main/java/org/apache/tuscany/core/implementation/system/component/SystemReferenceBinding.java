@@ -71,10 +71,6 @@ public class SystemReferenceBinding extends AbstractSCAObject implements Referen
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        throw new UnsupportedOperationException();
-    }
-
     public TargetInvoker createAsyncTargetInvoker(OutboundWire wire, Operation operation) {
         throw new UnsupportedOperationException();
     }

@@ -257,7 +257,7 @@ public class ConnectorImpl implements Connector {
                 ServiceContract sourceContract = sourceWire.getServiceContract();
                 TargetInvoker invoker;
                 try {
-                    invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
+                    invoker = binding.createTargetInvoker(sourceContract, operation);
                 } catch (TargetInvokerCreationException e) {
                     throw new WireConnectException("Error connecting source and target",
                         sourceWire,

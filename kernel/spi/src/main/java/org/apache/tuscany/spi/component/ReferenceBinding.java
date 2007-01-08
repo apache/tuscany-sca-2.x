@@ -70,19 +70,9 @@ public interface ReferenceBinding extends SCAObject {
         throws TargetInvokerCreationException;
 
     /**
-     * Creates a target invoker for callbacks
+     * Returns the service contract for the binding
      *
-     * @param contract  the service contract to invoke on
-     * @param operation the operation to invoke
-     * @throws TargetInvokerCreationException
-     */
-    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException;
-
-    /**
-     * Get the ServiceContract for the binding
-     *
-     * @return
+     * @return the service contract for the binding
      */
     ServiceContract<?> getBindingServiceContract();
 
@@ -91,7 +81,7 @@ public interface ReferenceBinding extends SCAObject {
      * Set the ServiceContract for the binding. This contract will be used for the outbound wire. If not set, it will be
      * the same as the ServideContract from the interface.
      *
-     * @param serviceContract
+     * @param serviceContract the service contract
      */
     void setBindingServiceContract(ServiceContract<?> serviceContract);
 

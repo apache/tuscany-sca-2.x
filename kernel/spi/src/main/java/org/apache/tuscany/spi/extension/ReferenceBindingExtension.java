@@ -20,15 +20,12 @@ package org.apache.tuscany.spi.extension;
 
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ReferenceBinding;
-import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.Reference;
-import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
-import org.apache.tuscany.spi.wire.TargetInvoker;
 
 /**
  * The default implementation of an SCA reference
@@ -67,11 +64,6 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
 
     public void setOutboundWire(OutboundWire outboundWire) {
         this.outboundWire = outboundWire;
-    }
-
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException {
-        throw new UnsupportedOperationException();
     }
 
     public ServiceContract<?> getBindingServiceContract() {
