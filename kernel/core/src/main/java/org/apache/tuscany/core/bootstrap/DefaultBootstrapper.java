@@ -149,7 +149,9 @@ public class DefaultBootstrapper implements Bootstrapper {
         JavaInterfaceProcessorRegistry interfaceIntrospector = new JavaInterfaceProcessorRegistryImpl();
         Introspector introspector = createIntrospector(interfaceIntrospector);
         LoaderRegistry loader = createLoader(new PropertyObjectFactoryImpl(), introspector);
-        return new DeployerImpl(xmlFactory, loader, builder);
+        DeployerImpl deployer = new DeployerImpl(xmlFactory, loader, builder);
+        deployer.setMonitor(getMonitorFactory().getMonitor(ScopeContainerMonitor.class));
+        return deployer;
     }
 
     /**
