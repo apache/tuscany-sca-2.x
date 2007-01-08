@@ -52,4 +52,9 @@ public class TuscanySessionListenerTestCase extends TestCase {
         listener.sessionCreated(event);
         EasyMock.verify(context);
     }
+
+    public void testSessionDestroyedBeforeCreated() throws Exception {
+        TuscanySessionListener listener = new TuscanySessionListener();
+        listener.sessionDestroyed(null);
+    }
 }

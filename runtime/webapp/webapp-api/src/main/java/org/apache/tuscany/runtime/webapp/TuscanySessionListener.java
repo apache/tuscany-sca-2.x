@@ -46,7 +46,8 @@ public class TuscanySessionListener implements HttpSessionListener {
     }
 
     public void sessionDestroyed(HttpSessionEvent event) {
-        runtime.sessionDestroyed(event);
-
+        if (runtime != null) {
+            runtime.sessionDestroyed(event);
+        }
     }
 }
