@@ -43,35 +43,23 @@ public interface Component extends SCAObject {
     void setScopeContainer(ScopeContainer scopeContainer);
 
     /**
-     * Returns the wire associated with the given service name or null if not found
+     * Returns the wire associated with the given service name or null if not found.
+     *
+     * @return the wire associated with the given service name or null if not found.
      */
     InboundWire getInboundWire(String serviceName);
 
     /**
-     * Adds a target-side wire. Target-side wire factories contain the invocation chains associated with the destination
-     * service of a wire
-     */
-    void addInboundWire(InboundWire wire);
-
-    /**
-     * Returns a map of inbound wires for a service.
+     * Returns a map of inbound wires.
+     *
+     * @return a map of inbound wires.
      */
     Collection<InboundWire> getInboundWires();
 
     /**
-     * Adds a source-side wire for the given reference. Source-side wires contain the invocation chains for a reference
-     * in the implementation associated with the instance wrapper created by this configuration.
-     */
-    void addOutboundWire(OutboundWire wire);
-
-    /**
-     * Adds a set of source-side multiplicity wires for the given reference. Source-side wires contain the invocation
-     * chains for a reference in the implementation associated with the instance wrapper created by this configuration.
-     */
-    void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires);
-
-    /**
      * Returns a map of source-side wires for references. There may be 1..n wires per reference.
+     *
+     * @return a map of source-side wires for references.
      */
     Map<String, List<OutboundWire>> getOutboundWires();
 
@@ -82,20 +70,21 @@ public interface Component extends SCAObject {
      * @param targetName   the service name
      * @param operation    the operation to invoke
      * @param callbackWire the callback wire or null if the associated wire is unidirectional
+     * @return the target invoker
      * @throws TargetInvokerCreationException
      */
     TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
         throws TargetInvokerCreationException;
 
     /**
-     * Gets the default property values associated with the component.
+     * Returns the default property values associated with the component.
      *
-     * @return Default property values associated with the component.
+     * @return default property values associated with the component.
      */
     Map<String, PropertyValue<?>> getDefaultPropertyValues();
 
     /**
-     * Gets the default property values associated with the component.
+     * Sets the default property values associated with the component.
      *
      * @param defaultPropertyValues Default property values associated with the component.
      */
