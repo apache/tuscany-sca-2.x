@@ -39,12 +39,10 @@ public class LocalServiceBinding extends ServiceBindingExtension {
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException {
-        return new LocalTargetInvoker(operation, outboundWire);
-    }
-
-
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException {
-        return new LocalCallbackTargetInvoker(operation, getInboundWire());
+        if (operation.isCallback()) {
+            return new LocalCallbackTargetInvoker(operation, getInboundWire());
+        } else {
+            return new LocalTargetInvoker(operation, outboundWire);
+        }
     }
 }

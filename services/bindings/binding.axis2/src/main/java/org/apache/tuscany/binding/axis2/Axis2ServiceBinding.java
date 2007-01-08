@@ -36,6 +36,7 @@ import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.host.ServletHost;
@@ -89,11 +90,11 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
     private Set<String> seenConversations = Collections.synchronizedSet(new HashSet<String>());
 
     public Axis2ServiceBinding(String theName,
-                        ServiceContract<?> serviceContract,
-                        CompositeComponent parent,
-                        WebServiceBindingDefinition binding,
-                        ServletHost servletHost,
-                        ConfigurationContext configContext, WorkContext workContext) {
+                               ServiceContract<?> serviceContract,
+                               CompositeComponent parent,
+                               WebServiceBindingDefinition binding,
+                               ServletHost servletHost,
+                               ConfigurationContext configContext, WorkContext workContext) {
 
         super(theName, parent);
 
@@ -287,10 +288,13 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
             + serviceInterface.getName());
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract,
-                                                     org.apache.tuscany.spi.model.Operation operation) {
-
-        return new Axis2ServiceCallbackTargetInvoker(this);
+    public TargetInvoker createTargetInvoker(ServiceContract contract, org.apache.tuscany.spi.model.Operation operation)
+        throws TargetInvokerCreationException {
+        if (!operation.isCallback()){
+           throw new UnsupportedOperationException();
+        }else{
+            return new Axis2ServiceCallbackTargetInvoker(this);
+        }
     }
 
     public void addMapping(Object msgId, InvocationContext invCtx) {
@@ -321,8 +325,9 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
                     ao.getChildrenWithName(new QName("http://www.w3.org/2005/08/addressing", "ReferenceParameters"));
                      rpI.hasNext();) {
                     OMElement rpE = (OMElement) rpI.next();
-                    for (Iterator cidI = rpE.getChildrenWithName(WebServiceBindingDefinition.CONVERSATION_ID_REFPARM_QN);
-                         cidI.hasNext();) {
+                    for (
+                        Iterator cidI = rpE.getChildrenWithName(WebServiceBindingDefinition.CONVERSATION_ID_REFPARM_QN);
+                        cidI.hasNext();) {
                         OMElement cidE = (OMElement) cidI.next();
                         conversationID = cidE.getText();
                     }

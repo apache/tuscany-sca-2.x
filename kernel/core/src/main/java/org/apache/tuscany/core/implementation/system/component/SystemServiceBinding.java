@@ -85,10 +85,6 @@ public class SystemServiceBinding extends AbstractSCAObject implements ServiceBi
         throw new UnsupportedOperationException();
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation) {
-        throw new UnsupportedOperationException();
-    }
-
     public ServiceContract<?> getBindingServiceContract() {
         return serviceContract;
     }

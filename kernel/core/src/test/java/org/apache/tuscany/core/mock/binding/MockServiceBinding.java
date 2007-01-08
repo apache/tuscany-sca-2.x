@@ -74,11 +74,6 @@ public class MockServiceBinding extends AbstractSCAObject implements ServiceBind
         return null;
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException {
-        return null;
-    }
-
     public Scope getScope() {
         return null;
     }
