@@ -179,20 +179,8 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
     }
 
-    public void addOutboundWire(OutboundWire wire) {
-
-    }
-
-    public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
-
-    }
-
     public Map<String, List<OutboundWire>> getOutboundWires() {
         return null;
-    }
-
-    public void addInboundWire(InboundWire wire) {
-        //TODO implement
     }
 
     public InboundWire getInboundWire(String serviceName) {
