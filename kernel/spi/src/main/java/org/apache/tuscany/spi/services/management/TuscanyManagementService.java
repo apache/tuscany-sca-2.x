@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.services.management;
 
+import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.spi.component.Component;
 
 /**
@@ -27,7 +28,7 @@ import org.apache.tuscany.spi.component.Component;
  *
  * @version $Revision$ $Date$
  */
-public interface ManagementService {
+public interface TuscanyManagementService extends ManagementService<Component> {
 
     /**
      * Registers a component for management.
