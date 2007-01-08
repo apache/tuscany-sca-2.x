@@ -83,7 +83,7 @@ public class CallbackConnectionTestCase extends TestCase {
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
         EasyMock.expect(binding.isSystem()).andReturn(false).anyTimes();
         EasyMock.expect(binding.getName()).andReturn("source").atLeastOnce();
-        EasyMock.expect(binding.createCallbackTargetInvoker(EasyMock.isA(ServiceContract.class),
+        EasyMock.expect(binding.createTargetInvoker(EasyMock.isA(ServiceContract.class),
             EasyMock.isA(Operation.class))).andReturn(EasyMock.createNiceMock(TargetInvoker.class));
         EasyMock.replay(binding);
 

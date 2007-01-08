@@ -21,7 +21,11 @@ public class LocalReferenceBinding extends ReferenceBindingExtension {
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException {
-        return new LocalTargetInvoker(operation, outboundWire);
+        if (operation.isCallback()) {
+            return new LocalCallbackTargetInvoker(operation, inboundWire);
+        } else {
+            return new LocalTargetInvoker(operation, outboundWire);
+        }
     }
 
     public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
