@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.services.management.ManagementService;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
@@ -47,14 +47,14 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
  * @version $Rev$ $Date$
  */
 public class SystemCompositeBuilder extends ComponentBuilderExtension<SystemCompositeImplementation> {
-    private ManagementService managementService;
+    private TuscanyManagementService managementService;
 
     public SystemCompositeBuilder() {
     }
 
     public SystemCompositeBuilder(BuilderRegistry builderRegistry,
                                   Connector connector,
-                                  ManagementService managementService) {
+                                  TuscanyManagementService managementService) {
         this.builderRegistry = builderRegistry;
         this.connector = connector;
         this.managementService = managementService;
