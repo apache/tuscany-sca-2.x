@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
@@ -60,6 +61,7 @@ public class AtomicComponentExtensionTestCase extends TestCase {
 
     public void testRemoveInstance() throws Exception {
         ScopeContainer container = EasyMock.createMock(ScopeContainer.class);
+        EasyMock.expect(container.getScope()).andReturn(Scope.COMPOSITE);
         container.remove(EasyMock.isA(AtomicComponentExtension.class));
         EasyMock.replay(container);
         TestExtension ext = new TestExtension(container);
@@ -69,11 +71,12 @@ public class AtomicComponentExtensionTestCase extends TestCase {
 
     private class TestExtension extends AtomicComponentExtension {
         public TestExtension() {
-            super(null, null, null, null, null, null, null, 0);
+            super(null, null, null, null, null, null, 0);
         }
 
         public TestExtension(ScopeContainer scopeContainer) {
-            super(null, null, scopeContainer, null, null, null, null, 0);
+            super(null, null, null, null, null, null, 0);
+            setScopeContainer(scopeContainer);
         }
 
         public Object createInstance() throws ObjectCreationException {

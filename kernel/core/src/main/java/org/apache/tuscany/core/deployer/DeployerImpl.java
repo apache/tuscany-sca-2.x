@@ -23,6 +23,7 @@ import javax.xml.stream.XMLInputFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Builder;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
@@ -33,15 +34,17 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.loader.Loader;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 
-import org.apache.tuscany.spi.builder.BuilderInstantiationException;
-import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.api.annotation.Monitor;
+import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 
 /**
  * Default implementation of Deployer.
@@ -82,7 +85,8 @@ public class DeployerImpl implements Deployer {
     public <I extends Implementation<?>> Component deploy(CompositeComponent parent,
                                                           ComponentDefinition<I> componentDefinition)
         throws LoaderException, BuilderException, PrepareException {
-        ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
+        final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
+        scopeContainer.start();
         DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
         try {
             load(parent, componentDefinition, deploymentContext);
@@ -91,10 +95,16 @@ public class DeployerImpl implements Deployer {
             throw e;
         }
         Component component = (Component) build(parent, componentDefinition, deploymentContext);
-        if (component instanceof CompositeComponent) {
-            CompositeComponent composite = (CompositeComponent) component;
-            composite.setScopeContainer(scopeContainer);
-        }
+        // create a listener so the scope container is shutdown when the top-level composite stops
+        RuntimeEventListener listener = new RuntimeEventListener() {
+            public void onEvent(Event event) {
+                scopeContainer.onEvent(event);
+                if (event instanceof CompositeStop) {
+                    scopeContainer.stop();
+                }
+            }
+        };
+        component.addListener(listener);
         component.prepare();
         try {
             parent.register(component);

@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * Loads the component type for a DataSource component. Component type information is currently static, although this
@@ -59,6 +60,7 @@ public class DSComponentTypeLoader extends ComponentTypeLoaderExtension<DataSour
         throws LoaderException {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> componentType =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
+        componentType.setImplementationScope(Scope.COMPOSITE);
         JavaServiceContract serviceContract = new JavaServiceContract(DataSource.class);
         ServiceDefinition service = new ServiceDefinition("DataSource", serviceContract, false);
         componentType.add(service);

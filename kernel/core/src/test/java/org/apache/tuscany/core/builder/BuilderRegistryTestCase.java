@@ -32,6 +32,8 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
+import org.apache.tuscany.spi.component.ScopeContainer;
+import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -44,6 +46,7 @@ import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import static org.apache.tuscany.spi.model.Multiplicity.ONE_ONE;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -126,11 +129,15 @@ public class BuilderRegistryTestCase extends TestCase {
 
     @SuppressWarnings({"unchecked"})
     public void testComponentImplementationDispatch() throws Exception {
+        ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
+        ScopeContainer scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
+        EasyMock.expect(scopeRegistry.getScopeContainer(EasyMock.isA(Scope.class))).andReturn(scopeContainer);
+        EasyMock.replay(scopeRegistry);
         WireService wireService = EasyMock.createMock(WireService.class);
         wireService.createWires(EasyMock.isA(AtomicComponent.class),
             EasyMock.isA(ComponentDefinition.class));
         EasyMock.replay(wireService);
-        BuilderRegistry registry = new BuilderRegistryImpl(null, wireService);
+        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry, wireService);
 
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);

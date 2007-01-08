@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.service.openjpa;
 
-import java.util.ArrayList;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -48,7 +47,7 @@ public class JPAAtomicComponent extends SystemAtomicComponentExtension {
                               String persistenceUnit,
                               Map<Object, Object> configProps,
                               int initLevel) {
-        super(name, parent, scopeContainer, initLevel);
+        super(name, parent, initLevel);
         assert persistenceUnit != null;
         this.persistenceUnit = persistenceUnit;
         this.configProps = configProps;

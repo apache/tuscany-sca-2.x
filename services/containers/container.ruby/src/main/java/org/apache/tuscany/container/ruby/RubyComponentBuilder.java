@@ -27,12 +27,10 @@ import java.util.Map;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
-import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import org.apache.tuscany.container.ruby.rubyscript.RubyScript;
@@ -72,20 +70,11 @@ public class RubyComponentBuilder extends ComponentBuilderExtension<RubyImplemen
         RubyScript rubyScript = implementation.getRubyScript();
 
         // TODO: have ComponentBuilderExtension pass ScopeContainer in on build method?
-        ScopeContainer scopeContainer;
-        Scope scope = componentType.getLifecycleScope();
-        if (Scope.COMPOSITE == scope) {
-            scopeContainer = deploymentContext.getCompositeScope();
-        } else {
-            scopeContainer = scopeRegistry.getScopeContainer(scope);
-        }
-
         return new RubyComponent(name,
             rubyScript,
             implementation.getRubyClassName(),
             propertyValues,
             parent,
-            scopeContainer,
             wireService,
             workContext,
             monitor);

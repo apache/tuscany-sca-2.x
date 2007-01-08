@@ -71,6 +71,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         impl.setImplementationClass(FooImpl.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
+        component.setScopeContainer(container);
         component.start();
         container.onEvent(new CompositeStart(this, null));
         FooImpl foo = (FooImpl) component.getTargetInstance();
@@ -110,6 +111,7 @@ public class SystemComponentBuilderTestCase extends TestCase {
         propVal.setValueFactory(new SingletonObjectFactory<String>("value"));
         definition.add(propVal);
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
+        component.setScopeContainer(container);
         component.start();
         FooImpl foo = (FooImpl) component.getTargetInstance();
         assertEquals("value", foo.prop);

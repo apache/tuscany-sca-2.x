@@ -81,7 +81,6 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
 
-        deploymentContext.getCompositeScope().start();
         component.start();
         CompositeComponent sourceComponent = (CompositeComponent) component.getChild("SourceComponent");
         assertTrue(sourceComponent.getChild("InnerSourceService") instanceof Service);
@@ -199,6 +198,7 @@ public class CompositeBuilderTestCase extends TestCase {
         super.setUp();
         ScopeContainerMonitor monitor = EasyMock.createNiceMock(ScopeContainerMonitor.class);
         CompositeScopeContainer container = new CompositeScopeContainer(monitor);
+        container.start();
         deploymentContext = new RootDeploymentContext(null, null, container, null);
     }
     

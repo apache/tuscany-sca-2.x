@@ -2,11 +2,9 @@ package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
 
-import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
-import org.apache.tuscany.spi.component.ScopeRegistry;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
@@ -36,6 +34,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
     private CompositeComponent parent;
     private PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type;
     private ComponentDefinition<JavaImplementation> definition;
+    private ScopeContainer scopeContainer;
 
     public void testInitLevel() throws Exception {
         type.setInitLevel(1);
@@ -68,19 +67,8 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
     public void testScope() throws Exception {
         JavaComponentBuilder builder = new JavaComponentBuilder();
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, deploymentContext);
+        component.setScopeContainer(scopeContainer);
         assertEquals(Scope.COMPOSITE, component.getScope());
-    }
-
-    public void testUnknownScope() throws Exception {
-        JavaComponentBuilder builder = new JavaComponentBuilder();
-        builder.setScopeRegistry(EasyMock.createNiceMock(ScopeRegistry.class));
-        definition.getImplementation().getComponentType().setImplementationScope(new Scope("foo"));
-        try {
-            builder.build(parent, definition, deploymentContext);
-            fail();
-        } catch (ScopeNotFoundException e) {
-            // expected
-        }
     }
 
     protected void setUp() throws Exception {
@@ -93,15 +81,14 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
 
 
     private void createDeploymentContext() {
-        ScopeContainer scope = EasyMock.createMock(ScopeContainer.class);
-        scope.start();
-        scope.stop();
-        scope.register(EasyMock.isA(AtomicComponent.class));
+        scopeContainer = EasyMock.createMock(ScopeContainer.class);
+        scopeContainer.start();
+        scopeContainer.stop();
+        scopeContainer.register(EasyMock.isA(AtomicComponent.class));
         EasyMock.expectLastCall().atLeastOnce();
-        EasyMock.expect(scope.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
-        EasyMock.replay(scope);
+        EasyMock.expect(scopeContainer.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
+        EasyMock.replay(scopeContainer);
         deploymentContext = EasyMock.createMock(DeploymentContext.class);
-        EasyMock.expect(deploymentContext.getCompositeScope()).andReturn(scope).atLeastOnce();
         EasyMock.replay(deploymentContext);
     }
 

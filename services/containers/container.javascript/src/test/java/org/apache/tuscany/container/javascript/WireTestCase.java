@@ -122,8 +122,9 @@ public class WireTestCase extends TestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         JavaScriptComponent context =
-            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), null, scope,
+            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), null,
                 ArtifactFactory.createWireService(), null, null);
+        context.setScopeContainer(scope);
         scope.register(context);
         Operation<Type> operation = new Operation<Type>("greet", null, null, null, false, null, NO_CONVERSATION);
         TargetInvoker invoker = context.createTargetInvoker(null, operation, null);
@@ -140,8 +141,9 @@ public class WireTestCase extends TestCase {
         List<Class<?>> services = new ArrayList<Class<?>>();
         services.add(Greeting.class);
         JavaScriptComponent context =
-            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), null, scope,
+            new JavaScriptComponent("source", implClass2, new HashMap<String, Object>(), null,
                 ArtifactFactory.createWireService(), null, null);
+        context.setScopeContainer(scope);
         scope.register(context);
 
         InboundWire wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);

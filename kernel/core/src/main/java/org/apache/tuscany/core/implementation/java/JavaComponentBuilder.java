@@ -25,10 +25,8 @@ import java.lang.reflect.Method;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
-import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.host.ResourceHost;
@@ -71,15 +69,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
         Scope scope = componentType.getImplementationScope();
-        if (Scope.COMPOSITE == scope) {
-            configuration.setScopeContainer(deployment.getCompositeScope());
-        } else {
-            ScopeContainer container = scopeRegistry.getScopeContainer(scope);
-            if (container == null) {
-                throw new ScopeNotFoundException(scope.getScope());
-            }
-            configuration.setScopeContainer(container);
-        }
         if (definition.getInitLevel() != null) {
             configuration.setInitLevel(definition.getInitLevel());
         } else {

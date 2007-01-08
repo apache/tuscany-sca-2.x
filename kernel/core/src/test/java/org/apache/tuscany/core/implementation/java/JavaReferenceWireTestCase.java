@@ -53,7 +53,6 @@ public class JavaReferenceWireTestCase extends TestCase {
         configuration.addReferenceSite("target", SourceImpl.class.getMethod("setTarget", Target.class));
         Constructor<SourceImpl> ctr = SourceImpl.class.getConstructor();
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(ctr));
-        configuration.setScopeContainer(scope);
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         wire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(new HashMap<Operation<?>, OutboundInvocationChain>()).atLeastOnce();
@@ -74,6 +73,7 @@ public class JavaReferenceWireTestCase extends TestCase {
         configuration.setWireService(service);
         configuration.setName("source");
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setScopeContainer(scope);
         component.addOutboundWire(wire);
         component.start();
         Source source = (Source) component.getTargetInstance();

@@ -33,6 +33,7 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.model.Scope;
 
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.util.JavaIntrospectionHelper;
@@ -74,6 +75,8 @@ public class SystemComponentTypeLoader extends ComponentTypeLoaderExtension<Syst
         } else {
             componentType = loadFromSidefile(sidefile, deploymentContext);
         }
+        // this means system components are always composite scoped
+        componentType.setImplementationScope(Scope.COMPOSITE);
         implementation.setComponentType(componentType);
     }
 

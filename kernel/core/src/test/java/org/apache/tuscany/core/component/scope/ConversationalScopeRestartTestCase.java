@@ -56,32 +56,32 @@ public class ConversationalScopeRestartTestCase extends TestCase {
         MethodEventInvoker<Object> destroyInvoker =
             new MethodEventInvoker<Object>(InitDestroyOnce.class.getMethod("destroy"));
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setScopeContainer(scope);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
         configuration.setName("InitDestroy");
-        AtomicComponent context = new SystemAtomicComponentImpl(configuration);
-        context.start();
+        AtomicComponent component = new SystemAtomicComponentImpl(configuration);
+        component.setScopeContainer(scope);
+        component.start();
 
         String conversation = "conv";
         ctx.setIdentifier(Scope.CONVERSATION, conversation);
         scope.onEvent(new ConversationStart(this, conversation));
-        Object instance = context.getTargetInstance();
-        assertSame(instance, context.getTargetInstance());
+        Object instance = component.getTargetInstance();
+        assertSame(instance, component.getTargetInstance());
 
         scope.onEvent(new ConversationEnd(this, conversation));
         scope.stop();
-        context.stop();
+        component.stop();
 
         scope.start();
         scope.onEvent(new ConversationStart(this, conversation));
-        context.start();
+        component.start();
         //assertNotSame(instance, context.getServiceInstance());
         scope.onEvent(new ConversationEnd(this, conversation));
         scope.stop();
-        context.stop();
+        component.stop();
     }
 
     public static class InitDestroyOnce {

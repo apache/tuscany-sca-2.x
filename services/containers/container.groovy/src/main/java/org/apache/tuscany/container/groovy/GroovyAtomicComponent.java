@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.container.groovy;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,6 @@ public class GroovyAtomicComponent extends AtomicComponentExtension {
     public GroovyAtomicComponent(GroovyConfiguration configuration) {
         super(configuration.getName(),
             configuration.getParent(),
-            configuration.getScopeContainer(),
             configuration.getWireService(),
             configuration.getWorkContext(),
             null,

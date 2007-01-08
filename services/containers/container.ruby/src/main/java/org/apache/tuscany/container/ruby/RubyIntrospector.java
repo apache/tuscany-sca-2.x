@@ -68,7 +68,7 @@ public class RubyIntrospector {
 
     private void introspectScope(RubyComponentType componentType, Scope scope) {
         if (scope != null) {
-            componentType.setLifecycleScope(scope);
+            componentType.setImplementationScope(scope);
         }
     }
 

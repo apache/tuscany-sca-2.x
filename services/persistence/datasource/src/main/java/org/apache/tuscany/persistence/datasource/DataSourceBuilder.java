@@ -26,7 +26,6 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -67,9 +66,8 @@ public class DataSourceBuilder extends ComponentBuilderExtension<DataSourceImple
                 }
             }
             ProviderObjectFactory providerFactory = new ProviderObjectFactory(beanClass, injectors);
-            ScopeContainer scope = deploymentContext.getCompositeScope();
             int initLevel = implementation.getComponentType().getInitLevel();
-            return new DataSourceComponent(definition.getName(), providerFactory, parent, scope, initLevel);
+            return new DataSourceComponent(definition.getName(), providerFactory, parent, initLevel);
         } catch (ClassNotFoundException e) {
             throw new BuilderConfigException(e);
         }

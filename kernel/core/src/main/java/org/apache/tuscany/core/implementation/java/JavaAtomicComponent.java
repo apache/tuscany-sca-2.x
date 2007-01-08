@@ -48,7 +48,6 @@ public class JavaAtomicComponent extends PojoAtomicComponent {
 
     public JavaAtomicComponent(PojoConfiguration configuration) {
         super(configuration);
-        this.scope = configuration.getScopeContainer().getScope();
     }
 
     public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire) {

@@ -39,6 +39,10 @@ public class CompositeComponentType<S extends ServiceDefinition,
     private final Map<String, Include> includes = new HashMap<String, Include>();
     private final List<WireDefinition> wires = new ArrayList<WireDefinition>();
 
+    public CompositeComponentType() {
+        implementationScope = Scope.SYSTEM;
+    }
+
     public String getName() {
         return name;
     }
@@ -51,7 +55,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     @SuppressWarnings("unchecked")
     /**
      * Get all properties including the ones are from included composites
-     * @return 
+     * @return
      */
     public Map<String, P> getProperties() {
         Map<String, P> view = new HashMap<String, P>(super.getProperties());
@@ -65,7 +69,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     @SuppressWarnings("unchecked")
     /**
      * Get all references including the ones are from included composites
-     * @return 
+     * @return
      */
     public Map<String, R> getReferences() {
         Map<String, R> view = new HashMap<String, R>(super.getReferences());
@@ -79,7 +83,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
     @Override
     /**
      * Get all services including the ones are from included composites
-     * @return 
+     * @return
      */
     public Map<String, S> getServices() {
         Map<String, S> view = new HashMap<String, S>(super.getServices());
@@ -95,27 +99,27 @@ public class CompositeComponentType<S extends ServiceDefinition,
     @SuppressWarnings("unchecked")
     public Map<String, ComponentDefinition<? extends Implementation<?>>> getComponents() {
         Map<String, ComponentDefinition<? extends Implementation<?>>> view =
-                new HashMap<String, ComponentDefinition<? extends Implementation<?>>>(components);
+            new HashMap<String, ComponentDefinition<? extends Implementation<?>>>(components);
         for (Include i : includes.values()) {
             view.putAll(i.getIncluded().getComponents());
         }
         return Collections.unmodifiableMap(view);
     }
 
-    
+
     /**
      * Get all wires including the ones are from included composites
      */
     @SuppressWarnings("unchecked")
     public List<WireDefinition> getWires() {
         List<WireDefinition> view =
-                new ArrayList<WireDefinition>(wires);
+            new ArrayList<WireDefinition>(wires);
         for (Include i : includes.values()) {
             view.addAll(i.getIncluded().getWires());
         }
         return Collections.unmodifiableList(view);
     }
-    
+
     /**
      * Get declared properties in this composite type, included doesn't count
      */
@@ -143,23 +147,23 @@ public class CompositeComponentType<S extends ServiceDefinition,
     public Map<String, ComponentDefinition<? extends Implementation<?>>> getDeclaredComponents() {
         return components;
     }
-    
+
     /**
      * Get declared wires in this composite type, included doesn't count
      */
     public List<WireDefinition> getDeclaredWires() {
         return wires;
     }
-    
+
     public void add(WireDefinition wireDefn) {
         wires.add(wireDefn);
     }
-    
-    
+
+
     public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
         components.put(componentDefinition.getName(), componentDefinition);
     }
-    
+
     public Map<String, Include> getIncludes() {
         return includes;
     }

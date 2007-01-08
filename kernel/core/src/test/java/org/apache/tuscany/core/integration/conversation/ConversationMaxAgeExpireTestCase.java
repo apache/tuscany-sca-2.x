@@ -110,10 +110,10 @@ public class ConversationMaxAgeExpireTestCase extends AbstractConversationTestCa
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setName("target");
         configuration.setMaxAge(50);
-        configuration.setScopeContainer(container);
         Constructor<Object> ctor = Object.class.getConstructor();
         configuration.setInstanceFactory(new ConversationMaxAgeExpireTestCase.MockPojoFactory(ctor));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
+        component.setScopeContainer(container);
         component.start();
         return component;
     }

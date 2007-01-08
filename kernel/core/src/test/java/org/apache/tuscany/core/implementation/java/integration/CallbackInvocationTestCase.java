@@ -80,6 +80,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
         JavaAtomicComponent fooComponent =
             (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+        fooComponent.setScopeContainer(container);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
 
@@ -91,6 +92,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> sourceDefinition = createSource("fooClient");
         JavaAtomicComponent clientComponent =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition, context);
+        clientComponent.setScopeContainer(container);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
@@ -111,6 +113,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
         JavaAtomicComponent fooComponent =
             (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+        fooComponent.setScopeContainer(container);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
 
@@ -122,6 +125,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> sourceDefinition = createPlainSource("fooPlainClient");
         JavaAtomicComponent clientComponent =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition, context);
+        clientComponent.setScopeContainer(container);
         wireService.createWires(clientComponent, sourceDefinition);
         container.register(clientComponent);
 
@@ -145,6 +149,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> targetDefinition = createTarget();
         JavaAtomicComponent fooComponent =
             (JavaAtomicComponent) builder.build(null, targetDefinition, context);
+        fooComponent.setScopeContainer(container);
         wireService.createWires(fooComponent, targetDefinition);
         container.register(fooComponent);
 
@@ -157,10 +162,12 @@ public class CallbackInvocationTestCase extends TestCase {
         ComponentDefinition<JavaImplementation> sourceDefinition2 = createSource("fooCleint2");
         JavaAtomicComponent clientComponent1 =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition1, context);
+        clientComponent1.setScopeContainer(container);
         wireService.createWires(clientComponent1, sourceDefinition1);
         container.register(clientComponent1);
         JavaAtomicComponent clientComponent2 =
             (JavaAtomicComponent) builder.build(parent, sourceDefinition2, context);
+        clientComponent2.setScopeContainer(container);
         wireService.createWires(clientComponent2, sourceDefinition2);
         container.register(clientComponent2);
 
