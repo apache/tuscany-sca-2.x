@@ -32,6 +32,7 @@ import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplem
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 
 /**
@@ -45,6 +46,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
     private ClassLoader applicationClassLoader;
     private RuntimeInfo runtimeInfo;
     private MonitorFactory monitorFactory;
+    private ManagementService<?> managementService;
 
     public URL getSystemScdl() {
         return systemScdl;
@@ -100,6 +102,14 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     public void setMonitorFactory(MonitorFactory monitorFactory) {
         this.monitorFactory = monitorFactory;
+    }
+
+    public ManagementService<?> getManagementService() {
+        return managementService;
+    }
+
+    public void setManagementService(ManagementService<?> managementService) {
+        this.managementService = managementService;
     }
 
     public MonitorFactory createDefaultMonitorFactory() {
