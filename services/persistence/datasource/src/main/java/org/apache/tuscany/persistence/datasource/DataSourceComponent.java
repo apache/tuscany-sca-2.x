@@ -75,7 +75,7 @@ public class DataSourceComponent extends SystemAtomicComponentExtension {
         throw new UnsupportedOperationException("Wires not supported for DataSource components");
     }
 
-    protected void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    protected void onReferenceWires(List<OutboundWire> wires) {
         throw new UnsupportedOperationException("Wires not supported for DataSource components");
     }
 
