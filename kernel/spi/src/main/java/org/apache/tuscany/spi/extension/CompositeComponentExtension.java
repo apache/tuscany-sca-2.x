@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.w3c.dom.Document;
@@ -180,7 +181,17 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     public Map<String, List<OutboundWire>> getOutboundWires() {
-        return null;
+        synchronized (references) {
+            Map<String, List<OutboundWire>> map = new HashMap<String, List<OutboundWire>>();
+            for (Reference reference : references) {
+                List<OutboundWire> wires = new ArrayList<OutboundWire>();
+                map.put(reference.getName(), wires);
+                for (ReferenceBinding binding : reference.getReferenceBindings()) {
+                    wires.add(binding.getOutboundWire());
+                }
+            }
+            return map;
+        }
     }
 
     public InboundWire getInboundWire(String serviceName) {

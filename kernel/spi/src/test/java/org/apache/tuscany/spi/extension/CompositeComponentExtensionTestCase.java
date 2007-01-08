@@ -21,9 +21,12 @@ package org.apache.tuscany.spi.extension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.Reference;
+import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
@@ -31,6 +34,7 @@ import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
+import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -126,7 +130,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
     }
 
     public void testInboundWire() throws Exception {
-        ServiceContract<?> contract = new ServiceContract(Object.class) {
+        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
         };
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
@@ -149,8 +153,30 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         assertNotNull(composite.getInboundWire("service"));
     }
 
+
+    public void testGetOutboundWires() throws Exception {
+        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
+        };
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        wire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.replay(wire);
+        ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(binding);
+        Reference reference = EasyMock.createMock(Reference.class);
+        EasyMock.expect(reference.getName()).andReturn("reference").atLeastOnce();
+        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
+        List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
+        EasyMock.expect(reference.getReferenceBindings()).andReturn(bindings).atLeastOnce();
+        EasyMock.replay(reference);
+        composite.register(reference);
+        Map<String, List<OutboundWire>> wires = composite.getOutboundWires();
+        assertNotNull(wires.get("reference"));
+    }
+
     public void testInboundSystemWire() throws Exception {
-        ServiceContract<?> contract = new ServiceContract(Object.class) {
+        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
         };
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
@@ -175,7 +201,7 @@ public class CompositeComponentExtensionTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        contract = new ServiceContract(Object.class) {
+        contract = new ServiceContract<Object>(Object.class) {
 
         };
         composite = new CompositeComponentExtension("foo", null, null, null) {
