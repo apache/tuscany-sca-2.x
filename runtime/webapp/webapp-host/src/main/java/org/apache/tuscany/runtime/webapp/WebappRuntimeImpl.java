@@ -33,7 +33,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.event.EventPublisher;
-import org.apache.tuscany.spi.services.management.ManagementService;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
@@ -95,7 +95,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
 
-        ManagementService managementService = null;
+        TuscanyManagementService managementService = null;
         Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
         
         runtime = bootstrapper.createRuntime();
