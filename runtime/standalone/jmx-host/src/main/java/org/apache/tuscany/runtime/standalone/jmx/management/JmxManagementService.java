@@ -24,14 +24,14 @@ import javax.management.ObjectName;
 
 import org.apache.tuscany.runtime.standalone.jmx.management.instrument.InstrumentedComponent;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.services.management.ManagementService;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
 /**
  * JMX implementation of the management service.
  *
  * @version $Revision$ $Date$
  */
-public class JmxManagementService implements ManagementService {
+public class JmxManagementService implements TuscanyManagementService {
 
     /**
      * MBean server used by the JMX management service.
@@ -57,7 +57,7 @@ public class JmxManagementService implements ManagementService {
 
     /**
      * @throws JmxException In case of an unexpected JMX exception.
-     * @see org.apache.tuscany.spi.services.management.ManagementService#registerComponent(
+     * @see org.apache.tuscany.spi.services.management.TuscanyManagementService#registerComponent(
      *java.lang.String,org.apache.tuscany.spi.component.Component)
      */
     public final void registerComponent(String name, Component component) throws JmxException {
