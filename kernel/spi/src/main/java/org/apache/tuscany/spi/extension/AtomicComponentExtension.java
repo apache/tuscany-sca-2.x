@@ -171,10 +171,10 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
         return Collections.unmodifiableMap(referenceWires);
     }
 
-    public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    public void addOutboundWires(List<OutboundWire> wires) {
         assert wires != null && wires.size() > 0;
         referenceWires.put(wires.get(0).getReferenceName(), wires);
-        onReferenceWires(multiplicityClass, wires);
+        onReferenceWires(wires);
     }
 
     public void removeInstance() throws ComponentException {
@@ -184,7 +184,7 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     protected void onReferenceWire(OutboundWire wire) {
     }
 
-    protected void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    protected void onReferenceWires(List<OutboundWire> wires) {
     }
 
     protected void onServiceWire(InboundWire wire) {

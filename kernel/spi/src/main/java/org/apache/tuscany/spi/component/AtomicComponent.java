@@ -82,9 +82,8 @@ public interface AtomicComponent extends Component {
     /**
      * Adds a set of source-side multiplicity wires for the given reference. Source-side wires contain the invocation
      * chains for a reference in the implementation associated with the instance wrapper created by this configuration.
-     * FIXME should take ServiceContract
      */
-    void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires);
+    void addOutboundWires(List<OutboundWire> wires);
 
     /**
      * Notifies the given instance of an initialization event.

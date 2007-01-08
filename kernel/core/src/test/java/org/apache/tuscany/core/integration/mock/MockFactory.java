@@ -186,7 +186,7 @@ public final class MockFactory {
         outboundWire.setTargetName(new QualifiedName(targetName + "/" + serviceName));
         List<OutboundWire> factories = new ArrayList<OutboundWire>();
         factories.add(outboundWire);
-        sourceComponent.addOutboundWires(sourceReferenceClass, factories);
+        sourceComponent.addOutboundWires(factories);
         targetScope.register(targetComponent);
         sourceScope.register(sourceComponent);
         CONNECTOR.connect(outboundWire, inboundWire, false);

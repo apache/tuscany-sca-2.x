@@ -133,7 +133,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
         throw new UnsupportedOperationException();
     }
 
-    public void addOutboundWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    public void addOutboundWires(List<OutboundWire> wires) {
         throw new UnsupportedOperationException();
     }
 

@@ -43,6 +43,7 @@ import org.apache.tuscany.core.injection.InvalidAccessorException;
 import org.apache.tuscany.core.injection.ListMultiplicityObjectFactory;
 import org.apache.tuscany.core.injection.MethodInjector;
 import org.apache.tuscany.core.injection.NoAccessorException;
+import org.apache.tuscany.core.injection.NoMultiplicityTypeException;
 import org.apache.tuscany.core.injection.ObjectCallbackException;
 import org.apache.tuscany.core.injection.PojoObjectFactory;
 
@@ -198,7 +199,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
         //TODO error if ref not set on constructor or ref site
     }
 
-    public void onReferenceWires(Class<?> multiplicityClass, List<OutboundWire> wires) {
+    public void onReferenceWires(List<OutboundWire> wires) {
         assert wires.size() > 0 : "Wires were empty";
         String referenceName = wires.get(0).getReferenceName();
         Member member = referenceSites.get(referenceName);
@@ -210,7 +211,11 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                 throw new NoAccessorException(referenceName);
             }
         }
-        injectors.add(createMultiplicityInjector(member, multiplicityClass, wires));
+        Class<?> type = wires.get(0).getServiceContract().getInterfaceClass();
+        if (type == null) {
+            throw new NoMultiplicityTypeException("Java interface must be specified for multiplicity", referenceName);
+        }
+        injectors.add(createMultiplicityInjector(member, type, wires));
         //TODO multiplicity for constructor injection
     }
 
