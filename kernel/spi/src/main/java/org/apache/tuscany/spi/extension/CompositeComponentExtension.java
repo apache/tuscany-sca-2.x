@@ -46,7 +46,7 @@ import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
-import org.apache.tuscany.spi.services.management.ManagementService;
+import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.Wire;
@@ -78,7 +78,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     /**
      * Management service to use.
      */
-    private ManagementService managementService;
+    private TuscanyManagementService managementService;
 
     protected CompositeComponentExtension(String name,
                                           CompositeComponent parent,
@@ -95,7 +95,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
      * @param managementService Management service used for registering components.
      */
     @Autowire
-    public final void setManagementService(ManagementService managementService) {
+    public final void setManagementService(TuscanyManagementService managementService) {
         this.managementService = managementService;
     }
 
