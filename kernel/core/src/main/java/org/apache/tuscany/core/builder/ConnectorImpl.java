@@ -270,7 +270,7 @@ public class ConnectorImpl implements Connector {
                 ServiceContract sourceContract = sourceWire.getServiceContract();
                 TargetInvoker invoker;
                 try {
-                    invoker = binding.createCallbackTargetInvoker(sourceContract, operation);
+                    invoker = binding.createTargetInvoker(sourceContract, operation);
                 } catch (TargetInvokerCreationException e) {
                     String targetName = sourceWire.getContainer().getName();
                     throw new WireConnectException("Error processing callback wire",

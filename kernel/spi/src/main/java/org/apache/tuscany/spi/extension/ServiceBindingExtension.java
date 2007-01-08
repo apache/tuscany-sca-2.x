@@ -83,11 +83,6 @@ public abstract class ServiceBindingExtension extends AbstractSCAObject implemen
         this.bindingServiceContract = serviceContract;
     }
 
-    public TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public boolean isSystem() {
         return service != null && service.isSystem();

@@ -91,14 +91,4 @@ public interface ServiceBinding extends SCAObject {
     TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)
         throws TargetInvokerCreationException;
 
-    /**
-     * Returns the target invoker for dispatching callback invocations
-     *
-     * @param contract  the callback contract
-     * @param operation the callback operation the target invoker dispatches to
-     * @throws TargetInvokerCreationException
-     */
-    TargetInvoker createCallbackTargetInvoker(ServiceContract contract, Operation operation)
-        throws TargetInvokerCreationException;
-
 }
