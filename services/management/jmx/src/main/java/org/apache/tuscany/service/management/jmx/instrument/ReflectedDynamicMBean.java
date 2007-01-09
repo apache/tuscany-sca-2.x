@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.runtime.standalone.jmx.management.instrument;
+package org.apache.tuscany.service.management.jmx.instrument;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
