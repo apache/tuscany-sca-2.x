@@ -44,12 +44,15 @@ import org.easymock.EasyMock;
  */
 public class PropertyTestCase extends TestCase {
 
-    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
-        + "class Foo implements Greeting{"
-        + "   String property;"
-        + "   public String greet(String name){"
-        + "       return property;  "
-        + "   }"
+    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;\n"
+        + "class Foo implements Greeting{\n"
+        + "   String property;\n"
+        + "   public String greet(String name){\n"
+        + "       return property;\n"
+        + "   }\n"
+        + "   public String setWire(Greeting ref){\n"
+        + "       return null;\n"
+        + "   }\n"
         + "}";
 
     private ScopeContainer scopeContainer;

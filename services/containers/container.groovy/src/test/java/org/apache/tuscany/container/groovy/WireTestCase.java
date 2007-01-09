@@ -61,25 +61,27 @@ import org.easymock.EasyMock;
  */
 public class WireTestCase extends TestCase {
 
-    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
-        + "class Foo implements Greeting{"
-        + "   Greeting wire;"
-        + "   "
-        + "   void setWire(Greeting ref){"
-        + "       wire = ref;"
-        + "   };"
-        + "   "
-        + "   String greet(String name){"
-        + "       return wire.greet(name);  "
-        + "   };"
-        + "}";
+    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;\n"
+        + "class Foo implements Greeting{\n"
+        + "   Greeting wire;\n"
+        + "   \n"
+        + "   String setWire(Greeting ref){\n"
+        + "       wire = ref;\n"
+        + "   };\n"
+        + "   \n"
+        + "   String greet(String name){\n"
+        + "       return wire.greet(name);\n"
+        + "   };\n"
+        + "}\n";
 
     private static final String SCRIPT2 = "import org.apache.tuscany.container.groovy.mock.Greeting;"
-        + "class Foo implements Greeting{"
-        + "   public String greet(String name){"
-        + "       return name;  "
-        + "   }"
-        + "}";
+        + "class Foo implements Greeting {\n"
+        + "   public String greet(String name){\n"
+        + "       return name;\n"
+        + "   }\n"
+        + "   String setWire(Greeting ref){\n"
+        + "   };\n"
+        + "}\n";
 
     private Class<? extends GroovyObject> implClass1;
     private Class<? extends GroovyObject> implClass2;
