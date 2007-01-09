@@ -25,6 +25,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PersistenceException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
+import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -85,13 +86,13 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
                     long expire = System.currentTimeMillis() + component.getMaxIdleTime();
                     nonDurableStore.updateRecord(component, conversationId, instance, expire);
                 }
-                return instance;
             } else {
-                Object o = component.createInstance();
+                instance = component.createInstance();
                 long expire = calculateExpiration(component);
-                nonDurableStore.insertRecord(component, conversationId, o, expire);
-                return o;
+                nonDurableStore.insertRecord(component, conversationId, instance, expire);
+                component.init(instance);
             }
+            return instance;
         } catch (StoreReadException e) {
             throw new TargetResolutionException("Error retrieving target instance", e);
         } catch (StoreWriteException e) {
@@ -146,8 +147,17 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     public void remove(AtomicComponent component) throws PersistenceException {
         String conversationId = getConversationId();
         try {
-            nonDurableStore.removeRecord(component, conversationId);
+            workContext.setCurrentAtomicComponent(component);
+            Object instance = nonDurableStore.readRecord(component, conversationId);
+            if (instance != null) {
+                component.destroy(instance);
+                nonDurableStore.removeRecord(component, conversationId);
+            }
+        } catch (StoreReadException e) {
+            throw new PersistenceException(e);
         } catch (StoreWriteException e) {
+            throw new PersistenceException(e);
+        } catch (TargetDestructionException e) {
             throw new PersistenceException(e);
         }
     }
