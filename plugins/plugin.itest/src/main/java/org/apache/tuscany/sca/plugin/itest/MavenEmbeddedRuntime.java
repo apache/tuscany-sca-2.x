@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
+import org.osoa.sca.CompositeContext;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
@@ -171,6 +172,11 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         Component component = deployer.deploy(composite, definition);
 
         component.start();
+    }
+
+    @Deprecated
+    public CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader) throws InitializationException {
+        throw new UnsupportedOperationException();
     }
 
     public void destroy() {

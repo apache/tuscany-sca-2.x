@@ -29,6 +29,7 @@ import java.util.ResourceBundle;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.osoa.sca.CompositeContext;
 import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
@@ -55,30 +56,44 @@ public class Main {
 
         StandaloneRuntimeInfo runtimeInfo = createRuntimeInfo();
         TuscanyRuntime runtime = createRuntime(runtimeInfo);
-
-        File applicationJar = new File(args[0]);
-        URL applicationURL = applicationJar.toURI().toURL();
-        String[] appArgs = new String[args.length - 1];
-        System.arraycopy(args, 1, appArgs, 0, appArgs.length);
-
-        ClassLoader applicationClassLoader =
-            new URLClassLoader(new URL[]{applicationURL}, runtime.getHostClassLoader());
-
-        URL applicationScdl = getApplicationScdl(applicationClassLoader);
-
-        runtime.setApplicationName("application");
-        runtime.setApplicationScdl(applicationScdl);
-        runtime.setApplicationClassLoader(applicationClassLoader);
         runtime.initialize();
-        SCA context = runtime.getContext();
-
         try {
-            context.start();
-            runApplication(applicationJar, applicationClassLoader, appArgs);
+            File applicationJar = new File(args[0]);
+            URL applicationURL = applicationJar.toURI().toURL();
+            String[] appArgs = new String[args.length - 1];
+            System.arraycopy(args, 1, appArgs, 0, appArgs.length);
+
+            ClassLoader applicationClassLoader =
+                new URLClassLoader(new URL[]{applicationURL}, runtime.getHostClassLoader());
+
+            URL applicationScdl = getApplicationScdl(applicationClassLoader);
+
+            final CompositeContext context = runtime.deployApplication("application",
+                                                                       applicationScdl,
+                                                                       applicationClassLoader);
+
+            // FIXME JNB we should replace this with CurrentCompositeContext.setContext(...)
+            SCA sca = new SCA() {
+
+                public void start() {
+                    setCompositeContext(context);
+                }
+
+                public void stop() {
+                    setCompositeContext(null);
+                }
+            };
+
+            sca.start();
+            try {
+                runApplication(applicationJar, applicationClassLoader, appArgs);
+            } finally {
+                sca.stop();
+            }
         } finally {
-            context.stop();
             runtime.destroy();
         }
+
     }
 
     static StandaloneRuntimeInfo createRuntimeInfo() throws IOException {
@@ -116,7 +131,7 @@ public class Main {
         String className = runtimeInfo.getProperty("tuscany.runtimeClass",
                                                    "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
         Class<?> implClass = Class.forName(className, true, bootClassLoader);
-        
+
         TuscanyRuntime runtime = (TuscanyRuntime) implClass.newInstance();
         runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setHostClassLoader(hostClassLoader);

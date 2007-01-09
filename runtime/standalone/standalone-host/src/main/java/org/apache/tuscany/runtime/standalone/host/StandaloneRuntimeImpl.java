@@ -18,9 +18,11 @@
  */
 package org.apache.tuscany.runtime.standalone.host;
 
+import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
+import org.osoa.sca.CompositeContext;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
@@ -48,11 +50,11 @@ import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
  * @version $Rev$ $Date$
  */
 public class StandaloneRuntimeImpl extends AbstractRuntime {
-    private CompositeContextImpl context;
     private RuntimeComponent runtime;
     private CompositeComponent systemComponent;
     private CompositeComponent tuscanySystem;
-    private CompositeComponent application;
+    private Deployer deployer;
+    private WireService wireService;
 
     public void initialize() throws InitializationException {
         ClassLoader bootClassLoader = getClass().getClassLoader();
@@ -100,25 +102,34 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
             if (!(deployerComponent instanceof AtomicComponent)) {
                 throw new InitializationException("Deployer must be an atomic component");
             }
-            deployer = (Deployer)((AtomicComponent)deployerComponent).getTargetInstance();
+            this.deployer = (Deployer)((AtomicComponent)deployerComponent).getTargetInstance();
 
             SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
             if (!(wireServiceComponent instanceof AtomicComponent)) {
                 throw new InitializationException("WireService must be an atomic component");
             }
-            WireService wireService = (WireService)((AtomicComponent)wireServiceComponent).getTargetInstance();
+            wireService = (WireService)((AtomicComponent)wireServiceComponent).getTargetInstance();
+        } catch (LoaderException ex) {
+            throw new InitializationException(ex);
+        } catch (BuilderException ex) {
+            throw new InitializationException(ex);
+        } catch (ComponentException ex) {
+            throw new InitializationException(ex);
+        }
+    }
 
-            if (getApplicationScdl() != null) {
-                application =
-                    deployApplicationScdl(deployer,
-                                          runtime.getRootComponent(),
-                                          getApplicationName(),
-                                          getApplicationScdl(),
-                                          getApplicationClassLoader());
-                application.start();
-            }
 
-            context = new CompositeContextImpl(application, wireService);
+    @Deprecated
+    public CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader)
+        throws InitializationException {
+        try {
+            CompositeComponent application = deployApplicationScdl(deployer,
+                                                                   runtime.getRootComponent(),
+                                                                   name,
+                                                                   scdlLocation,
+                                                                   classLoader);
+            application.start();
+            return new CompositeContextImpl(application, wireService);
         } catch (LoaderException ex) {
             throw new InitializationException(ex);
         } catch (BuilderException ex) {
@@ -129,11 +140,6 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
     }
 
     public void destroy() {
-        context = null;
-        if (application != null) {
-            application.stop();
-            application = null;
-        }
         if (tuscanySystem != null) {
             tuscanySystem.stop();
             tuscanySystem = null;
@@ -149,7 +155,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
     }
 
     public SCA getContext() {
-        return context;
+        throw new UnsupportedOperationException();
     }
 
 }

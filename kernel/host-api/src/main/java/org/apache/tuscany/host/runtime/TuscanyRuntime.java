@@ -20,6 +20,7 @@ package org.apache.tuscany.host.runtime;
 
 import java.net.URL;
 
+import org.osoa.sca.CompositeContext;
 import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.MonitorFactory;
@@ -171,4 +172,16 @@ public interface TuscanyRuntime {
      */
     @Deprecated
     void setApplicationClassLoader(ClassLoader applicationClassLoader);
+
+    /**
+     * Temporary API to allow and application to be deployed until we get the proper deployment services running.
+     *
+     * @param name the name of the component for the application
+     * @param scdlLocation the location of a SCDL composite document to use as the component's implementation
+     * @param classLoader the classloader to associated with the application component
+     * @return the context for the application's composite component
+     */
+    @Deprecated
+    CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader)
+        throws InitializationException;
 }
