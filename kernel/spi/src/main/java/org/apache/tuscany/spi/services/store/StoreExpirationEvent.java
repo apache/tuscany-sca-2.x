@@ -16,52 +16,56 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.persistence.store.journal;
+package org.apache.tuscany.spi.services.store;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.event.Event;
 
 /**
- * Used by the store cache to retrieve record entries
+ * Fired when a store implementation expires a resource
  *
  * @version $Rev$ $Date$
  */
-public class RecordKey {
-
-    private String id;
+public class StoreExpirationEvent implements Event {
+    private Object source;
     private SCAObject owner;
+    private Object instance;
 
-    public RecordKey(String id, SCAObject owner) {
-        this.id = id;
+    /**
+     * Constructor.
+     *
+     * @param source   the source of the event
+     * @param owner    the owner of the expiring object
+     * @param instance the expiring object
+     */
+    public StoreExpirationEvent(Object source, SCAObject owner, Object instance) {
+        assert source != null;
+        assert owner != null;
+        assert instance != null;
+        this.source = source;
         this.owner = owner;
+        this.instance = instance;
     }
 
-    public String getId() {
-        return id;
+    public Object getSource() {
+        return source;
     }
 
+    /**
+     * Returns the owner of the expiring object.
+     *
+     * @return the owner of the expiring object.
+     */
     public SCAObject getOwner() {
         return owner;
     }
 
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final RecordKey recordKey = (RecordKey) o;
-        if (id != null ? !id.equals(recordKey.id) : recordKey.id != null) {
-            return false;
-        }
-        return !(owner != null ? !owner.getCanonicalName().equals(recordKey.owner.getCanonicalName()) :
-            recordKey.owner != null);
-    }
-
-    public int hashCode() {
-        int result;
-        result = (id != null ? id.hashCode() : 0);
-        result = 31 * result + (owner != null ? owner.hashCode() : 0);
-        return result;
+    /**
+     * Returns the expiring object.
+     *
+     * @return the expiring object.
+     */
+    public Object getInstance() {
+        return instance;
     }
 }

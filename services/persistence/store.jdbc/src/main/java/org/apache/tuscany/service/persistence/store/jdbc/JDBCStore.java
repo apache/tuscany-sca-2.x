@@ -32,9 +32,11 @@ import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Resource;
+import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
@@ -45,11 +47,15 @@ import org.apache.tuscany.api.annotation.Monitor;
 
 /**
  * A store implementation that uses a relational database to persist records transactionally.
+ * <p/>
+ * Note this implementation does not yet support destruction callbacks for expired. In order to support this, expired
+ * records must be rehydrated and deleted individually.
  *
  * @version $Rev$ $Date$
  */
+@Service(Store.class)
 @EagerInit
-public class JDBCStore implements Store {
+public class JDBCStore extends AbstractEventPublisher implements Store {
     private DataSource dataSource;
     private StoreMonitor monitor;
     private Converter converter;

@@ -28,12 +28,14 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Scope;
+import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
 
@@ -44,9 +46,9 @@ import org.apache.tuscany.api.annotation.Monitor;
  *
  * @version $Rev$ $Date$
  */
-@Scope("COMPOSITE")
+@Service(Store.class)
 @EagerInit
-public class MemoryStore implements Store {
+public class MemoryStore extends AbstractEventPublisher implements Store {
     private Map<SCAObject, Map<String, Record>> store;
     // TODO integrate with a core threading scheme
     private ScheduledExecutorService scheduler;
@@ -177,11 +179,16 @@ public class MemoryStore implements Store {
 
         public void run() {
             long now = System.currentTimeMillis();
-            for (Map<String, Record> map : store.values()) {
-                for (Map.Entry<String, Record> entry : map.entrySet()) {
+            for (Map.Entry<SCAObject, Map<String, Record>> entries : store.entrySet()) {
+                for (Map.Entry<String, Record> entry : entries.getValue().entrySet()) {
                     final long expiration = entry.getValue().expiration;
                     if (expiration != NEVER && now >= expiration) {
-                        map.remove(entry.getKey());
+                        SCAObject owner = entries.getKey();
+                        Object instance = entry.getValue().getData();
+                        // notify listeners of the expiration 
+                        StoreExpirationEvent event = new StoreExpirationEvent(this, owner, instance);
+                        publish(event);
+                        entries.getValue().remove(entry.getKey());
                     }
                 }
             }

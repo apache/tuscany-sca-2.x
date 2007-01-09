@@ -32,13 +32,16 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Service;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.event.AbstractEventPublisher;
 import org.apache.tuscany.spi.services.store.RecoveryListener;
 import org.apache.tuscany.spi.services.store.Store;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 import org.apache.tuscany.spi.services.store.StoreReadException;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
+import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 
 import org.apache.tuscany.api.annotation.Monitor;
 import static org.apache.tuscany.persistence.store.journal.SerializationHelper.partition;
@@ -83,8 +86,9 @@ import org.objectweb.howl.log.LogRecordSizeException;
  *
  * @version $Rev$ $Date$
  */
+@Service(Store.class)
 @EagerInit
-public class JournalStore implements Store {
+public class JournalStore extends AbstractEventPublisher implements Store {
     private static final int UNITIALIZED = -99;
 
     // the cache of active records
@@ -388,7 +392,7 @@ public class JournalStore implements Store {
 
     public Object readRecord(SCAObject owner, String id) throws StoreReadException {
         RecordEntry record;
-        RecordKey key = new RecordKey(id, owner.getCanonicalName());
+        RecordKey key = new RecordKey(id, owner);
         record = cache.get(key);
         if (record == null) {
             return null;
@@ -402,7 +406,7 @@ public class JournalStore implements Store {
     public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
         try {
             journal.writeHeader(serializeHeader(Header.DELETE, 0, owner.getCanonicalName(), id, NEVER), true);
-            RecordKey key = new RecordKey(id, owner.getCanonicalName());
+            RecordKey key = new RecordKey(id, owner);
             // remove from the cache
             cache.remove(key);
         } catch (IOException e) {
@@ -456,7 +460,7 @@ public class JournalStore implements Store {
             }
             // add last record using a forced write
             journal.writeBlock(bytes.get(bytes.size() - 1), recordId, true);
-            RecordKey key = new RecordKey(id, canonicalName);
+            RecordKey key = new RecordKey(id, owner);
             // add to the entry in the cache
             cache.put(key, new RecordEntry(serializable, operation, keys, expiration));
         } catch (IOException e) {
@@ -546,11 +550,17 @@ public class JournalStore implements Store {
                         RecordEntry record = entry.getValue();
                         if (record.getExpiration() <= now) {
                             try {
-                                String ownerName = key.getOwnerName();
+                                String ownerName = key.getOwner().getCanonicalName();
                                 String id = key.getId();
                                 byte[] header =
                                     SerializationHelper.serializeHeader(Header.DELETE, 0, ownerName, id, Store.NEVER);
                                 journal.writeHeader(header, false);
+                                // notify listeners
+                                SCAObject owner = key.getOwner();
+                                Object instance = record.getObject();
+                                // notify listeners of the expiration 
+                                StoreExpirationEvent event = new StoreExpirationEvent(this, owner, instance);
+                                publish(event);
                             } catch (IOException e) {
                                 monitor.error(e);
                             } catch (StoreWriteException e) {

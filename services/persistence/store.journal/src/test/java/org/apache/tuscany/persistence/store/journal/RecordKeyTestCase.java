@@ -18,7 +18,10 @@
  */
 package org.apache.tuscany.persistence.store.journal;
 
+import org.apache.tuscany.spi.component.SCAObject;
+
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
@@ -27,22 +30,41 @@ public class RecordKeyTestCase extends TestCase {
 
     public void testEquals() throws Exception {
         String id = "bar";
-        RecordKey key1 = new RecordKey(id, "foo");
-        RecordKey key2 = new RecordKey(id, "foo");
+        SCAObject owner1 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner1.getCanonicalName()).andReturn("foo");
+        EasyMock.replay(owner1);
+        SCAObject owner2 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner2.getCanonicalName()).andReturn("foo");
+        EasyMock.replay(owner2);
+
+        RecordKey key1 = new RecordKey(id, owner1);
+        RecordKey key2 = new RecordKey(id, owner2);
         assertEquals(key1, key2);
     }
 
     public void testNotEqualsId() throws Exception {
         String id = "bar";
-        RecordKey key1 = new RecordKey(id, "foo");
-        RecordKey key2 = new RecordKey("baz", "foo");
+        SCAObject owner1 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner1.getCanonicalName()).andReturn("foo");
+        EasyMock.replay(owner1);
+        SCAObject owner2 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner2.getCanonicalName()).andReturn("foo");
+        EasyMock.replay(owner2);
+        RecordKey key1 = new RecordKey(id, owner1);
+        RecordKey key2 = new RecordKey("baz", owner2);
         assertFalse(key1.equals(key2));
     }
 
     public void testNotEqualsOwner() throws Exception {
         String id = "bar";
-        RecordKey key1 = new RecordKey(id, "foo");
-        RecordKey key2 = new RecordKey(id, "bar");
+        SCAObject owner1 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner1.getCanonicalName()).andReturn("foo");
+        EasyMock.replay(owner1);
+        SCAObject owner2 = EasyMock.createMock(SCAObject.class);
+        EasyMock.expect(owner2.getCanonicalName()).andReturn("bar");
+        EasyMock.replay(owner2);
+        RecordKey key1 = new RecordKey(id, owner1);
+        RecordKey key2 = new RecordKey(id, owner2);
         assertFalse(key1.equals(key2));
     }
 
