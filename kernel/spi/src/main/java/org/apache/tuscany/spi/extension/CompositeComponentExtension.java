@@ -20,9 +20,9 @@ package org.apache.tuscany.spi.extension;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.w3c.dom.Document;
@@ -57,7 +57,6 @@ import org.apache.tuscany.spi.wire.Wire;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class CompositeComponentExtension extends AbstractComponentExtension implements CompositeComponent {
-
     protected final Map<String, SCAObject> children = new ConcurrentHashMap<String, SCAObject>();
     protected final List<Service> services = new ArrayList<Service>();
     protected final List<Reference> references = new ArrayList<Reference>();
@@ -187,7 +186,10 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
                 List<OutboundWire> wires = new ArrayList<OutboundWire>();
                 map.put(reference.getName(), wires);
                 for (ReferenceBinding binding : reference.getReferenceBindings()) {
-                    wires.add(binding.getOutboundWire());
+                    OutboundWire wire = binding.getOutboundWire();
+                    if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
+                        wires.add(wire);
+                    }
                 }
             }
             return map;
@@ -245,7 +247,10 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             List<InboundWire> map = new ArrayList<InboundWire>();
             for (Service service : services) {
                 for (ServiceBinding binding : service.getServiceBindings()) {
-                    map.add(binding.getInboundWire());
+                    InboundWire wire = binding.getInboundWire();
+                    if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
+                        map.add(wire);
+                    }
                 }
             }
             return map;

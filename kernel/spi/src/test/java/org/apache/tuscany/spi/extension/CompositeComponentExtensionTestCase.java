@@ -153,26 +153,115 @@ public class CompositeComponentExtensionTestCase extends TestCase {
         assertNotNull(composite.getInboundWire("service"));
     }
 
+    public void testInboundWires() throws Exception {
+        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
+        };
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
+        wire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.replay(wire);
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(binding);
+
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(binding);
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
+        assertEquals(1, composite.getInboundWires().size());
+    }
+
+    public void testInboundWiresNonLocalBinding() throws Exception {
+        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
+        };
+        InboundWire wire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(wire.getBindingType()).andReturn(new QName("foo", "foo"));
+        wire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.replay(wire);
+        ServiceBinding binding = EasyMock.createMock(ServiceBinding.class);
+        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.replay(binding);
+
+        Service service = EasyMock.createMock(Service.class);
+        EasyMock.expect(service.getName()).andReturn("service").atLeastOnce();
+        EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
+        List<ServiceBinding> bindings = new ArrayList<ServiceBinding>();
+        bindings.add(binding);
+        service.getServiceBindings();
+        EasyMock.expectLastCall().andReturn(bindings).atLeastOnce();
+        EasyMock.replay(service);
+        composite.register(service);
+        assertEquals(0, composite.getInboundWires().size());
+    }
+
 
     public void testGetOutboundWires() throws Exception {
         ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
         };
-        InboundWire wire = EasyMock.createMock(InboundWire.class);
-        wire.getServiceContract();
+        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
+        inboundWire.getServiceContract();
         EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
-        EasyMock.replay(wire);
+        EasyMock.replay(inboundWire);
+
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        outboundWire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.expect(outboundWire.getBindingType()).andReturn(Wire.LOCAL_BINDING);
+        EasyMock.replay(outboundWire);
+
         ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
-        EasyMock.expect(binding.getInboundWire()).andReturn(wire).atLeastOnce();
+        EasyMock.expect(binding.getInboundWire()).andReturn(inboundWire).atLeastOnce();
+        EasyMock.expect(binding.getOutboundWire()).andReturn(outboundWire).atLeastOnce();
         EasyMock.replay(binding);
         Reference reference = EasyMock.createMock(Reference.class);
         EasyMock.expect(reference.getName()).andReturn("reference").atLeastOnce();
         EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
         List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
+        bindings.add(binding);
         EasyMock.expect(reference.getReferenceBindings()).andReturn(bindings).atLeastOnce();
         EasyMock.replay(reference);
         composite.register(reference);
         Map<String, List<OutboundWire>> wires = composite.getOutboundWires();
-        assertNotNull(wires.get("reference"));
+        assertEquals(1, wires.get("reference").size());
+    }
+
+    public void testGetOutboundWiresWithNonLocalBinding() throws Exception {
+        ServiceContract<Object> contract = new ServiceContract<Object>(Object.class) {
+        };
+        QName qName = new QName("foo", "foo");
+        InboundWire inboundWire = EasyMock.createMock(InboundWire.class);
+        EasyMock.expect(inboundWire.getBindingType()).andReturn(qName);
+        inboundWire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.replay(inboundWire);
+
+        OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
+        outboundWire.getServiceContract();
+        EasyMock.expectLastCall().andReturn(contract).atLeastOnce();
+        EasyMock.expect(outboundWire.getBindingType()).andReturn(qName);
+        EasyMock.replay(outboundWire);
+
+        ReferenceBinding binding = EasyMock.createMock(ReferenceBinding.class);
+        EasyMock.expect(binding.getInboundWire()).andReturn(inboundWire).atLeastOnce();
+        EasyMock.expect(binding.getOutboundWire()).andReturn(outboundWire).atLeastOnce();
+        EasyMock.replay(binding);
+        Reference reference = EasyMock.createMock(Reference.class);
+        EasyMock.expect(reference.getName()).andReturn("reference").atLeastOnce();
+        EasyMock.expect(reference.isSystem()).andReturn(false).atLeastOnce();
+        List<ReferenceBinding> bindings = new ArrayList<ReferenceBinding>();
+        bindings.add(binding);
+        EasyMock.expect(reference.getReferenceBindings()).andReturn(bindings).atLeastOnce();
+        EasyMock.replay(reference);
+        composite.register(reference);
+        Map<String, List<OutboundWire>> wires = composite.getOutboundWires();
+        assertEquals(0, wires.get("reference").size());
     }
 
     public void testInboundSystemWire() throws Exception {
