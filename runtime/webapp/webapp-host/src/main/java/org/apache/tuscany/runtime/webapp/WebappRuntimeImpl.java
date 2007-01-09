@@ -19,11 +19,13 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.util.StringTokenizer;
+import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
+import org.osoa.sca.CompositeContext;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
 import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
@@ -182,6 +184,12 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         }
     }
 
+    @Deprecated
+    public CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader)
+        throws InitializationException {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     public void destroy() {
         context = null;
         if (application != null) {
@@ -242,28 +250,4 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
     public void stopRequest() {
         application.publish(new RequestEnd(this));
     }
-
-    /**
-     * Returns a monitor factory for the funtime
-     *
-     * @param loggingLevel
-     */
-//    private MonitorFactory getMonitorFactory(String loggingLevel) {
-//        String factoryName = "org.apache.tuscany.core.monitor.NullMonitorFactory";
-//        Map<String, Object> props = null;
-//        if (loggingLevel != null) {
-//            factoryName = "org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory";
-//            props = new HashMap<String, Object>();
-//            Level level = Level.SEVERE;
-//            try {
-//                level = Level.parse(loggingLevel);
-//            } catch (IllegalArgumentException e) {
-//                // ignore bad loggingLevel
-//            }
-//            props.put("bundleName", "SystemMessages");
-//            props.put("defaultLevel", level);
-//        }
-//
-//        return MonitorFactoryUtil.createMonitorFactory(factoryName, props);
-//    }
 }
