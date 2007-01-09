@@ -56,7 +56,7 @@ public class OSGiBindingBuilder extends BindingBuilderExtension<OSGiBindingDefin
     }
 
     public OSGiReferenceBinding build(CompositeComponent parent,
-                                      BoundReferenceDefinition<OSGiBindingDefinition> boundReferenceDefinition,
+                                      BoundReferenceDefinition boundReferenceDefinition,
                                       OSGiBindingDefinition bindingDefinition, DeploymentContext deploymentContext) {
         String name = boundReferenceDefinition.getName();
         return new OSGiReferenceBinding(name, parent);
