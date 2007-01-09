@@ -46,7 +46,7 @@ public class Journal extends Logger {
 
     /**
      * Writes a header record to the log. The format of the header is defined by {@link
-     * SerializationHelper#createHeader(short, int, String, java.util.UUID, long)}
+     * SerializationHelper#createHeader(short, int, String, String, long)}
      *
      * @param bytes the record as a byte array
      * @param force true if the disk write should be forced

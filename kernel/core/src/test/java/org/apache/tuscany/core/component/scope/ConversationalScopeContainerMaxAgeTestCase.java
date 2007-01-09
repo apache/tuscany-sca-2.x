@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
 
@@ -56,6 +57,7 @@ public class ConversationalScopeContainerMaxAgeTestCase extends TestCase {
         EasyMock.replay(component);
         store = EasyMock.createMock(Store.class);
         EasyMock.expect(store.readRecord(EasyMock.isA(SCAObject.class), EasyMock.isA(String.class))).andReturn(foo);
+        store.addListener(EasyMock.isA(RuntimeEventListener.class));
         EasyMock.replay(store);
         container = new ConversationalScopeContainer(store, context, null);
         container.start();

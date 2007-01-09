@@ -26,8 +26,7 @@ import org.apache.tuscany.spi.event.Event;
  * @version $$Rev$$ $$Date$$
  */
 public abstract class AbstractEvent implements Event {
-
-    protected transient Object source;
+    protected Object source;
 
     public AbstractEvent(Object source) {
         assert source != null : "Source id was null";

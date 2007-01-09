@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.PersistenceException;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.ScopeContainerMonitor;
 import org.apache.tuscany.spi.component.TargetDestructionException;
@@ -30,8 +31,10 @@ import org.apache.tuscany.spi.component.TargetNotFoundException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.event.Event;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 import org.apache.tuscany.spi.services.store.StoreReadException;
 import org.apache.tuscany.spi.services.store.StoreWriteException;
 
@@ -44,9 +47,12 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
     private Store nonDurableStore;
     private Map<AtomicComponent, AtomicComponent> components;
 
-    public ConversationalScopeContainer(Store store, WorkContext workContext, ScopeContainerMonitor monitor) {
+    public ConversationalScopeContainer(Store store, WorkContext workContext, final ScopeContainerMonitor monitor) {
         super(workContext, monitor);
         this.nonDurableStore = store;
+        if (store != null) {
+            store.addListener(new ExpirationListener(monitor));
+        }
         components = new ConcurrentHashMap<AtomicComponent, AtomicComponent>();
     }
 
@@ -184,6 +190,31 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
             return now + component.getMaxIdleTime();
         } else {
             return Store.DEFAULT_EXPIRATION_OFFSET;
+        }
+    }
+
+    /**
+     * Receives expiration events from the store and notifies the corresponding atomic component
+     */
+    private static class ExpirationListener implements RuntimeEventListener {
+        private final ScopeContainerMonitor monitor;
+
+        public ExpirationListener(ScopeContainerMonitor monitor) {
+            this.monitor = monitor;
+        }
+
+        public void onEvent(Event event) {
+            if (event instanceof StoreExpirationEvent) {
+                StoreExpirationEvent expiration = (StoreExpirationEvent) event;
+                SCAObject object = expiration.getOwner();
+                assert object instanceof AtomicComponent;
+                AtomicComponent owner = (AtomicComponent) object;
+                try {
+                    owner.destroy(expiration.getInstance());
+                } catch (TargetDestructionException e) {
+                    monitor.destructionError(e);
+                }
+            }
         }
     }
 }

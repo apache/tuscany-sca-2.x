@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.services.store;
 
 import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.event.EventPublisher;
 
 /**
  * Implementations provide a persistent store for runtime data such as conversational state. A persistent store could be
@@ -27,7 +28,7 @@ import org.apache.tuscany.spi.component.SCAObject;
  *
  * @version $Rev$ $Date$
  */
-public interface Store {
+public interface Store extends EventPublisher {
 
     /* Used to indicate an the default expiration offset for records for the store */
     long DEFAULT_EXPIRATION_OFFSET = -1;

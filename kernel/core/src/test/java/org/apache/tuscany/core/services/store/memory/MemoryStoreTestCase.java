@@ -19,14 +19,19 @@
 package org.apache.tuscany.core.services.store.memory;
 
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.event.RuntimeEventListener;
 import org.apache.tuscany.spi.services.store.DuplicateRecordException;
 import org.apache.tuscany.spi.services.store.Store;
+import org.apache.tuscany.spi.services.store.StoreExpirationEvent;
 import org.apache.tuscany.spi.services.store.StoreMonitor;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 
 /**
  * @version $Rev$ $Date$
@@ -46,6 +51,33 @@ public class MemoryStoreTestCase extends TestCase {
         Thread.sleep(100);
         assertNull(store.readRecord(component, id));
         store.destroy();
+    }
+
+    public void testNotifyOnEviction() throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
+        RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
+        listener.onEvent(EasyMock.isA(StoreExpirationEvent.class));
+        org.easymock.classextension.EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
+            public Object answer() throws Throwable {
+                latch.countDown();
+                return null;
+            }
+        });
+        EasyMock.replay(listener);
+        MemoryStore store = new MemoryStore(monitor);
+        store.addListener(listener);
+        store.setReaperInterval(10);
+        store.init();
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        String id = UUID.randomUUID().toString();
+        Object value = new Object();
+        store.insertRecord(component, id, value, 1);
+        if (!latch.await(1000, TimeUnit.MILLISECONDS)) {
+            // failed to notify listener
+            fail();
+        }
+        EasyMock.verify(listener);
     }
 
     public void testNoEviction() throws Exception {
