@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.runtime.standalone.jmx.management;
+package org.apache.tuscany.service.management.jmx;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.tuscany.runtime.standalone.jmx.management.instrument.InstrumentedComponent;
+import org.apache.tuscany.service.management.jmx.instrument.InstrumentedComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 

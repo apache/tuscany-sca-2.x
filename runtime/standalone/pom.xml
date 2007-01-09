@@ -35,7 +35,6 @@
         <module>standalone-api</module>
         <module>launcher</module>
         <module>standalone-host</module>
-        <module>jmx-host</module>
         <module>server.start</module>
         <module>server.shutdown</module>
         <module>plugin.standalone</module>

@@ -16,24 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.runtime.standalone.jmx.management;
+package org.apache.tuscany.service.management.jmx.instrument;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
- * Maps JMX exceptions to runtime exceptions.
+ * Excpetion thrown when there is an instrumentation error.
  * 
- * @version $Revision$ $Date$
+ * @version $Revison$ $Date$
+ *
  */
 @SuppressWarnings("serial")
-public class JmxException extends TuscanyRuntimeException {
+public class InstrumentationException extends TuscanyRuntimeException {
 
     /**
      * Initializes the root cause.
      * @param cause Initializes the root cause.
      */
-    public JmxException(Throwable cause) {
+    public InstrumentationException(Throwable cause) {
         super(cause);
+    }
+
+    /**
+     * Initializes the message.
+     * @param message Initializes the message.
+     */
+    public InstrumentationException(String message) {
+        super(message);
     }
 
 }

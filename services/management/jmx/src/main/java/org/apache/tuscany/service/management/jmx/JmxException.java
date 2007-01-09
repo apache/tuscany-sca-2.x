@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.runtime.standalone.jmx;
+package org.apache.tuscany.service.management.jmx;
 
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
@@ -26,13 +26,13 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
  * @version $Revision$ $Date$
  */
 @SuppressWarnings("serial")
-public class JmxHostException extends TuscanyRuntimeException {
+public class JmxException extends TuscanyRuntimeException {
 
     /**
      * Initializes the root cause.
      * @param cause Initializes the root cause.
      */
-    public JmxHostException(Throwable cause) {
+    public JmxException(Throwable cause) {
         super(cause);
     }
 

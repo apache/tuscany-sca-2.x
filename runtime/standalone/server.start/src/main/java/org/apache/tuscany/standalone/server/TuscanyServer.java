@@ -35,7 +35,7 @@ import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
-import org.apache.tuscany.runtime.standalone.jmx.management.JmxManagementService;
+import org.apache.tuscany.service.management.jmx.JmxManagementService;
 import org.apache.tuscany.standalone.server.management.jmx.Agent;
 import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
 
@@ -217,7 +217,7 @@ public class TuscanyServer implements TuscanyServerMBean {
 
         final String className =
             runtimeInfo.getProperty("tuscany.launcherClass",
-                               "org.apache.tuscany.runtime.standalone.jmx.JmxRuntimeImpl");
+                               "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
         final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
         runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setSystemScdl(systemScdl);

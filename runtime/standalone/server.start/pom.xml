@@ -44,8 +44,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
-            <artifactId>jmx-host</artifactId>
+            <groupId>org.apache.tuscany.sca.services.management</groupId>
+            <artifactId>management-jmx</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>

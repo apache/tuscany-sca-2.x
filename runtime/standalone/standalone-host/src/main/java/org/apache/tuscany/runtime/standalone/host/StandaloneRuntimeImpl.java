@@ -62,7 +62,7 @@ public class StandaloneRuntimeImpl extends AbstractRuntime {
 
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
 
-        TuscanyManagementService managementService = null;
+        TuscanyManagementService managementService = (TuscanyManagementService)getManagementService();
         Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
         runtime = bootstrapper.createRuntime();
         runtime.start();
