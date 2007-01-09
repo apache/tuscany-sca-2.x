@@ -38,7 +38,7 @@ import org.easymock.EasyMock;
 /**
  * @version $Rev$ $Date$
  */
-public class ConversationalScopeContainerDestroyOnExpirationTestContainer extends TestCase {
+public class ConversationalScopeContainerDestroyOnExpirationTestCase extends TestCase {
     private ScopeContainer container;
     private TestStore store;
     private AtomicComponent component;
