@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
@@ -25,6 +27,7 @@ import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * The runtime representaion of the local service binding
@@ -35,6 +38,10 @@ public class LocalServiceBinding extends ServiceBindingExtension {
 
     public LocalServiceBinding(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
+    }
+
+    public QName getBindingType() {
+        return Wire.LOCAL_BINDING;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)

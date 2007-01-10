@@ -26,6 +26,7 @@ import org.osoa.sca.annotations.Constructor;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Connector;
+import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.builder.WiringException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
@@ -53,7 +54,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WirePostProcessorRegistry;
 import org.apache.tuscany.spi.wire.WireService;
 
-import org.apache.tuscany.core.binding.local.LocalReferenceBinding;
 import org.apache.tuscany.core.wire.LoopBackWire;
 import org.apache.tuscany.core.wire.NonBlockingBridgingInterceptor;
 import org.apache.tuscany.core.wire.SynchronousBridgingInterceptor;
@@ -85,8 +85,8 @@ public class ConnectorImpl implements Connector {
     }
 
     public void connect(SCAObject source) throws WiringException {
-        if (source instanceof AtomicComponent) {
-            handleAtomic((AtomicComponent) source);
+        if (source instanceof Component) {
+            handleComponent((Component) source);
         } else if (source instanceof Reference) {
             handleReference((Reference) source);
         } else if (source instanceof Service) {
@@ -591,34 +591,10 @@ public class ConnectorImpl implements Connector {
             OutboundWire outboundWire = binding.getOutboundWire();
             // connect the reference's inbound and outbound wires
             connect(inboundWire, outboundWire, true);
-
-            if (binding instanceof LocalReferenceBinding) {
-                String targetName = outboundWire.getTargetName().getPartName();
-                String serviceName = outboundWire.getTargetName().getPortName();
-                // A reference configured with the local binding is always connected to a target that is a sibling
-                // of the reference's parent composite.
-                parent = parent.getParent();
-                if (parent == null) {
-                    throw new TargetServiceNotFoundException("Reference target parent not found",
-                        reference.getName(),
-                        null,
-                        targetName,
-                        serviceName);
-                }
-                SCAObject target = parent.getChild(targetName);
-                if (target instanceof Reference) {
-                    throw new InvalidTargetTypeException("Invalid target type",
-                        reference.getName(),
-                        null,
-                        targetName,
-                        serviceName);
-                }
-                connect(binding, outboundWire, target);
-            }
         }
     }
 
-    private void handleAtomic(AtomicComponent component) throws WiringException {
+    private void handleComponent(Component component) throws WiringException {
         CompositeComponent parent = component.getParent();
         assert parent != null;
         // connect outbound wires for component references to their targets
@@ -637,6 +613,10 @@ public class ConnectorImpl implements Connector {
                         if (outboundWire.isAutowire()) {
                             autowire(outboundWire, parent);
                         } else {
+                            if (outboundWire.getTargetName() == null) {
+                                String referenceName = outboundWire.getReferenceName();
+                                throw new MissingWireTargetException("Target name was null", referenceName);
+                            }
                             SCAObject target = parent.getChild(outboundWire.getTargetName().getPartName());
                             connect(component, outboundWire, target);
                         }
@@ -648,25 +628,28 @@ public class ConnectorImpl implements Connector {
                 }
             }
         }
-        // connect inbound wires
-        for (InboundWire inboundWire : component.getInboundWires()) {
-            for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                Operation<?> operation = chain.getOperation();
-                String serviceName = inboundWire.getServiceName();
-                TargetInvoker invoker;
-                try {
-                    invoker = component.createTargetInvoker(serviceName, operation, null);
-                } catch (TargetInvokerCreationException e) {
-                    String targetName = inboundWire.getContainer().getName();
-                    throw new WireConnectException("Error processing inbound wire",
-                        null,
-                        null,
-                        targetName,
-                        serviceName,
-                        e);
+        if (component instanceof AtomicComponent) {
+            // connect inbound wires for atomic components
+            // JFM TODO this will be moved out to AtomicComponent prepare
+            for (InboundWire inboundWire : component.getInboundWires()) {
+                for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                    Operation<?> operation = chain.getOperation();
+                    String serviceName = inboundWire.getServiceName();
+                    TargetInvoker invoker;
+                    try {
+                        invoker = component.createTargetInvoker(serviceName, operation, null);
+                    } catch (TargetInvokerCreationException e) {
+                        String targetName = inboundWire.getContainer().getName();
+                        throw new WireConnectException("Error processing inbound wire",
+                            null,
+                            null,
+                            targetName,
+                            serviceName,
+                            e);
+                    }
+                    chain.setTargetInvoker(invoker);
+                    chain.prepare();
                 }
-                chain.setTargetInvoker(invoker);
-                chain.prepare();
             }
         }
     }

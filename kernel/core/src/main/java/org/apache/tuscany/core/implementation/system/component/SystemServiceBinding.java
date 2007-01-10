@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -30,6 +32,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Runtime artifact for the system binding
@@ -46,6 +49,10 @@ public class SystemServiceBinding extends AbstractSCAObject implements ServiceBi
         throws CoreRuntimeException {
         super(name, parent);
         this.serviceContract = serviceContract;
+    }
+
+    public QName getBindingType() {
+        return Wire.LOCAL_BINDING;
     }
 
     public void setService(Service service) {

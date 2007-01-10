@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.test.binding;
 
+import javax.xml.namespace.QName;
+
+import org.osoa.sca.Version;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
@@ -26,8 +30,14 @@ import org.apache.tuscany.spi.extension.ServiceBindingExtension;
  * @version $Rev$ $Date$
  */
 public class TestBindingServiceBinding extends ServiceBindingExtension {
+    private static final QName BINDING_TEST = new QName(Version.XML_NAMESPACE_1_0, "binding.socket");
+
     public TestBindingServiceBinding(String name, CompositeComponent parent) throws CoreRuntimeException {
         super(name, parent);
         // do nothing, but this could register with the host environment
+    }
+
+    public QName getBindingType() {
+        return BINDING_TEST;
     }
 }

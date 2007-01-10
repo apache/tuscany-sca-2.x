@@ -51,7 +51,19 @@ public class OutboundWireImpl implements OutboundWire {
     private boolean autowire;
     private boolean optimizable;
 
+    /**
+     * Creates a local outbound wire
+     */
     public OutboundWireImpl() {
+    }
+
+    /**
+     * Creates an outbound wire for the given binding type
+     *
+     * @param bindingType the binding type
+     */
+    public OutboundWireImpl(QName bindingType) {
+        this.bindingType = bindingType;
     }
 
     public void setOptimizable(boolean optimizable) {
@@ -60,10 +72,6 @@ public class OutboundWireImpl implements OutboundWire {
 
     public QName getBindingType() {
         return bindingType;
-    }
-
-    public void setBindingType(QName bindingType) {
-        this.bindingType = bindingType;
     }
 
     public Object getTargetService() throws TargetResolutionException {
@@ -156,22 +164,6 @@ public class OutboundWireImpl implements OutboundWire {
 
     public boolean isOptimizable() {
         return optimizable;
-//        for (OutboundInvocationChain chain : chains.values()) {
-//            if (chain.getHeadInterceptor() != null) {
-//                Interceptor current = chain.getHeadInterceptor();
-//                if (current == null) {
-//                    break;
-//                }
-//                while (current != null) {
-//                    if (!current.isOptimizable()) {
-//                        return false;
-//                    }
-//                    current = current.getNext();
-//                }
-//            }
-//        }
-//        // if there is a callback, the wire is never optimizable since the callback target needs to be disambiguated
-//        return callbackTargetChains.isEmpty();
     }
 
     public SCAObject getContainer() {

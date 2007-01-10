@@ -355,10 +355,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
             // connect all children
             // TODO for composite wires, should delegate down
             try {
-                // TODO JFM fixme test
-                if (!(child instanceof CompositeComponent)) {
-                    connector.connect(child);
-                }
+                connector.connect(child);
                 child.prepare();
             } catch (PrepareException e) {
                 e.addContextName(getName());

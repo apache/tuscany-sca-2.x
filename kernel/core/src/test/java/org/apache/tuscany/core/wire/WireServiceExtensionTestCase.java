@@ -24,6 +24,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -269,6 +271,10 @@ public class WireServiceExtensionTestCase extends TestCase {
 
         public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
             this.bindingServiceContract = bindingServiceContract;
+        }
+
+        public QName getBindingType() {
+            return null;
         }
 
         public void setReference(Reference reference) {

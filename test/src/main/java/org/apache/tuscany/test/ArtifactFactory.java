@@ -76,7 +76,7 @@ public final class ArtifactFactory {
      * @param serviceName the service name associated with the wire
      * @param interfaze   the interface associated with the wire
      */
-    public static <T> InboundWire createInboundWire(String serviceName, Class<T> interfaze)
+    public static <T> InboundWire createLocalInboundWire(String serviceName, Class<T> interfaze)
         throws InvalidServiceContractException {
         InboundWire wire = new InboundWireImpl();
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
@@ -95,7 +95,7 @@ public final class ArtifactFactory {
      * @param refName   the reference name the wire is associated with on the client
      * @param interfaze the interface associated with the wire
      */
-    public static <T> OutboundWire createOutboundWire(String refName, Class<T> interfaze)
+    public static <T> OutboundWire createLocalOutboundWire(String refName, Class<T> interfaze)
         throws InvalidServiceContractException {
         OutboundWire wire = new OutboundWireImpl();
         wire.setReferenceName(refName);

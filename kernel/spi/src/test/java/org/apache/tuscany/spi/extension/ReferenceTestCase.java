@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
@@ -77,6 +79,10 @@ public class ReferenceTestCase extends TestCase {
     private class TestReferenceBinding extends ReferenceBindingExtension {
         public TestReferenceBinding() {
             super(null, null);
+        }
+
+        public QName getBindingType() {
+            return null;
         }
 
         public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

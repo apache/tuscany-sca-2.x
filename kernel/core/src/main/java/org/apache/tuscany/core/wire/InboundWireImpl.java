@@ -50,12 +50,25 @@ public class InboundWireImpl implements InboundWire {
     private AtomicComponent targetComponent;
     private boolean optimizable;
 
-    public QName getBindingType() {
-        return bindingType;
+
+    /**
+     * Creates a local inbound wire
+     */
+    public InboundWireImpl() {
     }
 
-    public void setBindingType(QName bindingType) {
+
+    /**
+     * Creates an inbound wire for the given binding type
+     *
+     * @param bindingType the binding type
+     */
+    public InboundWireImpl(QName bindingType) {
         this.bindingType = bindingType;
+    }
+
+    public QName getBindingType() {
+        return bindingType;
     }
 
     public Object getTargetService() throws TargetResolutionException {

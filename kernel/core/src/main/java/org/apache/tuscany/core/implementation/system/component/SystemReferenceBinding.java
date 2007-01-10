@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -28,6 +30,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
+import org.apache.tuscany.spi.wire.Wire;
 
 /**
  * Default implementation of a reference configured with the system binding
@@ -49,6 +52,10 @@ public class SystemReferenceBinding extends AbstractSCAObject implements Referen
 
     public void setInboundWire(InboundWire wire) {
         this.inboundWire = wire;
+    }
+
+    public QName getBindingType() {
+        return Wire.LOCAL_BINDING;
     }
 
     public void setReference(Reference reference) {

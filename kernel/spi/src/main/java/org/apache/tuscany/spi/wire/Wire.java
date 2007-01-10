@@ -30,8 +30,7 @@ import org.apache.tuscany.spi.model.ServiceContract;
  * @version $$Rev$$ $$Date$$
  */
 public interface Wire {
-
-    QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "local");
+    QName LOCAL_BINDING = new QName("http://tuscany.apache.org/xmlns/sca/binding/1.0", "binding.local");
 
     QName getBindingType();
 
