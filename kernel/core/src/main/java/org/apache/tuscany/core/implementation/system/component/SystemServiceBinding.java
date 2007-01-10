@@ -96,10 +96,6 @@ public class SystemServiceBinding extends AbstractSCAObject implements ServiceBi
         return serviceContract;
     }
 
-    public void setBindingServiceContract(ServiceContract<?> serviceContract) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public boolean isSystem() {
         return service != null && service.isSystem();
