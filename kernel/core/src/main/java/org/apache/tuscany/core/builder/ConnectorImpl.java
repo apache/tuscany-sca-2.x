@@ -115,9 +115,7 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
-        if (optimizable
-            && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)) {
+        if (optimizable && WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
@@ -284,9 +282,7 @@ public class ConnectorImpl implements Connector {
             postProcessorRegistry.process(sourceWire, targetWire);
         }
         // perform optimization, if possible
-        if (optimizable
-            && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)) {
+        if (optimizable && WireUtils.isOptimizable(sourceWire) && WireUtils.isOptimizable(targetWire)) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
