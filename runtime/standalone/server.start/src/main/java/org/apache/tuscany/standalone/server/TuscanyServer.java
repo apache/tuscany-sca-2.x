@@ -219,7 +219,6 @@ public class TuscanyServer implements TuscanyServerMBean {
             runtimeInfo.getProperty("tuscany.launcherClass",
                                "org.apache.tuscany.runtime.standalone.host.StandaloneRuntimeImpl");
         final TuscanyRuntime runtime = (TuscanyRuntime) Beans.instantiate(bootClassLoader, className);
-        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setSystemScdl(systemScdl);
         runtime.setHostClassLoader(hostClassLoader);
 

@@ -254,7 +254,6 @@ public class TuscanyStartMojo extends AbstractMojo {
             }
         }
 
-        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setSystemScdl(systemScdl);
         runtime.setHostClassLoader(hostClassLoader);
 

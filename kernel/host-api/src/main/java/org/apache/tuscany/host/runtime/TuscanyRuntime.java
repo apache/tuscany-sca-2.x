@@ -89,13 +89,6 @@ public interface TuscanyRuntime {
     void setMonitorFactory(MonitorFactory monitorFactory);
 
     /**
-     * Create the default MonitorFactory for this runtime.
-     *
-     * @return the default MonitorFactory for this runtime
-     */
-    MonitorFactory createDefaultMonitorFactory();
-
-    /**
      * Sets the ManagementService that this runtime should use.
      *
      * @param managementService the ManagementService that this runtime should use
