@@ -29,14 +29,19 @@ import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
+import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
+import org.apache.tuscany.spi.wire.TargetInvoker;
 import org.apache.tuscany.spi.wire.WireService;
 
 /**
@@ -191,4 +196,21 @@ public abstract class AtomicComponentExtension extends AbstractComponentExtensio
     }
 
 
+    public void prepare() throws PrepareException {
+        // connect inbound wires for atomic components
+        for (InboundWire inboundWire : getInboundWires()) {
+            for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
+                Operation<?> operation = chain.getOperation();
+                String serviceName = inboundWire.getServiceName();
+                TargetInvoker invoker;
+                try {
+                    invoker = createTargetInvoker(serviceName, operation, null);
+                } catch (TargetInvokerCreationException e) {
+                    throw new PrepareException("Error processing inbound wire", serviceName, e);
+                }
+                chain.setTargetInvoker(invoker);
+                chain.prepare();
+            }
+        }
+    }
 }
