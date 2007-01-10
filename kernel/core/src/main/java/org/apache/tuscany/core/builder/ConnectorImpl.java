@@ -390,9 +390,15 @@ public class ConnectorImpl implements Connector {
             }
         }
         if (targetWire == null) {
-            throw new NoCompatibleBindingsException(source.getName(),
-                targetName.getPartName(),
-                targetName.getPortName());
+            if (target.getReferenceBindings().size() > 0 && source instanceof Component) {
+                // TODO create a pluggable algorithm for selecting the binding type
+                targetWire = target.getReferenceBindings().get(0).getInboundWire();
+            }
+            if (targetWire == null) {
+                throw new NoCompatibleBindingsException(source.getName(),
+                    targetName.getPartName(),
+                    targetName.getPortName());
+            }
         }
         checkIfWireable(sourceWire, targetWire);
         boolean optimizable = isOptimizable(source.getScope(), target.getScope());
