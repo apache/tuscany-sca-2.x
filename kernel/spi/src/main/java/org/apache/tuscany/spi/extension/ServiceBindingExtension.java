@@ -79,10 +79,6 @@ public abstract class ServiceBindingExtension extends AbstractSCAObject implemen
         return bindingServiceContract;
     }
 
-    public void setBindingServiceContract(ServiceContract<?> serviceContract) {
-        this.bindingServiceContract = serviceContract;
-    }
-
     @Override
     public boolean isSystem() {
         return service != null && service.isSystem();

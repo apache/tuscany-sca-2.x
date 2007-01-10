@@ -94,14 +94,17 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
 
     public Axis2ServiceBinding(String theName,
                                ServiceContract<?> serviceContract,
+                               ServiceContract<?> serviceBindingContract,
                                CompositeComponent parent,
                                WebServiceBindingDefinition binding,
                                ServletHost servletHost,
-                               ConfigurationContext configContext, WorkContext workContext) {
+                               ConfigurationContext configContext,
+                               WorkContext workContext) {
 
         super(theName, parent);
 
         this.serviceContract = serviceContract;
+        this.bindingServiceContract = serviceBindingContract;
         this.binding = binding;
         this.servletHost = servletHost;
         this.configContext = configContext;

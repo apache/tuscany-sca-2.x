@@ -29,6 +29,7 @@ import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
+import org.apache.tuscany.spi.model.ServiceContract;
 
 /**
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
@@ -46,6 +47,7 @@ public class JMSServiceBinding extends ServiceBindingExtension {
                       CompositeComponent parent,
                       JMSBindingDefinition jmsBinding,
                       JMSResourceFactory jmsResourceFactory,
+                      ServiceContract<?> serviceBindingContract,
                       OperationAndDataBinding requestOperationAndDataBinding,
                       OperationAndDataBinding responseOperationAndDataBinding,
                       Class<?> service) {
@@ -53,6 +55,7 @@ public class JMSServiceBinding extends ServiceBindingExtension {
 
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
+        this.bindingServiceContract = serviceBindingContract;
         this.requestOperationAndDataBinding = requestOperationAndDataBinding;
         this.responseOperationAndDataBinding = responseOperationAndDataBinding;
     }

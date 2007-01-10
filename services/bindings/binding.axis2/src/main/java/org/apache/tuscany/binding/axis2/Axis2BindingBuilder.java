@@ -124,10 +124,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
             }
 
             ServiceBinding serviceBinding =
-                new Axis2ServiceBinding(serviceDefinition.getName(), outboundContract, parent, wsBinding,
+                new Axis2ServiceBinding(serviceDefinition.getName(), outboundContract, inboundContract, parent, wsBinding,
                     servletHost, configContext, workContext);
-            serviceBinding.setBindingServiceContract(inboundContract);
-
             return serviceBinding;
 
         } catch (InvalidServiceContractException e) {

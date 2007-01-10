@@ -118,6 +118,7 @@ public class Axis2ServiceTestCase extends TestCase {
             new Axis2ServiceBinding(serviceName,
                 contract,
                 null,
+                null,
                 wsBinding,
                 tomcatHost,
                 configurationContext, new WorkContextImpl());

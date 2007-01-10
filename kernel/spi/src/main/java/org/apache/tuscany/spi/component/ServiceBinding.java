@@ -55,14 +55,6 @@ public interface ServiceBinding extends SCAObject {
     ServiceContract<?> getBindingServiceContract();
 
     /**
-     * Set the ServiceContract for the binding. This contract will be used for the inbound wire. If not set, it will be
-     * the same as the ServideContract from the interface.
-     *
-     * @param serviceContract the binding contract
-     */
-    void setBindingServiceContract(ServiceContract<?> serviceContract);
-
-    /**
      * Returns the inbound wire for flowing a request through the service
      *
      * @return the inbound wire for flowing a request through the service

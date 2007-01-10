@@ -55,10 +55,6 @@ public class MockServiceBinding extends AbstractSCAObject implements ServiceBind
         return bindingServiceContract;
     }
 
-    public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
-        this.bindingServiceContract = bindingServiceContract;
-    }
-
     public InboundWire getInboundWire() {
         return inboundWire;
     }
