@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObjectStartException;
@@ -33,6 +34,7 @@ import org.osgi.framework.ServiceFactory;
  * @version $Rev$ $Date$
  */
 public class OSGiServiceBinding extends ServiceBindingExtension {
+    private static final QName BINDING_OSGI = new QName("http://tuscany.apache.org/xmlns/osgi/1.0", "binding.osgi");
     private final String osgiServiceName;
     //private final Class<? extends Object> service;
     private OSGiHost host;
@@ -48,10 +50,10 @@ public class OSGiServiceBinding extends ServiceBindingExtension {
      * @param host            the OSGi host
      */
     public OSGiServiceBinding(String name,
-                       CompositeComponent parent,
-                       WireService wireService,
-                       String osgiServiceName,
-                       OSGiHost host) {
+                              CompositeComponent parent,
+                              WireService wireService,
+                              String osgiServiceName,
+                              OSGiHost host) {
         super(name, parent);
         this.osgiServiceName = osgiServiceName;
         //this.service = service;
@@ -87,6 +89,10 @@ public class OSGiServiceBinding extends ServiceBindingExtension {
     public void stop() {
         super.stop();
         //Unregister the service with OSGi
+    }
+
+    public QName getBindingType() {
+        return BINDING_OSGI;
     }
 
     private class ServiceFactoryProxyHandler implements InvocationHandler {

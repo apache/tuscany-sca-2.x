@@ -9,6 +9,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.xml.namespace.QName;
+
+import org.osoa.sca.Version;
+
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
@@ -24,6 +28,7 @@ import org.apache.tuscany.spi.wire.MessageImpl;
  * @version $Rev$ $Date$
  */
 public class TestSocketBindingServiceBinding extends ServiceBindingExtension {
+    private static final QName BINDING_TEST = new QName(Version.XML_NAMESPACE_1_0, "binding.socket");
     private int port;
     private ServerSocket socket;
     private ExecutorService executor;
@@ -34,6 +39,10 @@ public class TestSocketBindingServiceBinding extends ServiceBindingExtension {
         this.port = port;
     }
 
+    public QName getBindingType() {
+        return BINDING_TEST;
+    }
+    
     public void start() {
         executor = Executors.newSingleThreadExecutor();
         // create a listener, note that a work scheduler should normally be used to spawn work in different threads

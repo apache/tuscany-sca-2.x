@@ -103,14 +103,14 @@ public abstract class WireServiceExtension implements WireService {
     }
 
     public void createWires(ReferenceBinding referenceBinding, ServiceContract<?> contract, QualifiedName targetName) {
-        InboundWire inboundWire = new InboundWireImpl();
+        InboundWire inboundWire = new InboundWireImpl(referenceBinding.getBindingType());
         inboundWire.setServiceContract(contract);
         inboundWire.setContainer(referenceBinding);
         for (Operation<?> operation : contract.getOperations().values()) {
             InboundInvocationChain chain = createInboundChain(operation);
             inboundWire.addInvocationChain(operation, chain);
         }
-        OutboundWire outboundWire = new OutboundWireImpl();
+        OutboundWire outboundWire = new OutboundWireImpl(referenceBinding.getBindingType());
         outboundWire.setTargetName(targetName);
 
         // [rfeng] Check if the Reference has the binding contract
@@ -148,7 +148,7 @@ public abstract class WireServiceExtension implements WireService {
     }
 
     public void createWires(ServiceBinding serviceBinding, ServiceContract<?> contract, String targetName) {
-        InboundWire inboundWire = new InboundWireImpl();
+        InboundWire inboundWire = new InboundWireImpl(serviceBinding.getBindingType());
         // [rfeng] Check if the Reference has the serviceBinding contract
         ServiceContract<?> bindingContract = serviceBinding.getBindingServiceContract();
         if (bindingContract == null) {
@@ -163,7 +163,7 @@ public abstract class WireServiceExtension implements WireService {
             inboundWire.addInvocationChain(operation, inboundChain);
         }
 
-        OutboundWire outboundWire = new OutboundWireImpl();
+        OutboundWire outboundWire = new OutboundWireImpl(serviceBinding.getBindingType());
         outboundWire.setServiceContract(contract);
         outboundWire.setTargetName(new QualifiedName(targetName));
         outboundWire.setContainer(serviceBinding);

@@ -18,6 +18,7 @@ package org.apache.tuscany.osgi.binding;
 
 import java.lang.reflect.Method;
 import java.rmi.Remote;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
@@ -30,11 +31,16 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev$ $Date$
  */
 public class OSGiReferenceBinding extends ReferenceBindingExtension {
+    private static final QName BINDING_OSGI = new QName("http://tuscany.apache.org/xmlns/osgi/1.0", "binding.osgi");
     //private final String uri;
 
     public OSGiReferenceBinding(String name, CompositeComponent parent) {
         super(name, parent);
         //this.uri = uri;
+    }
+
+    public QName getBindingType() {
+        return BINDING_OSGI;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

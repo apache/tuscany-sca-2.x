@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.model.Scope;
 
@@ -31,18 +33,27 @@ public class ServiceBindingExtensionTestCase extends TestCase {
 
     public void testScope() throws Exception {
         ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+            public QName getBindingType() {
+                return null;
+            }
         };
         assertEquals(Scope.SYSTEM, binding.getScope());
     }
 
     public void testPrepare() throws Exception {
         ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+            public QName getBindingType() {
+                return null;
+            }
         };
         binding.prepare();
     }
 
     public void testIsSystemNoParent() throws Exception {
         ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+            public QName getBindingType() {
+                return null;
+            }
         };
         assertFalse(binding.isSystem());
     }
@@ -52,6 +63,9 @@ public class ServiceBindingExtensionTestCase extends TestCase {
         EasyMock.expect(service.isSystem()).andReturn(true);
         EasyMock.replay(service);
         ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+            public QName getBindingType() {
+                return null;
+            }
         };
         binding.setService(service);
         assertTrue(binding.isSystem());
@@ -62,6 +76,9 @@ public class ServiceBindingExtensionTestCase extends TestCase {
         EasyMock.expect(service.isSystem()).andReturn(false);
         EasyMock.replay(service);
         ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+            public QName getBindingType() {
+                return null;
+            }
         };
         binding.setService(service);
         assertFalse(binding.isSystem());

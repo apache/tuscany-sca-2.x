@@ -1,5 +1,7 @@
 package org.apache.tuscany.spi.extension;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
@@ -51,6 +53,10 @@ public class ReferenceBindingExtensionTestCase extends TestCase {
     private static class MockBindingExtension extends ReferenceBindingExtension {
         public MockBindingExtension() {
             super(null, null);
+        }
+
+        public QName getBindingType() {
+            return null;
         }
 
         public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation)

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.component;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -31,6 +33,13 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  */
 public interface ReferenceBinding extends SCAObject {
 
+    /**
+     * Returns the binding qualified name
+     *
+     * @return the binding qualified name
+     */
+    QName getBindingType();
+    
     /**
      * Sets the parent reference for the binding
      *
