@@ -48,6 +48,14 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
     private MonitorFactory monitorFactory;
     private ManagementService<?> managementService;
 
+    protected AbstractRuntime() {
+        this(new NullMonitorFactory());
+    }
+
+    protected AbstractRuntime(MonitorFactory monitorFactory) {
+        this.monitorFactory = monitorFactory;
+    }
+
     public URL getSystemScdl() {
         return systemScdl;
     }
@@ -110,10 +118,6 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     public void setManagementService(ManagementService<?> managementService) {
         this.managementService = managementService;
-    }
-
-    public MonitorFactory createDefaultMonitorFactory() {
-        return new NullMonitorFactory();
     }
 
     protected CompositeComponent deploySystemScdl(Deployer deployer,

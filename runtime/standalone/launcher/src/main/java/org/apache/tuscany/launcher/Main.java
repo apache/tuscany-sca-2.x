@@ -133,7 +133,6 @@ public class Main {
         Class<?> implClass = Class.forName(className, true, bootClassLoader);
 
         TuscanyRuntime runtime = (TuscanyRuntime) implClass.newInstance();
-        runtime.setMonitorFactory(runtime.createDefaultMonitorFactory());
         runtime.setHostClassLoader(hostClassLoader);
         runtime.setSystemScdl(systemSCDL);
         runtime.setRuntimeInfo(runtimeInfo);
