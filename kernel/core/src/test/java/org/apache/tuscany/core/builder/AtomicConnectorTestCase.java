@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.builder;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +36,6 @@ import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 import org.apache.tuscany.core.wire.InboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
-import org.apache.tuscany.core.wire.InvokerInterceptor;
 import org.apache.tuscany.core.wire.OutboundInvocationChainImpl;
 import org.apache.tuscany.core.wire.OutboundWireImpl;
 import org.easymock.EasyMock;

@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.spi.extension;
 
-import javax.xml.namespace.QName;
-
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.AbstractSCAObject;
 import org.apache.tuscany.spi.component.CompositeComponent;
