@@ -58,8 +58,11 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
     public Axis2ReferenceBinding(String theName,
                                  CompositeComponent parent,
                                  WebServiceBindingDefinition wsBinding,
-                                 ServiceContract contract, WorkContext workContext) {
+                                 ServiceContract contract,
+                                 ServiceContract<?> bindingServiceContract,
+                                 WorkContext workContext) {
         super(theName, parent);
+        this.bindingServiceContract = bindingServiceContract;
         this.workContext = workContext;
         try {
             Definition wsdlDefinition = wsBinding.getWSDLDefinition();

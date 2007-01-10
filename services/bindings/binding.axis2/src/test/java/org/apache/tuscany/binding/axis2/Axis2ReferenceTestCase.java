@@ -90,7 +90,8 @@ public class Axis2ReferenceTestCase extends TestCase {
         Service wsdlService = wsdlDef.getService(new QName("http://objectweb.org/hello_world_soap_http",
             "SOAPService"));
         Port port = wsdlService.getPort("SoapPort");
-        WebServiceBindingDefinition wsBinding = new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
+        WebServiceBindingDefinition wsBinding =
+            new WebServiceBindingDefinition(wsdlDef, port, "uri", "portURI", wsdlService);
         //Create a mocked WireService, make the call of ServiceBindingExtension.getServiceInstance() returns a proxy instance.
         WireService wireService = EasyMock.createNiceMock(WireService.class);
         EasyMock.replay(wireService);
@@ -101,6 +102,8 @@ public class Axis2ReferenceTestCase extends TestCase {
         return new Axis2ReferenceBinding(serviceName,
             parent,
             wsBinding,
-            contract, null);
+            contract,
+            null,
+            null);
     }
 }

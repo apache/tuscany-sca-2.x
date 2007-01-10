@@ -106,11 +106,8 @@ public class JMSBindingBuilder extends BindingBuilderExtension<JMSBindingDefinit
         OperationAndDataBinding responseODB =
             getRequestOperationAndDatabinding(jmsBinding, deploymentContext.getClassLoader());
 
-        JMSReferenceBinding reference =
-            new JMSReferenceBinding(name, parent, jmsBinding, jmsResourceFactory, requestODB, responseODB,
-                requestDest, replyDest);
-        reference.setBindingServiceContract(serviceContract);
-        return reference;
+        return new JMSReferenceBinding(name, parent, jmsBinding, jmsResourceFactory, serviceContract, requestODB, responseODB,
+            requestDest, replyDest);
 
     }
 

@@ -172,11 +172,8 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
                 throw new Axis2BindingBuilderRuntimeException(e);
             }
 
-            ReferenceBinding referenceBinding = new Axis2ReferenceBinding(boundReferenceDefinition.getName(), parent, wsBinding,
-                inboundContract, workContext);
-            referenceBinding.setBindingServiceContract(outboundContract);
-
-            return referenceBinding;
+            return new Axis2ReferenceBinding(boundReferenceDefinition.getName(), parent, wsBinding,
+                inboundContract, outboundContract, workContext);
 
         } catch (InvalidServiceContractException e) {
             throw new Axis2BindingBuilderRuntimeException(e);

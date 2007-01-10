@@ -85,13 +85,4 @@ public interface ReferenceBinding extends SCAObject {
      */
     ServiceContract<?> getBindingServiceContract();
 
-
-    /**
-     * Set the ServiceContract for the binding. This contract will be used for the outbound wire. If not set, it will be
-     * the same as the ServideContract from the interface.
-     *
-     * @param serviceContract the service contract
-     */
-    void setBindingServiceContract(ServiceContract<?> serviceContract);
-
 }

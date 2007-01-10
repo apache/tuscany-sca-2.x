@@ -46,13 +46,14 @@ public class JMSReferenceBinding extends ReferenceBindingExtension {
                         CompositeComponent parent,
                         JMSBindingDefinition jmsBinding,
                         JMSResourceFactory jmsResourceFactory,
+                        ServiceContract<?> bindingServiceContract,
                         OperationAndDataBinding requestOperationAndDataBinding,
                         OperationAndDataBinding responseOperationAndDataBinding,
                         Destination requestDest,
                         Destination replyDest) {
 
         super(name, parent);
-
+        this.bindingServiceContract = bindingServiceContract;
         this.jmsBinding = jmsBinding;
         this.jmsResourceFactory = jmsResourceFactory;
         this.requestOperationAndDataBinding = requestOperationAndDataBinding;
