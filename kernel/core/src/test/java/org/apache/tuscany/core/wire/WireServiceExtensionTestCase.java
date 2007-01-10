@@ -269,10 +269,6 @@ public class WireServiceExtensionTestCase extends TestCase {
             return bindingServiceContract;
         }
 
-        public void setBindingServiceContract(ServiceContract<?> bindingServiceContract) {
-            this.bindingServiceContract = bindingServiceContract;
-        }
-
         public QName getBindingType() {
             return null;
         }

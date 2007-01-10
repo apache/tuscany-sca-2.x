@@ -70,10 +70,6 @@ public abstract class ReferenceBindingExtension extends AbstractSCAObject implem
         return bindingServiceContract;
     }
 
-    public void setBindingServiceContract(ServiceContract<?> serviceContract) {
-        this.bindingServiceContract = serviceContract;
-    }
-
     @Override
     public boolean isSystem() {
         return reference != null && reference.isSystem();

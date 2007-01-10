@@ -86,10 +86,6 @@ public class SystemReferenceBinding extends AbstractSCAObject implements Referen
         throw new UnsupportedOperationException();
     }
 
-    public void setBindingServiceContract(ServiceContract<?> serviceContract) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public boolean isSystem() {
         return reference != null && reference.isSystem();
