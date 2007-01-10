@@ -16,6 +16,8 @@
  */
 package org.apache.tuscany.binding.rmi;
 
+import javax.xml.namespace.QName;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.binding.rmi.host.RMIHostImpl;
@@ -43,6 +45,9 @@ public class RMIServiceTestCase extends TestCase {
         WireService service = EasyMock.createNiceMock(WireService.class);
         EasyMock.replay(service);
         RMIServiceBinding s = new RMIServiceBinding("bla023", null, service, new RMIHostImpl(), null, "9996", "bla", Runnable.class) {
+            public QName getBindingType() {
+                return null;
+            }
         };
         s.start();
         try {

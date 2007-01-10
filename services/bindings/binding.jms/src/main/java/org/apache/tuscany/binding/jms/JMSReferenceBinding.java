@@ -19,6 +19,9 @@
 package org.apache.tuscany.binding.jms;
 
 import javax.jms.Destination;
+import javax.xml.namespace.QName;
+
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
@@ -30,6 +33,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 public class JMSReferenceBinding extends ReferenceBindingExtension {
+    private static final QName BINDING_JMS = new QName(XML_NAMESPACE_1_0, "binding.jms");
 
     protected JMSBindingDefinition jmsBinding;
     protected JMSResourceFactory jmsResourceFactory;
@@ -55,6 +59,10 @@ public class JMSReferenceBinding extends ReferenceBindingExtension {
         this.responseOperationAndDataBinding = responseOperationAndDataBinding;
         this.requestDest = requestDest;
         this.replyDest = replyDest;
+    }
+
+    public QName getBindingType() {
+        return BINDING_JMS;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

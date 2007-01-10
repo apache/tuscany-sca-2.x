@@ -38,6 +38,7 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceProvider;
 
 import org.osoa.sca.annotations.Destroy;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.CoreRuntimeException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -66,6 +67,7 @@ import org.xmlsoap.schemas.wsdl.http.AddressType;
  * @version $Rev$ $Date$
  */
 public class CeltixServiceBinding extends ServiceBindingExtension implements ServerBindingEndpointCallback {
+    private static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
     private Bus bus;
     private Port port;
@@ -272,4 +274,8 @@ public class CeltixServiceBinding extends ServiceBindingExtension implements Ser
         return null;
     }
 
+
+    public QName getBindingType() {
+        return BINDING_WS;
+    }
 }

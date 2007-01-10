@@ -18,6 +18,8 @@ package org.apache.tuscany.binding.rmi;
 
 import java.lang.reflect.Method;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
@@ -31,6 +33,9 @@ import org.apache.tuscany.host.rmi.RMIHost;
  * @version $Rev$ $Date$
  */
 public class RMIReferenceBinding extends ReferenceBindingExtension {
+    private static final QName BINDING_RMI = new QName(
+        "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");
+
     private final String host;
 
     private final String port;
@@ -50,6 +55,10 @@ public class RMIReferenceBinding extends ReferenceBindingExtension {
         this.port = port;
         this.svcName = svcName;
         this.rmiHost = rmiHost;
+    }
+
+    public QName getBindingType() {
+        return BINDING_RMI;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {
