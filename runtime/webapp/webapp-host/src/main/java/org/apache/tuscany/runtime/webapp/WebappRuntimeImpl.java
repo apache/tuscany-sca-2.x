@@ -19,27 +19,11 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.util.StringTokenizer;
-import java.net.URL;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionEvent;
-import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
-import org.osoa.sca.CompositeContext;
 
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
-import org.apache.tuscany.spi.component.AtomicComponent;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.event.EventPublisher;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
-import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
@@ -48,10 +32,13 @@ import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
+import org.apache.tuscany.spi.event.EventPublisher;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -59,12 +46,12 @@ import org.apache.tuscany.host.servlet.ServletRequestInjector;
  * <p/>
  * The bootstrapper launches the runtime, booting system extensions and applications, according to the servlet
  * parameters defined in {@link Constants}. When the runtime is instantiated, it is placed in the servlet context with
- * the attribute {@link Constants.RUNTIME_PARAM}. The runtime implements {@link WebappRuntime} so that filters and
+ * the attribute {@link Constants#RUNTIME_PARAM}. The runtime implements {@link WebappRuntime} so that filters and
  * servlets loaded in the parent web app classloader may pass events and requests to it.
  * <p/>
  * By default, the top-most application composite component will be returned when "non-managed" web application code
  * such as JSPs call {@link org.osoa.sca.CurrentCompositeContext}. If a composite deeper in the hierarchy should be
- * returned instead, the <code>web.xml</code> must contain an entry for {@link Constants.CURRENT_COMPOSITE_PATH_PARAM}
+ * returned instead, the <code>web.xml</code> must contain an entry for {@link Constants#CURRENT_COMPOSITE_PATH_PARAM}
  * whose value is a component path expression using '/' as a delimeter such as foo/bar/baz.
  *
  * @version $$Rev$$ $$Date$$
@@ -76,9 +63,6 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
     private ServletRequestInjector requestInjector;
     private CompositeContextImpl context;
-    private RuntimeComponent runtime;
-    private CompositeComponent systemComponent;
-    private CompositeComponent tuscanySystem;
     private CompositeComponent application;
 
     public ServletContext getServletContext() {
@@ -89,79 +73,33 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         this.servletContext = servletContext;
     }
 
-    public void initialize() throws InitializationException {
-        ClassLoader bootClassLoader = getClass().getClassLoader();
-
-        // Read optional system monitor factory classname
-        MonitorFactory mf = getMonitorFactory();
-
-        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
-
-        TuscanyManagementService managementService = null;
-        Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
-        
-        runtime = bootstrapper.createRuntime();
-        runtime.start();
-        systemComponent = runtime.getSystemComponent();
-
+    protected void registerSystemComponents() throws InitializationException {
+        super.registerSystemComponents();
         try {
-            // register the runtime info provided by the host
-            // FIXME andyp@bea.com -- autowire appears to need an exact type match,
-            // hence the need to register this twice
-            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME,
-                RuntimeInfo.class,
-                getRuntimeInfo());
-            systemComponent.registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
-                WebappRuntimeInfo.class,
-                (WebappRuntimeInfo) getRuntimeInfo());
-
-            // register the monitor factory provided by the host
-            systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
+            getSystemComponent().registerJavaObject(WebappRuntimeInfo.COMPONENT_NAME,
+                                                    WebappRuntimeInfo.class,
+                                                    (WebappRuntimeInfo) getRuntimeInfo());
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
+    }
 
-        systemComponent.start();
-
-        if (getSystemScdl() == null) {
-            throw new TuscanyInitException("Could not find system SCDL");
-        }
+    public void initialize() throws InitializationException {
+        super.initialize();
 
         try {
-            // deploy the system scdl
-            Deployer deployer = bootstrapper.createDeployer();
-            tuscanySystem = deploySystemScdl(deployer,
-                systemComponent,
-                ComponentNames.TUSCANY_SYSTEM,
-                getSystemScdl(),
-                bootClassLoader);
-            tuscanySystem.start();
-
-            SCAObject host = tuscanySystem.getSystemChild("servletHost");
+            SCAObject host = getTuscanySystem().getSystemChild("servletHost");
             if (!(host instanceof AtomicComponent)) {
                 throw new InitializationException("Servlet host must be an atomic component");
             }
             requestInjector = (ServletRequestInjector) ((AtomicComponent) host).getTargetInstance();
 
-            // switch to the system deployer
-            SCAObject child = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
-            if (!(child instanceof AtomicComponent)) {
-                throw new InitializationException("Deployer must be an atomic component");
-            }
-            deployer = (Deployer) ((AtomicComponent) child).getTargetInstance();
-
-            SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
-            if (!(wireServiceComponent instanceof AtomicComponent)) {
-                throw new InitializationException("WireService must be an atomic component");
-            }
-            WireService wireService = (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
-
             if (getApplicationScdl() == null) {
                 throw new TuscanyInitException("Could not find application SCDL");
             }
-            runtime.getRootComponent().start();
-            application = deployApplicationScdl(deployer,
-                runtime.getRootComponent(),
+            getRuntime().getRootComponent().start();
+            application = deployApplicationScdl(getDeployer(),
+                getRuntime().getRootComponent(),
                 getApplicationName(),
                 getApplicationScdl(),
                 getHostClassLoader());
@@ -178,36 +116,18 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                     current = (CompositeComponent) o;
                 }
             }
-            context = new CompositeContextImpl(current, wireService);
+            context = new CompositeContextImpl(current, getWireService());
         } catch (Exception e) {
             throw new ServletLauncherInitException(e);
         }
     }
 
-    @Deprecated
-    public CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader)
-        throws InitializationException {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
     public void destroy() {
-        context = null;
         if (application != null) {
             application.stop();
             application = null;
         }
-        if (tuscanySystem != null) {
-            tuscanySystem.stop();
-            tuscanySystem = null;
-        }
-        if (systemComponent != null) {
-            systemComponent.stop();
-            systemComponent = null;
-        }
-        if (runtime != null) {
-            runtime.stop();
-            runtime = null;
-        }
+        super.destroy();
     }
 
     public SCA getContext() {

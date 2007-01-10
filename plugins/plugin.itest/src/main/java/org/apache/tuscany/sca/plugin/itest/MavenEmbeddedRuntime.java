@@ -22,47 +22,31 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.SCA;
-import org.osoa.sca.CompositeContext;
 
-import org.apache.tuscany.spi.bootstrap.ComponentNames;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
+import org.apache.tuscany.core.launcher.CompositeContextImpl;
+import org.apache.tuscany.core.runtime.AbstractRuntime;
+import org.apache.tuscany.host.runtime.InitializationException;
+import org.apache.tuscany.sca.plugin.itest.TuscanyStartMojo.MavenEmbeddedArtifactRepository;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentException;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.artifact.ArtifactRepository;
-import org.apache.tuscany.spi.services.management.TuscanyManagementService;
-import org.apache.tuscany.spi.wire.WireService;
-
-import org.apache.tuscany.core.bootstrap.Bootstrapper;
-import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
-import org.apache.tuscany.core.runtime.AbstractRuntime;
-import org.apache.tuscany.host.MonitorFactory;
-import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.host.runtime.InitializationException;
-import org.apache.tuscany.sca.plugin.itest.TuscanyStartMojo.MavenEmbeddedArtifactRepository;
 
 /**
  * @version $Rev$ $Date$
  */
 public class MavenEmbeddedRuntime extends AbstractRuntime {
     private CompositeContextImpl context;
-    private RuntimeComponent runtime;
-    private CompositeComponent systemComponent;
-    private CompositeComponent tuscanySystem;
     private CompositeComponent application;
 
     private ArtifactRepository artifactRepository;
@@ -73,77 +57,39 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         extensions.put(extensionName, extentionSCDL);
     }
 
-    public void initialize() throws InitializationException {
-        ClassLoader bootClassLoader = getClass().getClassLoader();
-
-        // Read optional system monitor factory classname
-        MonitorFactory mf = getMonitorFactory();
-
-        XMLInputFactory xmlFactory = XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", bootClassLoader);
-
-        TuscanyManagementService managementService = null;
-        Bootstrapper bootstrapper = new DefaultBootstrapper(mf, xmlFactory, managementService);
-        runtime = bootstrapper.createRuntime();
-        runtime.start();
-        systemComponent = runtime.getSystemComponent();
-
-        // register the runtime info provided by the host
-        RuntimeInfo runtimeInfo = getRuntimeInfo();
+    protected void registerSystemComponents() throws InitializationException {
+        super.registerSystemComponents();
         try {
-            systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
-            systemComponent.registerJavaObject(MavenRuntimeInfo.COMPONENT_NAME,
+            getSystemComponent().registerJavaObject(MavenRuntimeInfo.COMPONENT_NAME,
                 MavenRuntimeInfo.class,
-                (MavenRuntimeInfo) runtimeInfo);
+                (MavenRuntimeInfo) getRuntimeInfo());
 
-            // register the monitor factory provided by the host
-            systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, mf);
-            systemComponent.registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
+            getSystemComponent().registerJavaObject(MavenEmbeddedArtifactRepository.COMPONENT_NAME,
                 ArtifactRepository.class,
                 artifactRepository);
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
+    }
 
-        systemComponent.start();
+    public void initialize() throws InitializationException {
+        super.initialize();
 
         try {
-            // deploy the system scdl
-            Deployer deployer = bootstrapper.createDeployer();
-            tuscanySystem = deploySystemScdl(deployer,
-                systemComponent,
-                ComponentNames.TUSCANY_SYSTEM,
-                getSystemScdl(),
-                bootClassLoader);
-            tuscanySystem.start();
-
-            // switch to the system deployer
-            SCAObject deployerComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_DEPLOYER);
-            if (!(deployerComponent instanceof AtomicComponent)) {
-                throw new InitializationException("Deployer must be an atomic component");
-            }
-            deployer = (Deployer) ((AtomicComponent) deployerComponent).getTargetInstance();
-
-            SCAObject wireServiceComponent = tuscanySystem.getSystemChild(ComponentNames.TUSCANY_WIRE_SERVICE);
-            if (!(wireServiceComponent instanceof AtomicComponent)) {
-                throw new InitializationException("WireService must be an atomic component");
-            }
-            WireService wireService = (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
-
             for (Object extensionName : extensions.keySet()) {
-                deployExtension(tuscanySystem, deployer, (String) extensionName, (URL) extensions.get(extensionName));
+                deployExtension(getTuscanySystem(), getDeployer(), (String) extensionName, (URL) extensions.get(extensionName));
             }
 
-            application = deployApplicationScdl(deployer,
-                runtime.getRootComponent(),
+            application = deployApplicationScdl(getDeployer(),
+                getRuntime().getRootComponent(),
                 getApplicationName(),
                 getApplicationScdl(),
                 getApplicationClassLoader());
             application.start();
 
-            context = new CompositeContextImpl(application, wireService);
+            context = new CompositeContextImpl(application, getWireService());
         } catch (LoaderException e) {
-            // FIXME do something with this
-            e.printStackTrace();
+            throw new InitializationException(e);
         } catch (BuilderException e) {
             throw new InitializationException(e);
         } catch (TargetResolutionException e) {
@@ -174,29 +120,13 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         component.start();
     }
 
-    @Deprecated
-    public CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader) throws InitializationException {
-        throw new UnsupportedOperationException();
-    }
-
     public void destroy() {
         context = null;
         if (application != null) {
             application.stop();
             application = null;
         }
-        if (tuscanySystem != null) {
-            tuscanySystem.stop();
-            tuscanySystem = null;
-        }
-        if (systemComponent != null) {
-            systemComponent.stop();
-            systemComponent = null;
-        }
-        if (runtime != null) {
-            runtime.stop();
-            runtime = null;
-        }
+        super.destroy();
     }
 
     public SCA getContext() {
