@@ -20,6 +20,7 @@ package org.apache.tuscany.runtime.webapp;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URI;
 import javax.servlet.ServletContext;
 
 /**
@@ -54,5 +55,9 @@ public class WebappRuntimeInfoImpl implements WebappRuntimeInfo {
 
     public boolean isOnline() {
         return online;
+    }
+
+    public URI getDomain() {
+        throw new UnsupportedOperationException();
     }
 }

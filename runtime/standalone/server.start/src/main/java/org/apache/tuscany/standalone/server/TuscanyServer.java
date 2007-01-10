@@ -192,7 +192,7 @@ public class TuscanyServer implements TuscanyServerMBean {
         // online unless the offline property is set
         boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
 
-        return new StandaloneRuntimeInfoImpl(profile, installDirectory, profileDir, null, online, props);
+        return new StandaloneRuntimeInfoImpl(null, profile, installDirectory, profileDir, null, online, props);
     }
 
     /**

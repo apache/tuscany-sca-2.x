@@ -19,6 +19,7 @@
 package org.apache.tuscany.host;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 
 /**
@@ -31,6 +32,14 @@ public interface RuntimeInfo {
      * The default name that the runtime should assign to the component providing this service.
      */
     String COMPONENT_NAME = "RuntimeInfo";
+
+    /**
+     * Returns the SCA domain associated with this runtime.
+     * A null domain indicates that this is a standalone runtime with a self-contained assembly.
+     *
+     * @return the SCA domain associated with this runtime; may be null
+     */
+    URI getDomain();
 
     /**
      * Return the root directory used to resolve application file paths.

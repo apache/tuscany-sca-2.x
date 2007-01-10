@@ -20,6 +20,7 @@ package org.apache.tuscany.host;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URI;
 
 /**
  * Abstract runtime info implementation.
@@ -27,7 +28,12 @@ import java.net.URL;
  * @version $Revision$ $Date$
  */
 public abstract class AbstractRuntimeInfo implements RuntimeInfo {
-    
+
+    /**
+     * This SCA Domain this runtime belongs to.
+     */
+    private final URI domain;
+
     /**
      * Application root directory.
      */
@@ -51,42 +57,40 @@ public abstract class AbstractRuntimeInfo implements RuntimeInfo {
     /**
      * Initializes the runtime info instance.
      * 
+     * @param domain the SCA Domain that this runtime belongs to
      * @param applicationRootDirectory Application root directory.
      * @param baseUrl Base Url.
      * @param installDirectory Install directory.
      * @param online Onlne indicator.
      */
-    public AbstractRuntimeInfo(File applicationRootDirectory, URL baseUrl, File installDirectory, boolean online) {
+    public AbstractRuntimeInfo(URI domain,
+                               File applicationRootDirectory,
+                               URL baseUrl,
+                               File installDirectory,
+                               boolean online) {
+        this.domain = domain;
         this.applicationRootDirectory = applicationRootDirectory;
         this.baseUrl = baseUrl;
         this.installDirectory = installDirectory;
         this.online = online;
     }
 
-    /**
-     * @see org.apache.tuscany.host.RuntimeInfo#getApplicationRootDirectory()
-     */
+    public URI getDomain() {
+        return domain;
+    }
+
     public final File getApplicationRootDirectory() {
         return applicationRootDirectory;
     }
 
-    /**
-     * @see org.apache.tuscany.host.RuntimeInfo#getBaseURL()
-     */
     public final URL getBaseURL() {
         return baseUrl;
     }
 
-    /**
-     * @see org.apache.tuscany.host.RuntimeInfo#getInstallDirectory()
-     */
     public final File getInstallDirectory() {
         return installDirectory;
     }
 
-    /**
-     * @see org.apache.tuscany.host.RuntimeInfo#isOnline()
-     */
     public final boolean isOnline() {
         return online;
     }

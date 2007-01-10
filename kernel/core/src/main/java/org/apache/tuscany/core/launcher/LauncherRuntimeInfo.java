@@ -21,6 +21,7 @@ package org.apache.tuscany.core.launcher;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 
 import org.apache.tuscany.host.RuntimeInfo;
 
@@ -47,6 +48,10 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
         this.installDirectory = installDirectory;
         this.applicationRootDirectory = applicationRootDirectory;
         this.online = online;
+    }
+
+    public URI getDomain() {
+        throw new UnsupportedOperationException();
     }
 
     /**

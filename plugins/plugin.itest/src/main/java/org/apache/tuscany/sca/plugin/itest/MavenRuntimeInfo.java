@@ -20,6 +20,7 @@ package org.apache.tuscany.sca.plugin.itest;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URI;
 
 import org.apache.tuscany.host.RuntimeInfo;
 
@@ -42,6 +43,10 @@ public class MavenRuntimeInfo implements RuntimeInfo {
     }
 
     public boolean isOnline() {
+        throw new UnsupportedOperationException();
+    }
+
+    public URI getDomain() {
         throw new UnsupportedOperationException();
     }
 }
