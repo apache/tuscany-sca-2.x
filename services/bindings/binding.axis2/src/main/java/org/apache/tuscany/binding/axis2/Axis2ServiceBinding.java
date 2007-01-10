@@ -32,6 +32,7 @@ import javax.wsdl.Operation;
 import javax.wsdl.PortType;
 import javax.xml.namespace.QName;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.builder.BuilderConfigException;
@@ -71,6 +72,8 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
  * @version $Rev$ $Date$
  */
 public class Axis2ServiceBinding extends ServiceBindingExtension {
+    private static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
+
     private ServiceContract<?> serviceContract;
 
     private ServletHost servletHost;
@@ -288,11 +291,15 @@ public class Axis2ServiceBinding extends ServiceBindingExtension {
             + serviceInterface.getName());
     }
 
+    public QName getBindingType() {
+        return BINDING_WS;
+    }
+
     public TargetInvoker createTargetInvoker(ServiceContract contract, org.apache.tuscany.spi.model.Operation operation)
         throws TargetInvokerCreationException {
-        if (!operation.isCallback()){
-           throw new UnsupportedOperationException();
-        }else{
+        if (!operation.isCallback()) {
+            throw new UnsupportedOperationException();
+        } else {
             return new Axis2ServiceCallbackTargetInvoker(this);
         }
     }

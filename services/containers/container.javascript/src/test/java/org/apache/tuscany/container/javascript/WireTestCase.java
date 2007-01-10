@@ -146,7 +146,7 @@ public class WireTestCase extends TestCase {
         context.setScopeContainer(scope);
         scope.register(context);
 
-        InboundWire wire = ArtifactFactory.createInboundWire("Greeting", Greeting.class);
+        InboundWire wire = ArtifactFactory.createLocalInboundWire("Greeting", Greeting.class);
         ArtifactFactory.terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(context.createTargetInvoker(null, chain.getOperation(), null));

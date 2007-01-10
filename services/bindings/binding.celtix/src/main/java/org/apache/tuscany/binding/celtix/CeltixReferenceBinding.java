@@ -21,6 +21,9 @@ package org.apache.tuscany.binding.celtix;
 import javax.wsdl.Definition;
 import javax.wsdl.Port;
 import javax.wsdl.Service;
+import javax.xml.namespace.QName;
+
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -38,6 +41,7 @@ import org.objectweb.celtix.Bus;
  * @version $Rev$ $Date$
  */
 public class CeltixReferenceBinding<T> extends ReferenceBindingExtension {
+    private static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
     private Bus bus;
     private Port port;
@@ -46,16 +50,20 @@ public class CeltixReferenceBinding<T> extends ReferenceBindingExtension {
     private TypeHelper typeHelper;
 
     public CeltixReferenceBinding(String name,
-                           CompositeComponent parent,
-                           WebServiceBindingDefinition binding,
-                           Bus theBus,
-                           TypeHelper theTypeHelper) {
+                                  CompositeComponent parent,
+                                  WebServiceBindingDefinition binding,
+                                  Bus theBus,
+                                  TypeHelper theTypeHelper) {
         super(name, parent);
         this.wsdlDef = binding.getWSDLDefinition();
         this.port = binding.getWSDLPort();
         this.wsdlService = binding.getWSDLService();
         this.bus = theBus;
         this.typeHelper = theTypeHelper;
+    }
+
+    public QName getBindingType() {
+        return BINDING_WS;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

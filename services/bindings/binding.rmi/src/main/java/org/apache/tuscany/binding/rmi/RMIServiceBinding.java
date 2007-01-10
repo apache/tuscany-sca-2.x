@@ -19,6 +19,7 @@ package org.apache.tuscany.binding.rmi;
 import java.lang.reflect.Method;
 import java.rmi.Remote;
 import java.rmi.server.UnicastRemoteObject;
+import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
@@ -35,6 +36,8 @@ import org.apache.tuscany.host.rmi.RMIHostException;
  * @version $Rev$ $Date$
  */
 public class RMIServiceBinding<T extends Remote> extends ServiceBindingExtension {
+    private static final QName BINDING_RMI = new QName(
+        "http://tuscany.apache.org/xmlns/binding/rmi/1.0-SNAPSHOT", "binding.rmi");
 
     public static final String URI_PREFIX = "//localhost";
     public static final String SLASH = "/";
@@ -52,13 +55,13 @@ public class RMIServiceBinding<T extends Remote> extends ServiceBindingExtension
     private WireService wireService;
 
     public RMIServiceBinding(String name,
-                      CompositeComponent parent,
-                      WireService wireService,
-                      RMIHost rHost,
-                      String host,
-                      String port,
-                      String svcName,
-                      Class<T> service) {
+                             CompositeComponent parent,
+                             WireService wireService,
+                             RMIHost rHost,
+                             String host,
+                             String port,
+                             String svcName,
+                             Class<T> service) {
         super(name, parent);
 
         this.serviceInterface = service;
@@ -150,6 +153,10 @@ public class RMIServiceBinding<T extends Remote> extends ServiceBindingExtension
         }
         cw.visitEnd();
         return cw.toByteArray();
+    }
+
+    public QName getBindingType() {
+        return BINDING_RMI;
     }
 
     private class RMIServiceClassLoader extends ClassLoader {

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.spring;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.WiringException;
@@ -47,9 +49,12 @@ public final class SpringTestUtils {
                                                    CompositeComponent parent)
         throws InvalidServiceContractException, WiringException {
         ServiceBinding serviceBinding = new ServiceBindingExtension(name, parent) {
+            public QName getBindingType() {
+                return null;
+            }
         };
-        InboundWire inboundWire = ArtifactFactory.createInboundWire(name, serviceInterface);
-        OutboundWire outboundWire = ArtifactFactory.createOutboundWire(name, serviceInterface);
+        InboundWire inboundWire = ArtifactFactory.createLocalInboundWire(name, serviceInterface);
+        OutboundWire outboundWire = ArtifactFactory.createLocalOutboundWire(name, serviceInterface);
         ArtifactFactory.terminateWire(outboundWire);
         serviceBinding.setInboundWire(inboundWire);
         serviceBinding.setOutboundWire(outboundWire);

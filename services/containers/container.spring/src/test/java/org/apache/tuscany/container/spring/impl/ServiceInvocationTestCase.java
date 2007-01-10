@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.spring.impl;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.Service;
@@ -47,12 +49,15 @@ public class ServiceInvocationTestCase extends TestCase {
     public void testInvocation() throws Exception {
         AbstractApplicationContext springContext = createSpringContext();
         SpringCompositeComponent composite = new SpringCompositeComponent("parent", springContext, null, null, null);
-        InboundWire inboundWire = ArtifactFactory.createInboundWire("fooService", TestBean.class);
-        OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooService", TestBean.class);
+        InboundWire inboundWire = ArtifactFactory.createLocalInboundWire("fooService", TestBean.class);
+        OutboundWire outboundWire = ArtifactFactory.createLocalOutboundWire("fooService", TestBean.class);
         outboundWire.setTargetName(new QualifiedName("foo"));
         ArtifactFactory.terminateWire(outboundWire);
         ServiceBinding serviceBinding =
             new ServiceBindingExtension("fooService", composite) {
+                public QName getBindingType() {
+                    return null;
+                }
             };
 
         serviceBinding.setInboundWire(inboundWire);

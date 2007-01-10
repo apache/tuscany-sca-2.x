@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.binding.jsonrpc;
 
+import javax.xml.namespace.QName;
+
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 import org.osoa.sca.annotations.Destroy;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -29,6 +32,7 @@ import org.apache.tuscany.spi.wire.WireService;
  * @version $Rev$ $Date$
  */
 public class JSONRPCServiceBinding extends ServiceBindingExtension {
+    public static final QName BINDING_JSON = new QName(XML_NAMESPACE_1_0, "binding.jsonrpc");
 
     private static int servletRegistrationCount = 0;
 
@@ -38,7 +42,8 @@ public class JSONRPCServiceBinding extends ServiceBindingExtension {
 
     public static final String SCRIPT_GETTER_SERVICE_MAPPING = "/SCA/scripts";
 
-    public JSONRPCServiceBinding(String theName, CompositeComponent parent, WireService wireService, ServletHost servletHost) {
+    public JSONRPCServiceBinding(String theName, CompositeComponent parent, WireService wireService,
+                                 ServletHost servletHost) {
 
         super(theName, parent);
 
@@ -83,4 +88,7 @@ public class JSONRPCServiceBinding extends ServiceBindingExtension {
         super.stop();
     }
 
+    public QName getBindingType() {
+        return BINDING_JSON;
+    }
 }

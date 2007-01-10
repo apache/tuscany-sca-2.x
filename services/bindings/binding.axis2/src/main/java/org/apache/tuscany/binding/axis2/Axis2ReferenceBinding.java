@@ -22,6 +22,8 @@ import java.util.Collection;
 import javax.wsdl.Definition;
 import javax.xml.namespace.QName;
 
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.extension.ReferenceBindingExtension;
@@ -46,6 +48,7 @@ import org.apache.tuscany.binding.axis2.util.WebServicePortMetaData;
  * Axis2Reference uses Axis2 to invoke a remote web service
  */
 public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
+    private static final QName BINDING_WS = new QName(XML_NAMESPACE_1_0, "binding.ws");
 
     private WebServicePortMetaData wsPortMetaData;
     private ServiceClient serviceClient;
@@ -53,9 +56,9 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
 
     @SuppressWarnings("unchecked")
     public Axis2ReferenceBinding(String theName,
-                          CompositeComponent parent,
-                          WebServiceBindingDefinition wsBinding,
-                          ServiceContract contract, WorkContext workContext) {
+                                 CompositeComponent parent,
+                                 WebServiceBindingDefinition wsBinding,
+                                 ServiceContract contract, WorkContext workContext) {
         super(theName, parent);
         this.workContext = workContext;
         try {
@@ -66,6 +69,10 @@ public class Axis2ReferenceBinding<T> extends ReferenceBindingExtension {
         } catch (AxisFault e) {
             throw new Axis2BindingRunTimeException(e);
         }
+    }
+
+    public QName getBindingType() {
+        return BINDING_WS;
     }
 
     public TargetInvoker createTargetInvoker(ServiceContract contract, Operation operation) {

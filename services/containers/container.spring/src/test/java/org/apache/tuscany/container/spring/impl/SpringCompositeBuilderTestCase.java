@@ -22,11 +22,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Service;
-import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
@@ -67,9 +68,12 @@ public class SpringCompositeBuilderTestCase extends TestCase {
         WireService wireService = ArtifactFactory.createWireService();
         ServiceBindingExtension binding =
             new ServiceBindingExtension("fooServiceBinding", null) {
+                public QName getBindingType() {
+                    return null;
+                }
             };
-        InboundWire inboundWire = ArtifactFactory.createInboundWire("fooServiceBinding", TestBean.class);
-        OutboundWire outboundWire = ArtifactFactory.createOutboundWire("fooServiceBinding", TestBean.class);
+        InboundWire inboundWire = ArtifactFactory.createLocalInboundWire("fooServiceBinding", TestBean.class);
+        OutboundWire outboundWire = ArtifactFactory.createLocalOutboundWire("fooServiceBinding", TestBean.class);
         ArtifactFactory.terminateWire(outboundWire);
         binding.setInboundWire(inboundWire);
         binding.setOutboundWire(outboundWire);

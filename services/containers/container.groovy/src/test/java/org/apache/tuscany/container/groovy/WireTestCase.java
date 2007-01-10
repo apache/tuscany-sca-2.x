@@ -41,8 +41,8 @@ import groovy.lang.GroovyObject;
 import junit.framework.TestCase;
 import org.apache.tuscany.container.groovy.mock.Greeting;
 import org.apache.tuscany.test.ArtifactFactory;
-import static org.apache.tuscany.test.ArtifactFactory.createInboundWire;
-import static org.apache.tuscany.test.ArtifactFactory.createOutboundWire;
+import static org.apache.tuscany.test.ArtifactFactory.createLocalInboundWire;
+import static org.apache.tuscany.test.ArtifactFactory.createLocalOutboundWire;
 import static org.apache.tuscany.test.ArtifactFactory.createWireService;
 import static org.apache.tuscany.test.ArtifactFactory.terminateWire;
 import static org.easymock.EasyMock.createMock;
@@ -61,27 +61,25 @@ import org.easymock.EasyMock;
  */
 public class WireTestCase extends TestCase {
 
-    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;\n"
-        + "class Foo implements Greeting{\n"
-        + "   Greeting wire;\n"
-        + "   \n"
-        + "   String setWire(Greeting ref){\n"
-        + "       wire = ref;\n"
-        + "   };\n"
-        + "   \n"
-        + "   String greet(String name){\n"
-        + "       return wire.greet(name);\n"
-        + "   };\n"
-        + "}\n";
+    private static final String SCRIPT = "import org.apache.tuscany.container.groovy.mock.Greeting;"
+        + "class Foo implements Greeting{"
+        + "   Greeting wire;"
+        + "   "
+        + "   void setWire(Greeting ref){"
+        + "       wire = ref;"
+        + "   };"
+        + "   "
+        + "   String greet(String name){"
+        + "       return wire.greet(name);  "
+        + "   };"
+        + "}";
 
     private static final String SCRIPT2 = "import org.apache.tuscany.container.groovy.mock.Greeting;"
-        + "class Foo implements Greeting {\n"
-        + "   public String greet(String name){\n"
-        + "       return name;\n"
-        + "   }\n"
-        + "   String setWire(Greeting ref){\n"
-        + "   };\n"
-        + "}\n";
+        + "class Foo implements Greeting{"
+        + "   public String greet(String name){"
+        + "       return name;  "
+        + "   }"
+        + "}";
 
     private Class<? extends GroovyObject> implClass1;
     private Class<? extends GroovyObject> implClass2;
@@ -101,7 +99,7 @@ public class WireTestCase extends TestCase {
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
         component.setScopeContainer(scopeContainer);
-        OutboundWire wire = createOutboundWire("wire", Greeting.class);
+        OutboundWire wire = createLocalOutboundWire("wire", Greeting.class);
         terminateWire(wire);
 
         TargetInvoker invoker = createMock(TargetInvoker.class);
@@ -171,7 +169,7 @@ public class WireTestCase extends TestCase {
         configuration.setWireService(createWireService());
         GroovyAtomicComponent component = new GroovyAtomicComponent(configuration);
         component.setScopeContainer(scopeContainer);
-        InboundWire wire = createInboundWire("Greeting", Greeting.class);
+        InboundWire wire = createLocalInboundWire("Greeting", Greeting.class);
         terminateWire(wire);
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             chain.setTargetInvoker(component.createTargetInvoker(null, chain.getOperation(), null));

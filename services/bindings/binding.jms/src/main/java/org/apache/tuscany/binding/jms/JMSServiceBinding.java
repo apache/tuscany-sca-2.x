@@ -23,6 +23,9 @@ import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.naming.NamingException;
+import javax.xml.namespace.QName;
+
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.extension.ServiceBindingExtension;
@@ -31,6 +34,7 @@ import org.apache.tuscany.spi.extension.ServiceBindingExtension;
  * @version $Rev: 449970 $ $Date: 2006-09-26 06:05:35 -0400 (Tue, 26 Sep 2006) $
  */
 public class JMSServiceBinding extends ServiceBindingExtension {
+    private static final QName BINDING_JMS = new QName(XML_NAMESPACE_1_0, "binding.jms");
 
     private JMSBindingDefinition jmsBinding;
     private JMSResourceFactory jmsResourceFactory;
@@ -85,5 +89,9 @@ public class JMSServiceBinding extends ServiceBindingExtension {
 
         jmsResourceFactory.startConnection();
 
+    }
+
+    public QName getBindingType() {
+        return BINDING_JMS;
     }
 }
