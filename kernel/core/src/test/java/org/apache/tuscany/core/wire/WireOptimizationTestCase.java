@@ -20,8 +20,11 @@ package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Type;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.model.Operation;
 import static org.apache.tuscany.spi.model.Operation.NO_CONVERSATION;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -30,6 +33,7 @@ import org.apache.tuscany.spi.wire.OutboundInvocationChain;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
 
 /**
  * Verifies wire optimization analysis
@@ -37,14 +41,16 @@ import junit.framework.TestCase;
  * @version $$Rev$$ $$Date$$
  */
 public class WireOptimizationTestCase extends TestCase {
-
     private Operation operation;
 
     public void foo() {
     }
 
     public void testSourceWireInterceptorOptimization() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
         OutboundWire wire = new OutboundWireImpl();
+        wire.setContainer(component);
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -52,7 +58,10 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testSourceWireNonInterceptorOptimization() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
         OutboundWire wire = new OutboundWireImpl();
+        wire.setContainer(component);
         OutboundInvocationChain chain = new OutboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
@@ -60,15 +69,72 @@ public class WireOptimizationTestCase extends TestCase {
     }
 
     public void testTargetWireInterceptorOptimization() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
         InboundWire wire = new InboundWireImpl();
+        wire.setContainer(component);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
+        chain.addInterceptor(new OptimizableInterceptor());
+        wire.addInvocationChain(operation, chain);
+        assertTrue(WireUtils.isOptimizable(wire));
+
+    }
+
+    public void testTargetWireOptimizationDestroyableButNotStateless() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.expect(component.isDestroyable()).andReturn(true);
+        EasyMock.expect(component.getScope()).andReturn(Scope.COMPOSITE);
+        EasyMock.replay(component);
+        InboundWire wire = new InboundWireImpl();
+        wire.setContainer(component);
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new OptimizableInterceptor());
         wire.addInvocationChain(operation, chain);
         assertTrue(WireUtils.isOptimizable(wire));
     }
 
-    public void testTargetWireNonInterceptorOptimization() throws Exception {
+    public void testTargetWireOptimizationDestroyableAndStateless() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.expect(component.isDestroyable()).andReturn(true);
+        EasyMock.expect(component.getScope()).andReturn(Scope.STATELESS);
+        EasyMock.replay(component);
         InboundWire wire = new InboundWireImpl();
+        wire.setContainer(component);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
+        chain.addInterceptor(new OptimizableInterceptor());
+        wire.addInvocationChain(operation, chain);
+        assertFalse(WireUtils.isOptimizable(wire));
+    }
+
+    public void testTargetWireOptimizationStatelessNotDestroyable() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.expect(component.isDestroyable()).andReturn(false);
+        EasyMock.expect(component.getScope()).andReturn(Scope.STATELESS);
+        EasyMock.replay(component);
+        InboundWire wire = new InboundWireImpl();
+        wire.setContainer(component);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
+        chain.addInterceptor(new OptimizableInterceptor());
+        wire.addInvocationChain(operation, chain);
+        assertTrue(WireUtils.isOptimizable(wire));
+    }
+
+    public void testTargetWireNoOptimizationNonAtomicContainer() throws Exception {
+        Component component = EasyMock.createNiceMock(Component.class);
+        EasyMock.replay(component);
+        InboundWire wire = new InboundWireImpl();
+        wire.setContainer(component);
+        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
+        chain.addInterceptor(new OptimizableInterceptor());
+        wire.addInvocationChain(operation, chain);
+        assertFalse(WireUtils.isOptimizable(wire));
+    }
+
+    public void testTargetWireNonInterceptorOptimization() throws Exception {
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        InboundWire wire = new InboundWireImpl();
+        wire.setContainer(component);
         InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
         chain.addInterceptor(new NonOptimizableInterceptor());
         wire.addInvocationChain(operation, chain);

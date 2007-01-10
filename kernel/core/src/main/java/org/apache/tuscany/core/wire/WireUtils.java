@@ -22,8 +22,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import static org.apache.tuscany.spi.idl.java.JavaIDLUtils.findMethod;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundInvocationChain;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.Interceptor;
@@ -97,7 +100,6 @@ public final class WireUtils {
      * @return true if the wire is optimizable
      */
     public static boolean isOptimizable(OutboundWire wire) {
-
         for (OutboundInvocationChain chain : wire.getInvocationChains().values()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();
@@ -124,6 +126,17 @@ public final class WireUtils {
      * @return true if the wire is optimizable
      */
     public static boolean isOptimizable(InboundWire wire) {
+        SCAObject container = wire.getContainer();
+        if (!(container instanceof AtomicComponent)) {
+            // optimize only Atomic targets
+            // JFM TODO make more generalizable
+            return false;
+        }
+        if (container.getScope() == Scope.STATELESS && ((AtomicComponent) container).isDestroyable()) {
+            //Optimizations on stateless targets are not performed if they receive destroy events since a destruction
+            // notification must be given through a proxy
+            return false;
+        }
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
             if (chain.getHeadInterceptor() != null) {
                 Interceptor current = chain.getHeadInterceptor();

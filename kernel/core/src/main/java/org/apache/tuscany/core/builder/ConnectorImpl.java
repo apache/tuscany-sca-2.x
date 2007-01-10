@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.builder.WiringException;
-import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -116,15 +115,10 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
-        // perform optimization, if possible. Atomic component's do not have outbound target wires, but keep the check
-        // perform optimization, if possible. Note that optimizations on stateless targets are not performed if they
-        // receive destroy events since a destruction notification must be given through a proxy
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)
-            && targetWire.getContainer() instanceof AtomicComponent
-            && targetWire.getContainer().getScope() == Scope.STATELESS
-            && !((AtomicComponent) targetWire.getContainer()).isDestroyable()) {
+            && WireUtils.isOptimizable(targetWire)) {
+            sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
     }
@@ -289,14 +283,10 @@ public class ConnectorImpl implements Connector {
             // run wire post-processors
             postProcessorRegistry.process(sourceWire, targetWire);
         }
-        // perform optimization, if possible. Note that optimizations on stateless targets are not performed if they
-        // receive destroy events since a destruction notification must be given through a proxy
+        // perform optimization, if possible
         if (optimizable
             && WireUtils.isOptimizable(sourceWire)
-            && WireUtils.isOptimizable(targetWire)
-            && targetWire.getContainer() instanceof AtomicComponent
-            && targetWire.getContainer().getScope() == Scope.STATELESS
-            && !((AtomicComponent) targetWire.getContainer()).isDestroyable()) {
+            && WireUtils.isOptimizable(targetWire)) {
             sourceWire.setOptimizable(true);
             sourceWire.setTargetWire(targetWire);
         }
