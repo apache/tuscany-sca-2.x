@@ -20,6 +20,7 @@ package org.apache.tuscany.services.maven;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URI;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -66,6 +67,10 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
 
             public boolean isOnline() {
                 return false;
+            }
+
+            public URI getDomain() {
+                throw new UnsupportedOperationException();
             }
         });
         Artifact artifact = new Artifact();

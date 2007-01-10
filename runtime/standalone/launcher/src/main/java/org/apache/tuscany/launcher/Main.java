@@ -110,7 +110,7 @@ public class Main {
         // online unless the offline property is set
         boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
 
-        return new StandaloneRuntimeInfoImpl(profile, installDir, profileDir, null, online, props);
+        return new StandaloneRuntimeInfoImpl(null, profile, installDir, profileDir, null, online, props);
     }
 
     static TuscanyRuntime createRuntime(StandaloneRuntimeInfo runtimeInfo) throws Exception {

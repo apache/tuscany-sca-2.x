@@ -19,6 +19,7 @@
 package org.apache.tuscany.runtime.standalone;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Properties;
 
 import org.apache.tuscany.host.AbstractRuntimeInfo;
@@ -35,6 +36,7 @@ public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements St
      * Initializes the base URL, install directory, application root directory and
      * online mode.
      *
+     * @param domain                   the SCA domain this runtime belongs to
      * @param profileName              the runtime's profile name
      * @param installDirectory         directory containing the standalone installation
      * @param profileDirectory         directory containing this runtime's profile
@@ -42,14 +44,14 @@ public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements St
      * @param online                   true if this runtime should consider itself online
      * @param properties               properties for this runtime
      */
-    public StandaloneRuntimeInfoImpl(String profileName,
+    public StandaloneRuntimeInfoImpl(URI domain, String profileName,
                                      File installDirectory,
                                      File profileDirectory,
                                      File applicationRootDirectory,
                                      boolean online,
                                      Properties properties) {
-        super(applicationRootDirectory, DirectoryHelper.toURL(installDirectory), installDirectory, online);
-        this.profileName = profileName;        
+        super(domain, applicationRootDirectory, DirectoryHelper.toURL(installDirectory), installDirectory, online);
+        this.profileName = profileName;
         this.profileDirectory = profileDirectory;
         this.properties = properties;
 
