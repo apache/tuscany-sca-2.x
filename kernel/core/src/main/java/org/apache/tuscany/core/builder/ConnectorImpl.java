@@ -628,29 +628,5 @@ public class ConnectorImpl implements Connector {
                 }
             }
         }
-        if (component instanceof AtomicComponent) {
-            // connect inbound wires for atomic components
-            // JFM TODO this will be moved out to AtomicComponent prepare
-            for (InboundWire inboundWire : component.getInboundWires()) {
-                for (InboundInvocationChain chain : inboundWire.getInvocationChains().values()) {
-                    Operation<?> operation = chain.getOperation();
-                    String serviceName = inboundWire.getServiceName();
-                    TargetInvoker invoker;
-                    try {
-                        invoker = component.createTargetInvoker(serviceName, operation, null);
-                    } catch (TargetInvokerCreationException e) {
-                        String targetName = inboundWire.getContainer().getName();
-                        throw new WireConnectException("Error processing inbound wire",
-                            null,
-                            null,
-                            targetName,
-                            serviceName,
-                            e);
-                    }
-                    chain.setTargetInvoker(invoker);
-                    chain.prepare();
-                }
-            }
-        }
     }
 }

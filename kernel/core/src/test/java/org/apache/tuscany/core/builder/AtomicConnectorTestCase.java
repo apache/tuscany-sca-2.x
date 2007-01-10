@@ -121,39 +121,6 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         assertEquals(RESPONSE, resp.getBody());
     }
 
-    public void testConnectInboundAtomicComponentWires() throws Exception {
-        CompositeComponent parent = EasyMock.createNiceMock(CompositeComponent.class);
-        // create the inbound wire and chain
-        InboundInvocationChain chain = new InboundInvocationChainImpl(operation);
-        chain.addInterceptor(new InvokerInterceptor());
-        InboundWire wire = new InboundWireImpl();
-        wire.setServiceContract(contract);
-        wire.addInvocationChain(operation, chain);
-        wire.setServiceName(TARGET_SERVICE);
-        List<InboundWire> wires = new ArrayList<InboundWire>();
-        wires.add(wire);
-
-        AtomicComponent source = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(source.getParent()).andReturn(parent);
-        source.getOutboundWires();
-        EasyMock.expectLastCall().andReturn(Collections.emptyMap());
-        source.getInboundWires();
-        EasyMock.expectLastCall().andReturn(wires);
-        source
-            .createTargetInvoker(EasyMock.eq(TARGET_SERVICE), EasyMock.eq(operation), (InboundWire) EasyMock.isNull());
-        EasyMock.expectLastCall().andReturn(new MockInvoker());
-        EasyMock.replay(source);
-
-        wire.setContainer(source);
-
-        connector.connect(source);
-        Message msg = new MessageImpl();
-        msg.setTargetInvoker(chain.getTargetInvoker());
-        Message resp = chain.getHeadInterceptor().invoke(msg);
-        assertEquals(RESPONSE, resp.getBody());
-    }
-
-
     protected void setUp() throws Exception {
         super.setUp();
     }
