@@ -238,10 +238,7 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = component.createTargetInvoker(targetOp.getName(), operation, null);
                 } catch (TargetInvokerCreationException e) {
-                    throw new WireConnectException("Error connecting source and target",
-                        sourceWire,
-                        targetWire,
-                        e);
+                    throw new WireConnectException("Error connecting source and target", sourceWire, targetWire, e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof ReferenceBinding) {
@@ -251,10 +248,7 @@ public class ConnectorImpl implements Connector {
                 try {
                     invoker = binding.createTargetInvoker(sourceContract, operation);
                 } catch (TargetInvokerCreationException e) {
-                    throw new WireConnectException("Error connecting source and target",
-                        sourceWire,
-                        targetWire,
-                        e);
+                    throw new WireConnectException("Error connecting source and target", sourceWire, targetWire, e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
             } else if (source instanceof ServiceBinding) {
@@ -265,12 +259,7 @@ public class ConnectorImpl implements Connector {
                     invoker = binding.createTargetInvoker(sourceContract, operation);
                 } catch (TargetInvokerCreationException e) {
                     String targetName = sourceWire.getContainer().getName();
-                    throw new WireConnectException("Error processing callback wire",
-                        null,
-                        null,
-                        targetName,
-                        null,
-                        e);
+                    throw new WireConnectException("Error processing callback wire", null, null, targetName, null, e);
                 }
                 connect(outboundChain, inboundChain, invoker, false);
             } else {
@@ -355,12 +344,10 @@ public class ConnectorImpl implements Connector {
                 targetName.getPortName());
         } else {
             String sourceName = sourceWire.getContainer().getName();
-            String sourceReference = sourceWire.getReferenceName();
-            throw new InvalidTargetTypeException("Invalid target type",
-                sourceName,
-                sourceReference,
-                targetName.getPartName(),
-                targetName.getPortName());
+            String sourceRef = sourceWire.getReferenceName();
+            String partName = targetName.getPartName();
+            String portName = targetName.getPortName();
+            throw new InvalidTargetTypeException("Invalid target type", sourceName, sourceRef, partName, portName);
         }
     }
 
