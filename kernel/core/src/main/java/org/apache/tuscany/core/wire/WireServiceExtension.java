@@ -158,7 +158,6 @@ public abstract class WireServiceExtension implements WireService {
         inboundWire.setContainer(serviceBinding);
         for (Operation<?> operation : bindingContract.getOperations().values()) {
             InboundInvocationChain inboundChain = createInboundChain(operation);
-            // TODO JFM remove need for this
             inboundChain.addInterceptor(new SynchronousBridgingInterceptor());
             inboundWire.addInvocationChain(operation, inboundChain);
         }
@@ -179,7 +178,6 @@ public abstract class WireServiceExtension implements WireService {
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 // TODO handle policy
-                //TODO statement below could be cleaner
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
                 outboundWire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
             }
@@ -279,7 +277,6 @@ public abstract class WireServiceExtension implements WireService {
             for (Operation<?> operation : contract.getCallbackOperations().values()) {
                 InboundInvocationChain callbackTargetChain = createInboundChain(operation);
                 // TODO handle policy
-                //TODO statement below could be cleaner
                 callbackTargetChain.addInterceptor(new InvokerInterceptor());
                 wire.addTargetCallbackInvocationChain(operation, callbackTargetChain);
             }
