@@ -40,6 +40,12 @@
             <artifactId>standalone-host</artifactId>
             <version>${sca.version}</version>
         </dependency>
+        <dependency> <!-- needed for axis even on client side-->
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

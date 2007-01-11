@@ -67,6 +67,8 @@
                 <include>org.osoa:sca-api-r0.95</include>
                 <include>org.apache.tuscany.sca.kernel:tuscany-api</include>
                 <include>org.apache.tuscany.sca.kernel:tuscany-host-api</include>
+                <!-- servlet api need to be loaded for axis  -->
+                <include>javax.servlet:servlet-api</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
         </dependencySet>
