@@ -27,7 +27,6 @@
 	<service name="TransactionManagerService">
         <interface.java interface = "javax.transaction.TransactionManager"/>
         <reference>TransactionManager</reference>
-	    <system:binding.system/> 
 	</service>
 	
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">

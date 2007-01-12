@@ -97,6 +97,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         // create the target
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(target.getName()).andReturn(TARGET).anyTimes();
+        EasyMock.expect(target.isOptimizable()).andReturn(false).anyTimes();
         EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
         target.getInboundWire(EasyMock.eq(TARGET_SERVICE));

@@ -27,14 +27,6 @@
            name="org.apache.tuscany.core.SystemImplementation">
 
     <!-- System implementation type -->
-    <component name="system.bindingLoader">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemBindingLoader"/>
-    </component>
-    
-    <component name="system.bindingBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder"/>
-    </component>
-
     <component name="system.componentTypeLoader">
         <system:implementation.system class="org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader"/>
     </component>

@@ -52,6 +52,7 @@ import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.wire.WireService;
 
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 
@@ -136,6 +137,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                          DeploymentContext deploymentContext) throws BuilderException {
         String name = boundServiceDefinition.getName();
         ServiceContract<?> serviceContract = boundServiceDefinition.getServiceContract();
+        if (boundServiceDefinition.getBindings().isEmpty()) {
+            // if no bindings are configured, default to the local binding.
+            // this should be changed to allow runtime selection
+            if (boundServiceDefinition.getBindings().isEmpty()) {
+                // TODO JFM implement capability for the runtime to choose a binding
+                boundServiceDefinition.addBinding(new LocalBindingDefinition());
+            }
+        }
         boolean system = parent.isSystem();
         URI targetUri = boundServiceDefinition.getTarget();
         Service service = new ServiceImpl(name, parent, serviceContract, targetUri, system);
@@ -166,9 +175,17 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public Reference build(CompositeComponent parent,
                            BoundReferenceDefinition referenceDefinition,
                            DeploymentContext context) throws BuilderException {
-
         String name = referenceDefinition.getName();
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
+        if (referenceDefinition.getBindings().isEmpty()) {
+            // if no bindings are configured, default to the local binding.
+            // this should be changed to allow runtime selection
+            if (referenceDefinition.getBindings().isEmpty()) {
+                // TODO JFM implement capability for the runtime to choose a binding
+                referenceDefinition.addBinding(new LocalBindingDefinition());
+            }
+        }
+
         Reference reference = new ReferenceImpl(name, parent, contract);
         for (BindingDefinition bindingDefinition : referenceDefinition.getBindings()) {
             Class<?> bindingClass = bindingDefinition.getClass();

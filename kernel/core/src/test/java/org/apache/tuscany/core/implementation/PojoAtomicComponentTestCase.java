@@ -22,6 +22,7 @@ import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.model.Operation;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.OutboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
@@ -64,6 +65,45 @@ public class PojoAtomicComponentTestCase extends TestCase {
         EasyMock.verify(invoker);
     }
 
+    public void testOptimizable() throws Exception {
+        PojoConfiguration config = new PojoConfiguration();
+        config.setInstanceFactory(factory);
+        TestAtomicComponent component = new TestAtomicComponent(config);
+        assertTrue(component.isOptimizable());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void testDestroyableButOptimizable() throws Exception {
+        PojoConfiguration config = new PojoConfiguration();
+        config.setInstanceFactory(factory);
+        EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
+        invoker.invokeEvent(EasyMock.notNull());
+        EasyMock.replay(invoker);
+        config.setDestroyInvoker(invoker);
+        TestAtomicComponent component = new TestAtomicComponent(config);
+        assertTrue(component.isOptimizable());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void testStatelessOptimizable() throws Exception {
+        PojoConfiguration config = new PojoConfiguration();
+        config.setInstanceFactory(factory);
+        TestStatelessAtomicComponent component = new TestStatelessAtomicComponent(config);
+        assertTrue(component.isOptimizable());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void testNotOptimizable() throws Exception {
+        PojoConfiguration config = new PojoConfiguration();
+        config.setInstanceFactory(factory);
+        EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
+        invoker.invokeEvent(EasyMock.notNull());
+        EasyMock.replay(invoker);
+        config.setDestroyInvoker(invoker);
+        TestStatelessAtomicComponent component = new TestStatelessAtomicComponent(config);
+        assertFalse(component.isOptimizable());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         factory = new PojoObjectFactory<Foo>(Foo.class.getConstructor());
@@ -73,6 +113,30 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
         public TestAtomicComponent(PojoConfiguration configuration) {
             super(configuration);
+        }
+
+        public Scope getScope() {
+            return Scope.COMPOSITE;
+        }
+
+        protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
+            return null;
+        }
+
+        public TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
+            throws TargetInvokerCreationException {
+            return null;
+        }
+    }
+
+    private class TestStatelessAtomicComponent extends PojoAtomicComponent {
+
+        public TestStatelessAtomicComponent(PojoConfiguration configuration) {
+            super(configuration);
+        }
+
+        public Scope getScope() {
+            return Scope.STATELESS;
         }
 
         protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {

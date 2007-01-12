@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.component.TargetDestructionException;
 import org.apache.tuscany.spi.component.TargetInitializationException;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.extension.AtomicComponentExtension;
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import org.apache.tuscany.core.injection.ArrayMultiplicityObjectFactory;
@@ -116,6 +117,12 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
                 throw new TargetDestructionException("Error destroying component instance", getName(), e);
             }
         }
+    }
+
+    public boolean isOptimizable() {
+        // stateless implementations that require a destroy callback cannot be optimized since the callback is
+        // performed by the JavaTargetInvoker
+        return !(getScope() == Scope.STATELESS && isDestroyable());
     }
 
     public Object getTargetInstance() throws TargetResolutionException {

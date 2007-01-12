@@ -37,6 +37,9 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 
+import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.binding.local.LocalBindingLoader;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
@@ -50,6 +53,7 @@ import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
+import org.apache.tuscany.core.implementation.processor.EagerInitProcessor;
 import org.apache.tuscany.core.implementation.processor.HeuristicPojoProcessor;
 import org.apache.tuscany.core.implementation.processor.ImplementationProcessorServiceImpl;
 import org.apache.tuscany.core.implementation.processor.InitProcessor;
@@ -59,15 +63,11 @@ import org.apache.tuscany.core.implementation.processor.ReferenceProcessor;
 import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
-import org.apache.tuscany.core.implementation.processor.EagerInitProcessor;
-import org.apache.tuscany.core.implementation.system.builder.SystemBindingBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
-import org.apache.tuscany.core.implementation.system.loader.SystemBindingLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader;
-import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.loader.ComponentLoader;
@@ -82,9 +82,9 @@ import org.apache.tuscany.core.wire.jdk.JDKWireService;
 import org.apache.tuscany.host.MonitorFactory;
 
 /**
- * A default implementation of a Bootstrapper. Please see the documentation on
- * the individual methods for how the primordial components are created.
- * 
+ * A default implementation of a Bootstrapper. Please see the documentation on the individual methods for how the
+ * primordial components are created.
+ *
  * @version $Rev$ $Date$
  */
 public class DefaultBootstrapper implements Bootstrapper {
@@ -94,11 +94,9 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     /**
      * Create a default bootstrapper.
-     * 
-     * @param monitorFactory the MonitorFactory to be used to create monitors
-     *            for the primordial components
-     * @param xmlFactory the XMLInputFactory to be used by the components to
-     *            load XML artifacts
+     *
+     * @param monitorFactory    the MonitorFactory to be used to create monitors for the primordial components
+     * @param xmlFactory        the XMLInputFactory to be used by the components to load XML artifacts
      * @param managementService management service used by the runtime.
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
@@ -111,7 +109,7 @@ public class DefaultBootstrapper implements Bootstrapper {
 
     /**
      * Returns the MonitorFactory being used by this bootstrapper.
-     * 
+     *
      * @return the MonitorFactory being used by this bootstrapper
      */
     public MonitorFactory getMonitorFactory() {
@@ -119,11 +117,9 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Create the RuntimeComponent that will form the root of the component
-     * tree. Returns an new instance of a {@link DefaultRuntime} with the system
-     * and application root components initialized with default composite
-     * components.
-     * 
+     * Create the RuntimeComponent that will form the root of the component tree. Returns an new instance of a {@link
+     * DefaultRuntime} with the system and application root components initialized with default composite components.
+     *
      * @return a newly created root for the component tree
      */
     public RuntimeComponent createRuntime() {
@@ -138,9 +134,8 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Create primordial deployer that can be used to load the system
-     * definition.
-     * 
+     * Create primordial deployer that can be used to load the system definition.
+     *
      * @return the primordial deployer
      */
     public Deployer createDeployer() {
@@ -155,10 +150,9 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Create a basic ScopeRegistry containing the ScopeContainers that are
-     * available to components in the system definition. The implementation
-     * returned only support COMPOSITE scope.
-     * 
+     * Create a basic ScopeRegistry containing the ScopeContainers that are available to components in the system
+     * definition. The implementation returned only support COMPOSITE scope.
+     *
      * @param workContext the WorkContext the scopes should use
      * @return a new ScopeRegistry
      */
@@ -169,32 +163,15 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Create a Loader that can be used to parse an XML file containing the SCDL
-     * for the system definition. The following Implementation types are
-     * supported:
-     * <ul>
-     * <li>SystemImplementation</li>
-     * <li>SystemCompositeImplementation</li>
-     * </ul>
-     * and the following SCDL elements are supported:
-     * <ul>
-     * <li>composite</li>
-     * <li>component</li>
-     * <li>componentType</li>
-     * <li>interface.java</li>
-     * <li>property</li>
-     * <li>reference</li>
-     * <li>service</li>
-     * <li>implementation.system</li>
-     * <li>binding.system</li>
-     * </ul>
-     * Note the Java component type and the WSDL interface type are not
-     * supported.
-     * 
-     * @param propertyFactory the StAXPropertyFactory to be used for parsing
-     *            Property values
-     * @param introspector the Introspector to be used to inspect component
-     *            implementations
+     * Create a Loader that can be used to parse an XML file containing the SCDL for the system definition. The
+     * following Implementation types are supported: <ul> <li>SystemImplementation</li>
+     * <li>SystemCompositeImplementation</li> </ul> and the following SCDL elements are supported: <ul>
+     * <li>composite</li> <li>component</li> <li>componentType</li> <li>interface.java</li> <li>property</li>
+     * <li>reference</li> <li>service</li> <li>implementation.system</li> </ul> Note the Java component type and the
+     * WSDL interface type are not supported.
+     *
+     * @param propertyFactory the StAXPropertyFactory to be used for parsing Property values
+     * @param introspector    the Introspector to be used to inspect component implementations
      * @return a new StAX XML loader
      */
     public LoaderRegistry createLoader(PropertyObjectFactory propertyFactory, Introspector introspector) {
@@ -204,33 +181,32 @@ public class DefaultBootstrapper implements Bootstrapper {
         // register component type loaders
         loaderRegistry.registerLoader(SystemImplementation.class, new SystemComponentTypeLoader(introspector));
         loaderRegistry.registerLoader(SystemCompositeImplementation.class,
-                                      new SystemCompositeComponentTypeLoader(loaderRegistry));
+            new SystemCompositeComponentTypeLoader(loaderRegistry));
 
         // register element loaders
         registerLoader(loaderRegistry, new ComponentLoader(loaderRegistry, propertyFactory));
         registerLoader(loaderRegistry, new ComponentTypeElementLoader(loaderRegistry));
         registerLoader(loaderRegistry, new CompositeLoader(loaderRegistry, null));
         registerLoader(loaderRegistry, new IncludeLoader(loaderRegistry));
-        registerLoader(loaderRegistry,
-                       new InterfaceJavaLoader(loaderRegistry, new JavaInterfaceProcessorRegistryImpl()));
+        JavaInterfaceProcessorRegistryImpl processorRegistry = new JavaInterfaceProcessorRegistryImpl();
+        registerLoader(loaderRegistry, new InterfaceJavaLoader(loaderRegistry, processorRegistry));
         registerLoader(loaderRegistry, new PropertyLoader(loaderRegistry));
         registerLoader(loaderRegistry, new ReferenceLoader(loaderRegistry));
         registerLoader(loaderRegistry, new ServiceLoader(loaderRegistry));
         registerLoader(loaderRegistry, new SystemImplementationLoader(loaderRegistry));
-        registerLoader(loaderRegistry, new SystemBindingLoader(loaderRegistry));
+        registerLoader(loaderRegistry, new LocalBindingLoader(loaderRegistry));
         return loaderRegistry;
     }
 
     /**
-     * Create new Introspector for extracting a ComponentType definition from a
-     * Java class.
-     * 
+     * Create new Introspector for extracting a ComponentType definition from a Java class.
+     *
      * @return a new Introspector
      */
     public Introspector createIntrospector(JavaInterfaceProcessorRegistry registry) {
         ImplementationProcessorService service = new ImplementationProcessorServiceImpl(registry);
-        IntrospectionRegistryImpl introspectionRegistry =
-            new IntrospectionRegistryImpl(monitorFactory.getMonitor(IntrospectionRegistryImpl.Monitor.class));
+        IntrospectionRegistryImpl.Monitor monitor = monitorFactory.getMonitor(IntrospectionRegistryImpl.Monitor.class);
+        IntrospectionRegistryImpl introspectionRegistry = new IntrospectionRegistryImpl(monitor);
         introspectionRegistry.registerProcessor(new ConstructorProcessor(service));
         introspectionRegistry.registerProcessor(new DestroyProcessor());
         introspectionRegistry.registerProcessor(new InitProcessor());
@@ -246,9 +222,8 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Create a new Connector that can be used to wire primordial components
-     * together.
-     * 
+     * Create a new Connector that can be used to wire primordial components together.
+     *
      * @return a new Connector
      */
     public Connector createConnector() {
@@ -256,24 +231,21 @@ public class DefaultBootstrapper implements Bootstrapper {
     }
 
     /**
-     * Helper method for registering a loader with the registry. The Loader is
-     * registered once for the QName returned by its
-     * {@link LoaderExtension#getXMLType()} method.
-     * 
+     * Helper method for registering a loader with the registry. The Loader is registered once for the QName returned by
+     * its {@link LoaderExtension#getXMLType()} method.
+     *
      * @param registry the LoaderRegistry to register with
-     * @param loader the Loader to register
+     * @param loader   the Loader to register
      */
     protected void registerLoader(LoaderRegistry registry, LoaderExtension<?> loader) {
         registry.registerLoader(loader.getXMLType(), loader);
     }
 
     /**
-     * Create a Builder that can be used to build the components in the system
-     * definition. The default implementation only supports implementations from
-     * the system programming model.
-     * 
-     * @param scopeRegistry the ScopeRegistry defining the component scopes that
-     *            will be supported
+     * Create a Builder that can be used to build the components in the system definition. The default implementation
+     * only supports implementations from the system programming model.
+     *
+     * @param scopeRegistry the ScopeRegistry defining the component scopes that will be supported
      * @return a new Builder
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
@@ -283,7 +255,7 @@ public class DefaultBootstrapper implements Bootstrapper {
             new SystemCompositeBuilder(builderRegistry, createConnector(), managementService);
         builderRegistry.register(SystemCompositeImplementation.class, builder);
         builderRegistry.register(SystemImplementation.class, new SystemComponentBuilder());
-        builderRegistry.register(SystemBindingDefinition.class, new SystemBindingBuilder());
+        builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         return builderRegistry;
     }
 

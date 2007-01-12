@@ -59,4 +59,7 @@ public abstract class AbstractComponentExtension extends AbstractSCAObject imple
         this.defaultPropertyValues = defaultPropertyValues;
     }
 
+    public boolean isOptimizable() {
+        return false;
+    }
 }

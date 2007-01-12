@@ -32,6 +32,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -41,10 +42,11 @@ import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
+import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
@@ -77,6 +79,7 @@ public class CompositeBuilderTestCase extends TestCase {
         jBuilder.setWireService(wireService);
         builderRegistry.register(JavaImplementation.class, jBuilder);
         builderRegistry.register(CompositeImplementation.class, builder);
+        builderRegistry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
         builder.setBuilderRegistry(builderRegistry);
         CompositeComponent component =
             (CompositeComponent) builder.build(parent, createTopComponentDef(), deploymentContext);
@@ -201,5 +204,5 @@ public class CompositeBuilderTestCase extends TestCase {
         container.start();
         deploymentContext = new RootDeploymentContext(null, null, container, null);
     }
-    
+
 }

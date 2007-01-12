@@ -19,8 +19,8 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URL;
-import java.util.Map;
 import java.util.Collection;
+import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
@@ -29,6 +29,7 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
@@ -39,12 +40,10 @@ import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-import org.apache.tuscany.spi.model.BindingDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
-import org.apache.tuscany.core.implementation.system.model.SystemBindingDefinition;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
@@ -85,9 +84,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals("service", serviceDefinition.getName());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
         Collection<BindingDefinition> bindings = serviceDefinition.getBindings();
-        for (BindingDefinition binding : bindings) {
-            assertTrue(binding instanceof SystemBindingDefinition);
-        }
+        assertTrue(bindings.isEmpty());
 
         // check parse of <component>
         Map<String, ComponentDefinition<? extends Implementation<?>>> components = composite.getDeclaredComponents();
