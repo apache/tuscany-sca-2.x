@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
+import org.apache.tuscany.sdo.model.ModelFactory;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 
@@ -76,7 +77,7 @@ public class ImportSDOLoaderTestCase extends TestCase {
     }
 
     public static class MockFactory {
-        public static final Object INSTANCE = null;
+        public static final Object INSTANCE = ModelFactory.INSTANCE;
 
         static {
             ImportSDOLoaderTestCase.inited = true;
