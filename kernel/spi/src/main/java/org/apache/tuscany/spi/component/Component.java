@@ -43,6 +43,27 @@ public interface Component extends SCAObject {
     void setScopeContainer(ScopeContainer scopeContainer);
 
     /**
+     * Returns the default property values associated with the component.
+     *
+     * @return default property values associated with the component.
+     */
+    Map<String, PropertyValue<?>> getDefaultPropertyValues();
+
+    /**
+     * Sets the default property values associated with the component.
+     *
+     * @param defaultPropertyValues Default property values associated with the component.
+     */
+    void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues);
+
+    /**
+     * Returns true if invocation dispatching can be optimized, i.e. invocation chains are not required
+     *
+     * @return true if invocation dispatching can be optimized, i.e. invocation chains are not required
+     */
+    boolean isOptimizable();
+
+    /**
      * Returns the wire associated with the given service name or null if not found.
      *
      * @return the wire associated with the given service name or null if not found.
@@ -75,19 +96,5 @@ public interface Component extends SCAObject {
      */
     TargetInvoker createTargetInvoker(String targetName, Operation operation, InboundWire callbackWire)
         throws TargetInvokerCreationException;
-
-    /**
-     * Returns the default property values associated with the component.
-     *
-     * @return default property values associated with the component.
-     */
-    Map<String, PropertyValue<?>> getDefaultPropertyValues();
-
-    /**
-     * Sets the default property values associated with the component.
-     *
-     * @param defaultPropertyValues Default property values associated with the component.
-     */
-    void setDefaultPropertyValues(Map<String, PropertyValue<?>> defaultPropertyValues);
 
 }

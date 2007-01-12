@@ -104,17 +104,15 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         EasyMock.verify(outboundWire);
     }
 
-    public void testOutboundToInboundNoOptimizationStatelessWithNoDestructor() throws Exception {
+    public void testOutboundToInboundNoOptimizationAtomic() throws Exception {
         AtomicComponent container = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.expect(container.isSystem()).andReturn(false);
         EasyMock.expect(container.getScope()).andReturn(Scope.STATELESS);
-        EasyMock.expect(container.isDestroyable()).andReturn(false);
+        EasyMock.expect(container.isOptimizable()).andReturn(false);
         EasyMock.replay(container);
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        outboundWire.setTargetWire(EasyMock.eq(inboundWire));
-        outboundWire.setOptimizable(EasyMock.eq(true));
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
         EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         outboundWire.getInvocationChains();
@@ -135,6 +133,8 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
+        outboundWire.setTargetWire(EasyMock.eq(inboundWire));
+        outboundWire.setOptimizable(EasyMock.eq(true));
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();

@@ -28,7 +28,6 @@
     <!-- expose Deployer API as a service -->
     <service name="deployer" >
         <interface.java interface="org.apache.tuscany.spi.deployer.Deployer"/>
-        <system:binding.system/>
         <reference>deployerImpl</reference>
     </service>
 

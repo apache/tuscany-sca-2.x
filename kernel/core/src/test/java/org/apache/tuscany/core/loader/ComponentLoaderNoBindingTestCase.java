@@ -28,15 +28,14 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
+import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
 import org.easymock.EasyMock;
 
@@ -52,12 +51,12 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
 
     public void testNoServiceBinding() throws Exception {
         loader.load(null, null, reader, null);
-        assert service.getBindings().get(0) instanceof LocalBindingDefinition;
+        assert service.getBindings().isEmpty();
     }
 
     public void testNoReferenceBinding() throws Exception {
         loader.load(null, null, reader, null);
-        assert reference.getBindings().get(0) instanceof LocalBindingDefinition;
+        assert reference.getBindings().isEmpty();
     }
 
     protected void setUp() throws Exception {

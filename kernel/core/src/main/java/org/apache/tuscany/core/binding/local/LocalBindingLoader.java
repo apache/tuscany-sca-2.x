@@ -24,10 +24,12 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
+import org.apache.tuscany.spi.extension.LoaderExtension;
 import org.apache.tuscany.spi.loader.LoaderException;
-import org.apache.tuscany.spi.loader.StAXElementLoader;
+import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.wire.Wire;
 
@@ -36,16 +38,25 @@ import org.apache.tuscany.spi.wire.Wire;
  *
  * @version $Rev$ $Date$
  */
-public class LocalBindingLoader implements StAXElementLoader {
+public class LocalBindingLoader extends LoaderExtension<LocalBindingDefinition> {
+
+    /**
+     * Constructor specifies the registry to register with.
+     *
+     * @param registry the LoaderRegistry this loader should register with
+     */
+    public LocalBindingLoader(@Autowire LoaderRegistry registry) {
+        super(registry);
+    }
 
     public QName getXMLType() {
         return Wire.LOCAL_BINDING;
     }
 
-    public ModelObject load(CompositeComponent parent,
-                            ModelObject object,
-                            XMLStreamReader reader,
-                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
+    public LocalBindingDefinition load(CompositeComponent parent,
+                                       ModelObject object,
+                                       XMLStreamReader reader,
+                                       DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         String uri = reader.getAttributeValue(null, "uri");
         if (uri != null) {
             try {

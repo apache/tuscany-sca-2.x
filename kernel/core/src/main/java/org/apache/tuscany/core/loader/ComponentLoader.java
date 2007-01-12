@@ -55,7 +55,6 @@ import org.apache.tuscany.spi.loader.UndefinedReferenceException;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -157,28 +156,29 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                 }
                             }
 
-                            for (ServiceDefinition serviceDefinition : type.getServices().values()) {
-                                if (serviceDefinition instanceof BoundServiceDefinition) {
-                                    BoundServiceDefinition bsd = (BoundServiceDefinition) serviceDefinition;
-                                    if (bsd.getBindings().isEmpty()) {
-                                        if (bsd.getBindings().isEmpty()) {
-                                            // TODO JFM implement capability for the runtime to choose a binding
-                                            bsd.addBinding(new LocalBindingDefinition());
-                                        }
-                                    }
-                                }
-                            }
-                            for (ReferenceDefinition referenceDefinition : type.getReferences().values()) {
-                                if (referenceDefinition instanceof BoundReferenceDefinition) {
-                                    BoundReferenceDefinition bsd = (BoundReferenceDefinition) referenceDefinition;
-                                    if (bsd.getBindings().isEmpty()) {
-                                        if (bsd.getBindings().isEmpty()) {
-                                            // TODO JFM implement capability for the runtime to choose a binding
-                                            bsd.addBinding(new LocalBindingDefinition());
-                                        }
-                                    }
-                                }
-                            }
+                            // xcv
+//                            for (ServiceDefinition serviceDefinition : type.getServices().values()) {
+//                                if (serviceDefinition instanceof BoundServiceDefinition) {
+//                                    BoundServiceDefinition bsd = (BoundServiceDefinition) serviceDefinition;
+//                                    if (bsd.getBindings().isEmpty()) {
+//                                        if (bsd.getBindings().isEmpty()) {
+//                                            // TODO JFM implement capability for the runtime to choose a binding
+//                                            bsd.addBinding(new LocalBindingDefinition());
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                            for (ReferenceDefinition referenceDefinition : type.getReferences().values()) {
+//                                if (referenceDefinition instanceof BoundReferenceDefinition) {
+//                                    BoundReferenceDefinition bsd = (BoundReferenceDefinition) referenceDefinition;
+//                                    if (bsd.getBindings().isEmpty()) {
+//                                        if (bsd.getBindings().isEmpty()) {
+//                                            // TODO JFM implement capability for the runtime to choose a binding
+//                                            bsd.addBinding(new LocalBindingDefinition());
+//                                        }
+//                                    }
+//                                }
+//                            }
                             validate(componentDefinition);
                             return componentDefinition;
                         }
