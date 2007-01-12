@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.component;
 
 import java.util.List;
+import java.util.Collection;
 
 import org.w3c.dom.Document;
 
@@ -65,7 +66,15 @@ public interface CompositeComponent extends Component, RuntimeEventListener {
      * @return the system wire or null if not found
      */
     InboundWire getInboundSystemWire(String serviceName);
-    
+
+    /**
+     * Returns a map of inbound system wires.
+     *
+     * @return a map of inbound system wires.
+     */
+    Collection<InboundWire> getInboundSystemWires();
+
+
     /**
      * Register a simple Java Object as a system component. This is primarily intended for use by bootstrap code to
      * create the initial configuration components.

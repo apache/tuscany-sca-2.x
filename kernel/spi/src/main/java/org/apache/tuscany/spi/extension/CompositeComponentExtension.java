@@ -35,7 +35,6 @@ import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
-import org.apache.tuscany.spi.component.IllegalTargetException;
 import org.apache.tuscany.spi.component.InvalidAutowireInterface;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.Reference;
@@ -257,20 +256,26 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
     }
 
+    public Collection<InboundWire> getInboundSystemWires() {
+        synchronized (systemServices) {
+            List<InboundWire> map = new ArrayList<InboundWire>();
+            for (Service service : systemServices) {
+                for (ServiceBinding binding : service.getServiceBindings()) {
+                    InboundWire wire = binding.getInboundWire();
+                    if (Wire.LOCAL_BINDING.equals(wire.getBindingType())) {
+                        map.add(wire);
+                    }
+                }
+            }
+            return map;
+        }
+    }
+
     public InboundWire resolveAutowire(Class<?> instanceInterface) throws TargetResolutionException {
         // FIXME JNB make this faster and thread safe
         for (Map.Entry<Class, InboundWire> service : autowireInternal.entrySet()) {
             if (instanceInterface.isAssignableFrom(service.getKey())) {
-                InboundWire wire = service.getValue();
-                SCAObject parent = wire.getContainer();
-
-                if (parent instanceof AtomicComponent
-                    || parent instanceof ReferenceBinding
-                    || parent instanceof ServiceBinding) {
-                    return wire;
-                } else {
-                    throw new IllegalTargetException("Autowire target must be a system type", parent.getName());
-                }
+                return service.getValue();
             }
         }
         if (getParent() != null) {
@@ -406,13 +411,13 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
         }
     }
 
-    protected void registerAutowireInternal(Class<?> interfaze, InboundWire wire, boolean isSystem)
+    protected void registerAutowireInternal(Class<?> interfaze, InboundWire wire, boolean system)
         throws InvalidAutowireInterface {
         if (interfaze == null) {
             // The ServiceContract is not from Java
             return;
         }
-        if (isSystem()) {
+        if (system) {
             if (systemAutowireInternal.containsKey(interfaze)) {
                 return;
             }
@@ -500,15 +505,21 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
     }
 
     protected void registerAutowire(CompositeComponent component) throws InvalidAutowireInterface {
-        Collection<InboundWire> wires = component.getInboundWires();
-        for (InboundWire wire : wires) {
-            Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-            registerAutowireInternal(clazz, wire, false);
-        }
-        wires = component.getInboundWires();
-        for (InboundWire wire : wires) {
-            Class<?> clazz = wire.getServiceContract().getInterfaceClass();
-            registerAutowireInternal(clazz, wire, true);
+        if (component.isSystem()) {
+            // the composite is under the system hierarchy so only register its system services
+            Collection<InboundWire> wires = component.getInboundSystemWires();
+            for (InboundWire wire : wires) {
+                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+                registerAutowireInternal(clazz, wire, true);
+            }
+
+        } else {
+            // the composite is under the application hierarchy so only register its non-system services
+            Collection<InboundWire> wires = component.getInboundWires();
+            for (InboundWire wire : wires) {
+                Class<?> clazz = wire.getServiceContract().getInterfaceClass();
+                registerAutowireInternal(clazz, wire, false);
+            }
         }
     }
 
