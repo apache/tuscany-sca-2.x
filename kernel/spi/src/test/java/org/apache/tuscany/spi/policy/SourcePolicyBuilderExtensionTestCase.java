@@ -6,36 +6,45 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License.    
+ * under the License.
  */
 package org.apache.tuscany.spi.policy;
 
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import static org.apache.tuscany.spi.policy.PolicyBuilderRegistry.EXTENSION;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+
 /**
- * Implementations contribute {@link org.apache.tuscany.spi.wire.Interceptor}s to handle source-side policy on a wire.
- *
- * @version $$Rev$$ $$Date$$
+ * @version $Rev$ $Date$
  */
-public interface SourcePolicyBuilder {
+public class SourcePolicyBuilderExtensionTestCase extends TestCase {
 
-    /**
-     * Callback for attaching policy to a source-side wire
-     *
-     * @param definition the service definition
-     * @param wire       the wire to attach policy to
-     * @throws BuilderException
-     */
-    void build(ReferenceDefinition definition, OutboundWire wire) throws BuilderException;
+    public void testRegister() throws Exception {
+        PolicyBuilderRegistry registry = EasyMock.createMock(PolicyBuilderRegistry.class);
+        registry.registerSourceBuilder(EasyMock.eq(EXTENSION), EasyMock.isA(MockPolicyBuilderExtension.class));
+        EasyMock.replay(registry);
+        SourcePolicyBuilderExtension extension = new MockPolicyBuilderExtension();
+        extension.setRegistry(registry);
+        extension.init();
+        EasyMock.verify(registry);
+    }
 
+    private static class MockPolicyBuilderExtension extends SourcePolicyBuilderExtension {
+
+        public void build(ReferenceDefinition definition, OutboundWire wire) throws BuilderException {
+
+        }
+    }
 }
