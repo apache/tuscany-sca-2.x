@@ -32,7 +32,7 @@ public class AbstractCompositeContextTestCase extends TestCase {
         EasyMock.replay(composite);
         WireService wireService = EasyMock.createNiceMock(WireService.class);
         CompositeContext context = new TestCompositeContext(composite, wireService);
-        assertEquals("foo", context.getCompositeName());
+        assertEquals("foo", context.getName());
     }
 
     public void testAtomicLocate() throws Exception {
