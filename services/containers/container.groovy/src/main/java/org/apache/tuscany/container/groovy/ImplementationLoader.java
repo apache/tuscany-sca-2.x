@@ -69,8 +69,9 @@ public class ImplementationLoader extends LoaderExtension<GroovyImplementation> 
 
         GroovyImplementation implementation = new GroovyImplementation();
         implementation.setScript(source);
-        // no component type support
-        //registry.loadComponentType(parent, implementation, deploymentContext);
+        implementation.setApplicationLoader(deploymentContext.getClassLoader());
+        implementation.setScriptResourceName(script);
+        
         return implementation;
     }
 

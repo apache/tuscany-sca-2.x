@@ -45,6 +45,7 @@ import org.easymock.classextension.EasyMock;
  */
 public class AsyncInvokerTestCase extends TestCase {
 
+    @SuppressWarnings("unchecked")
     public void testInvoke() throws Exception {
         GroovyObject instance = createMock(GroovyObject.class);
         expect(instance.invokeMethod("invoke", null)).andReturn(null).once();

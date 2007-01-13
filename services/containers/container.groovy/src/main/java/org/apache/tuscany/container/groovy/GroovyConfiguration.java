@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.groovy;
 
+import groovy.lang.GroovyObject;
+
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,12 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
-import org.apache.tuscany.spi.wire.WireService;
 import org.apache.tuscany.spi.extension.ExecutionMonitor;
-
-import groovy.lang.GroovyObject;
+import org.apache.tuscany.spi.wire.WireService;
 
 /**
  * Encapsulates confuration for a Groovy-based atomic component
@@ -40,7 +39,6 @@ import groovy.lang.GroovyObject;
 public class GroovyConfiguration {
 
     private CompositeComponent parent;
-    private ScopeContainer scopeContainer;
     private int initLevel;
     private Map<String, Member> referenceSites = new HashMap<String, Member>();
     private Map<String, Member> propertySites = new HashMap<String, Member>();

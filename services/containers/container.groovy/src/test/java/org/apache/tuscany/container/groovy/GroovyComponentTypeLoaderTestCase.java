@@ -30,6 +30,8 @@ public class GroovyComponentTypeLoaderTestCase extends TestCase {
     public void testLoad() throws Exception {
         GroovyComponentTypeLoader loader = new GroovyComponentTypeLoader();
         GroovyImplementation impl = new GroovyImplementation();
+        impl.setScriptResourceName("Foo.groovy");
+        impl.setApplicationLoader(Thread.currentThread().getContextClassLoader());
         loader.load(null, impl, null);
         GroovyComponentType type = impl.getComponentType();
         assertEquals(Scope.COMPOSITE, type.getLifecycleScope());

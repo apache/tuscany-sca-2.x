@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.container.groovy;
 
+import java.net.URL;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentTypeLoaderExtension;
@@ -28,16 +30,44 @@ import org.apache.tuscany.spi.model.Scope;
  * @version $Rev$ $Date$
  */
 public class GroovyComponentTypeLoader extends ComponentTypeLoaderExtension<GroovyImplementation> {
+    
+    @Override
     protected Class<GroovyImplementation> getImplementationClass() {
         return GroovyImplementation.class;
     }
 
     public void load(CompositeComponent parent, GroovyImplementation implementation, DeploymentContext context)
         throws LoaderException {
-        GroovyComponentType componentType = new GroovyComponentType();
+        URL resource = implementation.getApplicationLoader().getResource(getSideFileName(implementation));
+        GroovyComponentType componentType;
+        if (resource == null) {
+            //TODO this should be replaced by loadFromIntrospection,
+            componentType = new GroovyComponentType();
+        } else {
+            componentType = loadFromSidefile(resource, context);
+        }
+        
         // for now, default to composite
         componentType.setLifecycleScope(Scope.COMPOSITE);
         implementation.setComponentType(componentType);
     }
+    
+    protected GroovyComponentType loadFromSidefile(URL url, DeploymentContext deploymentContext)
+        throws LoaderException {
+        GroovyComponentType ct = new GroovyComponentType();
+        return (GroovyComponentType)loaderRegistry.load(null,ct, url, GroovyComponentType.class, deploymentContext);
+    }
 
+    private String getSideFileName(GroovyImplementation implementation) {
+        String baseName = getResourceName(implementation);
+        int lastDot = baseName.lastIndexOf('.');
+        if (lastDot != -1) {
+            baseName = baseName.substring(0, lastDot);
+        }
+        return baseName + ".componentType";
+    }
+    
+    protected String getResourceName(GroovyImplementation implementation) {
+        return implementation.getScriptResourceName();
+    }
 }
