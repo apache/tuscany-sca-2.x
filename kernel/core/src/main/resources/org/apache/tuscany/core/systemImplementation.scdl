@@ -41,6 +41,6 @@
         <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder"/>
     </component>
     <component name="system.compositeBuilder">
-        <system:implementation.system class="org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder"/>
+        <system:implementation.system class="org.apache.tuscany.core.implementation.composite.SystemCompositeBuilder"/>
     </component>
 </composite>

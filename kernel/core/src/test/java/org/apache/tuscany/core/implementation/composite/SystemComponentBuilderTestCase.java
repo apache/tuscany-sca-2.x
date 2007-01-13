@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.builder;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Method;
 
@@ -37,6 +37,7 @@ import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.easymock.EasyMock;
 
