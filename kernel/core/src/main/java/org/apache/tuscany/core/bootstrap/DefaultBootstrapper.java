@@ -64,7 +64,7 @@ import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.implementation.system.builder.SystemCompositeBuilder;
+import org.apache.tuscany.core.implementation.composite.SystemCompositeBuilder;
 import org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader;
