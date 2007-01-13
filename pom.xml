@@ -32,7 +32,7 @@
     <properties>
         <sca.version>1.0-incubator-SNAPSHOT</sca.version>
         <scaKernelVersion>1.0-incubator-SNAPSHOT</scaKernelVersion>
-        <axis2Version>1.1</axis2Version>
+        <axis2Version>1.1.1</axis2Version>
     </properties>
 
     <!-- definition of repositories where the parent pom can be found -->
@@ -165,13 +165,13 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-api</artifactId>
-                <version>1.2</version>
+                <version>1.2.2</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
-                <version>1.2</version>
+                <version>1.2.2</version>
                 <scope>compile</scope>
             </dependency>
 
@@ -187,7 +187,7 @@
             <dependency>
                 <groupId>wsdl4j</groupId>
                 <artifactId>wsdl4j</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.2</version>
             </dependency>
 
             <!-- XmlSchema implementation -->
