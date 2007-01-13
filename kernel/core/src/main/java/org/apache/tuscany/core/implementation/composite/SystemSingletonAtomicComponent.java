@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.composite;
 
 import java.util.Collection;
 import java.util.Collections;

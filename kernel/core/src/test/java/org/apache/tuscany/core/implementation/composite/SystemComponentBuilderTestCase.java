@@ -20,8 +20,8 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.lang.reflect.Method;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.ConstructorDefinition;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -36,8 +36,8 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
 import org.apache.tuscany.core.injection.SingletonObjectFactory;
 import org.easymock.EasyMock;
 
