@@ -42,11 +42,11 @@ public class ManagedCompositeContext extends AbstractCompositeContext {
         super(composite, wireService);
     }
 
-    public String getCompositeName() {
+    public String getName() {
         return composite.getName();
     }
 
-    public String getCompositeURI() {
+    public String getURI() {
         throw new UnsupportedOperationException();
     }
 
