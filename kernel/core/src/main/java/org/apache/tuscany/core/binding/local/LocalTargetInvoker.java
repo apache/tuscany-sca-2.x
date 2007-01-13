@@ -39,6 +39,7 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
     public LocalTargetInvoker(Operation operation, OutboundWire outboundWire) {
         assert operation != null;
         chain = outboundWire.getInvocationChains().get(operation);
+        assert chain != null;
         fromAddress = (outboundWire.getContainer() == null) ? null : outboundWire.getContainer().getName();
         contractHasCallback = outboundWire.getServiceContract().getCallbackClass() != null;
     }
@@ -51,6 +52,7 @@ public class LocalTargetInvoker extends AbstractLocalTargetInvoker {
     public Message invoke(Message msg) throws InvocationRuntimeException {
         try {
             TargetInvoker invoker = chain.getTargetInvoker();
+            assert invoker != null;
             // Pushing the from address only needs to happen in the outbound (forward) direction for callbacks
             if (contractHasCallback) {
                 msg.pushFromAddress(fromAddress);
