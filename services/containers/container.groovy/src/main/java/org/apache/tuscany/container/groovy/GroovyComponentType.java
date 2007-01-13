@@ -39,5 +39,9 @@ public class GroovyComponentType extends ComponentType<ServiceDefinition, Refere
     public void setLifecycleScope(Scope lifecycleScope) {
         this.lifecycleScope = lifecycleScope;
     }
+    
+    public GroovyComponentType() {
+        implementationScope = Scope.COMPOSITE;
+    }
 
 }

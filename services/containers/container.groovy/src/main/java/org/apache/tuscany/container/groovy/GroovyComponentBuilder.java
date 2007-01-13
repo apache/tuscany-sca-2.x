@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.container.groovy;
 
+import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyObject;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,9 +34,6 @@ import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
@@ -47,6 +47,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         return GroovyImplementation.class;
     }
 
+    @SuppressWarnings("unchecked")
     public Component build(CompositeComponent parent,
                            ComponentDefinition<GroovyImplementation> componentDefinition,
                            DeploymentContext deploymentContext)
@@ -68,7 +69,7 @@ public class GroovyComponentBuilder extends ComponentBuilderExtension<GroovyImpl
         // get the Groovy classloader for this deployment component
         GroovyClassLoader groovyClassLoader = (GroovyClassLoader) deploymentContext.getExtension("groovy.classloader");
         if (groovyClassLoader == null) {
-            groovyClassLoader = new GroovyClassLoader(deploymentContext.getClassLoader());
+            groovyClassLoader = new GroovyClassLoader(implementation.getApplicationLoader());
             deploymentContext.putExtension("groovy.classloader", groovyClassLoader);
         }
 

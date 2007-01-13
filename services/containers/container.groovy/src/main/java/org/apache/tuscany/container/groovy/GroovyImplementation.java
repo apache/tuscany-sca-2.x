@@ -27,6 +27,34 @@ public class GroovyImplementation extends AtomicImplementation<GroovyComponentTy
 
     //the Groovy source to be executed
     private String script;
+    
+    // the application class loader, we need this to construct a GroovyClassLoader in GroovyComponentBuilder
+    private ClassLoader applicationLoader;
+    
+    // TODO , Suggest to change the current script to scriptContent, acutally, we need script file name to get component side file name.
+    private String scriptResourceName;
+    
+    public String getScriptResourceName() {
+        return scriptResourceName;
+    }
+
+    public void setScriptResourceName(String scriptResourceName) {
+        this.scriptResourceName = scriptResourceName;
+    }
+
+    /**
+     * Return Application class loader to be executed.
+     */
+    public ClassLoader getApplicationLoader() {
+        return applicationLoader;
+    }
+
+    /**
+     * Sets the Application class loader to be executed.
+     */
+    public void setApplicationLoader(ClassLoader applicationLoader) {
+        this.applicationLoader = applicationLoader;
+    }
 
     /**
      * Returns the Groovy source to be executed.
