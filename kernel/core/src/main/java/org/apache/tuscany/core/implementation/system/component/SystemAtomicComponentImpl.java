@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.implementation.PojoAtomicComponent;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
+import org.apache.tuscany.core.wire.OptimizedWireObjectFactory;
 
 /**
  * Default implementation of a system atomic context
@@ -49,6 +50,6 @@ public class SystemAtomicComponentImpl extends PojoAtomicComponent {
     }
 
     protected ObjectFactory<?> createWireFactory(Class<?> interfaze, OutboundWire wire) {
-        return new WireObjectFactory(wire);
+        return new OptimizedWireObjectFactory(wire);
     }
 }

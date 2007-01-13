@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import org.apache.tuscany.spi.component.TargetException;
 
 import junit.framework.TestCase;
@@ -34,11 +37,25 @@ public class SystemSingletonAtomicComponentTestCase extends TestCase {
         assertEquals(foo, component.getTargetInstance());
     }
 
+    public void testGetInstanceMultipleServices() throws TargetException {
+        FooImpl foo = new FooImpl();
+        List<Class<?>> services = new ArrayList<Class<?>>();
+        services.add(Foo.class);
+        services.add(Bar.class);
+        SystemSingletonAtomicComponent<Foo, FooImpl> component =
+            new SystemSingletonAtomicComponent<Foo, FooImpl>("foo", null, services, foo);
+        assertEquals(foo, component.getTargetInstance());
+    }
+
     private interface Foo {
 
     }
 
-    private class FooImpl implements Foo {
+    private interface Bar {
+
+    }
+
+    private class FooImpl implements Foo, Bar {
 
     }
 }
