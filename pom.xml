@@ -59,6 +59,18 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>sateh</id>
+            <name>Maven Sateh</name>
+            <url>http://maven.sateh.com/maven2//</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        
     </repositories>
 
     <modules>

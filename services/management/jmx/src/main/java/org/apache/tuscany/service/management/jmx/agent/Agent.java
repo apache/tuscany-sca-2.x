@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.standalone.server.management.jmx;
+package org.apache.tuscany.service.management.jmx.agent;
 
 import javax.management.MBeanServer;
 

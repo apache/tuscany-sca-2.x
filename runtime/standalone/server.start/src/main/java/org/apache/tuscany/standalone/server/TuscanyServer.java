@@ -36,8 +36,8 @@ import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfoImpl;
 import org.apache.tuscany.service.management.jmx.JmxManagementService;
-import org.apache.tuscany.standalone.server.management.jmx.Agent;
-import org.apache.tuscany.standalone.server.management.jmx.RmiAgent;
+import org.apache.tuscany.service.management.jmx.agent.Agent;
+import org.apache.tuscany.service.management.jmx.agent.RmiAgent;
 
 /**
  * This class provides the commandline interface for starting the

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.standalone.server.management.jmx;
+package org.apache.tuscany.service.management.jmx.agent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -57,14 +57,14 @@ public abstract class AbstractAgent implements Agent {
     }
     
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#getMBeanServer()
+     * @see org.apache.tuscany.service.management.jmx.agent.Agent#getMBeanServer()
      */
     public MBeanServer getMBeanServer() {
         return mBeanServer;
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#register(java.lang.Object, java.lang.String)
+     * @see org.apache.tuscany.service.management.jmx.agent.Agent#register(java.lang.Object, java.lang.String)
      */
     public final void register(Object instance, String name) throws ManagementException {
         
@@ -77,7 +77,7 @@ public abstract class AbstractAgent implements Agent {
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#start()
+     * @see org.apache.tuscany.service.management.jmx.agent.Agent#start()
      */
     public final void start() throws ManagementException {
 
@@ -105,7 +105,7 @@ public abstract class AbstractAgent implements Agent {
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.Agent#shutdown()
+     * @see org.apache.tuscany.service.management.jmx.agent.Agent#shutdown()
      */
     public final void shutdown() throws ManagementException {
         

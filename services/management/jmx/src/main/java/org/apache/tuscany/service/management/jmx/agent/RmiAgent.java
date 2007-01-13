@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.standalone.server.management.jmx;
+package org.apache.tuscany.service.management.jmx.agent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -84,7 +84,7 @@ public class RmiAgent extends AbstractAgent {
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.AbstractAgent#preStart()
+     * @see org.apache.tuscany.service.management.jmx.agent.AbstractAgent#preStart()
      */
     @Override
     public void preStart() throws ManagementException {
@@ -98,7 +98,7 @@ public class RmiAgent extends AbstractAgent {
     }
 
     /**
-     * @see org.apache.tuscany.standalone.server.management.jmx.AbstractAgent#postStop()
+     * @see org.apache.tuscany.service.management.jmx.agent.AbstractAgent#postStop()
      */
     @Override
     public void postStop() throws ManagementException {
