@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.tuscany.core.implementation.system.component;
+package org.apache.tuscany.core.implementation.composite;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tuscany.spi.component.TargetException;
 

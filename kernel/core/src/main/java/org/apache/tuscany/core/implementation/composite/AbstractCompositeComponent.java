@@ -38,7 +38,6 @@ import org.apache.tuscany.spi.wire.TargetInvoker;
 
 import org.apache.tuscany.core.component.event.CompositeStart;
 import org.apache.tuscany.core.component.event.CompositeStop;
-import org.apache.tuscany.core.implementation.system.component.SystemSingletonAtomicComponent;
 
 /**
  * The base implementation of a composite context
