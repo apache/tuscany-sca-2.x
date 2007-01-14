@@ -36,6 +36,24 @@
             <artifactId>tuscany-spi</artifactId>
             <version>${sca.version}</version>
             <scope>compile</scope>
+        </dependency>   
+        <dependency>
+            <groupId>org.jxta.platform</groupId>
+            <artifactId>jxta</artifactId>
+            <version>2.3.6</version>
+            <scope>compile</scope>
+			<exclusions>
+                <exclusion>
+                    <groupId>jaxen</groupId>
+                    <artifactId>jaxen</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>    
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
