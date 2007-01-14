@@ -47,7 +47,8 @@ public interface DiscoveryService {
      * 
      * @param domain Domain in which the runtime is participating.
      * @param profile Name of the runtime profile.
+     * @param admin A flag to indicate this is the admin runtime.
      */
-    void runtimeStarted(URI domain, String profile);
+    void runtimeStarted(URI domain, String profile, boolean admin);
 
 }
