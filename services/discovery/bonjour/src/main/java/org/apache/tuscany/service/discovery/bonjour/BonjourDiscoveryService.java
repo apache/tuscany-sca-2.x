@@ -35,8 +35,9 @@ public class BonjourDiscoveryService extends AbstractDiscoveryService {
      * 
      * @param domain Domain in which the runtime is participating.
      * @param profile Name of the runtime profile.
+     * @param admin A flag to indicate this is the admin runtime.
      */
-    public void runtimeStarted(URI domain, String profile) {
+    public void runtimeStarted(URI domain, String profile, boolean admin) {
         throw new UnsupportedOperationException();
     }
 
