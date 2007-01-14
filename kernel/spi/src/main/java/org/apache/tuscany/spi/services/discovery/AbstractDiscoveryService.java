@@ -18,20 +18,18 @@
  */
 package org.apache.tuscany.spi.services.discovery;
 
-import java.net.URI;
-
 import org.apache.tuscany.spi.services.domain.DomainModelService;
 
 /**
- * Defines the abstraction that allows runtimes participating 
- * in the domain to discover each other and broadcast liveness 
- * to the admin server that holds the domain's runtime physical 
- * model and the domain-wide assembly model..
+ * Abstract implementation of the discovery service.
  * 
  * @version $Revision$ $Date$
  *
  */
-public interface DiscoveryService {
+public abstract class AbstractDiscoveryService implements DiscoveryService {
+
+    /** Domain model service. */
+    private DomainModelService domainModelService;
     
     /**
      * Makes a reference to the domain model service available to the discovery service. 
@@ -40,14 +38,16 @@ public interface DiscoveryService {
      * 
      * @param domainModelService Domain model service used for callbacks.
      */
-    void setDomainModelService(DomainModelService domainModelService);
+    public final void setDomainModelService(DomainModelService domainModelService) {
+        this.domainModelService = domainModelService;
+    }
     
     /**
-     * Publish the event to indicate that the specified runtime is started.
-     * 
-     * @param domain Domain in which the runtime is participating.
-     * @param profile Name of the runtime profile.
+     * Gets the domain model service used by this discovery service.
+     * @return Domain model service used for callbacks.
      */
-    void runtimeStarted(URI domain, String profile);
+    protected final DomainModelService getDomainModelService() {
+        return domainModelService;
+    }
 
 }
