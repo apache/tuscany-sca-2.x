@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.services.discovery;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.services.domain.DomainModelService;
 
 /**
@@ -40,5 +42,13 @@ public interface DiscoveryService {
      * @param domainModelService
      */
     void setDomainModelService(DomainModelService domainModelService);
+    
+    /**
+     * Publish the event to indicate that the specified runtime is started.
+     * 
+     * @param domain Domain in which the runtime is participating.
+     * @param profile Name of the runtime profile.
+     */
+    void runtimeStarted(URI domain, String profile);
 
 }
