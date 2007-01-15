@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.service.discovery.bonjour;
 
-import java.net.URI;
-
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 
 /**
@@ -29,15 +27,20 @@ import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
  *
  */
 public class BonjourDiscoveryService extends AbstractDiscoveryService {
-    
+
     /**
-     * Publish the event to indicate that the specified runtime is started.
-     * 
-     * @param domain Domain in which the runtime is participating.
-     * @param profile Name of the runtime profile.
-     * @param admin A flag to indicate this is the admin runtime.
+     * Starts the discovery service.
      */
-    public void runtimeStarted(URI domain, String profile, boolean admin) {
+    @Override
+    public void onStart() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Stops the discovery service.
+     */
+    @Override
+    public void onStop() {
         throw new UnsupportedOperationException();
     }
 

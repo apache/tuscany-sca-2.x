@@ -18,7 +18,11 @@
  */
 package org.apache.tuscany.spi.services.discovery;
 
+import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.domain.DomainModelService;
+import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.Init;
 
 /**
  * Abstract implementation of the discovery service.
@@ -31,6 +35,9 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
     /** Domain model service. */
     private DomainModelService domainModelService;
     
+    /** Runtime info. */
+    private RuntimeInfo runtimeInfo;
+    
     /**
      * Makes a reference to the domain model service available to the discovery service. 
      * This is required by the dicovery service to propogate any changes in the domain 
@@ -38,16 +45,83 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      * 
      * @param domainModelService Domain model service used for callbacks.
      */
+    @Autowire
     public final void setDomainModelService(DomainModelService domainModelService) {
         this.domainModelService = domainModelService;
     }
     
     /**
+     * Sets the runtime info for the runtime using the discovery service.
+     * 
+     * @param runtimeInfo Runtime info for the runtime using the discovery service.
+     */
+    @Autowire
+    public final void setRuntimeInfo(RuntimeInfo runtimeInfo) {
+        this.runtimeInfo = runtimeInfo;
+    }
+    
+    /**
+     * Starts the discovery service.
+     * @throws Any unexpected JXTA exception to bubble up the call stack.
+     */
+    @Init
+    public final void start() {
+        
+        onStart();
+        
+        Runnable shutdownHook = new ShutdownHook();
+        Runtime.getRuntime().addShutdownHook(new Thread(shutdownHook));
+        
+    }
+    
+    /**
+     * Stops the discovery service.
+     * @throws Any unexpected JXTA exception to bubble up the call stack.
+     */
+    @Destroy
+    public final void stop() {
+        onStop();
+    }
+    
+    /**
      * Gets the domain model service used by this discovery service.
+     * 
      * @return Domain model service used for callbacks.
      */
     protected final DomainModelService getDomainModelService() {
         return domainModelService;
+    }
+    
+    /**
+     * Gets the runtime info for the runtime using the discovery service.
+     * 
+     * @return Runtime info for the runtime using the discovery service.
+     */
+    protected final RuntimeInfo getRuntimeInfo() {
+        return runtimeInfo;
+    }
+    
+    /**
+     * Required to be overridden by sub-classes.
+     *
+     */
+    protected abstract void onStart();
+    
+    /**
+     * Required to be overridden by sub-classes.
+     *
+     */
+    protected abstract void onStop();
+    
+    /**
+     * Shutdown hook.
+     */
+    private class ShutdownHook implements Runnable {
+
+        public void run() {
+            stop();
+        }
+        
     }
 
 }

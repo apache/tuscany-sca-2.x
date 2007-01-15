@@ -18,8 +18,7 @@
  */
 package org.apache.tuscany.spi.services.discovery;
 
-import java.net.URI;
-
+import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.services.domain.DomainModelService;
 
 /**
@@ -43,12 +42,20 @@ public interface DiscoveryService {
     void setDomainModelService(DomainModelService domainModelService);
     
     /**
-     * Publish the event to indicate that the specified runtime is started.
+     * Sets the runtime info for the runtime using the discovery service.
      * 
-     * @param domain Domain in which the runtime is participating.
-     * @param profile Name of the runtime profile.
-     * @param admin A flag to indicate this is the admin runtime.
+     * @param runtimeInfo Runtime info for the runtime using the discovery service.
      */
-    void runtimeStarted(URI domain, String profile, boolean admin);
+    void setRuntimeInfo(RuntimeInfo runtimeInfo);
+    
+    /**
+     * Starts the discovery service.
+     */
+    void start();
+    
+    /**
+     * Stops the discovery service.
+     */
+    void stop();
 
 }
