@@ -24,10 +24,9 @@ import java.net.URI;
 import net.jxta.endpoint.Message;
 import net.jxta.exception.PeerGroupException;
 
+import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 import org.apache.tuscany.spi.services.domain.DomainModelService;
-import org.osoa.sca.annotations.Destroy;
-import org.osoa.sca.annotations.Init;
 
 /**
  * Discovery service implemented using Apple bonjour.
@@ -39,24 +38,6 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
     
     /** Pipe receiver. */
     private PipeReceiver pipeReceiver;
-    
-    /**
-     * Publish the event to indicate that the specified runtime is started.
-     * 
-     * @param domain Domain in which the runtime is participating.
-     * @param profile Name of the runtime profile.
-     * @param admin A flag to indicate this is the admin runtime.
-     * @throws Any unexpected JXTA exception to bubble up the call stack.
-     */
-    public void runtimeStarted(URI domain, String profile, boolean admin) throws JxtaException {
-        
-        try {
-            pipeReceiver.start(domain, profile);
-        } catch (IOException ex) {
-            throw new JxtaException(ex);
-        }
-        
-    }
 
     /**
      * Callback method for message reception.
@@ -72,12 +53,25 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
      * Starts the discovery service.
      * @throws Any unexpected JXTA exception to bubble up the call stack.
      */
-    @Init
-    public void start() throws JxtaException {
+    @Override
+    public void onStart() throws JxtaException {
         
         try {
+            
             pipeReceiver = PipeReceiver.newInstance(this);
+            
+            RuntimeInfo runtimeInfo = getRuntimeInfo();
+            URI domain = runtimeInfo.getDomain();
+            // TODO Move profile from StandaloneRuntimeInfo to RuntimeInfo
+            String profile = null;  
+            
+            pipeReceiver.start(domain, profile);
+            
+            // TODO Use pipe sender to notify coming alive
+            
         } catch (PeerGroupException ex) {
+            throw new JxtaException(ex);
+        } catch (IOException ex) {
             throw new JxtaException(ex);
         }
         
@@ -86,8 +80,10 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
     /**
      * Stops the discovery service.
      */
-    @Destroy
-    public void stop() {
+    @Override
+    protected void onStop() {
+        
+        // TODO Use pipe sender to notify shutdown
         pipeReceiver.stop();
     }
 
