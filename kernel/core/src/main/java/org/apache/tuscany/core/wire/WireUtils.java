@@ -126,7 +126,7 @@ public final class WireUtils {
      */
     public static boolean isOptimizable(InboundWire wire) {
         SCAObject container = wire.getContainer();
-        if ((container instanceof Component) && !((Component) container).isOptimizable()) {
+        if (!(container instanceof Component) || !((Component) container).isOptimizable()) {
             return false;
         }
         for (InboundInvocationChain chain : wire.getInvocationChains().values()) {
