@@ -133,8 +133,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
-        outboundWire.setTargetWire(EasyMock.eq(inboundWire));
-        outboundWire.setOptimizable(EasyMock.eq(true));
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
