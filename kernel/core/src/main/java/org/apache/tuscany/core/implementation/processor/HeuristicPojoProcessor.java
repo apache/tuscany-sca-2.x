@@ -117,7 +117,14 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
             evaluateConstructor(type, clazz);
             return;
         }
+        calcPropRefs(methods, services, type, clazz);
+        evaluateConstructor(type, clazz);
+    }
 
+    private <T> void calcPropRefs(Set<Method> methods,
+                                  Map<String, JavaMappedService> services,
+                                  PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                  Class<T> clazz) throws ProcessingException {
         // heuristically determine the properties references
         // make a first pass through all public methods with one param
         for (Method method : methods) {
@@ -167,7 +174,6 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
                 type.add(createProperty(field.getName(), field, paramType));
             }
         }
-        evaluateConstructor(type, clazz);
     }
 
     /**
@@ -254,26 +260,43 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
             }
             boolean empty = props.size() + refs.size() == 0;
             if (!empty) {
-                // the constructor param types must unambiguously match defined reference or property types
-                for (Class param : params) {
-                    String name = findReferenceOrProperty(param, props, refs);
-                    if (name == null) {
-                        throw new AmbiguousConstructorException(param.getName());
-                    }
-                    paramNames.add(name);
-                }
+                calcParamNames(params, props, refs, paramNames);
             } else {
-                // heuristically determine refs and props from the parameter types
-                for (Class<?> param : params) {
-                    String name = getBaseName(param).toLowerCase();
-                    if (isReferenceType(param)) {
-                        refs.put(name, createReference(name, null, param));
-                    } else {
-                        props.put(name, createProperty(name, null, param));
-                    }
-                    paramNames.add(name);
-                }
+                heuristicParamNames(params, refs, props, paramNames);
+
             }
+        }
+    }
+
+    private void calcParamNames(Class[] params,
+                                Map<String, JavaMappedProperty<?>> props,
+                                Map<String, JavaMappedReference> refs,
+                                List<String> paramNames)
+        throws AmbiguousConstructorException {
+        // the constructor param types must unambiguously match defined reference or property types
+        for (Class param : params) {
+            String name = findReferenceOrProperty(param, props, refs);
+            if (name == null) {
+                throw new AmbiguousConstructorException(param.getName());
+            }
+            paramNames.add(name);
+        }
+    }
+
+    private void heuristicParamNames(Class[] params,
+                                     Map<String, JavaMappedReference> refs,
+                                     Map<String, JavaMappedProperty<?>> props,
+                                     List<String> paramNames)
+        throws ProcessingException {
+        // heuristically determine refs and props from the parameter types
+        for (Class<?> param : params) {
+            String name = getBaseName(param).toLowerCase();
+            if (isReferenceType(param)) {
+                refs.put(name, createReference(name, null, param));
+            } else {
+                props.put(name, createProperty(name, null, param));
+            }
+            paramNames.add(name);
         }
     }
 

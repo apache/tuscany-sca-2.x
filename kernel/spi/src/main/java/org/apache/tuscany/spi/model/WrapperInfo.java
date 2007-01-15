@@ -17,12 +17,12 @@
  * under the License.    
  */
 
-package org.apache.tuscany.spi.idl;
+package org.apache.tuscany.spi.model;
 
 import java.util.List;
 import javax.xml.namespace.QName;
 
-import org.apache.tuscany.spi.model.DataType;
+import org.apache.tuscany.spi.idl.ElementInfo;
 
 /**
  * The "Wrapper Style" WSDL operation is defined by The Java API for XML-Based Web Services (JAX-WS) 2.0 specification,
@@ -36,6 +36,8 @@ import org.apache.tuscany.spi.model.DataType;
  * The wrapper elements only contain child elements, they must not contain other structures such as wildcards (element
  * or attribute), xsd:choice, substitution groups (element references are not permitted) or attributes; furthermore,
  * they must not be nillable. </ul>
+ *
+ * @version $Rev$ $Date$
  */
 public class WrapperInfo {
     private ElementInfo inputWrapperElement;
@@ -50,14 +52,6 @@ public class WrapperInfo {
 
     private DataType<QName> unwrappedOutputType;
 
-    /**
-     * @param inputWrapperElement
-     * @param outputWrapperElement
-     * @param inputElements
-     * @param outputElements
-     * @param unwrappedInputType
-     * @param unwrappedOutputType
-     */
     public WrapperInfo(ElementInfo inputWrapperElement,
                        ElementInfo outputWrapperElement,
                        List<ElementInfo> inputElements,
