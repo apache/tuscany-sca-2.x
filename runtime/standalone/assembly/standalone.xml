@@ -71,6 +71,7 @@
                 <include>javax.servlet:servlet-api</include>
             </includes>
             <outputDirectory>lib</outputDirectory>
+            <outputFileNameMapping>${artifactId}-${baseVersion}.${extension}</outputFileNameMapping>
         </dependencySet>
 
         <!-- copy boot dependencies to launcher profile -->
