@@ -185,23 +185,11 @@ public class Axis2BindingBuilder extends BindingBuilderExtension<WebServiceBindi
     }
 
     protected void initAxis() throws BuilderConfigException {
-        // TODO: Fix classloader switching. See TUSCANY-647
-        // TODO: also consider having a system component wrapping the Axis2 ConfigContext
-        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
-        ClassLoader scl = getClass().getClassLoader();
+        // TODO: consider having a system component wrapping the Axis2 ConfigContext
         try {
-            if (tccl != scl) {
-                Thread.currentThread().setContextClassLoader(scl);
-            }
-            try {
-                this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
-            } catch (AxisFault e) {
-                throw new BuilderConfigException(e);
-            }
-        } finally {
-            if (tccl != scl) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
+            this.configContext = new TuscanyAxisConfigurator().getConfigurationContext();
+        } catch (AxisFault e) {
+            throw new BuilderConfigException(e);
         }
     }
 
