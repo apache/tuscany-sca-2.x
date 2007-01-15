@@ -34,9 +34,10 @@ import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.WrapperHandler;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
-import org.apache.tuscany.spi.idl.WrapperInfo;
+import org.apache.tuscany.spi.model.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.Operation;
+
 import org.osoa.sca.annotations.Service;
 
 /**

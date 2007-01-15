@@ -38,7 +38,6 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.Resource;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.PropertyValue;
-import org.apache.tuscany.spi.model.Scope;
 
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.injection.MethodEventInvoker;
@@ -68,7 +67,6 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
 
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setParent(parent);
-        Scope scope = componentType.getImplementationScope();
         if (definition.getInitLevel() != null) {
             configuration.setInitLevel(definition.getInitLevel());
         } else {
@@ -129,14 +127,40 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
 
         // handle properties
-        for (PropertyValue<?> property : definition.getPropertyValues().values()) {
-            ObjectFactory<?> factory = property.getValueFactory();
-            if (factory != null) {
-                component.addPropertyFactory(property.getName(), factory);
-            }
-        }
+        handleProperties(definition, component);
 
         // handle resources
+        handleResources(componentType, component, parent);
+
+        handleCallbackSites(componentType, configuration);
+
+        // FIXME JFM  this should be refactored to be by operation
+        component.setAllowsPassByReference(componentType.isAllowsPassByReference());
+
+        if (componentType.getConversationIDMember() != null) {
+            component.addConversationIDFactory(componentType.getConversationIDMember());
+        }
+
+        return component;
+    }
+
+    private void handleCallbackSites(
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
+        PojoConfiguration configuration) {
+        for (JavaMappedService service : componentType.getServices().values()) {
+            // setup callback injection sites
+            if (service.getCallbackReferenceName() != null) {
+                // Only if there is a callback reference in the service
+                configuration.addCallbackSite(service.getCallbackReferenceName(), service.getCallbackMember());
+            }
+        }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void handleResources(
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> componentType,
+        JavaAtomicComponent component,
+        CompositeComponent parent) {
         for (Resource resource : componentType.getResources().values()) {
             ObjectFactory<?> objectFactory = resource.getObjectFactory();
             if (objectFactory != null) {
@@ -156,22 +180,15 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
                 component.addResourceFactory(name, factory);
             }
         }
+    }
 
-        for (JavaMappedService service : componentType.getServices().values()) {
-            // setup callback injection sites
-            if (service.getCallbackReferenceName() != null) {
-                // Only if there is a callback reference in the service
-                configuration.addCallbackSite(service.getCallbackReferenceName(), service.getCallbackMember());
+    private void handleProperties(ComponentDefinition<JavaImplementation> definition, JavaAtomicComponent component) {
+        for (PropertyValue<?> property : definition.getPropertyValues().values()) {
+            ObjectFactory<?> factory = property.getValueFactory();
+            if (factory != null) {
+                component.addPropertyFactory(property.getName(), factory);
             }
         }
-
-        component.setAllowsPassByReference(componentType.isAllowsPassByReference());
-
-        if (componentType.getConversationIDMember() != null) {
-            component.addConversationIDFactory(componentType.getConversationIDMember());
-        }
-
-        return component;
     }
 
     protected Class<JavaImplementation> getImplementationType() {

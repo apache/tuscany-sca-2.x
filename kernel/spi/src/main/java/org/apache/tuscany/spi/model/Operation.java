@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tuscany.spi.idl.WrapperInfo;
-
 /**
  * Represents an operation that is part of a service contract. The type paramter of this operation identifies the
  * logical type system for all data types.

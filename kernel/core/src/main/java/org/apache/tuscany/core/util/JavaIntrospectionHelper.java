@@ -263,7 +263,7 @@ public final class JavaIntrospectionHelper {
     }
 
     public static <T> Constructor<T> getDefaultConstructor(Class<T> clazz) throws NoSuchMethodException {
-        return clazz.getConstructor((Class[])null);
+        return clazz.getConstructor((Class[]) null);
     }
 
     /**
@@ -279,7 +279,7 @@ public final class JavaIntrospectionHelper {
     /**
      * Returns the simple name of a class - i.e. the class name devoid of its package qualifier
      *
-     * @param implClass
+     * @param implClass the implmentation class
      */
     public static String getBaseName(Class<?> implClass) {
         String baseName = implClass.getName();

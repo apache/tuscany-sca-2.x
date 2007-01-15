@@ -36,7 +36,7 @@ import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
-import org.apache.tuscany.spi.idl.WrapperInfo;
+import org.apache.tuscany.spi.model.WrapperInfo;
 import org.apache.tuscany.spi.model.DataType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
