@@ -193,7 +193,7 @@ public class ConnectorImpl implements Connector {
 
             if (source instanceof ServiceBinding) {
                 // services are a special case: invoker must go on the inbound and outbound chains
-                if (target instanceof Component && (isOneWayOperation || operationHasCallback)) {
+                if (target instanceof Component && isOneWayOperation) {// || operationHasCallback)) {
                     // if the target is a component and the operation is non-blocking
                     connect(outboundChain, inboundChain, invoker, true);
                 } else {
@@ -203,7 +203,7 @@ public class ConnectorImpl implements Connector {
                 InboundInvocationChain chain = binding.getInboundWire().getInvocationChains().get(operation);
                 chain.setTargetInvoker(invoker);
             } else {
-                if (target instanceof Component && (isOneWayOperation || operationHasCallback)) {
+                if (target instanceof Component && isOneWayOperation) {// || operationHasCallback)) {
                     // if the target is a component and the operation is non-blocking
                     connect(outboundChain, inboundChain, invoker, true);
                 } else {
@@ -240,7 +240,13 @@ public class ConnectorImpl implements Connector {
                 } catch (TargetInvokerCreationException e) {
                     throw new WireConnectException("Error connecting source and target", sourceWire, targetWire, e);
                 }
-                connect(outboundChain, inboundChain, invoker, false);
+                boolean isOneWayOperation = targetOp.isNonBlocking();
+                if (target instanceof Component && isOneWayOperation) {// || operationHasCallback)) {
+                    // if the target is a component and the operation is non-blocking
+                    connect(outboundChain, inboundChain, invoker, true);
+                } else {
+                    connect(outboundChain, inboundChain, invoker, false);
+                }
             } else if (source instanceof ReferenceBinding) {
                 ReferenceBinding binding = (ReferenceBinding) source;
                 ServiceContract sourceContract = sourceWire.getServiceContract();
