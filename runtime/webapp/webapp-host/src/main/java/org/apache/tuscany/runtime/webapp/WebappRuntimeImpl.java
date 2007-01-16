@@ -19,10 +19,11 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.util.StringTokenizer;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSessionEvent;
 
-import org.osoa.sca.SCA;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
 
 import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
@@ -39,6 +40,7 @@ import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.EventPublisher;
+import org.osoa.sca.SCA;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -150,8 +152,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         ((EventPublisher) requestInjector).publish(endSession);
     }
 
-    public void httpRequestStarted(Object sessionid) {
-        HttpRequestStart httpRequestStart = new HttpRequestStart(this, sessionid);
+    public void httpRequestStarted(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Object sessionId = session == null ? new LazyHTTPSessionId(request) : session.getId();
+        HttpRequestStart httpRequestStart = new HttpRequestStart(this, sessionId);
         application.publish(httpRequestStart);
         ((EventPublisher) requestInjector).publish(httpRequestStart);
     }

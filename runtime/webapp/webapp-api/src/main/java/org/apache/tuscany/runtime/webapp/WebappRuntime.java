@@ -19,6 +19,7 @@
 package org.apache.tuscany.runtime.webapp;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
@@ -64,13 +65,13 @@ public interface WebappRuntime extends HttpSessionListener, TuscanyRuntime {
     void stopRequest();
 
     /**
-     * Request has been started with the given session id
+     * Request has been started for the given request
      */
-    void httpRequestStarted(Object id);
+    void httpRequestStarted(HttpServletRequest request);
 
     /**
      * Request has been ended with the given session id
      */
-
     void httpRequestEnded(Object id);
+    
 }

@@ -18,15 +18,22 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.net.URL;
-import javax.servlet.ServletContext;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.monitor.NullMonitorFactory;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
+import java.net.URL;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
+import junit.framework.TestCase;
+
+import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.host.servlet.ServletRequestInjector;
+import org.apache.tuscany.spi.component.WorkContext;
+import org.apache.tuscany.spi.model.Scope;
 
 /**
  * @version $Rev$ $Date$
@@ -46,6 +53,35 @@ public class WebappRuntimeImplTestCase extends TestCase {
         replay(context);
         runtime.initialize();
         verify(context);
+    }
+
+    public void testLazyHttpSessionId() throws Exception {
+        expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
+        expect(context.getInitParameter("tuscany.currentCompositePath")).andReturn(null);
+        replay(context);
+        runtime.initialize();
+        verify(context);
+
+        HttpServletRequest request = createMock(HttpServletRequest.class);;
+        expect(request.getSession(true)).andReturn(null);
+        expect(request.getSession(false)).andReturn(null);
+        replay(request);
+
+        runtime.httpRequestStarted(request);
+        
+        ServletRequestInjector injector = runtime.getRequestInjector();
+        class WorkContextAccessor extends ServletHostImpl {
+            ServletHostImpl servletHostImpl;
+            WorkContextAccessor(ServletHostImpl servletHostImpl){
+                this.servletHostImpl = servletHostImpl;
+            }
+            WorkContext getWorkContext() {
+                return servletHostImpl.workContext;
+            }
+        }
+        WorkContext workContext = new WorkContextAccessor((ServletHostImpl)injector).getWorkContext();
+        workContext.getIdentifier(Scope.SESSION);
+        verify(request);
     }
 
     protected void setUp() throws Exception {
