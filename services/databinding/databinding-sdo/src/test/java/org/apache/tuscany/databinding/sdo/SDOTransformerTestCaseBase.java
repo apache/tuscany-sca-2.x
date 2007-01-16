@@ -20,7 +20,8 @@
 package org.apache.tuscany.databinding.sdo;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
+
+import junit.framework.TestCase;
 
 import org.apache.tuscany.core.databinding.impl.TransformationContextImpl;
 import org.apache.tuscany.sdo.util.SDOUtil;
@@ -30,13 +31,7 @@ import org.apache.tuscany.spi.model.DataType;
 import com.example.ipo.sdo.PurchaseOrderType;
 import com.example.ipo.sdo.SdoFactory;
 import com.example.ipo.sdo.USAddress;
-
 import commonj.sdo.DataObject;
-import commonj.sdo.helper.XMLDocument;
-import commonj.sdo.helper.XMLHelper;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 /**
  * The base class for SDO-related test cases

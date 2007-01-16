@@ -18,7 +18,6 @@
  */
 package org.apache.tuscany.databinding.sdo;
 
-import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
@@ -27,16 +26,17 @@ import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLHelper;
 
 @Service(Transformer.class)
-public class String2DataObject extends TransformerExtension<String, DataObject> implements PullTransformer<String, DataObject> {
+public class String2DataObject extends TransformerExtension<String, DataObject> implements
+    PullTransformer<String, DataObject> {
 
     public DataObject transform(String source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            XMLHelper xmlHelper = helperContext.getXMLHelper();
             return xmlHelper.load(source).getRootObject();
         } catch (Exception e) {
             throw new TransformationException(e);

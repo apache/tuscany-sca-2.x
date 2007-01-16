@@ -20,10 +20,11 @@
 package org.apache.tuscany.databinding.sdo;
 
 import org.apache.tuscany.databinding.sdo.ImportSDOLoader.SDOType;
+import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 
 /**
  * Helper class to get TypeHelper from the transformation context
@@ -32,21 +33,22 @@ public class SDODataTypeHelper {
     private SDODataTypeHelper() {
     }
 
-    public static TypeHelper getTypeHelper(TransformationContext context) {
-        TypeHelper typeHelper = null;
+    public static HelperContext getHelperContext(TransformationContext context) {
         if (context == null || context.getMetadata() == null) {
-            return TypeHelper.INSTANCE;
+            return SDOUtil.createHelperContext();
         }
-        CompositeComponent composite = (CompositeComponent) context.getMetadata().get(CompositeComponent.class);
+        HelperContext helperContext = null;
+        CompositeComponent composite = (CompositeComponent)context.getMetadata().get(CompositeComponent.class);
         if (composite != null) {
-            SDOType sdoType = (SDOType) composite.getExtensions().get(SDOType.class);
+            SDOType sdoType = (SDOType)composite.getExtensions().get(SDOType.class);
             if (sdoType != null) {
-                typeHelper = sdoType.getTypeHelper();
+                helperContext = sdoType.getHelperContext();
             }
         }
-        if (typeHelper == null) {
-            return TypeHelper.INSTANCE;
+        if (helperContext == null) {
+            return SDOUtil.createHelperContext();
+        } else {
+            return helperContext;
         }
-        return typeHelper;
     }
 }

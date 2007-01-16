@@ -66,7 +66,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.w3c.dom.Node;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 import commonj.sdo.helper.XSDHelper;
@@ -155,8 +155,8 @@ public class TransformationTestCase extends TestCase {
     // XMLBeans --> SDO
     public void testTransformation1() throws Exception {
         URL xsdFile = getClass().getClassLoader().getResource("ipo.xsd");
-        TypeHelper typeHelper = SDOUtil.createTypeHelper();
-        XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
+        HelperContext helperContext = SDOUtil.createHelperContext();
+        XSDHelper xsdHelper = helperContext.getXSDHelper();
         xsdHelper.define(xsdFile.openStream(), xsdFile.toExternalForm());
 
         // URL/Stream/Reader to XmlObject
@@ -167,7 +167,7 @@ public class TransformationTestCase extends TestCase {
         System.out.println("Path: " + path);
 
         TransformationContext tContext = createTransformationContext();
-        tContext.getMetadata().put(SDOType.class, new SDOType(typeHelper));
+        tContext.getMetadata().put(SDOType.class, new SDOType(helperContext));
 
         Object result = object;
         for (Transformer transformer : path) {

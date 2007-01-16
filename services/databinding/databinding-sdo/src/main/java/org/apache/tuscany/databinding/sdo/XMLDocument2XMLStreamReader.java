@@ -30,11 +30,12 @@ import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 
 @Service(Transformer.class)
-public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocument, XMLStreamReader> implements PullTransformer<XMLDocument, XMLStreamReader> {
+public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocument, XMLStreamReader> implements
+    PullTransformer<XMLDocument, XMLStreamReader> {
     /**
      * @param source
      * @param context
@@ -42,8 +43,8 @@ public class XMLDocument2XMLStreamReader extends TransformerExtension<XMLDocumen
      */
     public XMLStreamReader transform(XMLDocument source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
             return streamHelper.createXMLStreamReader(source);
         } catch (XMLStreamException e) {
             throw new TransformationException(e);

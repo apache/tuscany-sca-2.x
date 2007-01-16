@@ -31,17 +31,18 @@ import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 
 @Service(Transformer.class)
 public class XMLStreamReader2DataObject extends TransformerExtension<XMLStreamReader, DataObject> implements
-        PullTransformer<XMLStreamReader, DataObject> {
+    PullTransformer<XMLStreamReader, DataObject> {
 
     public DataObject transform(XMLStreamReader source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
-            // The XMLStreamHelper requires that the reader is posistioned at START_ELEMENT
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
+            // The XMLStreamHelper requires that the reader is posistioned at
+            // START_ELEMENT
             while (source.getEventType() != XMLStreamConstants.START_ELEMENT && source.hasNext()) {
                 source.next();
             }

@@ -20,7 +20,6 @@ package org.apache.tuscany.databinding.sdo;
 
 import java.io.StringWriter;
 
-import org.apache.tuscany.sdo.util.SDOUtil;
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.TransformationException;
@@ -28,18 +27,18 @@ import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 
 @Service(Transformer.class)
 public class XMLDocument2String extends TransformerExtension<XMLDocument, String> implements
-        PullTransformer<XMLDocument, String> {
+    PullTransformer<XMLDocument, String> {
 
     public String transform(XMLDocument source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            XMLHelper xmlHelper = helperContext.getXMLHelper();
             StringWriter writer = new StringWriter();
             xmlHelper.save(source, writer, null);
             return writer.toString();
