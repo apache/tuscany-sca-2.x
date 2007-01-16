@@ -32,7 +32,7 @@ import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
 import commonj.sdo.DataObject;
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 import commonj.sdo.helper.XMLHelper;
 
@@ -42,12 +42,12 @@ public class DataObject2XMLStreamReader extends TransformerExtension<DataObject,
 
     public XMLStreamReader transform(DataObject source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
             Object logicalType = context.getSourceDataType().getLogical();
             QName elementName =
                     (logicalType instanceof QName) ? (QName) logicalType : new QName("commonj.sdo", "dataObject");
-            XMLHelper xmlHelper = SDOUtil.createXMLHelper(typeHelper);
+            XMLHelper xmlHelper = helperContext.getXMLHelper();
             XMLDocument document =
                     xmlHelper.createDocument(source, elementName.getNamespaceURI(), elementName.getLocalPart());
             return streamHelper.createXMLStreamReader(document);

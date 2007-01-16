@@ -27,6 +27,7 @@ import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.idl.TypeInfo;
 
 import commonj.sdo.Type;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.TypeHelper;
 
 /**
@@ -45,7 +46,8 @@ public class SDOSimpleTypeMapper implements SimpleTypeMapper {
         if (URI_2001_SCHEMA_XSD.equals(typeName.getNamespaceURI())) {
             type = SDOUtil.getXSDSDOType(typeName.getLocalPart());
         } else {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            TypeHelper typeHelper = helperContext.getTypeHelper();
             type = typeHelper.getType(typeName.getNamespaceURI(), typeName.getLocalPart());
         }
         return SDOUtil.createFromString(type, value);
@@ -57,10 +59,8 @@ public class SDOSimpleTypeMapper implements SimpleTypeMapper {
         if (URI_2001_SCHEMA_XSD.equals(typeName.getNamespaceURI())) {
             type = SDOUtil.getXSDSDOType(typeName.getLocalPart());
         } else {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            if (typeHelper == null) {
-                typeHelper = TypeHelper.INSTANCE;
-            }
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            TypeHelper typeHelper = helperContext.getTypeHelper();
             type = typeHelper.getType(typeName.getNamespaceURI(), typeName.getLocalPart());
         }
         return SDOUtil.convertToString(type, obj);

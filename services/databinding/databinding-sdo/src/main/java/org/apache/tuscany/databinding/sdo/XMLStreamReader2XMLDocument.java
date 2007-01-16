@@ -29,17 +29,17 @@ import org.apache.tuscany.spi.databinding.Transformer;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
 import org.osoa.sca.annotations.Service;
 
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XMLDocument;
 
 @Service(Transformer.class)
 public class XMLStreamReader2XMLDocument extends TransformerExtension<XMLStreamReader, XMLDocument> implements
-        PullTransformer<XMLStreamReader, XMLDocument> {
+    PullTransformer<XMLStreamReader, XMLDocument> {
 
     public XMLDocument transform(XMLStreamReader source, TransformationContext context) {
         try {
-            TypeHelper typeHelper = SDODataTypeHelper.getTypeHelper(context);
-            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(typeHelper);
+            HelperContext helperContext = SDODataTypeHelper.getHelperContext(context);
+            XMLStreamHelper streamHelper = SDOUtil.createXMLStreamHelper(helperContext.getTypeHelper());
             return streamHelper.load(source);
         } catch (Exception e) {
             throw new TransformationException(e);

@@ -38,7 +38,7 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.osoa.sca.annotations.Constructor;
 
-import commonj.sdo.helper.TypeHelper;
+import commonj.sdo.helper.HelperContext;
 import commonj.sdo.helper.XSDHelper;
 
 /**
@@ -48,10 +48,11 @@ import commonj.sdo.helper.XSDHelper;
  */
 public class ImportSDOLoader extends LoaderExtension {
     public static final QName IMPORT_SDO =
-            new QName("http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0", "import.sdo");
+        new QName("http://tuscany.apache.org/xmlns/sca/databinding/sdo/1.0", "import.sdo");
 
-    @Constructor( { "registry" })
-    public ImportSDOLoader(@Autowire LoaderRegistry registry) {
+    @Constructor( {"registry"})
+    public ImportSDOLoader(@Autowire
+    LoaderRegistry registry) {
         super(registry);
     }
 
@@ -59,24 +60,31 @@ public class ImportSDOLoader extends LoaderExtension {
         return IMPORT_SDO;
     }
 
-    public ModelObject load(CompositeComponent parent, ModelObject object, XMLStreamReader reader, DeploymentContext deploymentContext)
-        throws XMLStreamException, LoaderException {
+    public ModelObject load(CompositeComponent parent,
+                            ModelObject object,
+                            XMLStreamReader reader,
+                            DeploymentContext deploymentContext) throws XMLStreamException, LoaderException {
         assert IMPORT_SDO.equals(reader.getName());
 
-        // FIXME: [rfeng] How to associate the TypeHelper with deployment context?
-        TypeHelper typeHelper = TypeHelper.INSTANCE;
+        // FIXME: [rfeng] How to associate the TypeHelper with deployment
+        // context?
+        HelperContext helperContext = null;
         if (deploymentContext != null && deploymentContext.getParent() != null) {
-            typeHelper = (TypeHelper) deploymentContext.getParent().getExtension(TypeHelper.class.getName());
-            if (typeHelper == null) {
-                typeHelper = SDOUtil.createTypeHelper();
-                deploymentContext.getParent().putExtension(TypeHelper.class.getName(), typeHelper);
+            helperContext = (HelperContext)deploymentContext.getParent().getExtension(HelperContext.class.getName());
+            if (helperContext == null) {
+                helperContext = SDOUtil.createHelperContext();
+                deploymentContext.getParent().putExtension(HelperContext.class.getName(), helperContext);
             }
         }
 
+        if (helperContext == null) {
+            helperContext = SDOUtil.createHelperContext();
+        }
+
         importFactory(reader, deploymentContext);
-        importWSDL(reader, deploymentContext, typeHelper);
+        importWSDL(reader, deploymentContext, helperContext);
         LoaderUtil.skipToEndElement(reader);
-        return new SDOType(typeHelper);
+        return new SDOType(helperContext);
     }
 
     private void importFactory(XMLStreamReader reader, DeploymentContext deploymentContext) throws LoaderException {
@@ -88,7 +96,8 @@ public class ImportSDOLoader extends LoaderExtension {
                 ClassLoader cl = deploymentContext.getClassLoader();
                 Thread.currentThread().setContextClassLoader(cl);
                 Class<?> factoryClass = cl.loadClass(factoryName);
-                // FIXME: We require the SDO to provide an API to register static types in a given TypeHelper
+                // FIXME: We require the SDO to provide an API to register
+                // static types in a given TypeHelper
                 SDOUtil.registerStaticTypes(factoryClass);
             } catch (ClassNotFoundException e) {
                 throw new LoaderException(e.getMessage(), e);
@@ -98,7 +107,7 @@ public class ImportSDOLoader extends LoaderExtension {
         }
     }
 
-    private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, TypeHelper typeHelper)
+    private void importWSDL(XMLStreamReader reader, DeploymentContext deploymentContext, HelperContext helperContext)
         throws LoaderException {
         String location = reader.getAttributeValue(null, "location");
         if (location == null)
@@ -118,7 +127,7 @@ public class ImportSDOLoader extends LoaderExtension {
                 }
                 InputStream xsdInputStream = wsdlURL.openStream();
                 try {
-                    XSDHelper xsdHelper = SDOUtil.createXSDHelper(typeHelper);
+                    XSDHelper xsdHelper = helperContext.getXSDHelper();
                     xsdHelper.define(xsdInputStream, wsdlURL.toExternalForm());
                 } finally {
                     xsdInputStream.close();
@@ -132,15 +141,15 @@ public class ImportSDOLoader extends LoaderExtension {
     }
 
     public static class SDOType extends ModelObject {
-        private TypeHelper typeHelper;
+        private HelperContext helperContext;
 
-        public SDOType(TypeHelper typeHelper) {
+        public SDOType(HelperContext typeHelper) {
             super();
-            this.typeHelper = typeHelper;
+            this.helperContext = typeHelper;
         }
 
-        public TypeHelper getTypeHelper() {
-            return typeHelper;
+        public HelperContext getHelperContext() {
+            return helperContext;
         }
     }
 }
