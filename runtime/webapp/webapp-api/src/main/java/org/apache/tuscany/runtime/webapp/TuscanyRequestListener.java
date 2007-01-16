@@ -56,9 +56,7 @@ public class TuscanyRequestListener implements ServletRequestListener {
         getRuntime(context);
         ServletRequest servletRequest = servletRequestEvent.getServletRequest();
         if (servletRequest instanceof HttpServletRequest) {
-            HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-            HttpSession session = httpServletRequest.getSession(false);
-            runtime.httpRequestStarted(session == null ? null : session.getId());
+            runtime.httpRequestStarted((HttpServletRequest) servletRequest);
 
         }
 
