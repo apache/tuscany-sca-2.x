@@ -30,7 +30,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.osoa.sca.CompositeContext;
-import org.osoa.sca.SCA;
+import org.osoa.sca.CurrentCompositeContext;
 
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
@@ -68,27 +68,15 @@ public class Main {
 
             URL applicationScdl = getApplicationScdl(applicationClassLoader);
 
-            final CompositeContext context = runtime.deployApplication("application",
-                                                                       applicationScdl,
-                                                                       applicationClassLoader);
+            CompositeContext context = runtime.deployApplication("application",
+                                                                 applicationScdl,
+                                                                 applicationClassLoader);
 
-            // FIXME JNB we should replace this with CurrentCompositeContext.setContext(...)
-            SCA sca = new SCA() {
-
-                public void start() {
-                    setCompositeContext(context);
-                }
-
-                public void stop() {
-                    setCompositeContext(null);
-                }
-            };
-
-            sca.start();
+            CompositeContext old = CurrentCompositeContext.setContext(context);
             try {
                 runApplication(applicationJar, applicationClassLoader, appArgs);
             } finally {
-                sca.stop();
+                CurrentCompositeContext.setContext(old);
             }
         } finally {
             runtime.destroy();
@@ -111,6 +99,7 @@ public class Main {
         boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
 
         return new StandaloneRuntimeInfoImpl(null, profile, installDir, profileDir, null, online, props);
+
     }
 
     static TuscanyRuntime createRuntime(StandaloneRuntimeInfo runtimeInfo) throws Exception {

@@ -21,7 +21,6 @@ package org.apache.tuscany.host.runtime;
 import java.net.URL;
 
 import org.osoa.sca.CompositeContext;
-import org.osoa.sca.SCA;
 
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
@@ -120,7 +119,7 @@ public interface TuscanyRuntime {
      * Returns the current SCA context
      */
     @Deprecated
-    SCA getContext();
+    CompositeContext getContext();
 
     /**
      * Returns the name of the component associated with the application SCDL.

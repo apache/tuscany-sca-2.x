@@ -24,7 +24,6 @@ import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.component.Reference;

@@ -38,14 +38,6 @@ public class CompositeContextImpl extends AbstractCompositeContext {
         super(composite, wireService);
     }
 
-    public void start() {
-        setCompositeContext(this);
-    }
-
-    public void stop() {
-        setCompositeContext(null);
-    }
-
     public ServiceReference createServiceReferenceForSession(Object arg0) {
         throw new UnsupportedOperationException();
     }

@@ -22,7 +22,6 @@ import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
 import org.osoa.sca.CompositeContext;
-import org.osoa.sca.SCA;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
@@ -305,7 +304,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
         return (CompositeComponent) deployer.deploy(parent, definition);
     }
 
-    public SCA getContext() {
+    public CompositeContext getContext() {
         throw new UnsupportedOperationException();
     }
 

@@ -58,6 +58,12 @@ public final class Constants {
     static final String RUNTIME_ATTRIBUTE = "tuscany.runtime";
 
     /**
+     * Context attribute for storing the CompositeContext that should be bound to the thread.`
+     */
+    @Deprecated
+    static final String CONTEXT_ATTRIBUTE = "tuscany.context";
+
+    /**
      * Servlet context-param name for the path to the composite to set as the webb app composite
      */
     static final String CURRENT_COMPOSITE_PATH_PARAM = "tuscany.currentCompositePath";

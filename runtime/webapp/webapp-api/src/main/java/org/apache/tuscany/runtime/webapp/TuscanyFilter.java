@@ -25,10 +25,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.ServletContext;
 
-import org.osoa.sca.SCA;
+import org.osoa.sca.CompositeContext;
+import org.osoa.sca.CurrentCompositeContext;
 
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
+import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
 
 /**
  * Maps an incoming request and the current composite context to the composite component for the web application. This
@@ -38,30 +41,32 @@ import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
  * @version $Rev$ $Date$
  */
 public class TuscanyFilter implements Filter {
-    private SCA context;
+    private CompositeContext context;
     private WebappRuntime runtime;
 
     public void init(FilterConfig config) throws ServletException {
-        runtime = (WebappRuntime) config.getServletContext().getAttribute(RUNTIME_ATTRIBUTE);
+        ServletContext servletContext = config.getServletContext();
+        runtime = (WebappRuntime) servletContext.getAttribute(RUNTIME_ATTRIBUTE);
         if (runtime == null) {
             throw new ServletException("Tuscany is not configured for the web application");
         }
-        context = runtime.getContext();
+        context = (CompositeContext) servletContext.getAttribute(CONTEXT_ATTRIBUTE);
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain)
         throws IOException, ServletException {
+        CompositeContext oldContext = CurrentCompositeContext.setContext(context);
         try {
             runtime.startRequest();
-            context.start();
             filterChain.doFilter(req, resp);
         } finally {
-            context.stop();
+            CurrentCompositeContext.setContext(oldContext);
             runtime.stopRequest();
         }
     }
 
     public void destroy() {
-
+        context = null;
+        runtime = null;
     }
 }

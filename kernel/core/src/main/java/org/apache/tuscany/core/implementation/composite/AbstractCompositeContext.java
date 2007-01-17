@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import org.osoa.sca.CompositeContext;
-import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -40,7 +39,7 @@ import org.apache.tuscany.spi.wire.WireService;
  *
  * @version $Rev$ $Date$
  */
-public abstract class AbstractCompositeContext extends SCA implements CompositeContext {
+public abstract class AbstractCompositeContext implements CompositeContext {
     protected final CompositeComponent composite;
     protected final WireService wireService;
 
