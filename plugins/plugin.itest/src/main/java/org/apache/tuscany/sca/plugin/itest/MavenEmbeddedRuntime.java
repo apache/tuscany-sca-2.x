@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osoa.sca.SCA;
+import org.osoa.sca.CompositeContext;
 
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.launcher.CompositeContextImpl;
@@ -116,7 +116,6 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
             new ComponentDefinition<SystemCompositeImplementation>(extensionName, implementation);
 
         Component component = deployer.deploy(composite, definition);
-
         component.start();
     }
 
@@ -129,7 +128,7 @@ public class MavenEmbeddedRuntime extends AbstractRuntime {
         super.destroy();
     }
 
-    public SCA getContext() {
+    public CompositeContext getContext() {
         return context;
     }
 

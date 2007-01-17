@@ -43,7 +43,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.tuscany.host.runtime.InitializationException;
 
-import org.osoa.sca.SCA;
+import org.osoa.sca.CompositeContext;
+import org.osoa.sca.CurrentCompositeContext;
 
 /**
  * @version $Rev$ $Date$
@@ -296,8 +297,8 @@ public class TuscanyStartMojo extends AbstractMojo {
         } catch (InitializationException e) {
             throw new MojoExecutionException("Error initializing", e);
         }
-        SCA context = runtime.getContext();
-        context.start();
+        CompositeContext context = runtime.getContext();
+        CurrentCompositeContext.setContext(context);
 
         foo.set(applicationClassLoader);
     }

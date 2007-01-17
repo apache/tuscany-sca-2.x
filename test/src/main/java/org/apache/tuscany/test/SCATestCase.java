@@ -46,6 +46,8 @@ import org.apache.tuscany.core.monitor.JavaLoggingMonitorFactory;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.runtime.InitializationException;
 
+import org.osoa.sca.CurrentCompositeContext;
+
 /**
  * Base class for JUnit tests that want to run in an SCA client environment.
  *
@@ -88,7 +90,7 @@ public abstract class SCATestCase extends TestCase {
             component = launcher.bootApplication("application", applicationSCDL);
             component.start();
             context = new CompositeContextImpl(component, wireService);
-            context.start();
+            CurrentCompositeContext.setContext(context);
         } catch (TuscanyException e) {
             DeploymentMonitor monitor = monitorFactory.getMonitor(DeploymentMonitor.class);
             monitor.deploymentError(e);
@@ -173,7 +175,7 @@ public abstract class SCATestCase extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        context.stop();
+        CurrentCompositeContext.setContext(null);
         component.stop();
         launcher.shutdownRuntime();
         super.tearDown();

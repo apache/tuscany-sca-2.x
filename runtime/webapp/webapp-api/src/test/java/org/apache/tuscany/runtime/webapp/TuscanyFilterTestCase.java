@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
@@ -25,94 +26,97 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.osoa.sca.SCA;
-
 import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import org.osoa.sca.CompositeContext;
+
+import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import org.easymock.classextension.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class TuscanyFilterTestCase extends TestCase {
+    private TuscanyFilter filter;
+    private FilterConfig config;
+    private ServletContext servletContext;
+    private WebappRuntime runtime;
+    private CompositeContext context;
+    private ServletRequest request;
+    private ServletResponse response;
+    private FilterChain chain;
 
-    public void testStartStopFilter() throws Exception {
-        SCA sca = EasyMock.createNiceMock(SCA.class);
-        sca.start();
-        sca.stop();
-        EasyMock.replay(sca);
-        WebappRuntime runtime = createMock(WebappRuntime.class);
-        expect(runtime.getContext()).andReturn(sca);
-        runtime.startRequest();
-        runtime.stopRequest();
-        replay(runtime);
-        ServletContext context = createNiceMock(ServletContext.class);
-        EasyMock.expect(context.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
-        replay(context);
-        TuscanyFilter filter = new TuscanyFilter();
-        FilterConfig config = createMock(FilterConfig.class);
-        expect(config.getServletContext()).andReturn(context);
-        replay(config);
-        filter.init(config);
-        ServletRequest req = createNiceMock(ServletRequest.class);
-        ServletResponse resp = createNiceMock(ServletResponse.class);
-        FilterChain chain = createNiceMock(FilterChain.class);
-        filter.doFilter(req, resp, chain);
-        verify(runtime);
-        EasyMock.verify(sca);
-    }
+    public void testFilterInit() {
+        EasyMock.expect(config.getServletContext()).andReturn(servletContext);
+        EasyMock.expect(servletContext.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
+        EasyMock.expect(servletContext.getAttribute(CONTEXT_ATTRIBUTE)).andReturn(context);
 
-    public void testExceptionCleanupFilter() throws Exception {
-        SCA sca = EasyMock.createNiceMock(SCA.class);
-        sca.start();
-        sca.stop();
-        EasyMock.replay(sca);
-        WebappRuntime runtime = createMock(WebappRuntime.class);
-        runtime.startRequest();
-        runtime.stopRequest();
-        expect(runtime.getContext()).andReturn(sca);
-        replay(runtime);
-        ServletContext context = createNiceMock(ServletContext.class);
-        EasyMock.expect(context.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
-        replay(context);
-        TuscanyFilter filter = new TuscanyFilter();
-        FilterConfig config = createMock(FilterConfig.class);
-        expect(config.getServletContext()).andReturn(context);
-        replay(config);
-        filter.init(config);
-        ServletRequest req = createNiceMock(ServletRequest.class);
-        ServletResponse resp = createNiceMock(ServletResponse.class);
-        FilterChain chain = createNiceMock(FilterChain.class);
-        chain.doFilter(isA(ServletRequest.class), isA(ServletResponse.class));
-        EasyMock.expectLastCall().andThrow(new TestException());
-        filter.doFilter(req, resp, chain);
-        verify(runtime);
-        EasyMock.verify(sca);
-    }
-
-    public void testRuntimeNotConfigured() throws Exception {
-        ServletContext context = createNiceMock(ServletContext.class);
-        TuscanyFilter filter = new TuscanyFilter();
-        FilterConfig config = createMock(FilterConfig.class);
-        expect(config.getServletContext()).andReturn(context);
-        replay(config);
+        EasyMock.replay(servletContext);
+        EasyMock.replay(config);
+        EasyMock.replay(runtime);
+        EasyMock.replay(context);
         try {
             filter.init(config);
-            fail();
         } catch (ServletException e) {
-            //expected
+            fail(e.getMessage());
         }
+        EasyMock.verify(servletContext);
+        EasyMock.verify(config);
+        EasyMock.verify(runtime);
+        EasyMock.verify(context);
     }
 
-    private class TestException extends RuntimeException {
+    public void testFilterInitWithNoRuntimeConfigured() {
+        EasyMock.expect(config.getServletContext()).andReturn(servletContext);
+        EasyMock.expect(servletContext.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(null);
 
+        EasyMock.replay(servletContext);
+        EasyMock.replay(config);
+        EasyMock.replay(runtime);
+        EasyMock.replay(context);
+        try {
+            filter.init(config);
+            fail("Expected a ServletException");
+        } catch (ServletException e) {
+            // OK
+        }
+        EasyMock.verify(servletContext);
+        EasyMock.verify(config);
+        EasyMock.verify(runtime);
+        EasyMock.verify(context);
     }
 
+    public void testContextIsAssociatedWithThread() throws ServletException, IOException {
+        EasyMock.expect(config.getServletContext()).andReturn(servletContext);
+        EasyMock.expect(servletContext.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
+        EasyMock.expect(servletContext.getAttribute(CONTEXT_ATTRIBUTE)).andReturn(context);
+        EasyMock.replay(servletContext);
+        EasyMock.replay(config);
+        filter.init(config);
 
+        chain.doFilter(EasyMock.same(request), EasyMock.same(response));
+        EasyMock.replay(chain);
+        runtime.startRequest();
+        runtime.stopRequest();
+        EasyMock.replay(runtime);
+        try {
+            filter.doFilter(request, response, chain);
+        } catch (IOException e) {
+            fail(e.getMessage());
+        }
+        EasyMock.verify(chain);
+        EasyMock.verify(runtime);
+    }
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        filter = new TuscanyFilter();
+        config = EasyMock.createMock(FilterConfig.class);
+        servletContext = EasyMock.createMock(ServletContext.class);
+        runtime = EasyMock.createMock(WebappRuntime.class);
+        context = EasyMock.createMock(CompositeContext.class);
+        request = EasyMock.createMock(ServletRequest.class);
+        response = EasyMock.createMock(ServletResponse.class);
+        chain = EasyMock.createMock(FilterChain.class);
+    }
 }

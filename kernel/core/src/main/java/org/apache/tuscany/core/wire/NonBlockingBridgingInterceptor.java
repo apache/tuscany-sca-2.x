@@ -22,7 +22,6 @@ import java.util.LinkedList;
 
 import org.osoa.sca.CompositeContext;
 import org.osoa.sca.CurrentCompositeContext;
-import org.osoa.sca.SCA;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.component.WorkContext;
@@ -41,7 +40,6 @@ import org.apache.tuscany.spi.model.Scope;
  */
 public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
 
-    private static final ContextBinder BINDER = new ContextBinder();
     private static final Message RESPONSE = new ImmutableMessage();
 
     private WorkScheduler workScheduler;
@@ -73,16 +71,15 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
                     if (conversationID != null) {
                         workContext.setIdentifier(Scope.CONVERSATION, conversationID);
                     }
-                    CompositeContext oldContext = CurrentCompositeContext.getContext();
+                    CompositeContext oldContext = CurrentCompositeContext.setContext(currentContext);
                     try {
-                        BINDER.setContext(currentContext);
                         next.invoke(msg);
                     } catch (Exception e) {
                         // REVIEW uncomment when it is available
                         // monitor.executionError(e);
                         e.printStackTrace();
                     } finally {
-                        BINDER.setContext(oldContext);
+                        CurrentCompositeContext.setContext(oldContext);
                     }
                 }
             });
@@ -102,20 +99,6 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
 
     public boolean isOptimizable() {
         return false;
-    }
-
-    private static class ContextBinder extends SCA {
-        public void setContext(CompositeContext context) {
-            setCompositeContext(context);
-        }
-
-        public void start() {
-            throw new AssertionError();
-        }
-
-        public void stop() {
-            throw new AssertionError();
-        }
     }
 
     /**

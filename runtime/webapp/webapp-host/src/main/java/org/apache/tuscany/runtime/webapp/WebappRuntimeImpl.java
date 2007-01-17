@@ -19,11 +19,12 @@
 package org.apache.tuscany.runtime.webapp;
 
 import java.util.StringTokenizer;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
+
+import org.osoa.sca.CompositeContext;
 
 import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
@@ -40,7 +41,6 @@ import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.event.EventPublisher;
-import org.osoa.sca.SCA;
 
 /**
  * Bootstrapper for the Tuscany runtime in a web application host. This listener manages one runtime per servlet
@@ -101,10 +101,10 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             }
             getRuntime().getRootComponent().start();
             application = deployApplicationScdl(getDeployer(),
-                getRuntime().getRootComponent(),
-                getApplicationName(),
-                getApplicationScdl(),
-                getHostClassLoader());
+                                                getRuntime().getRootComponent(),
+                                                getApplicationName(),
+                                                getApplicationScdl(),
+                                                getHostClassLoader());
             application.start();
             CompositeComponent current = application;
             String path = servletContext.getInitParameter(Constants.CURRENT_COMPOSITE_PATH_PARAM);
@@ -132,7 +132,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         super.destroy();
     }
 
-    public SCA getContext() {
+    public CompositeContext getContext() {
         return context;
     }
 
