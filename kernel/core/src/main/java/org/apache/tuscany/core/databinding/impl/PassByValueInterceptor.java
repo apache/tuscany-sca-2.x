@@ -100,7 +100,9 @@ public class PassByValueInterceptor implements Interceptor {
     }
 
     public Object copy(Object arg, DataBinding argDataBinding) {
-        if(arg == null) return null;
+        if (arg == null) {
+            return null;
+        }
         Object copiedArg;
         if (dataBinding != null) {
             copiedArg = dataBinding.copy(arg);

@@ -141,7 +141,6 @@ public class ConnectorImpl implements Connector {
             // system services do not need to have their chains processed, return
             return;
         }
-        ServiceContract contract = sourceWire.getServiceContract();
         // match outbound to inbound chains
         for (OutboundInvocationChain outboundChain : sourceWire.getInvocationChains().values()) {
             Operation<?> operation = outboundChain.getOperation();
@@ -151,7 +150,6 @@ public class ConnectorImpl implements Connector {
             }
             Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
-            boolean operationHasCallback = contract.getCallbackName() != null;
             TargetInvoker invoker;
             if (target instanceof Component) {
                 Component component = (Component) target;

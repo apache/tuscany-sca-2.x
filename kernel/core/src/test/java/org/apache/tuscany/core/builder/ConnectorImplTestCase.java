@@ -92,7 +92,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
@@ -113,7 +112,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
         EasyMock.expect(outboundWire.getContainer()).andReturn(container).atLeastOnce();
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
@@ -132,7 +130,6 @@ public class ConnectorImplTestCase extends AbstractConnectorImplTestCase {
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(container);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(outboundWire.getServiceContract()).andReturn(contract);
         outboundWire.getInvocationChains();
         EasyMock.expectLastCall().andReturn(Collections.emptyMap()).atLeastOnce();
         outboundWire.getTargetCallbackInvocationChains();
