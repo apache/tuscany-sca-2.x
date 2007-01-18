@@ -156,14 +156,11 @@ public class ConversationalScopeContainer extends AbstractScopeContainer impleme
             workContext.setCurrentAtomicComponent(component);
             Object instance = nonDurableStore.readRecord(component, conversationId);
             if (instance != null) {
-                component.destroy(instance);
                 nonDurableStore.removeRecord(component, conversationId);
             }
         } catch (StoreReadException e) {
             throw new PersistenceException(e);
         } catch (StoreWriteException e) {
-            throw new PersistenceException(e);
-        } catch (TargetDestructionException e) {
             throw new PersistenceException(e);
         }
     }

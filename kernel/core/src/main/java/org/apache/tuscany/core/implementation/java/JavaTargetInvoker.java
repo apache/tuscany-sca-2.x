@@ -96,6 +96,7 @@ public class JavaTargetInvoker extends TargetInvokerExtension {
                 // notify a stateless instance of a destruction event after the invoke
                 component.destroy(instance);
             } else if (sequence == END) {
+                component.destroy(instance);
                 // if end conversation, remove resource
                 component.removeInstance();
             }
