@@ -80,19 +80,20 @@ public class PassByValueWirePostProcessor extends WirePostProcessorExtension {
                 targetOperation = entry.getKey();
                 sourceOperation =
                     getSourceOperation(source.getInvocationChains().keySet(), targetOperation.getName());
+                
 
-                argsDataBindings = resolveArgsDataBindings(targetOperation);
-                resultDataBinding = resolveResultDataBinding(targetOperation);
-
-                passByValueInterceptor = new PassByValueInterceptor();
-                passByValueInterceptor.setDataBinding(getDataBinding(targetOperation));
-                passByValueInterceptor.setArgsDataBindings(argsDataBindings);
-                passByValueInterceptor.setResultDataBinding(resultDataBinding);
-
-                entry.getValue().addInterceptor(0, passByValueInterceptor);
-                tailInterceptor = source.getInvocationChains().get(sourceOperation).getTailInterceptor();
-                if (tailInterceptor != null) {
-                    tailInterceptor.setNext(passByValueInterceptor);
+                if (null != sourceOperation) {
+                    argsDataBindings = resolveArgsDataBindings(targetOperation);
+                    resultDataBinding = resolveResultDataBinding(targetOperation);
+                    passByValueInterceptor = new PassByValueInterceptor();
+                    passByValueInterceptor.setDataBinding(getDataBinding(targetOperation));
+                    passByValueInterceptor.setArgsDataBindings(argsDataBindings);
+                    passByValueInterceptor.setResultDataBinding(resultDataBinding);
+                    entry.getValue().addInterceptor(0, passByValueInterceptor);
+                    tailInterceptor = source.getInvocationChains().get(sourceOperation).getTailInterceptor();
+                    if (tailInterceptor != null) {
+                        tailInterceptor.setNext(passByValueInterceptor);
+                    }
                 }
             }
         }
