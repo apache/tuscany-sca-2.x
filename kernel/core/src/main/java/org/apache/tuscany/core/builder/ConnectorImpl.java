@@ -152,12 +152,6 @@ public class ConnectorImpl implements Connector {
             Operation<?> inboundOperation = inboundChain.getOperation();
             boolean isOneWayOperation = operation.isNonBlocking();
             boolean operationHasCallback = contract.getCallbackName() != null;
-            if (isOneWayOperation && operationHasCallback) {
-                throw new IllegalCallbackException("Operation cannot be marked one-way and have a callback",
-                    inboundOperation.getName(),
-                    sourceWire,
-                    targetWire);
-            }
             TargetInvoker invoker;
             if (target instanceof Component) {
                 Component component = (Component) target;
