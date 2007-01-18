@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.wire.Message;
 import org.apache.tuscany.spi.wire.MessageImpl;
 import org.apache.tuscany.spi.wire.TargetInvoker;
-import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.easymock.classextension.EasyMock;
@@ -100,6 +100,7 @@ public class JavaTargetInvokerSequenceTestCase extends TestCase {
         EasyMock.expect(component.getAssociatedTargetInstance()).andReturn(foo);
         EasyMock.expect(component.getScope()).andReturn(Scope.CONVERSATION);
         component.removeInstance();
+        component.destroy(EasyMock.eq(foo));
         EasyMock.replay(component);
         JavaTargetInvoker invoker = new JavaTargetInvoker(Foo.class.getMethod("invoke"), component, null, null, null);
         Message msg = new MessageImpl();

@@ -36,7 +36,7 @@ import org.easymock.EasyMock;
  */
 public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
 
-    public void testInitDestroy() throws Exception {
+    public void testInitRemove() throws Exception {
         StoreMonitor monitor = EasyMock.createMock(StoreMonitor.class);
         monitor.start(EasyMock.isA(String.class));
         monitor.stop(EasyMock.isA(String.class));
@@ -51,7 +51,6 @@ public class ConversationalScopeInstanceLifecycleTestCase extends TestCase {
         component.init(EasyMock.eq(comp));
         EasyMock.expect(component.getMaxAge()).andReturn(1L).anyTimes();
         component.addListener(EasyMock.isA(RuntimeEventListener.class));
-        component.destroy(EasyMock.eq(comp));
         EasyMock.replay(component);
         scope.register(component);
         String convID = "ConvID";
