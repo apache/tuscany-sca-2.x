@@ -66,6 +66,7 @@ public class QualifiedName {
     public QualifiedName(String partName, String portName) {
         this.partName = partName;
         this.portName = portName;
+        this.qName = partName + '/' + portName;
     }
 
     /**
