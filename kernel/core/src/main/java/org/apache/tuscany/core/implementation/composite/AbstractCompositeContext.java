@@ -103,7 +103,7 @@ public abstract class AbstractCompositeContext implements CompositeContext {
                 }
             }
             if (wire == null) {
-                throw new ServiceRuntimeException("Local binding for service not found [" + qName + "]");
+                throw new ServiceRuntimeException("Local binding for reference not found [" + qName + "]");
             }
         } else if (child == null) {
             throw new ServiceRuntimeException("Service not found [" + qName + "]");
