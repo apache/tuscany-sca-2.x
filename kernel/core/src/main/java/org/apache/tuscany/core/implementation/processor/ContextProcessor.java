@@ -76,9 +76,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
         Class<?> paramType = method.getParameterTypes()[0];
         if (CompositeContext.class.equals(paramType)) {
             String name = method.getName();
-            if (name.startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(name);
-            }
+            name = JavaIntrospectionHelper.toPropertyName(name);
             Resource resource = new Resource();
             resource.setName(name);
             resource.setMember(method);
@@ -86,9 +84,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             type.getResources().put(name, resource);
         } else if (RequestContext.class.equals(paramType)) {
             String name = method.getName();
-            if (name.startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(name);
-            }
+            name = JavaIntrospectionHelper.toPropertyName(name);
             Resource resource = new Resource();
             resource.setName(name);
             resource.setMember(method);
@@ -115,9 +111,7 @@ public class ContextProcessor extends ImplementationProcessorExtension {
             type.getResources().put(name, resource);
         } else if (RequestContext.class.equals(paramType)) {
             String name = field.getName();
-            if (name.startsWith("set")) {
-                name = JavaIntrospectionHelper.toPropertyName(name);
-            }
+            name = JavaIntrospectionHelper.toPropertyName(name);
             Resource resource = new Resource();
             resource.setName(name);
             resource.setMember(field);
