@@ -96,6 +96,9 @@ public abstract class AbstractCompositeContext implements CompositeContext {
             }
         } else if (child instanceof Reference) {
             Reference service = (Reference) child;
+            if (service.getReferenceBindings().isEmpty()) {
+                throw new ServiceRuntimeException("No binding for reference [" + qName + "]");
+            }
             for (ReferenceBinding binding : service.getReferenceBindings()) {
                 if (Wire.LOCAL_BINDING.equals(binding.getInboundWire().getBindingType())) {
                     wire = binding.getInboundWire();
@@ -103,7 +106,8 @@ public abstract class AbstractCompositeContext implements CompositeContext {
                 }
             }
             if (wire == null) {
-                throw new ServiceRuntimeException("Local binding for reference not found [" + qName + "]");
+                // pick the first one
+                wire = service.getReferenceBindings().get(0).getInboundWire();
             }
         } else if (child == null) {
             throw new ServiceRuntimeException("Service not found [" + qName + "]");
