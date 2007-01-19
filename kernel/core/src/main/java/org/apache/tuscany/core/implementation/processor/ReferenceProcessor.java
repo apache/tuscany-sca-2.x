@@ -81,10 +81,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
             required = annotation.required();
         }
         if (name == null) {
-            name = method.getName();
-            if (method.getName().startsWith("set")) {
-                name = toPropertyName(method.getName());
-            }
+            name = toPropertyName(method.getName());
         }
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);

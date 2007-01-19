@@ -58,10 +58,7 @@ public class ResourceProcessor extends ImplementationProcessorExtension {
         }
         String name = annotation.name();
         if (name.length() < 1) {
-            name = method.getName();
-            if (method.getName().startsWith("set")) {
-                name = toPropertyName(method.getName());
-            }
+            name = toPropertyName(method.getName());
         }
         if (type.getResources().get(name) != null) {
             throw new DuplicateResourceException(name);
