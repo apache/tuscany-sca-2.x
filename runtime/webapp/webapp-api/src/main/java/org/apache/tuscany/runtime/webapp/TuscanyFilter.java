@@ -51,6 +51,9 @@ public class TuscanyFilter implements Filter {
             throw new ServletException("Tuscany is not configured for the web application");
         }
         context = (CompositeContext) servletContext.getAttribute(CONTEXT_ATTRIBUTE);
+        if (context == null) {
+            throw new ServletException("No context specified");
+        }
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain)
