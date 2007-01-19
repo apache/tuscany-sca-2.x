@@ -119,12 +119,14 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                 }
             }
             context = new CompositeContextImpl(current, getWireService());
+            servletContext.setAttribute(Constants.CONTEXT_ATTRIBUTE, context);
         } catch (Exception e) {
             throw new ServletLauncherInitException(e);
         }
     }
 
     public void destroy() {
+        servletContext.removeAttribute(Constants.CONTEXT_ATTRIBUTE);
         if (application != null) {
             application.stop();
             application = null;

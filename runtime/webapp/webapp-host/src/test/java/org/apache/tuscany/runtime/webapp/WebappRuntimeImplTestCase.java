@@ -22,6 +22,9 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.eq;
+import org.osoa.sca.CompositeContext;
 
 import java.net.URL;
 
@@ -50,6 +53,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
     public void testBootWithDefaults() throws Exception {
         expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
         expect(context.getInitParameter("tuscany.currentCompositePath")).andReturn(null);
+        context.setAttribute(eq(Constants.CONTEXT_ATTRIBUTE), isA(CompositeContext.class));
         replay(context);
         runtime.initialize();
         verify(context);
@@ -58,6 +62,7 @@ public class WebappRuntimeImplTestCase extends TestCase {
     public void testLazyHttpSessionId() throws Exception {
         expect(context.getResourcePaths("/WEB-INF/tuscany/extensions/")).andReturn(null);
         expect(context.getInitParameter("tuscany.currentCompositePath")).andReturn(null);
+        context.setAttribute(eq(Constants.CONTEXT_ATTRIBUTE), isA(CompositeContext.class));
         replay(context);
         runtime.initialize();
         verify(context);
