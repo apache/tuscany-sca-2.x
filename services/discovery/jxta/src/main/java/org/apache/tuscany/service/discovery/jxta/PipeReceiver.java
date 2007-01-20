@@ -21,7 +21,9 @@ package org.apache.tuscany.service.discovery.jxta;
 import java.io.IOException;
 import java.net.URI;
 
-import net.jxta.endpoint.Message;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
+
 import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.peergroup.PeerGroupFactory;
@@ -31,6 +33,8 @@ import net.jxta.pipe.PipeMsgListener;
 import net.jxta.pipe.PipeService;
 import net.jxta.protocol.PipeAdvertisement;
 
+import org.apache.tuscany.spi.services.discovery.MessageListener;
+
 /**
  * Class for receiving information on a JXTA pipe.
  * 
@@ -39,8 +43,8 @@ import net.jxta.protocol.PipeAdvertisement;
  */
 public final class PipeReceiver implements PipeMsgListener {
     
-    /** Message listener. */
-    private MessageListener messageListener;
+    /** Discovery service. */
+    private JxtaDiscoveryService discoveryService;
     
     /** Net peer group. */
     private PeerGroup peerGroup;
@@ -53,12 +57,13 @@ public final class PipeReceiver implements PipeMsgListener {
     
     /**
      * Initializes the message listener.
-     * @param messageListener Message listener.
+     * 
+     * @param discoveryService JXTA discovery service.
      * @throws PeerGroupException If unable to create Peer group.
      */
-    private PipeReceiver(MessageListener messageListener) throws PeerGroupException {
+    private PipeReceiver(JxtaDiscoveryService discoveryService) throws PeerGroupException {
         
-        this.messageListener = messageListener;
+        this.discoveryService = discoveryService;
 
         peerGroup = PeerGroupFactory.newNetPeerGroup();
         pipeService = peerGroup.getPipeService();
@@ -67,16 +72,17 @@ public final class PipeReceiver implements PipeMsgListener {
     
     /**
      * Creates a new instance of the pipe receiver.
-     * @param messageListener Message lsitener.
+     * 
+     * @param discoveryService JXTA discovery service.
      * @throws PeerGroupException If unable to create Peer group.
      */
-    public static PipeReceiver newInstance(MessageListener messageListener) throws PeerGroupException {
+    public static PipeReceiver newInstance(JxtaDiscoveryService discoveryService) throws PeerGroupException {
         
-        if(messageListener == null) {
-            throw new IllegalArgumentException("Message listener is null");
+        if(discoveryService == null) {
+            throw new IllegalArgumentException("Discovery service is null");
         }
         
-        return new PipeReceiver(messageListener);
+        return new PipeReceiver(discoveryService);
         
     }
     
@@ -109,9 +115,17 @@ public final class PipeReceiver implements PipeMsgListener {
     /**
      * Callback when messages are received.
      */
-    public void pipeMsgEvent(PipeMsgEvent event) {        
-        Message message = event.getMessage();
-        messageListener.onMessage(message);
+    public void pipeMsgEvent(PipeMsgEvent event) {
+        
+        QName messageType = null;
+        XMLStreamReader content = null;
+        // TODO get message type from event and extract content.
+        
+        MessageListener listener = discoveryService.getListener(messageType);
+        if(listener != null) {
+            listener.onMessage(content);
+        }
+        
     }
 
 }

@@ -18,8 +18,8 @@
  */
 package org.apache.tuscany.spi.services.discovery;
 
-import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.spi.services.domain.DomainModelService;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 
 /**
  * Defines the abstraction that allows runtimes participating 
@@ -33,29 +33,19 @@ import org.apache.tuscany.spi.services.domain.DomainModelService;
 public interface DiscoveryService {
     
     /**
-     * Makes a reference to the domain model service available to the discovery service. 
-     * This is required by the dicovery service to propogate any changes in the domain 
-     * topology back to the admin server.
+     * Sends a message to the specified runtime.
      * 
-     * @param domainModelService Domain model service used for callbacks.
+     * @param runtimeId Runtime id of recipient.
+     * @param content Message content.
      */
-    void setDomainModelService(DomainModelService domainModelService);
+    void sendMessage(String runtimeId, XMLStreamReader content);
     
     /**
-     * Sets the runtime info for the runtime using the discovery service.
+     * Registers a listener for async messages.
      * 
-     * @param runtimeInfo Runtime info for the runtime using the discovery service.
+     * @param messageType Message type that can be handled by the listener.
+     * @param listener Recipient of the async message.
      */
-    void setRuntimeInfo(RuntimeInfo runtimeInfo);
-    
-    /**
-     * Starts the discovery service.
-     */
-    void start();
-    
-    /**
-     * Stops the discovery service.
-     */
-    void stop();
+    void registerListener(QName messageType, MessageListener listener);
 
 }

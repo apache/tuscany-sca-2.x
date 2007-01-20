@@ -18,9 +18,13 @@
  */
 package org.apache.tuscany.spi.services.discovery;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.xml.namespace.QName;
+
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.services.domain.DomainModelService;
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.Init;
 
@@ -31,23 +35,21 @@ import org.osoa.sca.annotations.Init;
  *
  */
 public abstract class AbstractDiscoveryService implements DiscoveryService {
-
-    /** Domain model service. */
-    private DomainModelService domainModelService;
     
     /** Runtime info. */
     private RuntimeInfo runtimeInfo;
     
+    /** Listeners. */
+    private Map<QName, MessageListener> listenerMap = new ConcurrentHashMap<QName, MessageListener>();
+    
     /**
-     * Makes a reference to the domain model service available to the discovery service. 
-     * This is required by the dicovery service to propogate any changes in the domain 
-     * topology back to the admin server.
+     * Registers a listener for async messages.
      * 
-     * @param domainModelService Domain model service used for callbacks.
+     * @param meesageType Message type that can be handled by the listener.
+     * @param listener Recipient of the async message.
      */
-    @Autowire
-    public final void setDomainModelService(DomainModelService domainModelService) {
-        this.domainModelService = domainModelService;
+    public void registerListener(QName messageType, MessageListener listener) {
+        listenerMap.put(messageType, listener);
     }
     
     /**
@@ -62,7 +64,6 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
     
     /**
      * Starts the discovery service.
-     * @throws Any unexpected JXTA exception to bubble up the call stack.
      */
     @Init
     public final void start() {
@@ -76,20 +77,10 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
     
     /**
      * Stops the discovery service.
-     * @throws Any unexpected JXTA exception to bubble up the call stack.
      */
     @Destroy
     public final void stop() {
         onStop();
-    }
-    
-    /**
-     * Gets the domain model service used by this discovery service.
-     * 
-     * @return Domain model service used for callbacks.
-     */
-    protected final DomainModelService getDomainModelService() {
-        return domainModelService;
     }
     
     /**
@@ -99,6 +90,16 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      */
     protected final RuntimeInfo getRuntimeInfo() {
         return runtimeInfo;
+    }
+    
+    /**
+     * Returns the listener for the specified message type.
+     * 
+     * @param messageType Message type for the incoming message.
+     * @return Listeners inteersted in the message type.
+     */
+    public final MessageListener getListener(QName messageType) {
+        return listenerMap.get(messageType);
     }
     
     /**
