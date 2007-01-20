@@ -42,6 +42,13 @@ public interface RuntimeInfo {
     URI getDomain();
 
     /**
+     * Returns the unique runtime is in the SCA domain.
+     *
+     * @return the SCA domain associated with this runtime; may be null
+     */
+    String getRuntimeId();
+    
+    /**
      * Return the root directory used to resolve application file paths.
      *
      * @return the directory used to resolve application file paths.

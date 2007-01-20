@@ -26,7 +26,6 @@ import net.jxta.exception.PeerGroupException;
 
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
-import org.apache.tuscany.spi.services.domain.DomainModelService;
 
 /**
  * Discovery service implemented using Apple bonjour.
@@ -45,8 +44,8 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
      */
     public void onMessage(Message message) {  
         
-        DomainModelService domainModelService = getDomainModelService();        
         // TODO Notify the domain model service
+        // DomainModelService domainModelService = getDomainModelService();  
     }
     
     /**
@@ -62,10 +61,9 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
             
             RuntimeInfo runtimeInfo = getRuntimeInfo();
             URI domain = runtimeInfo.getDomain();
-            // TODO Move profile from StandaloneRuntimeInfo to RuntimeInfo
-            String profile = null;  
+            String runtimeId = runtimeInfo.getRuntimeId();  
             
-            pipeReceiver.start(domain, profile);
+            pipeReceiver.start(domain, runtimeId);
             
             // TODO Use pipe sender to notify coming alive
             

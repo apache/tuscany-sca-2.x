@@ -60,4 +60,8 @@ public class WebappRuntimeInfoImpl implements WebappRuntimeInfo {
     public URI getDomain() {
         throw new UnsupportedOperationException();
     }
+
+    public String getRuntimeId() {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -89,4 +89,8 @@ public class LauncherRuntimeInfo implements RuntimeInfo {
     public boolean isOnline() {
         return online;
     }
+
+    public String getRuntimeId() {
+        throw new UnsupportedOperationException();
+    }
 }
