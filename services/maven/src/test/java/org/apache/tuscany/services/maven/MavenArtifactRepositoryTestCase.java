@@ -72,6 +72,10 @@ public class MavenArtifactRepositoryTestCase extends TestCase {
             public URI getDomain() {
                 throw new UnsupportedOperationException();
             }
+
+            public String getRuntimeId() {
+                throw new UnsupportedOperationException();
+            }
         });
         Artifact artifact = new Artifact();
         artifact.setGroup("junit");

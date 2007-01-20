@@ -30,6 +30,7 @@ import org.apache.tuscany.host.AbstractRuntimeInfo;
 public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements StandaloneRuntimeInfo {
     private final String profileName;
     private final File profileDirectory;
+    private final File installDirectory;
     private final Properties properties;
 
     /**
@@ -44,16 +45,18 @@ public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements St
      * @param online                   true if this runtime should consider itself online
      * @param properties               properties for this runtime
      */
-    public StandaloneRuntimeInfoImpl(URI domain, String profileName,
-                                     File installDirectory,
-                                     File profileDirectory,
-                                     File applicationRootDirectory,
-                                     boolean online,
-                                     Properties properties) {
-        super(domain, applicationRootDirectory, DirectoryHelper.toURL(installDirectory), installDirectory, online);
+    public StandaloneRuntimeInfoImpl(final URI domain, 
+                                     final String profileName,
+                                     final File installDirectory,
+                                     final File profileDirectory,
+                                     final File applicationRootDirectory,
+                                     final boolean online,
+                                     final Properties properties) {
+        super(domain, applicationRootDirectory, DirectoryHelper.toURL(installDirectory), online, profileName);
         this.profileName = profileName;
         this.profileDirectory = profileDirectory;
         this.properties = properties;
+        this.installDirectory = installDirectory;
 
     }
 
@@ -63,6 +66,10 @@ public class StandaloneRuntimeInfoImpl extends AbstractRuntimeInfo implements St
 
     public File getProfileDirectory() {
         return profileDirectory;
+    }
+
+    public File getInstallDirectory() {
+        return installDirectory;
     }
 
     public String getProperty(String name, String defaultValue) {

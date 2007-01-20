@@ -45,14 +45,14 @@ public abstract class AbstractRuntimeInfo implements RuntimeInfo {
     private final URL baseUrl;
     
     /**
-     * Install directory.
-     */
-    private final File installDirectory;
-    
-    /**
      * Online indicator.
      */
     private final boolean online;
+    
+    /**
+     * Runtime Id.
+     */
+    private String runtimeId;
 
     /**
      * Initializes the runtime info instance.
@@ -60,37 +60,64 @@ public abstract class AbstractRuntimeInfo implements RuntimeInfo {
      * @param domain the SCA Domain that this runtime belongs to
      * @param applicationRootDirectory Application root directory.
      * @param baseUrl Base Url.
-     * @param installDirectory Install directory.
      * @param online Onlne indicator.
+     * @param runtimeId Runtime Id.
      */
-    public AbstractRuntimeInfo(URI domain,
-                               File applicationRootDirectory,
-                               URL baseUrl,
-                               File installDirectory,
-                               boolean online) {
+    public AbstractRuntimeInfo(final URI domain,
+                               final File applicationRootDirectory,
+                               final URL baseUrl,
+                               final boolean online,
+                               final String runtimeId) {
         this.domain = domain;
         this.applicationRootDirectory = applicationRootDirectory;
         this.baseUrl = baseUrl;
-        this.installDirectory = installDirectory;
         this.online = online;
+        this.runtimeId = runtimeId;
     }
 
+    /**
+     * Returns the SCA domain associated with this runtime.
+     * A null domain indicates that this is a standalone runtime with a self-contained assembly.
+     *
+     * @return the SCA domain associated with this runtime; may be null
+     */
     public URI getDomain() {
         return domain;
     }
 
+    /**
+     * Returns the unique runtime is in the SCA domain.
+     *
+     * @return the SCA domain associated with this runtime; may be null
+     */
+    public String getRuntimeId() {
+        return runtimeId;
+    }
+    
+    /**
+     * Return the root directory used to resolve application file paths.
+     *
+     * @return the directory used to resolve application file paths.
+     */
     public final File getApplicationRootDirectory() {
         return applicationRootDirectory;
     }
 
+    /**
+     * Gets the base URL for the runtime.
+     *
+     * @return The base URL for the runtime.
+     */
     public final URL getBaseURL() {
         return baseUrl;
     }
 
-    public final File getInstallDirectory() {
-        return installDirectory;
-    }
-
+    /**
+     * Returns whether the runtime considers itself "online" or connected to the internet.
+     * This can be used by services to enable access to remote resources.
+     *
+     * @return true if the runtime is online.
+     */
     public final boolean isOnline() {
         return online;
     }

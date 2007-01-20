@@ -49,4 +49,8 @@ public class MavenRuntimeInfo implements RuntimeInfo {
     public URI getDomain() {
         throw new UnsupportedOperationException();
     }
+
+    public String getRuntimeId() {
+        throw new UnsupportedOperationException();
+    }
 }
