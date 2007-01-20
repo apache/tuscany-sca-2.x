@@ -21,7 +21,8 @@ package org.apache.tuscany.service.discovery.jxta;
 import java.io.IOException;
 import java.net.URI;
 
-import net.jxta.endpoint.Message;
+import javax.xml.stream.XMLStreamReader;
+
 import net.jxta.exception.PeerGroupException;
 
 import org.apache.tuscany.host.RuntimeInfo;
@@ -33,20 +34,10 @@ import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
  * @version $Revision$ $Date$
  *
  */
-public class JxtaDiscoveryService extends AbstractDiscoveryService implements MessageListener {
+public class JxtaDiscoveryService extends AbstractDiscoveryService {
     
     /** Pipe receiver. */
     private PipeReceiver pipeReceiver;
-
-    /**
-     * Callback method for message reception.
-     * @param message Message that is received.
-     */
-    public void onMessage(Message message) {  
-        
-        // TODO Notify the domain model service
-        // DomainModelService domainModelService = getDomainModelService();  
-    }
     
     /**
      * Starts the discovery service.
@@ -65,8 +56,6 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
             
             pipeReceiver.start(domain, runtimeId);
             
-            // TODO Use pipe sender to notify coming alive
-            
         } catch (PeerGroupException ex) {
             throw new JxtaException(ex);
         } catch (IOException ex) {
@@ -76,12 +65,20 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Me
     }
     
     /**
+     * Sends a message to the specified runtime.
+     * 
+     * @param runtimeId Runtime id of recipient.
+     * @param content Message content.
+     */
+    public void sendMessage(String runtimeId, XMLStreamReader content) {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
      * Stops the discovery service.
      */
     @Override
     protected void onStop() {
-        
-        // TODO Use pipe sender to notify shutdown
         pipeReceiver.stop();
     }
 

@@ -16,15 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.spi.services.domain;
+package org.apache.tuscany.spi.services.discovery;
+
+import javax.xml.stream.XMLStreamReader;
 
 /**
- * Defines the interface for maintaining the physical model 
- * for the runtimes participating in a given domain.
+ * Message listener for propogating callbacks.
  * 
  * @version $Revision$ $Date$
  *
  */
-public interface DomainModelService {
+public interface MessageListener {
+    
+    /**
+     * Callback for propogating async messages.
+     * @param content Message content.
+     */
+    void onMessage(XMLStreamReader content);
 
 }

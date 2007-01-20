@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.service.discovery.bonjour;
 
+import javax.xml.stream.XMLStreamReader;
+
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 
 /**
@@ -41,6 +43,16 @@ public class BonjourDiscoveryService extends AbstractDiscoveryService {
      */
     @Override
     public void onStop() {
+        throw new UnsupportedOperationException();
+    }
+    
+    /**
+     * Sends a message to the specified runtime.
+     * 
+     * @param runtimeId Runtime id of recipient.
+     * @param content Message content.
+     */
+    public void sendMessage(String runtimeId, XMLStreamReader content) {
         throw new UnsupportedOperationException();
     }
 
