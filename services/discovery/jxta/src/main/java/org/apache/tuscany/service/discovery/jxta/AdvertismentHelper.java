@@ -20,7 +20,6 @@ package org.apache.tuscany.service.discovery.jxta;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.document.MimeMediaType;
@@ -50,14 +49,14 @@ public abstract class AdvertismentHelper {
      * @param runtimeId Runtime Id.
      * @return Pipe advertisment message.
      */
-    public static PipeAdvertisement getDomainAdvertisment(URI domain, String runtimeId) {
+    public static PipeAdvertisement getDomainAdvertisment(String domain, String runtimeId) {
 
         InputStream in = null;
         try {
             in = AdvertismentHelper.class.getClassLoader().getResourceAsStream("pipe.adv");
             StructuredDocument sd = StructuredDocumentFactory.newStructuredDocument(MimeMediaType.XMLUTF8, in);
             XMLElement root = (XMLElement) sd.getRoot();
-            root.appendChild(sd.createElement("Domain", domain.toString()));
+            root.appendChild(sd.createElement("Domain", domain));
             root.appendChild(sd.createElement("RuntimeId", runtimeId));
             return (PipeAdvertisement)AdvertisementFactory.newAdvertisement(root);
         } catch (IOException ex) {
