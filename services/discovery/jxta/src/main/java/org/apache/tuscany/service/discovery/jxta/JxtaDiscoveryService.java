@@ -20,19 +20,23 @@ package org.apache.tuscany.service.discovery.jxta;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 
 import javax.security.cert.CertificateException;
 import javax.xml.stream.XMLStreamReader;
 
+import net.jxta.credential.AuthenticationCredential;
 import net.jxta.exception.PeerGroupException;
+import net.jxta.membership.Authenticator;
+import net.jxta.membership.MembershipService;
 import net.jxta.peergroup.NetPeerGroupFactory;
 import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
+import net.jxta.protocol.ModuleImplAdvertisement;
 
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
+import org.omg.CORBA.Any;
 
 /**
  * Discovery service implemented using Apple bonjour.
@@ -68,14 +72,10 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
 
             // Configure the platform
             configure();
+            String domain = getRuntimeInfo().getDomain().toString();
 
-            PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
-            URI domain = getRuntimeInfo().getDomain();
-            
-            // TODO Create and join the group
-            // PeerGroup domainGroup = netGroup.getParentGroup();
-            
-            pipeReceiver = PipeReceiver.newInstance(this, netGroup);
+            PeerGroup domainGroup = createAndJoinDomainGroup();            
+            pipeReceiver = PipeReceiver.newInstance(this, domainGroup);
 
             RuntimeInfo runtimeInfo = getRuntimeInfo();
             String runtimeId = runtimeInfo.getRuntimeId();
@@ -85,6 +85,8 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
         } catch (PeerGroupException ex) {
             throw new JxtaException(ex);
         } catch (IOException ex) {
+            throw new JxtaException(ex);
+        } catch (Exception ex) {
             throw new JxtaException(ex);
         }
 
@@ -116,7 +118,6 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
 
         try {
             
-            // Set the peer name to runtime id.
             configurator.setName(getRuntimeInfo().getRuntimeId());
             
             if (configurator.exists()) {
@@ -132,6 +133,33 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
         } catch (CertificateException ex) {
             throw new JxtaException(ex);
         }
+        
+    }
+
+    /**
+     * Creates and joins the domain peer group.
+     * @return Domain peer group.
+     * @throws Exception In case of unexpected JXTA exceptions.
+     */
+    private PeerGroup createAndJoinDomainGroup() throws Exception {
+        
+        PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
+            
+        ModuleImplAdvertisement implAdv = netGroup.getAllPurposePeerGroupImplAdvertisement();
+        PeerGroup domainGroup = netGroup.newGroup(null, implAdv, "JoinTest", "testing group adv");
+        domainGroup.getDiscoveryService().remotePublish(domainGroup.getPeerGroupAdvertisement());
+            
+        AuthenticationCredential authCred = new AuthenticationCredential(domainGroup, null, null);
+        MembershipService membership = domainGroup.getMembershipService();
+        Authenticator auth = membership.apply(authCred);
+                
+        if (auth.isReadyForJoin()){
+            membership.join(auth);
+        } else {
+            throw new JxtaException("Unable to join domain group");
+        }
+        return domainGroup;
+        
     }
 
 }

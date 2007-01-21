@@ -19,7 +19,6 @@
 package org.apache.tuscany.service.discovery.jxta;
 
 import java.io.IOException;
-import java.net.URI;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -88,7 +87,7 @@ public final class PipeReceiver implements PipeMsgListener {
      * @param profile Profile name of the runtime.
      * @throws IOException In case of unexpected IO error.
      */
-    public void start(URI domain, String profile) throws IOException {  
+    public void start(String domain, String profile) throws IOException {  
         
         if(domain == null) {
             throw new IllegalArgumentException("Domain is null");
