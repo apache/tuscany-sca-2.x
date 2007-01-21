@@ -18,14 +18,18 @@
  */
 package org.apache.tuscany.service.discovery.jxta;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.security.cert.CertificateException;
 import javax.xml.stream.XMLStreamReader;
 
 import net.jxta.exception.PeerGroupException;
+import net.jxta.platform.NetworkConfigurator;
 
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 
 /**
@@ -35,35 +39,50 @@ import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
  *
  */
 public class JxtaDiscoveryService extends AbstractDiscoveryService {
-    
+
     /** Pipe receiver. */
     private PipeReceiver pipeReceiver;
-    
+
+    /** Network platform configurator. */
+    private NetworkConfigurator configurator;
+
+    /**
+     * Adds a network configurator for this service.
+     * @param configurator Network configurator.
+     */
+    @Autowire
+    public void setConfigurator(NetworkConfigurator configurator) {
+        this.configurator = configurator;
+    }
+
     /**
      * Starts the discovery service.
      * @throws Any unexpected JXTA exception to bubble up the call stack.
      */
     @Override
     public void onStart() throws JxtaException {
-        
+
         try {
+
+            // Configure the platform
+            configure();
             
             pipeReceiver = PipeReceiver.newInstance(this);
-            
+
             RuntimeInfo runtimeInfo = getRuntimeInfo();
             URI domain = runtimeInfo.getDomain();
-            String runtimeId = runtimeInfo.getRuntimeId();  
-            
+            String runtimeId = runtimeInfo.getRuntimeId();
+
             pipeReceiver.start(domain, runtimeId);
-            
+
         } catch (PeerGroupException ex) {
             throw new JxtaException(ex);
         } catch (IOException ex) {
             throw new JxtaException(ex);
         }
-        
+
     }
-    
+
     /**
      * Sends a message to the specified runtime.
      * 
@@ -73,13 +92,34 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
     public void sendMessage(String runtimeId, XMLStreamReader content) {
         throw new UnsupportedOperationException();
     }
-    
+
     /**
      * Stops the discovery service.
      */
     @Override
     protected void onStop() {
         pipeReceiver.stop();
+    }
+
+    /**
+     * Configures the platform.
+     *
+     */
+    private void configure() {
+
+        try {
+            if (!configurator.exists()) {
+                configurator.save();
+            } else {
+                File pc = new File(configurator.getHome(), "PlatformConfig");
+                configurator.load(pc.toURI());
+                configurator.save();
+            }
+        } catch (IOException ex) {
+            throw new JxtaException(ex);
+        } catch (CertificateException ex) {
+            throw new JxtaException(ex);
+        }
     }
 
 }
