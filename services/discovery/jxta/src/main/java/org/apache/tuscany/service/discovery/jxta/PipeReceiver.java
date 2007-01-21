@@ -26,7 +26,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import net.jxta.exception.PeerGroupException;
 import net.jxta.peergroup.PeerGroup;
-import net.jxta.peergroup.PeerGroupFactory;
 import net.jxta.pipe.InputPipe;
 import net.jxta.pipe.PipeMsgEvent;
 import net.jxta.pipe.PipeMsgListener;
@@ -46,9 +45,6 @@ public final class PipeReceiver implements PipeMsgListener {
     /** Discovery service. */
     private JxtaDiscoveryService discoveryService;
     
-    /** Net peer group. */
-    private PeerGroup peerGroup;
-    
     /** Pipe service. */
     private PipeService pipeService;
     
@@ -59,14 +55,13 @@ public final class PipeReceiver implements PipeMsgListener {
      * Initializes the message listener.
      * 
      * @param discoveryService JXTA discovery service.
+     * @param domainGroup Domain peer group for this service.
      * @throws PeerGroupException If unable to create Peer group.
      */
-    private PipeReceiver(JxtaDiscoveryService discoveryService) throws PeerGroupException {
+    private PipeReceiver(JxtaDiscoveryService discoveryService, PeerGroup domainGroup) throws PeerGroupException {
         
         this.discoveryService = discoveryService;
-
-        peerGroup = PeerGroupFactory.newNetPeerGroup();
-        pipeService = peerGroup.getPipeService();
+        pipeService = domainGroup.getPipeService();
         
     }
     
@@ -75,14 +70,15 @@ public final class PipeReceiver implements PipeMsgListener {
      * 
      * @param discoveryService JXTA discovery service.
      * @throws PeerGroupException If unable to create Peer group.
+     * @throws PeerGroupException If unable to create Peer group.
      */
-    public static PipeReceiver newInstance(JxtaDiscoveryService discoveryService) throws PeerGroupException {
+    public static PipeReceiver newInstance(JxtaDiscoveryService discoveryService, PeerGroup domainGroup) throws PeerGroupException {
         
         if(discoveryService == null) {
             throw new IllegalArgumentException("Discovery service is null");
         }
         
-        return new PipeReceiver(discoveryService);
+        return new PipeReceiver(discoveryService, domainGroup);
         
     }
     

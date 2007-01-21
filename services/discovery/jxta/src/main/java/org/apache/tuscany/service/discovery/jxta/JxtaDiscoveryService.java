@@ -26,6 +26,8 @@ import javax.security.cert.CertificateException;
 import javax.xml.stream.XMLStreamReader;
 
 import net.jxta.exception.PeerGroupException;
+import net.jxta.peergroup.NetPeerGroupFactory;
+import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 
 import org.apache.tuscany.host.RuntimeInfo;
@@ -66,11 +68,16 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
 
             // Configure the platform
             configure();
+
+            PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
+            URI domain = getRuntimeInfo().getDomain();
             
-            pipeReceiver = PipeReceiver.newInstance(this);
+            // TODO Create and join the group
+            // PeerGroup domainGroup = netGroup.getParentGroup();
+            
+            pipeReceiver = PipeReceiver.newInstance(this, netGroup);
 
             RuntimeInfo runtimeInfo = getRuntimeInfo();
-            URI domain = runtimeInfo.getDomain();
             String runtimeId = runtimeInfo.getRuntimeId();
 
             pipeReceiver.start(domain, runtimeId);
@@ -108,13 +115,18 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
     private void configure() {
 
         try {
-            if (!configurator.exists()) {
-                configurator.save();
-            } else {
+            
+            // Set the peer name to runtime id.
+            configurator.setName(getRuntimeInfo().getRuntimeId());
+            
+            if (configurator.exists()) {
                 File pc = new File(configurator.getHome(), "PlatformConfig");
                 configurator.load(pc.toURI());
                 configurator.save();
+            } else {
+                configurator.save();
             }
+            
         } catch (IOException ex) {
             throw new JxtaException(ex);
         } catch (CertificateException ex) {
