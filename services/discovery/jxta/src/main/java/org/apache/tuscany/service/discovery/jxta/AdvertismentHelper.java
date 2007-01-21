@@ -18,9 +18,15 @@
  */
 package org.apache.tuscany.service.discovery.jxta;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import net.jxta.document.AdvertisementFactory;
+import net.jxta.document.MimeMediaType;
+import net.jxta.document.StructuredDocument;
+import net.jxta.document.StructuredDocumentFactory;
+import net.jxta.document.XMLElement;
 import net.jxta.protocol.PipeAdvertisement;
 
 /**
@@ -30,32 +36,42 @@ import net.jxta.protocol.PipeAdvertisement;
  *
  */
 public abstract class AdvertismentHelper {
-    
+
     /**
      * Utility class constructor.
      */
     private AdvertismentHelper() {
     }
-    
+
     /**
      * Creates a pipe advertisment message for the domain.
      * 
      * @param domain Domain URI.
-     * @param profile Runtime profile.
+     * @param runtimeId Runtime Id.
      * @return Pipe advertisment message.
      */
-    public static PipeAdvertisement getDomainAdvertisment(URI domain, String profile) {
+    public static PipeAdvertisement getDomainAdvertisment(URI domain, String runtimeId) {
+
+        InputStream in = null;
+        try {
+            in = AdvertismentHelper.class.getClassLoader().getResourceAsStream("pipe.adv");
+            StructuredDocument sd = StructuredDocumentFactory.newStructuredDocument(MimeMediaType.XMLUTF8, in);
+            XMLElement root = (XMLElement) sd.getRoot();
+            root.appendChild(sd.createElement("Domain", domain.toString()));
+            root.appendChild(sd.createElement("RuntimeId", runtimeId));
+            return (PipeAdvertisement)AdvertisementFactory.newAdvertisement(root);
+        } catch (IOException ex) {
+            throw new JxtaException(ex);
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                throw new JxtaException(ex);
+            }
+        }
         
-        StringBuffer sb = new StringBuffer("<jxta:PipeAdvertisement xmlns:jxta=\"http://jxta.org\">");
-        sb.append("<Domain>");
-        sb.append(domain);
-        sb.append("</Domain>");
-        sb.append("<Profile>");
-        sb.append(profile);
-        sb.append("</Profile>");
-        sb.append("</jxta:PipeAdvertisement");
-        
-        return (PipeAdvertisement)AdvertisementFactory.newAdvertisement(sb.toString());
     }
-    
+
 }
