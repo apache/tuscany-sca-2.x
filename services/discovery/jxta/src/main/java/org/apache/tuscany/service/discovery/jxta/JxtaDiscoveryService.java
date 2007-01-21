@@ -74,7 +74,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
             configure();
             String domain = getRuntimeInfo().getDomain().toString();
 
-            PeerGroup domainGroup = createAndJoinDomainGroup();            
+            PeerGroup domainGroup = createAndJoinDomainGroup(domain);            
             pipeReceiver = PipeReceiver.newInstance(this, domainGroup);
 
             RuntimeInfo runtimeInfo = getRuntimeInfo();
@@ -141,12 +141,12 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * @return Domain peer group.
      * @throws Exception In case of unexpected JXTA exceptions.
      */
-    private PeerGroup createAndJoinDomainGroup() throws Exception {
+    private PeerGroup createAndJoinDomainGroup(String domain) throws Exception {
         
         PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
             
         ModuleImplAdvertisement implAdv = netGroup.getAllPurposePeerGroupImplAdvertisement();
-        PeerGroup domainGroup = netGroup.newGroup(null, implAdv, "JoinTest", "testing group adv");
+        PeerGroup domainGroup = netGroup.newGroup(null, implAdv, domain, "Tuscany domain group");
         domainGroup.getDiscoveryService().remotePublish(domainGroup.getPeerGroupAdvertisement());
             
         AuthenticationCredential authCred = new AuthenticationCredential(domainGroup, null, null);
