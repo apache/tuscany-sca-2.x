@@ -48,8 +48,11 @@ import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
@@ -111,6 +114,32 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                 if (scope == Scope.SYSTEM || scope == Scope.COMPOSITE) {
                     component.setScopeContainer(context.getCompositeScope());
                 } else {
+                    // Check for conversational contract if conversational scope
+                    if (scope == Scope.CONVERSATION) {
+                        boolean hasConversationalContract = false;
+                        ComponentType<ServiceDefinition, ReferenceDefinition, ?> componentType =
+                            componentDefinition.getImplementation().getComponentType();
+                        Map<String, ServiceDefinition> services = componentType.getServices();
+                        for (ServiceDefinition serviceDef : services.values()) {
+                            InteractionScope intScope = serviceDef.getServiceContract().getInteractionScope();
+                            if (intScope == InteractionScope.CONVERSATIONAL) {
+                                hasConversationalContract = true;
+                                break;
+                            }
+                        }
+                        if (!hasConversationalContract) {
+                            Map<String, ReferenceDefinition> references = componentType.getReferences();
+                            for (ReferenceDefinition refDef : references.values()) {
+                                // TODO check for a conversational callback contract
+                                // refDef.getServiceContract() ...
+                            }
+                        }
+                        if (!hasConversationalContract) {
+                            String name = implClass.getName();
+                            throw new NoConversationalContractException("No conversational contract for conversational implementation", name);
+                        }
+                    }
+                    // Now it's ok to set the scope container
                     ScopeContainer scopeContainer = scopeRegistry.getScopeContainer(scope);
                     if (scopeContainer == null) {
                         throw new ScopeNotFoundException(scope.toString());
