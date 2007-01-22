@@ -155,6 +155,40 @@ public class BuilderRegistryTestCase extends TestCase {
         assertNotNull(ret);
         EasyMock.verify(wireService);
     }
+    
+    public void testNoConversationalContract() throws Exception {
+        ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
+        ScopeContainer scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
+        EasyMock.expect(scopeRegistry.getScopeContainer(EasyMock.isA(Scope.class))).andReturn(scopeContainer);
+        EasyMock.replay(scopeRegistry);
+        WireService wireService = EasyMock.createMock(WireService.class);
+        wireService.createWires(EasyMock.isA(AtomicComponent.class),
+            EasyMock.isA(ComponentDefinition.class));
+        EasyMock.replay(wireService);
+        BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry, wireService);
+        
+        AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
+        EasyMock.replay(component);
+        ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
+        EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
+            EasyMock.isA(ComponentDefinition.class),
+            EasyMock.isA(DeploymentContext.class))).andReturn(component);
+        EasyMock.replay(builder);
+        registry.register(FooImplementation.class, builder);
+
+        FooImplementation impl = new FooImplementation();
+        ComponentType componentType = new ComponentType();
+        componentType.setImplementationScope(Scope.CONVERSATION);
+        impl.setComponentType(componentType);
+        ComponentDefinition<FooImplementation> definition = new ComponentDefinition<FooImplementation>("foo", impl);
+        try {
+            Component ret = registry.build(parent, definition, deploymentContext);
+            fail("Should throw NoConversationalContractException");
+        }
+        catch(NoConversationalContractException e) {
+            // expected
+        }
+}
 
     protected void setUp() throws Exception {
         super.setUp();
