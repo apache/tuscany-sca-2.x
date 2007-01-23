@@ -20,13 +20,14 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
+
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.wire.InvocationRuntimeException;
 import org.apache.tuscany.spi.wire.Message;
 
-import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.client.OperationClient;
@@ -34,8 +35,6 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 
 public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
-
-    protected static final OMElement RESPONSE = null;
 
     private Axis2ReferenceCallbackTargetInvoker callbackInvoker;
 
@@ -59,10 +58,21 @@ public class Axis2AsyncTargetInvoker extends Axis2TargetInvoker {
             Axis2ReferenceCallback callback = new Axis2ReferenceCallback(callbackInvoker);
             operationClient.setCallback(callback);
 
+            // FIXME Synchronize with callback thread to get return value
+            CountDownLatch doneSignal = new CountDownLatch(1);
+            callbackInvoker.setSignal(doneSignal);
+
             operationClient.execute(false);
 
-            // REVIEW it seems ok to return null
-            return RESPONSE;
+            try {
+                doneSignal.await();
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // FIXME returning value from callback thread
+            Object response = callbackInvoker.getReturnPayload();
+            return response;
         } catch (AxisFault e) {
             throw new InvocationTargetException(e);
         }
