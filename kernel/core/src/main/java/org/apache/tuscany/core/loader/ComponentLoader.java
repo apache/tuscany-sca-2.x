@@ -155,30 +155,6 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                                     componentDefinition.add(referenceTarget);
                                 }
                             }
-
-                            // xcv
-//                            for (ServiceDefinition serviceDefinition : type.getServices().values()) {
-//                                if (serviceDefinition instanceof BoundServiceDefinition) {
-//                                    BoundServiceDefinition bsd = (BoundServiceDefinition) serviceDefinition;
-//                                    if (bsd.getBindings().isEmpty()) {
-//                                        if (bsd.getBindings().isEmpty()) {
-//                                            // TODO JFM implement capability for the runtime to choose a binding
-//                                            bsd.addBinding(new LocalBindingDefinition());
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                            for (ReferenceDefinition referenceDefinition : type.getReferences().values()) {
-//                                if (referenceDefinition instanceof BoundReferenceDefinition) {
-//                                    BoundReferenceDefinition bsd = (BoundReferenceDefinition) referenceDefinition;
-//                                    if (bsd.getBindings().isEmpty()) {
-//                                        if (bsd.getBindings().isEmpty()) {
-//                                            // TODO JFM implement capability for the runtime to choose a binding
-//                                            bsd.addBinding(new LocalBindingDefinition());
-//                                        }
-//                                    }
-//                                }
-//                            }
                             validate(componentDefinition);
                             return componentDefinition;
                         }
