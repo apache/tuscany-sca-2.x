@@ -30,8 +30,10 @@
 
     <repositories>
         <repository>
-            <id>eclipse.emf</id>
-            <url>http://download.eclipse.org/tools/emf/maven2</url>
+            <!-- temporarily replace the eclipse repo...id>eclipse.emf</id>
+            <url>http://download.eclipse.org/tools/emf/maven2</url -->
+            <id>osuosl.org</id>
+            <url>http://ftp.osuosl.org/pub/eclipse/tools/emf/maven2</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
