@@ -20,6 +20,7 @@ package org.apache.tuscany.binding.axis2;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
@@ -34,6 +35,8 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
     private LinkedList<Object> callbackRoutingChain;
     private boolean cacheable;
     Axis2CallbackInvocationHandler invocationHandler;
+    private CountDownLatch signal;
+    private Object returnPayload;
 
     public Axis2ReferenceCallbackTargetInvoker(Operation operation,
                                                InboundWire inboundWire,
@@ -48,9 +51,13 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
         Object[] args;
         if (payload != null && !payload.getClass().isArray()) {
             args = new Object[]{payload};
+            returnPayload = payload;
         } else {
             args = (Object[]) payload;
+            returnPayload = args[0];
         }
+        // FIXME synchronize with forward thread to return value
+        signal.countDown();
         try {
             return invocationHandler.invoke(operation, args, callbackRoutingChain);
         } catch (Throwable t) {
@@ -95,5 +102,13 @@ public class Axis2ReferenceCallbackTargetInvoker implements TargetInvoker {
 
     public void setCallbackRoutingChain(LinkedList<Object> callbackRoutingChain) {
         this.callbackRoutingChain = callbackRoutingChain;
+    }
+    
+    public void setSignal(CountDownLatch signal) {
+        this.signal = signal;
+    }
+    
+    public Object getReturnPayload() {
+        return returnPayload;
     }
 }
