@@ -36,6 +36,8 @@ import org.apache.tuscany.binding.axis2.Axis2ServiceBinding.InvocationContext;
 public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
 
     private Axis2ServiceBinding service;
+    
+    protected static final OMElement RESPONSE = null;
 
     public Axis2ServiceCallbackTargetInvoker(Axis2ServiceBinding service) {
         this.service = service;
@@ -78,7 +80,7 @@ public class Axis2ServiceCallbackTargetInvoker implements TargetInvoker {
             throw new Axis2BindingRunTimeException(t);
         }
 
-        return Axis2AsyncTargetInvoker.RESPONSE;
+        return RESPONSE;
     }
 
     public Message invoke(Message msg) throws InvocationRuntimeException {
