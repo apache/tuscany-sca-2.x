@@ -44,7 +44,6 @@ import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -136,7 +135,8 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                         }
                         if (!hasConversationalContract) {
                             String name = implClass.getName();
-                            throw new NoConversationalContractException("No conversational contract for conversational implementation", name);
+                            throw new NoConversationalContractException(
+                                "No conversational contract for conversational implementation", name);
                         }
                     }
                     // Now it's ok to set the scope container
@@ -162,22 +162,22 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     @SuppressWarnings({"unchecked"})
     public Service build(CompositeComponent parent,
-                         BoundServiceDefinition boundServiceDefinition,
+                         ServiceDefinition serviceDefinition,
                          DeploymentContext deploymentContext) throws BuilderException {
-        String name = boundServiceDefinition.getName();
-        ServiceContract<?> serviceContract = boundServiceDefinition.getServiceContract();
-        if (boundServiceDefinition.getBindings().isEmpty()) {
+        String name = serviceDefinition.getName();
+        ServiceContract<?> serviceContract = serviceDefinition.getServiceContract();
+        if (serviceDefinition.getBindings().isEmpty()) {
             // if no bindings are configured, default to the local binding.
             // this should be changed to allow runtime selection
-            if (boundServiceDefinition.getBindings().isEmpty()) {
+            if (serviceDefinition.getBindings().isEmpty()) {
                 // TODO JFM implement capability for the runtime to choose a binding
-                boundServiceDefinition.addBinding(new LocalBindingDefinition());
+                serviceDefinition.addBinding(new LocalBindingDefinition());
             }
         }
         boolean system = parent.isSystem();
-        URI targetUri = boundServiceDefinition.getTarget();
+        URI targetUri = serviceDefinition.getTarget();
         Service service = new ServiceImpl(name, parent, serviceContract, targetUri, system);
-        for (BindingDefinition definition : boundServiceDefinition.getBindings()) {
+        for (BindingDefinition definition : serviceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
             // noinspection SuspiciousMethodCalls
             BindingBuilder bindingBuilder = bindingBuilders.get(bindingClass);
@@ -185,14 +185,14 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                 throw new NoRegisteredBuilderException("No builder registered for type", bindingClass.getName());
             }
             ServiceBinding binding =
-                bindingBuilder.build(parent, boundServiceDefinition, definition, deploymentContext);
+                bindingBuilder.build(parent, serviceDefinition, definition, deploymentContext);
             if (wireService != null) {
-                URI uri = boundServiceDefinition.getTarget();
+                URI uri = serviceDefinition.getTarget();
                 if (uri == null) {
                     throw new MissingWireTargetException("Service uri not specified");
                 }
                 String path = uri.getPath();
-                ServiceContract<?> contract = boundServiceDefinition.getServiceContract();
+                ServiceContract<?> contract = serviceDefinition.getServiceContract();
                 wireService.createWires(binding, contract, path);
             }
             service.addServiceBinding(binding);

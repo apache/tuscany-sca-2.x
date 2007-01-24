@@ -24,7 +24,6 @@ import java.net.URISyntaxException;
 
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.InvalidWireException;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Property;
@@ -49,9 +48,10 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         componentType.setName("TestComposite");
         //add a service to the composite
         ServiceDefinition serviceDefn = new ServiceDefinition("compositeService1", null, true);
-        BoundServiceDefinition boundSvcDefn = new BoundServiceDefinition("boundSvc", null, null, true, null);
-        BoundServiceDefinition boundSvcDefnWithTarget =
-            new BoundServiceDefinition("boundSvcWithTarget", null, null, true, new URI("orgTarget"));
+        ServiceDefinition boundSvcDefn = new ServiceDefinition("boundSvc", null, true, null);
+        ServiceDefinition boundSvcDefnWithTarget =
+            new ServiceDefinition("boundSvcWithTarget", null, true);
+        boundSvcDefnWithTarget.setTarget(new URI("orgTarget"));
         componentType.add(serviceDefn);
         componentType.add(boundSvcDefn);
         componentType.add(boundSvcDefnWithTarget);

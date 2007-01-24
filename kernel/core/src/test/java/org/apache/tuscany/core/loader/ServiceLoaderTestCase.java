@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -101,7 +100,7 @@ public class ServiceLoaderTestCase extends TestCase {
         expect(mockRegistry.load(null, null, mockReader, null)).andReturn(binding).times(2);
         replay(mockRegistry);
 
-        BoundServiceDefinition serviceDefinition = (BoundServiceDefinition) loader.load(null, null, mockReader, null);
+        ServiceDefinition serviceDefinition = loader.load(null, null, mockReader, null);
         assertEquals(2, serviceDefinition.getBindings().size());
     }
 

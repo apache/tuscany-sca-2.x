@@ -39,7 +39,6 @@ import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -48,6 +47,7 @@ import org.apache.tuscany.spi.model.Implementation;
 import static org.apache.tuscany.spi.model.Multiplicity.ONE_ONE;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 import junit.framework.TestCase;
@@ -86,15 +86,15 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
         EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
-            EasyMock.isA(BoundServiceDefinition.class),
+            EasyMock.isA(ServiceDefinition.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
         EasyMock.replay(builder);
         registry.register(MockBindingDefinition.class, builder);
-        List<BindingDefinition> bindingDefs = new ArrayList<BindingDefinition>();
-        bindingDefs.add(new MockBindingDefinition());
-        bindingDefs.add(new MockBindingDefinition());
-        BoundServiceDefinition definition = new BoundServiceDefinition("foo", null, bindingDefs, false, new URI("foo"));
+        ServiceDefinition definition = new ServiceDefinition("foo", null, false);
+        definition.addBinding(new MockBindingDefinition());
+        definition.addBinding(new MockBindingDefinition());
+        definition.setTarget(new URI("foo"));
         Service service = registry.build(parent, definition, deploymentContext);
         assertEquals(2, service.getServiceBindings().size());
         EasyMock.verify(wireService);
@@ -155,7 +155,8 @@ public class BuilderRegistryTestCase extends TestCase {
         assertNotNull(ret);
         EasyMock.verify(wireService);
     }
-    
+
+    @SuppressWarnings({"unchecked"})
     public void testNoConversationalContract() throws Exception {
         ScopeRegistry scopeRegistry = EasyMock.createMock(ScopeRegistry.class);
         ScopeContainer scopeContainer = EasyMock.createNiceMock(ScopeContainer.class);
@@ -166,7 +167,7 @@ public class BuilderRegistryTestCase extends TestCase {
             EasyMock.isA(ComponentDefinition.class));
         EasyMock.replay(wireService);
         BuilderRegistry registry = new BuilderRegistryImpl(scopeRegistry, wireService);
-        
+
         AtomicComponent component = EasyMock.createNiceMock(AtomicComponent.class);
         EasyMock.replay(component);
         ComponentBuilder<FooImplementation> builder = EasyMock.createMock(ComponentBuilder.class);
@@ -182,13 +183,12 @@ public class BuilderRegistryTestCase extends TestCase {
         impl.setComponentType(componentType);
         ComponentDefinition<FooImplementation> definition = new ComponentDefinition<FooImplementation>("foo", impl);
         try {
-            Component ret = registry.build(parent, definition, deploymentContext);
+            registry.build(parent, definition, deploymentContext);
             fail("Should throw NoConversationalContractException");
-        }
-        catch(NoConversationalContractException e) {
+        } catch (NoConversationalContractException e) {
             // expected
         }
-}
+    }
 
     protected void setUp() throws Exception {
         super.setUp();

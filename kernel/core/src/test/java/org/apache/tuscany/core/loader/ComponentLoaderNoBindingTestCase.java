@@ -29,11 +29,11 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.implementation.java.JavaImplementation;
@@ -46,7 +46,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
     private ComponentLoader loader;
     private XMLStreamReader reader;
-    private BoundServiceDefinition service;
+    private ServiceDefinition service;
     private BoundReferenceDefinition reference;
 
     public void testNoServiceBinding() throws Exception {
@@ -61,10 +61,10 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        service = new BoundServiceDefinition();
+        service = new ServiceDefinition();
         reference = new BoundReferenceDefinition();
-        PojoComponentType<BoundServiceDefinition, ReferenceDefinition, Property<?>> type =
-            new PojoComponentType<BoundServiceDefinition, ReferenceDefinition, Property<?>>();
+        PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
+            new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         type.add(service);
         type.add(reference);
         JavaImplementation impl = new JavaImplementation();

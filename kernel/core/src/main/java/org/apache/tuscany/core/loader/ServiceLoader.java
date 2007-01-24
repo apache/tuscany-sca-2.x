@@ -20,8 +20,6 @@ package org.apache.tuscany.core.loader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -40,9 +38,6 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -72,8 +67,8 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
         assert SERVICE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String target = null;
-        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
-        ServiceContract serviceContract = null;
+        ServiceDefinition def = new ServiceDefinition();
+        def.setName(name);
         while (true) {
             int i = reader.next();
             switch (i) {
@@ -85,9 +80,9 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                     } else {
                         ModelObject o = registry.load(parent, null, reader, deploymentContext);
                         if (o instanceof ServiceContract) {
-                            serviceContract = (ServiceContract) o;
+                            def.setServiceContract((ServiceContract) o);
                         } else if (o instanceof BindingDefinition) {
-                            bindings.add((BindingDefinition) o);
+                            def.addBinding((BindingDefinition) o);
                         } else {
                             throw new UnrecognizedElementException(reader.getName());
                         }
@@ -95,21 +90,14 @@ public class ServiceLoader extends LoaderExtension<ServiceDefinition> {
                     break;
                 case END_ELEMENT:
                     if (SERVICE.equals(reader.getName())) {
-                        if (object instanceof ComponentType && !(object instanceof CompositeComponentType)) {
-                            // the load is being done for an atomic component type
-                            // FIXME need a way to specify "remotable" on a service
-                            return new ServiceDefinition(name, serviceContract, false);
-                        }
-                        URI targetURI = null;
                         if (target != null) {
                             try {
-                                targetURI = new URI(target);
+                                def.setTarget(new URI(target));
                             } catch (URISyntaxException e) {
                                 throw new InvalidReferenceException(target, name);
                             }
                         }
-                        // FIXME need a way to specify "remotable" on a service
-                        return new BoundServiceDefinition(name, serviceContract, bindings, false, targetURI);
+                        return def;
                     }
                     break;
             }

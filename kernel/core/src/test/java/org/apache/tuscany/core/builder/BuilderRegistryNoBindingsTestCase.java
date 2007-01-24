@@ -31,8 +31,8 @@ import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.Multiplicity;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.binding.local.LocalBindingBuilder;
@@ -53,8 +53,8 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testNoServiceBindings() throws Exception {
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
-        List<BindingDefinition> bindingDefs = new ArrayList<BindingDefinition>();
-        BoundServiceDefinition definition = new BoundServiceDefinition("foo", null, bindingDefs, false, new URI("foo"));
+        ServiceDefinition definition = new ServiceDefinition("foo", null, false);
+        definition.setTarget(new URI("foo"));
         Service service = registry.build(parent, definition, deploymentContext);
         assertEquals(1, service.getServiceBindings().size());
         assertTrue(service.getServiceBindings().get(0) instanceof LocalServiceBinding);

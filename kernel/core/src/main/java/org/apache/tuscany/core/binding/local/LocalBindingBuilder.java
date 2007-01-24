@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Creates runtime artifacts for the local binding
@@ -39,11 +39,11 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
     }
 
     public ServiceBinding build(CompositeComponent parent,
-                                BoundServiceDefinition boundServiceDefinition,
+                                ServiceDefinition serviceDefinition,
                                 LocalBindingDefinition bindingDefinition,
                                 DeploymentContext deploymentContext)
         throws BuilderException {
-        return new LocalServiceBinding(boundServiceDefinition.getName(), parent);
+        return new LocalServiceBinding(serviceDefinition.getName(), parent);
     }
 
 

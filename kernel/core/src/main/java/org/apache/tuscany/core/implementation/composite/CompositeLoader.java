@@ -40,7 +40,6 @@ import org.apache.tuscany.spi.loader.InvalidServiceException;
 import org.apache.tuscany.spi.loader.InvalidWireException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -157,9 +156,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
             sourceName = new QualifiedName(wire.getSource().getPath());
             serviceDefinition = composite.getDeclaredServices().get(sourceName.getPartName());
             if (serviceDefinition != null) {
-                if (serviceDefinition instanceof BoundServiceDefinition) {
-                    ((BoundServiceDefinition) serviceDefinition).setTarget(wire.getTarget());
-                }
+                serviceDefinition.setTarget(wire.getTarget());
             } else {
                 componentDefinition = composite.getDeclaredComponents().get(sourceName.getPartName());
                 if (componentDefinition != null) {
@@ -200,7 +197,7 @@ public class CompositeLoader extends LoaderExtension<CompositeComponentType> {
         throws InvalidServiceException {
         // check if all of the composite services have been wired
         for (ServiceDefinition svcDefn : composite.getDeclaredServices().values()) {
-            if (svcDefn instanceof BoundServiceDefinition && ((BoundServiceDefinition) svcDefn).getTarget() == null) {
+            if (svcDefn.getTarget() == null) {
                 throw new InvalidServiceException("Composite service not wired to a target", svcDefn.getName());
             }
         }
