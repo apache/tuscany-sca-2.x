@@ -155,7 +155,10 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
 
         try {
             
-            configurator.setName(getRuntimeInfo().getRuntimeId());
+            String runtimeId = getRuntimeInfo().getRuntimeId();
+            
+            configurator.setName(runtimeId);
+            configurator.setHome(new File(runtimeId));
             
             if (configurator.exists()) {
                 File pc = new File(configurator.getHome(), "PlatformConfig");
@@ -194,7 +197,6 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
                 
         if (auth.isReadyForJoin()){
             membership.join(auth);
-            System.err.println("Joined" + domainGroup.getPeerGroupName());
         } else {
             throw new JxtaException("Unable to join domain group");
         }
