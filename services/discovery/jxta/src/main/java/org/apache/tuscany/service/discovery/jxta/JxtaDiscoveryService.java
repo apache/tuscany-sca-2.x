@@ -25,6 +25,7 @@ import javax.security.cert.CertificateException;
 import javax.xml.stream.XMLStreamReader;
 
 import net.jxta.credential.AuthenticationCredential;
+import net.jxta.discovery.DiscoveryService;
 import net.jxta.exception.PeerGroupException;
 import net.jxta.membership.Authenticator;
 import net.jxta.membership.MembershipService;
@@ -33,10 +34,11 @@ import net.jxta.peergroup.PeerGroup;
 import net.jxta.platform.NetworkConfigurator;
 import net.jxta.protocol.ModuleImplAdvertisement;
 
-import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.omg.CORBA.Any;
+import org.osoa.sca.annotations.Property;
 
 /**
  * Discovery service implemented using Apple bonjour.
@@ -45,12 +47,24 @@ import org.omg.CORBA.Any;
  *
  */
 public class JxtaDiscoveryService extends AbstractDiscoveryService {
+    
+    /** Default discovery interval. */
+    private static long DEFAULT_INTERVAL = 2000L;
 
-    /** Pipe receiver. */
-    private PipeReceiver pipeReceiver;
+    /** Peer listener. */
+    private PeerListener peerListener;
 
     /** Network platform configurator. */
     private NetworkConfigurator configurator;
+    
+    /** Work scheduler. */
+    private WorkScheduler workScheduler;
+    
+    /** Interval for sending discivery messages .*/
+    private long interval = DEFAULT_INTERVAL;
+    
+    /** Domain peer group. */
+    private PeerGroup domainGroup;
 
     /**
      * Adds a network configurator for this service.
@@ -59,6 +73,24 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
     @Autowire
     public void setConfigurator(NetworkConfigurator configurator) {
         this.configurator = configurator;
+    }
+
+    /**
+     * Adds a work scheduler for runningbackground discovery operations.
+     * @param workScheduler Work scheduler.
+     */
+    @Autowire
+    public void setWorkScheduler(WorkScheduler workScheduler) {
+        this.workScheduler = workScheduler;
+    }
+    
+    /**
+     * Sets the interval at which discovery messages are sent.
+     * @param interval Interval at which discovery messages are sent.
+     */
+    @Property
+    public void setInterval(long interval) {
+        this.interval = interval;
     }
 
     /**
@@ -72,15 +104,9 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
 
             // Configure the platform
             configure();
+            
             String domain = getRuntimeInfo().getDomain().toString();
-
-            PeerGroup domainGroup = createAndJoinDomainGroup(domain);            
-            pipeReceiver = PipeReceiver.newInstance(this, domainGroup);
-
-            RuntimeInfo runtimeInfo = getRuntimeInfo();
-            String runtimeId = runtimeInfo.getRuntimeId();
-
-            pipeReceiver.start(domain, runtimeId);
+            createAndJoinDomainGroup(domain);
 
         } catch (PeerGroupException ex) {
             throw new JxtaException(ex);
@@ -98,8 +124,19 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * @param runtimeId Runtime id of recipient.
      * @param content Message content.
      */
-    public void sendMessage(String runtimeId, XMLStreamReader content) {
-        throw new UnsupportedOperationException();
+    public void sendMessage(final String runtimeId, final XMLStreamReader content) {
+        
+        if(runtimeId == null) {
+            throw new IllegalArgumentException("Runtime id is null");
+        }
+        if(content == null) {
+            throw new IllegalArgumentException("Content id is null");
+        }
+        
+        if(peerListener.isRuntimeAlive(runtimeId)) {
+            // Send the message
+        }
+        
     }
 
     /**
@@ -107,7 +144,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      */
     @Override
     protected void onStop() {
-        pipeReceiver.stop();
+        peerListener.stop();
     }
 
     /**
@@ -141,13 +178,15 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * @return Domain peer group.
      * @throws Exception In case of unexpected JXTA exceptions.
      */
-    private PeerGroup createAndJoinDomainGroup(String domain) throws Exception {
+    private void createAndJoinDomainGroup(String domain) throws Exception {
         
         PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
             
         ModuleImplAdvertisement implAdv = netGroup.getAllPurposePeerGroupImplAdvertisement();
-        PeerGroup domainGroup = netGroup.newGroup(null, implAdv, domain, "Tuscany domain group");
-        domainGroup.getDiscoveryService().remotePublish(domainGroup.getPeerGroupAdvertisement());
+        domainGroup = netGroup.newGroup(null, implAdv, domain, "Tuscany domain group");
+        
+        final DiscoveryService discoveryService = netGroup.getDiscoveryService();
+        discoveryService.remotePublish(netGroup.getPeerAdvertisement());
             
         AuthenticationCredential authCred = new AuthenticationCredential(domainGroup, null, null);
         MembershipService membership = domainGroup.getMembershipService();
@@ -155,10 +194,13 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
                 
         if (auth.isReadyForJoin()){
             membership.join(auth);
+            System.err.println("Joined" + domainGroup.getPeerGroupName());
         } else {
             throw new JxtaException("Unable to join domain group");
         }
-        return domainGroup;
+        
+        peerListener = new PeerListener(discoveryService, interval);
+        workScheduler.scheduleWork(peerListener);
         
     }
 
