@@ -162,7 +162,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
-            <version>${sca.version}</version>
+				<version>0.1-pre-spec-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
