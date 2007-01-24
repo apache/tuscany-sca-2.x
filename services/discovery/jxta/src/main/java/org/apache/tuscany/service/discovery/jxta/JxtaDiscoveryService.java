@@ -105,8 +105,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
             // Configure the platform
             configure();
             
-            String domain = getRuntimeInfo().getDomain().toString();
-            createAndJoinDomainGroup(domain);
+            createAndJoinDomainGroup();
 
         } catch (PeerGroupException ex) {
             throw new JxtaException(ex);
@@ -178,10 +177,12 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
 
     /**
      * Creates and joins the domain peer group.
-     * @return Domain peer group.
      * @throws Exception In case of unexpected JXTA exceptions.
      */
-    private void createAndJoinDomainGroup(String domain) throws Exception {
+    private void createAndJoinDomainGroup() throws Exception {
+        
+
+        String domain = getRuntimeInfo().getDomain().toString();
         
         PeerGroup netGroup = new NetPeerGroupFactory().getInterface();
             
