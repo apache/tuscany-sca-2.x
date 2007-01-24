@@ -26,6 +26,8 @@ import java.net.URL;
 import net.jxta.platform.NetworkConfigurator;
 
 import org.apache.tuscany.host.RuntimeInfo;
+import org.apache.tuscany.spi.services.work.NotificationListener;
+import org.apache.tuscany.spi.services.work.WorkScheduler;
 
 import junit.framework.TestCase;
 
@@ -47,6 +49,15 @@ public class JxtaDiscoveryServiceTest extends TestCase {
 
     public void testStartAndStop() {
         
+        JxtaDiscoveryService discoveryService1 = getDiscoveryService("runtime-1", "domain");
+        
+        discoveryService1.start();
+        discoveryService1.stop();
+        
+    }
+    
+    private JxtaDiscoveryService getDiscoveryService(final String runtimeId, final String domain) {
+        
         JxtaDiscoveryService discoveryService = new JxtaDiscoveryService();
         RuntimeInfo runtimeInfo = new RuntimeInfo() {
             public File getApplicationRootDirectory() {
@@ -57,13 +68,13 @@ public class JxtaDiscoveryServiceTest extends TestCase {
             }
             public URI getDomain() {
                 try {
-                    return new URI("test-domain");
+                    return new URI(domain);
                 } catch (URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
             }
             public String getRuntimeId() {
-                return "test-runtime";
+                return runtimeId;
             }
             public boolean isOnline() {
                 return false;
@@ -77,8 +88,19 @@ public class JxtaDiscoveryServiceTest extends TestCase {
         configurator.setPassword("test-password");
         
         discoveryService.setConfigurator(configurator);
-        discoveryService.start();
-        discoveryService.stop();
+        discoveryService.setWorkScheduler(new WorkScheduler() {
+            public <T extends Runnable> void scheduleWork(T work, NotificationListener<T> listener) {
+                scheduleWork(work, null);
+            }
+            public <T extends Runnable> void scheduleWork(final T work) {
+                new Thread() {
+                    public void run() {
+                        work.run();
+                    }
+                }.start();
+            }            
+        });
+        return discoveryService;
         
     }
 
