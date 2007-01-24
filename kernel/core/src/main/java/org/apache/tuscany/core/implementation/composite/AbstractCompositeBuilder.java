@@ -10,7 +10,6 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -40,13 +39,8 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
         }
         for (ServiceDefinition definition : componentType.getServices().values()) {
             try {
-                if (definition instanceof BoundServiceDefinition) {
-                    BoundServiceDefinition bsd = (BoundServiceDefinition) definition;
-                    Service service = builderRegistry.build(component, bsd, deploymentContext);
-                    component.register(service);
-                } else {
-                    throw new UnsupportedOperationException();
-                }
+                Service service = builderRegistry.build(component, definition, deploymentContext);
+                component.register(service);
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering service", e);
             }

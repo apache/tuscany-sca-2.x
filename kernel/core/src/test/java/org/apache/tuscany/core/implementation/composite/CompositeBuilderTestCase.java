@@ -33,7 +33,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -117,7 +116,7 @@ public class CompositeBuilderTestCase extends TestCase {
         JavaServiceContract targetContract = registry.introspect(Target.class);
         reference.setServiceContract(targetContract);
         innerType.add(reference);
-        BoundServiceDefinition service = new BoundServiceDefinition();
+        ServiceDefinition service = new ServiceDefinition();
         service.setName("InnerSourceService");
         JavaServiceContract sourceContract = registry.introspect(Source.class);
         service.setServiceContract(sourceContract);

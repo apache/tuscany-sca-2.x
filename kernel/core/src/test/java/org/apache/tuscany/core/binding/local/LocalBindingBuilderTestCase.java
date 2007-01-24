@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.binding.local;
 
 import org.apache.tuscany.spi.component.ServiceBinding;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
 
@@ -30,7 +30,7 @@ public class LocalBindingBuilderTestCase extends TestCase {
 
     public void testBuild() throws Exception {
         LocalBindingBuilder builder = new LocalBindingBuilder();
-        BoundServiceDefinition def = new BoundServiceDefinition();
+        ServiceDefinition def = new ServiceDefinition();
         def.setName("foo");
         ServiceBinding binding = builder.build(null, def, null, null);
         assertEquals(LocalServiceBinding.class, binding.getClass());

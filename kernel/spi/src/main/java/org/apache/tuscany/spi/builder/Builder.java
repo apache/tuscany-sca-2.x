@@ -24,9 +24,9 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Implementations build <code>SCAObject</code> types from model objects.
@@ -56,7 +56,7 @@ public interface Builder {
      * @return the newly created service
      * @throws BuilderException
      */
-    Service build(CompositeComponent parent, BoundServiceDefinition definition, DeploymentContext context)
+    Service build(CompositeComponent parent, ServiceDefinition definition, DeploymentContext context)
         throws BuilderException;
 
     /**

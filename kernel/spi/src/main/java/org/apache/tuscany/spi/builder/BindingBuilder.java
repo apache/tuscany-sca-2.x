@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
 import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
+import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
  * Responsible for processing a service or reference in an assembly configured with a particular binding. The builder
@@ -39,14 +39,14 @@ public interface BindingBuilder<B extends BindingDefinition> {
      * Creates a service binding
      *
      * @param parent                 the containing composite component
-     * @param boundServiceDefinition the service the binding is configured for
+     * @param serviceDefinition the service the binding is configured for
      * @param bindingDefinition      the binding definition
      * @param deploymentContext      the current deployment context
      * @return a service binding
      * @throws BuilderException
      */
     ServiceBinding build(CompositeComponent parent,
-                         BoundServiceDefinition boundServiceDefinition,
+                         ServiceDefinition serviceDefinition,
                          B bindingDefinition,
                          DeploymentContext deploymentContext) throws BuilderException;
 

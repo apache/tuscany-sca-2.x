@@ -30,7 +30,6 @@ import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundServiceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -79,7 +78,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals(1, services.size()); // included doesn't count
         services = composite.getServices();
         assertEquals(2, services.size()); // included counts
-        BoundServiceDefinition serviceDefinition = (BoundServiceDefinition) services.get("service");
+        ServiceDefinition serviceDefinition = services.get("service");
         assertNotNull(serviceDefinition);
         assertEquals("service", serviceDefinition.getName());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());

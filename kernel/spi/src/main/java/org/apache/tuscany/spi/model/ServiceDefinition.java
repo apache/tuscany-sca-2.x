@@ -18,6 +18,11 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.net.URI;
+
 /**
  * Represents a service offered by a component
  *
@@ -28,17 +33,22 @@ public class ServiceDefinition extends ModelObject {
     private ServiceContract serviceContract;
     private boolean remotable;
     private String callbackRefName;
+    private List<BindingDefinition> bindings;
+    private URI target;
 
     public ServiceDefinition() {
+        bindings = new ArrayList<BindingDefinition>();
     }
 
     public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable) {
+        bindings = new ArrayList<BindingDefinition>();
         this.name = name;
         this.serviceContract = serviceContract;
         this.remotable = remotable;
     }
 
     public ServiceDefinition(String name, ServiceContract serviceContract, boolean remotable, String callbackRefName) {
+        bindings = new ArrayList<BindingDefinition>();
         this.name = name;
         this.serviceContract = serviceContract;
         this.remotable = remotable;
@@ -78,10 +88,26 @@ public class ServiceDefinition extends ModelObject {
 
     /**
      * Sets the callback name
-     * @param name
      */
     public void setCallbackReferenceName(String name) {
         this.callbackRefName = name;
     }
+
+    public List<BindingDefinition> getBindings() {
+        return Collections.unmodifiableList(bindings);
+    }
+
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
+    }
+
+    public URI getTarget() {
+        return target;
+    }
+
+    public void setTarget(URI target) {
+        this.target = target;
+    }
+
 
 }
