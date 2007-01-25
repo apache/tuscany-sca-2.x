@@ -18,8 +18,6 @@
  */
 package org.apache.tuscany.core.loader;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.namespace.QName;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -37,9 +35,6 @@ import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
-import org.apache.tuscany.spi.model.ComponentType;
-import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -68,30 +63,25 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         throws XMLStreamException, LoaderException {
         assert REFERENCE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
-        Multiplicity multiplicity =
-            StAXUtil.multiplicity(reader.getAttributeValue(null, "multiplicity"), Multiplicity.ONE_ONE);
-        List<BindingDefinition> bindings = new ArrayList<BindingDefinition>();
-        ServiceContract<?> contract = null;
+        String multiplicityVal = reader.getAttributeValue(null, "multiplicity");
+        Multiplicity multiplicity = StAXUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition();
+        referenceDefinition.setMultiplicity(multiplicity);
+        referenceDefinition.setName(name);
         while (true) {
             switch (reader.next()) {
                 case START_ELEMENT:
                     ModelObject o = registry.load(parent, null, reader, deploymentContext);
                     if (o instanceof ServiceContract) {
-                        contract = (ServiceContract) o;
+                        referenceDefinition.setServiceContract((ServiceContract) o);
                     } else if (o instanceof BindingDefinition) {
-                        bindings.add((BindingDefinition) o);
+                        referenceDefinition.addBinding((BindingDefinition) o);
                     } else {
                         throw new UnrecognizedElementException(reader.getName());
                     }
                     break;
                 case END_ELEMENT:
-                    if (object instanceof ComponentType && !(object instanceof CompositeComponentType)) {
-                        // loading a reference in a component type side file
-                        ReferenceDefinition referenceDefinition = new ReferenceDefinition(name, contract);
-                        referenceDefinition.setMultiplicity(multiplicity);
-                        return referenceDefinition;
-                    }
-                    return new BoundReferenceDefinition(name, contract, bindings, multiplicity);
+                    return referenceDefinition;
             }
         }
     }

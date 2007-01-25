@@ -32,7 +32,6 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
@@ -110,7 +109,7 @@ public class CompositeBuilderTestCase extends TestCase {
         CompositeComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>> innerType =
             new CompositeComponentType<ServiceDefinition, ReferenceDefinition, JavaMappedProperty<?>>();
         innerType.add(createInnerSourceComponentDef());
-        BoundReferenceDefinition reference = new BoundReferenceDefinition();
+        ReferenceDefinition reference = new ReferenceDefinition();
         reference.setName("TargetComponentRef");
         JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
         JavaServiceContract targetContract = registry.introspect(Target.class);

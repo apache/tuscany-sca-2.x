@@ -18,6 +18,10 @@
  */
 package org.apache.tuscany.spi.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Represents a component reference
  *
@@ -29,13 +33,25 @@ public class ReferenceDefinition extends ModelObject {
     private Multiplicity multiplicity;
     private boolean autowire;
     private boolean required;
+    private List<BindingDefinition> bindings;
 
     public ReferenceDefinition() {
+        multiplicity = Multiplicity.ONE_ONE;
+        bindings = new ArrayList<BindingDefinition>();
     }
 
     public ReferenceDefinition(String name, ServiceContract serviceContract) {
         this.name = name;
         this.serviceContract = serviceContract;
+        bindings = new ArrayList<BindingDefinition>();
+        multiplicity = Multiplicity.ONE_ONE;
+    }
+
+    public ReferenceDefinition(String name, ServiceContract serviceContract, Multiplicity multiplicity) {
+        this.name = name;
+        this.serviceContract = serviceContract;
+        this.multiplicity = multiplicity;
+        bindings = new ArrayList<BindingDefinition>();
     }
 
     public String getName() {
@@ -76,5 +92,13 @@ public class ReferenceDefinition extends ModelObject {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public List<BindingDefinition> getBindings() {
+        return Collections.unmodifiableList(bindings);
+    }
+
+    public void addBinding(BindingDefinition binding) {
+        this.bindings.add(binding);
     }
 }

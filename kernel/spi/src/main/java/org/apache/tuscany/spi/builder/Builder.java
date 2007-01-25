@@ -23,9 +23,9 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
@@ -68,7 +68,7 @@ public interface Builder {
      * @return the newly created reference
      * @throws BuilderException
      */
-    Reference build(CompositeComponent parent, BoundReferenceDefinition definition, DeploymentContext context)
+    Reference build(CompositeComponent parent, ReferenceDefinition definition, DeploymentContext context)
         throws BuilderException;
 
 }

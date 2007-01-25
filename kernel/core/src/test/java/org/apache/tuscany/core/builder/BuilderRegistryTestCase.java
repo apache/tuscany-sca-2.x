@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.builder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.BindingBuilder;
@@ -38,13 +36,13 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.model.Implementation;
 import static org.apache.tuscany.spi.model.Multiplicity.ONE_ONE;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.Scope;
 import org.apache.tuscany.spi.model.ServiceContract;
 import org.apache.tuscany.spi.model.ServiceDefinition;
@@ -113,15 +111,14 @@ public class BuilderRegistryTestCase extends TestCase {
         EasyMock.replay(binding);
         BindingBuilder<MockBindingDefinition> builder = EasyMock.createMock(BindingBuilder.class);
         EasyMock.expect(builder.build(EasyMock.isA(CompositeComponent.class),
-            EasyMock.isA(BoundReferenceDefinition.class),
+            EasyMock.isA(ReferenceDefinition.class),
             EasyMock.isA(MockBindingDefinition.class),
             EasyMock.isA(DeploymentContext.class))).andReturn(binding).times(2);
         EasyMock.replay(builder);
         registry.register(MockBindingDefinition.class, builder);
-        List<BindingDefinition> bindingDefs = new ArrayList<BindingDefinition>();
-        bindingDefs.add(new MockBindingDefinition());
-        bindingDefs.add(new MockBindingDefinition());
-        BoundReferenceDefinition definition = new BoundReferenceDefinition("foo", null, bindingDefs, ONE_ONE);
+        ReferenceDefinition definition = new ReferenceDefinition("foo", null, ONE_ONE);
+        definition.addBinding(new MockBindingDefinition());
+        definition.addBinding(new MockBindingDefinition());
         Reference reference = registry.build(parent, definition, deploymentContext);
         assertEquals(2, reference.getReferenceBindings().size());
         EasyMock.verify(wireService);

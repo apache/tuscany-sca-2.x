@@ -29,7 +29,6 @@ import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -95,8 +94,7 @@ public class ReferenceLoaderTestCase extends TestCase {
         EasyMock.expect(mockRegistry.load(null, null, mockReader, null)).andReturn(binding).times(2);
         EasyMock.replay(mockRegistry);
 
-        BoundReferenceDefinition referenceDefinition =
-            (BoundReferenceDefinition) loader.load(null, null, mockReader, null);
+        ReferenceDefinition referenceDefinition = loader.load(null, null, mockReader, null);
         assertEquals(2, referenceDefinition.getBindings().size());
     }
 

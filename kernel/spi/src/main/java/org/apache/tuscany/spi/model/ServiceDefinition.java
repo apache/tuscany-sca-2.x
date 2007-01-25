@@ -18,10 +18,10 @@
  */
 package org.apache.tuscany.spi.model;
 
-import java.util.List;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.net.URI;
+import java.util.List;
 
 /**
  * Represents a service offered by a component
@@ -55,26 +55,56 @@ public class ServiceDefinition extends ModelObject {
         this.callbackRefName = callbackRefName;
     }
 
+    /**
+     * Returns the service name
+     *
+     * @return the service name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the service name
+     *
+     * @param name the service name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the service contract
+     *
+     * @return the service contract
+     */
     public ServiceContract<?> getServiceContract() {
         return serviceContract;
     }
 
-    public void setServiceContract(ServiceContract serviceContract) {
-        this.serviceContract = serviceContract;
+    /**
+     * Sets the service contract
+     *
+     * @param contract the service contract
+     */
+    public void setServiceContract(ServiceContract contract) {
+        this.serviceContract = contract;
     }
 
+    /**
+     * Returns true if the service is remotable
+     *
+     * @return true if the service is remotable
+     */
     public boolean isRemotable() {
         return remotable;
     }
 
+    /**
+     * Sets if the service is remotable
+     *
+     * @param remotable if the service is remotable
+     */
     public void setRemotable(boolean remotable) {
         this.remotable = remotable;
     }
@@ -93,18 +123,38 @@ public class ServiceDefinition extends ModelObject {
         this.callbackRefName = name;
     }
 
+    /**
+     * Returns the bindings configured for the service
+     *
+     * @return the bindings configured for the service
+     */
     public List<BindingDefinition> getBindings() {
         return Collections.unmodifiableList(bindings);
     }
 
+    /**
+     * Configures the service with a binding
+     *
+     * @param binding the binding
+     */
     public void addBinding(BindingDefinition binding) {
         this.bindings.add(binding);
     }
 
+    /**
+     * Returns the target URI the service is wired to
+     *
+     * @return the target URI the service is wired to
+     */
     public URI getTarget() {
         return target;
     }
 
+    /**
+     * Sets the target URI the service is wired to
+     *
+     * @param target the target URI the service is wired to
+     */
     public void setTarget(URI target) {
         this.target = target;
     }

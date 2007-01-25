@@ -9,7 +9,6 @@ import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.ComponentBuilderExtension;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -47,13 +46,8 @@ public abstract class AbstractCompositeBuilder<T extends Implementation<Composit
         }
         for (ReferenceDefinition definition : componentType.getReferences().values()) {
             try {
-                if (definition instanceof BoundReferenceDefinition) {
-                    BoundReferenceDefinition brd = (BoundReferenceDefinition) definition;
-                    Reference child = builderRegistry.build(component, brd, deploymentContext);
-                    component.register(child);
-                } else {
-                    throw new UnsupportedOperationException();
-                }
+                Reference child = builderRegistry.build(component, definition, deploymentContext);
+                component.register(child);
             } catch (ComponentRegistrationException e) {
                 throw new BuilderInstantiationException("Error registering reference", e);
             }

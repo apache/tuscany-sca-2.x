@@ -54,7 +54,6 @@ import org.apache.tuscany.spi.loader.UndefinedPropertyException;
 import org.apache.tuscany.spi.loader.UndefinedReferenceException;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
@@ -235,18 +234,16 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         }
         if (componentType instanceof CompositeComponentType) {
             ReferenceDefinition definition = componentType.getReferences().get(name);
-            assert definition instanceof BoundReferenceDefinition;
-            BoundReferenceDefinition brd = (BoundReferenceDefinition) definition;
-            if (brd.getBindings().isEmpty()) {
+            if (definition.getBindings().isEmpty()) {
                 // TODO JFM allow selection of a default binding
                 try {
                     LocalBindingDefinition binding = new LocalBindingDefinition(new URI(target));
-                    brd.addBinding(binding);
+                    definition.addBinding(binding);
                 } catch (URISyntaxException e) {
                     throw new InvalidReferenceException(e);
                 }
             } else {
-                for (BindingDefinition binding : brd.getBindings()) {
+                for (BindingDefinition binding : definition.getBindings()) {
                     try {
                         // FIXME this is bad - clarify in the spec how URIs are overriden
                         binding.setTargetUri(new URI(target));
