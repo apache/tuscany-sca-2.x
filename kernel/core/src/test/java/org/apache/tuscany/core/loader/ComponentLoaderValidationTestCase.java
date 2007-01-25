@@ -5,7 +5,7 @@ import java.net.URI;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-import org.apache.tuscany.spi.loader.InvalidReferenceException;
+import org.apache.tuscany.spi.loader.ReferenceMultiplicityViolationException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.loader.MissingReferenceException;
@@ -97,7 +97,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         try {
             loader.validate(defn);
             fail();
-        } catch (InvalidReferenceException e) {
+        } catch (ReferenceMultiplicityViolationException e) {
             // Expected
         }
 
@@ -108,7 +108,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         try {
             loader.validate(defn);
             fail();
-        } catch (InvalidReferenceException e) {
+        } catch (ReferenceMultiplicityViolationException e) {
             // Expected
         }
 
@@ -117,14 +117,14 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         try {
             loader.validate(defn);
             fail();
-        } catch (InvalidReferenceException e) {
+        } catch (ReferenceMultiplicityViolationException e) {
             // Expected
         }
         refDefinition.setMultiplicity(Multiplicity.ONE_N);
         try {
             loader.validate(defn);
             fail();
-        } catch (InvalidReferenceException e) {
+        } catch (ReferenceMultiplicityViolationException e) {
             // Expected
         }
         refDefinition.setMultiplicity(Multiplicity.ZERO_N);
