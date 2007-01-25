@@ -52,6 +52,7 @@ import org.apache.tuscany.spi.loader.MissingMustOverridePropertyException;
 import org.apache.tuscany.spi.loader.MissingReferenceException;
 import org.apache.tuscany.spi.loader.NotOverridablePropertyException;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
+import org.apache.tuscany.spi.loader.ReferenceMultiplicityViolationException;
 import org.apache.tuscany.spi.loader.UndefinedPropertyException;
 import org.apache.tuscany.spi.loader.UndefinedReferenceException;
 import org.apache.tuscany.spi.loader.UnrecognizedElementException;
@@ -319,23 +320,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                     break;
                 case ZERO_ONE:
                     if (count > 1) {
-                        throw new InvalidReferenceException("Reference " + name
-                            + " violates the multiplicity: "
-                            + multiplicity);
+                        throw new ReferenceMultiplicityViolationException(name, multiplicity, count);
                     }
                     break;
                 case ONE_ONE:
                     if (count != 1) {
-                        throw new InvalidReferenceException("Reference " + name
-                            + " violates the multiplicity: "
-                            + multiplicity);
+                        throw new ReferenceMultiplicityViolationException(name, multiplicity, count);
                     }
                     break;
                 case ONE_N:
                     if (count < 1) {
-                        throw new InvalidReferenceException("Reference " + name
-                            + " violates the multiplicity: "
-                            + multiplicity);
+                        throw new ReferenceMultiplicityViolationException(name, multiplicity, count);
                     }
                     break;
             }
