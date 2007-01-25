@@ -35,9 +35,9 @@ import junit.framework.TestCase;
  * @version $Revision$ $Date$
  *
  */
-public class JxtaDiscoveryServiceTest extends TestCase {
+public class JxtaDiscoveryServiceTestCase extends TestCase {
 
-    public JxtaDiscoveryServiceTest(String name) {
+    public JxtaDiscoveryServiceTestCase(String name) {
         super(name);
     }
 
@@ -47,12 +47,15 @@ public class JxtaDiscoveryServiceTest extends TestCase {
     protected void tearDown() throws Exception {
     }
 
-    public void testStartAndStop() {
+    public void testStartAndStop() throws Exception {
         
-        JxtaDiscoveryService discoveryService1 = getDiscoveryService("runtime-1", "domain");
+        JxtaDiscoveryService discoveryService = getDiscoveryService("runtime-1", "domain");
         
-        discoveryService1.start();
-        discoveryService1.stop();
+        discoveryService.start();
+        while(!discoveryService.isStarted()) {
+        }
+        //while(true) {
+        //}
         
     }
     
