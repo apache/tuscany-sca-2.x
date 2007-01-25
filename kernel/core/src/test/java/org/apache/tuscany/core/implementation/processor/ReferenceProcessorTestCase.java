@@ -193,7 +193,7 @@ public class ReferenceProcessorTestCase extends TestCase {
 
     }
 
-    public void testMultiplicity_1_N() throws Exception {
+    public void testMultiplicity1ToN() throws Exception {
         processor.visitField(null, Multiple.class.getDeclaredField("refs1"), type, null);
         JavaMappedReference prop = type.getReferences().get("refs1");
         assertNotNull(prop);
@@ -202,7 +202,7 @@ public class ReferenceProcessorTestCase extends TestCase {
         assertTrue(prop.isRequired());
     }
 
-    public void testMultiplicity_0_N() throws Exception {
+    public void testMultiplicityTo0ToN() throws Exception {
         processor.visitField(null, Multiple.class.getDeclaredField("refs2"), type, null);
         JavaMappedReference prop = type.getReferences().get("refs2");
         assertNotNull(prop);
@@ -211,8 +211,8 @@ public class ReferenceProcessorTestCase extends TestCase {
         assertFalse(prop.isRequired());
     }
 
-    public void testMultiplicity_1_N_Method() throws Exception {
-        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", new Class[] {Ref[].class}), type, null);
+    public void testMultiplicity1ToNMethod() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", Ref[].class), type, null);
         JavaMappedReference prop = type.getReferences().get("refs3");
         assertNotNull(prop);
         assertSame(Ref.class, prop.getServiceContract().getInterfaceClass());
@@ -220,8 +220,8 @@ public class ReferenceProcessorTestCase extends TestCase {
         assertTrue(prop.isRequired());
     }
 
-    public void testMultiplicity_0_N_Method() throws Exception {
-        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", new Class[] {Collection.class}), type, null);
+    public void testMultiplicity0ToNMethod() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", Collection.class), type, null);
         JavaMappedReference prop = type.getReferences().get("refs4");
         assertNotNull(prop);
         assertSame(Ref.class, prop.getServiceContract().getInterfaceClass());
