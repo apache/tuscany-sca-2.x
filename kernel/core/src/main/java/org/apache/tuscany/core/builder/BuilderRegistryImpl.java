@@ -43,7 +43,6 @@ import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
@@ -202,7 +201,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
 
     @SuppressWarnings("unchecked")
     public Reference build(CompositeComponent parent,
-                           BoundReferenceDefinition referenceDefinition,
+                           ReferenceDefinition referenceDefinition,
                            DeploymentContext context) throws BuilderException {
         String name = referenceDefinition.getName();
         ServiceContract<?> contract = referenceDefinition.getServiceContract();

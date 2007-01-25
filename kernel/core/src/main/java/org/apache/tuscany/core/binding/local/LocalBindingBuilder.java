@@ -24,7 +24,7 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.extension.BindingBuilderExtension;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 /**
@@ -48,9 +48,9 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
 
 
     public ReferenceBinding build(CompositeComponent parent,
-                                  BoundReferenceDefinition boundReferenceDefinition,
+                                  ReferenceDefinition referenceDefinition,
                                   LocalBindingDefinition bindingDefinition,
                                   DeploymentContext deploymentContext) throws BuilderException {
-        return new LocalReferenceBinding(boundReferenceDefinition.getName(), parent);
+        return new LocalReferenceBinding(referenceDefinition.getName(), parent);
     }
 }

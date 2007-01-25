@@ -30,7 +30,7 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -69,7 +69,7 @@ public abstract class BindingBuilderExtension<B extends BindingDefinition> imple
     }
 
     public ReferenceBinding build(CompositeComponent parent,
-                                  BoundReferenceDefinition boundReferenceDefinition,
+                                  ReferenceDefinition boundReferenceDefinition,
                                   B bindingDefinition,
                                   DeploymentContext deploymentContext) throws BuilderException {
         return null;

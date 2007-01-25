@@ -19,8 +19,6 @@
 package org.apache.tuscany.core.builder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -29,9 +27,8 @@ import org.apache.tuscany.spi.component.ReferenceBinding;
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.BindingDefinition;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.Multiplicity;
+import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
 import junit.framework.TestCase;
@@ -63,9 +60,8 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testReferenceBindingBuilderDispatch() throws Exception {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
-        List<BindingDefinition> bindingDefs = new ArrayList<BindingDefinition>();
-        BoundReferenceDefinition definition =
-            new BoundReferenceDefinition("foo", null, bindingDefs, Multiplicity.ONE_ONE);
+        ReferenceDefinition definition = new ReferenceDefinition("foo", null);
+        definition.setMultiplicity(Multiplicity.ONE_ONE);
         Reference reference = registry.build(parent, definition, deploymentContext);
         assertEquals(1, reference.getReferenceBindings().size());
         assertTrue(reference.getReferenceBindings().get(0) instanceof LocalReferenceBinding);

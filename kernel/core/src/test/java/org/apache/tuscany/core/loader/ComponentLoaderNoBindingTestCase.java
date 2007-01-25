@@ -28,7 +28,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
-import org.apache.tuscany.spi.model.BoundReferenceDefinition;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Property;
@@ -47,7 +46,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     private ComponentLoader loader;
     private XMLStreamReader reader;
     private ServiceDefinition service;
-    private BoundReferenceDefinition reference;
+    private ReferenceDefinition reference;
 
     public void testNoServiceBinding() throws Exception {
         loader.load(null, null, reader, null);
@@ -62,7 +61,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         service = new ServiceDefinition();
-        reference = new BoundReferenceDefinition();
+        reference = new ReferenceDefinition();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         type.add(service);
