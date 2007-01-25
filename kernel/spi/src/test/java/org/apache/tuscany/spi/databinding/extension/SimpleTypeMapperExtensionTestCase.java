@@ -96,14 +96,14 @@ public class SimpleTypeMapperExtensionTestCase extends TestCase {
             Object value = SAMPLE_VALUES.get(name);
             if (value instanceof String[]) {
                 for (String s : (String[])value) {
-                    Object obj = extension.toJavaObject(simpleType, s, context);
+                    Object obj = extension.toSimpleJavaObject(simpleType, s, context);
                     String str = extension.toXMLLiteral(simpleType, obj, context);
                     assertNotNull(str);
                     // assertTrue("[" + name + "] " + s + " " + str,
                     // str.contains((String) s));
                 }
             } else if (value instanceof String) {
-                Object obj = extension.toJavaObject(simpleType, (String)value, context);
+                Object obj = extension.toSimpleJavaObject(simpleType, (String)value, context);
                 String str = extension.toXMLLiteral(simpleType, obj, context);
                 assertNotNull(str);
                 // assertTrue("[" + name + "] " + value + " " + str,

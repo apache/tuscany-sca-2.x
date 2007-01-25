@@ -23,22 +23,23 @@ import org.apache.tuscany.spi.databinding.SimpleTypeMapper;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
+import org.w3c.dom.Node;
 
 /**
  * Transformer to convert data from a databinding's representation of simple
  * types to Java Objects
  */
-public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension<T, Object> implements
+public abstract class XMLType2JavaTransformer<T> extends TransformerExtension<T, Object> implements
     PullTransformer<T, Object> {
 
     protected SimpleTypeMapper mapper;
 
-    public SimpleType2JavaTransformer() {
-        this.mapper = new SimpleTypeMapperExtension();
+    public XMLType2JavaTransformer() {
+        this.mapper = new XMLTypeMapperExtension<Node>();
     }
 
-    public SimpleType2JavaTransformer(SimpleTypeMapper mapper) {
-        this.mapper = (mapper != null) ? mapper : new SimpleTypeMapperExtension();
+    public XMLType2JavaTransformer(SimpleTypeMapper mapper) {
+        this.mapper = (mapper != null) ? mapper : new XMLTypeMapperExtension<Node>();
     }
 
     public Object transform(T source, TransformationContext context) {
@@ -48,7 +49,8 @@ public abstract class SimpleType2JavaTransformer<T> extends TransformerExtension
                 (ElementInfo)context.getSourceDataType().getMetadata(ElementInfo.class.getName());
             simpleType = (TypeInfo)element.getType();
         }
-        return mapper.toJavaObject(simpleType, getText(source), context);
+        
+        return mapper.toJavaObject(simpleType, source, context);
     }
 
     public Class getTargetType() {
