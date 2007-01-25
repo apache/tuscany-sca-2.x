@@ -60,8 +60,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testReferenceBindingBuilderDispatch() throws Exception {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
-        ReferenceDefinition definition = new ReferenceDefinition("foo", null);
-        definition.setMultiplicity(Multiplicity.ONE_ONE);
+        ReferenceDefinition definition = new ReferenceDefinition("foo", null, Multiplicity.ONE_ONE);
         Reference reference = registry.build(parent, definition, deploymentContext);
         assertEquals(1, reference.getReferenceBindings().size());
         assertTrue(reference.getReferenceBindings().get(0) instanceof LocalReferenceBinding);
