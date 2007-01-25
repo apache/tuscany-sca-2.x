@@ -20,6 +20,9 @@ package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.QName;
 
@@ -41,6 +44,7 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.ServiceContract;
 
@@ -103,22 +107,22 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     public boolean processParam(
         Class<?> param,
+        Type genericParam,
         Annotation[] paramAnnotations,
         String[] constructorNames,
         int pos,
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        List<String> injectionNames) throws ProcessingException {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type, List<String> injectionNames) throws ProcessingException {
         boolean processed = false;
         for (Annotation annot : paramAnnotations) {
             if (Autowire.class.equals(annot.annotationType())) {
                 processed = true;
-                processAutowire(annot, constructorNames, pos, param, type, injectionNames);
+                processAutowire(annot, constructorNames, pos, param, genericParam, type, injectionNames);
             } else if (Property.class.equals(annot.annotationType())) {
                 processed = true;
-                processProperty(annot, constructorNames, pos, type, param, injectionNames);
+                processProperty(annot, constructorNames, pos, type, param, genericParam, injectionNames);
             } else if (Reference.class.equals(annot.annotationType())) {
                 processed = true;
-                processReference(annot, constructorNames, pos, type, param, injectionNames);
+                processReference(annot, constructorNames, pos, type, param, genericParam, injectionNames);
             } else if (Resource.class.equals(annot.annotationType())) {
                 processed = true;
                 processResource((Resource) annot, constructorNames, pos, type, param, injectionNames);
@@ -201,6 +205,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         String[] constructorNames,
         int pos,
         Class<?> param,
+        Type genericParam,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
         List<String> injectionNames) throws ProcessingException {
         // the param is marked as an autowire
@@ -233,17 +238,29 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
                 paramNum);
         }
         reference.setName(name);
-        reference.setRequired(autowireAnnot.required());
-        ServiceContract<?> contract = null;
+        boolean required = autowireAnnot.required();
+        reference.setRequired(required);
         try {
-            contract = registry.introspect(param);
+            Class<?> rawType = param;
+            if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)) {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_N);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_N);
+                }
+            } else {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_ONE);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_ONE);
+                }
+            }
+            Class<?> baseType = getBaseType(rawType, genericParam);            
+            ServiceContract<?> contract = registry.introspect(baseType);
+            reference.setServiceContract(contract);
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }
-
-//        ServiceContract<?> contract = new JavaServiceContract();
-        contract.setInterfaceClass(param);
-        reference.setServiceContract(contract);
         type.getReferences().put(name, reference);
         addName(injectionNames, pos, name);
     }
@@ -260,18 +277,23 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
      * @param explicitNames    the collection of injection names to update
      * @throws ProcessingException
      */
-    private <T> void processProperty(
+    @SuppressWarnings("unchecked")
+    private void processProperty(
         Annotation annot,
         String[] constructorNames,
         int pos,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        Class<T> param,
+        Class<?> param,
+        Type genericParam,
         List<String> explicitNames) throws ProcessingException {
-        // TODO multiplicity
         // the param is marked as a property
         Property propAnnot = (Property) annot;
-        JavaMappedProperty<T> property = new JavaMappedProperty<T>();
-        property.setJavaType(param);
+        JavaMappedProperty property = new JavaMappedProperty();
+        Class<?> baseType = getBaseType(param, genericParam);
+        if (param.isArray() || Collection.class.isAssignableFrom(param)) {
+            property.setMany(true);
+        }        
+        property.setJavaType(baseType);
         String name = propAnnot.name();
         if (name == null || name.length() == 0) {
             if (constructorNames.length < pos + 1 || constructorNames[pos] == null
@@ -300,7 +322,6 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
                 property.setXmlType(typeInfo.getQName());
             }
         }
-        property.setJavaType(param);
         type.getProperties().put(name, property);
         addName(explicitNames, pos, name);
     }
@@ -323,6 +344,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         int pos,
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
         Class<?> param,
+        Type genericParam,
         List<String> explicitNames) throws ProcessingException {
 
         // TODO multiplicity
@@ -346,9 +368,25 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             throw new DuplicateReferenceException(name);
         }
         reference.setName(name);
-        reference.setRequired(refAnnotation.required());
+        boolean required = refAnnotation.required();
+        reference.setRequired(required);
         try {
-            ServiceContract<?> contract = registry.introspect(param);
+            Class<?> rawType = param;
+            if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)) {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_N);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_N);
+                }
+            } else {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_ONE);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_ONE);
+                }
+            }
+            Class<?> baseType = getBaseType(rawType, genericParam);            
+            ServiceContract<?> contract = registry.introspect(baseType);
             reference.setServiceContract(contract);
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
@@ -407,4 +445,25 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         addName(explicitNames, pos, name);
     }
 
+    protected static Class<?> getBaseType(Class<?> cls, Type genericType) {
+        if (cls.isArray()) {
+            return cls.getComponentType();
+        } else if (Collection.class.isAssignableFrom(cls)) {
+            if (genericType == cls) {
+                return Object.class;
+            } else {
+                ParameterizedType parameterizedType = (ParameterizedType)genericType;
+                Type baseType = parameterizedType.getActualTypeArguments()[0];
+                if (baseType instanceof Class) {
+                    return (Class<?>)baseType;
+                } else if (baseType instanceof ParameterizedType) {
+                    return (Class<?>)((ParameterizedType)baseType).getRawType();
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return cls;
+        }
+    }        
 }

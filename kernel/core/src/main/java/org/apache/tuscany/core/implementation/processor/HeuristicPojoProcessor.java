@@ -249,7 +249,13 @@ public class HeuristicPojoProcessor extends ImplementationProcessorExtension {
         if (explict) {
             for (int i = 0; i < params.length; i++) {
                 Class param = params[i];
-                implService.processParam(param, annotations[i], new String[0], i, type, paramNames);
+                implService.processParam(param,
+                                         constructor.getGenericParameterTypes()[i],
+                                         annotations[i],
+                                         new String[0],
+                                         i,
+                                         type,
+                                         paramNames);
             }
         } else {
             if (!implService.areUnique(params)) {

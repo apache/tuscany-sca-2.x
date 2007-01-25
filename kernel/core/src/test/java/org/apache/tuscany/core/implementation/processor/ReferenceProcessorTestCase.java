@@ -18,12 +18,16 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import junit.framework.TestCase;
@@ -36,8 +40,7 @@ public class ReferenceProcessorTestCase extends TestCase {
 
     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
         new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
-    ReferenceProcessor processor =
-        new ReferenceProcessor(new JavaInterfaceProcessorRegistryImpl());
+    ReferenceProcessor processor = new ReferenceProcessor(new JavaInterfaceProcessorRegistryImpl());
 
     public void testMethodAnnotation() throws Exception {
         processor.visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setFoo", Ref.class), type, null);
@@ -49,16 +52,20 @@ public class ReferenceProcessorTestCase extends TestCase {
     }
 
     public void testMethodRequired() throws Exception {
-        processor
-            .visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setFooRequired", Ref.class), type, null);
+        processor.visitMethod(null,
+                              ReferenceProcessorTestCase.Foo.class.getMethod("setFooRequired", Ref.class),
+                              type,
+                              null);
         JavaMappedReference prop = type.getReferences().get("fooRequired");
         assertNotNull(prop);
         assertTrue(prop.isRequired());
     }
 
     public void testMethodName() throws Exception {
-        processor
-            .visitMethod(null, ReferenceProcessorTestCase.Foo.class.getMethod("setBarMethod", Ref.class), type, null);
+        processor.visitMethod(null,
+                              ReferenceProcessorTestCase.Foo.class.getMethod("setBarMethod", Ref.class),
+                              type,
+                              null);
         assertNotNull(type.getReferences().get("bar"));
     }
 
@@ -89,19 +96,20 @@ public class ReferenceProcessorTestCase extends TestCase {
             processor.visitField(null, ReferenceProcessorTestCase.Bar.class.getDeclaredField("baz"), type, null);
             fail();
         } catch (DuplicateReferenceException e) {
-            //expected
+            // expected
         }
     }
 
     public void testDuplicateMethods() throws Exception {
         processor.visitMethod(null, ReferenceProcessorTestCase.Bar.class.getMethod("dupMethod", Ref.class), type, null);
         try {
-            processor
-                .visitMethod(null, ReferenceProcessorTestCase.Bar.class.getMethod("dupSomeMethod", Ref.class), type,
-                    null);
+            processor.visitMethod(null,
+                                  ReferenceProcessorTestCase.Bar.class.getMethod("dupSomeMethod", Ref.class),
+                                  type,
+                                  null);
             fail();
         } catch (DuplicateReferenceException e) {
-            //expected
+            // expected
         }
     }
 
@@ -110,7 +118,7 @@ public class ReferenceProcessorTestCase extends TestCase {
             processor.visitMethod(null, ReferenceProcessorTestCase.Bar.class.getMethod("badMethod"), type, null);
             fail();
         } catch (IllegalReferenceException e) {
-            //expected
+            // expected
         }
     }
 
@@ -132,7 +140,6 @@ public class ReferenceProcessorTestCase extends TestCase {
         @Reference(name = "theBaz")
         protected Ref bazField;
 
-
         @Reference
         public void setFoo(Ref ref) {
         }
@@ -146,7 +153,6 @@ public class ReferenceProcessorTestCase extends TestCase {
         }
 
     }
-
 
     private class Bar {
 
@@ -168,6 +174,59 @@ public class ReferenceProcessorTestCase extends TestCase {
         public void badMethod() {
         }
 
+    }
+
+    private class Multiple {
+        @Reference(required = true)
+        protected List<Ref> refs1;
+
+        @Reference(required = false)
+        protected Ref[] refs2;
+
+        @Reference(required = true)
+        public void setRefs3(Ref[] refs) {
+        }
+
+        @Reference(required = false)
+        public void setRefs4(Collection<Ref> refs) {
+        }
 
     }
+
+    public void testMultiplicity_1_N() throws Exception {
+        processor.visitField(null, Multiple.class.getDeclaredField("refs1"), type, null);
+        JavaMappedReference prop = type.getReferences().get("refs1");
+        assertNotNull(prop);
+        assertSame(Ref.class, prop.getServiceContract().getInterfaceClass());
+        assertEquals(Multiplicity.ONE_N, prop.getMultiplicity());
+        assertTrue(prop.isRequired());
+    }
+
+    public void testMultiplicity_0_N() throws Exception {
+        processor.visitField(null, Multiple.class.getDeclaredField("refs2"), type, null);
+        JavaMappedReference prop = type.getReferences().get("refs2");
+        assertNotNull(prop);
+        assertSame(Ref.class, prop.getServiceContract().getInterfaceClass());
+        assertEquals(Multiplicity.ZERO_N, prop.getMultiplicity());
+        assertFalse(prop.isRequired());
+    }
+
+    public void testMultiplicity_1_N_Method() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", new Class[] {Ref[].class}), type, null);
+        JavaMappedReference prop = type.getReferences().get("refs3");
+        assertNotNull(prop);
+        assertSame(Ref.class, prop.getServiceContract().getInterfaceClass());
+        assertEquals(Multiplicity.ONE_N, prop.getMultiplicity());
+        assertTrue(prop.isRequired());
+    }
+
+    public void testMultiplicity_0_N_Method() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", new Class[] {Collection.class}), type, null);
+        JavaMappedReference prop = type.getReferences().get("refs4");
+        assertNotNull(prop);
+        assertSame(Ref.class, prop.getServiceContract().getInterfaceClass());
+        assertEquals(Multiplicity.ZERO_N, prop.getMultiplicity());
+        assertFalse(prop.isRequired());
+    }
+
 }

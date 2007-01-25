@@ -21,6 +21,9 @@ package org.apache.tuscany.spi.implementation.java;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
@@ -90,4 +93,26 @@ public abstract class ImplementationProcessorExtension implements Implementation
                              DeploymentContext context) throws ProcessingException {
 
     }
+    
+    protected static Class<?> getBaseType(Class<?> cls, Type genericType) {
+        if (cls.isArray()) {
+            return cls.getComponentType();
+        } else if (Collection.class.isAssignableFrom(cls)) {
+            if (genericType == cls) {
+                return Object.class;
+            } else {
+                ParameterizedType parameterizedType = (ParameterizedType)genericType;
+                Type baseType = parameterizedType.getActualTypeArguments()[0];
+                if (baseType instanceof Class) {
+                    return (Class<?>)baseType;
+                } else if (baseType instanceof ParameterizedType) {
+                    return (Class<?>)((ParameterizedType)baseType).getRawType();
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return cls;
+        }
+    }    
 }

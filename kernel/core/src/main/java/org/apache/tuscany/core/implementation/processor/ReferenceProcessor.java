@@ -18,11 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
-import org.osoa.sca.annotations.Reference;
+import java.util.Collection;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -35,38 +36,41 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ServiceContract;
-
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
+import org.osoa.sca.annotations.Reference;
 
 /**
- * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
+ * Processes an {@link @Reference} annotation, updating the component type with
+ * corresponding {@link
  * org.apache.tuscany.spi.implementation.java.JavaMappedReference}
- *
+ * 
  * @version $Rev$ $Date$
  */
 public class ReferenceProcessor extends ImplementationProcessorExtension {
 
     private JavaInterfaceProcessorRegistry regsitry;
 
-    public ReferenceProcessor(@Autowire JavaInterfaceProcessorRegistry registry) {
+    public ReferenceProcessor(@Autowire
+    JavaInterfaceProcessorRegistry registry) {
         this.regsitry = registry;
     }
 
-    public void visitMethod(CompositeComponent parent, Method method,
+    public void visitMethod(CompositeComponent parent,
+                            Method method,
                             PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-                            DeploymentContext context)
-        throws ProcessingException {
+                            DeploymentContext context) throws ProcessingException {
         Reference annotation = method.getAnnotation(Reference.class);
         Autowire autowire = method.getAnnotation(Autowire.class);
         boolean isAutowire = autowire != null;
         if (annotation == null && !isAutowire) {
-            return; //Not a reference or autowire annotation.
+            return; // Not a reference or autowire annotation.
         }
         if (method.getParameterTypes().length != 1) {
             throw new IllegalReferenceException("Setter must have one parameter", method.toString());
         }
-        //process autowire required first let reference override. or if conflicting should this fault?
+        // process autowire required first let reference override. or if
+        // conflicting should this fault?
         boolean required = false;
         if (isAutowire) {
             required = autowire.required();
@@ -94,7 +98,22 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         reference.setName(name);
         ServiceContract contract;
         try {
-            contract = regsitry.introspect(method.getParameterTypes()[0]);
+            Class<?> rawType = method.getParameterTypes()[0];
+            if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)) {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_N);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_N);
+                }
+            } else {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_ONE);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_ONE);
+                }
+            }
+            Class<?> baseType = getBaseType(rawType, method.getGenericParameterTypes()[0]);
+            contract = regsitry.introspect(baseType);
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }
@@ -102,7 +121,8 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         type.getReferences().put(name, reference);
     }
 
-    public void visitField(CompositeComponent parent, Field field,
+    public void visitField(CompositeComponent parent,
+                           Field field,
                            PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                            DeploymentContext context) throws ProcessingException {
         Reference annotation = field.getAnnotation(Reference.class);
@@ -131,7 +151,22 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         reference.setName(name);
         ServiceContract contract;
         try {
-            contract = regsitry.introspect(field.getType());
+            Class<?> rawType = field.getType();
+            if (rawType.isArray() || Collection.class.isAssignableFrom(rawType)) {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_N);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_N);
+                }
+            } else {
+                if (required) {
+                    reference.setMultiplicity(Multiplicity.ONE_ONE);
+                } else {
+                    reference.setMultiplicity(Multiplicity.ZERO_ONE);
+                }
+            }
+            Class<?> baseType = getBaseType(rawType, field.getGenericType());
+            contract = regsitry.introspect(baseType);
         } catch (InvalidServiceContractException e) {
             throw new ProcessingException(e);
         }
@@ -139,12 +174,10 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         type.getReferences().put(name, reference);
     }
 
-    public <T> void visitConstructor(CompositeComponent parent, Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference,
-                                         JavaMappedProperty<?>> type,
+    public <T> void visitConstructor(CompositeComponent parent,
+                                     Constructor<T> constructor,
+                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
 
     }
-
-
 }
