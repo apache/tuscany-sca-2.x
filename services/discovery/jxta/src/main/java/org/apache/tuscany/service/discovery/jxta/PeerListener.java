@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.service.discovery.jxta;
 
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,6 +26,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
 import net.jxta.discovery.DiscoveryService;
+import net.jxta.protocol.DiscoveryResponseMsg;
+import net.jxta.protocol.PeerAdvertisement;
 
 /**
  * Listener that keeps track of peers in the same peer group.
@@ -32,7 +35,7 @@ import net.jxta.discovery.DiscoveryService;
  * @version $Revision$ $Date$
  *
  */
-public class PeerListener implements Runnable, DiscoveryListener {
+public class PeerListener implements DiscoveryListener {
     
     /** Discovery service to use. */
     private DiscoveryService discoveryService;
@@ -43,32 +46,38 @@ public class PeerListener implements Runnable, DiscoveryListener {
     /** Liveness indicator. */
     private AtomicBoolean live = new AtomicBoolean();
     
+    /** Owning runtime. */
+    private String runtimeId;
+    
     /** Available peers. */
     private List<String> availablePeers = new LinkedList<String>();
     
     /**
      * Initializes the JXTA discovery service.
      * @param discoveryService JXTA discovery service.
+     * @param interval Interval between sending discovery messages.
+     * @param runtimeId Runtime that owns this peer.
      */
-    public PeerListener(DiscoveryService discoveryService, long interval) {
+    public PeerListener(DiscoveryService discoveryService, long interval, String runtimeId) {
         this.discoveryService = discoveryService;
+        this.interval = interval;
+        this.runtimeId = runtimeId;
+        this.discoveryService.addDiscoveryListener(this);
     }
 
     /**
      * Sends discovery messages for peer advertisements.
      */
-    public void run() {
+    public void start() {
 
-        discoveryService.addDiscoveryListener(this);
         live.set(true);
-        
+        discoveryService.addDiscoveryListener(this);
         while(live.get()) {
             discoveryService.getRemoteAdvertisements(null, DiscoveryService.PEER, null, null, 5);
             try {
                 Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                return;
-            }
+            } catch(Exception e) {}
+
         }
         
     }
@@ -82,10 +91,25 @@ public class PeerListener implements Runnable, DiscoveryListener {
     }
 
     /**
-     * Receives asynchronous discovery responses.
+     * by implementing DiscoveryListener we must define this method
+     * to deal to discovery responses
      */
-    public synchronized void discoveryEvent(DiscoveryEvent discoveryEvent) {
-        // TODO Update the list of available peers
+
+    public synchronized void discoveryEvent(DiscoveryEvent event) {
+
+        DiscoveryResponseMsg res = event.getResponse();
+        Enumeration en = res.getAdvertisements();
+        if (en != null ) {
+            while (en.hasMoreElements()) {
+                PeerAdvertisement adv = (PeerAdvertisement) en.nextElement();
+                String peerName = adv.getName();
+                if(!runtimeId.equals(peerName)) {
+                    availablePeers.add(adv.getName());
+                    System.out.println (" Peer name = " + peerName);
+                    System.out.println (" Peer Group = " + adv.getPeerGroupID());
+                }
+            }
+        }
     }
     
     /**
