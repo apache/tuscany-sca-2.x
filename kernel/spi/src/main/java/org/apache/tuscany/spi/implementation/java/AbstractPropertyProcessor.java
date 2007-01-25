@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -73,7 +74,12 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
             throw new DuplicatePropertyException(name);
         }
 
-        JavaMappedProperty<?> property = createProperty(name, javaType, method);
+        Class<?> baseType = getBaseType(javaType, method.getGenericParameterTypes()[0]);
+        JavaMappedProperty<?> property = createProperty(name, baseType, method);
+        if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
+            property.setMany(true);
+        }
+        
         initProperty(property, annotation, parent, context);
         properties.put(name, property);
     }
@@ -99,7 +105,11 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
             throw new DuplicatePropertyException(name);
         }
 
-        JavaMappedProperty<?> property = createProperty(name, javaType, field);
+        Class<?> baseType = getBaseType(javaType, field.getGenericType());
+        JavaMappedProperty<?> property = createProperty(name, baseType, field);
+        if (javaType.isArray() || Collection.class.isAssignableFrom(javaType)) {
+            property.setMany(true);
+        }        
         initProperty(property, annotation, parent, context);
         properties.put(name, property);
     }
@@ -127,7 +137,12 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
                     if (name == null || name.length() == 0) {
                         name = param.getName();
                     }
-                    JavaMappedProperty<?> property = createProperty(name, param, constructor);
+                    
+                    Class<?> baseType = getBaseType(param, constructor.getGenericParameterTypes()[i]);
+                    JavaMappedProperty<?> property = createProperty(name, baseType, constructor);
+                    if (param.isArray() || Collection.class.isAssignableFrom(param)) {
+                        property.setMany(true);
+                    }
                     initProperty(property, monitorAnnot, parent, context);
                     properties.put(name, property);
                     service.addName(definition.getInjectionNames(), i, name);
@@ -156,4 +171,5 @@ public abstract class AbstractPropertyProcessor<A extends Annotation> extends Im
         }
         return Character.toLowerCase(name.charAt(3)) + name.substring(4);
     }
+    
 }

@@ -19,6 +19,10 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import static org.apache.tuscany.spi.model.OverrideOptions.MUST;
+
+import java.util.Collection;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
@@ -153,4 +157,54 @@ public class PropertyProcessorTestCase extends TestCase {
         }
 
     }
+    
+    private class Multiple {
+        @Property
+        protected List<String> refs1;
+
+        @Property
+        protected String[] refs2;
+
+        @Property
+        public void setRefs3(String[] refs) {
+        }
+
+        @Property
+        public void setRefs4(Collection<String> refs) {
+        }
+
+    }
+
+    public void testMultiplicity_Collection() throws Exception {
+        processor.visitField(null, Multiple.class.getDeclaredField("refs1"), type, null);
+        JavaMappedProperty prop = type.getProperties().get("refs1");
+        assertNotNull(prop);
+        assertSame(String.class, prop.getJavaType());
+        assertTrue(prop.isMany());
+    }
+
+    public void testMultiplicity_Array() throws Exception {
+        processor.visitField(null, Multiple.class.getDeclaredField("refs2"), type, null);
+        JavaMappedProperty prop = type.getProperties().get("refs2");
+        assertNotNull(prop);
+        assertSame(String.class, prop.getJavaType());
+        assertTrue(prop.isMany());
+    }
+
+    public void testMultiplicity_Array_Method() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", new Class[] {String[].class}), type, null);
+        JavaMappedProperty prop = type.getProperties().get("refs3");
+        assertNotNull(prop);
+        assertSame(String.class, prop.getJavaType());
+        assertTrue(prop.isMany());
+    }
+
+    public void testMultiplicity_Collection_Method() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", new Class[] {Collection.class}), type, null);
+        JavaMappedProperty prop = type.getProperties().get("refs4");
+        assertNotNull(prop);
+        assertSame(String.class, prop.getJavaType());
+        assertTrue(prop.isMany());
+    }
+    
 }

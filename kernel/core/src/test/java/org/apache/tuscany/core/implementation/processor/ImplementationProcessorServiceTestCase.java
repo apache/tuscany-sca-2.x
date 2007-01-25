@@ -72,7 +72,13 @@ public class ImplementationProcessorServiceTestCase extends TestCase {
         Annotation[] paramAnnotations = ctor.getParameterAnnotations()[0];
         List<String> injectionNames = new ArrayList<String>();
         String[] names = new String[]{"foo"};
-        implService.processParam(int.class, paramAnnotations, names, 0, type, injectionNames);
+        implService.processParam(int.class,
+                                 ctor.getGenericParameterTypes()[0],
+                                 paramAnnotations,
+                                 names,
+                                 0,
+                                 type,
+                                 injectionNames);
         org.apache.tuscany.spi.model.Property<?> property = type.getProperties().get("foo");
         assertEquals(int.class, property.getJavaType());
         assertEquals(SimpleTypeMapperExtension.XSD_INT, property.getXmlType());

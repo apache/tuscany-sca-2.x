@@ -19,18 +19,21 @@
 package org.apache.tuscany.core.implementation.processor;
 
 import java.lang.reflect.Constructor;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+import junit.framework.TestCase;
 
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
-
-import junit.framework.TestCase;
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
+import org.apache.tuscany.spi.model.Multiplicity;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
 /**
  * @version $Rev$ $Date$
@@ -144,5 +147,38 @@ public class ConstructorProcessorTestCase extends TestCase {
         public AllAutowireNoName(@Autowire String param1, @Autowire String param2, @Autowire String param3) {
         }
     }
+    
+    public static final class Multiple {
+        @org.osoa.sca.annotations.Constructor
+        public Multiple(@Autowire Collection<String> param1,
+                     @Property(name = "foo") String[] param2,
+                     @Reference(name = "bar", required=true) List<String> param3, 
+                     @Property(name = "abc") Set<String> param4,
+                     @Reference(name = "xyz") String[] param5) {
+        }
+    } 
+    
+    public void testMultiplicity() throws Exception {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
+            new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
+        Constructor<Multiple> ctor1 =
+            Multiple.class.getConstructor(Collection.class, String[].class, List.class, Set.class, String[].class);
+        processor.visitConstructor(null, ctor1, type, null);
+        JavaMappedReference ref0 = type.getReferences().get("java.util.Collection0");
+        assertNotNull(ref0);
+        assertEquals(Multiplicity.ONE_N, ref0.getMultiplicity());
+        JavaMappedReference ref1 = type.getReferences().get("bar");
+        assertNotNull(ref1);
+        assertEquals(Multiplicity.ONE_N, ref1.getMultiplicity());
+        JavaMappedReference ref2 = type.getReferences().get("xyz");
+        assertNotNull(ref2);
+        assertEquals(Multiplicity.ZERO_N, ref2.getMultiplicity());
+        JavaMappedProperty prop1 = type.getProperties().get("foo");
+        assertNotNull(prop1);
+        assertTrue(prop1.isMany());
+        JavaMappedProperty prop2 = type.getProperties().get("abc");
+        assertNotNull(prop2);
+        assertTrue(prop2.isMany());
+    }    
 
 }

@@ -20,6 +20,7 @@ package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
@@ -66,6 +67,7 @@ public interface ImplementationProcessorService {
      * Processes a constructor parameter by introspecting its annotations
      *
      * @param param            the parameter to process
+     * @param genericParam     the generic type of the parameter
      * @param paramAnnotations the parameter annotations
      * @param constructorNames the array of constructorNames specified by
      * @param pos              the declaration position of the constructor parameter
@@ -73,13 +75,13 @@ public interface ImplementationProcessorService {
      * @param injectionNames   the list of parameter constructorNames specified on parameter annotations
      * @throws ProcessingException
      */
-    boolean processParam(
-        Class<?> param,
-        Annotation[] paramAnnotations,
-        String[] constructorNames,
-        int pos,
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
-        List<String> injectionNames) throws ProcessingException;
+    boolean processParam(Class<?> param,
+                         Type genericParam,
+                         Annotation[] paramAnnotations,
+                         String[] constructorNames,
+                         int pos,
+                         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                         List<String> injectionNames) throws ProcessingException;
 
     /**
      * Returns true if {@link @Autowire}, {@link @Property}, or {@link @Reference} are present in the given array
