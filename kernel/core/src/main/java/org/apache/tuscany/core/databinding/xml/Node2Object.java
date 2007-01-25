@@ -19,7 +19,7 @@
 package org.apache.tuscany.core.databinding.xml;
 
 import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.extension.SimpleType2JavaTransformer;
+import org.apache.tuscany.spi.databinding.extension.XMLType2JavaTransformer;
 import org.osoa.sca.annotations.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -28,7 +28,7 @@ import org.w3c.dom.Node;
  * Transformer to convert data from an simple Node to Java Object
  */
 @Service(Transformer.class)
-public class Node2Object extends SimpleType2JavaTransformer<Node> {
+public class Node2Object extends XMLType2JavaTransformer<Node> {
 
     public Node2Object() {
         super(null);

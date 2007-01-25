@@ -107,6 +107,7 @@ public final class PropertyHelper {
                                          ComponentDefinition<? extends Implementation<?>> componentDefinition,
                                          DeploymentContext deploymentContext) throws LoaderException {
         Map<String, PropertyValue<?>> propertyValues = componentDefinition.getPropertyValues();
+        
         for (PropertyValue propValue : propertyValues.values()) {
             Document node = propValue.getValue();
             String source = propValue.getSource();
@@ -143,12 +144,14 @@ public final class PropertyHelper {
 
                         // FIXME: How to deal with namespaces?
                         node = evaluate(null, document, xpath);
-                        propValue.setValue(node);
-                        Property<?> prop =
+                        if (node != null) {
+                            propValue.setValue(node);
+                        } 
+                        /*Property<?> prop =
                             (Property<?>)componentDefinition.getImplementation().getComponentType()
                                 .getProperties().get(propValue.getName());
                         propValue
-                            .setValueFactory(new SimplePropertyObjectFactory(prop, propValue.getValue()));
+                            .setValueFactory(new SimplePropertyObjectFactory(prop, propValue.getValue()));*/
                     } else {
                         InvalidValueException ex =
                             new InvalidValueException("The 'source' has an invalid value");

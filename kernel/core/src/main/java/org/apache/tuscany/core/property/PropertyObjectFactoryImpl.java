@@ -28,6 +28,7 @@ import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.Mediator;
+import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
 import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.apache.tuscany.spi.loader.PropertyObjectFactory;
@@ -72,7 +73,17 @@ public class PropertyObjectFactoryImpl implements PropertyObjectFactory {
             this.property = property;
             this.propertyValue = propertyValue;
             sourceDataType = new DataType<QName>(DOMDataBinding.NAME, Node.class, this.property.getXmlType());
-            TypeInfo typeInfo = new TypeInfo(property.getXmlType(), true, null);
+            TypeInfo typeInfo = null;
+            if (this.property.getXmlType() != null) {
+                if (SimpleTypeMapperExtension.isSimpleXSDType(this.property.getXmlType())) { 
+                    typeInfo = new TypeInfo(property.getXmlType(), true, null);
+                } else {
+                    typeInfo = new TypeInfo(property.getXmlType(), false, null);
+                }
+            } else {
+                typeInfo = new TypeInfo(property.getXmlType(), false, null);
+            }
+            
             ElementInfo elementInfo = new ElementInfo(null, typeInfo);
             sourceDataType.setMetadata(ElementInfo.class.getName(), elementInfo);
             Class javaType = this.property.getJavaType();

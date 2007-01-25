@@ -199,6 +199,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         String file = reader.getAttributeValue(null, PROPERTY_FILE_ATTR);
         if (source != null || file != null) {
             propertyValue = new PropertyValue<Type>(name, source, file);
+            propertyValue.setValue(property.getDefaultValue());
             LoaderUtil.skipToEndElement(reader);
         } else {
             try {
