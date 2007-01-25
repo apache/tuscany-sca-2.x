@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.resolver;
 
+import org.apache.tuscany.spi.model.ModelObject;
+
 /**
  * Registry for resolvers that handle resolution of resources referenced by assembly model elements
  * <p/>
@@ -32,13 +34,13 @@ public interface ResolverRegistry {
      * @param modelClass the type model element the resolver handles
      * @param resolver   the resolver to be registered
      */
-    void register(Class<?> modelClass, Resolver resolver);
+    <T extends ModelObject> void register(Class<T> modelClass, Resolver<T> resolver);
 
     /**
      * Unregister a resolver for a model type.
      *
      * @param modelClass the model type whose builder should be unregistered
      */
-    void unregister(Class<?> modelClass);
+    <T extends ModelObject> void unregister(Class<T> modelClass);
 
 }

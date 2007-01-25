@@ -25,7 +25,7 @@ import org.apache.tuscany.spi.model.ModelObject;
  *
  * @version $Rev$ $Date$
  */
-public interface Resolver {
+public interface Resolver<T extends ModelObject> {
 
     /**
      * Processes a model object, resolving resources referenced by it
@@ -33,5 +33,5 @@ public interface Resolver {
      * @param object the model object to process
      * @throws ResolutionException
      */
-    void resolve(ModelObject object) throws ResolutionException;
+    void resolve(T object) throws ResolutionException;
 }
