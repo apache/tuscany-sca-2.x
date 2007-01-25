@@ -18,14 +18,11 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import static org.apache.tuscany.spi.model.OverrideOptions.MUST;
-
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.osoa.sca.annotations.Property;
 
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.implementation.java.DuplicatePropertyException;
 import org.apache.tuscany.spi.implementation.java.IllegalPropertyException;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
@@ -33,7 +30,10 @@ import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.OverrideOptions;
-import org.osoa.sca.annotations.Property;
+import static org.apache.tuscany.spi.model.OverrideOptions.MUST;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -157,7 +157,7 @@ public class PropertyProcessorTestCase extends TestCase {
         }
 
     }
-    
+
     private class Multiple {
         @Property
         protected List<String> refs1;
@@ -175,7 +175,7 @@ public class PropertyProcessorTestCase extends TestCase {
 
     }
 
-    public void testMultiplicity_Collection() throws Exception {
+    public void testMultiplicityCollection() throws Exception {
         processor.visitField(null, Multiple.class.getDeclaredField("refs1"), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs1");
         assertNotNull(prop);
@@ -183,7 +183,7 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMany());
     }
 
-    public void testMultiplicity_Array() throws Exception {
+    public void testMultiplicityArray() throws Exception {
         processor.visitField(null, Multiple.class.getDeclaredField("refs2"), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs2");
         assertNotNull(prop);
@@ -191,20 +191,20 @@ public class PropertyProcessorTestCase extends TestCase {
         assertTrue(prop.isMany());
     }
 
-    public void testMultiplicity_Array_Method() throws Exception {
-        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", new Class[] {String[].class}), type, null);
+    public void testMultiplicityArrayMethod() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs3", String[].class), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs3");
         assertNotNull(prop);
         assertSame(String.class, prop.getJavaType());
         assertTrue(prop.isMany());
     }
 
-    public void testMultiplicity_Collection_Method() throws Exception {
-        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", new Class[] {Collection.class}), type, null);
+    public void testMultiplicityCollectionMethod() throws Exception {
+        processor.visitMethod(null, Multiple.class.getMethod("setRefs4", Collection.class), type, null);
         JavaMappedProperty prop = type.getProperties().get("refs4");
         assertNotNull(prop);
         assertSame(String.class, prop.getJavaType());
         assertTrue(prop.isMany());
     }
-    
+
 }

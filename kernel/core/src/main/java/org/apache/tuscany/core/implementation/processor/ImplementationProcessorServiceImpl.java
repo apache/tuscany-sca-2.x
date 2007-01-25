@@ -111,7 +111,8 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         Annotation[] paramAnnotations,
         String[] constructorNames,
         int pos,
-        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type, List<String> injectionNames) throws ProcessingException {
+        PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+        List<String> injectionNames) throws ProcessingException {
         boolean processed = false;
         for (Annotation annot : paramAnnotations) {
             if (Autowire.class.equals(annot.annotationType())) {
@@ -255,7 +256,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
                     reference.setMultiplicity(Multiplicity.ZERO_ONE);
                 }
             }
-            Class<?> baseType = getBaseType(rawType, genericParam);            
+            Class<?> baseType = getBaseType(rawType, genericParam);
             ServiceContract<?> contract = registry.introspect(baseType);
             reference.setServiceContract(contract);
         } catch (InvalidServiceContractException e) {
@@ -292,7 +293,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         Class<?> baseType = getBaseType(param, genericParam);
         if (param.isArray() || Collection.class.isAssignableFrom(param)) {
             property.setMany(true);
-        }        
+        }
         property.setJavaType(baseType);
         String name = propAnnot.name();
         if (name == null || name.length() == 0) {
@@ -385,7 +386,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
                     reference.setMultiplicity(Multiplicity.ZERO_ONE);
                 }
             }
-            Class<?> baseType = getBaseType(rawType, genericParam);            
+            Class<?> baseType = getBaseType(rawType, genericParam);
             ServiceContract<?> contract = registry.introspect(baseType);
             reference.setServiceContract(contract);
         } catch (InvalidServiceContractException e) {
@@ -452,12 +453,12 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             if (genericType == cls) {
                 return Object.class;
             } else {
-                ParameterizedType parameterizedType = (ParameterizedType)genericType;
+                ParameterizedType parameterizedType = (ParameterizedType) genericType;
                 Type baseType = parameterizedType.getActualTypeArguments()[0];
                 if (baseType instanceof Class) {
-                    return (Class<?>)baseType;
+                    return (Class<?>) baseType;
                 } else if (baseType instanceof ParameterizedType) {
-                    return (Class<?>)((ParameterizedType)baseType).getRawType();
+                    return (Class<?>) ((ParameterizedType) baseType).getRawType();
                 } else {
                     return null;
                 }
@@ -465,5 +466,5 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         } else {
             return cls;
         }
-    }        
+    }
 }

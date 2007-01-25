@@ -18,12 +18,12 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
-import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+
+import org.osoa.sca.annotations.Reference;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -38,13 +38,13 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ServiceContract;
-import org.osoa.sca.annotations.Reference;
+
+import static org.apache.tuscany.core.util.JavaIntrospectionHelper.toPropertyName;
 
 /**
- * Processes an {@link @Reference} annotation, updating the component type with
- * corresponding {@link
+ * Processes an {@link @Reference} annotation, updating the component type with corresponding {@link
  * org.apache.tuscany.spi.implementation.java.JavaMappedReference}
- * 
+ *
  * @version $Rev$ $Date$
  */
 public class ReferenceProcessor extends ImplementationProcessorExtension {
@@ -176,7 +176,8 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
 
     public <T> void visitConstructor(CompositeComponent parent,
                                      Constructor<T> constructor,
-                                     PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type,
+                                     PojoComponentType<JavaMappedService,
+                                         JavaMappedReference, JavaMappedProperty<?>> type,
                                      DeploymentContext context) throws ProcessingException {
 
     }

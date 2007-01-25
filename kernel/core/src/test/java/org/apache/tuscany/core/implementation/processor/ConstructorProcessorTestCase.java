@@ -23,17 +23,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
 
-import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.model.Multiplicity;
-import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
+
+import junit.framework.TestCase;
+import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 
 /**
  * @version $Rev$ $Date$
@@ -137,8 +138,8 @@ public class ConstructorProcessorTestCase extends TestCase {
     public static final class Mixed {
         @org.osoa.sca.annotations.Constructor
         public Mixed(@Autowire String param1,
-                     @Property(name = "foo") String param2,
-                     @Reference(name = "bar") String param3) {
+                     @Property(name = "foo")String param2,
+                     @Reference(name = "bar")String param3) {
         }
     }
 
@@ -147,17 +148,17 @@ public class ConstructorProcessorTestCase extends TestCase {
         public AllAutowireNoName(@Autowire String param1, @Autowire String param2, @Autowire String param3) {
         }
     }
-    
+
     public static final class Multiple {
         @org.osoa.sca.annotations.Constructor
         public Multiple(@Autowire Collection<String> param1,
-                     @Property(name = "foo") String[] param2,
-                     @Reference(name = "bar", required=true) List<String> param3, 
-                     @Property(name = "abc") Set<String> param4,
-                     @Reference(name = "xyz") String[] param5) {
+                        @Property(name = "foo")String[] param2,
+                        @Reference(name = "bar", required = true)List<String> param3,
+                        @Property(name = "abc")Set<String> param4,
+                        @Reference(name = "xyz")String[] param5) {
         }
-    } 
-    
+    }
+
     public void testMultiplicity() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
@@ -179,6 +180,6 @@ public class ConstructorProcessorTestCase extends TestCase {
         JavaMappedProperty prop2 = type.getProperties().get("abc");
         assertNotNull(prop2);
         assertTrue(prop2.isMany());
-    }    
+    }
 
 }
