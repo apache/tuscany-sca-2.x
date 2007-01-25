@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -37,6 +38,7 @@ import org.apache.tuscany.spi.component.WorkContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
@@ -105,7 +107,7 @@ public class WireServiceExtensionTestCase extends TestCase {
         target.addTarget(new URI("bar"));
         target.setReferenceName("refName");
 
-        OutboundWire wire = wireService.createWire(target, definition);
+        OutboundWire wire = wireService.createWire(target, definition).get(0);
         assertEquals("refName", wire.getReferenceName());
         assertEquals("bar", wire.getTargetName().toString());
         assertFalse(wire.isAutowire());
@@ -135,12 +137,24 @@ public class WireServiceExtensionTestCase extends TestCase {
         definition.setAutowire(true);
         ReferenceTarget target = new ReferenceTarget();
         target.setReferenceName("refName");
-        OutboundWire wire = wireService.createWire(target, definition);
+        OutboundWire wire = wireService.createWire(target, definition).get(0);
         assertTrue(wire.isAutowire());
         assertEquals("refName", wire.getReferenceName());
         assertEquals(contract, wire.getServiceContract());
         assertEquals(Callback.class, wire.getCallbackInterface());
     }
+    
+    public void testCreateReferenceMultipleWire() throws Exception {
+        ReferenceDefinition definition = new ReferenceDefinition("foo", contract);
+        definition.setMultiplicity(Multiplicity.ONE_N);
+        ReferenceTarget target = new ReferenceTarget();
+        target.addTarget(new URI("bar"));
+        target.addTarget(new URI("bar2"));
+        target.setReferenceName("refName");
+
+        List<OutboundWire> wires = wireService.createWire(target, definition);
+        assertEquals(2, wires.size());
+    }    
 
     public void testCreateComponentWires() throws Exception {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
@@ -251,7 +265,7 @@ public class WireServiceExtensionTestCase extends TestCase {
         }
 
 
-        public OutboundWire createWire(ReferenceTarget reference, ReferenceDefinition def) {
+        public List<OutboundWire> createWire(ReferenceTarget reference, ReferenceDefinition def) {
             return super.createWire(reference, def);
         }
     }

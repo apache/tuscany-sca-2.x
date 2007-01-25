@@ -18,22 +18,24 @@
  */
 package org.apache.tuscany.core.loader;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
+
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.w3c.dom.Document;
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-import org.osoa.sca.annotations.Constructor;
-
+import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
+import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -59,16 +61,15 @@ import org.apache.tuscany.spi.model.ComponentType;
 import org.apache.tuscany.spi.model.CompositeComponentType;
 import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
-
-import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
-import org.apache.tuscany.core.implementation.system.model.SystemImplementation;
-import org.apache.tuscany.core.property.SimplePropertyObjectFactory;
+import org.osoa.sca.annotations.Constructor;
+import org.w3c.dom.Document;
 
 /**
  * Loads a component definition from an XML-based assembly file
@@ -253,14 +254,17 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 }
             }
         } else {
-            ReferenceTarget referenceTarget = new ReferenceTarget();
-            referenceTarget.setReferenceName(name);
+            ReferenceTarget referenceTarget = componentDefinition.getReferenceTargets().get(name);
+            if (referenceTarget == null) {
+                referenceTarget = new ReferenceTarget();
+                referenceTarget.setReferenceName(name);
+                componentDefinition.add(referenceTarget);
+            }
             try {
                 referenceTarget.addTarget(new URI(target));
             } catch (URISyntaxException e) {
                 throw new InvalidReferenceException(e);
             }
-            componentDefinition.add(referenceTarget);
         }
     }
 
@@ -304,9 +308,38 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
                 continue;
             }
             String name = referenceDef.getName();
-            if (!definition.getReferenceTargets().containsKey(name)) {
+            ReferenceTarget target = definition.getReferenceTargets().get(name);
+            if (target == null) {
                 throw new MissingReferenceException(name);
             }
+            int count = target.getTargets().size();
+            Multiplicity multiplicity = referenceDef.getMultiplicity();
+            switch (multiplicity) {
+                case ZERO_N:
+                    break;
+                case ZERO_ONE:
+                    if (count > 1) {
+                        throw new InvalidReferenceException("Reference " + name
+                            + " violates the multiplicity: "
+                            + multiplicity);
+                    }
+                    break;
+                case ONE_ONE:
+                    if (count != 1) {
+                        throw new InvalidReferenceException("Reference " + name
+                            + " violates the multiplicity: "
+                            + multiplicity);
+                    }
+                    break;
+                case ONE_N:
+                    if (count < 1) {
+                        throw new InvalidReferenceException("Reference " + name
+                            + " violates the multiplicity: "
+                            + multiplicity);
+                    }
+                    break;
+            }
+
         }
     }
 }
