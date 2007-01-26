@@ -54,7 +54,7 @@ import org.easymock.IAnswer;
 public class ComponentLoaderTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
     private static final String NAME = "testComponent";
-    private static final Implementation IMPL = new JavaImplementation();
+    private JavaImplementation impl;
 
     private XMLStreamReader mockReader;
     private LoaderRegistry mockRegistry;
@@ -87,7 +87,7 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),
-            EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
+            EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         ComponentDefinition component = loader.load(EasyMock.createNiceMock(CompositeComponent.class),
             null, mockReader,
@@ -121,7 +121,7 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),
-            EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
+            EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         ComponentDefinition component = loader.load(EasyMock.createNiceMock(CompositeComponent.class),
             null, mockReader,
@@ -169,7 +169,7 @@ public class ComponentLoaderTestCase extends TestCase {
         EasyMock.expect(mockRegistry.load(EasyMock.isA(CompositeComponent.class),
             (ModelObject) isNull(),
             EasyMock.eq(mockReader),
-            EasyMock.isA(DeploymentContext.class))).andReturn(IMPL);
+            EasyMock.isA(DeploymentContext.class))).andReturn(impl);
         EasyMock.replay(mockRegistry);
         try {
             loader.load(EasyMock.createNiceMock(CompositeComponent.class),
@@ -183,6 +183,7 @@ public class ComponentLoaderTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        impl = new JavaImplementation();
         mockReader = EasyMock.createMock(XMLStreamReader.class);
         mockRegistry = EasyMock.createMock(LoaderRegistry.class);
         mockPropertyFactory = EasyMock.createMock(PropertyObjectFactory.class);

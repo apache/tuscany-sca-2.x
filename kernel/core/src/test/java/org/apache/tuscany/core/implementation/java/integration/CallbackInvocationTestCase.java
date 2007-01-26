@@ -198,7 +198,7 @@ public class CallbackInvocationTestCase extends TestCase {
         JavaMappedService mappedService = new JavaMappedService("Foo", contract, false, "callback", method);
         type.getServices().put("Foo", mappedService);
 
-        JavaImplementation impl = new JavaImplementation();
+        JavaImplementation impl = new JavaImplementation(FooImpl.class, type);
         impl.setComponentType(type);
         impl.setImplementationClass(FooImpl.class);
         return new ComponentDefinition<JavaImplementation>("foo", impl);
@@ -222,7 +222,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ReferenceTarget refTarget = new ReferenceTarget();
         refTarget.setReferenceName("foo");
         refTarget.getTargets().add(new URI("foo"));
-        JavaImplementation impl = new JavaImplementation();
+        JavaImplementation impl = new JavaImplementation(FooClient.class, type);
         impl.setComponentType(type);
         impl.setImplementationClass(FooClient.class);
         ComponentDefinition<JavaImplementation> def = new ComponentDefinition<JavaImplementation>(name, impl);
@@ -248,9 +248,7 @@ public class CallbackInvocationTestCase extends TestCase {
         ReferenceTarget refTarget = new ReferenceTarget();
         refTarget.setReferenceName("foo");
         refTarget.getTargets().add(new URI("foo"));
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
-        impl.setImplementationClass(FooPlainClient.class);
+        JavaImplementation impl = new JavaImplementation(FooPlainClient.class, type);
         ComponentDefinition<JavaImplementation> def = new ComponentDefinition<JavaImplementation>(name, impl);
         def.getReferenceTargets().put("foo", refTarget);
         return def;

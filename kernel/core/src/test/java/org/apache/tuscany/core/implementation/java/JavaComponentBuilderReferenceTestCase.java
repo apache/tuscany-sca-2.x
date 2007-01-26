@@ -78,9 +78,7 @@ public class JavaComponentBuilderReferenceTestCase extends TestCase {
         serviceDefinition.setServiceContract(contract);
         sourceType.add(serviceDefinition);
         sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
-        JavaImplementation sourceImpl = new JavaImplementation();
-        sourceImpl.setComponentType(sourceType);
-        sourceImpl.setImplementationClass(SourceImpl.class);
+        JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, sourceType);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
 
         JavaComponentBuilder builder = new JavaComponentBuilder();

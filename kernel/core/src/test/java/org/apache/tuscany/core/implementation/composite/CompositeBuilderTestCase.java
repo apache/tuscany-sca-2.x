@@ -158,9 +158,7 @@ public class CompositeBuilderTestCase extends TestCase {
 
         sourceType.add(sourceServiceDefinition);
         sourceType.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(SourceImpl.class.getConstructor()));
-        JavaImplementation sourceImpl = new JavaImplementation();
-        sourceImpl.setComponentType(sourceType);
-        sourceImpl.setImplementationClass(SourceImpl.class);
+        JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, sourceType);
         ComponentDefinition<JavaImplementation> innerSourceComponentDefinition =
             new ComponentDefinition<JavaImplementation>("InnerSourceComponent", sourceImpl);
         ReferenceTarget refTarget = new ReferenceTarget();
@@ -189,9 +187,7 @@ public class CompositeBuilderTestCase extends TestCase {
 
         targetType.add(serviceDefinition);
         targetType.setConstructorDefinition(new ConstructorDefinition<TargetImpl>(TargetImpl.class.getConstructor()));
-        JavaImplementation targetImpl = new JavaImplementation();
-        targetImpl.setComponentType(targetType);
-        targetImpl.setImplementationClass(TargetImpl.class);
+        JavaImplementation targetImpl = new JavaImplementation(TargetImpl.class, targetType);
         return new ComponentDefinition<JavaImplementation>("TargetComponent", targetImpl);
     }
 

@@ -105,9 +105,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         serviceDefinition.setServiceContract(contract);
         type.add(serviceDefinition);
         type.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
-        JavaImplementation sourceImpl = new JavaImplementation();
-        sourceImpl.setComponentType(type);
-        sourceImpl.setImplementationClass(SourceImpl.class);
+        JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, type);
         definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
     }
 

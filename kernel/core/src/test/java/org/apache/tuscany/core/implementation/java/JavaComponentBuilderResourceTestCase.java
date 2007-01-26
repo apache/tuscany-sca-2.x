@@ -53,9 +53,7 @@ public class JavaComponentBuilderResourceTestCase extends TestCase {
         type.add(resource);
         type.setImplementationScope(Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setImplementationClass(Foo.class);
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(Foo.class, type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("foo", impl);
         InboundWire resourceWire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(resourceWire.getTargetService()).andReturn("result");
