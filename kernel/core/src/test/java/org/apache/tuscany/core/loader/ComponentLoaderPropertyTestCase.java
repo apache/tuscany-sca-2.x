@@ -54,7 +54,7 @@ public class ComponentLoaderPropertyTestCase extends TestCase {
         property.setName("name");
         property.setOverride(OverrideOptions.MAY);
         type.add(property);
-        JavaImplementation impl = new JavaImplementation();
+        JavaImplementation impl = new JavaImplementation(null, type);
         impl.setComponentType(type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         loader.populatePropertyValues(defn);

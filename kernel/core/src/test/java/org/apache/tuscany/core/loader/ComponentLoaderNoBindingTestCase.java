@@ -66,8 +66,7 @@ public class ComponentLoaderNoBindingTestCase extends TestCase {
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         type.add(service);
         type.add(reference);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         LoaderRegistry registry = EasyMock.createMock(LoaderRegistry.class);
         EasyMock.expect(registry.load((CompositeComponent) EasyMock.isNull(),
             (ModelObject) EasyMock.isNull(),

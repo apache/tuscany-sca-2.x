@@ -58,9 +58,7 @@ public class JavaComponentBuilderConversationIDTestCase extends TestCase {
         type.setImplementationScope(Scope.STATELESS);
         type.setConstructorDefinition(ctorDef);
         
-        JavaImplementation impl = new JavaImplementation();
-        impl.setImplementationClass(Foo.class);
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(Foo.class, type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>("foo", impl);
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         JavaAtomicComponent component = (JavaAtomicComponent) builder.build(parent, definition, null);

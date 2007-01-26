@@ -35,8 +35,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         ReferenceDefinition refDefinition = new ReferenceDefinition();
         refDefinition.setName("name");
         type.add(refDefinition);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         ReferenceTarget target = new ReferenceTarget();
         target.setReferenceName("name");
@@ -51,8 +50,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         refDefinition.setName("name");
         refDefinition.setRequired(true);
         type.add(refDefinition);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         try {
             loader.validate(defn);
@@ -69,8 +67,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         refDefinition.setName("name");
         refDefinition.setRequired(false);
         type.add(refDefinition);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         loader.validate(defn);
     }
@@ -83,8 +80,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         refDefinition.setRequired(true);
         refDefinition.setMultiplicity(Multiplicity.ONE_N);
         type.add(refDefinition);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         ReferenceTarget target = new ReferenceTarget();
         target.setReferenceName("r1");
@@ -140,8 +136,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         refDefinition.setName("name");
         refDefinition.setAutowire(true);
         type.add(refDefinition);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         loader.validate(defn);
     }

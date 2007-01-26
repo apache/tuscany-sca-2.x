@@ -65,8 +65,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         pojoComponentType1.add(pojoSvc1);
         ReferenceDefinition pojoRef1 = new ReferenceDefinition("pojoRef1", null);
         pojoComponentType1.add(pojoRef1);
-        JavaImplementation pojoImpl1 = new JavaImplementation();
-        pojoImpl1.setComponentType(pojoComponentType1);
+        JavaImplementation pojoImpl1 = new JavaImplementation(null, pojoComponentType1);
 
         ComponentDefinition<JavaImplementation> component1 =
             new ComponentDefinition<JavaImplementation>("Component1", pojoImpl1);
@@ -82,8 +81,7 @@ public class CompositeLoaderWireResolutionTestCase extends TestCase {
         pojoComponentType2.add(pojoRef2);
         ReferenceDefinition pojoRef3 = new ReferenceDefinition("pojoRef3", null);
         pojoComponentType2.add(pojoRef3);
-        JavaImplementation pojoImpl2 = new JavaImplementation();
-        pojoImpl2.setComponentType(pojoComponentType2);
+        JavaImplementation pojoImpl2 = new JavaImplementation(null, pojoComponentType2);
 
         ComponentDefinition<JavaImplementation> component2 =
             new ComponentDefinition<JavaImplementation>("Component2", pojoImpl2);

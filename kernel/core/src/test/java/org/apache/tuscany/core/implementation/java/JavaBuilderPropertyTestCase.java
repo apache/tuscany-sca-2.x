@@ -60,9 +60,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         type.add(property);
         type.setConstructorDefinition(new ConstructorDefinition<Foo>(Foo.class.getConstructor((Class[]) null)));
         type.setImplementationScope(Scope.STATELESS);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
-        impl.setImplementationClass(Foo.class);
+        JavaImplementation impl = new JavaImplementation(Foo.class, type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
         PropertyValue propertyValue = new PropertyValue(property.getName(), property.getDefaultValueFactory());
         definition.getPropertyValues().put(property.getName(), propertyValue);
@@ -83,9 +81,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         type.add(property);
         type.setConstructorDefinition(new ConstructorDefinition<FooInt>(FooInt.class.getConstructor((Class[]) null)));
         type.setImplementationScope(Scope.STATELESS);
-        JavaImplementation impl = new JavaImplementation();
-        impl.setComponentType(type);
-        impl.setImplementationClass(Foo.class);
+        JavaImplementation impl = new JavaImplementation(Foo.class, type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
         ObjectFactory<Integer> defaultValueFactory = property.getDefaultValueFactory();
         PropertyValue<Integer> propertyValue = new PropertyValue<Integer>(property.getName(), defaultValueFactory);

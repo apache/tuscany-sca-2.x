@@ -51,9 +51,11 @@ public class JavaImplementationLoader extends LoaderExtension {
                             DeploymentContext deploymentContext)
         throws XMLStreamException, LoaderException {
         assert IMPLEMENTATION_JAVA.equals(reader.getName());
-        JavaImplementation implementation = new JavaImplementation();
         String implClass = reader.getAttributeValue(null, "class");
         Class<?> implementationClass = LoaderUtil.loadClass(implClass, deploymentContext.getClassLoader());
+
+        JavaImplementation implementation = new JavaImplementation();
+        implementation.setClassName(implClass);
         implementation.setImplementationClass(implementationClass);
         registry.loadComponentType(parent, implementation, deploymentContext);
         LoaderUtil.skipToEndElement(reader);

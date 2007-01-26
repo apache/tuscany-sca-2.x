@@ -31,7 +31,6 @@ public class ComponentLoaderReferenceTestCase extends TestCase {
     private static final QName COMPONENT = new QName(XML_NAMESPACE_1_0, "component");
     private static final QName REFERENCE = new QName(XML_NAMESPACE_1_0, "reference");
     private static final String NAME = "testComponent";
-    private static final JavaImplementation IMPL = new JavaImplementation();
     private ComponentLoader loader;
     private XMLStreamReader reader;
 
@@ -51,7 +50,7 @@ public class ComponentLoaderReferenceTestCase extends TestCase {
         super.setUp();
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        IMPL.setComponentType(type);
+        JavaImplementation impl = new JavaImplementation(null, type);
         reader = EasyMock.createMock(XMLStreamReader.class);
         EasyMock.expect(reader.getName()).andReturn(COMPONENT);
         EasyMock.expect(reader.getAttributeValue((String) EasyMock.isNull(), EasyMock.isA(String.class)))
@@ -76,7 +75,7 @@ public class ComponentLoaderReferenceTestCase extends TestCase {
         EasyMock.expect(mockRegistry.load((CompositeComponent) isNull(),
             (ModelObject) isNull(),
             EasyMock.isA(XMLStreamReader.class),
-            (DeploymentContext) isNull())).andReturn(IMPL);
+            (DeploymentContext) isNull())).andReturn(impl);
         EasyMock.replay(mockRegistry);
         loader = new ComponentLoader(mockRegistry, null);
 
