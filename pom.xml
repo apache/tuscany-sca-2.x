@@ -124,7 +124,7 @@
             <dependency>
                 <groupId>org.apache.tuscany</groupId>
                 <artifactId>commonj-api_r1.1</artifactId>
-                <version>1.0-incubator-SNAPSHOT</version>
+                <version>1.0-incubator-M2</version>
                 <scope>compile</scope>
             </dependency>
             <!-- java.xml.stream API -->
