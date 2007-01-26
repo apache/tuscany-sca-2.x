@@ -25,7 +25,16 @@ import org.apache.tuscany.spi.implementation.java.PojoComponentType;
  * @version $$Rev$$ $$Date$$
  */
 public class JavaImplementation extends AtomicImplementation<PojoComponentType> {
+    private String className;
     private Class<?> implementationClass;
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
     public Class<?> getImplementationClass() {
         return implementationClass;
