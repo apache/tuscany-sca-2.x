@@ -151,22 +151,23 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Ru
     /**
      * Sends a message to the specified runtime.
      * 
-     * @param runtimeId Runtime id of recipient.
+     * @param runtimeId Runtime id of recipient. If null, the message is 
+     * broadcasted to all runtimes in the domain.
      * @param content Message content.
      * @return The message id. 
      */
     public int sendMessage(final String runtimeId, final XMLStreamReader content) {
         
-        if(runtimeId == null) {
-            throw new IllegalArgumentException("Runtime id is null");
-        }
         if(content == null) {
             throw new IllegalArgumentException("Content id is null");
         }
         
-        PeerID peerID = peerListener.getPeerId(runtimeId);
-        if(peerID == null) {
-            throw new JxtaException("Unrecognized runtime " + runtimeId);
+        PeerID peerID = null;
+        if(runtimeId != null) {
+            peerID = peerListener.getPeerId(runtimeId);
+            if(peerID == null) {
+                throw new JxtaException("Unrecognized runtime " + runtimeId);
+            }
         }
         
         final String message = StaxHelper.serialize(content);
@@ -176,7 +177,12 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Ru
         query.setHandlerName(TuscanyQueryHandler.class.getSimpleName());
         query.setQuery(message);
         query.setSrc(domainGroup.getPeerID().toString());
-        resolverService.sendQuery(peerID.toString(), query);
+        
+        if(peerID == null) {
+            resolverService.sendQuery(null, query);
+        } else {
+            resolverService.sendQuery(peerID.toString(), query);
+        }
         
         return messageId;
         
