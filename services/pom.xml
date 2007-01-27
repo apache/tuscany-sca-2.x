@@ -62,7 +62,6 @@
         <module>bindings</module>
         <module>persistence</module>
         <module>transaction</module>
-        <module>discovery</module>
 <!--
         <module>transports/http.jetty</module>
 -->
