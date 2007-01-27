@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.osoa.sca.annotations.Destroy;
+import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
 /**
@@ -34,6 +35,7 @@ import org.osoa.sca.annotations.Init;
  * @version $Revision$ $Date$
  *
  */
+@EagerInit
 public abstract class AbstractDiscoveryService implements DiscoveryService {
     
     /** Runtime info. */
