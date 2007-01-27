@@ -68,6 +68,7 @@
 
     <modules>
         <module>axis2</module>
+        <module>javascript</module>
     </modules>
 
     <dependencyManagement>

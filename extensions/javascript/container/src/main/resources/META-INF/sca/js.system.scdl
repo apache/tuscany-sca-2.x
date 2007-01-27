@@ -25,6 +25,12 @@
 
            name="org.apache.tuscany.launcher.JavaScriptImplementation">
 
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.extensions.javascript</group>
+        <name>tuscany-javascript</name>
+        <version>1.0-incubator-SNAPSHOT</version>
+    </dependency>
+
     <component name="javascript.implementationLoader">
         <system:implementation.system class="org.apache.tuscany.container.javascript.JavaScriptImplementationLoader"/>
     </component>
