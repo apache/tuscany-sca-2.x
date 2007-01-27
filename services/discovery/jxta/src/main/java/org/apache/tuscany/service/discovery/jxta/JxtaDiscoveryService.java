@@ -42,6 +42,9 @@ import net.jxta.protocol.ModuleImplAdvertisement;
 import net.jxta.resolver.QueryHandler;
 import net.jxta.resolver.ResolverService;
 
+import org.apache.tuscany.service.discovery.jxta.pdp.PeerListener;
+import org.apache.tuscany.service.discovery.jxta.prp.TuscanyQueryHandler;
+import org.apache.tuscany.service.discovery.jxta.stax.StaxHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
@@ -166,8 +169,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Ru
             throw new JxtaException("Unrecognized runtime " + runtimeId);
         }
         
-        // TODO get message from XML stream reader
-        final String message = null;
+        final String message = StaxHelper.serialize(content);
         int messageId = messageIdGenerator.incrementAndGet();
         
         ResolverQuery query = new ResolverQuery();
