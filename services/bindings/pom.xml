@@ -37,7 +37,6 @@
          
         <module>sunjars</module>
         <module>binding.celtix</module>
-        <module>binding.axis2</module>
         <module>binding.jsonrpc</module>
         <module>binding.rmi</module>
         <module>binding.jms</module>

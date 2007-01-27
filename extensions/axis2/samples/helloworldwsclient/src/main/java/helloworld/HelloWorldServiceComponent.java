@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +15,29 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
--->
-<project>
+ */
+package helloworld;
 
-    <parent>
-        <groupId>org.apache.tuscany.sca.services</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </parent>
+import org.osoa.sca.annotations.Scope;
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.apache.tuscany.sca.services.databinding</groupId>
-    <artifactId>parent</artifactId>
-    <packaging>pom</packaging>
-    <name>Tuscany SCA Data Bindings</name>
+/**
+ * This client program shows how to create an SCA runtime, start it,
+ * locate the HelloWorld service and invoke it.
+ */
+@Scope("COMPOSITE")
+public class HelloWorldServiceComponent implements HelloWorldService {
+   
+    HelloWorldService helloWorldService;
 
-    <modules>
-        <module>databinding-castor</module>
-        <module>databinding-jaxb</module>
-        <module>databinding-sdo</module>
-        <module>databinding-xmlbeans</module>
-        <module>databinding-test</module>
-    </modules>
-</project>
+    public String getGreetings(String name) {
+        return helloWorldService.getGreetings(name);
+    }
+
+    public HelloWorldService getHelloWorldService() {
+        return helloWorldService;
+    }
+
+    public void setHelloWorldService(HelloWorldService helloWorldService) {
+        this.helloWorldService = helloWorldService;
+    }
+}
