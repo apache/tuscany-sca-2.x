@@ -19,13 +19,14 @@
 package org.apache.tuscany.service.discovery.jxta;
 
 import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
 import net.jxta.discovery.DiscoveryService;
+import net.jxta.peer.PeerID;
 import net.jxta.protocol.DiscoveryResponseMsg;
 import net.jxta.protocol.PeerAdvertisement;
 
@@ -50,7 +51,7 @@ public class PeerListener implements DiscoveryListener {
     private String runtimeId;
     
     /** Available peers. */
-    private List<String> availablePeers = new LinkedList<String>();
+    private Map<String, PeerID> availablePeers = new HashMap<String, PeerID>();
     
     /**
      * Initializes the JXTA discovery service.
@@ -83,18 +84,17 @@ public class PeerListener implements DiscoveryListener {
     }
     
     /**
-     * Returns the available peers participating in the domain.
-     * @return True if the specified runtime is alive.
+     * returns the peer id for the runtime id.
+     * @param runtimeId Runtime id for which peer id is requested.
+     * @return Peer id.
      */
-    public synchronized boolean isRuntimeAlive(String runtimeId) {
-        return availablePeers.contains(runtimeId);
+    public synchronized PeerID getPeerId(String runtimeId) {
+        return availablePeers.get(runtimeId);
     }
 
     /**
-     * by implementing DiscoveryListener we must define this method
-     * to deal to discovery responses
+     * Listens for discovery event.
      */
-
     public synchronized void discoveryEvent(DiscoveryEvent event) {
 
         DiscoveryResponseMsg res = event.getResponse();
@@ -104,12 +104,14 @@ public class PeerListener implements DiscoveryListener {
                 PeerAdvertisement adv = (PeerAdvertisement) en.nextElement();
                 String peerName = adv.getName();
                 if(!runtimeId.equals(peerName)) {
-                    availablePeers.add(adv.getName());
+                    availablePeers.put(adv.getName(), adv.getPeerID());
                     System.out.println (" Peer name = " + peerName);
+                    System.out.println (" Peer id = " + adv.getPeerID());
                     System.out.println (" Peer Group = " + adv.getPeerGroupID());
                 }
             }
         }
+        
     }
     
     /**

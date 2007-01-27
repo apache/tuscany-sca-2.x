@@ -26,12 +26,13 @@ import javax.xml.stream.XMLStreamReader;
  * @version $Revision$ $Date$
  *
  */
-public interface MessageListener {
+public interface RequestListener {
     
     /**
      * Callback for propogating async messages.
      * @param content Message content.
+     * @return Response to the request message.
      */
-    void onMessage(XMLStreamReader content);
+    XMLStreamReader onRequest(XMLStreamReader content);
 
 }
