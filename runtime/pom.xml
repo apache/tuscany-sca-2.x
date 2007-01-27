@@ -32,6 +32,7 @@
     <name>Tuscany SCA Runtime Hosts</name>
 
     <modules>
+        <module>services</module>
         <module>standalone</module>
         <module>webapp</module>
     </modules>

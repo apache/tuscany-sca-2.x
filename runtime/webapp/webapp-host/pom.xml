@@ -40,7 +40,7 @@
             <artifactId>core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services</groupId>
+            <groupId>org.apache.tuscany.sca.runtime.services</groupId>
             <artifactId>maven</artifactId>
             <version>${sca.version}</version>
             <scope>runtime</scope>
@@ -55,16 +55,12 @@
 
         <!-- test dependencies -->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>test</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 </project>

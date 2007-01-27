@@ -73,15 +73,6 @@
         
     </repositories>
 
-    <modules>
-        <module>kernel</module>
-        <module>test</module>
-        <module>services</module>
-        <module>runtime</module>
-        <module>tools</module>
-        <module>plugins</module>
-    </modules>
-
     <dependencyManagement>
         <dependencies>
             <!-- Tuscany Kernel Modules -->

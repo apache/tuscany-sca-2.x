@@ -43,7 +43,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.services</groupId>
+            <groupId>org.apache.tuscany.sca.runtime.services</groupId>
             <artifactId>maven</artifactId>
             <version>${sca.version}</version>
             <scope>runtime</scope>
