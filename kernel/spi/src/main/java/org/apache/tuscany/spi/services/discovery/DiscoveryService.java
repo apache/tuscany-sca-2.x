@@ -44,7 +44,8 @@ public interface DiscoveryService {
     int sendMessage(String runtimeId, XMLStreamReader content);
     
     /**
-     * Registers a request listener for async messages.
+     * Registers a request listener for async messages. Request listeners handle 
+     * unslolicited async messages sent by recipients.
      * 
      * @param messageType Message type that can be handled by the listener.
      * @param listener Recipient of the async message.
@@ -52,7 +53,9 @@ public interface DiscoveryService {
     void registerRequestListener(QName messageType, RequestListener listener);
     
     /**
-     * Registers a response listener for async messages.
+     * Registers a response listener for async messages. Response listeners handle 
+     * async meesages that are received in response to a request message that was 
+     * originally sent.
      * 
      * @param messageType Message type that can be handled by the listener.
      * @param listener Recipient of the async message.
