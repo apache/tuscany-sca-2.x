@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.discovery.jxta;
+package org.apache.tuscany.service.discovery.jxta.prp;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
@@ -27,6 +27,8 @@ import net.jxta.protocol.ResolverResponseMsg;
 import net.jxta.resolver.QueryHandler;
 import net.jxta.resolver.ResolverService;
 
+import org.apache.tuscany.service.discovery.jxta.JxtaDiscoveryService;
+import org.apache.tuscany.service.discovery.jxta.stax.StaxHelper;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 import org.apache.tuscany.spi.services.discovery.ResponseListener;
 
@@ -66,15 +68,13 @@ public class TuscanyQueryHandler implements QueryHandler {
         final String source = queryMessage.getSrc();
         final String handler = queryMessage.getHandlerName();
         
-        XMLStreamReader requestReader = null;
-        
-        // TODO extract QName from the message
-        final QName messageType = null;
+        final QName messageType = StaxHelper.getDocumentElementQName(message);
         RequestListener messageListener = discoveryService.getRequestListener(messageType);
         if(messageListener != null) {
             
+            XMLStreamReader requestReader = StaxHelper.createReader(message);
             XMLStreamReader responseReader = messageListener.onRequest(requestReader);
-            String response = null;
+            String response = StaxHelper.serialize(responseReader);
             
             ResolverResponse responseMessage = new ResolverResponse();
             responseMessage.setResponse(response);
@@ -96,14 +96,11 @@ public class TuscanyQueryHandler implements QueryHandler {
         final String message = responseMessage.getResponse();
         final int queryId = responseMessage.getQueryId();
         
-        XMLStreamReader responseReader = null;
-        
-        // TODO extract QName from the message
-        final QName messageType = null;
+        final QName messageType = StaxHelper.getDocumentElementQName(message);
         ResponseListener messageListener = discoveryService.getResponseListener(messageType);
-        if(messageListener != null) {            
+        if(messageListener != null) {     
+            XMLStreamReader responseReader = StaxHelper.createReader(message);       
             messageListener.onResponse(responseReader, queryId);
-
         }
         
     }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.discovery.jxta;
+package org.apache.tuscany.service.discovery.jxta.pdp;
 
 import java.util.Enumeration;
 import java.util.HashMap;
