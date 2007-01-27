@@ -39,17 +39,30 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
     /** Runtime info. */
     private RuntimeInfo runtimeInfo;
     
-    /** Listeners. */
-    private Map<QName, MessageListener> listenerMap = new ConcurrentHashMap<QName, MessageListener>();
+    /** Request listeners. */
+    private Map<QName, RequestListener> requestListenerMap = new ConcurrentHashMap<QName, RequestListener>();
+    
+    /** Response listeners. */
+    private Map<QName, ResponseListener> responseListenerMap = new ConcurrentHashMap<QName, ResponseListener>();
     
     /**
-     * Registers a listener for async messages.
+     * Registers a request listener for async messages.
      * 
-     * @param meesageType Message type that can be handled by the listener.
+     * @param messageType Message type that can be handled by the listener.
      * @param listener Recipient of the async message.
      */
-    public void registerListener(QName messageType, MessageListener listener) {
-        listenerMap.put(messageType, listener);
+    public void registerRequestListener(QName messageType, RequestListener listener) {
+        requestListenerMap.put(messageType, listener);
+    }
+
+    /**
+     * Registers a response listener for async messages.
+     * 
+     * @param messageType Message type that can be handled by the listener.
+     * @param listener Recipient of the async message.
+     */
+    public void registerResponseListener(QName messageType, ResponseListener listener) {
+        responseListenerMap.put(messageType, listener);
     }
     
     /**
@@ -93,13 +106,23 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
     }
     
     /**
-     * Returns the listener for the specified message type.
+     * Returns the request listener for the specified message type.
      * 
      * @param messageType Message type for the incoming message.
-     * @return Listeners inteersted in the message type.
+     * @return Listener interested in the message type.
      */
-    public final MessageListener getListener(QName messageType) {
-        return listenerMap.get(messageType);
+    public final RequestListener getRequestListener(QName messageType) {
+        return requestListenerMap.get(messageType);
+    }
+    
+    /**
+     * Returns the request listener for the specified message type.
+     * 
+     * @param messageType Message type for the incoming message.
+     * @return Listener interested in the message type.
+     */
+    public final ResponseListener getResponseListener(QName messageType) {
+        return responseListenerMap.get(messageType);
     }
     
     /**

@@ -33,19 +33,30 @@ import javax.xml.stream.XMLStreamReader;
 public interface DiscoveryService {
     
     /**
-     * Sends a message to the specified runtime.
+     * Sends a message to the specified runtime. The method returns a unique 
+     * message id for the sent message. The consumers can use the message id for
+     * correlating responses to sent messages.
      * 
      * @param runtimeId Runtime id of recipient.
      * @param content Message content.
+     * @return The message id. 
      */
-    void sendMessage(String runtimeId, XMLStreamReader content);
+    int sendMessage(String runtimeId, XMLStreamReader content);
     
     /**
-     * Registers a listener for async messages.
+     * Registers a request listener for async messages.
      * 
      * @param messageType Message type that can be handled by the listener.
      * @param listener Recipient of the async message.
      */
-    void registerListener(QName messageType, MessageListener listener);
+    void registerRequestListener(QName messageType, RequestListener listener);
+    
+    /**
+     * Registers a response listener for async messages.
+     * 
+     * @param messageType Message type that can be handled by the listener.
+     * @param listener Recipient of the async message.
+     */
+    void registerResponseListener(QName messageType, ResponseListener listener);
 
 }

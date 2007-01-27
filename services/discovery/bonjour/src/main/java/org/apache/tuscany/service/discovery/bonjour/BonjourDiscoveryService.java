@@ -51,8 +51,9 @@ public class BonjourDiscoveryService extends AbstractDiscoveryService {
      * 
      * @param runtimeId Runtime id of recipient.
      * @param content Message content.
+     * @return The message id. 
      */
-    public void sendMessage(String runtimeId, XMLStreamReader content) {
+    public int sendMessage(String runtimeId, XMLStreamReader content) {
         throw new UnsupportedOperationException();
     }
 

@@ -16,14 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.    
  */
-package org.apache.tuscany.service.discovery.jxta;
+package org.apache.tuscany.spi.services.discovery;
+
+import javax.xml.stream.XMLStreamReader;
 
 /**
- * Class for sending information on a JXTA pipe.
+ * Message listener for propogating callbacks.
  * 
  * @version $Revision$ $Date$
  *
  */
-public class PipeSender {
+public interface ResponseListener {
+    
+    /**
+     * Callback for propogating async messages.
+     * @param content Message content.
+     * @param An optional message id if this was in response to a message that was sent.
+     */
+    void onResponse(XMLStreamReader content, int messageId);
 
 }

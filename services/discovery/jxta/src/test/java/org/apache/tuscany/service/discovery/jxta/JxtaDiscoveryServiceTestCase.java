@@ -49,13 +49,11 @@ public class JxtaDiscoveryServiceTestCase extends TestCase {
 
     public void testStartAndStop() throws Exception {
         
-        JxtaDiscoveryService discoveryService = getDiscoveryService("runtime-1", "domain");
+        JxtaDiscoveryService discoveryService = getDiscoveryService("runtime-2", "domain");
         
         discoveryService.start();
         while(!discoveryService.isStarted()) {
         }
-        //while(true) {
-        //}
         
     }
     
