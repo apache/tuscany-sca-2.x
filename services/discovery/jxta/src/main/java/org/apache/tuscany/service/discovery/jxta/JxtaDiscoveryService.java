@@ -57,7 +57,7 @@ import org.osoa.sca.annotations.Property;
  * @version $Revision$ $Date$
  *
  */
-public class JxtaDiscoveryService extends AbstractDiscoveryService implements Runnable {
+public class JxtaDiscoveryService extends AbstractDiscoveryService {
     
     /** Default discovery interval. */
     private static long DEFAULT_INTERVAL = 10000L;
@@ -119,13 +119,17 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Ru
      */
     @Override
     public void onStart() throws JxtaException {
-        workScheduler.scheduleWork(this);
+        workScheduler.scheduleWork(new Runnable() {
+            public void run() {
+                startService();
+            }
+        });
     }
     
     /**
      * Rusn the discovery service in a different thread.
      */
-    public void run() {
+    private void startService() {
 
         try {  
             
@@ -135,14 +139,17 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService implements Ru
             setupDiscovery();        
             setupResolver();
             
-            started.set(true);        
+            started.set(true); 
             peerListener.start();
             
         } catch (PeerGroupException ex) {
+            ex.printStackTrace();
             throw new JxtaException(ex);
         } catch (IOException ex) {
+            ex.printStackTrace();
             throw new JxtaException(ex);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new JxtaException(ex);
         }
         
