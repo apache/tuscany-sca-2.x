@@ -81,13 +81,8 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      * Starts the discovery service.
      */
     @Init
-    public final void start() {
-        
+    public final void start() {        
         onStart();
-        
-        Runnable shutdownHook = new ShutdownHook();
-        Runtime.getRuntime().addShutdownHook(new Thread(shutdownHook));
-        
     }
     
     /**
@@ -138,16 +133,5 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      *
      */
     protected abstract void onStop();
-    
-    /**
-     * Shutdown hook.
-     */
-    private class ShutdownHook implements Runnable {
-
-        public void run() {
-            stop();
-        }
-        
-    }
 
 }
