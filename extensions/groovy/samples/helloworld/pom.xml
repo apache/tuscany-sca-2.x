@@ -18,46 +18,47 @@
  * under the License.    
 -->
 <project>
-
     <parent>
-        <groupId>org.apache.tuscany.sca.extensions.groovy</groupId>
+        <groupId>org.apache.tuscany.sca.extensions.groovy.samples</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-groovy</artifactId>
-    <name>Apache Tuscany Groovy Container</name>
-    <description>Apache Tuscany Groovy Container</description>
+    <artifactId>sample-helloworld-groovy</artifactId>
+    <packaging>jar</packaging>
+    <name>Tuscany Groovy helloworld Sample</name>
+    <description>A helloworld sample using a single SCA Groovy component</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
+            <groupId>org.osoa</groupId>
+            <artifactId>sca-api-r0.95</artifactId>
         </dependency>
-
-        <dependency>
-           <groupId>groovy</groupId>
-           <artifactId>groovy-all</artifactId>
-           <version>1.0</version>
-           <scope>compile</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
+            <groupId>org.apache.tuscany.sca.extensions.groovy</groupId>
+            <artifactId>tuscany-groovy</artifactId>
+            <version>${extensionVersion}</version>
+            <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-        </dependency>
-
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>helloworld.HelloWorldClient</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
