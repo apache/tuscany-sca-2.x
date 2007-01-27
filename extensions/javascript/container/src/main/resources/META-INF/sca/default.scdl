@@ -26,8 +26,8 @@
            name="org.apache.tuscany.launcher.JavaScriptImplementation">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>org.apache.tuscany.sca.services.containers</group>
-        <name>javascript</name>
+        <group>org.apache.tuscany.sca.extensions.javascript</group>
+        <name>tuscany-javascript</name>
         <version>1.0-incubator-SNAPSHOT</version>
     </dependency>
 
