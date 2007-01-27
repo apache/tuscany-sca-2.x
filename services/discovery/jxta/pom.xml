@@ -59,6 +59,12 @@
             <version>1.2.13</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+            <scope>compile</scope>
+        </dependency>
 		
         <dependency>
             <groupId>junit</groupId>
