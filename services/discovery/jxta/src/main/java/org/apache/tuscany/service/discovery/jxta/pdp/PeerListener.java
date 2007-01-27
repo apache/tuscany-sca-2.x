@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.tuscany.service.discovery.jxta.JxtaException;
+
 import net.jxta.discovery.DiscoveryEvent;
 import net.jxta.discovery.DiscoveryListener;
 import net.jxta.discovery.DiscoveryService;
@@ -63,7 +65,6 @@ public class PeerListener implements DiscoveryListener {
         this.discoveryService = discoveryService;
         this.interval = interval;
         this.runtimeId = runtimeId;
-        this.discoveryService.addDiscoveryListener(this);
     }
 
     /**
@@ -77,7 +78,9 @@ public class PeerListener implements DiscoveryListener {
             discoveryService.getRemoteAdvertisements(null, DiscoveryService.PEER, null, null, 5);
             try {
                 Thread.sleep(interval);
-            } catch(Exception e) {}
+            } catch(InterruptedException ex) {
+                throw new JxtaException(ex);
+            }
 
         }
         
