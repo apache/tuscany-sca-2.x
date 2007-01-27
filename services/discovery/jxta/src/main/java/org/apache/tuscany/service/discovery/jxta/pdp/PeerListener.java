@@ -71,10 +71,13 @@ public class PeerListener implements DiscoveryListener {
      */
     public void start() {
 
+        System.err.println("Starting discovery");
         live.set(true);
         discoveryService.addDiscoveryListener(this);
         while(live.get()) {
+            System.err.println("Sending discovery message");
             discoveryService.getRemoteAdvertisements(null, DiscoveryService.PEER, null, null, 5);
+            System.err.println("Discovery message sent");
             try {
                 Thread.sleep(interval);
             } catch(Exception e) {}
@@ -105,6 +108,7 @@ public class PeerListener implements DiscoveryListener {
                 String peerName = adv.getName();
                 if(!runtimeId.equals(peerName)) {
                     availablePeers.put(adv.getName(), adv.getPeerID());
+                    // System.err.println("Peer discovered:" + peerName);
                 }
             }
         }

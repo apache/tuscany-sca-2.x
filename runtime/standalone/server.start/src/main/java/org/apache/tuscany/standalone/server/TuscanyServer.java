@@ -22,6 +22,8 @@ import java.beans.Beans;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
@@ -134,6 +136,9 @@ public class TuscanyServer implements TuscanyServerMBean {
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new TuscanyServerException(ex);
+        } catch (Throwable ex) {
+            ex.printStackTrace();
+            throw new TuscanyServerException(ex);
         }
 
         System.err.println("Started");
@@ -180,19 +185,22 @@ public class TuscanyServer implements TuscanyServerMBean {
      * @param profile profile for which runtime info is created.
      * @return Runtime info.
      * @throws IOException If unable to read the runtime properties.
+     * @throws URISyntaxException 
      */
-    private StandaloneRuntimeInfo createRuntimeInfo(String profile) throws IOException {
+    private StandaloneRuntimeInfo createRuntimeInfo(String profile) throws IOException, URISyntaxException {
         
         File profileDir = DirectoryHelper.getProfileDirectory(installDirectory, profile);
 
         // load properties for this runtime
         File propFile = new File(profileDir, "etc/runtime.properties");
         Properties props = DirectoryHelper.loadProperties(propFile, System.getProperties());
-
+        String domain = props.getProperty("domain");
+        
         // online unless the offline property is set
         boolean online = !Boolean.parseBoolean(props.getProperty("offline", "false"));
 
-        return new StandaloneRuntimeInfoImpl(null, profile, installDirectory, profileDir, null, online, props);
+        
+        return new StandaloneRuntimeInfoImpl(new URI(domain), profile, installDirectory, profileDir, null, online, props);
     }
 
     /**

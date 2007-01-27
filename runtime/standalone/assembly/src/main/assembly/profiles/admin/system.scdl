@@ -117,6 +117,9 @@
     <!-- Java implementation type -->
     <include name="org.apache.tuscany.core.JavaImplementation" scdlResource="org/apache/tuscany/core/javaImplementation.scdl"/>
 
+    <!-- Include discovery -->
+    <include name="org.apache.tuscany.service.discovery" scdlResource="org/apache/tuscany/service/discovery/discovery.jxta.scdl"/>
+
     <!-- service for resolving artifacts using Maven repositories -->
     <component name="artifactRepository">
         <system:implementation.system class="org.apache.tuscany.services.maven.MavenArtifactRepository"/>
