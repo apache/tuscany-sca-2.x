@@ -18,17 +18,19 @@
  * under the License.    
 -->
 <project>
+
     <parent>
-        <groupId>org.apache.tuscany.sca.services</groupId>
-        <artifactId>parent</artifactId>
+        <groupId>org.apache.tuscany.sca.runtime.services.management</groupId>
+        <artifactId>management</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>maven</artifactId>
-    <name>Apache Tuscany Maven Service</name>
-    <description>Tuscany Maven Service</description>
+    <artifactId>management-jmx</artifactId>
+    <packaging>jar</packaging>
+    <name>Apache Tuscany JMX Management</name>
+    <description>Apache Tuscany JMX Management</description>
 
-    <dependencies>
+    <dependencies>    
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
@@ -36,24 +38,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-api</artifactId>
-            <version>${pom.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-embedder</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
     </dependencies>
-
 </project>

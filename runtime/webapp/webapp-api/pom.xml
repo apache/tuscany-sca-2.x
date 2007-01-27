@@ -44,17 +44,12 @@
 
         <!-- test dependencies -->
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>test</artifactId>
-            <version>${sca.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

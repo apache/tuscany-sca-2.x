@@ -46,7 +46,7 @@
             <artifactId>wsdl4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
+            <groupId>junit</groupId>                                      
             <artifactId>junit</artifactId>
         </dependency>
         <dependency>
