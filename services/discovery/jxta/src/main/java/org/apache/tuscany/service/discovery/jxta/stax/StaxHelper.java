@@ -60,7 +60,7 @@ public abstract class StaxHelper {
             StringBuffer xml = new StringBuffer();
 
             int event = reader.getEventType();
-            while (reader.hasNext()) {
+            while (true) {
 
                 switch (event) {
                     case XMLStreamConstants.START_ELEMENT:
@@ -79,11 +79,13 @@ public abstract class StaxHelper {
                         onEndElement(reader, xml);
                         break;
                 }
-
+                
+                if (!reader.hasNext()) {
+                      break;
+                }
                 event = reader.next();
 
             }
-
             return xml.toString();
 
         } catch (XMLStreamException ex) {
@@ -161,9 +163,9 @@ public abstract class StaxHelper {
      */
     private static void onEndElement(XMLStreamReader reader, StringBuffer xml) {
         String name = getName(reader);
-        xml.append("<");
+        xml.append("</");
         xml.append(name);
-        xml.append("/>");
+        xml.append(">");
     }
 
     /*

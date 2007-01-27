@@ -105,9 +105,6 @@ public class PeerListener implements DiscoveryListener {
                 String peerName = adv.getName();
                 if(!runtimeId.equals(peerName)) {
                     availablePeers.put(adv.getName(), adv.getPeerID());
-                    System.out.println (" Peer name = " + peerName);
-                    System.out.println (" Peer id = " + adv.getPeerID());
-                    System.out.println (" Peer Group = " + adv.getPeerGroupID());
                 }
             }
         }

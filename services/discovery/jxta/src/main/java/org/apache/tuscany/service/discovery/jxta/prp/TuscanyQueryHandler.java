@@ -82,7 +82,7 @@ public class TuscanyQueryHandler implements QueryHandler {
             responseMessage.setQueryId(queryId);
 
             resolverService.sendResponse(source, responseMessage);
-
+            
         }
         return ResolverService.OK;
         
