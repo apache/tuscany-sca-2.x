@@ -17,54 +17,50 @@
  * specific language governing permissions and limitations
  * under the License.    
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca.extensions.jsonrpc</groupId>
+        <groupId>org.apache.tuscany.sca.extensions</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>tuscany-jsonrpc</artifactId>
-    <name>Apache Tuscany Binding for JSON-RPC</name>
-    <description>Implementation of the SCA JSON-RPC Binding</description>
-    
-    <dependencies>
-            
-        <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>tuscany-spi</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.metaparadigm</groupId>
-            <artifactId>json-rpc</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
+    <groupId>org.apache.tuscany.sca.extensions.jsonrpc</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <name>Tuscany SCA Extensions for JSONRPC</name>
 
-        <dependency>
-	        <groupId>org.easymock</groupId>
-	        <artifactId>easymockclassextension</artifactId>
-        </dependency>    
+    <modules>
+        <module>binding</module>
+        <module>samples</module>
+    </modules>
 
-        <dependency>
+    <dependencyManagement>
+        <dependencies>
+
+           <dependency>
+              <groupId>com.metaparadigm</groupId>
+              <artifactId>json-rpc</artifactId>
+              <version>1.0</version>
+              <scope>compile</scope>
+           </dependency>
+        
+           <dependency>
 	        <groupId>net.sf.json-lib</groupId>
 	        <artifactId>json-lib</artifactId>
+	        <version>0.8</version>
 	        <scope>test</scope>
-        </dependency>    
+           </dependency>    
 
-        <dependency>
+           <dependency>
 	        <groupId>httpunit</groupId>
 	        <artifactId>httpunit</artifactId>
+	        <version>1.6.1</version>
 	        <scope>test</scope>
-        </dependency>
-        
-    </dependencies>
+           </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
 </project>
