@@ -22,13 +22,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.apache.tuscany.sca.services.bindings</groupId>
+        <groupId>org.apache.tuscany.sca.extensions.jms</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jms</artifactId>
+    <artifactId>tuscany-jms</artifactId>
     <name>Apache Tuscany Binding for JMS</name>
     <description>Implementation of the SCA JMS Binding</description>
 
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-				<version>0.1-pre-spec-SNAPSHOT</version>
+            <version>0.1-pre-spec-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -56,9 +56,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.tuscany.sca.services.databinding</groupId>
+            <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
             <artifactId>databinding-axiom</artifactId>
-            <version>${sca.version}</version>
+            <version>${extensionVersion}</version>
             <scope>compile</scope>
         </dependency>        
 
@@ -78,6 +78,20 @@
 	       <version>1.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>3.2</version>
+            <scope>compile</scope>
+        </dependency>       
+
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-management</artifactId>
+            <version>1.0-rc4</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.easymock</groupId>
@@ -85,23 +99,9 @@
         </dependency>
 
         <dependency>
-            <groupId>activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>3.2</version>
-            <scope>test</scope>
-        </dependency>       
-
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-j2ee-management</artifactId>
-            <version>1.0-rc4</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
-				<version>0.1-pre-spec-SNAPSHOT</version>
+		<version>0.1-pre-spec-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 

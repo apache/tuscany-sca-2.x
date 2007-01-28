@@ -17,6 +17,12 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
     name="org.apache.tuscany.binding.jms.JMSBinding">
 
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.extensions.jms</group>
+        <name>tuscany-jms</name>
+        <version>1.0-incubator-SNAPSHOT</version>
+    </dependency>
+
     <component name="jms.bindingLoader">
         <system:implementation.system class="org.apache.tuscany.binding.jms.JMSBindingLoader" />
     </component>
