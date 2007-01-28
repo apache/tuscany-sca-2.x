@@ -57,9 +57,7 @@
 
     <modules>
         <module>idl</module>
-        <module>containers</module>
         <module>databinding</module>
-        <module>bindings</module>
         <module>persistence</module>
         <module>transaction</module>
 <!--
