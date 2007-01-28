@@ -25,6 +25,12 @@
 
            name="org.apache.tuscany.launcher.SpringImplementation">
 
+    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
+        <group>org.apache.tuscany.sca.extensions.spring</group>
+        <name>tuscany-spring</name>
+        <version>1.0-incubator-SNAPSHOT</version>
+    </dependency>
+
     <component name="spring.implementationLoader">
         <system:implementation.system class="org.apache.tuscany.container.spring.loader.SpringImplementationLoader"/>
     </component>

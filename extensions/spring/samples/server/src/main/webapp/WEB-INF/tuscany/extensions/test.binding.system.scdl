@@ -16,31 +16,30 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.    
- -->
+-->
 <!--
-    Spring implementation extension configuration for the launcher environment.
+    JavaScript configuration for the launcher environment.
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
            xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
 
-           name="org.apache.tuscany.launcher.SpringImplementation">
+           name="org.apache.tuscany.test.TestBindingImplementation">
 
-    <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>org.apache.tuscany.sca.extensions.spring</group>
-        <name>tuscany-spring</name>
-        <version>1.0-incubator-SNAPSHOT</version>
-    </dependency>
-
-    <component name="spring.implementationLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.loader.SpringImplementationLoader"/>
+    <component name="BindingLoader">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestBindingLoader"/>
     </component>
 
-    <component name="spring.componentTypeLoader">
-        <system:implementation.system class="org.apache.tuscany.container.spring.loader.SpringXMLComponentTypeLoader"/>
+    <component name="BindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestBindingBuilder"/>
     </component>
 
-    <component name="spring.componentBuilder">
-        <system:implementation.system class="org.apache.tuscany.container.spring.impl.SpringCompositeBuilder"/>
+    <component name="SocketBindingLoader">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestSocketBindingLoader"/>
+    </component>
+
+    <component name="SocketBindingBuilder">
+        <system:implementation.system class="org.apache.tuscany.test.binding.TestSocketBindingBuilder"/>
     </component>
 
 </composite>
+
