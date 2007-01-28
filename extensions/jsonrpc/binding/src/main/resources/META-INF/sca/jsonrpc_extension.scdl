@@ -27,9 +27,9 @@
            name="org.apache.tuscany.binding.jsonrpc">
 
     <!-- dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <groupId>com.metaparadigm</groupId>
-        <name>json-rpc</name>
-        <version>1.0</version>
+        <group>org.apache.tuscany.sca.extensions.jsonrpc</group>
+        <name>tuscany-jsonrpc</name>
+        <version>1.0-incubator-SNAPSHOT</version>
     </dependency -->
 
     <component name="binding.jsonrpc.bindingLoader">
