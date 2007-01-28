@@ -20,13 +20,13 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca.services.containers</groupId>
+        <groupId>org.apache.tuscany.sca.extensions.spring</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>spring</artifactId>
+    <artifactId>tuscany-spring</artifactId>
     <name>Apache Tuscany Spring Framework Container</name>
     <description>Container for managing Spring composites</description>
 
@@ -34,21 +34,44 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-				<version>0.1-pre-spec-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
             <artifactId>webapp-api</artifactId>
-            <version>${sca.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.0</version>
+            <artifactId>spring-core</artifactId>
+            <version>2.0.2</version>
+            <scope>compile</scope>
+            <exclusions>
+               <exclusion>
+                  <groupId>asm</groupId>
+                  <artifactId>asm-util</artifactId>
+               </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-util</artifactId>
+            <version>2.2.3</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>2.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>2.0.2</version>
             <scope>compile</scope>
         </dependency>
 
@@ -62,14 +85,12 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
-				<version>0.1-pre-spec-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>javax.servlet</groupId>
