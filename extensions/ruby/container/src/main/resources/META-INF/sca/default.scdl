@@ -26,8 +26,8 @@
            name="org.apache.tuscany.launcher.RubyImplementation">
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
-        <group>org.apache.tuscany.sca.services.containers</group>
-        <name>ruby</name>
+        <group>org.apache.tuscany.sca.extensions.ruby</group>
+        <name>tuscany-ruby</name>
         <version>1.0-incubator-SNAPSHOT</version>
     </dependency>
 

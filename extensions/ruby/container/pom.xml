@@ -20,13 +20,13 @@
 <project>
 
     <parent>
-        <groupId>org.apache.tuscany.sca.services.containers</groupId>
+        <groupId>org.apache.tuscany.sca.extensions.ruby</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>ruby</artifactId>
+    <artifactId>tuscany-ruby</artifactId>
     <name>Apache Tuscany Ruby Container</name>
     <description>Apache Tuscany Ruby Container</description>
 
@@ -34,26 +34,20 @@
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-				<version>0.1-pre-spec-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
            <groupId>org.jruby</groupId>
            <artifactId>jruby</artifactId>
            <version>0.9.1</version>
-            <scope>compile</scope>
+           <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca.services.idl</groupId>
             <artifactId>wsdl</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
-				<version>0.1-pre-spec-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
@@ -66,8 +60,6 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
-            <version>2.1_3</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.ws.commons.axiom</groupId>
