@@ -33,7 +33,7 @@
 
     <properties>
         <extensionVersion>1.0-incubator-SNAPSHOT</extensionVersion>
-        <tuscanyKernelVersion>0.1-pre-spec-SNAPSHOT</tuscanyKernelVersion>
+        <scaKernelVersion>0.1-pre-spec-SNAPSHOT</scaKernelVersion>
         <scaImplVersion>0.1-pre-spec-SNAPSHOT</scaImplVersion>
         <specVersion>0.95</specVersion>
         <scaVersion>1.0-incubator-SNAPSHOT</scaVersion>
@@ -110,28 +110,28 @@
             <dependency>
                <groupId>org.apache.tuscany.sca</groupId>
                <artifactId>test</artifactId>
-               <version>${tuscanyKernelVersion}</version>
+               <version>${scaKernelVersion}</version>
                <scope>test</scope>
             </dependency>
 
             <dependency>
                <groupId>org.apache.tuscany.sca.kernel</groupId>
                <artifactId>tuscany-api</artifactId>
-               <version>${tuscanyKernelVersion}</version>
+               <version>${scaKernelVersion}</version>
                <scope>compile</scope>
             </dependency>
 
             <dependency>
                <groupId>org.apache.tuscany.sca.kernel</groupId>
                <artifactId>tuscany-spi</artifactId>
-               <version>${tuscanyKernelVersion}</version>
+               <version>${scaKernelVersion}</version>
                <scope>compile</scope>
             </dependency>
 
             <dependency>
                <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
                <artifactId>webapp-api</artifactId>
-               <version>${tuscanyKernelVersion}</version>
+               <version>${scaKernelVersion}</version>
                <scope>runtime</scope>
             </dependency>
 
