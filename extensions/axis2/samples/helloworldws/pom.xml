@@ -65,7 +65,7 @@
             <plugin>
                 <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
                 <artifactId>tuscany-war-plugin</artifactId>
-                <version>${tuscanyKernelVersion}</version>
+                <version>${scaKernelVersion}</version>
                 <executions>
                     <execution>
                         <id>tuscany-war</id>
