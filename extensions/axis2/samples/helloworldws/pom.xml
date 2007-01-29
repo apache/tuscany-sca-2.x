@@ -81,7 +81,7 @@
                     <extensions>
                         <dependency>
                             <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
-                            <artifactId>tuscany-axis2-binding</artifactId>
+                            <artifactId>tuscany-axis2</artifactId>
                             <version>${extensionVersion}</version>
                         </dependency>
                     </extensions>
