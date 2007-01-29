@@ -24,7 +24,7 @@
 
     <dependency xmlns="http://tuscany.apache.org/xmlns/1.0-SNAPSHOT">
         <group>org.apache.tuscany.sca.extensions.axis2</group>
-        <name>tuscany-axis2-binding</name>
+        <name>tuscany-axis2</name>
         <version>1.0-incubator-SNAPSHOT</version>
     </dependency>
     
