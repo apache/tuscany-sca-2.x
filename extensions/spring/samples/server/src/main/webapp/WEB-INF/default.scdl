@@ -20,7 +20,7 @@
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="SpringSample">
 
     <component name="SpringSample">
-        <implementation.spring location="application-context.xml">
+        <implementation.spring location="/WEB-INF/application-context.xml">
             <service name="SpringBean">
                 <interface.java interface="sample.TestComponent"/>
                 <binding.socket port="8888"/>

@@ -6,6 +6,11 @@
     <display-name>Tuscany Spring Sample</display-name>
 
     <context-param>
+       <param-name>tuscany.online</param-name>
+       <param-value>false</param-value>
+    </context-param>
+
+    <context-param>
         <param-name>currentCompositePath</param-name>
         <param-value>SpringSample</param-value>
     </context-param>

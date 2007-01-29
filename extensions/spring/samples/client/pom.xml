@@ -19,8 +19,8 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.samples.sca.spring</groupId>
-        <artifactId>tuscany-samples-sca-spring</artifactId>
+        <groupId>org.apache.tuscany.sca.extensions.spring.samples</groupId>
+        <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -31,36 +31,18 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r0.95</artifactId>
-            <scope>compile</scope>
+            <!-- Spring-SCA container extension -->
+            <groupId>org.apache.tuscany.sca.extensions.spring</groupId>
+            <artifactId>tuscany-spring</artifactId>
+            <version>${extensionVersion}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
+            <!-- Test binding extension -->
+            <groupId>org.apache.tuscany.sca</groupId>
+            <artifactId>test</artifactId>
             <version>0.1-pre-spec-SNAPSHOT</version>
             <scope>runtime</scope>
-            <!-- runtime is need for webapp integration to include jar -->
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
-            <artifactId>webapp-api</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope>
-            <!-- runtime is need for webapp integration to include jar -->
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
-            <artifactId>webapp-host</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope>
-            <!-- runtime is need for webapp integration to include jar -->
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -75,26 +57,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-	 <build>
-       <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-				<resource>
-                <directory>${notice.dir}</directory>
-                <targetPath>META-INF</targetPath>
-                <filtering>true</filtering>
-                <includes>
-                    <include>LICENSE.txt</include>
-                    <include>NOTICE.txt</include>
-                </includes>
-            </resource>
-        </resources>
-		  <plugins>
+
+    <build>
+        <finalName>client</finalName>
+        <plugins>
             <plugin>
                 <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
                 <artifactId>tuscany-war-plugin</artifactId>
+                <version>${scaKernelVersion}</version>
                 <executions>
                     <execution>
                         <id>tuscany-war</id>
@@ -104,26 +74,17 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <loadExtensionDependencies>false</loadExtensionDependencies>
-						<extensions>
-<!--                    <dependency>
-								<groupId>org.apache.tuscany.sca.services.databinding</groupId>
-                        <artifactId>databinding-sdo</artifactId>
-                        <version>${tuscanyVersion}</version>
-                     </dependency>-->
-							<dependency>
-								<groupId>org.apache.tuscany.sca.services.containers</groupId>
-								<artifactId>spring</artifactId>
-								<version>${tuscanyVersion}</version>
-							</dependency>
-							<dependency>
-								<groupId>org.apache.tuscany.sca</groupId>
-								<artifactId>test</artifactId>
-								<version>${tuscanyVersion}</version>
-							</dependency>
-						</extensions>
+                    <loadExtensionDependencies>true</loadExtensionDependencies>
+                    <extensions>
+                        <dependency>
+                            <groupId>org.apache.tuscany.sca.extensions.spring</groupId>
+                            <artifactId>tuscany-spring</artifactId>
+                            <version>${extensionVersion}</version>
+                        </dependency>
+                    </extensions>
                 </configuration>
             </plugin>
         </plugins>
-	</build>
+    </build>
+
 </project>
