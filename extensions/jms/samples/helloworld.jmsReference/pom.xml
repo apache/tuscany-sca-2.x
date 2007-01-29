@@ -44,19 +44,8 @@
             <version>${extensionVersion}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>3.2</version>
-            <scope>test</scope>
-        </dependency>       
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-j2ee-management</artifactId>
-            <version>1.0-rc4</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

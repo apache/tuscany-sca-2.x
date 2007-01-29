@@ -136,6 +136,13 @@
                <scope>runtime</scope>
             </dependency>
 
+            <dependency>
+               <groupId>org.apache.tuscany.sca.services.idl</groupId>
+               <artifactId>wsdl</artifactId>
+               <version>${scaKernelVersion}</version>
+               <scope>compile</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

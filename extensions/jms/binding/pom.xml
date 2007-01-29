@@ -37,22 +37,26 @@
         <dependency>
             <groupId>geronimo-spec</groupId>
             <artifactId>geronimo-spec-jms</artifactId>
-            <version>1.1-rc4</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+        </dependency>       
+
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-management</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
             <artifactId>tuscany-spi</artifactId>
-            <version>0.1-pre-spec-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tuscany.sca.services.idl</groupId>
             <artifactId>wsdl</artifactId>
-            <version>${sca.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -61,36 +65,6 @@
             <version>${extensionVersion}</version>
             <scope>compile</scope>
         </dependency>        
-
-        <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.ws.commons.axiom</groupId>
-            <artifactId>axiom-impl</artifactId>
-        </dependency>
-
-        <dependency>
-	       <groupId>commons-logging</groupId>
-	       <artifactId>commons-logging</artifactId>
-	       <version>1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>3.2</version>
-            <scope>compile</scope>
-        </dependency>       
-
-        <dependency>
-            <groupId>geronimo-spec</groupId>
-            <artifactId>geronimo-spec-j2ee-management</artifactId>
-            <version>1.0-rc4</version>
-            <scope>compile</scope>
-        </dependency>
 
         <!-- test dependencies -->
         <dependency>
@@ -101,8 +75,6 @@
         <dependency>
             <groupId>org.apache.tuscany.sca</groupId>
             <artifactId>test</artifactId>
-		<version>0.1-pre-spec-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -110,16 +82,6 @@
            <artifactId>xmlunit</artifactId>
            <version>1.0</version>
            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
         </dependency>
 
     </dependencies>
