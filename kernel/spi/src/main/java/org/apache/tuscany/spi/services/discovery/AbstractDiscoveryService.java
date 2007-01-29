@@ -81,7 +81,7 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      * Starts the discovery service.
      */
     @Init
-    public final void start() {        
+    public final void start() throws DiscoveryException {        
         onStart();
     }
     
@@ -89,7 +89,7 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      * Stops the discovery service.
      */
     @Destroy
-    public final void stop() {
+    public final void stop() throws DiscoveryException {
         onStop();
     }
     
@@ -126,12 +126,12 @@ public abstract class AbstractDiscoveryService implements DiscoveryService {
      * Required to be overridden by sub-classes.
      *
      */
-    protected abstract void onStart();
+    protected abstract void onStart() throws DiscoveryException;
     
     /**
      * Required to be overridden by sub-classes.
      *
      */
-    protected abstract void onStop();
+    protected abstract void onStop() throws DiscoveryException;
 
 }
