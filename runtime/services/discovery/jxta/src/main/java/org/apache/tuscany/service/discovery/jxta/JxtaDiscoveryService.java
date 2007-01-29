@@ -47,6 +47,7 @@ import org.apache.tuscany.service.discovery.jxta.prp.TuscanyQueryHandler;
 import org.apache.tuscany.service.discovery.jxta.stax.StaxHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
+import org.apache.tuscany.spi.services.discovery.DiscoveryException;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
 import org.omg.CORBA.Any;
 import org.osoa.sca.annotations.Property;
@@ -118,10 +119,14 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * @throws Any unexpected JXTA exception to bubble up the call stack.
      */
     @Override
-    public void onStart() throws JxtaException {
+    public void onStart() throws DiscoveryException {
         workScheduler.scheduleWork(new Runnable() {
             public void run() {
-                startService();
+                try {
+                    startService();
+                } catch(DiscoveryException ex) {
+                    throw new JxtaException(ex);
+                }
             }
         });
     }
@@ -129,7 +134,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
     /**
      * Rusn the discovery service in a different thread.
      */
-    private void startService() {
+    private void startService() throws DiscoveryException {
 
         try {  
             
@@ -143,14 +148,11 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
             peerListener.start();
             
         } catch (PeerGroupException ex) {
-            ex.printStackTrace();
-            throw new JxtaException(ex);
+            throw new DiscoveryException(ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
-            throw new JxtaException(ex);
+            throw new DiscoveryException(ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new JxtaException(ex);
+            throw new DiscoveryException(ex);
         }
         
     }
@@ -162,8 +164,9 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * broadcasted to all runtimes in the domain.
      * @param content Message content.
      * @return The message id. 
+     * @throws DiscoveryException In case of discovery errors.
      */
-    public int sendMessage(final String runtimeId, final XMLStreamReader content) {
+    public int sendMessage(final String runtimeId, final XMLStreamReader content) throws DiscoveryException {
         
         if(content == null) {
             throw new IllegalArgumentException("Content id is null");
@@ -173,7 +176,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
         if(runtimeId != null) {
             peerID = peerListener.getPeerId(runtimeId);
             if(peerID == null) {
-                throw new JxtaException("Unrecognized runtime " + runtimeId);
+                throw new DiscoveryException("Unrecognized runtime " + runtimeId);
             }
         }
         
@@ -216,7 +219,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
      * Configures the platform.
      *
      */
-    private void configure() {
+    private void configure() throws DiscoveryException {
 
         try {
             
@@ -234,9 +237,9 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
             }
             
         } catch (IOException ex) {
-            throw new JxtaException(ex);
+            throw new DiscoveryException(ex);
         } catch (CertificateException ex) {
-            throw new JxtaException(ex);
+            throw new DiscoveryException(ex);
         }
         
     }
@@ -261,7 +264,7 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
         if (auth.isReadyForJoin()){
             membership.join(auth);
         } else {
-            throw new JxtaException("Unable to join domain group");
+            throw new DiscoveryException("Unable to join domain group");
         }
         
     }

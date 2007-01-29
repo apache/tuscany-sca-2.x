@@ -40,8 +40,9 @@ public interface DiscoveryService {
      * @param runtimeId Runtime id of recipient.
      * @param content Message content.
      * @return The message id. 
+     * @throws DiscoveryException In case of discovery errors.
      */
-    int sendMessage(String runtimeId, XMLStreamReader content);
+    int sendMessage(String runtimeId, XMLStreamReader content) throws DiscoveryException;
     
     /**
      * Registers a request listener for async messages. Request listeners handle 
