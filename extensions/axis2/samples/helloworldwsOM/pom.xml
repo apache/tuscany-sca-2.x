@@ -19,68 +19,90 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.samples.sca</groupId>
+        <groupId>org.apache.tuscany.sca.extensions.axis2.samples</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>sample-helloworldwsOM</artifactId>
     <packaging>war</packaging>
     <name>Tuscany HelloWorld Web Service Sample OM</name>
     <description>A sample HelloWorld Web Service OM.</description>
 
-    <properties>
-        <ws.type>axis2</ws.type>
-    </properties>
-
     <dependencies>
+
+        <!-- SCA API dependencies -->
         <dependency>
             <groupId>org.osoa</groupId>
             <artifactId>sca-api-r0.95</artifactId>
-            <scope>compile</scope>
         </dependency>
+        
+        <!-- Tuscany API dependencies -->
         <dependency>
             <groupId>org.apache.tuscany.sca.kernel</groupId>
-            <artifactId>core</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope> <!-- runtime is need for webapp integration to include jar -->
+            <artifactId>tuscany-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tuscany.sca.services.bindings</groupId>
-            <artifactId>axis2</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope> <!-- runtime is need for webapp integration to include jar -->
-        </dependency>
+
+        <!-- runtime is need for webapp integration to include jar -->
         <dependency>
             <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
             <artifactId>webapp-api</artifactId>
-            <version>${pom.version}</version>
-            <scope>runtime</scope> <!-- runtime is need for webapp integration to include jar -->
         </dependency>
+
         <dependency>
-          <groupId>ws-commons</groupId>
-          <artifactId>axiom-api</artifactId>
-          <version>SNAPSHOT</version>
-            <scope>compile</scope> 
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
         </dependency>
+
         <dependency>
-          <groupId>ws-commons</groupId>
-          <artifactId>axiom-impl</artifactId>
-          <version>SNAPSHOT</version>
-          <scope>runtime</scope>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+        </dependency>
+
+        <!-- Unit testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
         </dependency>
         
     </dependencies>
+
+    <build>
+        <defaultGoal>install</defaultGoal>
+        <finalName>sample-helloworldwsOM</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tuscany.sca.runtime.webapp</groupId>
+                <artifactId>tuscany-war-plugin</artifactId>
+                <version>${scaKernelVersion}</version>
+                <executions>
+                    <execution>
+                        <id>tuscany-war</id>
+                        <goals>
+                            <goal>tuscany-war</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Set to true to embed external jars for extensions in the WAR -->
+                    <!-- Set to false to leave external jars for extensions to be resolved from maven repository -->
+                    <loadExtensionDependencies>true</loadExtensionDependencies>
+                    <extensions>
+                        <dependency>
+                            <groupId>org.apache.tuscany.sca.extensions.axis2</groupId>
+                            <artifactId>tuscany-axis2</artifactId>
+                            <version>${extensionVersion}</version>
+                        </dependency>
+                    </extensions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

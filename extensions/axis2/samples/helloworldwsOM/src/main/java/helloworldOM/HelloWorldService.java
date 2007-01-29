@@ -19,10 +19,12 @@
 package helloworldOM;
 
 import org.apache.axiom.om.OMElement;
+import org.osoa.sca.annotations.Remotable;
 
 /**
  * This is the business interface of the HelloWorld greetings service.
  */
+@Remotable
 public interface HelloWorldService {
 
     public OMElement getGreetings(OMElement name);
