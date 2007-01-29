@@ -59,7 +59,9 @@
 
     <modules>
         <module>helloworldws</module>
+        <module>helloworldwsOM</module>
         <module>helloworldwsclient</module>
+        <module>helloworldwsclientOM</module>
     </modules>
 
     <build>
