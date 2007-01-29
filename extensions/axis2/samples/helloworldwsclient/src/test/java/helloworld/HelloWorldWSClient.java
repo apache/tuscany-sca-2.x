@@ -19,8 +19,6 @@
 
 package helloworld;
 
-import java.net.URL;
-
 import junit.framework.Assert;
 
 import org.apache.tuscany.test.SCATestCase;
@@ -36,11 +34,8 @@ public class HelloWorldWSClient extends SCATestCase {
 
     @Override
     protected void setUp() throws Exception {
+        addExtension("Axis2Bidning", getClass().getClassLoader().getResource("META-INF/sca/binding.axis2.scdl"));
         setApplicationSCDL(HelloWorldService.class, "META-INF/sca/default.scdl");
-        URL base = getClass().getResource("/META-INF/sca/binding.axis2.scdl");
-        addExtension("binding.ws", new URL(base, "default.scdl"));
-        base = getClass().getResource("/META-INF/sca/databinding.sdo.scdl");
-        addExtension("databindning.sdo", new URL(base, "default.scdl"));
         super.setUp();
         CompositeContext compositeContext = CurrentCompositeContext.getContext();
         helloWorldService = compositeContext.locateService(HelloWorldService.class, "HelloWorldServiceComponent");
