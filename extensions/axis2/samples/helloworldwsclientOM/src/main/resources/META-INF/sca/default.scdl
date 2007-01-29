@@ -23,9 +23,7 @@
 
     <component name="HelloWorldServiceComponent">
       <implementation.java class="helloworldOM.HelloWorldServiceComponent"/>
-      <references>
-	       <reference name="helloWorldService">HelloWorldService</reference>
-       </references>
+      <reference name="helloWorldService">HelloWorldService</reference>
     </component>
 
     <reference name="HelloWorldService">
