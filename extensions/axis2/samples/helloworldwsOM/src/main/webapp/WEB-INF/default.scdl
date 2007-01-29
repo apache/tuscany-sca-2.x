@@ -19,18 +19,10 @@
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" name="helloworldws">
 
-    <service name="HelloWorldWebService"  target="http:///foo">
+    <service name="HelloWorldWebService">
         <!-- interface.wsdl interface="http://helloworldOM#wsdl.interface(HelloWorld)"/ -->
         <interface.java interface="helloworldOM.HelloWorldService"/>
-
-
-<!--FIXME the location attribute is a really bad hack here!  does not follow to spec at all 
--->
-      <binding.ws endpoint="http://helloworldOM#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)"
-          conformanceURIs="http://ws-i.org/profiles/basic/1.1"
-          location="wsdl/helloworldOM.wsdl"
-         />
-
+        <binding.ws endpoint="http://helloworldOM#wsdl.endpoint(HelloWorldService/HelloWorldSoapPort)" location="wsdl/helloworldOM.wsdl" />
         <reference>HelloWorldServiceComponent</reference>
     </service>
 

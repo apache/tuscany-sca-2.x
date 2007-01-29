@@ -24,17 +24,12 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
   <display-name>Tuscany HelloWorld Web Service Sample</display-name>
 
   <context-param>
-     <param-name>systemScdlPath</param-name>
-     <param-value>/META-INF/sca/webapp.system.scdl</param-value>
-  </context-param>
-
-  <context-param>
-     <param-name>applicationScdlPath</param-name>
-     <param-value>/META-INF/sca/default.scdl</param-value>
+     <param-name>tuscany.online</param-name>
+     <param-value>false</param-value>
   </context-param>
 
   <listener>
-     <listener-class>org.apache.tuscany.core.launcher.ServletLauncherListener</listener-class>
+     <listener-class>org.apache.tuscany.runtime.webapp.TuscanyContextListener</listener-class>
   </listener>
 
   <servlet>
@@ -45,7 +40,7 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
   
   <servlet-mapping>
      <servlet-name>TuscanyServlet</servlet-name>
-     <url-pattern>/services/*</url-pattern>
+     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 
 </web-app>
