@@ -24,13 +24,8 @@ Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
     <display-name>Tuscany Spring Sample</display-name>
 
     <context-param>
-        <param-name>tuscany.systemScdlPath</param-name>
-        <param-value>/META-INF/tuscany/webapp.scdl</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>tuscany.applicationScdlPath</param-name>
-        <param-value>/META-INF/sca/default.scdl</param-value>
+       <param-name>tuscany.online</param-name>
+       <param-value>false</param-value>
     </context-param>
 
     <context-param>
