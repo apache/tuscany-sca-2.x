@@ -37,9 +37,30 @@
     </modules>
 
     <dependencyManagement>
-        <dependencies>
+      <dependencies>
 
-        </dependencies>
+        <dependency>
+            <groupId>activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>3.2</version>
+            <scope>compile</scope>
+        </dependency>       
+
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-jms</artifactId>
+            <version>1.1-rc4</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>geronimo-spec</groupId>
+            <artifactId>geronimo-spec-j2ee-management</artifactId>
+            <version>1.0-rc4</version>
+            <scope>compile</scope>
+        </dependency>
+
+      </dependencies>
     </dependencyManagement>
 
 </project>
