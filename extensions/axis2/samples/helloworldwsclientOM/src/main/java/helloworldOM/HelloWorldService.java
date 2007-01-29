@@ -20,9 +20,11 @@ package helloworldOM;
 
 import org.apache.axiom.om.OMElement;
 import org.osoa.sca.annotations.Service;
+import org.osoa.sca.annotations.Remotable;
 
 
 @Service
+@Remotable
 public interface HelloWorldService {
 
     public OMElement getGreetings(OMElement parmE);
