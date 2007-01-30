@@ -42,7 +42,7 @@
             <dependency>
                <groupId>org.apache.tuscany.sca.services.idl</groupId>
                <artifactId>wsdl</artifactId>
-               <version>${scaKernelVersion}</version>
+               <version>1.0-incubator-SNAPSHOT</version>
                <scope>compile</scope>
             </dependency>
 
