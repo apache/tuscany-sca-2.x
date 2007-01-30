@@ -19,16 +19,18 @@
 package org.apache.tuscany.core.deployer.federation;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
+import org.apache.tuscany.core.deployer.DeployerImpl;
+import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.annotation.Autowire;
-import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.Implementation;
+import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 
@@ -36,16 +38,15 @@ import org.apache.tuscany.spi.services.discovery.RequestListener;
  * Federated deployer that deploys components in response to asynchronous 
  * messages from the federated domain.
  * 
+ * TODO Common abstractions between federated and local deployer.
+ * 
  * @version $Revision$ $Date$
  *
  */
-public class FederatedDeployer implements RequestListener {
+public class FederatedDeployer extends DeployerImpl implements RequestListener {
     
     /** QName of the message. */
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
-
-    /** Builder registry. */
-    private BuilderRegistry builderRegistry;
     
     /**
      * Deploys the SCDL.
@@ -56,17 +57,20 @@ public class FederatedDeployer implements RequestListener {
      */
     public XMLStreamReader onRequest(XMLStreamReader content) {
         
-        // TODO get this from the content
-        final ComponentDefinition<Implementation<?>> definition = null;
-        // TODO get this from somewhere
-        final DeploymentContext context = null;
         // TODO get this from somewhere
         final CompositeComponent parent = null;
+        
+        final ScopeContainer scopeContainer = new CompositeScopeContainer(monitor);
+        scopeContainer.start();
+        
+        final DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
 
         try {
-            Component component = builderRegistry.build(parent, definition, context);
-            component.start();
-        } catch (BuilderException ex) {
+            final Component component = (Component) loader.load(parent, null, content, deploymentContext);
+            // TODO Now the component is loaded, build and start it
+        } catch (LoaderException ex) {
+            return null;
+        } catch (XMLStreamException ex) {
             return null;
         }
         
@@ -80,15 +84,6 @@ public class FederatedDeployer implements RequestListener {
     @Autowire
     public void setDiscoveryService(DiscoveryService discoveryService) {
         discoveryService.registerRequestListener(MESSAGE_TYPE, this);
-    }
-    
-    /**
-     * Injects the builder registry.
-     * @param discoveryService Builder registry to be injected.
-     */
-    @Autowire
-    public void setBuilderRegistry(BuilderRegistry builderRegistry) {
-        this.builderRegistry = builderRegistry;
     }
 
 }

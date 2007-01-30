@@ -52,10 +52,10 @@ import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
  * @version $Rev$ $Date$
  */
 public class DeployerImpl implements Deployer {
-    private XMLInputFactory xmlFactory;
-    private Loader loader;
-    private Builder builder;
-    private ScopeContainerMonitor monitor;
+    protected XMLInputFactory xmlFactory;
+    protected Loader loader;
+    protected Builder builder;
+    protected ScopeContainerMonitor monitor;
 
     public DeployerImpl(XMLInputFactory xmlFactory, Loader loader, Builder builder) {
         this.xmlFactory = xmlFactory;
