@@ -18,19 +18,17 @@
  */
 package org.apache.tuscany.core.deployer.federation;
 
-import java.net.URL;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.builder.BuilderRegistry;
+import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.deployer.Deployer;
-import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeImplementation;
+import org.apache.tuscany.spi.model.Implementation;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 
@@ -46,8 +44,8 @@ public class FederatedDeployer implements RequestListener {
     /** QName of the message. */
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
 
-    /** Deployer. */
-    private Deployer deployer;
+    /** Builder registry. */
+    private BuilderRegistry builderRegistry;
     
     /**
      * Deploys the SCDL.
@@ -58,28 +56,17 @@ public class FederatedDeployer implements RequestListener {
      */
     public XMLStreamReader onRequest(XMLStreamReader content) {
         
-        // TODO get this from the SCDL content
-        final URL applicationScdl = null;
+        // TODO get this from the content
+        final ComponentDefinition<Implementation<?>> definition = null;
         // TODO get this from somewhere
-        final ClassLoader applicationClassLoader = null;
-        // TODO get this from somewhere
-        final String name = null;
+        final DeploymentContext context = null;
         // TODO get this from somewhere
         final CompositeComponent parent = null;
-        
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setScdlLocation(applicationScdl);
-        impl.setClassLoader(applicationClassLoader);
-        ComponentDefinition<CompositeImplementation> definition =
-            new ComponentDefinition<CompositeImplementation>(name, impl);
 
         try {
-            deployer.deploy(parent, definition);
-        } catch (LoaderException ex) {
-            return null;
+            Component component = builderRegistry.build(parent, definition, context);
+            component.start();
         } catch (BuilderException ex) {
-            return null;
-        } catch (ComponentException ex) {
             return null;
         }
         
@@ -96,12 +83,12 @@ public class FederatedDeployer implements RequestListener {
     }
     
     /**
-     * Injects the deployer.
-     * @param discoveryService Discovery service to be injected.
+     * Injects the builder registry.
+     * @param discoveryService Builder registry to be injected.
      */
     @Autowire
-    public void setDeployer(Deployer deployer) {
-        this.deployer = deployer;
+    public void setBuilderRegistry(BuilderRegistry builderRegistry) {
+        this.builderRegistry = builderRegistry;
     }
 
 }
