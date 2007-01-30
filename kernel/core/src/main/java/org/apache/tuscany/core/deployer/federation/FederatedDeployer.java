@@ -26,19 +26,20 @@ import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
 import org.apache.tuscany.core.deployer.DeployerImpl;
 import org.apache.tuscany.core.deployer.RootDeploymentContext;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.model.ComponentDefinition;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 
 /**
  * Federated deployer that deploys components in response to asynchronous 
  * messages from the federated domain.
- * 
- * TODO Common abstractions between federated and local deployer.
  * 
  * @version $Revision$ $Date$
  *
@@ -66,11 +67,18 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
         final DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
 
         try {
-            final Component component = (Component) loader.load(parent, null, content, deploymentContext);
-            // TODO Now the component is loaded, build and start it
+            final ComponentDefinition<?> definition = 
+                (ComponentDefinition<?>) loader.load(parent, null, content, deploymentContext);
+            final Component component =  (Component) builder.build(parent, definition, deploymentContext);
+            component.prepare();
+            component.start();
         } catch (LoaderException ex) {
             return null;
+        } catch (BuilderException ex) {
+            return null;
         } catch (XMLStreamException ex) {
+            return null;
+        } catch (PrepareException ex) {
             return null;
         }
         
