@@ -50,7 +50,7 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
     
     /**
-     * Deploys the SCDL.
+     * Deploys the component.
      * @param content SCDL content.
      * @return Response to the request message.
      * 
