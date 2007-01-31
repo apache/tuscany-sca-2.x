@@ -44,6 +44,7 @@
         <module>binding</module>
         <module>databinding</module>
         <module>tools</module>
+        <module>plugins</module>
         <module>samples</module>
     </modules>
 
