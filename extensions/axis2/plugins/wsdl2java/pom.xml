@@ -19,7 +19,7 @@
 -->
 <project>
     <parent>
-        <groupId>org.apache.tuscany.sca.plugins</groupId>
+        <groupId>org.apache.tuscany.sca.extensions.axis2.plugins</groupId>
         <artifactId>parent</artifactId>
         <version>1.0-incubator-SNAPSHOT</version>
     </parent>
@@ -27,7 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tuscany-plugin-wsdl2java</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Apache Tuscany SCA Maven Plugin for WSDL2Java</name>
+    <name>Apache Tuscany Maven Plugin for WSDL2Java</name>
     <description>Implementation of WSDL2Java Generator</description>
 
     <dependencies>
@@ -37,9 +37,9 @@
             <version>2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tuscany.sca</groupId>
-            <artifactId>sca-tools</artifactId>
-            <version>${pom.version}</version>
+            <groupId>org.apache.tuscany.sca.extensions.axis2.tools</groupId>
+            <artifactId>tuscany-wsdl2java</artifactId>
+            <version>${extensionVersion}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
