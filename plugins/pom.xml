@@ -58,7 +58,5 @@
 
     <modules>
         <module>plugin.itest</module>
-        <module>plugin.wsdl2java</module>
-        <module>plugin.java2wsdl</module>
     </modules>
 </project>
