@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://www.bigbank.com/Account/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:account="http://www.bigbank.com/Account/"
+                  targetNamespace="http://www.bigbank.com/Account/"
+                  name="AccountService">
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://www.bigbank.com/Account/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:account="http://www.bigbank.com/Account/"
+		xmlns:sdojava="commonj.sdo/java"
+		sdojava:package="org.apache.tuscany.samples.bigbank.account">
+
+            <xsd:element name="getAccountReportWrapped0">
+                <xsd:complexType>
+                    <xsd:sequence>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getAccountReportWrapped0Response">
+                <xsd:complexType>
+                    <xsd:sequence>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="getAccountReportWrapped1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="customerID" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getAccountReportWrapped1Response">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="accountReport" type="account:AccountReport"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+
+            <xsd:element name="getAccountReportWrappedN">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="customerID" type="xsd:string"/>
+                        <xsd:element name="customerID2" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getAccountReportWrappedNResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="accountReport" type="account:AccountReport"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+            <xsd:element name="getAccountReportBare0" type="xsd:string"/>
+            <xsd:element name="getAccountReportBare0Response" type="xsd:int"/>
+            
+            <xsd:element name="getAccountReportBare1Simple" type="xsd:string"/>
+            <xsd:element name="getAccountReportBare1SimpleResponse" type="xsd:int"/>
+            
+            <xsd:element name="getAccountReportBare1Complex" type="account:AccountRequest"/>
+            <xsd:element name="getAccountReportBare1ComplexResponse" type="account:AccountReport"/>
+
+            <xsd:complexType name="AccountRequest">
+                <xsd:sequence>
+                    <xsd:element name="customerID" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <xsd:complexType name="AccountReport">
+                <xsd:sequence>
+                    <xsd:element name="accountSummaries" type="account:AccountSummary" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="AccountSummary">
+                <xsd:attribute name="accountNumber" type="xsd:string"/>
+                <xsd:attribute name="accountType" type="xsd:string"/>
+                <xsd:attribute name="balance" type="xsd:float"/>
+            </xsd:complexType>
+
+        </xsd:schema>
+    </wsdl:types>
+
+    <wsdl:message name="getAccountReportWrapped0Request">
+        <wsdl:part element="account:getAccountReportWrapped0" name="getAccountReportWrapped0Request"/>
+    </wsdl:message>
+    <wsdl:message name="getAccountReportWrapped0Response">
+        <wsdl:part element="account:getAccountReportWrapped0Response" name="getAccountReportWrapped0Response"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAccountReportWrapped1Request">
+        <wsdl:part element="account:getAccountReportWrapped1" name="getAccountReportWrapped1Request"/>
+    </wsdl:message>
+    <wsdl:message name="getAccountReportWrapped1Response">
+        <wsdl:part element="account:getAccountReportWrapped1Response" name="getAccountReportWrapped1Response"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAccountReportWrappedNRequest">
+        <wsdl:part element="account:getAccountReportWrappedN" name="getAccountReportWrappedNRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getAccountReportWrappedNResponse">
+        <wsdl:part element="account:getAccountReportWrappedNResponse" name="getAccountReportWrappedNResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAccountReportBare0Request">
+    </wsdl:message>
+    <wsdl:message name="getAccountReportBare0Response">
+    </wsdl:message>
+
+    <wsdl:message name="getAccountReportBare1SimpleRequest">
+        <wsdl:part element="account:getAccountReportBare1Simple" name="getAccountReportBare1SimpleRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getAccountReportBare1SimpleResponse">
+        <wsdl:part element="account:getAccountReportBare1SimpleResponse" name="getAccountReportBare1SimpleResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAccountReportBare1ComplexRequest">
+        <wsdl:part element="account:getAccountReportBare1Complex" name="getAccountReportBare1ComplexRequest"/>
+    </wsdl:message>
+    <wsdl:message name="getAccountReportBare1ComplexResponse">
+        <wsdl:part element="account:getAccountReportBare1ComplexResponse" name="getAccountReportBare1ComplexResponse"/>
+    </wsdl:message>
+
+    <wsdl:portType name="Account_Service">
+        <wsdl:operation name="getAccountReportWrapped0">
+            <wsdl:input message="tns:getAccountReportWrapped0Request"/>
+            <wsdl:output message="tns:getAccountReportWrapped0Response"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportWrapped1">
+            <wsdl:input message="tns:getAccountReportWrapped1Request"/>
+            <wsdl:output message="tns:getAccountReportWrapped1Response"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportWrappedN">
+            <wsdl:input message="tns:getAccountReportWrappedNRequest"/>
+            <wsdl:output message="tns:getAccountReportWrappedNResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportBare0">
+            <wsdl:input message="tns:getAccountReportBare0Request"/>
+            <wsdl:output message="tns:getAccountReportBare0Response"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportBare1Simple">
+            <wsdl:input message="tns:getAccountReportBare1SimpleRequest"/>
+            <wsdl:output message="tns:getAccountReportBare1SimpleResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportBare1Complex">
+            <wsdl:input message="tns:getAccountReportBare1ComplexRequest"/>
+            <wsdl:output message="tns:getAccountReportBare1ComplexResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="AccountServiceSOAP" type="tns:Account_Service">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getAccountReportWrapped0">
+            <soap:operation
+                    soapAction="http://www.bigbank.com/Account/getAccountReportWrapped0"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportWrapped1">
+            <soap:operation
+                    soapAction="http://www.bigbank.com/Account/getAccountReportWrapped1"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportWrappedN">
+            <soap:operation
+                    soapAction="http://www.bigbank.com/Account/getAccountReportWrappedN"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportBare0">
+            <soap:operation
+                    soapAction="http://www.bigbank.com/Account/getAccountReportBare0"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportBare1Simple">
+            <soap:operation
+                    soapAction="http://www.bigbank.com/Account/getAccountReportBare1Simple"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getAccountReportBare1Complex">
+            <soap:operation
+                    soapAction="http://www.bigbank.com/Account/getAccountReportBare1Complex"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="AccountService">
+        <wsdl:port binding="tns:AccountServiceSOAP"
+                   name="AccountServiceSOAP">
+            <soap:address location="http://localhost:8080/sample-account/services/AccountService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

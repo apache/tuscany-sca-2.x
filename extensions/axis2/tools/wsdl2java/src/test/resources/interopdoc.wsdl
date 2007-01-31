@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.    
+ -->
+<definitions name="InteropTestDoc" targetNamespace="http://soapinterop.org/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://soapinterop.org/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+	<types>
+
+		<xsd:schema elementFormDefault="qualified" targetNamespace="http://soapinterop.org/" xmlns:interop="http://soapinterop.org/">
+
+			<xsd:element name="SingleTag">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="1" name="SingleTag" type="interop:SingleTag"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:complexType name="SingleTag"/>
+			<xsd:element name="SingleTagResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="1" name="SingleTag" type="interop:SingleTag"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="SimpleDocument">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="1" name="SimpleDocument" type="interop:SimpleDocument"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:complexType name="SimpleDocument">
+				<xsd:simpleContent>
+					<xsd:extension base="xsd:string"/>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			<xsd:element name="SimpleDocumentResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="1" name="SimpleDocument" type="interop:SimpleDocument"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="ComplexDocument">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="1" name="ComplexDocument" type="interop:ComplexDocument"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:complexType name="ComplexDocument">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" maxOccurs="1" name="simpleDoc" type="interop:ArrayOfSimpleDocument"/>
+					<xsd:element minOccurs="0" maxOccurs="1" name="child" type="interop:ChildDocument"/>
+				</xsd:sequence>
+				<xsd:attribute name="AnAttribute" type="xsd:string"/>
+			</xsd:complexType>
+			<xsd:complexType name="ArrayOfSimpleDocument">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" maxOccurs="unbounded" name="SimpleDocument" nillable="true" type="interop:SimpleDocument"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="ChildDocument">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" maxOccurs="1" name="childSimpleDoc" type="interop:ArrayOfSimpleDocument"/>
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:element name="ComplexDocumentResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element minOccurs="0" maxOccurs="1" name="ComplexDocument" type="interop:ComplexDocument"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+		</xsd:schema>
+
+	</types>
+
+	<message name="SingleTagSoapIn">
+		<part name="parameters" element="tns:SingleTag"/>
+	</message>
+	<message name="SingleTagSoapOut">
+		<part name="outputDoc" element="tns:SingleTagResponse"/>
+	</message>
+	<message name="SimpleDocumentSoapIn">
+		<part name="parameters" element="tns:SimpleDocument"/>
+	</message>
+	<message name="SimpleDocumentSoapOut">
+		<part name="outputDoc" element="tns:SimpleDocumentResponse"/>
+	</message>
+	<message name="ComplexDocumentSoapIn">
+		<part name="parameters" element="tns:ComplexDocument"/>
+	</message>
+	<message name="ComplexDocumentSoapOut">
+		<part name="outputDoc" element="tns:ComplexDocumentResponse"/>
+	</message>
+
+	<portType name="DocTestPortType">
+
+		<operation name="SingleTag">
+			<input message="tns:SingleTagSoapIn"/>
+			<output message="tns:SingleTagSoapOut"/>
+		</operation>
+		<operation name="SimpleDocument">
+			<input message="tns:SimpleDocumentSoapIn"/>
+			<output message="tns:SimpleDocumentSoapOut"/>
+		</operation>
+		<operation name="ComplexDocument">
+			<input message="tns:ComplexDocumentSoapIn"/>
+			<output message="tns:ComplexDocumentSoapOut"/>
+		</operation>
+
+	</portType>
+
+	<binding name="doc_test_binding" type="tns:DocTestPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+		<operation name="SingleTag">
+			<soap:operation soapAction="http://soapinterop.org/SingleTag"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation> 
+
+		<operation name="SimpleDocument">
+			<soap:operation soapAction="http://soapinterop.org/SimpleDocument"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation> 
+
+		<operation name="ComplexDocument">
+			<soap:operation soapAction="http://soapinterop.org/ComplexDocument"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation> 
+	</binding>
+
+	<service name="interopDocSvc">
+
+  		<port name="interopDocPort" binding="tns:doc_test_binding">
+    			<soap:address location="http://www.whitemesa.net/interopdoc"/>
+  		</port>
+
+	</service>
+
+</definitions>
