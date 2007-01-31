@@ -18,11 +18,16 @@
  */
 package org.apache.tuscany.spi.services.work;
 
+import org.apache.tuscany.api.TuscanyRuntimeException;
+
 /**
  * Exception thrown by the work scheduler in case of unexpected exceptions.
+ * 
+ * @version $Rev$ $Date$
  *
  */
-public class WorkSchedulerException extends RuntimeException {
+@SuppressWarnings("serial")
+public class WorkSchedulerException extends TuscanyRuntimeException {
 
     /**
      * Wraps the root cause.
