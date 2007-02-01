@@ -38,6 +38,11 @@ import org.w3c.dom.Node;
 
 public class SimpleTypeMapperExtension<T> extends XSDDataTypeConverter implements
         SimpleTypeMapper<T> {
+    
+    public static final int BASE64_ENCODING = 1;
+    public static final int HEXBIN_ENCODING = 2;
+    private int byteEncoding  = BASE64_ENCODING;
+    
     public static final String SET = "set";
 
     public static final Map<Class, String> JAVA2XML = new HashMap<Class, String>();
@@ -392,9 +397,16 @@ public class SimpleTypeMapperExtension<T> extends XSDDataTypeConverter implement
         } else if (obj instanceof XMLGregorianCalendar) {
             return ((XMLGregorianCalendar) obj).toXMLFormat();
         } else if (obj instanceof byte[]) {
-            if (simpleType.getQName().equals(XSD_BASE64)) {
+            if ( simpleType != null ) {
+                if ( simpleType.getQName().equals(XSD_BASE64) ) {
+                    byteEncoding = BASE64_ENCODING;
+                } else if ( simpleType.getQName().equals(XSD_HEXBIN) ) {
+                    byteEncoding = BASE64_ENCODING;
+                }
+            }
+            if (byteEncoding == BASE64_ENCODING) {
                 return printBase64Binary((byte[]) obj);
-            } else if (simpleType.getQName().equals(XSD_HEXBIN)) {
+            } else if (byteEncoding == HEXBIN_ENCODING) {
                 return printHexBinary((byte[]) obj);
             }
         } else if (obj instanceof QName) {
@@ -424,10 +436,16 @@ public class SimpleTypeMapperExtension<T> extends XSDDataTypeConverter implement
         if (simpleType.isSimpleType()) {
             return toSimpleJavaObject(simpleType, getText(xmlNode), context);
         } else {
-            XML2JavaMapperException xml2JavaEx =
-                    new XML2JavaMapperException("Complex XML Types not supported by SimpleTypeMapperExtension");
-            throw xml2JavaEx;
+            throw new IllegalArgumentException("Complex XML Types not supported by SimpleTypeMapperExtension");
         }
+    }
+
+    public int getByteEncoding() {
+        return byteEncoding;
+    }
+
+    public void setByteEncoding(int byteEncoding) {
+        this.byteEncoding = byteEncoding;
     }
 
 }
