@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 import org.apache.tuscany.core.databinding.xml.DOMDataBinding;
 import org.apache.tuscany.core.databinding.javabeans.DOMNode2JavaBean;
 import org.apache.tuscany.core.databinding.xml.Node2String;
-import org.apache.tuscany.core.databinding.xml.Object2Node;
+import org.apache.tuscany.core.databinding.javabeans.JavaBean2DOMNode;
 import org.apache.tuscany.core.databinding.xml.String2Node;
 import org.apache.tuscany.spi.databinding.DataBindingRegistry;
 import org.apache.tuscany.spi.databinding.TransformationContext;
@@ -164,7 +164,7 @@ public class IDLTransformerTestCase extends TestCase {
         tr.registerTransformer(new String2Node());
         tr.registerTransformer(new Node2String());
         tr.registerTransformer(new DOMNode2JavaBean());
-        tr.registerTransformer(new Object2Node());
+        tr.registerTransformer(new JavaBean2DOMNode());
         m.setTransformerRegistry(tr);
         DataBindingRegistry dataBindingRegistry = new DataBindingRegistryImpl();
         dataBindingRegistry.register(new DOMDataBinding());
