@@ -36,6 +36,7 @@
         <module>databinding-jaxb</module>
         <module>databinding-sdo</module>
         <module>databinding-xmlbeans</module>
+        <module>databinding-javabeans</module>
         <!-- module>databinding-test</module -->
     </modules>
 </project>
