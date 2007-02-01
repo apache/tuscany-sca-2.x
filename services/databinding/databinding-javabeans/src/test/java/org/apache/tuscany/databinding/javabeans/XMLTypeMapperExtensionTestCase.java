@@ -90,8 +90,9 @@ public class XMLTypeMapperExtensionTestCase extends TestCase {
         StringWriter sw = new StringWriter();
         transformer.transform(new DOMSource(aNode), new StreamResult(sw));
         String nodeString = sw.toString();
-        //System.out.println(nodeString);
+        System.out.println(nodeString);
 
+        assertTrue(nodeString.indexOf("<doubleNumber>184.52</doubleNumber>") != -1);
         assertTrue(nodeString.indexOf("<stringArray>TestString_1</stringArray>"
                 + "<stringArray>TestString_2</stringArray>") != -1);
         assertTrue(nodeString.indexOf("<integerNumber>27</integerNumber>") != -1);
@@ -132,9 +133,9 @@ public class XMLTypeMapperExtensionTestCase extends TestCase {
 
         public boolean[] boolArray;
 
-        public int integerNumber = 25;
+        private int integerNumber = 25;
 
-        public String[] stringArray;
+        private String[] stringArray;
 
         public SamplePropertyBean innerProperty;
 
