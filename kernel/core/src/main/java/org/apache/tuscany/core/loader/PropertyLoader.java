@@ -37,6 +37,7 @@ import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.OverrideOptions;
 import org.apache.tuscany.spi.model.Property;
 import org.apache.tuscany.spi.model.ModelObject;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.apache.tuscany.spi.annotation.Autowire;
 
 /**
@@ -87,7 +88,7 @@ public class PropertyLoader extends LoaderExtension<Property> {
         boolean many = Boolean.parseBoolean(reader.getAttributeValue(null, PROPERTY_MANY_ATTR));
         String override = reader.getAttributeValue(null, PROPERTY_OVERRIDE_ATTR);
         
-        Document value = StAXUtil.createPropertyValue(reader, xmlType, documentBuilder);
+        Document value = StaxUtil.createPropertyValue(reader, xmlType, documentBuilder);
 
         Property<?> property = new Property();
         property.setName(name);

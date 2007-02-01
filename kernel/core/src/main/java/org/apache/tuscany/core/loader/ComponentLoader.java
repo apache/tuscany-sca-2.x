@@ -69,6 +69,7 @@ import org.apache.tuscany.spi.model.PropertyValue;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ReferenceTarget;
 import org.apache.tuscany.spi.model.ServiceDefinition;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.osoa.sca.annotations.Constructor;
 import org.w3c.dom.Document;
 
@@ -204,7 +205,7 @@ public class ComponentLoader extends LoaderExtension<ComponentDefinition<?>> {
         } else {
             try {
                 DocumentBuilder documentBuilder = DOMHelper.newDocumentBuilder();
-                Document value = StAXUtil.createPropertyValue(reader, property.getXmlType(), documentBuilder);
+                Document value = StaxUtil.createPropertyValue(reader, property.getXmlType(), documentBuilder);
                 propertyValue = new PropertyValue<Type>(name, value);
             } catch (ParserConfigurationException e) {
                 throw new LoaderException(e);

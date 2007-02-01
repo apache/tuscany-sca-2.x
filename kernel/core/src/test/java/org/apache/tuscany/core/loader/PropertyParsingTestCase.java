@@ -26,6 +26,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 import junit.framework.TestCase;
+
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,7 +47,7 @@ public class PropertyParsingTestCase extends TestCase {
             + "</property>";
 
         XMLStreamReader reader = getReader(xml);
-        StAXUtil.loadPropertyValue(reader, root);
+        StaxUtil.loadPropertyValue(reader, root);
         NodeList childNodes = root.getChildNodes();
         assertEquals(2, childNodes.getLength());
 
