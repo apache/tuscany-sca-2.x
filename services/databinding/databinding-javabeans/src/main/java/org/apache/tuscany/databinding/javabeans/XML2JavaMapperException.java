@@ -27,7 +27,9 @@ import org.apache.tuscany.api.TuscanyRuntimeException;
  *
  */
 public class XML2JavaMapperException extends TuscanyRuntimeException {
-    
+    private static final long serialVersionUID = 4384386023751266852L;
+
+
     public XML2JavaMapperException() {
         
     }
