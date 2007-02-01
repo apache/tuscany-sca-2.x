@@ -48,6 +48,7 @@ import org.w3c.dom.NodeList;
  */
 public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
 
+    public static final String GET = "get";
     private Document factory;
 
     protected Node getFragment(T source) {
@@ -124,6 +125,46 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                     } catch (IllegalAccessException e) {
                         Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
                         java2xmlEx.addContextName("tranforming " + aField.getName() + " of "
+                                + javaType.getName());
+                        throw java2xmlEx;
+                    }
+                }
+                
+                Method[] methods = javaType.getDeclaredMethods();
+                String fieldName = null;
+                StringBuffer fieldNameBuffer = null;
+                for (Method aMethod : methods) {
+                    try {
+                        if (aMethod.getName().startsWith(GET) && aMethod.getParameterTypes().length == 0) {
+                            fieldName = resolveFieldFromMethod(aMethod.getName());
+                            try {
+                                javaType.getField(fieldName);
+                            } catch (NoSuchFieldException e) {
+                                if ( aMethod.getReturnType().isArray() ) {
+                                    appendChildElements(parent,
+                                                        fieldName,
+                                                        aMethod.getReturnType(),
+                                                        aMethod.invoke(javaObject, new Object[0]),
+                                                        context);
+                                } else {
+                                    elementNode = factory.createElement(fieldName);
+                                    parent.appendChild(elementNode);
+                                    appendChildElements(elementNode,
+                                                        fieldName,
+                                                        aMethod.getReturnType(),
+                                                        aMethod.invoke(javaObject, new Object[0]),
+                                                        context);
+                                }
+                            }
+                        }
+                    } catch (IllegalAccessException e) {
+                        Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
+                        java2xmlEx.addContextName("tranforming " + fieldName + " of "
+                                + javaType.getName());
+                        throw java2xmlEx;
+                    } catch (InvocationTargetException e) {
+                        Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
+                        java2xmlEx.addContextName("tranforming " + fieldName + " of "
                                 + javaType.getName());
                         throw java2xmlEx;
                     }
@@ -379,6 +420,13 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
             return true;
         }
         return false;
+    }
+    
+    private String resolveFieldFromMethod(String methodName) {
+        StringBuffer fieldName = new StringBuffer();
+        fieldName.append(Character.toLowerCase(methodName.charAt(GET.length())));
+        fieldName.append(methodName.substring(GET.length() + 1));
+        return fieldName.toString();
     }
 
 }
