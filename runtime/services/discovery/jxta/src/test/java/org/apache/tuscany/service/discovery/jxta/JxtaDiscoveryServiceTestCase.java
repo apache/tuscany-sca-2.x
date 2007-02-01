@@ -24,16 +24,17 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import net.jxta.platform.NetworkConfigurator;
 
 import org.apache.tuscany.host.RuntimeInfo;
-import org.apache.tuscany.service.discovery.jxta.stax.StaxHelper;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 import org.apache.tuscany.spi.services.discovery.ResponseListener;
 import org.apache.tuscany.spi.services.work.NotificationListener;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 import junit.framework.TestCase;
 
@@ -63,14 +64,16 @@ public class JxtaDiscoveryServiceTestCase extends TestCase {
         
         RequestListener requestListener = new RequestListener() {
             public XMLStreamReader onRequest(XMLStreamReader content) {
-                System.err.println("Request received:" + StaxHelper.serialize(content));
-                return StaxHelper.createReader("<response/>");
+                try {
+                    return StaxUtil.createReader("<response/>");
+                } catch(XMLStreamException ex) {
+                    throw new JxtaException(ex);
+                }
             }            
         };
         
         ResponseListener responseListener = new ResponseListener() {
             public void onResponse(XMLStreamReader content, int messageId) {
-                System.err.println("Response received:" + StaxHelper.serialize(content));
             }
             
         };
@@ -78,7 +81,7 @@ public class JxtaDiscoveryServiceTestCase extends TestCase {
         discoveryService.registerRequestListener(new QName("request"), requestListener);
         discoveryService.registerResponseListener(new QName("response"), responseListener);
         
-        XMLStreamReader reader = StaxHelper.createReader("<request/>");
+        XMLStreamReader reader = StaxUtil.createReader("<request/>");
         discoveryService.sendMessage(null, reader);
         reader.close();
         

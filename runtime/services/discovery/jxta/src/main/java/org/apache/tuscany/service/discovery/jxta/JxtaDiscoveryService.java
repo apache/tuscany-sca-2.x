@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.security.cert.CertificateException;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import net.jxta.credential.AuthenticationCredential;
@@ -44,11 +45,11 @@ import net.jxta.resolver.ResolverService;
 
 import org.apache.tuscany.service.discovery.jxta.pdp.PeerListener;
 import org.apache.tuscany.service.discovery.jxta.prp.TuscanyQueryHandler;
-import org.apache.tuscany.service.discovery.jxta.stax.StaxHelper;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.services.discovery.AbstractDiscoveryService;
 import org.apache.tuscany.spi.services.discovery.DiscoveryException;
 import org.apache.tuscany.spi.services.work.WorkScheduler;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 import org.omg.CORBA.Any;
 import org.osoa.sca.annotations.Property;
 
@@ -180,7 +181,13 @@ public class JxtaDiscoveryService extends AbstractDiscoveryService {
             }
         }
         
-        final String message = StaxHelper.serialize(content);
+        String message = null;
+        try {
+            StaxUtil.serialize(content);
+        } catch(XMLStreamException ex) {
+            throw new DiscoveryException(ex);
+        }
+        
         int messageId = messageIdGenerator.incrementAndGet();
         
         ResolverQuery query = new ResolverQuery();
