@@ -59,7 +59,7 @@
 
     <modules>
         <module>simple</module>
-        <!-- module>client</module -->
+        <module>client</module>
         <module>server</module>
     </modules>
 
