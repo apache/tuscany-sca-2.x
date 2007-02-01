@@ -23,8 +23,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -44,9 +42,9 @@ import org.xml.sax.InputSource;
  * by the JavaBeans Databinding.
  */
 public class XMLTypeMapperExtensionTestCase extends TestCase {
-    
+
     XMLTypeMapperExtension<Node> extension = new XMLTypeMapperExtension<Node>();
-    
+
     /**
      * @see junit.framework.TestCase#setUp()
      */
@@ -55,92 +53,93 @@ public class XMLTypeMapperExtensionTestCase extends TestCase {
     }
 
     public void testFieldSettings() throws Exception {
-        String samplePropertyXML = "<property name=\"prop2\" >" 
-                                            + "<integerNumber>27</integerNumber>" 
-                                            + "<floatNumber>79.34</floatNumber>" 
-                                            + "<doubleNumber>184.52</doubleNumber>" 
-                                            + "<innerProperty>" 
-                                            + "<integerNumber>54</integerNumber>" 
-                                            + "<floatNumber>158.68</floatNumber>" 
-                                            + "<doubleNumber>369.04</doubleNumber>" 
-                                            + "</innerProperty>" 
-                                            + "<stringArray>TestString_1</stringArray>" 
-                                            + "<stringArray>TestString_2</stringArray>" 
-                                            + "<boolArray>true</boolArray>" 
-                                            + "<boolArray>false</boolArray>" 
-                                    + "</property>";
-        
+        String samplePropertyXML =
+                "<property name=\"prop2\" >" + "<integerNumber>27</integerNumber>"
+                        + "<floatNumber>79.34</floatNumber>"
+                        + "<doubleNumber>184.52</doubleNumber>" + "<innerProperty>"
+                        + "<integerNumber>54</integerNumber>" + "<floatNumber>158.68</floatNumber>"
+                        + "<doubleNumber>369.04</doubleNumber>" + "</innerProperty>"
+                        + "<stringArray>TestString_1</stringArray>"
+                        + "<stringArray>TestString_2</stringArray>" + "<boolArray>true</boolArray>"
+                        + "<boolArray>false</boolArray>" + "</property>";
+
         DocumentBuilder builder = DOMHelper.newDocumentBuilder();
         InputSource inputSource = new InputSource(new StringReader(samplePropertyXML));
-        Node samplePropertyNode =  builder.parse(inputSource);
+        Node samplePropertyNode = builder.parse(inputSource);
         TypeInfo typeInfo = new TypeInfo(null, false, null);
-        
+
         TransformationContext context = EasyMock.createMock(TransformationContext.class);
         DataType<Class> dataType = new DataType<Class>(null, SamplePropertyBean.class);
         EasyMock.expect(context.getTargetDataType()).andReturn(dataType).anyTimes();
         EasyMock.replay(context);
-        
+
         Object javaObject = extension.toJavaObject(typeInfo, samplePropertyNode, context);
-        
+
         assertTrue(javaObject instanceof SamplePropertyBean);
-        SamplePropertyBean samplePropBean = (SamplePropertyBean)javaObject;
+        SamplePropertyBean samplePropBean = (SamplePropertyBean) javaObject;
         assertEquals(samplePropBean.getIntegerNumber(), 27);
-        assertEquals((float)79.34, (float)samplePropBean.getFloatNumber());
-        assertEquals((double)samplePropBean.getInnerProperty().getDoubleNumber(), (double)369.04);
-        
+        assertEquals((float) 79.34, (float) samplePropBean.getFloatNumber());
+        assertEquals((double) samplePropBean.getInnerProperty().getDoubleNumber(), (double) 369.04);
+
         assertEquals(samplePropBean.getStringArray()[0], "TestString_1");
         assertEquals(samplePropBean.boolArray[0], true);
-        
-        javax.xml.transform.Transformer transformer = TransformerFactory.newInstance().newTransformer();
+
+        javax.xml.transform.Transformer transformer =
+                TransformerFactory.newInstance().newTransformer();
         Node aNode = extension.toDOMNode(javaObject, context);
         StringWriter sw = new StringWriter();
         transformer.transform(new DOMSource(aNode), new StreamResult(sw));
         String nodeString = sw.toString();
         //System.out.println(nodeString);
-        
-        assertTrue(nodeString.indexOf("<stringArray>TestString_1</stringArray>" 
-                                         + "<stringArray>TestString_2</stringArray>") != -1);
+
+        assertTrue(nodeString.indexOf("<stringArray>TestString_1</stringArray>"
+                + "<stringArray>TestString_2</stringArray>") != -1);
         assertTrue(nodeString.indexOf("<integerNumber>27</integerNumber>") != -1);
-        
+
         int startIndex = nodeString.indexOf("<innerProperty>");
         int endIndex = nodeString.indexOf("</innerProperty>");
         String fragment = nodeString.substring(startIndex, endIndex);
         assertTrue(fragment.indexOf("<integerNumber>54</integerNumber>") != -1);
-        
+
         //System.out.println(sw.toString());
-        
-        
+
     }
-    
+
     public void testJava2NodeMapping() throws Exception {
         SamplePropertyBean propertyBean = new SamplePropertyBean();
         TransformationContext context = EasyMock.createMock(TransformationContext.class);
         DataType<Class> dataType = new DataType<Class>(null, SamplePropertyBean.class);
         EasyMock.expect(context.getTargetDataType()).andReturn(dataType).anyTimes();
         EasyMock.replay(context);
-        
-        javax.xml.transform.Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        Object data = new int[]{10, 20, 30, 40};
+
+        javax.xml.transform.Transformer transformer =
+                TransformerFactory.newInstance().newTransformer();
+        Object data = new int[] { 10, 20, 30, 40 };
         Node aNode = extension.toDOMNode(data, context);
         StringWriter sw = new StringWriter();
         transformer.transform(new DOMSource(aNode), new StreamResult(sw));
-        
+
         //System.out.println(sw.toString());
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><int_collection><int>10</int><int>20</int><int>30</int><int>40</int></int_collection>", sw.toString());
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?><int_collection><int>10</int><int>20</int><int>30</int><int>40</int></int_collection>",
+                     sw.toString());
     }
-    
-    public static class SamplePropertyBean  {
-        
+
+    public static class SamplePropertyBean {
+
         public float floatNumber = 50;
+
         public double doubleNumber = 75;
-        public boolean[] boolArray = null;
+
+        public boolean[] boolArray;
+
         public int integerNumber = 25;
+
         public String[] stringArray;
-        
+
         public SamplePropertyBean innerProperty;
-        
+
         public SamplePropertyBean() {
-            
+
         }
 
         public double getDoubleNumber() {
@@ -174,10 +173,10 @@ public class XMLTypeMapperExtensionTestCase extends TestCase {
         public void setInnerProperty(SamplePropertyBean prop) {
             this.innerProperty = prop;
         }
-        
+
         public String toString() {
-            return Double.toString(integerNumber + floatNumber + doubleNumber) + " & " 
-            + ((innerProperty == null) ? "" : innerProperty.toString());
+            return Double.toString(integerNumber + floatNumber + doubleNumber) + " & "
+                    + ((innerProperty == null) ? "" : innerProperty.toString());
         }
 
         public String[] getStringArray() {
@@ -187,6 +186,6 @@ public class XMLTypeMapperExtensionTestCase extends TestCase {
         public void setStringArray(String[] stringArray) {
             this.stringArray = stringArray;
         }
-        
+
     }
 }
