@@ -17,7 +17,7 @@
  * under the License.    
  */
 
-package org.apache.tuscany.databinding.javabeans;
+package org.apache.tuscany.core.databinding.javabeans;
 
 import org.apache.tuscany.spi.databinding.DataBinding;
 import org.apache.tuscany.spi.databinding.extension.DataBindingExtension;
