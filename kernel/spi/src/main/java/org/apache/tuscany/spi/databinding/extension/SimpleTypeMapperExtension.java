@@ -41,7 +41,6 @@ public class SimpleTypeMapperExtension<T> extends XSDDataTypeConverter implement
     
     public static final int BASE64_ENCODING = 1;
     public static final int HEXBIN_ENCODING = 2;
-    private int byteEncoding  = BASE64_ENCODING;
     
     public static final String SET = "set";
 
@@ -229,6 +228,7 @@ public class SimpleTypeMapperExtension<T> extends XSDDataTypeConverter implement
         XML2JAVA.put("NOTATION", javax.xml.namespace.QName.class);
     }
 
+    private int byteEncoding  = BASE64_ENCODING;
     private DatatypeFactory factory;
 
     public SimpleTypeMapperExtension() {
@@ -397,10 +397,10 @@ public class SimpleTypeMapperExtension<T> extends XSDDataTypeConverter implement
         } else if (obj instanceof XMLGregorianCalendar) {
             return ((XMLGregorianCalendar) obj).toXMLFormat();
         } else if (obj instanceof byte[]) {
-            if ( simpleType != null ) {
-                if ( simpleType.getQName().equals(XSD_BASE64) ) {
+            if (simpleType != null) {
+                if (simpleType.getQName().equals(XSD_BASE64)) {
                     byteEncoding = BASE64_ENCODING;
-                } else if ( simpleType.getQName().equals(XSD_HEXBIN) ) {
+                } else if (simpleType.getQName().equals(XSD_HEXBIN)) {
                     byteEncoding = BASE64_ENCODING;
                 }
             }
