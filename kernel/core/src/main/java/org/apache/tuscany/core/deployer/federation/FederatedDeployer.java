@@ -19,7 +19,6 @@
 package org.apache.tuscany.core.deployer.federation;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
@@ -32,8 +31,11 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.PrepareException;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
-import org.apache.tuscany.spi.loader.LoaderException;
+import org.apache.tuscany.spi.marshaller.MarshalException;
+import org.apache.tuscany.spi.marshaller.ModelMarshaller;
+import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
+import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 
@@ -48,6 +50,18 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     
     /** QName of the message. */
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
+    
+    /** Marshaller registry. */
+    private ModelMarshallerRegistry marshallerRegistry;
+    
+    /**
+     * Injects the model marshaller registry.
+     * @param marshallerRegistry Marshaller registry.
+     */
+    @Autowire
+    public void setMarshallerRegistry(ModelMarshallerRegistry marshallerRegistry) {
+        this.marshallerRegistry = marshallerRegistry;
+    }
     
     /**
      * Deploys the component.
@@ -67,16 +81,17 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
         final DeploymentContext deploymentContext = new RootDeploymentContext(null, xmlFactory, scopeContainer, null);
 
         try {
-            final ComponentDefinition<?> definition = 
-                (ComponentDefinition<?>) loader.load(parent, null, content, deploymentContext);
+            
+            final ModelMarshaller<? extends ModelObject> marshaller = marshallerRegistry.getMarshaller(MESSAGE_TYPE);
+            final ComponentDefinition<?> definition = (ComponentDefinition<?>) marshaller.unmarshall(content, false);
             final Component component =  (Component) builder.build(parent, definition, deploymentContext);
+            
             component.prepare();
             component.start();
-        } catch (LoaderException ex) {
+            
+        } catch (MarshalException ex) {
             return null;
         } catch (BuilderException ex) {
-            return null;
-        } catch (XMLStreamException ex) {
             return null;
         } catch (PrepareException ex) {
             return null;
