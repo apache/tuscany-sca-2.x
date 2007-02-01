@@ -53,7 +53,7 @@ import org.apache.tuscany.core.component.scope.CompositeScopeContainer;
  */
 public class DeployerImpl implements Deployer {
     protected XMLInputFactory xmlFactory;
-    protected Loader loader;
+    private Loader loader;
     protected Builder builder;
     protected ScopeContainerMonitor monitor;
 
