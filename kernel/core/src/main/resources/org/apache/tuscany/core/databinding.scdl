@@ -18,7 +18,7 @@
  * under the License.    
 -->
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0" xmlns:system="http://tuscany.apache.org/xmlns/system/1.0-SNAPSHOT"
-    name="org.apache.tuscany.core.DataBinding">
+    name="org.apache.tuscany.core.DataBinding"> 
 
     <component name="databinding.wirePostProcessor">
         <system:implementation.system class="org.apache.tuscany.core.databinding.impl.DataBindingWirePostProcessor" />
@@ -56,6 +56,11 @@
         <system:implementation.system class="org.apache.tuscany.core.databinding.impl.SimpleDataBinding" />
         <property name="className">org.w3c.dom.Node</property>
     </component>
+    
+    <component name="databinding.javabeans">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.JavaBeansDataBinding" />
+        <property name="className">org.w3c.dom.Node</property>
+    </component>
 
     <!-- Transformers -->
 
@@ -83,8 +88,8 @@
         <system:implementation.system class="org.apache.tuscany.core.databinding.xml.InputStream2SAX" />
     </component>
 
-    <component name="transformer.Node2Object">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.xml.Node2Object" />
+    <component name="transformer.DOMNode2JavaBean">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.DOMNode2JavaBean" />
     </component>
 
     <component name="transformer.Node2OutputStream">
@@ -103,8 +108,8 @@
         <system:implementation.system class="org.apache.tuscany.core.databinding.xml.Node2XMLStreamReader" />
     </component>
 
-    <component name="transformer.Object2Node">
-        <system:implementation.system class="org.apache.tuscany.core.databinding.xml.Object2Node" />
+    <component name="transformer.JavaBean2DOMNode">
+        <system:implementation.system class="org.apache.tuscany.core.databinding.javabeans.JavaBean2DOMNode" />
     </component>
 
     <component name="transformer.Reader2Node">
