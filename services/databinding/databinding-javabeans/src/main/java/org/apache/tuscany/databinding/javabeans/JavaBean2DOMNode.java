@@ -18,46 +18,34 @@
  */
 package org.apache.tuscany.databinding.javabeans;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.tuscany.spi.databinding.PullTransformer;
 import org.apache.tuscany.spi.databinding.TransformationContext;
-import org.apache.tuscany.spi.databinding.TransformationException;
 import org.apache.tuscany.spi.databinding.Transformer;
-import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.TransformerExtension;
-import org.apache.tuscany.spi.idl.ElementInfo;
-import org.apache.tuscany.spi.idl.TypeInfo;
 import org.osoa.sca.annotations.Service;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
  * Transformer to convert data from a JavaBean object to DOM Node
  */
 @Service(Transformer.class)
-public class JavaBean2DOMNode extends TransformerExtension<Object, Node> implements PullTransformer<Object, Node> {
+public class JavaBean2DOMNode extends TransformerExtension<Object, Node> implements
+        PullTransformer<Object, Node> {
 
     protected XMLTypeMapperExtension<Node> mapper;
-    private Document factory;
-    
+
     public JavaBean2DOMNode() {
         this.mapper = new XMLTypeMapperExtension<Node>();
-        try {
-            factory = DOMHelper.newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new TransformationException(e);
-        }
     }
-    
+
     public Node transform(Object source, TransformationContext context) {
-       return mapper.toDOMNode(source, context);
+        return mapper.toDOMNode(source, context);
     }
-    
+
     public Class getTargetType() {
         return Node.class;
     }
-    
+
     public Class getSourceType() {
         return Object.class;
     }

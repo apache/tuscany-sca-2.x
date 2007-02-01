@@ -37,15 +37,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.tuscany.spi.databinding.TransformationContext;
 import org.apache.tuscany.spi.databinding.extension.DOMHelper;
 import org.apache.tuscany.spi.databinding.extension.SimpleTypeMapperExtension;
-import org.apache.tuscany.spi.idl.ElementInfo;
 import org.apache.tuscany.spi.idl.TypeInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- *  This class maps JavaBeans objects to XML data represented physically as DOM Nodes and vice versa.  It 
- *  uses JavaBeans Introspection for this mapping.
+ * This class maps JavaBeans objects to XML data represented physically as DOM Nodes and vice versa. 
+ * It uses JavaBeans Introspection for this mapping.
  */
 public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
 
@@ -56,55 +55,76 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
     }
 
     public Node toDOMNode(Object javaObject, TransformationContext context) {
-        QName rootElementName =
-                (QName) context.getTargetDataType().getMetadata("RootElementName");
-        if ( rootElementName == null ) {
+        QName rootElementName = (QName) context.getTargetDataType().getMetadata("RootElementName");
+        if (rootElementName == null) {
             rootElementName = new QName(resolveRootElementName(javaObject.getClass()));
         }
         try {
             factory = DOMHelper.newDocument();
             Node root = DOMHelper.createElement(factory, rootElementName);
-            appendChildElements(root, resolveElementName(javaObject.getClass()), javaObject.getClass(), javaObject, context);
+            appendChildElements(root,
+                                resolveElementName(javaObject.getClass()),
+                                javaObject.getClass(),
+                                javaObject,
+                                context);
             return root;
-        } catch ( ParserConfigurationException e ) {
+        } catch (ParserConfigurationException e) {
             Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
-            java2xmlEx.addContextName("tranforming to xml, a java instance of" + javaObject.getClass().getName());
+            java2xmlEx.addContextName("tranforming to xml, a java instance of"
+                    + javaObject.getClass().getName());
             throw java2xmlEx;
         }
     }
 
-    private void appendChildElements(Node parent, String elementName, Class javaType, Object javaObject, TransformationContext context)  {
+    private void appendChildElements(Node parent,
+                                     String elementName,
+                                     Class javaType,
+                                     Object javaObject,
+                                     TransformationContext context) {
         Node elementNode = null;
-        if ( javaObject != null ) {
+        if (javaObject != null) {
             if (javaType.isPrimitive() || isSimpleJavaType(javaObject)) {
                 parent.appendChild(factory.createTextNode(toXMLLiteral(null, javaObject, context)));
-            } else if ( javaType.isArray() ) {
+            } else if (javaType.isArray()) {
                 boolean arrayDone = false;
                 Object arrayObject = null;
-                for (int count = 0 ; !arrayDone ; ++count) {
+                for (int count = 0; !arrayDone; ++count) {
                     try {
                         arrayObject = Array.get(javaObject, count);
                         elementNode = factory.createElement(elementName);
                         parent.appendChild(elementNode);
-                        appendChildElements(elementNode, elementName, javaType.getComponentType(), arrayObject, context);
-                    } catch (ArrayIndexOutOfBoundsException e1 ) {
+                        appendChildElements(elementNode,
+                                            elementName,
+                                            javaType.getComponentType(),
+                                            arrayObject,
+                                            context);
+                    } catch (ArrayIndexOutOfBoundsException e1) {
                         arrayDone = true;
                     }
                 }
             } else {
                 Field[] javaFields = javaType.getFields();
                 for (Field aField : javaFields) {
-                   try {
-                       if (!aField.getType().isArray()) {
-                           elementNode = factory.createElement(aField.getName());
-                           parent.appendChild(elementNode);
-                           appendChildElements(elementNode, aField.getName(), aField.getType(), aField.get(javaObject), context);
-                       } else {
-                           appendChildElements(parent, aField.getName(), aField.getType(), aField.get(javaObject), context);
-                       }
-                    } catch ( IllegalAccessException e ) {
+                    try {
+                        if (!aField.getType().isArray()) {
+                            elementNode = factory.createElement(aField.getName());
+                            parent.appendChild(elementNode);
+                            appendChildElements(elementNode,
+                                                aField.getName(),
+                                                aField.getType(),
+                                                aField.get(javaObject),
+                                                context);
+                        } else {
+                            appendChildElements(parent,
+                                                aField.getName(),
+                                                aField.getType(),
+                                                aField.get(javaObject),
+                                                context);
+                        }
+                    } catch (IllegalAccessException e) {
                         Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
-                        java2xmlEx.addContextName("tranforming " + aField.getName() + " of " + javaType.getName());
+                        java2xmlEx.addContextName("tranforming " + aField.getName() + " of "
+                                + javaType.getName());
                         throw java2xmlEx;
                     }
                 }
@@ -197,9 +217,9 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                     }
                     setterValueArray.add(createJavaObject(fieldValue, componentType, context));
                 } else {
-                    aMethod.invoke(javaInstance, new Object[] { createJavaObject(fieldValue,
+                    aMethod.invoke(javaInstance, new Object[] {createJavaObject(fieldValue,
                                                                                  paramType,
-                                                                                 context) });
+                                                                                 context)});
                 }
                 methodNotFound = false;
             }
@@ -261,12 +281,12 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                 Class paramType = aMethod.getParameterTypes()[0];
                 if (paramType.getComponentType().isPrimitive()) {
                     aMethod.invoke(javaInstance,
-                                   new Object[] { createPrimitiveArray(paramType.getComponentType(),
-                                                                       arraySetters.get(aMethod)) });
+                                   new Object[] {createPrimitiveArray(paramType.getComponentType(),
+                                                                       arraySetters.get(aMethod))});
                 } else {
                     aMethod.invoke(javaInstance,
-                                   new Object[] { createNonPrimitiveArray(paramType.getComponentType(),
-                                                                          arraySetters.get(aMethod)) });
+                                   new Object[] {createNonPrimitiveArray(paramType.getComponentType(),
+                                                                          arraySetters.get(aMethod))});
                 }
             }
         }
@@ -334,29 +354,28 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
         }
         return values;
     }
-    
+
     private String resolveRootElementName(Class javaType) {
-        if ( javaType.isArray() ) {
+        if (javaType.isArray()) {
             return javaType.getComponentType().getSimpleName() + "_collection";
         } else {
             return javaType.getSimpleName() + "_instance";
         }
     }
-    
+
     private String resolveElementName(Class javaType) {
-        if ( javaType.isArray() ) {
+        if (javaType.isArray()) {
             return javaType.getComponentType().getSimpleName();
         } else {
             return javaType.getSimpleName();
         }
     }
-    
+
     private boolean isSimpleJavaType(Object javaObject) {
-        if ( javaObject instanceof String ||
-                javaObject instanceof Float || javaObject instanceof Double || 
-                javaObject instanceof GregorianCalendar || javaObject instanceof Date || 
-                javaObject instanceof XMLGregorianCalendar || javaObject instanceof byte[] || 
-                javaObject instanceof QName) {
+        if (javaObject instanceof String || javaObject instanceof Float
+                || javaObject instanceof Double || javaObject instanceof GregorianCalendar
+                || javaObject instanceof Date || javaObject instanceof XMLGregorianCalendar
+                || javaObject instanceof byte[] || javaObject instanceof QName) {
             return true;
         }
         return false;
