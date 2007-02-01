@@ -42,8 +42,7 @@ import org.apache.tuscany.spi.loader.LoaderUtil;
 import org.apache.tuscany.spi.model.DataType;
 import org.apache.tuscany.spi.model.InteractionScope;
 import org.apache.tuscany.spi.model.ModelObject;
-
-import org.apache.tuscany.core.loader.StAXUtil;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Loads a Java interface definition from an XML-based assembly file
@@ -72,7 +71,7 @@ public class InterfaceJavaLoader extends LoaderExtension<JavaServiceContract> {
         throws XMLStreamException, LoaderException {
 
         assert INTERFACE_JAVA.equals(reader.getName());
-        InteractionScope interactionScope = StAXUtil.interactionScope(reader.getAttributeValue(null, "scope"));
+        InteractionScope interactionScope = StaxUtil.interactionScope(reader.getAttributeValue(null, "scope"));
         String name = reader.getAttributeValue(null, "interface");
         if (name == null) {
             // allow "class" as well as seems to be a common mistake

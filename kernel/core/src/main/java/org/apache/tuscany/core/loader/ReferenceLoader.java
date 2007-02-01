@@ -39,6 +39,7 @@ import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.model.Multiplicity;
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
+import org.apache.tuscany.spi.util.stax.StaxUtil;
 
 /**
  * Loads a reference from an XML-based assembly file
@@ -64,7 +65,7 @@ public class ReferenceLoader extends LoaderExtension<ReferenceDefinition> {
         assert REFERENCE.equals(reader.getName());
         String name = reader.getAttributeValue(null, "name");
         String multiplicityVal = reader.getAttributeValue(null, "multiplicity");
-        Multiplicity multiplicity = StAXUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
+        Multiplicity multiplicity = StaxUtil.multiplicity(multiplicityVal, Multiplicity.ONE_ONE);
         ReferenceDefinition referenceDefinition = new ReferenceDefinition();
         referenceDefinition.setMultiplicity(multiplicity);
         referenceDefinition.setName(name);
