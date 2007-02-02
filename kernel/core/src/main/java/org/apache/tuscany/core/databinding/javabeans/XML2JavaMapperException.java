@@ -22,21 +22,16 @@ package org.apache.tuscany.core.databinding.javabeans;
 import org.apache.tuscany.api.TuscanyRuntimeException;
 
 /**
- * This exception is used to encapsulate and rethrow exceptions that arise out of converting
- * XML Data to Java Objects.  
- *
+ * This exception is used to encapsulate and rethrow exceptions that arise out
+ * of converting XML Data to Java Objects.
  */
 public class XML2JavaMapperException extends TuscanyRuntimeException {
-    
-    public XML2JavaMapperException() {
-        
-    }
-    
+    private static final long serialVersionUID = 6596530102591630642L;
+
     public XML2JavaMapperException(String message) {
         super(message);
     }
-    
-    
+
     public XML2JavaMapperException(Throwable cause) {
         super(cause);
     }

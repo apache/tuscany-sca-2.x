@@ -44,8 +44,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This class maps JavaBeans objects to XML data represented physically as DOM Nodes and vice versa. 
- * It uses JavaBeans Introspection for this mapping.
+ * This class maps JavaBeans objects to XML data represented physically as DOM
+ * Nodes and vice versa. It uses JavaBeans Introspection for this mapping.
  */
 public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
 
@@ -53,11 +53,11 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
     private Document factory;
 
     protected Node getFragment(T source) {
-        return ((Document) source).getDocumentElement();
+        return ((Document)source).getDocumentElement();
     }
 
     public Node toDOMNode(Object javaObject, TransformationContext context) {
-        QName rootElementName = (QName) context.getTargetDataType().getMetadata("RootElementName");
+        QName rootElementName = (QName)context.getTargetDataType().getMetadata("RootElementName");
         if (rootElementName == null) {
             rootElementName = new QName(resolveRootElementName(javaObject.getClass()));
         }
@@ -72,8 +72,7 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
             return root;
         } catch (ParserConfigurationException e) {
             Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
-            java2xmlEx.addContextName("tranforming to xml, a java instance of"
-                    + javaObject.getClass().getName());
+            java2xmlEx.addContextName("tranforming to xml, a java instance of" + javaObject.getClass().getName());
             throw java2xmlEx;
         }
     }
@@ -95,10 +94,10 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                         arrayObject = Array.get(javaObject, count);
                         elementNode = factory.createElement(elementName);
                         parent.appendChild(elementNode);
-                        appendChildElements(elementNode,
-                                            elementName,
-                                            javaType.getComponentType(),
-                                            arrayObject,
+                        appendChildElements(elementNode, 
+                                            elementName, 
+                                            javaType.getComponentType(), 
+                                            arrayObject, 
                                             context);
                     } catch (ArrayIndexOutOfBoundsException e1) {
                         arrayDone = true;
@@ -125,48 +124,39 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                         }
                     } catch (IllegalAccessException e) {
                         Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
-                        java2xmlEx.addContextName("tranforming " + aField.getName() + " of "
-                                + javaType.getName());
+                        java2xmlEx.addContextName("tranforming " + aField.getName() + " of " + javaType.getName());
                         throw java2xmlEx;
                     }
                 }
-                
+
                 Method[] methods = javaType.getDeclaredMethods();
                 String fieldName = null;
-                StringBuffer fieldNameBuffer = null;
                 for (Method aMethod : methods) {
                     try {
-                        if (Modifier.isPublic(aMethod.getModifiers()) && aMethod.getName().startsWith(GET) && aMethod.getParameterTypes().length == 0) {
+                        if (Modifier.isPublic(aMethod.getModifiers()) && aMethod.getName().startsWith(GET)
+                            && aMethod.getParameterTypes().length == 0) {
                             fieldName = resolveFieldFromMethod(aMethod.getName());
                             try {
                                 javaType.getField(fieldName);
                             } catch (NoSuchFieldException e) {
-                                if ( aMethod.getReturnType().isArray() ) {
-                                    appendChildElements(parent,
-                                                        fieldName,
-                                                        aMethod.getReturnType(),
-                                                        aMethod.invoke(javaObject, new Object[0]),
-                                                        context);
+                                if (aMethod.getReturnType().isArray()) {
+                                    appendChildElements(parent, fieldName, aMethod.getReturnType(), aMethod
+                                        .invoke(javaObject, new Object[0]), context);
                                 } else {
                                     elementNode = factory.createElement(fieldName);
                                     parent.appendChild(elementNode);
-                                    appendChildElements(elementNode,
-                                                        fieldName,
-                                                        aMethod.getReturnType(),
-                                                        aMethod.invoke(javaObject, new Object[0]),
-                                                        context);
+                                    appendChildElements(elementNode, fieldName, aMethod.getReturnType(), aMethod
+                                        .invoke(javaObject, new Object[0]), context);
                                 }
                             }
                         }
                     } catch (IllegalAccessException e) {
                         Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
-                        java2xmlEx.addContextName("tranforming " + fieldName + " of "
-                                + javaType.getName());
+                        java2xmlEx.addContextName("tranforming " + fieldName + " of " + javaType.getName());
                         throw java2xmlEx;
                     } catch (InvocationTargetException e) {
                         Java2XMLMapperException java2xmlEx = new Java2XMLMapperException(e);
-                        java2xmlEx.addContextName("tranforming " + fieldName + " of "
-                                + javaType.getName());
+                        java2xmlEx.addContextName("tranforming " + fieldName + " of " + javaType.getName());
                         throw java2xmlEx;
                     }
                 }
@@ -179,19 +169,18 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
         if (xmlType.isSimpleType()) {
             return super.toJavaObject(xmlType, xmlNode, context);
         } else {
-            Class<?> javaType = (Class<?>) context.getTargetDataType().getLogical();
+            Class<?> javaType = (Class<?>)context.getTargetDataType().getLogical();
             return createJavaObject(getFragment(xmlNode), javaType, context);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private <L> L createJavaObject(Node valueFragment,
-                                   Class<L> javaType,
-                                   TransformationContext context) throws XML2JavaMapperException {
+    private <L> L createJavaObject(Node valueFragment, Class<L> javaType, TransformationContext context)
+        throws XML2JavaMapperException {
         NodeList childNodes = valueFragment.getChildNodes();
         if (childNodes.getLength() == 1 && childNodes.item(0).getNodeType() == 3) {
 
-            return (L) super.toJavaObject(getXMLType(javaType), (T) childNodes.item(0), context);
+            return (L)super.toJavaObject(getXMLType(javaType), (T)childNodes.item(0), context);
         } else {
             try {
                 L javaInstance = javaType.newInstance();
@@ -202,11 +191,7 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                         String fieldName = childNodes.item(count).getNodeName();
                         try {
                             Field javaField = javaType.getField(fieldName);
-                            setFieldValue(javaInstance,
-                                          javaField,
-                                          childNodes.item(count),
-                                          arrayFields,
-                                          context);
+                            setFieldValue(javaInstance, javaField, childNodes.item(count), arrayFields, context);
 
                         } catch (NoSuchFieldException e1) {
                             setFieldValueUsingSetter(javaType,
@@ -238,7 +223,7 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                                           Node fieldValue,
                                           Map<Method, List<Object>> arraySetters,
                                           TransformationContext context) throws IllegalAccessException,
-                                                                        InvocationTargetException {
+        InvocationTargetException {
         char firstChar = Character.toUpperCase(fieldName.charAt(0));
         StringBuilder methodName = new StringBuilder(SET + fieldName);
         methodName.setCharAt(SET.length(), firstChar);
@@ -246,22 +231,19 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
 
         for (int methodCount = 0; methodNotFound && methodCount < javaType.getMethods().length; ++methodCount) {
             Method aMethod = javaType.getMethods()[methodCount];
-            if (aMethod.getName().equals(methodName.toString())
-                    && aMethod.getParameterTypes().length == 1) {
+            if (aMethod.getName().equals(methodName.toString()) && aMethod.getParameterTypes().length == 1) {
                 Class paramType = aMethod.getParameterTypes()[0];
 
                 if (paramType.isArray()) {
                     Class componentType = paramType.getComponentType();
-                    List<Object> setterValueArray = null;
-                    if ((setterValueArray = arraySetters.get(aMethod)) == null) {
+                    List<Object> setterValueArray = arraySetters.get(aMethod);
+                    if (setterValueArray == null) {
                         setterValueArray = new ArrayList();
                         arraySetters.put(aMethod, setterValueArray);
                     }
                     setterValueArray.add(createJavaObject(fieldValue, componentType, context));
                 } else {
-                    aMethod.invoke(javaInstance, new Object[] {createJavaObject(fieldValue,
-                                                                                 paramType,
-                                                                                 context)});
+                    aMethod.invoke(javaInstance, new Object[] {createJavaObject(fieldValue, paramType, context)});
                 }
                 methodNotFound = false;
             }
@@ -269,8 +251,10 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
 
         if (methodNotFound) {
             XML2JavaMapperException xml2JavaEx =
-                    new XML2JavaMapperException("no field or setter method to configure property value <"
-                            + fieldName + "> in Java class <" + javaType.getName() + ">");
+                new XML2JavaMapperException("no field or setter method to configure property value <" + fieldName
+                    + "> in Java class <"
+                    + javaType.getName()
+                    + ">");
             xml2JavaEx.addContextName("configuring " + javaType.getName());
             throw xml2JavaEx;
         }
@@ -282,12 +266,12 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
                                Node fieldValue,
                                Map<Field, List<Object>> arrayFields,
                                TransformationContext context) throws IllegalAccessException {
-        Class<?> javaFieldType = (Class<?>) javaField.getType();
+        Class<?> javaFieldType = (Class<?>)javaField.getType();
 
         if (javaFieldType.isArray()) {
             Class componentType = javaFieldType.getComponentType();
-            List<Object> fldValueArray = null;
-            if ((fldValueArray = arrayFields.get(javaField)) == null) {
+            List<Object> fldValueArray = arrayFields.get(javaField);
+            if (fldValueArray == null) {
                 fldValueArray = new ArrayList();
                 arrayFields.put(javaField, fldValueArray);
             }
@@ -301,19 +285,17 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
     private void setArrayValues(Object javaInstance,
                                 Map<Field, List<Object>> arrayFields,
                                 Map<Method, List<Object>> arraySetters) throws IllegalAccessException,
-                                                                       InvocationTargetException {
+        InvocationTargetException {
         if (arrayFields.size() > 0) {
             for (Field javaField : arrayFields.keySet()) {
                 javaField.setAccessible(true);
 
                 if (javaField.getType().getComponentType().isPrimitive()) {
-                    javaField.set(javaInstance, createPrimitiveArray(javaField.getType()
-                                                                              .getComponentType(),
+                    javaField.set(javaInstance, createPrimitiveArray(javaField.getType().getComponentType(),
                                                                      arrayFields.get(javaField)));
                 } else {
-                    javaField.set(javaInstance,
-                                  createNonPrimitiveArray(javaField.getType().getComponentType(),
-                                                          arrayFields.get(javaField)));
+                    javaField.set(javaInstance, createNonPrimitiveArray(javaField.getType().getComponentType(),
+                                                                        arrayFields.get(javaField)));
                 }
             }
         }
@@ -322,13 +304,11 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
             for (Method aMethod : arraySetters.keySet()) {
                 Class paramType = aMethod.getParameterTypes()[0];
                 if (paramType.getComponentType().isPrimitive()) {
-                    aMethod.invoke(javaInstance,
-                                   new Object[] {createPrimitiveArray(paramType.getComponentType(),
-                                                                       arraySetters.get(aMethod))});
+                    aMethod.invoke(javaInstance, new Object[] {createPrimitiveArray(paramType.getComponentType(),
+                                                                                    arraySetters.get(aMethod))});
                 } else {
-                    aMethod.invoke(javaInstance,
-                                   new Object[] {createNonPrimitiveArray(paramType.getComponentType(),
-                                                                          arraySetters.get(aMethod))});
+                    aMethod.invoke(javaInstance, new Object[] {createNonPrimitiveArray(paramType.getComponentType(),
+                                                                                       arraySetters.get(aMethod))});
                 }
             }
         }
@@ -347,49 +327,49 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
             if (fieldType.getName().equals("int")) {
                 int[] primitiveValues = new int[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Integer) values.get(count)).intValue();
+                    primitiveValues[count] = ((Integer)values.get(count)).intValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("float")) {
                 float[] primitiveValues = new float[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Float) values.get(count)).floatValue();
+                    primitiveValues[count] = ((Float)values.get(count)).floatValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("boolean")) {
                 boolean[] primitiveValues = new boolean[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Boolean) values.get(count)).booleanValue();
+                    primitiveValues[count] = ((Boolean)values.get(count)).booleanValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("char")) {
                 char[] primitiveValues = new char[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Character) values.get(count)).charValue();
+                    primitiveValues[count] = ((Character)values.get(count)).charValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("byte")) {
                 byte[] primitiveValues = new byte[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Byte) values.get(count)).byteValue();
+                    primitiveValues[count] = ((Byte)values.get(count)).byteValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("short")) {
                 short[] primitiveValues = new short[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Short) values.get(count)).shortValue();
+                    primitiveValues[count] = ((Short)values.get(count)).shortValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("long")) {
                 long[] primitiveValues = new long[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Long) values.get(count)).longValue();
+                    primitiveValues[count] = ((Long)values.get(count)).longValue();
                 }
                 return primitiveValues;
             } else if (fieldType.getName().equals("double")) {
                 double[] primitiveValues = new double[values.size()];
                 for (int count = 0; count < values.size(); ++count) {
-                    primitiveValues[count] = ((Double) values.get(count)).doubleValue();
+                    primitiveValues[count] = ((Double)values.get(count)).doubleValue();
                 }
                 return primitiveValues;
             }
@@ -414,15 +394,26 @@ public class XMLTypeMapperExtension<T> extends SimpleTypeMapperExtension<T> {
     }
 
     private boolean isSimpleJavaType(Object javaObject) {
-        if (javaObject instanceof String || javaObject instanceof Float
-                || javaObject instanceof Double || javaObject instanceof GregorianCalendar
-                || javaObject instanceof Date || javaObject instanceof XMLGregorianCalendar
-                || javaObject instanceof byte[] || javaObject instanceof QName) {
+        if (javaObject instanceof String) {
+            return true;
+        }
+        if (javaObject instanceof Byte || javaObject instanceof Character
+            || javaObject instanceof Short
+            || javaObject instanceof Integer
+            || javaObject instanceof Long
+            || javaObject instanceof Float
+            || javaObject instanceof Double) {
+            return true;
+        }
+        if (javaObject instanceof GregorianCalendar || javaObject instanceof Date
+            || javaObject instanceof XMLGregorianCalendar
+            || javaObject instanceof byte[]
+            || javaObject instanceof QName) {
             return true;
         }
         return false;
     }
-    
+
     private String resolveFieldFromMethod(String methodName) {
         StringBuffer fieldName = new StringBuffer();
         fieldName.append(Character.toLowerCase(methodName.charAt(GET.length())));
