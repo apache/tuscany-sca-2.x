@@ -33,9 +33,7 @@ import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.marshaller.MarshalException;
 import org.apache.tuscany.spi.marshaller.ModelMarshaller;
-import org.apache.tuscany.spi.marshaller.ModelMarshallerRegistry;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.ModelObject;
 import org.apache.tuscany.spi.services.discovery.DiscoveryService;
 import org.apache.tuscany.spi.services.discovery.RequestListener;
 
@@ -51,17 +49,8 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     /** QName of the message. */
     private static final QName MESSAGE_TYPE = new QName("http://www.osoa.org/xmlns/sca/1.0", "composite");
     
-    /** Marshaller registry. */
-    private ModelMarshallerRegistry marshallerRegistry;
-    
-    /**
-     * Injects the model marshaller registry.
-     * @param marshallerRegistry Marshaller registry.
-     */
-    @Autowire
-    public void setMarshallerRegistry(ModelMarshallerRegistry marshallerRegistry) {
-        this.marshallerRegistry = marshallerRegistry;
-    }
+    /** Marshaller. */
+    private ModelMarshaller<ComponentDefinition<?>> marshaller;
     
     /**
      * Deploys the component.
@@ -82,8 +71,7 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
 
         try {
             
-            final ModelMarshaller<? extends ModelObject> marshaller = marshallerRegistry.getMarshaller(MESSAGE_TYPE);
-            final ComponentDefinition<?> definition = (ComponentDefinition<?>) marshaller.unmarshall(content, false);
+            final ComponentDefinition<?> definition = marshaller.unmarshall(content, false);
             final Component component =  (Component) builder.build(parent, definition, deploymentContext);
             
             component.prepare();
@@ -107,6 +95,15 @@ public class FederatedDeployer extends DeployerImpl implements RequestListener {
     @Autowire
     public void setDiscoveryService(DiscoveryService discoveryService) {
         discoveryService.registerRequestListener(MESSAGE_TYPE, this);
+    }
+    
+    /**
+     * Injects the model marshaller.
+     * @param marshaller Marshaller.
+     */
+    @Autowire
+    public void setMarshaller(ModelMarshaller<ComponentDefinition<?>> marshaller) {
+        this.marshaller = marshaller;
     }
 
 }
