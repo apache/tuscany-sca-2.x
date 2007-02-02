@@ -34,10 +34,6 @@
     -->
     <dependencies>
         <dependency>
-            <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r0.95</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tuscany.sca.runtime.standalone</groupId>
             <artifactId>standalone-api</artifactId>
             <version>${sca.version}</version>

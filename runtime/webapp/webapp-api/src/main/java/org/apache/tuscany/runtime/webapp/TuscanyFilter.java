@@ -27,11 +27,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletContext;
 
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
-import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
 
 /**
  * Maps an incoming request and the current composite context to the composite component for the web application. This
@@ -41,7 +37,6 @@ import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
  * @version $Rev$ $Date$
  */
 public class TuscanyFilter implements Filter {
-    private CompositeContext context;
     private WebappRuntime runtime;
 
     public void init(FilterConfig config) throws ServletException {
@@ -50,26 +45,19 @@ public class TuscanyFilter implements Filter {
         if (runtime == null) {
             throw new ServletException("Tuscany is not configured for the web application");
         }
-        context = (CompositeContext) servletContext.getAttribute(CONTEXT_ATTRIBUTE);
-        if (context == null) {
-            throw new ServletException("No context specified");
-        }
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain filterChain)
         throws IOException, ServletException {
-        CompositeContext oldContext = CurrentCompositeContext.setContext(context);
         try {
             runtime.startRequest();
             filterChain.doFilter(req, resp);
         } finally {
-            CurrentCompositeContext.setContext(oldContext);
             runtime.stopRequest();
         }
     }
 
     public void destroy() {
-        context = null;
         runtime = null;
     }
 }

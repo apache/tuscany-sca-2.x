@@ -18,13 +18,10 @@
  */
 package org.apache.tuscany.runtime.webapp;
 
-import java.util.StringTokenizer;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
-
-import org.osoa.sca.CompositeContext;
 
 import org.apache.tuscany.core.component.event.HttpRequestEnded;
 import org.apache.tuscany.core.component.event.HttpRequestStart;
@@ -32,7 +29,6 @@ import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.core.runtime.AbstractRuntime;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.servlet.ServletRequestInjector;
@@ -51,10 +47,6 @@ import org.apache.tuscany.spi.event.EventPublisher;
  * the attribute {@link Constants#RUNTIME_PARAM}. The runtime implements {@link WebappRuntime} so that filters and
  * servlets loaded in the parent web app classloader may pass events and requests to it.
  * <p/>
- * By default, the top-most application composite component will be returned when "non-managed" web application code
- * such as JSPs call {@link org.osoa.sca.CurrentCompositeContext}. If a composite deeper in the hierarchy should be
- * returned instead, the <code>web.xml</code> must contain an entry for {@link Constants#CURRENT_COMPOSITE_PATH_PARAM}
- * whose value is a component path expression using '/' as a delimeter such as foo/bar/baz.
  *
  * @version $$Rev$$ $$Date$$
  */
@@ -64,7 +56,6 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
 
 
     private ServletRequestInjector requestInjector;
-    private CompositeContextImpl context;
     private CompositeComponent application;
 
     public ServletContext getServletContext() {
@@ -100,6 +91,7 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
                 throw new TuscanyInitException("Could not find application SCDL");
             }
             getRuntime().getRootComponent().start();
+/*
             application = deployApplicationScdl(getDeployer(),
                                                 getRuntime().getRootComponent(),
                                                 getApplicationName(),
@@ -120,22 +112,18 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
             }
             context = new CompositeContextImpl(current, getWireService());
             servletContext.setAttribute(Constants.CONTEXT_ATTRIBUTE, context);
+*/
         } catch (Exception e) {
             throw new ServletLauncherInitException(e);
         }
     }
 
     public void destroy() {
-        servletContext.removeAttribute(Constants.CONTEXT_ATTRIBUTE);
         if (application != null) {
             application.stop();
             application = null;
         }
         super.destroy();
-    }
-
-    public CompositeContext getContext() {
-        return context;
     }
 
     public ServletRequestInjector getRequestInjector() {
@@ -158,22 +146,30 @@ public class WebappRuntimeImpl extends AbstractRuntime implements WebappRuntime 
         HttpSession session = request.getSession(false);
         Object sessionId = session == null ? new LazyHTTPSessionId(request) : session.getId();
         HttpRequestStart httpRequestStart = new HttpRequestStart(this, sessionId);
+/*
         application.publish(httpRequestStart);
+*/
         ((EventPublisher) requestInjector).publish(httpRequestStart);
     }
 
     public void httpRequestEnded(Object sessionid) {
         HttpRequestEnded httpRequestEnded = new HttpRequestEnded(this, sessionid);
+/*
         application.publish(httpRequestEnded);
+*/
         ((EventPublisher) requestInjector).publish(httpRequestEnded);
     }
 
 
     public void startRequest() {
+/*
         application.publish(new RequestStart(this));
+*/
     }
 
     public void stopRequest() {
+/*
         application.publish(new RequestEnd(this));
+*/
     }
 }
