@@ -69,8 +69,10 @@ public class TuscanyContextListener implements ServletContextListener {
             runtime.setRuntimeInfo(info);
             runtime.setHostClassLoader(webappClassLoader);
             runtime.setSystemScdl(systemScdl);
+/*
             runtime.setApplicationName(name);
             runtime.setApplicationScdl(applicationScdl);
+*/
             runtime.initialize();
 
             servletContext.setAttribute(RUNTIME_ATTRIBUTE, runtime);

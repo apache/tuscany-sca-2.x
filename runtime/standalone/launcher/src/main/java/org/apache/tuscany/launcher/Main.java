@@ -29,9 +29,6 @@ import java.util.ResourceBundle;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
-
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
 import org.apache.tuscany.runtime.standalone.DirectoryHelper;
 import org.apache.tuscany.runtime.standalone.StandaloneRuntimeInfo;
@@ -68,16 +65,13 @@ public class Main {
 
             URL applicationScdl = getApplicationScdl(applicationClassLoader);
 
+/*
             CompositeContext context = runtime.deployApplication("application",
                                                                  applicationScdl,
                                                                  applicationClassLoader);
 
-            CompositeContext old = CurrentCompositeContext.setContext(context);
-            try {
-                runApplication(applicationJar, applicationClassLoader, appArgs);
-            } finally {
-                CurrentCompositeContext.setContext(old);
-            }
+*/
+            runApplication(applicationJar, applicationClassLoader, appArgs);
         } finally {
             runtime.destroy();
         }

@@ -28,9 +28,7 @@ import javax.servlet.ServletResponse;
 
 import junit.framework.TestCase;
 import org.easymock.EasyMock;
-import org.osoa.sca.CompositeContext;
 
-import static org.apache.tuscany.runtime.webapp.Constants.CONTEXT_ATTRIBUTE;
 import static org.apache.tuscany.runtime.webapp.Constants.RUNTIME_ATTRIBUTE;
 
 /**
@@ -41,7 +39,6 @@ public class TuscanyFilterTestCase extends TestCase {
     private FilterConfig config;
     private ServletContext servletContext;
     private WebappRuntime runtime;
-    private CompositeContext context;
     private ServletRequest request;
     private ServletResponse response;
     private FilterChain chain;
@@ -49,12 +46,10 @@ public class TuscanyFilterTestCase extends TestCase {
     public void testFilterInit() {
         EasyMock.expect(config.getServletContext()).andReturn(servletContext);
         EasyMock.expect(servletContext.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
-        EasyMock.expect(servletContext.getAttribute(CONTEXT_ATTRIBUTE)).andReturn(context);
 
         EasyMock.replay(servletContext);
         EasyMock.replay(config);
         EasyMock.replay(runtime);
-        EasyMock.replay(context);
         try {
             filter.init(config);
         } catch (ServletException e) {
@@ -63,7 +58,6 @@ public class TuscanyFilterTestCase extends TestCase {
         EasyMock.verify(servletContext);
         EasyMock.verify(config);
         EasyMock.verify(runtime);
-        EasyMock.verify(context);
     }
 
     public void testFilterInitWithNoRuntimeConfigured() {
@@ -73,7 +67,6 @@ public class TuscanyFilterTestCase extends TestCase {
         EasyMock.replay(servletContext);
         EasyMock.replay(config);
         EasyMock.replay(runtime);
-        EasyMock.replay(context);
         try {
             filter.init(config);
             fail("Expected a ServletException");
@@ -83,13 +76,11 @@ public class TuscanyFilterTestCase extends TestCase {
         EasyMock.verify(servletContext);
         EasyMock.verify(config);
         EasyMock.verify(runtime);
-        EasyMock.verify(context);
     }
 
     public void testContextIsAssociatedWithThread() throws ServletException, IOException {
         EasyMock.expect(config.getServletContext()).andReturn(servletContext);
         EasyMock.expect(servletContext.getAttribute(RUNTIME_ATTRIBUTE)).andReturn(runtime);
-        EasyMock.expect(servletContext.getAttribute(CONTEXT_ATTRIBUTE)).andReturn(context);
         EasyMock.replay(servletContext);
         EasyMock.replay(config);
         filter.init(config);
@@ -114,7 +105,6 @@ public class TuscanyFilterTestCase extends TestCase {
         config = EasyMock.createMock(FilterConfig.class);
         servletContext = EasyMock.createMock(ServletContext.class);
         runtime = EasyMock.createMock(WebappRuntime.class);
-        context = EasyMock.createMock(CompositeContext.class);
         request = EasyMock.createMock(ServletRequest.class);
         response = EasyMock.createMock(ServletResponse.class);
         chain = EasyMock.createMock(FilterChain.class);

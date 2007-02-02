@@ -67,8 +67,10 @@ public class TuscanyContextListenerTestCase extends TestCase {
         runtime.setRuntimeInfo(isA(WebappRuntimeInfo.class));
         runtime.setHostClassLoader(cl);
         runtime.setSystemScdl(systemUrl);
+/*
         runtime.setApplicationName("application");
         runtime.setApplicationScdl(applicationUrl);
+*/
         runtime.initialize();
         replay(runtime);
 
