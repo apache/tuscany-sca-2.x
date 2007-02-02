@@ -21,31 +21,27 @@ package org.apache.tuscany.core.runtime;
 import java.net.URL;
 import javax.xml.stream.XMLInputFactory;
 
-import org.osoa.sca.CompositeContext;
-
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
-import org.apache.tuscany.core.launcher.CompositeContextImpl;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
 import org.apache.tuscany.host.runtime.InitializationException;
 import org.apache.tuscany.host.runtime.TuscanyRuntime;
-import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.bootstrap.ComponentNames;
+import org.apache.tuscany.spi.bootstrap.RuntimeComponent;
 import org.apache.tuscany.spi.builder.BuilderException;
-import org.apache.tuscany.spi.component.ComponentException;
-import org.apache.tuscany.spi.component.CompositeComponent;
-import org.apache.tuscany.spi.component.ComponentRegistrationException;
-import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.AtomicComponent;
+import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
+import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.deployer.Deployer;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.model.CompositeImplementation;
 import org.apache.tuscany.spi.services.management.TuscanyManagementService;
 import org.apache.tuscany.spi.wire.WireService;
 
@@ -213,7 +209,6 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
     }
 
 
-
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService) getManagementService();
         return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, tms);
@@ -234,7 +229,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
             throw new InitializationException("Deployer must be an atomic component");
         }
         try {
-            return (Deployer)((AtomicComponent)deployerComponent).getTargetInstance();
+            return (Deployer) ((AtomicComponent) deployerComponent).getTargetInstance();
         } catch (TargetResolutionException e) {
             throw new InitializationException(e);
         }
@@ -246,7 +241,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
             throw new InitializationException("WireService must be an atomic component");
         }
         try {
-            return (WireService)((AtomicComponent)wireServiceComponent).getTargetInstance();
+            return (WireService) ((AtomicComponent) wireServiceComponent).getTargetInstance();
         } catch (TargetResolutionException e) {
             throw new InitializationException(e);
         }
@@ -267,45 +262,4 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
         return (CompositeComponent) deployer.deploy(parent, definition);
     }
-
-    @Deprecated
-    public CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader)
-        throws InitializationException {
-        try {
-            CompositeComponent application = deployApplicationScdl(getDeployer(),
-                                                                   getRuntime().getRootComponent(),
-                                                                   name,
-                                                                   scdlLocation,
-                                                                   classLoader);
-            application.start();
-            return new CompositeContextImpl(application, getWireService());
-        } catch (LoaderException ex) {
-            throw new InitializationException(ex);
-        } catch (BuilderException ex) {
-            throw new InitializationException(ex);
-        } catch (ComponentException ex) {
-            throw new InitializationException(ex);
-        }
-    }
-
-    protected CompositeComponent deployApplicationScdl(Deployer deployer,
-                                                       CompositeComponent parent,
-                                                       String name,
-                                                       URL applicationScdl,
-                                                       ClassLoader applicationClassLoader)
-        throws LoaderException, BuilderException, ComponentException {
-
-        CompositeImplementation impl = new CompositeImplementation();
-        impl.setScdlLocation(applicationScdl);
-        impl.setClassLoader(applicationClassLoader);
-        ComponentDefinition<CompositeImplementation> definition =
-            new ComponentDefinition<CompositeImplementation>(name, impl);
-
-        return (CompositeComponent) deployer.deploy(parent, definition);
-    }
-
-    public CompositeContext getContext() {
-        throw new UnsupportedOperationException();
-    }
-
 }
