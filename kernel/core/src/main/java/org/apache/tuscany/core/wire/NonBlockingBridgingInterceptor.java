@@ -20,8 +20,6 @@ package org.apache.tuscany.core.wire;
 
 import java.util.LinkedList;
 
-import org.osoa.sca.CompositeContext;
-import org.osoa.sca.CurrentCompositeContext;
 import org.osoa.sca.ServiceRuntimeException;
 
 import org.apache.tuscany.spi.component.WorkContext;
@@ -58,7 +56,6 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
     }
 
     public Message invoke(final Message msg) {
-        final CompositeContext currentContext = CurrentCompositeContext.getContext();
         // Retrieve conversation id to transfer to new thread
         // Notice that we cannot clear the conversation id from the current thread
         final Object conversationID = workContext.getIdentifier(Scope.CONVERSATION);
@@ -71,16 +68,7 @@ public class NonBlockingBridgingInterceptor implements BridgingInterceptor {
                     if (conversationID != null) {
                         workContext.setIdentifier(Scope.CONVERSATION, conversationID);
                     }
-                    CompositeContext oldContext = CurrentCompositeContext.setContext(currentContext);
-                    try {
-                        next.invoke(msg);
-                    } catch (Exception e) {
-                        // REVIEW uncomment when it is available
-                        // monitor.executionError(e);
-                        e.printStackTrace();
-                    } finally {
-                        CurrentCompositeContext.setContext(oldContext);
-                    }
+                    next.invoke(msg);
                 }
             });
         } catch (Exception e) {

@@ -20,8 +20,6 @@ package org.apache.tuscany.host.runtime;
 
 import java.net.URL;
 
-import org.osoa.sca.CompositeContext;
-
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -114,66 +112,4 @@ public interface TuscanyRuntime {
      * @throws ShutdownException if there is an error destroying the runtime
      */
     void destroy() throws ShutdownException;
-
-    /**
-     * Returns the current SCA context
-     */
-    @Deprecated
-    CompositeContext getContext();
-
-    /**
-     * Returns the name of the component associated with the application SCDL.
-     *
-     * @return the name of the component associated with the application SCDL
-     */
-    @Deprecated
-    String getApplicationName();
-
-    /**
-     * Sets the name of the component associated with the application SCDL.
-     *
-     * @param applicationName the name of the component associated with the application SCDL
-     */
-    @Deprecated
-    void setApplicationName(String applicationName);
-
-    /**
-     * Returns the location of the default application's SCDL.
-     *
-     * @return the location of the default application's SCDL
-     */
-    @Deprecated
-    URL getApplicationScdl();
-
-    /**
-     * Sets the location of the default application's SCDL
-     *
-     * @param applicationScdl the location of the default application's SCDL
-     */
-    @Deprecated
-    void setApplicationScdl(URL applicationScdl);
-
-    /**
-     * Get the application classloader
-     */
-    @Deprecated
-    ClassLoader getApplicationClassLoader();
-
-    /**
-     * Set the application classloader
-     */
-    @Deprecated
-    void setApplicationClassLoader(ClassLoader applicationClassLoader);
-
-    /**
-     * Temporary API to allow and application to be deployed until we get the proper deployment services running.
-     *
-     * @param name the name of the component for the application
-     * @param scdlLocation the location of a SCDL composite document to use as the component's implementation
-     * @param classLoader the classloader to associated with the application component
-     * @return the context for the application's composite component
-     */
-    @Deprecated
-    CompositeContext deployApplication(String name, URL scdlLocation, ClassLoader classLoader)
-        throws InitializationException;
 }

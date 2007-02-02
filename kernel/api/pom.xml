@@ -32,7 +32,7 @@
     <dependencies>
         <dependency>
             <groupId>org.osoa</groupId>
-            <artifactId>sca-api-r0.95</artifactId>
+            <artifactId>sca-api-r${scaSpecVersion}</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
