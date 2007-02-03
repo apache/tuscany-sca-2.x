@@ -19,6 +19,7 @@
 package org.apache.tuscany.spi.implementation.java;
 
 import java.lang.reflect.Member;
+import java.net.URI;
 
 import org.apache.tuscany.spi.model.ReferenceDefinition;
 import org.apache.tuscany.spi.model.ServiceContract;
@@ -35,7 +36,7 @@ public class JavaMappedReference extends ReferenceDefinition {
     public JavaMappedReference() {
     }
 
-    public JavaMappedReference(String name, ServiceContract serviceContract, Member member) {
+    public JavaMappedReference(URI name, ServiceContract serviceContract, Member member) {
         super(name, serviceContract);
         this.member = member;
     }

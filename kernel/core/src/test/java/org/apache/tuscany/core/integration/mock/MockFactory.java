@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.integration.mock;
 
 import java.lang.reflect.Member;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,7 +126,7 @@ public final class MockFactory {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         configuration.setWorkContext(new WorkContextImpl());
-        configuration.setName(sourceName);
+        configuration.setName(new URI(sourceName));
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
         OutboundWire outboundWire = createOutboundWire(targetName, sourceReferenceClass, sourceHeadInterceptor);
@@ -177,7 +179,7 @@ public final class MockFactory {
             configuration.addReferenceSite(entry.getKey(), entry.getValue());
         }
         configuration.setWorkContext(new WorkContextImpl());
-        configuration.setName(sourceName);
+        configuration.setName(new URI(sourceName));
 
         JavaAtomicComponent sourceComponent = new JavaAtomicComponent(configuration);
         sourceComponent.setScopeContainer(sourceScope);
@@ -206,7 +208,7 @@ public final class MockFactory {
         InboundWire wire = new InboundWireImpl();
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
         wire.setServiceContract(contract);
-        wire.setServiceName(serviceName);
+        wire.setUri(URI.create("#" + serviceName));
         wire.addInvocationChains(createInboundChains(interfaze, interceptor));
         return wire;
     }
@@ -220,7 +222,7 @@ public final class MockFactory {
         throws InvalidServiceContractException {
 
         OutboundWire wire = new OutboundWireImpl();
-        wire.setReferenceName(refName);
+        wire.setUri(URI.create("#" + refName));
         Map<Operation<?>, OutboundInvocationChain> outboundChains = createOutboundChains(interfaze, interceptor);
         wire.addInvocationChains(outboundChains);
         ServiceContract<?> contract = REGISTRY.introspect(interfaze);
@@ -231,12 +233,12 @@ public final class MockFactory {
 
     @SuppressWarnings("unchecked")
     private static <T> JavaAtomicComponent createJavaComponent(String name, ScopeContainer scope, Class<T> clazz)
-        throws NoSuchMethodException {
+        throws NoSuchMethodException, URISyntaxException {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         configuration.setWireService(WIRE_SERVICE);
         configuration.setWorkContext(new WorkContextImpl());
-        configuration.setName(name);
+        configuration.setName(new URI(name));
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
         component.setScopeContainer(scope);
         return component;

@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -120,7 +123,11 @@ public class BasicConversationalScopeTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
-        configuration.setName("foo");
+        try {
+            configuration.setName(new URI("foo"));
+        } catch (URISyntaxException e) {
+            // will not happen
+        }
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scopeContainer);
         component.start();

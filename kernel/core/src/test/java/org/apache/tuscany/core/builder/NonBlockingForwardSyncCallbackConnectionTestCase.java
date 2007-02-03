@@ -117,7 +117,7 @@ public class NonBlockingForwardSyncCallbackConnectionTestCase extends TestCase {
         WorkContext context = new WorkContextImpl();
         WireService wireService = new JDKWireService(null, null);
         WorkScheduler scheduler = new NonBlockingForwardSyncCallbackConnectionTestCase.MockWorkScheduler();
-        connector = new ConnectorImpl(wireService, null, scheduler, context);
+        connector = new ConnectorImpl(wireService, null, null, scheduler, context);
         operation = new Operation<Type>("bar", null, null, null);
         operation.setNonBlocking(true);
         callbackOperation = new Operation<Type>("callback", null, null, null);

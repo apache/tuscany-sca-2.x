@@ -22,6 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -43,7 +44,7 @@ public class ResourceInjectionTestCase extends TestCase {
         Constructor<Foo> ctor = Foo.class.getConstructor();
         Field field = Foo.class.getDeclaredField("resource");
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setName("component");
+        configuration.setName(new URI("component"));
         configuration.setInstanceFactory(new PojoObjectFactory<Foo>(ctor));
         configuration.addResourceSite("bar", field);
         JavaAtomicComponent component = new JavaAtomicComponent(configuration);
@@ -69,7 +70,7 @@ public class ResourceInjectionTestCase extends TestCase {
         ScopeContainer containter = EasyMock.createNiceMock(ScopeContainer.class);
         Constructor<FooConstructor> ctor = FooConstructor.class.getConstructor(String.class);
         PojoConfiguration configuration = new PojoConfiguration();
-        configuration.setName("component");
+        configuration.setName(new URI("component"));
         configuration.setInstanceFactory(new PojoObjectFactory<FooConstructor>(ctor));
         List<String> ctorNames = new ArrayList<String>();
         ctorNames.add("bar");

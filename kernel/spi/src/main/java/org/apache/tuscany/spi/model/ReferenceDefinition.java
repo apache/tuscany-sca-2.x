@@ -21,6 +21,7 @@ package org.apache.tuscany.spi.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.net.URI;
 
 /**
  * Represents a component reference
@@ -28,7 +29,7 @@ import java.util.List;
  * @version $Rev$ $Date$
  */
 public class ReferenceDefinition extends ModelObject {
-    private String name;
+    private URI uri;
     private ServiceContract serviceContract;
     private Multiplicity multiplicity;
     private boolean autowire;
@@ -40,26 +41,26 @@ public class ReferenceDefinition extends ModelObject {
         bindings = new ArrayList<BindingDefinition>();
     }
 
-    public ReferenceDefinition(String name, ServiceContract serviceContract) {
-        this.name = name;
+    public ReferenceDefinition(URI uri, ServiceContract serviceContract) {
+        this.uri = uri;
         this.serviceContract = serviceContract;
         bindings = new ArrayList<BindingDefinition>();
         multiplicity = Multiplicity.ONE_ONE;
     }
 
-    public ReferenceDefinition(String name, ServiceContract serviceContract, Multiplicity multiplicity) {
-        this.name = name;
+    public ReferenceDefinition(URI uri, ServiceContract serviceContract, Multiplicity multiplicity) {
+        this.uri = uri;
         this.serviceContract = serviceContract;
         this.multiplicity = multiplicity;
         bindings = new ArrayList<BindingDefinition>();
     }
 
-    public String getName() {
-        return name;
+    public URI getUri() {
+        return uri;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
     public ServiceContract<?> getServiceContract() {

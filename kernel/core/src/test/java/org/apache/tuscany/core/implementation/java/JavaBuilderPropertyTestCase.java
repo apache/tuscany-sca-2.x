@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.java;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -62,6 +64,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         type.setImplementationScope(Scope.STATELESS);
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
+        definition.setName(URI.create("component"));
         PropertyValue propertyValue = new PropertyValue(property.getName(), property.getDefaultValueFactory());
         definition.getPropertyValues().put(property.getName(), propertyValue);
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
@@ -83,6 +86,7 @@ public class JavaBuilderPropertyTestCase extends TestCase {
         type.setImplementationScope(Scope.STATELESS);
         JavaImplementation impl = new JavaImplementation(Foo.class, type);
         ComponentDefinition<JavaImplementation> definition = new ComponentDefinition<JavaImplementation>(impl);
+        definition.setName(URI.create("component"));
         ObjectFactory<Integer> defaultValueFactory = property.getDefaultValueFactory();
         PropertyValue<Integer> propertyValue = new PropertyValue<Integer>(property.getName(), defaultValueFactory);
         definition.getPropertyValues().put(property.getName(), propertyValue);

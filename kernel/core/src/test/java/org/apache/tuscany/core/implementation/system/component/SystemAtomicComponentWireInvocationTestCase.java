@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.wire.OutboundWire;
 
@@ -45,11 +47,12 @@ public class SystemAtomicComponentWireInvocationTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.addReferenceSite("setTarget", SourceImpl.class.getMethod("setTarget", Target.class));
         configuration.setInstanceFactory(new PojoObjectFactory<SourceImpl>(SourceImpl.class.getConstructor()));
-        configuration.setName("source");
+        configuration.setName(new URI("source"));
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scope);
         OutboundWire outboundWire = EasyMock.createMock(OutboundWire.class);
-        EasyMock.expect(outboundWire.getReferenceName()).andReturn("setTarget").atLeastOnce();
+        URI uri = URI.create("#setTarget");
+        EasyMock.expect(outboundWire.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(outboundWire.getTargetService()).andReturn(target);
         EasyMock.replay(outboundWire);
         component.addOutboundWire(outboundWire);

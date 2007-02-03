@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.system.component;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.wire.OutboundWire;
 
 import junit.framework.TestCase;
@@ -43,7 +45,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
-        configuration.setName("foo");
+        configuration.setName(new URI("foo"));
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         Foo foo = (Foo) component.createInstance();
         component.init(foo);
@@ -55,7 +57,7 @@ public class SystemAtomicComponentTestCase extends TestCase {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(factory);
         configuration.setDestroyInvoker(destroyInvoker);
-        configuration.setName("foo");
+        configuration.setName(new URI("foo"));
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         Foo foo = (Foo) component.createInstance();
         component.destroy(foo);
@@ -71,13 +73,14 @@ public class SystemAtomicComponentTestCase extends TestCase {
         configuration.addConstructorParamType(String.class);
         configuration.addConstructorParamName("ref");
         configuration.addConstructorParamType(Foo.class);
-        configuration.setName("foo");
+        configuration.setName(new URI("foo"));
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.addPropertyFactory("foo", new SingletonObjectFactory<String>("baz"));
         Foo target = new Foo();
         OutboundWire wire = EasyMock.createMock(OutboundWire.class);
         EasyMock.expect(wire.getTargetService()).andReturn(target);
-        EasyMock.expect(wire.getReferenceName()).andReturn("ref").anyTimes();
+        URI uri = URI.create("#ref");
+        EasyMock.expect(wire.getUri()).andReturn(uri).anyTimes();
         EasyMock.replay(wire);
         component.addOutboundWire(wire);
         Bar bar = (Bar) component.createInstance();

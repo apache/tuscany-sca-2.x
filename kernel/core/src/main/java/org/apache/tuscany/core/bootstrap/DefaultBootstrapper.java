@@ -42,6 +42,7 @@ import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
 import org.apache.tuscany.core.binding.local.LocalBindingLoader;
 import org.apache.tuscany.core.builder.BuilderRegistryImpl;
 import org.apache.tuscany.core.builder.ConnectorImpl;
+import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.component.scope.CompositeScopeObjectFactory;
 import org.apache.tuscany.core.component.scope.ScopeRegistryImpl;
@@ -51,6 +52,7 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
 import org.apache.tuscany.core.implementation.IntrospectionRegistryImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeComponentImpl;
 import org.apache.tuscany.core.implementation.composite.CompositeLoader;
+import org.apache.tuscany.core.implementation.composite.SystemCompositeBuilder;
 import org.apache.tuscany.core.implementation.processor.ConstructorProcessor;
 import org.apache.tuscany.core.implementation.processor.DestroyProcessor;
 import org.apache.tuscany.core.implementation.processor.EagerInitProcessor;
@@ -64,7 +66,6 @@ import org.apache.tuscany.core.implementation.processor.ResourceProcessor;
 import org.apache.tuscany.core.implementation.processor.ScopeProcessor;
 import org.apache.tuscany.core.implementation.processor.ServiceProcessor;
 import org.apache.tuscany.core.implementation.system.builder.SystemComponentBuilder;
-import org.apache.tuscany.core.implementation.composite.SystemCompositeBuilder;
 import org.apache.tuscany.core.implementation.system.loader.SystemComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemCompositeComponentTypeLoader;
 import org.apache.tuscany.core.implementation.system.loader.SystemImplementationLoader;
@@ -90,6 +91,7 @@ import org.apache.tuscany.host.MonitorFactory;
 public class DefaultBootstrapper implements Bootstrapper {
     private final MonitorFactory monitorFactory;
     private final XMLInputFactory xmlFactory;
+    private final ComponentManager componentManager;
     private final TuscanyManagementService managementService;
 
     /**
@@ -97,13 +99,16 @@ public class DefaultBootstrapper implements Bootstrapper {
      *
      * @param monitorFactory    the MonitorFactory to be used to create monitors for the primordial components
      * @param xmlFactory        the XMLInputFactory to be used by the components to load XML artifacts
+     * @param componentManager  the component manager for the runtime isntance
      * @param managementService management service used by the runtime.
      */
     public DefaultBootstrapper(MonitorFactory monitorFactory,
                                XMLInputFactory xmlFactory,
+                               ComponentManager componentManager,
                                TuscanyManagementService managementService) {
         this.monitorFactory = monitorFactory;
         this.xmlFactory = xmlFactory;
+        this.componentManager = componentManager;
         this.managementService = managementService;
     }
 
@@ -250,7 +255,7 @@ public class DefaultBootstrapper implements Bootstrapper {
      */
     private Builder createBuilder(ScopeRegistry scopeRegistry) {
         BuilderRegistryImpl builderRegistry =
-            new BuilderRegistryImpl(scopeRegistry, new JDKWireService());
+            new BuilderRegistryImpl(scopeRegistry, new JDKWireService(), componentManager);
         SystemCompositeBuilder builder =
             new SystemCompositeBuilder(builderRegistry, createConnector(), managementService);
         builderRegistry.register(SystemCompositeImplementation.class, builder);

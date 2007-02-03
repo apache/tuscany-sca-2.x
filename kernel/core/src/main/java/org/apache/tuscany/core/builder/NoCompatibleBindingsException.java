@@ -18,19 +18,17 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.WiringException;
 
 /**
  * @version $Rev$ $Date$
  */
 public class NoCompatibleBindingsException extends WiringException {
-    public NoCompatibleBindingsException(String sourceName,
-                                         String targetName,
-                                         String serviceName) {
-        super("No compatible bindings for source and target");
-        setSourceName(sourceName);
-        setTargetName(targetName);
-        setTargetServiceName(serviceName);
+
+    public NoCompatibleBindingsException(URI sourceName, URI targetName) {
+        super("No compatible bindings for source and target", sourceName, targetName);
     }
 
 }

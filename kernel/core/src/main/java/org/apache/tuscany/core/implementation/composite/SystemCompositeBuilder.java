@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.Connector;
@@ -53,7 +55,7 @@ public class SystemCompositeBuilder extends AbstractCompositeBuilder<SystemCompo
                                     DeploymentContext deploymentContext) throws BuilderException {
         SystemCompositeImplementation impl = componentDefinition.getImplementation();
         CompositeComponentType<?, ?, ?> componentType = impl.getComponentType();
-        String name = componentDefinition.getName();
+        URI name = componentDefinition.getName();
         CompositeComponent component = new CompositeComponentImpl(name, parent, connector, true);
         component.setManagementService(managementService);
         build(parent, component, componentType, deploymentContext);

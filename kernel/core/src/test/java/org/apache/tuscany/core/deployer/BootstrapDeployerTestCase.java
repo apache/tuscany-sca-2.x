@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.deployer;
 
 import java.net.URL;
+import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
 import javax.xml.stream.XMLInputFactory;
@@ -46,10 +47,13 @@ import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.mock.component.BasicInterface;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import org.easymock.EasyMock;
 
 /**
  * Verifies the default boostrap deployer
@@ -65,6 +69,9 @@ public class BootstrapDeployerTestCase extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBoot1Load() throws LoaderException {
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        URI uri = URI.create("parent");
+        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
+        EasyMock.replay(parent);
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         deployer.load(parent, componentDefinition, deploymentContext);
@@ -80,7 +87,7 @@ public class BootstrapDeployerTestCase extends TestCase {
         assertEquals(2, services.size()); // included counts
         ServiceDefinition serviceDefinition = services.get("service");
         assertNotNull(serviceDefinition);
-        assertEquals("service", serviceDefinition.getName());
+        assertEquals("parent#service", serviceDefinition.getUri().toString());
         assertEquals(BasicInterface.class, serviceDefinition.getServiceContract().getInterfaceClass());
         Collection<BindingDefinition> bindings = serviceDefinition.getBindings();
         assertTrue(bindings.isEmpty());
@@ -113,10 +120,12 @@ public class BootstrapDeployerTestCase extends TestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot1.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        URI uri = URI.create("parent");
+        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         parent.register(isA(SCAObject.class));
         replay(parent);
         // load the boot1 file using the bootstrap deployer
-        componentDefinition.setName("simple");
+        componentDefinition.setName(new URI("simple"));
         Component component = deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
@@ -126,11 +135,13 @@ public class BootstrapDeployerTestCase extends TestCase {
         URL scdl = BootstrapDeployerTestCase.class.getResource("boot2.scdl");
         implementation.setScdlLocation(scdl);
         CompositeComponent parent = createNiceMock(CompositeComponent.class);
+        URI uri = URI.create("parent");
+        EasyMock.expect(parent.getUri()).andReturn(uri).atLeastOnce();
         parent.register(isA(SCAObject.class));
         replay(parent);
 
         // load the boot2 file using the bootstrap deployer
-        componentDefinition.setName("newDeployer");
+        componentDefinition.setName(new URI("newDeployer"));
         CompositeComponent component = (CompositeComponent) deployer.deploy(parent, componentDefinition);
         assertNotNull(component);
         verify(parent);
@@ -157,7 +168,8 @@ public class BootstrapDeployerTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
-        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory, null);
+        ComponentManager manager = new ComponentManagerImpl();
+        Bootstrapper bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), xmlFactory, manager, null);
         deployer = (DeployerImpl) bootstrapper.createDeployer();
         deploymentContext = new RootDeploymentContext(null, xmlFactory, null, null);
         implementation = new SystemCompositeImplementation();

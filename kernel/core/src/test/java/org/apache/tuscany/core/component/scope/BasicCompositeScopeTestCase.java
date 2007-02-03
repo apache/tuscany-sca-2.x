@@ -18,12 +18,15 @@
  */
 package org.apache.tuscany.core.component.scope;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.component.TargetNotFoundException;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.implementation.PojoConfiguration;
 import org.apache.tuscany.core.implementation.system.component.SystemAtomicComponentImpl;
 import org.apache.tuscany.core.injection.EventInvoker;
@@ -52,7 +55,7 @@ public class BasicCompositeScopeTestCase extends TestCase {
         CompositeScopeInitDestroyComponent o2 =
             (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertEquals(o1, o2);
-        scopeContext.onEvent(new CompositeStop(this, null));
+        scopeContext.onEvent(new ComponentStop(this, null));
         assertTrue(o1.isDestroyed());
         scopeContext.stop();
     }
@@ -94,7 +97,7 @@ public class BasicCompositeScopeTestCase extends TestCase {
         CompositeScopeInitDestroyComponent o2 =
             (CompositeScopeInitDestroyComponent) scopeContext.getInstance(component);
         assertSame(o1, o2);
-        scopeContext.onEvent(new CompositeStop(this, null));
+        scopeContext.onEvent(new ComponentStop(this, null));
         assertTrue(o1.isDestroyed());
         scopeContext.stop();
     }
@@ -118,7 +121,11 @@ public class BasicCompositeScopeTestCase extends TestCase {
         configuration.setInstanceFactory(factory);
         configuration.setInitInvoker(initInvoker);
         configuration.setDestroyInvoker(destroyInvoker);
-        configuration.setName("foo");
+        try {
+            configuration.setName(new URI("foo"));
+        } catch (URISyntaxException e) {
+            // will not happen
+        }
         SystemAtomicComponentImpl component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scopeContainer);
         component.start();

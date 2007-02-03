@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public abstract class CompositeComponentExtension extends AbstractComponentExten
      */
     private TuscanyManagementService managementService;
 
-    protected CompositeComponentExtension(String name,
+    protected CompositeComponentExtension(URI name,
                                           CompositeComponent parent,
                                           Connector connector,
                                           Map<String, Document> propertyValues) {

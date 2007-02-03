@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.integration.implementation.system.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -60,6 +62,7 @@ public class SystemBuilderPropertyTestCase extends TestCase {
         impl.setComponentType(type);
         impl.setImplementationClass(Foo.class);
         ComponentDefinition<SystemImplementation> definition = new ComponentDefinition<SystemImplementation>(impl);
+        definition.setName(URI.create("component"));
         AtomicComponent component = builder.build(parent, definition, deploymentContext);
         Foo foo = (Foo) component.createInstance();
         assertEquals("foo", foo.getTest());

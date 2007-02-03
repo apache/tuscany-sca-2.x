@@ -66,7 +66,7 @@ public class JDKCallbackInvocationHandler extends AbstractOutboundInvocationHand
     public JDKCallbackInvocationHandler(InboundWire wire, WorkContext context) {
         this.context = context;
         this.wire = wire;
-        this.serviceName = wire.getServiceName();
+        this.serviceName = wire.getUri().getFragment();
     }
 
     @SuppressWarnings({"unchecked"})

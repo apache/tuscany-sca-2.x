@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.builder;
 
+import java.net.URI;
+
 /**
  * Denotes a missing wire target in an assembly
  *
@@ -29,8 +31,7 @@ public class MissingWireTargetException extends WiringException {
         super(message);
     }
 
-    public MissingWireTargetException(String message, String identifier) {
-        super(message, identifier);
+    public MissingWireTargetException(String message, URI sourceUri, URI targetUri) {
+        super(message, sourceUri, targetUri);
     }
-
 }

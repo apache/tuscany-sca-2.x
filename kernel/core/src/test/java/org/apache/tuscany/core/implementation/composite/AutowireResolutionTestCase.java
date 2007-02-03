@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.wire.InboundWire;
 
@@ -39,7 +41,7 @@ public class AutowireResolutionTestCase extends TestCase {
     public void testConstruction() {
         CompositeComponent parent = createMock(CompositeComponent.class);
         replay(parent);
-        CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
+        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
         assertEquals("test", component.getName());
         assertSame(parent, component.getParent());
         verify(parent);
@@ -50,7 +52,7 @@ public class AutowireResolutionTestCase extends TestCase {
         InboundWire wire = TestUtils.createInboundWire(Foo.class, parent);
         EasyMock.expect(parent.resolveAutowire(eq(Foo.class))).andReturn(wire);
         replay(parent);
-        CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
+        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
         assertSame(wire, component.resolveAutowire(Foo.class));
         verify(parent);
     }
@@ -60,7 +62,7 @@ public class AutowireResolutionTestCase extends TestCase {
         InboundWire wire = TestUtils.createInboundWire(Foo.class, parent);
         EasyMock.expect(parent.resolveSystemAutowire(eq(Foo.class))).andReturn(wire);
         replay(parent);
-        CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
+        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
         assertSame(wire, component.resolveSystemAutowire(Foo.class));
         verify(parent);
     }
@@ -71,9 +73,9 @@ public class AutowireResolutionTestCase extends TestCase {
     public void testNamespaceIsolationAutowire() throws Exception {
         Foo foo = new Foo() {
         };
-        CompositeComponent parent = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         parent.registerJavaObject("foo", Foo.class, foo);
-        CompositeComponent component = new CompositeComponentImpl("test", parent, null, null);
+        CompositeComponent component = new CompositeComponentImpl(URI.create("test"), parent, null, null);
         assertNull(component.resolveAutowire(Foo.class));
     }
 

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAObject;
@@ -92,7 +93,8 @@ public class JDKOutboundInvocationHandlerSerializationTestCase extends TestCase 
         map.put(operation, createChain(operation));
         EasyMock.expect(wire.getContainer()).andReturn(container).atLeastOnce();
         EasyMock.expect(wire.getServiceContract()).andReturn(contract).atLeastOnce();
-        EasyMock.expect(wire.getReferenceName()).andReturn("foo").atLeastOnce();
+        URI uri = URI.create("#foo");
+        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(map).times(2);
         EasyMock.replay(wire);
         Map<String, List<OutboundWire>> wires = new HashMap<String, List<OutboundWire>>();

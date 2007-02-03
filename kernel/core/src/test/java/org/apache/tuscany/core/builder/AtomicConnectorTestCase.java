@@ -20,6 +20,7 @@ package org.apache.tuscany.core.builder;
 
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -77,7 +78,7 @@ public class AtomicConnectorTestCase extends AbstractConnectorImplTestCase {
         outboundWire.setContainer(binding);
         inboundWire.setContainer(binding);
 
-        Service service = new ServiceImpl("foo", parent, null);
+        Service service = new ServiceImpl(URI.create("foo"), parent, null);
         service.addServiceBinding(binding);
 
         connector.connect(service);

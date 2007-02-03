@@ -26,8 +26,8 @@ import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.RequestEnd;
 import org.apache.tuscany.core.component.event.RequestStart;
@@ -46,26 +46,26 @@ public class DependencyLifecycleTestCase extends TestCase {
     public void testInitDestroyOrderCompositeScope() throws Exception {
         CompositeScopeContainer scopeCtx = new CompositeScopeContainer(null);
         scopeCtx.start();
-        Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source",
+        Map<String, AtomicComponent> components = MockFactory.createWiredComponents("source",
             OrderedDependentPojoImpl.class,
             scopeCtx,
             "target",
             OrderedInitPojoImpl.class,
             scopeCtx);
-        for (AtomicComponent component : contexts.values()) {
+        for (AtomicComponent component : components.values()) {
             scopeCtx.register(component);
         }
-        AtomicComponent sourceComponent = contexts.get("source");
-        AtomicComponent targetComponent = contexts.get("target");
+        AtomicComponent sourceComponent = components.get("source");
+        AtomicComponent targetComponent = components.get("target");
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
-        scopeCtx.onEvent(new CompositeStart(this, null));
+        scopeCtx.onEvent(new ComponentStart(this, null));
         OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
         OrderedInitPojo target = (OrderedInitPojo) scopeCtx.getInstance(targetComponent);
         assertNotNull(source.getPojo());
         assertNotNull(target);
         assertEquals(2, source.getNumberInstantiated());
-        scopeCtx.onEvent(new CompositeStop(this, null));
+        scopeCtx.onEvent(new ComponentStop(this, null));
         assertEquals(0, source.getNumberInstantiated());
         scopeCtx.stop();
     }
@@ -81,7 +81,7 @@ public class DependencyLifecycleTestCase extends TestCase {
             scopeCtx);
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
-        scopeCtx.onEvent(new CompositeStart(this, null));
+        scopeCtx.onEvent(new ComponentStart(this, null));
         scopeCtx.register(sourceComponent);
         scopeCtx.register(targetComponent);
         OrderedDependentPojo source = (OrderedDependentPojo) scopeCtx.getInstance(sourceComponent);
@@ -89,7 +89,7 @@ public class DependencyLifecycleTestCase extends TestCase {
         assertNotNull(source.getPojo());
         assertNotNull(target);
         assertEquals(2, source.getNumberInstantiated());
-        scopeCtx.onEvent(new CompositeStop(this, null));
+        scopeCtx.onEvent(new ComponentStop(this, null));
         assertEquals(0, source.getNumberInstantiated());
         scopeCtx.stop();
     }

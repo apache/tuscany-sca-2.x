@@ -18,14 +18,16 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.DuplicateNameException;
 import org.apache.tuscany.spi.component.SCAObject;
 
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 
 /**
  * @version $Rev$ $Date$
@@ -69,13 +71,13 @@ public class JavaObjectRegistrationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        composite = new CompositeComponentImpl(null, null, null, null);
+        composite = new CompositeComponentImpl(URI.create("component"), null, null, null);
         composite.start();
-        composite.publish(new CompositeStart(this, null));
+        composite.publish(new ComponentStart(this, null));
     }
 
     protected void tearDown() throws Exception {
-        composite.publish(new CompositeStop(this, null));
+        composite.publish(new ComponentStop(this, null));
         composite.stop();
         super.tearDown();
     }

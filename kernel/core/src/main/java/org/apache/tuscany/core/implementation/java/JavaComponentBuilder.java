@@ -101,7 +101,7 @@ public class JavaComponentBuilder extends ComponentBuilderExtension<JavaImplemen
             Member member = reference.getMember();
             if (member != null) {
                 // could be null if the reference is mapped to a constructor
-                configuration.addReferenceSite(reference.getName(), member);
+                configuration.addReferenceSite(reference.getUri().getFragment(), member);
             }
         }
 

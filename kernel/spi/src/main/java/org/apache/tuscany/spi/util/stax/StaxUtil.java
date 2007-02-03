@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -31,24 +30,26 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.tuscany.spi.model.InteractionScope;
-import org.apache.tuscany.spi.model.Multiplicity;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import org.apache.tuscany.spi.model.InteractionScope;
+import org.apache.tuscany.spi.model.Multiplicity;
+
 /**
  * Utility for stax operations.
- * 
- * @version $Revision$ $Date$
  *
+ * @version $Revision$ $Date$
  */
 public abstract class StaxUtil {
 
-    /** XML input factory. */
+    /**
+     * XML input factory.
+     */
     private static final XMLInputFactory xmlFactory =
-        XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", StaxUtil.class.getClassLoader());;
+        XMLInputFactory.newInstance("javax.xml.stream.XMLInputFactory", StaxUtil.class.getClassLoader());
 
     private static final Map<String, Multiplicity> MULTIPLICITY = new HashMap<String, Multiplicity>(4);
 
@@ -64,9 +65,9 @@ public abstract class StaxUtil {
 
     /**
      * Convert a "multiplicity" attribute to the equivalent enum value.
-     * 
+     *
      * @param multiplicity the attribute to convert
-     * @param def the default value
+     * @param def          the default value
      * @return the enum equivalent
      */
     public static Multiplicity multiplicity(String multiplicity, Multiplicity def) {
@@ -74,10 +75,9 @@ public abstract class StaxUtil {
     }
 
     /**
-     * Convert a "scope" attribute to the equivalent enum value. Returns
-     * CONVERSATIONAL if the value equals (ignoring case) "conversational",
-     * otherwise returns NONCONVERSATIONAL.
-     * 
+     * Convert a "scope" attribute to the equivalent enum value. Returns CONVERSATIONAL if the value equals (ignoring
+     * case) "conversational", otherwise returns NONCONVERSATIONAL.
+     *
      * @param scope the attribute to convert
      * @return the enum equivalent
      */
@@ -119,12 +119,11 @@ public abstract class StaxUtil {
     }
 
     /**
-     * Load a property value specification from an StAX stream into a DOM
-     * Document. Only elements, text and attributes are processed; all comments
-     * and other whitespace are ignored.
-     * 
+     * Load a property value specification from an StAX stream into a DOM Document. Only elements, text and attributes
+     * are processed; all comments and other whitespace are ignored.
+     *
      * @param reader the stream to read from
-     * @param root the DOM node to load
+     * @param root   the DOM node to load
      */
     public static void loadPropertyValue(XMLStreamReader reader, Node root) throws XMLStreamException {
         Document document = root.getOwnerDocument();
@@ -168,12 +167,12 @@ public abstract class StaxUtil {
 
     /**
      * Serializes the infoset in the stream reader.
-     * 
+     *
      * @param reader Stream reader.
      * @return Serialized XML.
      * @throws XMLStreamException In case of an xml stream error.
      */
-    public static final String serialize(XMLStreamReader reader) throws XMLStreamException {
+    public static String serialize(XMLStreamReader reader) throws XMLStreamException {
 
         try {
 
@@ -216,12 +215,12 @@ public abstract class StaxUtil {
 
     /**
      * Creates a stream reader to the serialized XML.
-     * 
+     *
      * @param xml Serialized XML to which reader is to be created.
      * @return XML stream reader instance.
      * @throws XMLStreamException In case of an xml stream error.
      */
-    public static final XMLStreamReader createReader(String xml) throws XMLStreamException {
+    public static XMLStreamReader createReader(String xml) throws XMLStreamException {
 
         InputStream in = new ByteArrayInputStream(xml.getBytes());
         return xmlFactory.createXMLStreamReader(in);
@@ -230,12 +229,12 @@ public abstract class StaxUtil {
 
     /**
      * Creates a stream reader to the serialized XML.
-     * 
+     *
      * @param xml XML stream to which reader is to be created.
      * @return XML stream reader instance.
      * @throws XMLStreamException In case of an xml stream error.
      */
-    public static final XMLStreamReader createReader(InputStream xml) throws XMLStreamException {
+    public static XMLStreamReader createReader(InputStream xml) throws XMLStreamException {
 
         return xmlFactory.createXMLStreamReader(xml);
 
@@ -243,12 +242,12 @@ public abstract class StaxUtil {
 
     /**
      * Returns the qualified name of the document element.
-     * 
+     *
      * @param xml Serialized xml that needs to be checked.
      * @return Qualified name of the document element.
      * @throws XMLStreamException In case of an xml stream error.
      */
-    public static final QName getDocumentElementQName(String xml) throws XMLStreamException {
+    public static QName getDocumentElementQName(String xml) throws XMLStreamException {
 
         XMLStreamReader reader = null;
         try {
@@ -278,8 +277,7 @@ public abstract class StaxUtil {
         QName qname = reader.getName();
         String namePrefix = qname.getPrefix();
         String localPart = qname.getLocalPart();
-        String name = namePrefix == null || "".equals(namePrefix) ? localPart : namePrefix + ":" + localPart;
-        return name;
+        return namePrefix == null || "".equals(namePrefix) ? localPart : namePrefix + ":" + localPart;
     }
 
     /*

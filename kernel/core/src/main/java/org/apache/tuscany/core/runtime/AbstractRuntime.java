@@ -19,12 +19,15 @@
 package org.apache.tuscany.core.runtime;
 
 import java.net.URL;
+import java.net.URI;
 import javax.xml.stream.XMLInputFactory;
 
 import org.apache.tuscany.core.bootstrap.Bootstrapper;
 import org.apache.tuscany.core.bootstrap.DefaultBootstrapper;
 import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.core.monitor.NullMonitorFactory;
+import org.apache.tuscany.core.component.ComponentManager;
+import org.apache.tuscany.core.component.ComponentManagerImpl;
 import org.apache.tuscany.host.MonitorFactory;
 import org.apache.tuscany.host.RuntimeInfo;
 import org.apache.tuscany.host.management.ManagementService;
@@ -58,6 +61,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
     private RuntimeInfo runtimeInfo;
     private MonitorFactory monitorFactory;
     private ManagementService<?> managementService;
+    private ComponentManager componentManager;
 
     private RuntimeComponent runtime;
     private CompositeComponent systemComponent;
@@ -169,6 +173,12 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
         systemComponent = runtime.getSystemComponent();
         registerSystemComponents();
+        try {
+            componentManager.register(systemComponent);
+            componentManager.register(runtime.getRootComponent());
+        } catch (ComponentRegistrationException e) {
+            throw new InitializationException(e);
+        }
         systemComponent.start();
 
         // deploy the system scdl
@@ -211,13 +221,15 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     protected Bootstrapper createBootstrapper() {
         TuscanyManagementService tms = (TuscanyManagementService) getManagementService();
-        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, tms);
+        componentManager = new ComponentManagerImpl(tms);
+        return new DefaultBootstrapper(getMonitorFactory(), xmlFactory, componentManager, tms);
     }
 
     protected void registerSystemComponents() throws InitializationException {
         try {
             systemComponent.registerJavaObject(RuntimeInfo.COMPONENT_NAME, RuntimeInfo.class, runtimeInfo);
             systemComponent.registerJavaObject("MonitorFactory", MonitorFactory.class, getMonitorFactory());
+            systemComponent.registerJavaObject("ComponentManager", ComponentManager.class, componentManager);
         } catch (ComponentRegistrationException e) {
             throw new InitializationException(e);
         }
@@ -249,7 +261,7 @@ public abstract class AbstractRuntime implements TuscanyRuntime {
 
     protected CompositeComponent deploySystemScdl(Deployer deployer,
                                                   CompositeComponent parent,
-                                                  String name,
+                                                  URI name,
                                                   URL systemScdl,
                                                   ClassLoader systemClassLoader)
         throws LoaderException, BuilderException, ComponentException {

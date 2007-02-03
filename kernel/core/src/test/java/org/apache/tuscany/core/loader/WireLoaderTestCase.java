@@ -18,22 +18,14 @@
  */
 package org.apache.tuscany.core.loader;
 
+import javax.xml.namespace.QName;
+import javax.xml.stream.Location;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import org.easymock.EasyMock;
-
-import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
-
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.Location;
 
-import junit.framework.TestCase;
+import static org.osoa.sca.Version.XML_NAMESPACE_1_0;
 
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
@@ -41,6 +33,13 @@ import org.apache.tuscany.spi.loader.InvalidWireException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.loader.LoaderRegistry;
 import org.apache.tuscany.spi.model.WireDefinition;
+
+import junit.framework.TestCase;
+import org.easymock.EasyMock;
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 
 /**
  * @version $Rev: 471504 $ $Date: 2006-11-06 01:10:40 +0530 (Mon, 06 Nov 2006) $
@@ -145,6 +144,27 @@ public class WireLoaderTestCase extends TestCase {
         verify(registry, reader, context);
     }
 
+    public void testWireSourceAndTargetFragments() throws LoaderException, XMLStreamException {
+        expect(reader.getName()).andReturn(WIRE);
+        expect(reader.next()).andReturn(START_ELEMENT);
+        expect(reader.getName()).andReturn(SOURCE_URI).times(1);
+        expect(reader.getElementText()).andReturn("source/reference").times(1);
+        expect(reader.next()).andReturn(END_ELEMENT);
+        expect(reader.next()).andReturn(START_ELEMENT);
+        expect(reader.getName()).andReturn(TARGET_URI).times(2);
+        expect(reader.getElementText()).andReturn("target/service").times(1);
+        expect(reader.next()).andReturn(END_ELEMENT);
+        expect(reader.next()).andReturn(END_ELEMENT);
+        expect(reader.getName()).andReturn(WIRE).anyTimes();
+        replay(registry, reader, context);
+        WireDefinition wireDef = loader.load(composite, null, reader, context);
+        assertNotNull(wireDef);
+        assertEquals("source", wireDef.getSource().getPath());
+        assertEquals("reference", wireDef.getSource().getFragment());
+        assertEquals("target", wireDef.getTarget().getPath());
+        assertEquals("service", wireDef.getTarget().getFragment());
+    }
+
     protected void setUp() throws Exception {
         super.setUp();
         registry = createMock(LoaderRegistry.class);
@@ -156,4 +176,6 @@ public class WireLoaderTestCase extends TestCase {
         composite = createMock(CompositeComponent.class);
         loader = new WireLoader(registry);
     }
+
+
 }

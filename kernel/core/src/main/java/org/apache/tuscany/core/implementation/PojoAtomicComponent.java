@@ -190,7 +190,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
     }
 
     protected void onReferenceWire(OutboundWire wire) {
-        String name = wire.getReferenceName();
+        String name = wire.getUri().getFragment();
         Member member = referenceSites.get(name);
         if (member != null) {
             injectors.add(createInjector(member, wire));
@@ -208,7 +208,7 @@ public abstract class PojoAtomicComponent extends AtomicComponentExtension {
 
     public void onReferenceWires(List<OutboundWire> wires) {
         assert wires.size() > 0 : "Wires were empty";
-        String referenceName = wires.get(0).getReferenceName();
+        String referenceName = wires.get(0).getUri().getFragment();
         Member member = referenceSites.get(referenceName);
         if (member == null) {
             if (constructorParamNames.contains(referenceName)) {

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
@@ -71,7 +73,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(referenceBinding);
         outboundWire.setContainer(referenceBinding);
 
-        Reference reference = new ReferenceImpl("foo", parent, contract);
+        Reference reference = new ReferenceImpl(URI.create("foo"), parent, contract);
         reference.addReferenceBinding(referenceBinding);
 
         connector.connect(reference);
@@ -110,7 +112,7 @@ public class ReferenceConnectorTestCase extends AbstractConnectorImplTestCase {
         inboundWire.setContainer(referenceBinding);
         outboundWire.setContainer(referenceBinding);
 
-        Reference reference = new ReferenceImpl("foo", parent, contract);
+        Reference reference = new ReferenceImpl(URI.create("foo"), parent, contract);
         reference.addReferenceBinding(referenceBinding);
 
         connector.connect(reference);

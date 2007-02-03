@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import junit.framework.TestCase;
 
 /**
@@ -26,16 +28,12 @@ import junit.framework.TestCase;
 public class InvalidTargetTypeExceptionTestCase extends TestCase {
 
     public void testInstantiation() throws Exception {
-        InvalidTargetTypeException e = new InvalidTargetTypeException("message",
-            "source name",
-            "ref name",
-            "target name",
-            "service name");
+        URI sourceUri = URI.create("source");
+        URI targetUri = URI.create("target");
+        InvalidTargetTypeException e = new InvalidTargetTypeException("message", sourceUri, targetUri);
         assertEquals("message", e.getMessage());
-        assertEquals("source name", e.getSourceName());
-        assertEquals("ref name", e.getReferenceName());
-        assertEquals("target name", e.getTargetName());
-        assertEquals("service name", e.getTargetServiceName());
+        assertEquals(sourceUri, e.getSourceUri());
+        assertEquals(targetUri, e.getTargetUri());
 
     }
 }

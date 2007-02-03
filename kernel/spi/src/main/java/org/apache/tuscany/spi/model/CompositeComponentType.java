@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tuscany.spi.util.UriHelper;
+
 /**
  * A specialization of component type for composite components.
  *
@@ -161,7 +163,7 @@ public class CompositeComponentType<S extends ServiceDefinition,
 
 
     public void add(ComponentDefinition<? extends Implementation<?>> componentDefinition) {
-        components.put(componentDefinition.getName(), componentDefinition);
+        components.put(UriHelper.getBaseName(componentDefinition.getName()), componentDefinition);
     }
 
     public Map<String, Include> getIncludes() {

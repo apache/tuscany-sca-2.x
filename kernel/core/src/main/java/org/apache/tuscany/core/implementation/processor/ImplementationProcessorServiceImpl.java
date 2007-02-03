@@ -22,6 +22,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import javax.xml.namespace.QName;
@@ -66,7 +67,8 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
 
     public JavaMappedService createService(Class<?> interfaze) throws InvalidServiceContractException {
         JavaMappedService service = new JavaMappedService();
-        service.setName(interfaze.getName());
+        // create a relative URI
+        service.setUri(URI.create("#" + interfaze.getName()));
         service.setRemotable(interfaze.getAnnotation(Remotable.class) != null);
         ServiceContract<?> contract = registry.introspect(interfaze);
         service.setServiceContract(contract);
@@ -149,7 +151,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
     public JavaMappedReference createReference(String name, Member member, Class<?> paramType)
         throws ProcessingException {
         JavaMappedReference reference = new JavaMappedReference();
-        reference.setName(name);
+        reference.setUri(URI.create("#" + name));
         reference.setMember(member);
         reference.setRequired(false);
         ServiceContract contract;
@@ -238,7 +240,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
             throw new InvalidConstructorException("Name specified by @Constructor does not match autowire name",
                 paramNum);
         }
-        reference.setName(name);
+        reference.setUri(URI.create("#" + name));
         boolean required = autowireAnnot.required();
         reference.setRequired(required);
         try {
@@ -368,7 +370,7 @@ public class ImplementationProcessorServiceImpl implements ImplementationProcess
         if (type.getReferences().get(name) != null) {
             throw new DuplicateReferenceException(name);
         }
-        reference.setName(name);
+        reference.setUri(URI.create("#" + name));
         boolean required = refAnnotation.required();
         reference.setRequired(required);
         try {

@@ -20,6 +20,7 @@ package org.apache.tuscany.core.implementation.composite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -80,9 +81,9 @@ public class CompositePropagationTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = new CompositeComponentImpl("parent", null, null, null);
-        CompositeComponent child1 = new CompositeComponentImpl("child1", parent, null, null);
-        child2 = new CompositeComponentImpl("child2", child1, null, null);
+        parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
+        CompositeComponent child1 = new CompositeComponentImpl(URI.create("child1"), parent, null, null);
+        child2 = new CompositeComponentImpl(URI.create("child2"), child1, null, null);
         child1.register(child2);
         parent.register(child1);
     }

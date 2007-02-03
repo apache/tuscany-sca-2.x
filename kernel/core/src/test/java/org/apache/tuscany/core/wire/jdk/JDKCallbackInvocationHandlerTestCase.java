@@ -19,11 +19,11 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Proxy;
+import java.net.URI;
 
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
 
 import junit.framework.TestCase;
-
 import org.apache.tuscany.core.component.WorkContextImpl;
 import org.apache.tuscany.core.wire.InboundWireImpl;
 
@@ -34,6 +34,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
 
     public void testToString() {
         InboundWireImpl wire = new InboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         wire.setServiceContract(new JavaServiceContract(Foo.class));
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, new WorkContextImpl());
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
@@ -43,6 +44,7 @@ public class JDKCallbackInvocationHandlerTestCase extends TestCase {
     public void testHashCode() {
         InboundWireImpl wire = new InboundWireImpl();
         wire.setServiceContract(new JavaServiceContract(Foo.class));
+        wire.setUri(URI.create("#wire"));
         JDKCallbackInvocationHandler handler = new JDKCallbackInvocationHandler(wire, new WorkContextImpl());
         Foo foo = (Foo) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{Foo.class}, handler);
         assertNotNull(foo.hashCode());

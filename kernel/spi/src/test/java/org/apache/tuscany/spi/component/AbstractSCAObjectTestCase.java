@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.component;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.event.EventFilter;
 import org.apache.tuscany.spi.event.RuntimeEventListener;
@@ -32,8 +34,8 @@ import org.easymock.EasyMock;
  */
 public class AbstractSCAObjectTestCase extends TestCase {
 
-    public void testFireListener() {
-        SCAObject object = new TestSCAObject("foo", null);
+    public void testFireListener() throws Exception {
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         listener.onEvent(EasyMock.same(event));
@@ -43,8 +45,8 @@ public class AbstractSCAObjectTestCase extends TestCase {
         object.publish(event);
     }
 
-    public void testRemoveListener() {
-        SCAObject object = new TestSCAObject("foo", null);
+    public void testRemoveListener() throws Exception {
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         EasyMock.replay(listener);
@@ -53,8 +55,8 @@ public class AbstractSCAObjectTestCase extends TestCase {
         object.publish(event);
     }
 
-    public void testFalseFilterListener() {
-        SCAObject object = new TestSCAObject("foo", null);
+    public void testFalseFilterListener() throws Exception {
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         EasyMock.replay(listener);
@@ -62,8 +64,8 @@ public class AbstractSCAObjectTestCase extends TestCase {
         object.publish(event);
     }
 
-    public void testTrueFilterListener() {
-        SCAObject object = new TestSCAObject("foo", null);
+    public void testTrueFilterListener() throws Exception {
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
         Event event = new TestEvent();
         RuntimeEventListener listener = EasyMock.createMock(RuntimeEventListener.class);
         listener.onEvent(EasyMock.same(event));
@@ -73,32 +75,24 @@ public class AbstractSCAObjectTestCase extends TestCase {
         object.publish(event);
     }
 
-    public void testToString() {
-        SCAObject object = new TestSCAObject("foo", null);
+    public void testToString() throws Exception {
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
         assertNotNull(object.toString());
     }
 
-    public void testGetName() {
-        SCAObject object = new TestSCAObject("foo", null);
-        assertEquals("foo", object.getName());
+    public void testGetName() throws Exception {
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
+        assertEquals(new URI("foo"), object.getName());
     }
 
 
     public void testToPrepare() throws Exception {
-        SCAObject object = new TestSCAObject("foo", null);
+        SCAObject object = new TestSCAObject(new URI("foo"), null);
         object.prepare();
     }
 
-    public void testCanonicalName() {
-        CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
-        EasyMock.expect(parent.getCanonicalName()).andReturn("foo");
-        EasyMock.replay(parent);
-        TestSCAObject test = new TestSCAObject("bar", parent);
-        assertEquals("foo/bar", test.getCanonicalName());
-    }
-
     private class TestSCAObject extends AbstractSCAObject {
-        public TestSCAObject(String name, CompositeComponent parent) {
+        public TestSCAObject(URI name, CompositeComponent parent) {
             super(name, parent);
         }
 

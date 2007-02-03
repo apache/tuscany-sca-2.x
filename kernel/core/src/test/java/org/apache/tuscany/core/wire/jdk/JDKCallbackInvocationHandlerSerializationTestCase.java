@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.SCAExternalizable;
@@ -38,7 +39,8 @@ public class JDKCallbackInvocationHandlerSerializationTestCase extends TestCase 
     protected void setUp() throws Exception {
         super.setUp();
         wire = EasyMock.createMock(InboundWire.class);
-        EasyMock.expect(wire.getServiceName()).andReturn("foo").atLeastOnce();
+        URI uri = URI.create("#foo");
+        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.replay(wire);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
         EasyMock.expect(component.getInboundWire(EasyMock.eq("foo"))).andReturn(wire);

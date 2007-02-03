@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
 import java.util.Collections;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -33,7 +34,7 @@ import org.apache.tuscany.spi.wire.InboundWire;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import org.apache.tuscany.core.component.event.CompositeStart;
+import org.apache.tuscany.core.component.event.ComponentStart;
 import org.apache.tuscany.core.implementation.TestUtils;
 import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createMock;
@@ -49,12 +50,12 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     private AtomicComponent component;
 
     public void testGetScope() {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         Assert.assertEquals(Scope.SYSTEM, composite.getScope());
     }
 
     public void testReferencesServices() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.getName()).andReturn("foo").atLeastOnce();
         EasyMock.expect(service.isSystem()).andReturn(false).atLeastOnce();
@@ -66,14 +67,14 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     }
 
     public void testOnEvent() {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         Event event = new Event() {
             public Object getSource() {
                 return null;
             }
         };
         RuntimeEventListener listener = createMock(RuntimeEventListener.class);
-        listener.onEvent(isA(CompositeStart.class));
+        listener.onEvent(isA(ComponentStart.class));
         listener.onEvent(eq(event));
         expectLastCall();
         replay(listener);
@@ -83,7 +84,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
     }
 
     public void testPrepare() throws Exception {
-        CompositeComponent composite = new CompositeComponentImpl("parent", null, null, null);
+        CompositeComponent composite = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         composite.prepare();
     }
 
@@ -98,7 +99,7 @@ public class CompositeComponentImplBasicTestCase extends TestCase {
         expectLastCall().andReturn(name).anyTimes();
         replay(binding);
 
-        Reference reference = new ReferenceImpl(name, null, wire.getServiceContract());
+        Reference reference = new ReferenceImpl(URI.create(name), null, wire.getServiceContract());
         reference.addReferenceBinding(binding);
         return reference;
     }

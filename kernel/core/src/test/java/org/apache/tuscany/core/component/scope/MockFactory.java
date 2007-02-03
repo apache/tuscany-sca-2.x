@@ -19,6 +19,8 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +28,6 @@ import org.osoa.sca.annotations.Destroy;
 import org.osoa.sca.annotations.EagerInit;
 import org.osoa.sca.annotations.Init;
 
-import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.ScopeContainer;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -55,7 +56,7 @@ public final class MockFactory {
                                                                      String target,
                                                                      Class<?> targetClass,
                                                                      ScopeContainer targetScopeContainer)
-        throws NoSuchMethodException {
+        throws NoSuchMethodException, URISyntaxException {
 
         Map<String, AtomicComponent> components = new HashMap<String, AtomicComponent>();
         AtomicComponent targetComponent = createAtomicComponent(target, targetScopeContainer, targetClass);
@@ -93,17 +94,16 @@ public final class MockFactory {
         }
 
         sourceConfig.addReferenceSite(setter.getName(), setter);
-        sourceConfig.setName(source);
+        sourceConfig.setName(new URI(source));
         AtomicComponent sourceComponent = new SystemAtomicComponentImpl(sourceConfig);
         sourceComponent.setScopeContainer(sourceScopeContainer);
-        QualifiedName targetName = new QualifiedName(target);
         OutboundWire wire = new OutboundWireImpl();
-        wire.setReferenceName(setter.getName());
+        wire.setUri(URI.create("#" + setter.getName()));
         wire.setServiceContract(new JavaServiceContract(targetClass));
         InboundWire inboundWire = new InboundWireImpl();
         inboundWire.setContainer(targetComponent);
         inboundWire.setServiceContract(new JavaServiceContract(targetClass));
-        inboundWire.setServiceName(targetName.getPortName());
+        inboundWire.setUri(URI.create("#" + target));
         wire.setTargetWire(inboundWire);
         sourceComponent.addOutboundWire(wire);
         components.put(source, sourceComponent);
@@ -113,7 +113,7 @@ public final class MockFactory {
 
     @SuppressWarnings("unchecked")
     public static AtomicComponent createAtomicComponent(String name, ScopeContainer container, Class<?> clazz)
-        throws NoSuchMethodException {
+        throws NoSuchMethodException, URISyntaxException {
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory(clazz.getConstructor()));
         EagerInit eager = clazz.getAnnotation(EagerInit.class);
@@ -128,7 +128,7 @@ public final class MockFactory {
                 configuration.setDestroyInvoker(new MethodEventInvoker<Object>(method));
             }
         }
-        configuration.setName(name);
+        configuration.setName(new URI(name));
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(container);
         return component;

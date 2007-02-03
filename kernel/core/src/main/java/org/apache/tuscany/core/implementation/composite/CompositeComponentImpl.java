@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.implementation.composite;
 
 import java.util.Map;
+import java.net.URI;
 
 import org.w3c.dom.Document;
 
@@ -31,7 +32,6 @@ import org.apache.tuscany.spi.component.CompositeComponent;
  * @version $Rev$ $Date$
  */
 public class CompositeComponentImpl extends AbstractCompositeComponent {
-    private String uri;
     private boolean systemComposite;
 
     /**
@@ -42,11 +42,11 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
      * @param connector      the connector to use for wires
      * @param propertyValues this composite's Property values
      */
-    public CompositeComponentImpl(String name,
+    public CompositeComponentImpl(URI name,
                                   CompositeComponent parent,
                                   Connector connector,
                                   Map<String, Document> propertyValues) {
-        this(name, null, parent, connector, propertyValues);
+        super(name, parent, connector, propertyValues);
     }
 
     /**
@@ -57,54 +57,12 @@ public class CompositeComponentImpl extends AbstractCompositeComponent {
      * @param connector       the connector to use for wires
      * @param systemComposite true if the composite is a system composite
      */
-    public CompositeComponentImpl(String name,
+    public CompositeComponentImpl(URI name,
                                   CompositeComponent parent,
                                   Connector connector,
                                   boolean systemComposite) {
-        this(name, null, parent, connector, null, systemComposite);
-    }
-
-    /**
-     * Constructor specifying name and URI.
-     *
-     * @param name           the name of this Component
-     * @param uri            the unique identifier for this component
-     * @param parent         this component's parent
-     * @param connector      the connector to use for wires
-     * @param propertyValues this composite's Property values
-     */
-    public CompositeComponentImpl(String name,
-                                  String uri,
-                                  CompositeComponent parent,
-                                  Connector connector,
-                                  Map<String, Document> propertyValues) {
-        super(name, parent, connector, propertyValues);
-        this.uri = uri;
-    }
-
-    /**
-     * Constructor specifying name and URI.
-     *
-     * @param name            the name of this Component
-     * @param uri             the unique identifier for this component
-     * @param parent          this component's parent
-     * @param connector       the connector to use for wires
-     * @param propertyValues  this composite's Property values
-     * @param systemComposite true if the composite is a system composite
-     */
-    public CompositeComponentImpl(String name,
-                                  String uri,
-                                  CompositeComponent parent,
-                                  Connector connector,
-                                  Map<String, Document> propertyValues,
-                                  boolean systemComposite) {
-        super(name, parent, connector, propertyValues);
-        this.uri = uri;
+        super(name, parent, connector, null);
         this.systemComposite = systemComposite;
-    }
-
-    public String getURI() {
-        return uri;
     }
 
     public boolean isSystem() {

@@ -96,7 +96,7 @@ public class SystemComponentBuilder extends ComponentBuilderExtension<SystemImpl
             Member member = reference.getMember();
             if (member != null) {
                 // could be null if the reference is mapped to a constructor
-                configuration.addReferenceSite(reference.getName(), member);
+                configuration.addReferenceSite(reference.getUri().getFragment(), member);
             }
         }
 

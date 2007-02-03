@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.binding.local;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.ServiceBinding;
 import org.apache.tuscany.spi.model.ServiceDefinition;
 
@@ -31,7 +33,7 @@ public class LocalBindingBuilderTestCase extends TestCase {
     public void testBuild() throws Exception {
         LocalBindingBuilder builder = new LocalBindingBuilder();
         ServiceDefinition def = new ServiceDefinition();
-        def.setName("foo");
+        def.setUri(new URI("#foo"));
         ServiceBinding binding = builder.build(null, def, null, null);
         assertEquals(LocalServiceBinding.class, binding.getClass());
     }

@@ -33,12 +33,12 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         ReferenceDefinition refDefinition = new ReferenceDefinition();
-        refDefinition.setName("name");
+        refDefinition.setUri(URI.create("#name"));
         type.add(refDefinition);
         JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         ReferenceTarget target = new ReferenceTarget();
-        target.setReferenceName("name");
+        target.setReferenceName(URI.create("#name"));
         defn.add(target);
         loader.validate(defn);
     }
@@ -47,7 +47,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         ReferenceDefinition refDefinition = new ReferenceDefinition();
-        refDefinition.setName("name");
+        refDefinition.setUri(URI.create("#name"));
         refDefinition.setRequired(true);
         type.add(refDefinition);
         JavaImplementation impl = new JavaImplementation(null, type);
@@ -64,7 +64,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         ReferenceDefinition refDefinition = new ReferenceDefinition();
-        refDefinition.setName("name");
+        refDefinition.setUri(URI.create("#name"));
         refDefinition.setRequired(false);
         type.add(refDefinition);
         JavaImplementation impl = new JavaImplementation(null, type);
@@ -76,14 +76,15 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         ReferenceDefinition refDefinition = new ReferenceDefinition();
-        refDefinition.setName("r1");
+        URI uri = URI.create("#r1");
+        refDefinition.setUri(uri);
         refDefinition.setRequired(true);
         refDefinition.setMultiplicity(Multiplicity.ONE_N);
         type.add(refDefinition);
         JavaImplementation impl = new JavaImplementation(null, type);
         ComponentDefinition<Implementation<?>> defn = new ComponentDefinition<Implementation<?>>(impl);
         ReferenceTarget target = new ReferenceTarget();
-        target.setReferenceName("r1");
+        target.setReferenceName(uri);
         target.addTarget(URI.create("c1"));
         target.addTarget(URI.create("c2"));
         defn.add(target);
@@ -133,7 +134,7 @@ public class ComponentLoaderValidationTestCase extends TestCase {
         PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new PojoComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
         ReferenceDefinition refDefinition = new ReferenceDefinition();
-        refDefinition.setName("name");
+        refDefinition.setUri(URI.create("#name"));
         refDefinition.setAutowire(true);
         type.add(refDefinition);
         JavaImplementation impl = new JavaImplementation(null, type);

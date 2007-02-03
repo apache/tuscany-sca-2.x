@@ -37,6 +37,6 @@ public class BootstrapperTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), null, null);
+        bootstrapper = new DefaultBootstrapper(new NullMonitorFactory(), null, null, null);
     }
 }

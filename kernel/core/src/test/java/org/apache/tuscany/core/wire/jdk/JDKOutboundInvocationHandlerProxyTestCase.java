@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.wire.jdk;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.idl.java.JavaServiceContract;
@@ -65,6 +66,7 @@ public class JDKOutboundInvocationHandlerProxyTestCase extends TestCase {
             chain.setTargetInvoker(targetInvoker);
         }
         wire.setServiceContract(contract);
+        wire.setUri(URI.create("foo#bar"));
         clientHello = Client.class.getMethod("hello");
 
     }

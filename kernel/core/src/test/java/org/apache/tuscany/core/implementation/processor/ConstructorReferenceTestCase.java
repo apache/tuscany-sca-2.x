@@ -35,8 +35,7 @@ import org.apache.tuscany.core.idl.java.JavaInterfaceProcessorRegistryImpl;
  * @version $Rev$ $Date$
  */
 public class ConstructorReferenceTestCase extends TestCase {
-
-    ConstructorProcessor processor;
+    private ConstructorProcessor processor;
 
     public void testReference() throws Exception {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
@@ -45,7 +44,7 @@ public class ConstructorReferenceTestCase extends TestCase {
         processor.visitConstructor(null, ctor, type, null);
         JavaMappedReference reference = type.getReferences().get("myRef");
         assertTrue(reference.isRequired());
-        assertEquals("myRef", reference.getName());
+        assertEquals("#myRef", reference.getUri().toString());
     }
 
     public void testTwoReferencesSameType() throws Exception {

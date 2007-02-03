@@ -214,7 +214,7 @@ public class SynchronousForwardCallbackConnectionTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         WireService wireService = new JDKWireService(null, null);
-        connector = new ConnectorImpl(wireService, null, null, null);
+        connector = new ConnectorImpl(wireService, null, null, null, null);
         operation = new Operation<Type>("bar", null, null, null);
         callbackOperation = new Operation<Type>("callback", null, null, null);
         contract = new JavaServiceContract();

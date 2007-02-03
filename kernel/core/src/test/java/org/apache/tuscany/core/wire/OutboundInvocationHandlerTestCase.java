@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.apache.tuscany.spi.idl.java.JavaIDLUtils;
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
@@ -49,15 +50,9 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         super(arg0);
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
-        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
-        contract = registry.introspect(SimpleTarget.class);
-        hello = SimpleTarget.class.getMethod("hello", String.class);
-    }
-
     public void testBasicInvoke() throws Throwable {
         OutboundWire wire = new OutboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
@@ -67,6 +62,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
 
     public void testErrorInvoke() throws Throwable {
         OutboundWire wire = new OutboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         Operation operation = contract.getOperations().get("hello");
         wire.addInvocationChain(operation, createChain(operation));
         wire.setServiceContract(contract);
@@ -86,6 +82,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         source.setTargetInvoker(invoker);
 
         OutboundWire wire = new OutboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, source);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
@@ -104,6 +101,7 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         source.setTargetInvoker(invoker);
 
         OutboundWire wire = new OutboundWireImpl();
+        wire.setUri(URI.create("#wire"));
         wire.setServiceContract(contract);
         wire.addInvocationChain(operation, source);
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
@@ -129,4 +127,12 @@ public class OutboundInvocationHandlerTestCase extends TestCase {
         source.setTargetInvoker(invoker);
         return source;
     }
+
+    public void setUp() throws Exception {
+        super.setUp();
+        JavaInterfaceProcessorRegistry registry = new JavaInterfaceProcessorRegistryImpl();
+        contract = registry.introspect(SimpleTarget.class);
+        hello = SimpleTarget.class.getMethod("hello", String.class);
+    }
+
 }

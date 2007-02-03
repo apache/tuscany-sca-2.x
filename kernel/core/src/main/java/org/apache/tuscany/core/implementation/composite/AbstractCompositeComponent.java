@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -28,6 +30,7 @@ import org.w3c.dom.Document;
 import org.apache.tuscany.spi.builder.Connector;
 import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
+import org.apache.tuscany.spi.component.MalformedNameException;
 import org.apache.tuscany.spi.component.SCAObject;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
 import org.apache.tuscany.spi.event.Event;
@@ -36,8 +39,8 @@ import org.apache.tuscany.spi.model.Operation;
 import org.apache.tuscany.spi.wire.InboundWire;
 import org.apache.tuscany.spi.wire.TargetInvoker;
 
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 
 /**
  * The base implementation of a composite context
@@ -59,7 +62,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
      * @param connector      the connector for fusing wires
      * @param propertyValues the values of this composite's Properties
      */
-    public AbstractCompositeComponent(String name,
+    public AbstractCompositeComponent(URI name,
                                       CompositeComponent parent,
                                       Connector connector,
                                       Map<String, Document> propertyValues) {
@@ -68,12 +71,24 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
 
     public <S, I extends S> void registerJavaObject(String name, Class<S> service, I instance)
         throws ComponentRegistrationException {
-        register(new SystemSingletonAtomicComponent<S, I>(name, this, service, instance));
+        URI uri;
+        try {
+            uri = new URI(name);
+        } catch (URISyntaxException e) {
+            throw new MalformedNameException(e);
+        }
+        register(new SystemSingletonAtomicComponent<S, I>(uri, this, service, instance));
     }
 
     public <S, I extends S> void registerJavaObject(String name, List<Class<?>> services, I instance)
         throws ComponentRegistrationException {
-        register(new SystemSingletonAtomicComponent<S, I>(name, this, services, instance));
+        URI uri;
+        try {
+            uri = new URI(name);
+        } catch (URISyntaxException e) {
+            throw new MalformedNameException(e);
+        }
+        register(new SystemSingletonAtomicComponent<S, I>(uri, this, services, instance));
     }
 
     public void start() {
@@ -92,7 +107,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
             initialized = true;
             lifecycleState = INITIALIZED;
         }
-        publish(new CompositeStart(this, this));
+        publish(new ComponentStart(this, getUri()));
     }
 
     public void stop() {
@@ -106,7 +121,7 @@ public abstract class AbstractCompositeComponent extends CompositeComponentExten
         for (SCAObject child : systemChildren.values()) {
             child.stop();
         }
-        publish(new CompositeStop(this, this));
+        publish(new ComponentStop(this, getUri()));
         // need to block a start until reset is complete
         initializeLatch = new CountDownLatch(2);
         lifecycleState = STOPPING;

@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.WiringException;
 
 /**
@@ -27,16 +29,8 @@ import org.apache.tuscany.spi.builder.WiringException;
  */
 public class TargetServiceNotFoundException extends WiringException {
 
-    public TargetServiceNotFoundException(String message,
-                                      String sourceName,
-                                      String referenceName,
-                                      String targetName,
-                                      String serviceName) {
-        super(message);
-        setSourceName(sourceName);
-        setReferenceName(referenceName);
-        setTargetName(targetName);
-        setTargetServiceName(serviceName);
+    public TargetServiceNotFoundException(String message, URI sourceName, URI targetName) {
+        super(message, sourceName, targetName);
     }
 
 }

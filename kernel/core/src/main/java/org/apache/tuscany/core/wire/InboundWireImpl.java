@@ -20,6 +20,7 @@ package org.apache.tuscany.core.wire;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
@@ -39,7 +40,7 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class InboundWireImpl implements InboundWire {
     private QName bindingType = LOCAL_BINDING;
-    private String serviceName;
+    private URI uri;
     private ServiceContract serviceContract;
     private OutboundWire targetWire;
     private String callbackReferenceName;
@@ -89,16 +90,12 @@ public class InboundWireImpl implements InboundWire {
         this.serviceContract = serviceContract;
     }
 
-    public void addInterface(Class claz) {
-        throw new UnsupportedOperationException("Additional proxy interfaces not yet supported");
+    public URI getUri() {
+        return uri;
     }
 
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setUri(URI serviceName) {
+        this.uri = serviceName;
     }
 
     public Map<Operation<?>, InboundInvocationChain> getInvocationChains() {

@@ -24,6 +24,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -74,7 +75,8 @@ public class JDKInboundInvocationHandlerSerializationTestCase extends TestCase {
         Operation<Object> operation = new Operation<Object>("invoke", null, null, null, false, null, NO_CONVERSATION);
         map.put(operation, createChain(operation));
 
-        EasyMock.expect(wire.getServiceName()).andReturn("foo").atLeastOnce();
+        URI uri = URI.create("component#foo");
+        EasyMock.expect(wire.getUri()).andReturn(uri).atLeastOnce();
         EasyMock.expect(wire.getInvocationChains()).andReturn(map).times(2);
         EasyMock.replay(wire);
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);

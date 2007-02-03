@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     private Map<String, InboundWire> inboundWires;
     private WireService wireService = new JDKWireService();
 
-    public SystemSingletonAtomicComponent(String name, CompositeComponent parent, Class<S> interfaze, T instance) {
+    public SystemSingletonAtomicComponent(URI name, CompositeComponent parent, Class<S> interfaze, T instance) {
         super(name, parent);
         this.instance = instance;
         inboundWires = new HashMap<String, InboundWire>();
@@ -61,7 +62,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
 
-    public SystemSingletonAtomicComponent(String name,
+    public SystemSingletonAtomicComponent(URI name,
                                           CompositeComponent parent,
                                           List<Class<?>> services,
                                           T instance) {
@@ -118,7 +119,7 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
     }
 
     public void addInboundWire(InboundWire wire) {
-        inboundWires.put(wire.getServiceName(), wire);
+        inboundWires.put(wire.getUri().getFragment(), wire);
     }
 
     public Collection<InboundWire> getInboundWires() {
@@ -152,10 +153,12 @@ public class SystemSingletonAtomicComponent<S, T extends S> extends AbstractComp
 
     private void initWire(Class<?> interfaze) {
         JavaServiceContract serviceContract = new JavaServiceContract(interfaze);
-        ServiceDefinition def = new ServiceDefinition(interfaze.getName(), serviceContract, false);
+        // create a relative URI
+        URI uri = URI.create("#" + interfaze.getName());
+        ServiceDefinition def = new ServiceDefinition(uri, serviceContract, false);
         InboundWire wire = wireService.createWire(def);
         wire.setContainer(this);
-        inboundWires.put(wire.getServiceName(), wire);
+        inboundWires.put(wire.getUri().getFragment(), wire);
     }
 
 }

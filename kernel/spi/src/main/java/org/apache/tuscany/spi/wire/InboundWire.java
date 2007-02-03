@@ -31,18 +31,7 @@ import org.apache.tuscany.spi.model.Operation;
 public interface InboundWire extends Wire {
 
     /**
-     * Returns the name of the target service of the wire
-     */
-    String getServiceName();
-
-    /**
-     * Sets the name of the target service of the wire
-     */
-    void setServiceName(String name);
-
-    /**
-     * Returns the invocation chain for each operation on a service specified by a reference or a target
-     * service.
+     * Returns the invocation chain for each operation on a service specified by a reference or a target service.
      */
     Map<Operation<?>, InboundInvocationChain> getInvocationChains();
 

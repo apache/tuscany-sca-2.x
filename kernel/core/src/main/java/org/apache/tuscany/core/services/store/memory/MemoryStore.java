@@ -110,7 +110,7 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
             store.put(owner, map);
         }
         if (map.containsKey(id)) {
-            throw new DuplicateRecordException(owner.getCanonicalName(), id);
+            throw new DuplicateRecordException(owner.getUri().toString(), id);
         }
         map.put(id, new Record(object, expiration));
     }
@@ -118,11 +118,11 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
     public void updateRecord(SCAObject owner, String id, Object object, long expiration) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            throw new StoreWriteException("Record not found", owner.getCanonicalName(), id);
+            throw new StoreWriteException("Record not found", owner.getUri().toString(), id);
         }
         Record record = map.get(id);
         if (record == null) {
-            throw new StoreWriteException("Record not found", owner.getCanonicalName(), id);
+            throw new StoreWriteException("Record not found", owner.getUri().toString(), id);
         }
         record.data = object;
     }
@@ -146,10 +146,10 @@ public class MemoryStore extends AbstractEventPublisher implements Store {
     public void removeRecord(SCAObject owner, String id) throws StoreWriteException {
         Map<String, Record> map = store.get(owner);
         if (map == null) {
-            throw new StoreWriteException("Owner not found", owner.getCanonicalName(), id);
+            throw new StoreWriteException("Owner not found", owner.getUri().toString(), id);
         }
         if (map.remove(id) == null) {
-            throw new StoreWriteException("Owner not found", owner.getCanonicalName(), id);
+            throw new StoreWriteException("Owner not found", owner.getUri().toString(), id);
         }
     }
 

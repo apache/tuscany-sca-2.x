@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.spi.extension;
 
+import java.net.URI;
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.component.Service;
@@ -30,9 +31,10 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class ServiceBindingExtensionTestCase extends TestCase {
+    private URI uri;   
 
     public void testScope() throws Exception {
-        ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
             public QName getBindingType() {
                 return null;
             }
@@ -41,7 +43,7 @@ public class ServiceBindingExtensionTestCase extends TestCase {
     }
 
     public void testPrepare() throws Exception {
-        ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
             public QName getBindingType() {
                 return null;
             }
@@ -50,7 +52,7 @@ public class ServiceBindingExtensionTestCase extends TestCase {
     }
 
     public void testIsSystemNoParent() throws Exception {
-        ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
             public QName getBindingType() {
                 return null;
             }
@@ -62,7 +64,7 @@ public class ServiceBindingExtensionTestCase extends TestCase {
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.isSystem()).andReturn(true);
         EasyMock.replay(service);
-        ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
             public QName getBindingType() {
                 return null;
             }
@@ -75,7 +77,7 @@ public class ServiceBindingExtensionTestCase extends TestCase {
         Service service = EasyMock.createMock(Service.class);
         EasyMock.expect(service.isSystem()).andReturn(false);
         EasyMock.replay(service);
-        ServiceBindingExtension binding = new ServiceBindingExtension(null, null) {
+        ServiceBindingExtension binding = new ServiceBindingExtension(uri, null) {
             public QName getBindingType() {
                 return null;
             }
@@ -84,4 +86,10 @@ public class ServiceBindingExtensionTestCase extends TestCase {
         assertFalse(binding.isSystem());
     }
 
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        uri = URI.create("_foo");
+    }
 }
+

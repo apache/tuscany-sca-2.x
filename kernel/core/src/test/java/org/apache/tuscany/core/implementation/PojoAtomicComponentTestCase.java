@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.ObjectFactory;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.TargetInvokerCreationException;
@@ -41,6 +43,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testDestroy() throws Exception {
         PojoConfiguration config = new PojoConfiguration();
+        config.setName(URI.create("foo"));
         config.setInstanceFactory(factory);
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
@@ -55,6 +58,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testInit() throws Exception {
         PojoConfiguration config = new PojoConfiguration();
+        config.setName(URI.create("foo"));
         config.setInstanceFactory(factory);
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
@@ -67,6 +71,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
 
     public void testOptimizable() throws Exception {
         PojoConfiguration config = new PojoConfiguration();
+        config.setName(URI.create("foo"));
         config.setInstanceFactory(factory);
         TestAtomicComponent component = new TestAtomicComponent(config);
         assertTrue(component.isOptimizable());
@@ -76,6 +81,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
     public void testDestroyableButOptimizable() throws Exception {
         PojoConfiguration config = new PojoConfiguration();
         config.setInstanceFactory(factory);
+        config.setName(URI.create("foo"));
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);
@@ -87,6 +93,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
     @SuppressWarnings({"unchecked"})
     public void testStatelessOptimizable() throws Exception {
         PojoConfiguration config = new PojoConfiguration();
+        config.setName(URI.create("foo"));
         config.setInstanceFactory(factory);
         TestStatelessAtomicComponent component = new TestStatelessAtomicComponent(config);
         assertTrue(component.isOptimizable());
@@ -96,6 +103,7 @@ public class PojoAtomicComponentTestCase extends TestCase {
     public void testNotOptimizable() throws Exception {
         PojoConfiguration config = new PojoConfiguration();
         config.setInstanceFactory(factory);
+        config.setName(URI.create("foo"));
         EventInvoker<Object> invoker = EasyMock.createMock(EventInvoker.class);
         invoker.invokeEvent(EasyMock.notNull());
         EasyMock.replay(invoker);

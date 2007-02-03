@@ -18,26 +18,24 @@
  */
 package org.apache.tuscany.core.component.event;
 
-import org.apache.tuscany.spi.component.CompositeComponent;
+import java.net.URI;
 
 import junit.framework.TestCase;
-import org.easymock.EasyMock;
 
 /**
  * @version $Rev$ $Date$
  */
 public class EventTestCase extends TestCase {
-
-    private CompositeComponent component;
+    private URI uri = URI.create("foo");
 
     public void testCompositeStart() {
-        CompositeStart event = new CompositeStart(this, component);
-        assertEquals(component, event.getComposite());
+        ComponentStart event = new ComponentStart(this, uri);
+        assertEquals(uri, event.getComponentUri());
     }
 
     public void testCompositeStop() {
-        CompositeStop event = new CompositeStop(this, component);
-        assertEquals(component, event.getComposite());
+        ComponentStop event = new ComponentStop(this, uri);
+        assertEquals(uri, event.getComponentUri());
     }
 
     public void testHttpSessionStart() {
@@ -67,6 +65,5 @@ public class EventTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        component = EasyMock.createNiceMock(CompositeComponent.class);
     }
 }

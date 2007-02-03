@@ -1,6 +1,7 @@
 package org.apache.tuscany.core.implementation.java;
 
 import java.lang.reflect.Constructor;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -73,7 +74,7 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        parent = new CompositeComponentImpl(null, null, null, null);
+        parent = new CompositeComponentImpl(URI.create("parent"), null, null, null);
         constructor = SourceImpl.class.getConstructor((Class[]) null);
         createDeploymentContext();
         createComponentDefinitionAndType();
@@ -96,17 +97,18 @@ public class JavaComponentBuilderMetadataTestCase extends TestCase {
         type = new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         type.setImplementationScope(Scope.COMPOSITE);
         JavaMappedReference reference = new JavaMappedReference();
-        reference.setName("target");
+        reference.setUri(URI.create("#target"));
         reference.setMember(SourceImpl.class.getMethod("setTarget", Target.class));
         type.add(reference);
         ServiceContract<?> contract = new JavaServiceContract(Source.class);
         JavaMappedService serviceDefinition = new JavaMappedService();
-        serviceDefinition.setName("Source");
+        serviceDefinition.setUri(URI.create("component#Source"));
         serviceDefinition.setServiceContract(contract);
         type.add(serviceDefinition);
         type.setConstructorDefinition(new ConstructorDefinition<SourceImpl>(constructor));
         JavaImplementation sourceImpl = new JavaImplementation(SourceImpl.class, type);
         definition = new ComponentDefinition<JavaImplementation>(sourceImpl);
+        definition.setName(URI.create("component"));
     }
 
 }

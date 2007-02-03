@@ -20,6 +20,8 @@ package org.apache.tuscany.spi.extension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.CompositeComponent;
@@ -277,12 +279,12 @@ public class CompositeComponentExtensionAutowireTestCase extends TestCase {
     private static class MockComposite extends CompositeComponentExtension {
         private boolean system;
 
-        public MockComposite() {
-            super("foo", null, null, null);
+        public MockComposite() throws URISyntaxException {
+            super(new URI("foo"), null, null, null);
         }
 
-        public MockComposite(boolean system) {
-            super("foo", null, null, null);
+        public MockComposite(boolean system) throws URISyntaxException {
+            super(new URI("foo"), null, null, null);
             this.system = system;
         }
 

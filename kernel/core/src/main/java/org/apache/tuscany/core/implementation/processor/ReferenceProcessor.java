@@ -21,6 +21,7 @@ package org.apache.tuscany.core.implementation.processor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.Collection;
 
 import org.osoa.sca.annotations.Reference;
@@ -95,7 +96,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         reference.setMember(method);
         reference.setAutowire(isAutowire);
         reference.setRequired(required);
-        reference.setName(name);
+        reference.setUri(URI.create("#" + name));
         ServiceContract contract;
         try {
             Class<?> rawType = method.getParameterTypes()[0];
@@ -148,7 +149,7 @@ public class ReferenceProcessor extends ImplementationProcessorExtension {
         reference.setMember(field);
         reference.setRequired(required);
         reference.setAutowire(autowire);
-        reference.setName(name);
+        reference.setUri(URI.create("#" + name));
         ServiceContract contract;
         try {
             Class<?> rawType = field.getType();

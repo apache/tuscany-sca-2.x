@@ -21,10 +21,10 @@ package org.apache.tuscany.core.wire;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -83,13 +83,14 @@ public class WireServiceExtensionTestCase extends TestCase {
     }
 
     public void testCreateServiceWire() throws Exception {
-        ServiceDefinition definition = new ServiceDefinition("foo", contract, false);
+        URI uri = URI.create("service#foo");
+        ServiceDefinition definition = new ServiceDefinition(uri, contract, false);
         TargetInvoker invoker = EasyMock.createMock(TargetInvoker.class);
         MessageImpl resp = new MessageImpl();
         EasyMock.expect(invoker.invoke(EasyMock.isA(Message.class))).andReturn(resp);
         EasyMock.replay(invoker);
         InboundWire wire = wireService.createWire(definition);
-        assertEquals("foo", wire.getServiceName());
+        assertEquals("service#foo", wire.getUri().toString());
         assertEquals(1, wire.getInvocationChains().size());
         assertEquals(contract, wire.getServiceContract());
         InboundInvocationChain chain = wire.getInvocationChains().get(operation);
@@ -102,13 +103,13 @@ public class WireServiceExtensionTestCase extends TestCase {
     }
 
     public void testCreateReferenceWire() throws Exception {
-        ReferenceDefinition definition = new ReferenceDefinition("foo", contract);
+        ReferenceDefinition definition = new ReferenceDefinition(URI.create("foo"), contract);
         ReferenceTarget target = new ReferenceTarget();
         target.addTarget(new URI("bar"));
-        target.setReferenceName("refName");
+        target.setReferenceName(URI.create("#refName"));
 
         OutboundWire wire = wireService.createWire(target, definition).get(0);
-        assertEquals("refName", wire.getReferenceName());
+        assertEquals("#refName", wire.getUri().toString());
         assertEquals("bar", wire.getTargetName().toString());
         assertFalse(wire.isAutowire());
         assertEquals(1, wire.getInvocationChains().size());
@@ -133,35 +134,35 @@ public class WireServiceExtensionTestCase extends TestCase {
     }
 
     public void testCreateAutowireReferenceWire() throws Exception {
-        ReferenceDefinition definition = new ReferenceDefinition("foo", contract);
+        ReferenceDefinition definition = new ReferenceDefinition(URI.create("foo"), contract);
         definition.setAutowire(true);
         ReferenceTarget target = new ReferenceTarget();
-        target.setReferenceName("refName");
+        target.setReferenceName(URI.create("#refName"));
         OutboundWire wire = wireService.createWire(target, definition).get(0);
         assertTrue(wire.isAutowire());
-        assertEquals("refName", wire.getReferenceName());
+        assertEquals("#refName", wire.getUri().toString());
         assertEquals(contract, wire.getServiceContract());
         assertEquals(Callback.class, wire.getCallbackInterface());
     }
-    
+
     public void testCreateReferenceMultipleWire() throws Exception {
-        ReferenceDefinition definition = new ReferenceDefinition("foo", contract);
+        ReferenceDefinition definition = new ReferenceDefinition(URI.create("foo"), contract);
         definition.setMultiplicity(Multiplicity.ONE_N);
         ReferenceTarget target = new ReferenceTarget();
         target.addTarget(new URI("bar"));
         target.addTarget(new URI("bar2"));
-        target.setReferenceName("refName");
+        target.setReferenceName(URI.create("refName"));
 
         List<OutboundWire> wires = wireService.createWire(target, definition);
         assertEquals(2, wires.size());
-    }    
+    }
 
     public void testCreateComponentWires() throws Exception {
         ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>> type =
             new ComponentType<ServiceDefinition, ReferenceDefinition, Property<?>>();
-        ReferenceDefinition referenceDefinition = new ReferenceDefinition("refName", contract);
+        ReferenceDefinition referenceDefinition = new ReferenceDefinition(URI.create("#.refName"), contract);
         type.add(referenceDefinition);
-        ServiceDefinition serviceDefinition = new ServiceDefinition("foo", contract, false);
+        ServiceDefinition serviceDefinition = new ServiceDefinition(URI.create("#foo"), contract, false);
         type.add(serviceDefinition);
 
         Implementation<ComponentType> impl = new Implementation<ComponentType>() {
@@ -169,10 +170,10 @@ public class WireServiceExtensionTestCase extends TestCase {
         impl.setComponentType(type);
 
         ComponentDefinition<Implementation<ComponentType>> definition =
-            new ComponentDefinition<Implementation<ComponentType>>("Foo", impl);
+            new ComponentDefinition<Implementation<ComponentType>>(URI.create("foo"), impl);
         ReferenceTarget target = new ReferenceTarget();
         target.addTarget(new URI("bar"));
-        target.setReferenceName("refName");
+        target.setReferenceName(URI.create("#.refName"));
         definition.add(target);
 
         AtomicComponent component = EasyMock.createMock(AtomicComponent.class);
@@ -185,7 +186,8 @@ public class WireServiceExtensionTestCase extends TestCase {
     }
 
     public void testCreateReferenceBindingWire() throws Exception {
-        ReferenceBinding binding = new MockReferenceBinding();
+        URI uri = new URI("foo");
+        ReferenceBinding binding = new MockReferenceBinding(uri);
         QualifiedName qName = new QualifiedName("target");
 
         wireService.createWires(binding, contract, qName);
@@ -193,6 +195,7 @@ public class WireServiceExtensionTestCase extends TestCase {
         InboundWire inboundWire = binding.getInboundWire();
         assertEquals(1, inboundWire.getInvocationChains().size());
         assertEquals(contract, inboundWire.getServiceContract());
+        assertEquals(uri, inboundWire.getUri());
         assertEquals(binding, inboundWire.getContainer());
 
         OutboundWire outboundWire = binding.getOutboundWire();
@@ -200,23 +203,25 @@ public class WireServiceExtensionTestCase extends TestCase {
         assertEquals(1, outboundWire.getInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
         assertEquals(binding, outboundWire.getContainer());
+        assertEquals(uri, outboundWire.getUri());
     }
 
     public void testCreateServiceBindingWire() throws Exception {
-        ServiceBinding binding = new MockServiceBinding();
-
+        URI uri = URI.create("foo");
+        ServiceBinding binding = new MockServiceBinding(uri);
         wireService.createWires(binding, contract, "target");
 
         InboundWire inboundWire = binding.getInboundWire();
         assertEquals(1, inboundWire.getInvocationChains().size());
         assertEquals(contract, inboundWire.getServiceContract());
         assertEquals(binding, inboundWire.getContainer());
-
+        assertEquals(uri, inboundWire.getUri());
         OutboundWire outboundWire = binding.getOutboundWire();
         assertEquals("target", outboundWire.getTargetName().toString());
         assertEquals(1, outboundWire.getInvocationChains().size());
         assertEquals(contract, outboundWire.getServiceContract());
         assertEquals(binding, outboundWire.getContainer());
+        assertEquals(uri, outboundWire.getUri());
         assertEquals(1, outboundWire.getTargetCallbackInvocationChains().size());
     }
 
@@ -271,16 +276,15 @@ public class WireServiceExtensionTestCase extends TestCase {
     }
 
     private class MockReferenceBinding extends AbstractSCAObject implements ReferenceBinding {
-        private ServiceContract<?> bindingServiceContract;
         private InboundWire inboundWire;
         private OutboundWire outboundWire;
 
-        public MockReferenceBinding() {
-            super("foo", null);
+        public MockReferenceBinding(URI uri) throws URISyntaxException {
+            super(uri, null);
         }
 
         public ServiceContract<?> getBindingServiceContract() {
-            return bindingServiceContract;
+            return null;
         }
 
         public QName getBindingType() {

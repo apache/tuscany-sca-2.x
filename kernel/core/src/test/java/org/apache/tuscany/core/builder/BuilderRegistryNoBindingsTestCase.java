@@ -50,7 +50,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testNoServiceBindings() throws Exception {
         ServiceBinding binding = EasyMock.createNiceMock(ServiceBinding.class);
         EasyMock.replay(binding);
-        ServiceDefinition definition = new ServiceDefinition("foo", null, false);
+        ServiceDefinition definition = new ServiceDefinition(URI.create("#foo"), null, false);
         definition.setTarget(new URI("foo"));
         Service service = registry.build(parent, definition, deploymentContext);
         assertEquals(1, service.getServiceBindings().size());
@@ -60,7 +60,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
     public void testReferenceBindingBuilderDispatch() throws Exception {
         ReferenceBinding binding = EasyMock.createNiceMock(ReferenceBinding.class);
         EasyMock.replay(binding);
-        ReferenceDefinition definition = new ReferenceDefinition("foo", null, Multiplicity.ONE_ONE);
+        ReferenceDefinition definition = new ReferenceDefinition(URI.create("#foo"), null, Multiplicity.ONE_ONE);
         Reference reference = registry.build(parent, definition, deploymentContext);
         assertEquals(1, reference.getReferenceBindings().size());
         assertTrue(reference.getReferenceBindings().get(0) instanceof LocalReferenceBinding);
@@ -71,7 +71,7 @@ public class BuilderRegistryNoBindingsTestCase extends TestCase {
         deploymentContext = new RootDeploymentContext(null, null, null, null);
         parent = EasyMock.createNiceMock(CompositeComponent.class);
         EasyMock.replay(parent);
-        registry = new BuilderRegistryImpl(null, null);
+        registry = new BuilderRegistryImpl(null, null, null);
         registry.register(LocalBindingDefinition.class, new LocalBindingBuilder());
     }
 

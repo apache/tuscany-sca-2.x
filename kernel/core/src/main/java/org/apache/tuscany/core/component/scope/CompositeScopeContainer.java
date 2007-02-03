@@ -35,8 +35,8 @@ import org.apache.tuscany.spi.component.TargetResolutionException;
 import org.apache.tuscany.spi.event.Event;
 import org.apache.tuscany.spi.model.Scope;
 
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 
 /**
  * A scope context which manages atomic component instances keyed by composite
@@ -63,7 +63,7 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
 
     public void onEvent(Event event) {
         checkInit();
-        if (event instanceof CompositeStart) {
+        if (event instanceof ComponentStart) {
             try {
                 eagerInitComponents();
             } catch (ObjectCreationException e) {
@@ -72,7 +72,7 @@ public class CompositeScopeContainer extends AbstractScopeContainer {
                 monitor.eagerInitializationError(e);
             }
             lifecycleState = RUNNING;
-        } else if (event instanceof CompositeStop) {
+        } else if (event instanceof ComponentStop) {
             shutdownContexts();
         }
     }

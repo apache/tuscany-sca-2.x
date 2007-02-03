@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.component.scope;
 
 import java.lang.reflect.Constructor;
+import java.net.URI;
 
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.WorkContext;
@@ -60,7 +61,7 @@ public class ConversationalScopeRestartTestCase extends TestCase {
         configuration.setDestroyInvoker(destroyInvoker);
         Constructor<InitDestroyOnce> ctr = InitDestroyOnce.class.getConstructor((Class<?>[]) null);
         configuration.setInstanceFactory(new PojoObjectFactory<InitDestroyOnce>(ctr));
-        configuration.setName("InitDestroy");
+        configuration.setName(new URI("InitDestroy"));
         AtomicComponent component = new SystemAtomicComponentImpl(configuration);
         component.setScopeContainer(scope);
         component.start();

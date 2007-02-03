@@ -18,35 +18,40 @@
  */
 package org.apache.tuscany.spi.builder;
 
+import java.net.URI;
+
+
 /**
  * Denotes a general error raised during wiring
  *
  * @version $Rev$ $Date$
  */
 public abstract class WiringException extends BuilderException {
-    private String sourceName;
-    private String referenceName;
-    private String targetName;
-    private String targetServiceName;
+    private final URI sourceUri;
+    private final URI targetUri;
 
     protected WiringException(String message) {
         super(message);
+        sourceUri = null;
+        targetUri = null;
     }
 
-    protected WiringException(String message, String identifier) {
-        super(message, identifier);
+    protected WiringException(String message, URI sourceUri, URI targetUri) {
+        super(message);
+        this.sourceUri = sourceUri;
+        this.targetUri = targetUri;
     }
 
-    protected WiringException(String message, Throwable cause) {
+    protected WiringException(String message, URI sourceUri, URI targetUri, Throwable cause) {
         super(message, cause);
+        this.sourceUri = sourceUri;
+        this.targetUri = targetUri;
     }
 
-    protected WiringException(String message, String identifier, Throwable cause) {
-        super(message, identifier, cause);
-    }
-
-    protected WiringException(Throwable cause) {
-        super(cause);
+    protected WiringException(String message, String identifier, URI sourceUri, URI targetUri) {
+        super(message, identifier);
+        this.sourceUri = sourceUri;
+        this.targetUri = targetUri;
     }
 
     /**
@@ -54,17 +59,8 @@ public abstract class WiringException extends BuilderException {
      *
      * @return the source name the source name for the wire
      */
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    /**
-     * Sets the source name for the wire
-     *
-     * @param sourceName the source name for the wire
-     */
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
+    public URI getSourceUri() {
+        return sourceUri;
     }
 
     /**
@@ -72,53 +68,8 @@ public abstract class WiringException extends BuilderException {
      *
      * @return the target name the source name for the wire
      */
-    public String getTargetName() {
-        return targetName;
+    public URI getTargetUri() {
+        return targetUri;
     }
 
-    /**
-     * Sets the target name for the wire
-     *
-     * @param targetName the source name for the wire
-     */
-    public void setTargetName(String targetName) {
-        this.targetName = targetName;
-    }
-
-
-    /**
-     * Returns the source reference name for the wire
-     *
-     * @return the source reference name for the wire
-     */
-    public String getReferenceName() {
-        return referenceName;
-    }
-
-    /**
-     * Sets the source reference name for the wire
-     *
-     * @param referenceName the source reference name for the wire
-     */
-    public void setReferenceName(String referenceName) {
-        this.referenceName = referenceName;
-    }
-
-    /**
-     * Returns the target service name for the wire
-     *
-     * @return the target service name for the wire
-     */
-    public String getTargetServiceName() {
-        return targetServiceName;
-    }
-
-    /**
-     * Sets the target service name for the wire
-     *
-     * @param targetServiceName the target service name for the wire
-     */
-    public void setTargetServiceName(String targetServiceName) {
-        this.targetServiceName = targetServiceName;
-    }
 }

@@ -43,4 +43,10 @@ public interface ResolverRegistry {
      */
     <T extends ModelObject> void unregister(Class<T> modelClass);
 
+    /**
+     * Initiates the resolution process
+     *
+     * @param object the top-level element to resolve
+     */
+    <T extends ModelObject> void resolve(T object) throws ResolutionException;
 }

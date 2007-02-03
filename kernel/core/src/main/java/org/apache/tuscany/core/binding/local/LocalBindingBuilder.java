@@ -43,7 +43,7 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
                                 LocalBindingDefinition bindingDefinition,
                                 DeploymentContext deploymentContext)
         throws BuilderException {
-        return new LocalServiceBinding(serviceDefinition.getName(), parent);
+        return new LocalServiceBinding(serviceDefinition.getUri(), parent);
     }
 
 
@@ -51,6 +51,6 @@ public class LocalBindingBuilder extends BindingBuilderExtension<LocalBindingDef
                                   ReferenceDefinition referenceDefinition,
                                   LocalBindingDefinition bindingDefinition,
                                   DeploymentContext deploymentContext) throws BuilderException {
-        return new LocalReferenceBinding(referenceDefinition.getName(), parent);
+        return new LocalReferenceBinding(referenceDefinition.getUri(), parent);
     }
 }

@@ -35,8 +35,8 @@ import org.apache.tuscany.spi.model.Scope;
 
 import junit.framework.TestCase;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
@@ -70,7 +70,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             scope, members, "target", Target.class, TargetImpl.class, scope);
-        scope.onEvent(new CompositeStart(this, null));
+        scope.onEvent(new ComponentStart(this, null));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getTargetInstance();
@@ -80,7 +80,7 @@ public class ScopeReferenceTestCase extends TestCase {
         target.setString("foo");
         assertTrue(Proxy.isProxyClass(source.getTarget().getClass()));
         assertEquals("foo", source.getTarget().getString());
-        scope.onEvent(new CompositeStop(this, null));
+        scope.onEvent(new ComponentStop(this, null));
         scope.stop();
     }
 
@@ -96,7 +96,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             compositeScope, members, "target", Target.class, TargetImpl.class, sessionScope);
-        compositeScope.onEvent(new CompositeStart(this, null));
+        compositeScope.onEvent(new ComponentStart(this, null));
         Object session1 = new Object();
         ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
@@ -127,7 +127,7 @@ public class ScopeReferenceTestCase extends TestCase {
         sessionScope.onEvent(new HttpSessionEnd(this, session2));
 
         ctx.clearIdentifier(Scope.SESSION);
-        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new ComponentStop(this, null));
         sessionScope.stop();
         compositeScope.stop();
     }
@@ -144,7 +144,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             compositeScope, members, "target", Target.class, TargetImpl.class, requestScope);
-        compositeScope.onEvent(new CompositeStart(this, null));
+        compositeScope.onEvent(new ComponentStart(this, null));
         requestScope.onEvent(new RequestStart(this));
 
         AtomicComponent sourceComponent = contexts.get("source");
@@ -180,7 +180,7 @@ public class ScopeReferenceTestCase extends TestCase {
         future.get();
         assertEquals("foo", source.getTarget().getString());
         requestScope.onEvent(new RequestEnd(this));
-        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new ComponentStop(this, null));
         requestScope.stop();
         compositeScope.stop();
     }
@@ -197,7 +197,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             compositeScope, members, "target", Target.class, TargetImpl.class, statelessScope);
-        compositeScope.onEvent(new CompositeStart(this, null));
+        compositeScope.onEvent(new ComponentStart(this, null));
 
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
@@ -212,7 +212,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertFalse("foo".equals(target2.getString()));
         source.getTarget().setString("bar");
         assertFalse("bar".equals(source.getTarget().getString()));
-        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new ComponentStop(this, null));
         compositeScope.stop();
         statelessScope.stop();
     }
@@ -276,7 +276,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             sessionScope, members, "target", Target.class, TargetImpl.class, compositeScope);
-        compositeScope.onEvent(new CompositeStart(this, null));
+        compositeScope.onEvent(new ComponentStart(this, null));
         Object session1 = new Object();
         ctx.setIdentifier(Scope.SESSION, session1);
         sessionScope.onEvent(new HttpSessionStart(this, session1));
@@ -462,7 +462,7 @@ public class ScopeReferenceTestCase extends TestCase {
         final ScopeContainer compositeScope = new CompositeScopeContainer(null);
         requestScope.start();
         compositeScope.start();
-        compositeScope.onEvent(new CompositeStart(this, null));
+        compositeScope.onEvent(new ComponentStart(this, null));
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             requestScope, members, "target", Target.class, TargetImpl.class, compositeScope);
@@ -505,7 +505,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         requestScope.onEvent(new RequestEnd(this));
         requestScope.stop();
-        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new ComponentStop(this, null));
         compositeScope.stop();
     }
 
@@ -736,7 +736,7 @@ public class ScopeReferenceTestCase extends TestCase {
 
         Map<String, AtomicComponent> contexts = MockFactory.createWiredComponents("source", SourceImpl.class,
             statelessScope, members, "target", Target.class, TargetImpl.class, compositeScope);
-        compositeScope.onEvent(new CompositeStart(this, null));
+        compositeScope.onEvent(new ComponentStart(this, null));
         AtomicComponent sourceComponent = contexts.get("source");
         AtomicComponent targetComponent = contexts.get("target");
         Source source = (Source) sourceComponent.getTargetInstance();
@@ -760,7 +760,7 @@ public class ScopeReferenceTestCase extends TestCase {
         assertEquals("bar", target2.getString());
         assertEquals("bar", source.getTarget().getString());
 
-        compositeScope.onEvent(new CompositeStop(this, null));
+        compositeScope.onEvent(new ComponentStop(this, null));
         compositeScope.stop();
         statelessScope.stop();
     }

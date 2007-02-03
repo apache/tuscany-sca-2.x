@@ -20,6 +20,7 @@ package org.apache.tuscany.core.builder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,8 +68,8 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public abstract class AbstractConnectorImplTestCase extends TestCase {
-    protected static final String TARGET = "target";
-    protected static final QualifiedName TARGET_NAME = new QualifiedName(TARGET);
+    protected static final URI TARGET = URI.create("target");
+    protected static final QualifiedName TARGET_NAME = new QualifiedName("target");
     protected static final String TARGET_SERVICE = "FooService";
     protected static final QualifiedName TARGET_SERVICE_NAME = new QualifiedName("target/FooService");
     protected static final String RESPONSE = "response";
@@ -80,7 +81,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         WireService wireService = new JDKWireService(null, null);
-        connector = new ConnectorImpl(wireService, null, null, null);
+        connector = new ConnectorImpl(wireService, null, null, null, null);
         contract = new JavaServiceContract(Foo.class);
         operation = new Operation<Type>("bar", null, null, null);
     }
@@ -96,7 +97,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
 
         // create the target
         AtomicComponent target = EasyMock.createMock(AtomicComponent.class);
-        EasyMock.expect(target.getName()).andReturn(TARGET).anyTimes();
+        EasyMock.expect(target.getUri()).andReturn(TARGET).anyTimes();
         EasyMock.expect(target.isOptimizable()).andReturn(false).anyTimes();
         EasyMock.expect(target.getScope()).andReturn(Scope.COMPOSITE).atLeastOnce();
         EasyMock.expect(target.isSystem()).andReturn(false).atLeastOnce();
@@ -141,7 +142,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
 
     protected Service createServiceNonLocalBinding() throws WireConnectException {
         QName qName = new QName("foo", "bar");
-        ServiceBinding serviceBinding = new MockServiceBinding();
+        ServiceBinding serviceBinding = new MockServiceBinding(URI.create("foo"));
         InboundInvocationChain targetInboundChain = new InboundInvocationChainImpl(operation);
         targetInboundChain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire serviceInboundWire = new InboundWireImpl(qName);
@@ -201,7 +202,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
 
     protected ReferenceBinding createLocalReferenceBinding(QualifiedName target)
         throws TargetInvokerCreationException {
-        ReferenceBinding referenceBinding = new LocalReferenceBinding("local", null);
+        ReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("local"), null);
         InboundInvocationChain inboundChain = new InboundInvocationChainImpl(operation);
         InboundWire referenceInboundWire = new InboundWireImpl();
         referenceInboundWire.setServiceContract(contract);
@@ -228,7 +229,7 @@ public abstract class AbstractConnectorImplTestCase extends TestCase {
         chain.addInterceptor(new SynchronousBridgingInterceptor());
         InboundWire wire = new InboundWireImpl();
         wire.setServiceContract(contract);
-        LocalReferenceBinding referenceBinding = new LocalReferenceBinding("", parent);
+        LocalReferenceBinding referenceBinding = new LocalReferenceBinding(URI.create("baz"), parent);
         wire.setContainer(referenceBinding);
         wire.addInvocationChain(operation, chain);
 

@@ -30,12 +30,12 @@ import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.DeploymentContext;
 import org.apache.tuscany.spi.idl.InvalidServiceContractException;
 import org.apache.tuscany.spi.implementation.java.ImplementationProcessorExtension;
+import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.implementation.java.JavaMappedProperty;
 import org.apache.tuscany.spi.implementation.java.JavaMappedReference;
 import org.apache.tuscany.spi.implementation.java.JavaMappedService;
 import org.apache.tuscany.spi.implementation.java.PojoComponentType;
 import org.apache.tuscany.spi.implementation.java.ProcessingException;
-import org.apache.tuscany.spi.implementation.java.ImplementationProcessorService;
 import org.apache.tuscany.spi.model.ServiceContract;
 
 import static org.apache.tuscany.core.util.JavaIntrospectionHelper.getAllInterfaces;
@@ -70,7 +70,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
                     } catch (InvalidServiceContractException e) {
                         throw new ProcessingException(e);
                     }
-                    type.getServices().put(service.getName(), service);
+                    type.getServices().put(service.getUri().getFragment(), service);
                 }
             }
             return;
@@ -95,7 +95,7 @@ public class ServiceProcessor extends ImplementationProcessorExtension {
             } catch (InvalidServiceContractException e) {
                 throw new ProcessingException(e);
             }
-            type.getServices().put(service.getName(), service);
+            type.getServices().put(service.getUri().getFragment(), service);
         }
     }
 

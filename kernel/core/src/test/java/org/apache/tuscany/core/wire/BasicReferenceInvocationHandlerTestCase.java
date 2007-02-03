@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.wire;
 
 import java.lang.reflect.Method;
+import java.net.URI;
 
 import org.apache.tuscany.spi.idl.java.JavaInterfaceProcessorRegistry;
 import org.apache.tuscany.spi.model.Operation;
@@ -56,6 +57,7 @@ public class BasicReferenceInvocationHandlerTestCase extends TestCase {
         OutboundWire wire = new OutboundWireImpl();
         wire.addInvocationChain(operation, chain);
         wire.setServiceContract(contract);
+        wire.setUri(URI.create("#wire"));
         JDKOutboundInvocationHandler handler = new JDKOutboundInvocationHandler(SimpleTarget.class, wire, null);
         assertEquals("foo", handler.invoke(null, echo, new String[]{"foo"}));
         assertEquals(1, interceptor.getCount());

@@ -19,6 +19,7 @@
 package org.apache.tuscany.core.builder;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,13 +28,16 @@ import org.osoa.sca.annotations.EagerInit;
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.annotation.Autowire;
 import org.apache.tuscany.spi.builder.BindingBuilder;
+import org.apache.tuscany.spi.builder.BuilderConfigException;
 import org.apache.tuscany.spi.builder.BuilderException;
+import org.apache.tuscany.spi.builder.BuilderInstantiationException;
 import org.apache.tuscany.spi.builder.BuilderRegistry;
 import org.apache.tuscany.spi.builder.ComponentBuilder;
 import org.apache.tuscany.spi.builder.MissingWireTargetException;
 import org.apache.tuscany.spi.builder.ScopeNotFoundException;
 import org.apache.tuscany.spi.component.AtomicComponent;
 import org.apache.tuscany.spi.component.Component;
+import org.apache.tuscany.spi.component.ComponentRegistrationException;
 import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.Reference;
 import org.apache.tuscany.spi.component.ReferenceBinding;
@@ -54,6 +58,7 @@ import org.apache.tuscany.spi.model.ServiceDefinition;
 import org.apache.tuscany.spi.wire.WireService;
 
 import org.apache.tuscany.core.binding.local.LocalBindingDefinition;
+import org.apache.tuscany.core.component.ComponentManager;
 import org.apache.tuscany.core.implementation.composite.ReferenceImpl;
 import org.apache.tuscany.core.implementation.composite.ServiceImpl;
 
@@ -64,8 +69,9 @@ import org.apache.tuscany.core.implementation.composite.ServiceImpl;
  */
 @EagerInit
 public class BuilderRegistryImpl implements BuilderRegistry {
-    protected WireService wireService;
-    protected ScopeRegistry scopeRegistry;
+    private WireService wireService;
+    private ScopeRegistry scopeRegistry;
+    private ComponentManager componentManager;
 
     private final Map<Class<? extends Implementation<?>>, ComponentBuilder<? extends Implementation<?>>>
     componentBuilders =
@@ -73,11 +79,12 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     private final Map<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>> bindingBuilders =
         new HashMap<Class<? extends BindingDefinition>, BindingBuilder<? extends BindingDefinition>>();
 
-    public BuilderRegistryImpl(@Autowire
-    ScopeRegistry scopeRegistry, @Autowire
-    WireService wireService) {
+    public BuilderRegistryImpl(@Autowire ScopeRegistry scopeRegistry,
+                               @Autowire WireService wireService,
+                               @Autowire ComponentManager componentManager) {
         this.scopeRegistry = scopeRegistry;
         this.wireService = wireService;
+        this.componentManager = componentManager;
     }
 
     public <I extends Implementation<?>> void register(Class<I> implClass, ComponentBuilder<I> builder) {
@@ -126,13 +133,6 @@ public class BuilderRegistryImpl implements BuilderRegistry {
                             }
                         }
                         if (!hasConversationalContract) {
-                            Map<String, ReferenceDefinition> references = componentType.getReferences();
-                            for (ReferenceDefinition refDef : references.values()) {
-                                // TODO check for a conversational callback contract
-                                // refDef.getServiceContract() ...
-                            }
-                        }
-                        if (!hasConversationalContract) {
                             String name = implClass.getName();
                             throw new NoConversationalContractException(
                                 "No conversational contract for conversational implementation", name);
@@ -152,10 +152,15 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             if (wireService != null && component instanceof AtomicComponent) {
                 wireService.createWires((AtomicComponent) component, componentDefinition);
             }
+            componentManager.register(component);
             return component;
         } catch (BuilderException e) {
-            e.addContextName(componentDefinition.getName());
+            e.addContextName(componentDefinition.getName().toString());
             throw e;
+        } catch (ComponentRegistrationException e) {
+            BuilderInstantiationException bie = new BuilderInstantiationException("Error registering component", e);
+            bie.addContextName(componentDefinition.getName().toString());
+            throw bie;
         }
     }
 
@@ -163,7 +168,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public Service build(CompositeComponent parent,
                          ServiceDefinition serviceDefinition,
                          DeploymentContext deploymentContext) throws BuilderException {
-        String name = serviceDefinition.getName();
+        String name = serviceDefinition.getUri().getFragment();
         ServiceContract<?> serviceContract = serviceDefinition.getServiceContract();
         if (serviceDefinition.getBindings().isEmpty()) {
             // if no bindings are configured, default to the local binding.
@@ -175,7 +180,13 @@ public class BuilderRegistryImpl implements BuilderRegistry {
         }
         boolean system = parent.isSystem();
         URI targetUri = serviceDefinition.getTarget();
-        Service service = new ServiceImpl(name, parent, serviceContract, targetUri, system);
+        URI serviceUri;
+        try {
+            serviceUri = new URI(name);
+        } catch (URISyntaxException e) {
+            throw new BuilderConfigException(e);
+        }
+        Service service = new ServiceImpl(serviceUri, parent, serviceContract, targetUri, system);
         for (BindingDefinition definition : serviceDefinition.getBindings()) {
             Class<?> bindingClass = definition.getClass();
             // noinspection SuspiciousMethodCalls
@@ -203,7 +214,7 @@ public class BuilderRegistryImpl implements BuilderRegistry {
     public Reference build(CompositeComponent parent,
                            ReferenceDefinition referenceDefinition,
                            DeploymentContext context) throws BuilderException {
-        String name = referenceDefinition.getName();
+        String name = referenceDefinition.getUri().getFragment();
         ServiceContract<?> contract = referenceDefinition.getServiceContract();
         if (referenceDefinition.getBindings().isEmpty()) {
             // if no bindings are configured, default to the local binding.
@@ -214,7 +225,13 @@ public class BuilderRegistryImpl implements BuilderRegistry {
             }
         }
 
-        Reference reference = new ReferenceImpl(name, parent, contract);
+        URI referenceUri;
+        try {
+            referenceUri = new URI(name);
+        } catch (URISyntaxException e) {
+            throw new BuilderConfigException(e);
+        }
+        Reference reference = new ReferenceImpl(referenceUri, parent, contract);
         for (BindingDefinition bindingDefinition : referenceDefinition.getBindings()) {
             Class<?> bindingClass = bindingDefinition.getClass();
             // noinspection SuspiciousMethodCalls

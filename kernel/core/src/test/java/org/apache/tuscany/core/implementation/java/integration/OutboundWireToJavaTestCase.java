@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.tuscany.spi.QualifiedName;
 import org.apache.tuscany.spi.builder.WiringException;
@@ -44,8 +46,8 @@ import org.apache.tuscany.spi.wire.WireService;
 import junit.framework.TestCase;
 import org.apache.tuscany.core.builder.ConnectorImpl;
 import org.apache.tuscany.core.component.WorkContextImpl;
-import org.apache.tuscany.core.component.event.CompositeStart;
-import org.apache.tuscany.core.component.event.CompositeStop;
+import org.apache.tuscany.core.component.event.ComponentStart;
+import org.apache.tuscany.core.component.event.ComponentStop;
 import org.apache.tuscany.core.component.event.HttpSessionEnd;
 import org.apache.tuscany.core.component.event.HttpSessionStart;
 import org.apache.tuscany.core.component.event.RequestEnd;
@@ -163,7 +165,7 @@ public class OutboundWireToJavaTestCase extends TestCase {
     public void testToCompositeScope() throws Exception {
         CompositeScopeContainer scope = new CompositeScopeContainer(null);
         scope.start();
-        scope.onEvent(new CompositeStart(this, null));
+        scope.onEvent(new ComponentStart(this, null));
         final OutboundWire wire = getWire(scope);
         Target service = wireService.createProxy(Target.class, wire);
         Target target = wireService.createProxy(Target.class, wire);
@@ -171,26 +173,27 @@ public class OutboundWireToJavaTestCase extends TestCase {
         service.setString("foo");
         assertEquals("foo", service.getString());
         assertEquals("foo", target.getString());
-        scope.onEvent(new CompositeStop(this, null));
+        scope.onEvent(new ComponentStop(this, null));
         scope.stop();
     }
 
     private OutboundWire getWire(ScopeContainer scope) throws NoSuchMethodException,
-                                                              InvalidServiceContractException, WiringException {
+                                                              InvalidServiceContractException, WiringException,
+                                                              URISyntaxException {
         ConnectorImpl connector = new ConnectorImpl();
         CompositeComponent parent = EasyMock.createMock(CompositeComponent.class);
         PojoConfiguration configuration = new PojoConfiguration();
         configuration.setInstanceFactory(new PojoObjectFactory<TargetImpl>(TargetImpl.class.getConstructor()));
         configuration.setParent(parent);
         configuration.setWorkContext(workContext);
-        configuration.setName("source");
+        configuration.setName(new URI("source"));
 
         JavaAtomicComponent source = new JavaAtomicComponent(configuration);
         source.setScopeContainer(scope);
         OutboundWire outboundWire = createOutboundWire(new QualifiedName("target/Target"), Target.class);
         outboundWire.setContainer(source);
         source.addOutboundWire(outboundWire);
-        configuration.setName("target");
+        configuration.setName(new URI("target"));
         JavaAtomicComponent target = new JavaAtomicComponent(configuration);
         target.setScopeContainer(scope);
         InboundWire targetWire = MockFactory.createInboundWire("Target", Target.class);
@@ -215,6 +218,8 @@ public class OutboundWireToJavaTestCase extends TestCase {
         wire.setServiceContract(contract);
         wire.setTargetName(targetName);
         wire.addInvocationChains(createInvocationChains(interfaze));
+        wire.setTargetUri(URI.create(targetName.getPartName() + "#" + targetName.getPortName()));
+        wire.setUri(URI.create("component#ref"));
         return wire;
     }
 

@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 import org.apache.tuscany.spi.ObjectCreationException;
 import org.apache.tuscany.spi.component.ScopeContainer;
@@ -41,7 +42,7 @@ import org.easymock.EasyMock;
  * @version $Rev$ $Date$
  */
 public class AtomicComponentExtensionTestCase extends TestCase {
-
+    
     public void testIsEagerInit() throws Exception {
         TestExtension ext = new TestExtension();
         ext.isEagerInit();
@@ -60,7 +61,7 @@ public class AtomicComponentExtensionTestCase extends TestCase {
         chains.put(operation, chain);
         InboundWire wire = EasyMock.createMock(InboundWire.class);
         EasyMock.expect(wire.getInvocationChains()).andReturn(chains);
-        EasyMock.expect(wire.getServiceName()).andReturn("Service").atLeastOnce();
+        EasyMock.expect(wire.getUri()).andReturn(URI.create("Service")).atLeastOnce();
         EasyMock.replay(wire);
 
         ext.addInboundWire(wire);
@@ -98,11 +99,11 @@ public class AtomicComponentExtensionTestCase extends TestCase {
 
     private class TestExtension extends AtomicComponentExtension {
         public TestExtension() {
-            super(null, null, null, null, null, null, 0);
+            super(URI.create("_foo"), null, null, null, null, null, 0);
         }
 
         public TestExtension(ScopeContainer scopeContainer) {
-            super(null, null, null, null, null, null, 0);
+            super(URI.create("_foo"), null, null, null, null, null, 0);
             setScopeContainer(scopeContainer);
         }
 

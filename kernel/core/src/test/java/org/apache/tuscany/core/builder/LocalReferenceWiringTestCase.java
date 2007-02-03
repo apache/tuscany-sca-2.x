@@ -18,6 +18,7 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
 import java.util.Collections;
 
 import org.apache.tuscany.spi.QualifiedName;
@@ -55,14 +56,14 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
     public void testConnectLocalReferenceBindingToAtomicComponentService() throws Exception {
         final AtomicComponent atomicComponent = createAtomicTarget();
         CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
-        topComposite.getChild(TARGET);
+        topComposite.getChild(TARGET.toString());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 return atomicComponent;
             }
         });
         EasyMock.replay(topComposite);
-        CompositeComponent parent = new CompositeComponentImpl("parent", topComposite, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
         reference = createLocalReference(parent, TARGET_SERVICE_NAME);
         parent.register(reference);
         // connect to the target
@@ -85,14 +86,14 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
     public void testConnectLocalReferenceBindingToCompositeService() throws Exception {
         final CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
 
-        topComposite.getInboundWire(TARGET);
+        topComposite.getInboundWire(TARGET.toString());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 return createLocalInboundWire(topComposite);
             }
         });
         final Service service = createLocalService(topComposite);
-        topComposite.getChild(TARGET);
+        topComposite.getChild(TARGET.toString());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 return service;
@@ -100,7 +101,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         });
         EasyMock.replay(topComposite);
 
-        CompositeComponent parent = new CompositeComponentImpl("parent", topComposite, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
         reference = createLocalReference(parent, TARGET_NAME);
         parent.register(reference);
         connector.connect(parent);
@@ -121,7 +122,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         final Service service = createServiceNonLocalBinding();
         CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(topComposite.getName()).andReturn("foo");
-        topComposite.getChild(TARGET);
+        topComposite.getChild(TARGET.toString());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 return service;
@@ -129,7 +130,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         });
         EasyMock.replay(topComposite);
 
-        CompositeComponent parent = new CompositeComponentImpl("parent", topComposite, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
         reference = createLocalReference(parent, TARGET_NAME);
         parent.register(reference);
         try {
@@ -163,7 +164,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
 
         CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
         EasyMock.expect(topComposite.getName()).andReturn("foo").atLeastOnce();
-        topComposite.getChild(TARGET);
+        topComposite.getChild(TARGET.toString());
         EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
             public Object answer() throws Throwable {
                 return sibling;
@@ -171,7 +172,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
         });
         EasyMock.replay(topComposite);
 
-        CompositeComponent parent = new CompositeComponentImpl("parent", topComposite, connector, null);
+        CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
         reference = createLocalReference(parent, TARGET_SERVICE_NAME);
         parent.register(reference);
         parent.register(sibling);
@@ -200,7 +201,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
             EasyMock.replay(sibling);
 
             CompositeComponent topComposite = EasyMock.createMock(CompositeComponent.class);
-            topComposite.getChild(TARGET);
+            topComposite.getChild(TARGET.toString());
             EasyMock.expectLastCall().andStubAnswer(new IAnswer<Object>() {
                 public Object answer() throws Throwable {
                     return sibling;
@@ -209,7 +210,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
             EasyMock.expect(topComposite.getName()).andReturn("top").atLeastOnce();
             EasyMock.replay(topComposite);
 
-            CompositeComponent parent = new CompositeComponentImpl("parent", topComposite, connector, null);
+            CompositeComponent parent = new CompositeComponentImpl(URI.create("parent"), topComposite, connector, null);
 
             reference = createLocalReference(parent, TARGET_SERVICE_NAME);
             parent.register(reference);
@@ -227,7 +228,7 @@ public class LocalReferenceWiringTestCase extends AbstractConnectorImplTestCase 
 
     private Reference createLocalReference(CompositeComponent parent, QualifiedName target) throws Exception {
         referenceBinding = createLocalReferenceBinding(target);
-        Reference reference = new ReferenceImpl("foo", parent, contract);
+        Reference reference = new ReferenceImpl(URI.create("foo"), parent, contract);
         reference.addReferenceBinding(referenceBinding);
         return reference;
     }

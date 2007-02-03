@@ -21,18 +21,22 @@ package org.apache.tuscany.core.services.extension;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 import org.apache.tuscany.spi.annotation.Autowire;
+import org.apache.tuscany.spi.builder.BuilderException;
 import org.apache.tuscany.spi.component.Component;
-import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.component.ComponentException;
+import org.apache.tuscany.spi.component.CompositeComponent;
 import org.apache.tuscany.spi.deployer.CompositeClassLoader;
 import org.apache.tuscany.spi.deployer.Deployer;
+import org.apache.tuscany.spi.loader.IllegalSCDLNameException;
 import org.apache.tuscany.spi.loader.LoaderException;
 import org.apache.tuscany.spi.model.ComponentDefinition;
-import org.apache.tuscany.spi.builder.BuilderException;
+
+import org.apache.tuscany.core.implementation.system.model.SystemCompositeImplementation;
 
 /**
  * @version $Rev$ $Date$
@@ -51,7 +55,7 @@ public class AbstractExtensionDeployer {
         this.parent = parent;
     }
 
-    protected void deployExtension(File file) {
+    protected void deployExtension(File file) throws IllegalSCDLNameException {
         // extension name is file name less any extension
         String name = file.getName();
         int dot = name.lastIndexOf('.');
@@ -69,7 +73,7 @@ public class AbstractExtensionDeployer {
         deployExtension(name, url);
     }
 
-    protected void deployExtension(String name, URL url) {
+    protected void deployExtension(String name, URL url) throws IllegalSCDLNameException {
         // FIXME for now, assume this class's ClassLoader is the Tuscany system classloader
         // FIXME we should really use the one associated with the parent composite
         CompositeClassLoader extensionCL = new CompositeClassLoader(getClass().getClassLoader());
@@ -95,15 +99,21 @@ public class AbstractExtensionDeployer {
         SystemCompositeImplementation implementation = new SystemCompositeImplementation();
         implementation.setScdlLocation(scdlLocation);
         implementation.setClassLoader(extensionCL);
+        URI uri;
+        try {
+            uri = new URI(parent.getUri().toString() + "/" + name);
+        } catch (URISyntaxException e) {
+            throw new IllegalSCDLNameException(e);
+        }
         ComponentDefinition<SystemCompositeImplementation> definition =
-            new ComponentDefinition<SystemCompositeImplementation>(name, implementation);
+            new ComponentDefinition<SystemCompositeImplementation>(uri, implementation);
 
         // FIXME: [rfeng] Should we reset the thread context class loader here?
         // From the debugger with tomcat, the current TCCL is the RealmClassLoader
         // ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
         try {
             // Thread.currentThread().setContextClassLoader(extensionCL);
-            Component component = null;
+            Component component;
             try {
                 component = deployer.deploy(parent, definition);
                 component.start();

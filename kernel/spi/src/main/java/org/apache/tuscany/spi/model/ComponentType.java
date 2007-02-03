@@ -135,7 +135,7 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
      * @param service a service provided by the implementation
      */
     public void add(S service) {
-        services.put(service.getName(), service);
+        services.put(service.getUri().getFragment(), service);
     }
 
     /**
@@ -154,7 +154,7 @@ public class ComponentType<S extends ServiceDefinition, R extends ReferenceDefin
      * @param reference a reference to a service consumed by the implementation
      */
     public void add(R reference) {
-        references.put(reference.getName(), reference);
+        references.put(reference.getUri().getFragment(), reference);
     }
 
     /**

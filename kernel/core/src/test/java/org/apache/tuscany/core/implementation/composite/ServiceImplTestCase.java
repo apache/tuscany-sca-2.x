@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.composite;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.component.Service;
 import org.apache.tuscany.spi.component.ServiceBinding;
 
@@ -34,7 +36,7 @@ public class ServiceImplTestCase extends TestCase {
         binding.setService(EasyMock.isA(Service.class));
         binding.start();
         EasyMock.replay(binding);
-        Service service = new ServiceImpl(null, null, null);
+        Service service = new ServiceImpl(URI.create("foo#bar"), null, null);
         service.addServiceBinding(binding);
         service.start();
         EasyMock.verify(binding);
@@ -46,7 +48,7 @@ public class ServiceImplTestCase extends TestCase {
         binding.setService(EasyMock.isA(Service.class));
         binding.stop();
         EasyMock.replay(binding);
-        Service service = new ServiceImpl(null, null, null);
+        Service service = new ServiceImpl(URI.create("foo#bar"), null, null);
         service.addServiceBinding(binding);
         service.stop();
         EasyMock.verify(binding);
@@ -54,7 +56,7 @@ public class ServiceImplTestCase extends TestCase {
     }
 
     public void testIsSystem() {
-        Service service = new ServiceImpl(null, null, null, null, true);
+        Service service = new ServiceImpl(URI.create("foo#bar"), null, null, null, true);
         assertTrue(service.isSystem());
     }
 

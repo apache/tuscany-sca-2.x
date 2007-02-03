@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.core.implementation.processor;
 
+import java.net.URI;
+
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Remotable;
@@ -63,7 +65,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         JavaMappedReference ref = new JavaMappedReference();
-        ref.setName("foo");
+        ref.setUri(URI.create("#foo"));
         ServiceContract contract = new JavaServiceContract(String.class);
         ref.setServiceContract(contract);
         type.getReferences().put("foo", ref);
@@ -85,7 +87,7 @@ public class HeuristicConstructorTestCase extends TestCase {
         type.getProperties().put("foo", prop);
 
         JavaMappedReference ref = new JavaMappedReference();
-        ref.setName("ref");
+        ref.setUri(URI.create("#ref"));
         ServiceContract contract = new JavaServiceContract(Foo1.class);
         ref.setServiceContract(contract);
         type.getReferences().put("ref", ref);
@@ -114,12 +116,12 @@ public class HeuristicConstructorTestCase extends TestCase {
         PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>> type =
             new PojoComponentType<JavaMappedService, JavaMappedReference, JavaMappedProperty<?>>();
         JavaMappedReference ref = new JavaMappedReference();
-        ref.setName("ref");
+        ref.setUri(URI.create("#ref"));
         ServiceContract contract = new JavaServiceContract(Foo1.class);
         ref.setServiceContract(contract);
         type.getReferences().put("ref", ref);
         JavaMappedReference ref2 = new JavaMappedReference();
-        ref2.setName("ref2");
+        ref2.setUri(URI.create("#ref2"));
         ref2.setServiceContract(contract);
         type.getReferences().put("ref2", ref2);
         try {
@@ -261,18 +263,18 @@ public class HeuristicConstructorTestCase extends TestCase {
     }
 
     public static class Foo7 {
-        public Foo7(@Property(name = "myProp") String prop) {
+        public Foo7(@Property(name = "myProp")String prop) {
         }
     }
 
 
     public static class Foo8 {
-        public Foo8(@Reference(name = "myRef") String ref) {
+        public Foo8(@Reference(name = "myRef")String ref) {
         }
     }
 
     public static class Foo9 {
-        public Foo9(@Autowire(name = "myAutowire") String autowire) {
+        public Foo9(@Autowire(name = "myAutowire")String autowire) {
         }
     }
 
@@ -284,20 +286,20 @@ public class HeuristicConstructorTestCase extends TestCase {
         public Foo10(String prop) {
         }
 
-        public Foo10(@Property(name = "prop1") String prop1, @Property(name = "prop2") String prop2) {
+        public Foo10(@Property(name = "prop1")String prop1, @Property(name = "prop2")String prop2) {
 
         }
     }
 
     public static class Foo11 {
 
-        public Foo11(@Property(name = "prop1") String prop, @Baz String baz) {
+        public Foo11(@Property(name = "prop1")String prop, @Baz String baz) {
         }
     }
 
     public static class Foo12 {
 
-        public Foo12(@Property(name = "prop1") String prop, @Property(name = "prop2") String baz) {
+        public Foo12(@Property(name = "prop1")String prop, @Property(name = "prop2")String baz) {
         }
     }
 
@@ -322,8 +324,8 @@ public class HeuristicConstructorTestCase extends TestCase {
 
     public static final class Foo16 {
         public Foo16(@Autowire String param1,
-                     @Property(name = "foo") String param2,
-                     @Reference(name = "bar") String param3) {
+                     @Property(name = "foo")String param2,
+                     @Reference(name = "bar")String param3) {
         }
     }
 

@@ -18,9 +18,9 @@
  */
 package org.apache.tuscany.core.builder;
 
+import java.net.URI;
+
 import org.apache.tuscany.spi.builder.WiringException;
-import org.apache.tuscany.spi.wire.InboundWire;
-import org.apache.tuscany.spi.wire.OutboundWire;
 
 /**
  * Denotes an illegal callback
@@ -29,26 +29,8 @@ import org.apache.tuscany.spi.wire.OutboundWire;
  */
 public class IllegalCallbackException extends WiringException {
 
-    public IllegalCallbackException(String message,
-                                    String identifier,
-                                    String sourceName,
-                                    String referenceName,
-                                    String targetName,
-                                    String serviceName) {
-        super(message, identifier);
-        setSourceName(sourceName);
-        setReferenceName(referenceName);
-        setTargetName(targetName);
-        setTargetServiceName(serviceName);
-    }
-
-
-    public IllegalCallbackException(String message, String identifier, OutboundWire source, InboundWire target) {
-        super(message, identifier);
-        setSourceName(source.getContainer().getName());
-        setReferenceName(source.getReferenceName());
-        setTargetName(target.getContainer().getName());
-        setTargetServiceName(target.getServiceName());
+    public IllegalCallbackException(String message, String identifier, URI sourceUri, URI targetUri) {
+        super(message, identifier, sourceUri, targetUri);
     }
 
 }
