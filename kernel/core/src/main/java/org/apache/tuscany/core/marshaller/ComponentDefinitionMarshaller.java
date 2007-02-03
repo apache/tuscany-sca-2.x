@@ -18,6 +18,9 @@
  */
 package org.apache.tuscany.core.marshaller;
 
+import static javax.xml.stream.XMLStreamConstants.END_DOCUMENT;
+
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
@@ -41,7 +44,14 @@ public class ComponentDefinitionMarshaller implements ModelMarshaller<ComponentD
      * @throws MarshalException In case of any marshalling error.
      */
     public void marshall(ComponentDefinition<?> modelObject, XMLStreamWriter writer) throws MarshalException {
-
+        
+        try {
+            writer.writeStartDocument();
+            writer.writeEndDocument();
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
+        
     }
 
     /**
@@ -54,7 +64,17 @@ public class ComponentDefinitionMarshaller implements ModelMarshaller<ComponentD
      * @throws MarshalException In case of any unmarshalling error.
      */
     public ComponentDefinition<?> unmarshall(XMLStreamReader reader, boolean upconvert) throws MarshalException {
-        return null;
+        try {
+            while (true) {
+                ComponentDefinition<?> definition = null;
+                switch (reader.next()) {
+                    case END_DOCUMENT:
+                        return definition;
+                }
+            }
+        } catch (XMLStreamException ex) {
+            throw new MarshalException(ex);
+        }
     }
 
 }
