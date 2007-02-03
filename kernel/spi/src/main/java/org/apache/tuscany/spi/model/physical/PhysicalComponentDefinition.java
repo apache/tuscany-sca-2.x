@@ -18,6 +18,8 @@
  */
 package org.apache.tuscany.spi.model.physical;
 
+import java.net.URI;
+
 /**
  * Represents a physical component model.
  * 
@@ -25,5 +27,21 @@ package org.apache.tuscany.spi.model.physical;
  *
  */
 public abstract class PhysicalComponentDefinition {
+    private URI componentId;
 
+    /**
+     * Returns the absolute id for the phyiscal component.
+     * @return the absolute id for the phyiscal component
+     */
+    public URI getComponentId() {
+        return componentId;
+    }
+
+    /**
+     * Sets the absolute id for the phyiscal component.
+     * @param componentId the absolute id for the phyiscal component
+     */
+    public void setComponentId(URI componentId) {
+        this.componentId = componentId;
+    }
 }
